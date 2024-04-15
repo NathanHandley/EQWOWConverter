@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="WOW">
+      <UniqueIdentifier>{818560ac-5378-4083-b77e-bac547db833a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="EQ">
+      <UniqueIdentifier>{6428c256-643d-4b01-9e91-4c2a21703e4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Converter">
+      <UniqueIdentifier>{e2232a10-2351-4c28-9072-36a7cff6a185}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{4b30921a-0aa6-4075-a627-d94428caddd4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DBCFile.cpp">
+      <Filter>WOW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EQMap.cpp">
+      <Filter>EQ</Filter>
+    </ClCompile>
+    <ClCompile Include="src\s3d.cpp">
+      <Filter>EQ</Filter>
+    </ClCompile>
+    <ClCompile Include="src\wld.c">
+      <Filter>EQ</Filter>
+    </ClCompile>
+    <ClCompile Include="src\WoWMap.cpp">
+      <Filter>WOW</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Converter.cpp">
+      <Filter>Converter</Filter>
+    </ClCompile>
+    <ClCompile Include="src\EQToWoWConverter.cpp" />
+    <ClCompile Include="src\main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\dbc.h">
+      <Filter>WOW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\DBCFile.h">
+      <Filter>WOW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\EQMap.h">
+      <Filter>EQ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wmo.h">
+      <Filter>WOW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\WoWMap.h">
+      <Filter>WOW</Filter>
+    </ClInclude>
+    <ClInclude Include="src\s3d.h">
+      <Filter>EQ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\wld.h">
+      <Filter>EQ</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Converter.h">
+      <Filter>Converter</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vec.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Types.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
