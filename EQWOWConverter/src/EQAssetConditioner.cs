@@ -54,7 +54,7 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(outputZoneFolderRoot);
             FileTool.CreateBlankDirectory(tempFolderRoot);
 
-            // Iterate through each exported directory
+            // Iterate through each exported directory and process objects and zones
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
             foreach (string topDirectory in topDirectories)
             {
@@ -67,10 +67,8 @@ namespace EQWOWConverter
                 // Determine what objects exist in this folder
                 string tempZoneFolder = Path.Combine(tempFolderRoot, "Zone");
                 string tempObjectsFolder = Path.Combine(tempFolderRoot, "Objects");
-                string tempCharactersFolder = Path.Combine(tempFolderRoot, "Characters");
                 bool topDirectoryHasZone = Directory.Exists(tempZoneFolder);
                 bool topDirectoryHasObjects = Directory.Exists(tempObjectsFolder);
-                bool topDirectoryHasCharacters = Directory.Exists(tempCharactersFolder);
 
                 // Process objects
                 if (topDirectoryHasObjects)
@@ -88,14 +86,6 @@ namespace EQWOWConverter
 
                     // Process the object meshes
                     ProcessAndCopyObjectMeshes(topDirectoryFolderNameOnly, tempObjectsFolder, tempZoneFolder, outputObjectsMeshesFolderRoot);
-                }
-
-                // Process characters
-                if (topDirectoryHasCharacters)
-                {
-                    // TODO
-                    //if (topDirectoryHasCharacters)
-                    //    FileTool.CopyDirectoryAndContents(tempCharactersFolder, outputCharactersFolderRoot, false, true);
                 }
 
                 // Process Zones
@@ -270,6 +260,10 @@ namespace EQWOWConverter
             string[] objectMeshFiles = Directory.GetFiles(tempObjectMeshesFolderName);
             foreach (string objectMeshFile in objectMeshFiles)
             {
+                // Skip collision meshes
+                if (objectMeshFile.Contains("_collision.txt"))
+                    continue;
+
                 // Calculate the full paths for comparison
                 string objectMeshFileNameOnly = Path.GetFileName(objectMeshFile);
                 string originalObjectMeshFileNameOnlyNoExtension = Path.GetFileNameWithoutExtension(objectMeshFile);
@@ -293,6 +287,16 @@ namespace EQWOWConverter
                             altIteration++;
                             Logger.WriteLine("- [" + topDirectory + "] Object Mesh Collision with name '" + objectMeshFileNameOnly + "' but different contents so renaming to '" + newObjectMeshFileNameOnly + "'");
                             File.Move(sourceObjectMeshFile, Path.Combine(tempObjectMeshesFolderName, newObjectMeshFileNameOnly));
+
+                            // Also update the collision file, if there was one
+                            string collisionMeshFileName = Path.GetFileNameWithoutExtension(objectMeshFileNameOnly) + "_collision.txt";
+                            string collisionMeshFilePath = Path.Combine(tempObjectMeshesFolderName, collisionMeshFileName);
+                            if (File.Exists(collisionMeshFilePath))
+                            {
+                                string newCollisionMeshFilePath = Path.Combine(tempObjectMeshesFolderName, originalObjectMeshFileNameOnlyNoExtension + "alt" + altIteration.ToString() + "_collision.txt");
+                                Logger.WriteLine("- [" + topDirectory + "] Object Mesh also had a collision mesh with name '" + collisionMeshFileName + "', so changing that as well");
+                                File.Move(collisionMeshFilePath, newCollisionMeshFilePath);
+                            }
 
                             // Update mesh references in zone object instances file
                             string zoneObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
@@ -327,8 +331,15 @@ namespace EQWOWConverter
                 }
                 while (doesUnresolvedFileCollisionExist);
 
-                // Copy the file
+                // Copy the files
                 File.Copy(sourceObjectMeshFile, targetObjectMeshFile, true);
+                string collisionMeshFileNameOnly = Path.GetFileNameWithoutExtension(sourceObjectMeshFile) + "_collision.txt";
+                string sourceCollisionMeshFile = Path.Combine(tempObjectMeshesFolderName, collisionMeshFileNameOnly);
+                if (File.Exists(sourceCollisionMeshFile))
+                {
+                    string targetCollisionMeshFile = Path.Combine(outputObjectsMeshesFolderRoot, collisionMeshFileNameOnly);
+                    File.Copy(sourceCollisionMeshFile, targetCollisionMeshFile, true);
+                }
             }
         }
     }
