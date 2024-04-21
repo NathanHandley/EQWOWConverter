@@ -59,5 +59,47 @@ namespace EQWOWConverter
             // the same.
             return ((file1byte - file2byte) == 0);
         }
+
+        public static void CreateBlankDirectory(string targetDirectory)
+        {
+            if (Directory.Exists(targetDirectory))
+                Directory.Delete(targetDirectory, true);
+            Directory.CreateDirectory(targetDirectory);
+        }
+
+        public static bool CopyDirectoryAndContents(string sourceDirectory, string targetDirectory, bool deleteTargetContents, bool recursive)
+        {
+            // Create the folder if it doesn't exist, or recreate if the contents should be deleted
+            if (Directory.Exists(targetDirectory) == false)
+                Directory.CreateDirectory(targetDirectory);
+            else if (deleteTargetContents)
+            {
+                Directory.Delete(targetDirectory, true);
+                Directory.CreateDirectory(targetDirectory);
+            }
+
+            // Get and cache the source directory details
+            DirectoryInfo sourceDirectoryInfo = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo[] sourceDirectoryInfos = sourceDirectoryInfo.GetDirectories();
+
+            // Copy files from source directory into destination directory
+            foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
+            {
+                string targetFilePath = Path.Combine(targetDirectory, file.Name);
+                file.CopyTo(targetFilePath);
+            }
+
+            // If set to recursive, also do the same for the directories
+            if (recursive)
+            {
+                foreach (DirectoryInfo subDirectory in sourceDirectoryInfos)
+                {
+                    string newTargetDirectory = Path.Combine(targetDirectory, subDirectory.Name);
+                    CopyDirectoryAndContents(subDirectory.FullName, newTargetDirectory, deleteTargetContents, recursive);
+                }
+            }
+
+            return true;
+        }
     }
 }

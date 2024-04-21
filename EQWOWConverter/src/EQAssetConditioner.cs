@@ -12,57 +12,86 @@ namespace EQWOWConverter
     {
         public EQAssetConditioner() { }
 
-        public bool CondenseAll(string eqExportsRawPath, string eqExportsCondensedPath)
+        public bool ConditionAll(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Console.WriteLine("Condensing Raw EQ Data...");
+            Console.WriteLine("Conditioning Raw EQ Data...");
 
             // Make sure the raw path exists
             if (Directory.Exists(eqExportsRawPath) == false)
             {
                 Console.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-                Console.WriteLine("Condensing Failed!");
+                Console.WriteLine("Conditioning Failed!");
                 return false;
             }
 
             // Create base folder
-            Directory.CreateDirectory(eqExportsCondensedPath);
+            FileTool.CreateBlankDirectory(eqExportsCondensedPath);
 
-            // Objects
-            if (CondenseObjects(eqExportsRawPath, eqExportsCondensedPath) == false)
+            // Delete/Recreate the output folders
+            string outputObjectsFolderRoot = Path.Combine(eqExportsCondensedPath, "objects");
+            string outputCharactersFolderRoot = Path.Combine(eqExportsCondensedPath, "characters");
+            string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
+            string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
+            FileTool.CreateBlankDirectory(outputObjectsFolderRoot);
+            FileTool.CreateBlankDirectory(outputCharactersFolderRoot);
+            FileTool.CreateBlankDirectory(outputZoneFolderRoot);
+            FileTool.CreateBlankDirectory(tempFolderRoot);
+
+            // Iterate through each exported directory
+            string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
+            foreach (string topDirectory in topDirectories)
             {
-                Console.WriteLine("Condensing of objects failed!");
-                return false;
+                // Get just the folder name itself for later
+                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+
+                // Bring in the objects of this directory
+                FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
+
+                // Handle collisions
+                // TODO:
+
+                string tempZoneFolder = Path.Combine(tempFolderRoot, "Zone");
+                if (Directory.Exists(tempZoneFolder))
+                {
+                    // Copy the zone folder over
+                    string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
+                    FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
+                }
             }
 
-            Console.WriteLine("Condensing completed");
+            // Clean up the temp folder and exit
+            Directory.Delete(tempFolderRoot, true);
+            Console.WriteLine("Conditioning completed");
             return true;
         }
-        
+
+        /*
         private bool CondenseObjects(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Console.WriteLine("Condensing Objects Started...");
-
-            // Delete/Recreate the objects subfolder
-            string objectsOutputFolder = Path.Combine(eqExportsCondensedPath, "objects");
-            if (Directory.Exists(objectsOutputFolder))
-                Directory.Delete(objectsOutputFolder, true);
-            Directory.CreateDirectory(objectsOutputFolder);
-
             // Iterate through each source top folder
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
             foreach (string topDirectory in topDirectories)
             {
-                // Folder is the zone name
                 string topFolder = topDirectory.Split('\\').Last();
                 Console.WriteLine(" - Processing objects in folder '" + topFolder + "'");
 
                 // Check for objects folder
-                string objectFolder = Path.Combine(topDirectory, "Objects\\Textures");
+                string objectFolder = Path.Combine(topDirectory, "Objects");
                 if (Directory.Exists(objectFolder) == false)
                 {
                     Console.WriteLine(" - No objects in folder, skipping to next");
                     continue;
                 }
+
+                // Copy the contents to the Temp folder for work
+                FileTool.CopyDirectoryAndContents(objectFolder, tempFolder, true, true);
+
+                // Check for collision textures, and rename where required
+
+                // Check for collision object
+
+
+
 
                 // Iterate through every object file
                 string[] filesInObjectRoot = Directory.GetFiles(objectFolder);
@@ -90,5 +119,6 @@ namespace EQWOWConverter
             Console.WriteLine("Condensing Objects Ended (Success)");
             return true;
         }
+        */
     }
 }
