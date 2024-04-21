@@ -38,9 +38,9 @@ internal class Program
                     case "1":
                         {
                             Console.WriteLine("Conditioning Exported EQ Data...");
-                            EQAssetConditioner condenser = new EQAssetConditioner();
-                            bool condenseObjectsResult = condenser.CondenseObjects(CONFIG_PATH_EQEXPORTSRAW, CONFIG_PATH_EQEXPORTSCONDITIONED);
-                            if (condenseObjectsResult == false)
+                            EQAssetConditioner conditioner = new EQAssetConditioner();
+                            bool condenseResult = conditioner.CondenseAll(CONFIG_PATH_EQEXPORTSRAW, CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            if (condenseResult == false)
                             {
                                 Console.WriteLine("Exported EQ Data Conditioning Failed.");
                                 break;

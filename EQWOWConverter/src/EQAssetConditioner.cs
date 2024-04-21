@@ -4,26 +4,43 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+// Intentially ignoring 'vertex colors'.  Come back if this is needed.
+
 namespace EQWOWConverter
 {
     internal class EQAssetConditioner
     {
         public EQAssetConditioner() { }
 
-        public bool CondenseObjects(string eqExportsRawPath, string eqExportsCondensedPath)
+        public bool CondenseAll(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Console.WriteLine("Condensing Objects Started...");
+            Console.WriteLine("Condensing Raw EQ Data...");
 
             // Make sure the raw path exists
             if (Directory.Exists(eqExportsRawPath) == false)
             {
                 Console.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-                Console.WriteLine("Condensing Objects Ended (Failed)");
+                Console.WriteLine("Condensing Failed!");
                 return false;
             }
 
             // Create base folder
             Directory.CreateDirectory(eqExportsCondensedPath);
+
+            // Objects
+            if (CondenseObjects(eqExportsRawPath, eqExportsCondensedPath) == false)
+            {
+                Console.WriteLine("Condensing of objects failed!");
+                return false;
+            }
+
+            Console.WriteLine("Condensing completed");
+            return true;
+        }
+        
+        private bool CondenseObjects(string eqExportsRawPath, string eqExportsCondensedPath)
+        {
+            Console.WriteLine("Condensing Objects Started...");
 
             // Delete/Recreate the objects subfolder
             string objectsOutputFolder = Path.Combine(eqExportsCondensedPath, "objects");
@@ -31,24 +48,43 @@ namespace EQWOWConverter
                 Directory.Delete(objectsOutputFolder, true);
             Directory.CreateDirectory(objectsOutputFolder);
 
-            // Iterate through each zone folder
-            string[] zoneDirectories = Directory.GetDirectories(eqExportsRawPath);
-            foreach (string zoneDirectory in zoneDirectories)
+            // Iterate through each source top folder
+            string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
+            foreach (string topDirectory in topDirectories)
             {
                 // Folder is the zone name
-                string zoneName = zoneDirectory.Split('\\').Last();
-                Console.WriteLine(" - Processing objects for zone '" + zoneName + "'");
+                string topFolder = topDirectory.Split('\\').Last();
+                Console.WriteLine(" - Processing objects in folder '" + topFolder + "'");
 
                 // Check for objects folder
-                string zoneObjectFolder = Path.Combine(zoneDirectory, "Objects");
-                if (Directory.Exists(zoneObjectFolder) == false)
+                string objectFolder = Path.Combine(topDirectory, "Objects\\Textures");
+                if (Directory.Exists(objectFolder) == false)
                 {
-                    Console.WriteLine(" - No objects in zone, skipping to next");
+                    Console.WriteLine(" - No objects in folder, skipping to next");
                     continue;
                 }
 
-                // Iterate through the Objects by name (minus extension)
-                // TODO: HERE
+                // Iterate through every object file
+                string[] filesInObjectRoot = Directory.GetFiles(objectFolder);
+                foreach(string file in filesInObjectRoot)
+                {
+                    string fileNameOnly = Path.GetFileName(file);
+                    string sourceObjectFile = Path.Combine(objectFolder, fileNameOnly);
+                    string targetObjectFile = Path.Combine(objectsOutputFolder, fileNameOnly);
+
+                    // Compare the files if the destination file already exist
+                    if (File.Exists(targetObjectFile) == true)
+                    {
+                        if (FileTool.AreFilesTheSame(targetObjectFile, sourceObjectFile) == false)
+                            Console.WriteLine("- Error! File named '" + fileNameOnly + "' already exists and it's different.  Skipping.");
+//                        else
+//                            Console.WriteLine("- Skipping file '" + fileNameOnly + "' as it already exists");
+                        continue;
+                    }
+
+                    // Copy the file
+                    File.Copy(sourceObjectFile, targetObjectFile, true); 
+                }
             }
 
             Console.WriteLine("Condensing Objects Ended (Success)");
