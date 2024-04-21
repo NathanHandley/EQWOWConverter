@@ -2,28 +2,32 @@
 // Released under GPLv3, unless otherwise noted in specific code files
 
 using EQWOWConverter;
+using System.Runtime.CompilerServices;
 
 internal class Program
 {
     // TODO: Move to config
-    public static string CONFIG_PATH_EQEXPORTSRAW       = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-OBJ";
+    public static string CONFIG_PATH_EQEXPORTSRAW       = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
     public static string CONFIG_PATH_EQEXPORTSCONDITIONED = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
 
     private static void Main(string[] args)
     {
-        Console.WriteLine("###### EQ WOW Converter ######");
+        Logger.ResetLog();
+        Logger.WriteLine("###### EQ WOW Converter ######");
         bool doLoopForCommands = true;
         while (doLoopForCommands == true)
-        {
-            Console.WriteLine("");
-            Console.WriteLine("Options:");
-            Console.WriteLine(" [1] - Condition Exported EQ Model Data");
-            Console.WriteLine(" [X] - Exit");
+        {   
+            Logger.WriteLine("");
+            Logger.WriteLine("Options:");
+            Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
+            //Console.WriteLine(" [2] - Update Images References (.png to .blp)");
+            Logger.WriteLine(" [5] - Convert Zones to WMO");
+            Logger.WriteLine(" [X] - Exit");
             Console.Write("Command: ");
             string? enteredCommand = Console.ReadLine();
             if (enteredCommand == null)
             {
-                Console.WriteLine("Enter a command");
+                Logger.WriteLine("Enter a command");
             }
             else
             {
@@ -31,31 +35,43 @@ internal class Program
                 {
                     case "X":
                         {
-                            Console.WriteLine("Exiting.");
+                            Logger.WriteLine("Exiting.");
                             doLoopForCommands = false;
                         }
                         break;
                     case "1":
                         {
-                            Console.WriteLine("Conditioning Exported EQ Data...");
+                            Logger.WriteLine("Conditioning Exported EQ Data...");
                             EQAssetConditioner conditioner = new EQAssetConditioner();
                             bool condenseResult = conditioner.ConditionAllModels(CONFIG_PATH_EQEXPORTSRAW, CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
-                                Console.WriteLine("Exported EQ Data Conditioning Failed.");
+                                Logger.WriteLine("Exported EQ Data Conditioning Failed.");
                                 break;
-                            }                            
-                            Console.WriteLine("Exported EQ Data Conditioning Succeeded.");
+                            }
+                            Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
+                        } break;
+                    case "5":
+                        {
+                            Logger.WriteLine("Converting zones from EQ to WoW...");
+                            AssetConverter converter = new AssetConverter();
+                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            if (conversionResult == false)
+                            {
+                                Logger.WriteLine("EQ to WoW zone conversion Failed.");
+                                break;
+                            }
+                            Logger.WriteLine("Conversion of zones complete");
                         } break;
                     default:
                         {
-                            Console.WriteLine("Unknown Command");
+                            Logger.WriteLine("Unknown Command");
                         }
                         break;
                 }
             }
         }
-        Console.WriteLine("Press any key to quit...");
+        Logger.WriteLine("Press any key to quit...");
         Console.ReadKey();
     }
 }

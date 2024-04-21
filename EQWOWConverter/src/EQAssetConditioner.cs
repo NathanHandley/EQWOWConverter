@@ -12,15 +12,24 @@ namespace EQWOWConverter
     {
         public EQAssetConditioner() { }
 
+        private static uint objectMeshesCondensed = 0;
+        private static uint objectMaterialsCondensed = 0;
+        private static uint objectTexturesCondensed = 0;
+
         public bool ConditionAllModels(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Console.WriteLine("Conditioning Raw EQ Model Data (Zones, Characters, Objects)...");
+            Logger.WriteLine("Conditioning Raw EQ Model Data (Zones, Characters, Objects)...");
+
+            // Reset counters
+            objectMeshesCondensed = 0;
+            objectMaterialsCondensed = 0;
+            objectTexturesCondensed = 0;
 
             // Make sure the raw path exists
             if (Directory.Exists(eqExportsRawPath) == false)
             {
-                Console.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-                Console.WriteLine("Conditioning Failed!");
+                Logger.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
+                Logger.WriteLine("Conditioning Failed!");
                 return false;
             }
 
@@ -29,13 +38,17 @@ namespace EQWOWConverter
 
             // Delete/Recreate the output folders
             string outputObjectsFolderRoot = Path.Combine(eqExportsCondensedPath, "objects");
-            string outputObjectsTexturesFolderRoot = Path.Combine(outputObjectsFolderRoot, "Textures");
+            string outputObjectsTexturesFolderRoot = Path.Combine(outputObjectsFolderRoot, "textures");
+            string outputObjectsMeshesFolderRoot = Path.Combine(outputObjectsFolderRoot, "meshes");
+            string outputObjectsMaterialsFolderRoot = Path.Combine(outputObjectsFolderRoot, "materiallists");
             string outputCharactersFolderRoot = Path.Combine(eqExportsCondensedPath, "characters");
-            string outputCharactersTexturesFolderRoot = Path.Combine(outputCharactersFolderRoot, "Textures");
+            string outputCharactersTexturesFolderRoot = Path.Combine(outputCharactersFolderRoot, "textures");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
             FileTool.CreateBlankDirectory(outputObjectsFolderRoot);
             FileTool.CreateBlankDirectory(outputObjectsTexturesFolderRoot);
+            FileTool.CreateBlankDirectory(outputObjectsMeshesFolderRoot);
+            FileTool.CreateBlankDirectory(outputObjectsMaterialsFolderRoot);
             FileTool.CreateBlankDirectory(outputCharactersFolderRoot);
             FileTool.CreateBlankDirectory(outputCharactersTexturesFolderRoot);
             FileTool.CreateBlankDirectory(outputZoneFolderRoot);
@@ -68,10 +81,13 @@ namespace EQWOWConverter
                         Directory.Delete(objectVertexDataFolder, true);
 
                     // Process the object textures
-                    ProcessAndCopyObjectTextures(tempObjectsFolder, outputObjectsTexturesFolderRoot);
+                    ProcessAndCopyObjectTextures(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsTexturesFolderRoot);
 
-                    // Process the object files
-                    ProcessAndCopyObjectFiles(tempObjectsFolder, outputObjectsFolderRoot, tempZoneFolder);
+                    // Process the object materials
+                    ProcessAndCopyObjectMaterials(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsMaterialsFolderRoot);
+
+                    // Process the object meshes
+                    ProcessAndCopyObjectMeshes(topDirectoryFolderNameOnly, tempObjectsFolder, tempZoneFolder, outputObjectsMeshesFolderRoot);
                 }
 
                 // Process characters
@@ -92,14 +108,30 @@ namespace EQWOWConverter
 
             // Clean up the temp folder and exit
             Directory.Delete(tempFolderRoot, true);
-            Console.WriteLine("Conditioning completed for model data");
+            Logger.WriteLine("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "'");
             return true;
         }
 
-        private void ProcessAndCopyObjectTextures(string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
+        public void UpdateImageReferences(string eqExportsCondensedPath)
+        {
+            Logger.WriteLine("Updating image references...");
+
+            //// Make sure the raw path exists
+            //if (Directory.Exists(eqExportsRawPath) == false)
+            //{
+            //    Console.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
+            //    Console.WriteLine("Conditioning Failed!");
+            //    return false;
+            //}
+
+            Logger.WriteLine("Conditioning completed for model data");
+        }
+
+        private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {
             // Look for texture collisions for different texture files
             string tempObjectTextureFolderName = Path.Combine(tempObjectsFolder, "Textures");
+            string tempMaterialsFolderName = Path.Combine(tempObjectsFolder, "MaterialLists");
             string[] objectTexturesFiles = Directory.GetFiles(tempObjectTextureFolderName);
             foreach (string objectTextureFile in objectTexturesFiles)
             {
@@ -124,18 +156,20 @@ namespace EQWOWConverter
                             // Update the file name
                             string newObjectTextureFileNameOnly = originalObjectTextureFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectTextureFile);
                             altIteration++;
-                            Console.WriteLine("- Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
-                            File.Move(objectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
+                            Logger.WriteLine("- [" + topDirectory + "] Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
+                            File.Move(sourceObjectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
 
                             // Update texture references in material files
-                            string[] objectMaterialFiles = Directory.GetFiles(tempObjectsFolder, "*.mtl");
+                            string[] objectMaterialFiles = Directory.GetFiles(tempMaterialsFolderName);
                             foreach (string objectMaterialFile in objectMaterialFiles)
                             {
                                 string fileText = File.ReadAllText(objectMaterialFile);
-                                if (fileText.Contains(objectTextureFileNameOnly))
+                                string objectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(objectTextureFileNameOnly);
+                                if (fileText.Contains(":" + objectTextureFileNameNoExtension))
                                 {
-                                    Console.WriteLine("- Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameOnly + "' which was renamed to '" + newObjectTextureFileNameOnly + "'. Updating material file...");
-                                    fileText = fileText.Replace(objectTextureFileNameOnly, newObjectTextureFileNameOnly);
+                                    string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
+                                    Logger.WriteLine("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
+                                    fileText = fileText.Replace(":" + objectTextureFileNameNoExtension, ":" + newObjectTextureFileNameNoExtension);
                                     File.WriteAllText(objectMaterialFile, fileText);
                                 }
                             }
@@ -146,6 +180,10 @@ namespace EQWOWConverter
                             targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
                             doesUnresolvedFileCollisionExist = true;
                         }
+                        else
+                        {
+                            objectTexturesCondensed++;
+                        }
                     }
                 }
                 while (doesUnresolvedFileCollisionExist);
@@ -155,31 +193,88 @@ namespace EQWOWConverter
             }
         }
 
-        // Object files are composed of .obj, _collision.obj, and .mtl
-        private void ProcessAndCopyObjectFiles(string tempObjectsFolder, string outputObjectsFolder, string tempZoneFolder)
+        private void ProcessAndCopyObjectMaterials(string topDirectory, string tempObjectsFolder, string outputObjectsMaterialsFolderRoot)
         {
-            // Go through all of the object obj files
-            string[] objectFiles = Directory.GetFiles(tempObjectsFolder, "*.obj");
-            foreach (string objectFile in objectFiles)
+            // Look for material collisions for different material files
+            string tempObjectMaterialsFolderName = Path.Combine(tempObjectsFolder, "MaterialLists");
+            string tempObjectMeshesFolderName = Path.Combine(tempObjectsFolder, "Meshes");            
+            string[] objectMaterialFiles = Directory.GetFiles(tempObjectMaterialsFolderName);
+            foreach (string objectMaterialFile in objectMaterialFiles)
             {
-                // Skip just collision files
-                if (objectFile.Contains("_collision"))
-                    continue;
+                // Calculate the full paths for comparison
+                string objectMaterialFileNameOnly = Path.GetFileName(objectMaterialFile);
+                string originalObjectMaterialFileNameOnlyNoExtension = Path.GetFileNameWithoutExtension(objectMaterialFile);
+                string sourceObjectMaterialFile = Path.Combine(tempObjectMaterialsFolderName, objectMaterialFileNameOnly);
+                string targetObjectMaterialFile = Path.Combine(outputObjectsMaterialsFolderRoot, objectMaterialFileNameOnly);
 
-                // Get the related object files
-                string objectFileBaseNoExtension = Path.GetFileNameWithoutExtension(objectFile);
-                string originalObjectFileBaseNoExtension = objectFileBaseNoExtension;
-                string objectOBJFileName = Path.GetFileName(objectFile);
-                string objectOBJCollisionFileName = Path.GetFileName(objectFileBaseNoExtension + "_collision" + ".obj");
-                string objectMTLFileName = objectFileBaseNoExtension + ".mtl";
+                // Loop until there is no unresolved file collision
+                bool doesUnresolvedFileCollisionExist;
+                uint altIteration = 1;
+                do
+                {
+                    if (altIteration > 1)
+                    {
+                        int x = 5;
+                    }
+                    // Compare the files if the destination file already exist
+                    doesUnresolvedFileCollisionExist = false;
+                    if (File.Exists(targetObjectMaterialFile) == true)
+                    {
+                        // If the files collide but are not the exact same, create a new version
+                        if (FileTool.AreFilesTheSame(targetObjectMaterialFile, sourceObjectMaterialFile) == false)
+                        {
+                            // Update the file name
+                            string newObjectMaterialFileNameOnly = originalObjectMaterialFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectMaterialFile);
+                            altIteration++;
+                            Logger.WriteLine("- [" + topDirectory + "] Object Material Collision with name '" + objectMaterialFileNameOnly + "' but different contents so renaming to '" + newObjectMaterialFileNameOnly + "'");
+                            File.Move(sourceObjectMaterialFile, Path.Combine(tempObjectMaterialsFolderName, newObjectMaterialFileNameOnly));
 
-                // Calculate related object paths
-                string objectSourceOBJFullPath = Path.Combine(tempObjectsFolder, objectOBJFileName);
-                string objectSourceOBJCollisionFullPath = Path.Combine(tempObjectsFolder, objectOBJCollisionFileName);
-                string objectSourceMTLFullPath = Path.Combine(tempObjectsFolder, objectMTLFileName);
-                string objectTargetOBJFullPath = Path.Combine(outputObjectsFolder, objectOBJFileName);
-                string objectTargetOBJCollisionFullPath = Path.Combine(outputObjectsFolder, objectOBJCollisionFileName);
-                string objectTargetMTLFullPath = Path.Combine(outputObjectsFolder, objectMTLFileName);
+                            // Update material references in mesh files
+                            string[] objectMeshFiles = Directory.GetFiles(tempObjectMeshesFolderName);
+                            foreach (string objectMeshFile in objectMeshFiles)
+                            {
+                                string fileText = File.ReadAllText(objectMeshFile);
+                                string objectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMaterialFileNameOnly);
+                                if (fileText.Contains("," + objectMaterialFileNameNoExtension))
+                                {
+                                    string newObjectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMaterialFileNameOnly);
+                                    Logger.WriteLine("- [" + topDirectory + "] Object mesh file '" + objectMeshFile + "' contained material '" + objectMaterialFileNameNoExtension + "' which was renamed to '" + newObjectMaterialFileNameNoExtension + "'. Updating mesh file...");
+                                    fileText = fileText.Replace("," + objectMaterialFileNameNoExtension, "," + newObjectMaterialFileNameNoExtension);
+                                    File.WriteAllText(objectMeshFile, fileText);
+                                }
+                            }
+
+                            // Continue loop using this new file name as a base
+                            objectMaterialFileNameOnly = newObjectMaterialFileNameOnly;
+                            sourceObjectMaterialFile = Path.Combine(tempObjectMaterialsFolderName, objectMaterialFileNameOnly);
+                            targetObjectMaterialFile = Path.Combine(outputObjectsMaterialsFolderRoot, objectMaterialFileNameOnly);
+                            doesUnresolvedFileCollisionExist = true;
+                        }
+                        else
+                        {
+                            objectMaterialsCondensed++;
+                        }
+                    }
+                }
+                while (doesUnresolvedFileCollisionExist);
+
+                // Copy the file
+                File.Copy(sourceObjectMaterialFile, targetObjectMaterialFile, true);
+            }
+        }
+
+        private void ProcessAndCopyObjectMeshes(string topDirectory, string tempObjectsFolder, string tempZoneFolder, string outputObjectsMeshesFolderRoot)
+        {
+            // Look for mesh collisions for different mesh files
+            string tempObjectMeshesFolderName = Path.Combine(tempObjectsFolder, "Meshes");
+            string[] objectMeshFiles = Directory.GetFiles(tempObjectMeshesFolderName);
+            foreach (string objectMeshFile in objectMeshFiles)
+            {
+                // Calculate the full paths for comparison
+                string objectMeshFileNameOnly = Path.GetFileName(objectMeshFile);
+                string originalObjectMeshFileNameOnlyNoExtension = Path.GetFileNameWithoutExtension(objectMeshFile);
+                string sourceObjectMeshFile = Path.Combine(tempObjectMeshesFolderName, objectMeshFileNameOnly);
+                string targetObjectMeshFile = Path.Combine(outputObjectsMeshesFolderRoot, objectMeshFileNameOnly);
 
                 // Loop until there is no unresolved file collision
                 bool doesUnresolvedFileCollisionExist;
@@ -188,93 +283,52 @@ namespace EQWOWConverter
                 {
                     // Compare the files if the destination file already exist
                     doesUnresolvedFileCollisionExist = false;
-                    if (File.Exists(objectSourceOBJFullPath) && File.Exists(objectTargetOBJFullPath) &&
-                        FileTool.AreFilesTheSame(objectSourceOBJFullPath, objectTargetOBJFullPath) == false)
+                    if (File.Exists(targetObjectMeshFile) == true)
                     {
-                        Console.WriteLine("- Object OBJ file '" + objectOBJFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
-                        doesUnresolvedFileCollisionExist = true;
-                    }
-                    if (File.Exists(objectSourceOBJCollisionFullPath) && File.Exists(objectTargetOBJCollisionFullPath) &&
-                        FileTool.AreFilesTheSame(objectSourceOBJCollisionFullPath, objectTargetOBJCollisionFullPath) == false)
-                    {
-                        Console.WriteLine("- Object Collision OBJ file '" + objectOBJCollisionFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
-                        doesUnresolvedFileCollisionExist = true;
-                    }
-                    if (File.Exists(objectSourceMTLFullPath) && File.Exists(objectTargetMTLFullPath) &&
-                        FileTool.AreFilesTheSame(objectSourceMTLFullPath, objectTargetMTLFullPath) == false)
-                    {
-                        Console.WriteLine("- Object MTL file '" + objectMTLFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
-                        doesUnresolvedFileCollisionExist = true;
-                    }
-
-                    // Handle renames if there was a collision that wasn't the same
-                    if (doesUnresolvedFileCollisionExist == true)
-                    {
-                        string newObjectFileBaseNoExtension = originalObjectFileBaseNoExtension + "alt" + altIteration.ToString();
-                        altIteration++;
-                        Console.WriteLine("- New Object file base name is '" + newObjectFileBaseNoExtension);
-
-                        // Rename the core files
-                        string newObjectFileName = newObjectFileBaseNoExtension + ".obj";
-                        string newObjectCollisionFileName = newObjectFileBaseNoExtension + "_collision.obj";
-                        string newObjectMaterialFileName = newObjectFileBaseNoExtension + ".mtl";
-                        if (File.Exists(objectSourceOBJFullPath))
-                            File.Move(objectSourceOBJFullPath, Path.Combine(tempObjectsFolder, newObjectFileName));
-                        if (File.Exists(objectSourceOBJCollisionFullPath))
-                            File.Move(objectSourceOBJCollisionFullPath, Path.Combine(tempObjectsFolder, newObjectCollisionFileName));
-                        if (File.Exists(objectSourceMTLFullPath))
-                            File.Move(objectSourceMTLFullPath, Path.Combine(tempObjectsFolder, newObjectMaterialFileName));
-
-                        // Update comparison references
-                        objectSourceOBJFullPath = Path.Combine(tempObjectsFolder, newObjectFileName);
-                        objectSourceOBJCollisionFullPath = Path.Combine(tempObjectsFolder, newObjectCollisionFileName);
-                        objectSourceMTLFullPath = Path.Combine(tempObjectsFolder, newObjectMaterialFileName);
-                        objectTargetOBJFullPath = Path.Combine(outputObjectsFolder, newObjectFileName);
-                        objectTargetOBJCollisionFullPath = Path.Combine(outputObjectsFolder, newObjectCollisionFileName);
-                        objectTargetMTLFullPath = Path.Combine(outputObjectsFolder, newObjectMaterialFileName);
-
-                        // Update material file reference inside the obj file
-                        if (File.Exists(objectSourceOBJFullPath))
+                        // If the files collide but are not the exact same, create a new version
+                        if (FileTool.AreFilesTheSame(targetObjectMeshFile, sourceObjectMeshFile) == false)
                         {
-                            string fileText = File.ReadAllText(objectSourceOBJFullPath);
-                            if (fileText.Contains(objectMTLFileName))
+                            // Update the file name
+                            string newObjectMeshFileNameOnly = originalObjectMeshFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectMeshFile);
+                            altIteration++;
+                            Logger.WriteLine("- [" + topDirectory + "] Object Mesh Collision with name '" + objectMeshFileNameOnly + "' but different contents so renaming to '" + newObjectMeshFileNameOnly + "'");
+                            File.Move(sourceObjectMeshFile, Path.Combine(tempObjectMeshesFolderName, newObjectMeshFileNameOnly));
+
+                            // Update mesh references in zone object instances file
+                            string zoneObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
+                            if (File.Exists(zoneObjectInstancesFile) == false)
                             {
-                                Console.WriteLine("- Object OBJ named '" + objectOBJFileName + "' has reference to material file '" + objectMTLFileName + "', changing to '" + newObjectMaterialFileName + "'...");
-                                fileText = fileText.Replace(objectMTLFileName, newObjectMaterialFileName);
-                                File.WriteAllText(objectSourceOBJFullPath, fileText);
+                                Logger.WriteLine("- [" + topDirectory + "] No object_instances file to update");
                             }
-                        }
+                            else
+                            {
+                                string fileText = File.ReadAllText(zoneObjectInstancesFile);
+                                string objectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMeshFileNameOnly);
+                                if (fileText.Contains(objectMeshFileNameNoExtension + ","))
+                                {
+                                    string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMeshFileNameOnly);
+                                    Logger.WriteLine("- [" + topDirectory + "] Zone object_instances file '" + zoneObjectInstancesFile + "' contained mesh '" + objectMeshFileNameNoExtension + "' which was renamed to '" + newObjectMeshFileNameNoExtension + "'. Updating object_instances file...");
+                                    fileText = fileText.Replace(objectMeshFileNameNoExtension + ",", newObjectMeshFileNameNoExtension + ",");
+                                    File.WriteAllText(zoneObjectInstancesFile, fileText);
+                                }
+                            }
 
-                        // Update object references in the zone file, if it exists
-                        string zoneObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
-                        if (File.Exists(zoneObjectInstancesFile))
+                            // Continue loop using this new file name as a base
+                            objectMeshFileNameOnly = newObjectMeshFileNameOnly;
+                            sourceObjectMeshFile = Path.Combine(tempObjectMeshesFolderName, objectMeshFileNameOnly);
+                            targetObjectMeshFile = Path.Combine(outputObjectsMeshesFolderRoot, objectMeshFileNameOnly);
+                            doesUnresolvedFileCollisionExist = true;
+                        }
+                        else
                         {
-                            string zoneName = string.Empty;
-                            string[] zoneFiles = Directory.GetFiles(tempZoneFolder, "*.obj");
-                            if (zoneFiles.Length > 0)
-                                zoneName = Path.GetFileNameWithoutExtension(zoneFiles[0]);
-                            Console.WriteLine("- Zone object_instances file for zone '" + zoneName + "' was found in container with object '" + objectOBJFileName + "', so updating references...");
-                            string fileText = File.ReadAllText(zoneObjectInstancesFile);
-                            fileText = fileText.Replace(objectFileBaseNoExtension + ",", newObjectFileBaseNoExtension + ",");
-                            File.WriteAllText(zoneObjectInstancesFile, fileText);
+                            objectMeshesCondensed++;
                         }
-
-                        // Update the base file names
-                        objectFileBaseNoExtension = newObjectFileBaseNoExtension;
-                        objectOBJFileName = newObjectFileName;
-                        objectOBJCollisionFileName = newObjectCollisionFileName;
-                        objectMTLFileName = newObjectMaterialFileName;
                     }
                 }
                 while (doesUnresolvedFileCollisionExist);
 
-                // Copy the files
-                if (File.Exists(objectSourceOBJFullPath))
-                    File.Copy(objectSourceOBJFullPath, objectTargetOBJFullPath, true);
-                if (File.Exists(objectSourceOBJCollisionFullPath))
-                    File.Copy(objectSourceOBJCollisionFullPath, objectTargetOBJCollisionFullPath, true);
-                if (File.Exists(objectSourceMTLFullPath))
-                    File.Copy(objectSourceMTLFullPath, objectTargetMTLFullPath, true);
+                // Copy the file
+                File.Copy(sourceObjectMeshFile, targetObjectMeshFile, true);
             }
         }
     }

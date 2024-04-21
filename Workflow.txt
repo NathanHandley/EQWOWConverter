@@ -1,4 +1,4 @@
-** Versions **
+x** Versions **
 Use Everquest Trilogy (note: COULD use Titanium, but would need to parse down list of assets)
 
 ** TODO **
@@ -6,21 +6,25 @@ Use Everquest Trilogy (note: COULD use Titanium, but would need to parse down li
 
 ** Extracting Everquest Assets **
 Use LaternExtractor
-- Edit 'settings.txt' inside the binary folder
+- Edit 'settings.txt' inside the respective Release/Debug binary folder
  - Set the Everquest directory
- - Set ModelExportFormat = 1
- - Set ExportHiddenGeometry = 1
+ - Set ModelExportFormat = 0 (Intermediate)
+ - Set ExportHiddenGeometry = true
  - Set ExportZoneWithObjects = true
+ - Set ExportCharacterToSingleFolder = true
+ - Set ExportEquipmentToSingleFolder = true
+ - Set ExportSoundsToSingleFolder = true
+ - Set CopyMusic = true
 - Execute LaternExtractor.exe
  - Enter command "all", push enter
  
 ** Condition the EQ objects **
 Use EQWOWConverter
 - Run command "Condition Exported EQ Data"
-TODO 
  
 ** Converting EQ texture assets into BLP **
-TODO
+Use BLPNG Converter
+- To BLP > Choose Folder  (select the conditioned assets folder)
 
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
 TODO
