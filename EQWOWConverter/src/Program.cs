@@ -6,7 +6,7 @@ using EQWOWConverter;
 internal class Program
 {
     // TODO: Move to config
-    public static string CONFIG_PATH_EQEXPORTSRAW       = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports";
+    public static string CONFIG_PATH_EQEXPORTSRAW       = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-OBJ";
     public static string CONFIG_PATH_EQEXPORTSCONDITIONED = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
 
     private static void Main(string[] args)
@@ -17,7 +17,7 @@ internal class Program
         {
             Console.WriteLine("");
             Console.WriteLine("Options:");
-            Console.WriteLine(" [1] - Condition Exported EQ Data");
+            Console.WriteLine(" [1] - Condition Exported EQ Model Data");
             Console.WriteLine(" [X] - Exit");
             Console.Write("Command: ");
             string? enteredCommand = Console.ReadLine();

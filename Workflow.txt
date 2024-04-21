@@ -9,6 +9,8 @@ Use LaternExtractor
 - Edit 'settings.txt' inside the binary folder
  - Set the Everquest directory
  - Set ModelExportFormat = 1
+ - Set ExportHiddenGeometry = 1
+ - Set ExportZoneWithObjects = true
 - Execute LaternExtractor.exe
  - Enter command "all", push enter
  

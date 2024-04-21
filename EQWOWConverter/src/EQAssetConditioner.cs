@@ -77,6 +77,7 @@ namespace EQWOWConverter
                 // Process characters
                 if (topDirectoryHasCharacters)
                 {
+                    // TODO
                     //if (topDirectoryHasCharacters)
                     //    FileTool.CopyDirectoryAndContents(tempCharactersFolder, outputCharactersFolderRoot, false, true);
                 }
