@@ -59,16 +59,6 @@ namespace EQWOWConverter
                 bool topDirectoryHasObjects = Directory.Exists(tempObjectsFolder);
                 bool topDirectoryHasCharacters = Directory.Exists(tempCharactersFolder);
 
-
-                // Handle collisions
-                // TODO:
-
-                // What needs to happen (Objects)
-                // - If an object file name (.mtl, .obj) already exists, compare the files + related textures
-                //  - If everything matches, we move onto the next
-                //  - If something is different, add a suffix, incriment, and reattempt comparison
-                // - If an object 'changed' names
-
                 // Process objects
                 if (topDirectoryHasObjects)
                 {
@@ -77,69 +67,26 @@ namespace EQWOWConverter
                     if (Directory.Exists(objectVertexDataFolder))
                         Directory.Delete(objectVertexDataFolder, true);
 
-                    // Look for texture collisions for different texture files
-                    string tempObjectTextureFolderName = Path.Combine(tempObjectsFolder, "Textures");
-                    string[] objectTexturesFiles = Directory.GetFiles(tempObjectTextureFolderName);
-                    foreach (string objectTextureFile in objectTexturesFiles)
-                    {
-                        // Calculate the full paths for comparison
-                        string objectTextureFileNameOnly = Path.GetFileName(objectTextureFile);
-                        string sourceObjectFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
-                        string targetObjectFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
+                    // Process the object textures
+                    ProcessAndCopyObjectTextures(tempObjectsFolder, outputObjectsTexturesFolderRoot);
 
-                        // Loop until there is no unresolved file collision
-                        bool doesUnresolvedFileCollisionExist = false;
-                        do
-                        {
-                            // Compare the files if the destination file already exist
-                            doesUnresolvedFileCollisionExist = false;
-                            if (File.Exists(targetObjectFile) == true)
-                            {
-                                // If the files collide but are not the exact same, create a new version
-                                if (FileTool.AreFilesTheSame(targetObjectFile, sourceObjectFile) == false)
-                                {
-                                    // Update the file name
-                                    string newObjectTextureFileNameOnly = Path.GetFileNameWithoutExtension(objectTextureFile) + "alt1" + Path.GetExtension(objectTextureFile);
-                                    Console.WriteLine("- Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
-                                    File.Move(objectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
-
-                                    // Update texture references in material files
-                                    string[] objectMaterialFiles = Directory.GetFiles(tempObjectsFolder, "*.mtl");
-                                    foreach (string objectMaterialFile in objectMaterialFiles)
-                                    {
-                                        string fileText = File.ReadAllText(objectMaterialFile);
-                                        fileText = fileText.Replace(objectTextureFileNameOnly, newObjectTextureFileNameOnly);
-                                        File.WriteAllText(objectMaterialFile, fileText);
-                                    }
-
-                                    // Continue loop using this new file name as a base
-                                    objectTextureFileNameOnly = newObjectTextureFileNameOnly;
-                                    sourceObjectFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
-                                    targetObjectFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);                                    
-                                    doesUnresolvedFileCollisionExist = true;
-                                }
-                            }
-                        }
-                        while (doesUnresolvedFileCollisionExist);
-
-                        // Copy the file
-                        File.Copy(sourceObjectFile, targetObjectFile, true);
-                    }
+                    // Process the object files
+                    ProcessAndCopyObjectFiles(tempObjectsFolder, outputObjectsFolderRoot, tempZoneFolder);
                 }
 
+                // Process characters
+                if (topDirectoryHasCharacters)
+                {
+                    //if (topDirectoryHasCharacters)
+                    //    FileTool.CopyDirectoryAndContents(tempCharactersFolder, outputCharactersFolderRoot, false, true);
+                }
 
-
-
-                // Copy folders if they exist
+                // Process Zones
                 if (topDirectoryHasZone)
                 {
                     string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
                     FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
                 }
-                if (topDirectoryHasObjects)
-                    FileTool.CopyDirectoryAndContents(tempObjectsFolder, outputObjectsFolderRoot, false, true);
-                if (topDirectoryHasCharacters)
-                    FileTool.CopyDirectoryAndContents(tempCharactersFolder, outputCharactersFolderRoot, false, true);
             }
 
             // Clean up the temp folder and exit
@@ -148,97 +95,186 @@ namespace EQWOWConverter
             return true;
         }
 
-        /*
-        private bool CondenseObjects(string eqExportsRawPath, string eqExportsCondensedPath)
+        private void ProcessAndCopyObjectTextures(string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {
-            // Iterate through each source top folder
-            string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
-            foreach (string topDirectory in topDirectories)
-            {
-                string topFolder = topDirectory.Split('\\').Last();
-                Console.WriteLine(" - Processing objects in folder '" + topFolder + "'");
-
-                // Check for objects folder
-                string objectFolder = Path.Combine(topDirectory, "Objects");
-                if (Directory.Exists(objectFolder) == false)
-                {
-                    Console.WriteLine(" - No objects in folder, skipping to next");
-                    continue;
-                }
-
-                // Copy the contents to the Temp folder for work
-                FileTool.CopyDirectoryAndContents(objectFolder, tempFolder, true, true);
-
-                // Check for collision textures, and rename where required
-
-                // Check for collision object
-
-
-
-
-                // Iterate through every object file
-                string[] filesInObjectRoot = Directory.GetFiles(objectFolder);
-                foreach(string file in filesInObjectRoot)
-                {
-                    string fileNameOnly = Path.GetFileName(file);
-                    string sourceObjectFile = Path.Combine(objectFolder, fileNameOnly);
-                    string targetObjectFile = Path.Combine(objectsOutputFolder, fileNameOnly);
-
-                    // Compare the files if the destination file already exist
-                    if (File.Exists(targetObjectFile) == true)
-                    {
-                        if (FileTool.AreFilesTheSame(targetObjectFile, sourceObjectFile) == false)
-                            Console.WriteLine("- Error! File named '" + fileNameOnly + "' already exists and it's different.  Skipping.");
-//                        else
-//                            Console.WriteLine("- Skipping file '" + fileNameOnly + "' as it already exists");
-                        continue;
-                    }
-
-                    // Copy the file
-                    File.Copy(sourceObjectFile, targetObjectFile, true); 
-                }
-            }
-
-            Console.WriteLine("Condensing Objects Ended (Success)");
-            return true;
-        }
-        */
-
-
-
-/*
-                if (topDirectoryHasObjects)
-        {
-            // Delete vertex color data (Hopefully we won't need this...)
-            string objectVertexDataFolder = Path.Combine(tempObjectsFolder, "VertexColors");
-            if (Directory.Exists(objectVertexDataFolder))
-                Directory.Delete(objectVertexDataFolder, true);
-
             // Look for texture collisions for different texture files
             string tempObjectTextureFolderName = Path.Combine(tempObjectsFolder, "Textures");
             string[] objectTexturesFiles = Directory.GetFiles(tempObjectTextureFolderName);
             foreach (string objectTextureFile in objectTexturesFiles)
             {
                 // Calculate the full paths for comparison
-                string objectTextureFileNameOnlyOriginal = Path.GetFileName(objectTextureFile);
-                string sourceObjectFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnlyOriginal);
-                string targetObjectFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnlyOriginal);
+                string objectTextureFileNameOnly = Path.GetFileName(objectTextureFile);
+                string originalObjectTextureFileNameOnlyNoExtension = Path.GetFileNameWithoutExtension(objectTextureFile);
+                string sourceObjectTextureFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
+                string targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
 
-                // Compare the files if the destination file already exist
-                if (File.Exists(targetObjectFile) == true)
+                // Loop until there is no unresolved file collision
+                bool doesUnresolvedFileCollisionExist;
+                uint altIteration = 1;
+                do
                 {
-                    // If the files collide but are not the exact same, create a new version
-                    if (FileTool.AreFilesTheSame(targetObjectFile, sourceObjectFile) == false)
+                    // Compare the files if the destination file already exist
+                    doesUnresolvedFileCollisionExist = false;
+                    if (File.Exists(targetObjectTextureFile) == true)
                     {
-                        Console.WriteLine("- Object Texture Collision with name '" + objectTextureFileNameOnlyOriginal + "' but different contents.");
-                        string newObjectTextureFileName = Path.GetFileNameWithoutExtension(objectTextureFile) + "alt1" + Path.GetExtension(objectTextureFile);
+                        // If the files collide but are not the exact same, create a new version
+                        if (FileTool.AreFilesTheSame(targetObjectTextureFile, sourceObjectTextureFile) == false)
+                        {
+                            // Update the file name
+                            string newObjectTextureFileNameOnly = originalObjectTextureFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectTextureFile);
+                            altIteration++;
+                            Console.WriteLine("- Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
+                            File.Move(objectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
+
+                            // Update texture references in material files
+                            string[] objectMaterialFiles = Directory.GetFiles(tempObjectsFolder, "*.mtl");
+                            foreach (string objectMaterialFile in objectMaterialFiles)
+                            {
+                                string fileText = File.ReadAllText(objectMaterialFile);
+                                if (fileText.Contains(objectTextureFileNameOnly))
+                                {
+                                    Console.WriteLine("- Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameOnly + "' which was renamed to '" + newObjectTextureFileNameOnly + "'. Updating material file...");
+                                    fileText = fileText.Replace(objectTextureFileNameOnly, newObjectTextureFileNameOnly);
+                                    File.WriteAllText(objectMaterialFile, fileText);
+                                }
+                            }
+
+                            // Continue loop using this new file name as a base
+                            objectTextureFileNameOnly = newObjectTextureFileNameOnly;
+                            sourceObjectTextureFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
+                            targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
+                            doesUnresolvedFileCollisionExist = true;
+                        }
                     }
                 }
+                while (doesUnresolvedFileCollisionExist);
 
                 // Copy the file
-                File.Copy(sourceObjectFile, targetObjectFile, true);
+                File.Copy(sourceObjectTextureFile, targetObjectTextureFile, true);
             }
         }
-        */
-}
+
+        // Object files are composed of .obj, _collision.obj, and .mtl
+        private void ProcessAndCopyObjectFiles(string tempObjectsFolder, string outputObjectsFolder, string tempZoneFolder)
+        {
+            // Go through all of the object obj files
+            string[] objectFiles = Directory.GetFiles(tempObjectsFolder, "*.obj");
+            foreach (string objectFile in objectFiles)
+            {
+                // Skip just collision files
+                if (objectFile.Contains("_collision"))
+                    continue;
+
+                // Get the related object files
+                string objectFileBaseNoExtension = Path.GetFileNameWithoutExtension(objectFile);
+                string originalObjectFileBaseNoExtension = objectFileBaseNoExtension;
+                string objectOBJFileName = Path.GetFileName(objectFile);
+                string objectOBJCollisionFileName = Path.GetFileName(objectFileBaseNoExtension + "_collision" + ".obj");
+                string objectMTLFileName = objectFileBaseNoExtension + ".mtl";
+
+                // Calculate related object paths
+                string objectSourceOBJFullPath = Path.Combine(tempObjectsFolder, objectOBJFileName);
+                string objectSourceOBJCollisionFullPath = Path.Combine(tempObjectsFolder, objectOBJCollisionFileName);
+                string objectSourceMTLFullPath = Path.Combine(tempObjectsFolder, objectMTLFileName);
+                string objectTargetOBJFullPath = Path.Combine(outputObjectsFolder, objectOBJFileName);
+                string objectTargetOBJCollisionFullPath = Path.Combine(outputObjectsFolder, objectOBJCollisionFileName);
+                string objectTargetMTLFullPath = Path.Combine(outputObjectsFolder, objectMTLFileName);
+
+                // Loop until there is no unresolved file collision
+                bool doesUnresolvedFileCollisionExist;
+                uint altIteration = 1;
+                do
+                {
+                    // Compare the files if the destination file already exist
+                    doesUnresolvedFileCollisionExist = false;
+                    if (File.Exists(objectSourceOBJFullPath) && File.Exists(objectTargetOBJFullPath) &&
+                        FileTool.AreFilesTheSame(objectSourceOBJFullPath, objectTargetOBJFullPath) == false)
+                    {
+                        Console.WriteLine("- Object OBJ file '" + objectOBJFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
+                        doesUnresolvedFileCollisionExist = true;
+                    }
+                    if (File.Exists(objectSourceOBJCollisionFullPath) && File.Exists(objectTargetOBJCollisionFullPath) &&
+                        FileTool.AreFilesTheSame(objectSourceOBJCollisionFullPath, objectTargetOBJCollisionFullPath) == false)
+                    {
+                        Console.WriteLine("- Object Collision OBJ file '" + objectOBJCollisionFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
+                        doesUnresolvedFileCollisionExist = true;
+                    }
+                    if (File.Exists(objectSourceMTLFullPath) && File.Exists(objectTargetMTLFullPath) &&
+                        FileTool.AreFilesTheSame(objectSourceMTLFullPath, objectTargetMTLFullPath) == false)
+                    {
+                        Console.WriteLine("- Object MTL file '" + objectMTLFileName + "' had a collision with a file that was different.  Alternate version will be made and associated...");
+                        doesUnresolvedFileCollisionExist = true;
+                    }
+
+                    // Handle renames if there was a collision that wasn't the same
+                    if (doesUnresolvedFileCollisionExist == true)
+                    {
+                        string newObjectFileBaseNoExtension = originalObjectFileBaseNoExtension + "alt" + altIteration.ToString();
+                        altIteration++;
+                        Console.WriteLine("- New Object file base name is '" + newObjectFileBaseNoExtension);
+
+                        // Rename the core files
+                        string newObjectFileName = newObjectFileBaseNoExtension + ".obj";
+                        string newObjectCollisionFileName = newObjectFileBaseNoExtension + "_collision.obj";
+                        string newObjectMaterialFileName = newObjectFileBaseNoExtension + ".mtl";
+                        if (File.Exists(objectSourceOBJFullPath))
+                            File.Move(objectSourceOBJFullPath, Path.Combine(tempObjectsFolder, newObjectFileName));
+                        if (File.Exists(objectSourceOBJCollisionFullPath))
+                            File.Move(objectSourceOBJCollisionFullPath, Path.Combine(tempObjectsFolder, newObjectCollisionFileName));
+                        if (File.Exists(objectSourceMTLFullPath))
+                            File.Move(objectSourceMTLFullPath, Path.Combine(tempObjectsFolder, newObjectMaterialFileName));
+
+                        // Update comparison references
+                        objectSourceOBJFullPath = Path.Combine(tempObjectsFolder, newObjectFileName);
+                        objectSourceOBJCollisionFullPath = Path.Combine(tempObjectsFolder, newObjectCollisionFileName);
+                        objectSourceMTLFullPath = Path.Combine(tempObjectsFolder, newObjectMaterialFileName);
+                        objectTargetOBJFullPath = Path.Combine(outputObjectsFolder, newObjectFileName);
+                        objectTargetOBJCollisionFullPath = Path.Combine(outputObjectsFolder, newObjectCollisionFileName);
+                        objectTargetMTLFullPath = Path.Combine(outputObjectsFolder, newObjectMaterialFileName);
+
+                        // Update material file reference inside the obj file
+                        if (File.Exists(objectSourceOBJFullPath))
+                        {
+                            string fileText = File.ReadAllText(objectSourceOBJFullPath);
+                            if (fileText.Contains(objectMTLFileName))
+                            {
+                                Console.WriteLine("- Object OBJ named '" + objectOBJFileName + "' has reference to material file '" + objectMTLFileName + "', changing to '" + newObjectMaterialFileName + "'...");
+                                fileText = fileText.Replace(objectMTLFileName, newObjectMaterialFileName);
+                                File.WriteAllText(objectSourceOBJFullPath, fileText);
+                            }
+                        }
+
+                        // Update object references in the zone file, if it exists
+                        string zoneObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
+                        if (File.Exists(zoneObjectInstancesFile))
+                        {
+                            string zoneName = string.Empty;
+                            string[] zoneFiles = Directory.GetFiles(tempZoneFolder, "*.obj");
+                            if (zoneFiles.Length > 0)
+                                zoneName = Path.GetFileNameWithoutExtension(zoneFiles[0]);
+                            Console.WriteLine("- Zone object_instances file for zone '" + zoneName + "' was found in container with object '" + objectOBJFileName + "', so updating references...");
+                            string fileText = File.ReadAllText(zoneObjectInstancesFile);
+                            fileText = fileText.Replace(objectFileBaseNoExtension + ",", newObjectFileBaseNoExtension + ",");
+                            File.WriteAllText(zoneObjectInstancesFile, fileText);
+                        }
+
+                        // Update the base file names
+                        objectFileBaseNoExtension = newObjectFileBaseNoExtension;
+                        objectOBJFileName = newObjectFileName;
+                        objectOBJCollisionFileName = newObjectCollisionFileName;
+                        objectMTLFileName = newObjectMaterialFileName;
+                    }
+                }
+                while (doesUnresolvedFileCollisionExist);
+
+                // Copy the files
+                if (File.Exists(objectSourceOBJFullPath))
+                    File.Copy(objectSourceOBJFullPath, objectTargetOBJFullPath, true);
+                if (File.Exists(objectSourceOBJCollisionFullPath))
+                    File.Copy(objectSourceOBJCollisionFullPath, objectTargetOBJCollisionFullPath, true);
+                if (File.Exists(objectSourceMTLFullPath))
+                    File.Copy(objectSourceMTLFullPath, objectTargetMTLFullPath, true);
+            }
+        }
+    }
 }
