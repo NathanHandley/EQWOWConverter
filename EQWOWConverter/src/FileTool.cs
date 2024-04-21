@@ -86,7 +86,7 @@ namespace EQWOWConverter
             foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
             {
                 string targetFilePath = Path.Combine(targetDirectory, file.Name);
-                file.CopyTo(targetFilePath);
+                file.CopyTo(targetFilePath, true);
             }
 
             // If set to recursive, also do the same for the directories
