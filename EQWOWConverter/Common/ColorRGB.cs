@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Core
+namespace EQWOWConverter.Common
 {
-    internal class ColorRGBA
+    internal class ColorRGB
     {
         public int R;
         public int G;
         public int B;
-        public int A;
     }
 }
