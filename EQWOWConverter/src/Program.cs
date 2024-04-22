@@ -20,7 +20,7 @@ internal class Program
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
             Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
-            //Console.WriteLine(" [2] - Update Images References (.png to .blp)");
+            Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command: ");
@@ -50,6 +50,18 @@ internal class Program
                                 break;
                             }
                             Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
+                        } break;
+                    case "2":
+                        {
+                            Logger.WriteLine("Updating image references...");
+                            EQAssetConditioner conditioner = new EQAssetConditioner();
+                            bool condenseResult = conditioner.UpdateImageReferences(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            if (condenseResult == false)
+                            {
+                                Logger.WriteLine("Updating image references failed.");
+                                break;
+                            }
+                            Logger.WriteLine("Image reference updates complete.");
                         } break;
                     case "5":
                         {

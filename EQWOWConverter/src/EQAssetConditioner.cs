@@ -102,19 +102,23 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void UpdateImageReferences(string eqExportsCondensedPath)
+        public bool UpdateImageReferences(string eqExportsCondensedPath)
         {
             Logger.WriteLine("Updating image references...");
 
-            //// Make sure the raw path exists
-            //if (Directory.Exists(eqExportsRawPath) == false)
-            //{
-            //    Console.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-            //    Console.WriteLine("Conditioning Failed!");
-            //    return false;
-            //}
+            // Make sure the raw path exists
+            if (Directory.Exists(eqExportsCondensedPath) == false)
+            {
+                Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
+                Logger.WriteLine("Conditioning Failed!");
+                return false;
+            }
 
-            Logger.WriteLine("Conditioning completed for model data");
+            // Delete any .png files
+            FileTool.DeleteFilesInDirectory(eqExportsCondensedPath, "*.png", true);
+
+            Logger.WriteLine("Image reference updates complete");
+            return true;
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)

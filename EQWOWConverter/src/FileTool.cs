@@ -101,5 +101,32 @@ namespace EQWOWConverter
 
             return true;
         }
+
+        public static bool DeleteFilesInDirectory(string directory, string searchPattern, bool recursive)
+        {
+            if (Directory.Exists(directory) == false)
+            {
+                return false;
+            }
+
+            string[] files = Directory.GetFiles(directory, searchPattern);
+            foreach (string file in files)
+            {
+                File.Delete(file);
+                Logger.WriteLine("Deleted file '" + file + "' in folder '" + directory + "'");
+            }
+
+            if (recursive)
+            {
+                DirectoryInfo directoryInfo = new DirectoryInfo(directory);
+                DirectoryInfo[] directoryInfos = directoryInfo.GetDirectories();
+                foreach (DirectoryInfo curDirectory in directoryInfos)
+                {
+                    DeleteFilesInDirectory(curDirectory.FullName, searchPattern, recursive);
+                }
+            }
+
+            return true;
+        }
     }
 }
