@@ -1,5 +1,6 @@
-x** Versions **
-Use Everquest Trilogy (note: COULD use Titanium, but would need to parse down list of assets)
+** Versions **
+- Everquest Trilogy (note: COULD use Titanium, but would need to parse down list of assets)
+- World of Warcraft WOTLK v3.3.5a (original, not classic re-release)
 
 ** TODO **
 - Add source for LaternExtractor
@@ -25,6 +26,9 @@ Use EQWOWConverter
 ** Converting EQ texture assets into BLP **
 Use BLPNG Converter
 - To BLP > Choose Folder  (select the conditioned assets folder)
+
+** Clean up png files **
+Use EQWOWConverter
 
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
 TODO

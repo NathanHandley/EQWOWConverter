@@ -7,8 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.EQObjects;
 using EQWOWConverter.Common;
-using Warcraft.WMO;
-using Warcraft.WMO.GroupFile;
 using Vector3 = EQWOWConverter.Common.Vector3;
 
 namespace EQWOWConverter
@@ -36,21 +34,44 @@ namespace EQWOWConverter
                 return false;
             }
 
-            // Go through the subfolders for each zone and make the zone files
-            List<Zone> zones = new List<Zone>();
+            // Go through the subfolders for each zone and load them in for processing
+            List<EQZone> zones = new List<EQZone>();
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
+            Logger.WriteLine("Loading EQ zone files into memory...");
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
-                Logger.WriteLine("Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
-                Zone curZone = new Zone(zoneDirectory.Name, curZoneDirectory);
+                Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
+                EQZone curZone = new EQZone(zoneDirectory.Name, curZoneDirectory);
                 zones.Add(curZone);
+                Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
             }
+            Logger.WriteLine("EQ zone load complete.");
 
-            Logger.WriteLine("!!!! Conversion of zones to WOW NYI");
+            // Make respective warcraft maps for the zones
+            Logger.WriteLine("Converting EQ zones into WOW zones");
+            foreach (EQZone zone in zones)
+            {
+                CreateWoWZoneFromEQZone(zone);
+            }
+            Logger.WriteLine("EQ zones converted into WOW zones complete");
+
             Logger.WriteLine("Conversion Successful");
             return true;
+        }
+
+        public static void CreateWoWZoneFromEQZone(EQZone zone)
+        {
+            Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
+
+            
+
+
+
+
+
+            Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }
     }
 }

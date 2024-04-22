@@ -9,9 +9,9 @@ using EQWOWConverter.EQObjects;
 
 namespace EQWOWConverter
 {
-    internal class EQAssetConditioner
+    internal class AssetConditioner
     {
-        public EQAssetConditioner() { }
+        public AssetConditioner() { }
 
         private static uint objectMeshesCondensed = 0;
         private static uint objectMaterialsCondensed = 0;

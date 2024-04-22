@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.EQObjects
 {
-    internal class Zone
+    internal class EQZone
     {
         public string Name = string.Empty;
 
@@ -18,7 +18,7 @@ namespace EQWOWConverter.EQObjects
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<Material> Materials = new List<Material>();
 
-        public Zone(string name, string zoneFolder)
+        public EQZone(string name, string zoneFolder)
         {
             // Store name
             Name = name;
@@ -118,8 +118,8 @@ namespace EQWOWConverter.EQObjects
                             newLightInstance.Position.Z = float.Parse(blocks[2]);
                             newLightInstance.Radius = float.Parse(blocks[3]);
                             newLightInstance.Color.R = float.Parse(blocks[4]);
-                            newLightInstance.Color.G = float.Parse(blocks[4]);
-                            newLightInstance.Color.B = float.Parse(blocks[4]);
+                            newLightInstance.Color.G = float.Parse(blocks[5]);
+                            newLightInstance.Color.B = float.Parse(blocks[6]);
                             LightInstances.Add(newLightInstance);
                         }
                     }

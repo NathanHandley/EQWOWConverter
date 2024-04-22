@@ -42,7 +42,7 @@ internal class Program
                     case "1":
                         {
                             Logger.WriteLine("Conditioning Exported EQ Data...");
-                            EQAssetConditioner conditioner = new EQAssetConditioner();
+                            AssetConditioner conditioner = new AssetConditioner();
                             bool condenseResult = conditioner.ConditionAllModels(CONFIG_PATH_EQEXPORTSRAW, CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
@@ -54,7 +54,7 @@ internal class Program
                     case "2":
                         {
                             Logger.WriteLine("Updating image references...");
-                            EQAssetConditioner conditioner = new EQAssetConditioner();
+                            AssetConditioner conditioner = new AssetConditioner();
                             bool condenseResult = conditioner.UpdateImageReferences(CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
