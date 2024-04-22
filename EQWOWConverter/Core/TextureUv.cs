@@ -8,7 +8,7 @@ namespace EQWOWConverter.Core
 {
     internal class TextureUv
     {
-        float x;
-        float y;
+        public float X;
+        public float Y;
     }
 }

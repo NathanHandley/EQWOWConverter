@@ -8,9 +8,9 @@ namespace EQWOWConverter.Core
 {
     internal class ColorRGBA
     {
-        int R;
-        int G;
-        int B;
-        int A;
+        public int R;
+        public int G;
+        public int B;
+        public int A;
     }
 }

@@ -8,9 +8,9 @@ namespace EQWOWConverter.Core
 {
     internal class PolyIndex
     {
-        int materialIndex;
-        int PolyVert1;
-        int PolyVert2;
-        int PolyVert3;
+        public int MaterialIndex;
+        public int V1;
+        public int V2;
+        public int V3;
     }
 }

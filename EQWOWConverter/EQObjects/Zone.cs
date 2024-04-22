@@ -9,10 +9,7 @@ namespace EQWOWConverter.EQObjects
 {
     internal class Zone
     {
-        public List<Vector3> Verticies = new List<Vector3>();
-        public List<TextureUv> TextureCoords = new List<TextureUv>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
-        public List<PolyIndex> Indicies = new List<PolyIndex>();
+        public Mesh RenderMesh = new Mesh();
+        public Mesh CollisionMesh = new Mesh();
     }
 }
