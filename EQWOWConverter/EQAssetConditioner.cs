@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EQWOWConverter.EQObjects;
 
 // Intentially ignoring 'vertex colors'.  Come back if this is needed.
 
