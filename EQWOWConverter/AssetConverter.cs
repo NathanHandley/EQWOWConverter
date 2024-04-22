@@ -82,8 +82,8 @@ namespace EQWOWConverter
                         }
                         Vector3 vertex = new Vector3();
                         vertex.X = float.Parse(blocks[1]);
-                        vertex.Y = float.Parse(blocks[2]);
-                        vertex.Z = float.Parse(blocks[3]);
+                        vertex.Z = float.Parse(blocks[2]);
+                        vertex.Y = float.Parse(blocks[3]);
                         curZone.RenderMesh.Verticies.Add(vertex);
                     }
 
@@ -192,9 +192,9 @@ namespace EQWOWConverter
                             }
                             Vector3 vertex = new Vector3();
                             vertex.X = float.Parse(blocks[1]);
-                            vertex.Y = float.Parse(blocks[2]);
-                            vertex.Z = float.Parse(blocks[3]);
-                            curZone.RenderMesh.Verticies.Add(vertex);
+                            vertex.Z = float.Parse(blocks[2]);
+                            vertex.Y = float.Parse(blocks[3]);
+                            curZone.CollisionMesh.Verticies.Add(vertex);
                         }
 
                         // i = Indicies
@@ -211,7 +211,7 @@ namespace EQWOWConverter
                             index.V1 = int.Parse(blocks[2]);
                             index.V2 = int.Parse(blocks[3]);
                             index.V3 = int.Parse(blocks[4]);
-                            curZone.RenderMesh.Indicies.Add(index);
+                            curZone.CollisionMesh.Indicies.Add(index);
                         }
 
                         else
