@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWObjects
 {
-    internal enum WMOGroupFlags : uint
+    internal enum WMOGroupFlags : UInt32
     {
         HasBSPTree          = 0x1,
         HasLightMap         = 0x2,
