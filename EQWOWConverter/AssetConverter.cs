@@ -15,7 +15,10 @@ namespace EQWOWConverter
     {
         public static bool ConvertEQZonesToWOW(string eqExportsCondensedPath)
         {
-            // Temp for now, just use one zone
+            // TODO: Move this to a config
+            UInt32 curWMOID = 7000; // Reserving 7000-7200
+
+            Logger.WriteLine("Converting EQ zones to WOW zones...");
 
             // Make sure the root path exists
             if (Directory.Exists(eqExportsCondensedPath) == false)
@@ -34,28 +37,25 @@ namespace EQWOWConverter
                 return false;
             }
 
-            // Go through the subfolders for each zone and load them in for processing
-            List<EQZone> zones = new List<EQZone>();
+            // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
-            Logger.WriteLine("Loading EQ zone files into memory...");
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
+                // Load the EQ zone
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
-                EQZone curZone = new EQZone(zoneDirectory.Name, curZoneDirectory);
-                zones.Add(curZone);
+                EQZone curZone = new EQZone(zoneDirectory.Name, curZoneDirectory, curWMOID);
+                curWMOID++;
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
-            }
-            Logger.WriteLine("EQ zone load complete.");
 
-            // Make respective warcraft maps for the zones
-            Logger.WriteLine("Converting EQ zones into WOW zones");
-            foreach (EQZone zone in zones)
-            {
-                CreateWoWZoneFromEQZone(zone);
+                // Convert to WOW zone
+                CreateWoWZoneFromEQZone(curZone);
             }
-            Logger.WriteLine("EQ zones converted into WOW zones complete");
+
+            // Update the 
+            Logger.WriteLine(" TODO: WMOAreaTable.dbc ");
+            Logger.WriteLine(" TODO: AreaTable.dbc ");
 
             Logger.WriteLine("Conversion Successful");
             return true;
@@ -65,13 +65,39 @@ namespace EQWOWConverter
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
 
-            
+            // Create the chunk byte blocks
+            // MVER (Version) ---------------------------------------------------------------------
+            UInt32 version = 17;
+            List<byte> MVERChunkByteBlock = WrapInChunk("MVER", BitConverter.GetBytes(version));
+
+            // MOHD (Header) ----------------------------------------------------------------------
+            List<byte> MOHDBytes = new List<byte>();
+            MOHDBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count()))); // Number of Lights
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Models
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
+            MOHDBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Sets
+            MOHDBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
+            MOHDBytes.AddRange(BitConverter.GetBytes(zone.WMOID));          // WMOID (inside WMOAreaTable.dbc)
+            MOHDBytes.AddRange(zone.BoundingBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
 
 
-
-
+            // Assemble the byte blocks
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }
+
+        private static List<byte> WrapInChunk(string token, byte[] dataBlock)
+        {
+            if (token.Length != 4)
+                Logger.WriteLine("Error, WrapInChunk has a token that isn't a length of 4 (value = '" + token + "')");
+            List<byte> wrappedChunk = new List<byte>();
+            wrappedChunk.AddRange(Encoding.ASCII.GetBytes(token));
+            wrappedChunk.AddRange(BitConverter.GetBytes(Convert.ToUInt32(dataBlock.Length)));
+            wrappedChunk.AddRange(dataBlock);
+            return wrappedChunk;
+        }            
     }
 }

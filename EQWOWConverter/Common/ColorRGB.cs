@@ -8,8 +8,8 @@ namespace EQWOWConverter.Common
 {
     internal class ColorRGB
     {
-        public int R;
-        public int G;
-        public int B;
+        public int R = 0;
+        public int G = 0;
+        public int B = 0;
     }
 }

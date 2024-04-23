@@ -207,10 +207,6 @@ namespace EQWOWConverter
                 uint altIteration = 1;
                 do
                 {
-                    if (altIteration > 1)
-                    {
-                        int x = 5;
-                    }
                     // Compare the files if the destination file already exist
                     doesUnresolvedFileCollisionExist = false;
                     if (File.Exists(targetObjectMaterialFile) == true)

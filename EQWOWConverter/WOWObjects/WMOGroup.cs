@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWObjects
 {
+    // TODO: Delete?
     internal class WMOGroup
     {
 

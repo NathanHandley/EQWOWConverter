@@ -106,10 +106,10 @@ namespace EQWOWConverter.Common
                         continue;
                     }
                     ColorRGBA color = new ColorRGBA();
-                    color.B = int.Parse(blocks[1]);
-                    color.G = int.Parse(blocks[2]);
-                    color.R = int.Parse(blocks[3]);
-                    color.A = int.Parse(blocks[4]);
+                    color.B = byte.Parse(blocks[1]);
+                    color.G = byte.Parse(blocks[2]);
+                    color.R = byte.Parse(blocks[3]);
+                    color.A = byte.Parse(blocks[4]);
                     VertexColors.Add(color);
                 }
 

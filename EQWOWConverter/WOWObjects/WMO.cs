@@ -7,6 +7,7 @@ using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWObjects
 {
+    // TODO: Delete?
     internal class WMO
     {
         public WMORoot RootObject = new WMORoot();

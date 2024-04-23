@@ -4,6 +4,7 @@
 
 ** TODO **
 - Add source for LaternExtractor
+- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 7200
 
 ** Extracting Everquest Assets **
 Use LaternExtractor

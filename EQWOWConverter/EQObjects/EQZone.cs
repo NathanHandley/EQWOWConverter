@@ -7,21 +7,28 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.EQObjects
 {
+    // TODO: Change name to be more generic
     internal class EQZone
     {
         public string Name = string.Empty;
+        public UInt32 WMOID = 0;
 
         public Mesh RenderMesh = new Mesh();
         public Mesh CollisionMesh = new Mesh();
 
-        public ColorRGB AmbientLight = new ColorRGB();
+        public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<Material> Materials = new List<Material>();
 
-        public EQZone(string name, string zoneFolder)
+        public UInt32 TextureCount = 0;
+
+        public AxisAlignedBox BoundingBox = new AxisAlignedBox();
+
+        public EQZone(string name, string zoneFolder, uint wmoid)
         {
-            // Store name
+            // Store name and WMOID
             Name = name;
+            WMOID = wmoid;
 
             if (Directory.Exists(zoneFolder) == false)
             {
@@ -75,9 +82,9 @@ namespace EQWOWConverter.EQObjects
                                 Logger.WriteLine("- [" + Name + "]: Error, ambiant light data must be in 3 components");
                                 continue;
                             }
-                            AmbientLight.R = int.Parse(blocks[0]);
-                            AmbientLight.G = int.Parse(blocks[1]);
-                            AmbientLight.B = int.Parse(blocks[2]);
+                            AmbientLight.R = byte.Parse(blocks[0]);
+                            AmbientLight.G = byte.Parse(blocks[1]);
+                            AmbientLight.B = byte.Parse(blocks[2]);
                         }
                     }
                 }
@@ -164,11 +171,52 @@ namespace EQWOWConverter.EQObjects
                             string[] textureBlock = blocks[1].Split(":");
                             newMaterial.Name = textureBlock[0];
                             for (int i = 1; i < textureBlock.Length; i++)
+                            {
                                 newMaterial.AnimationTextures.Add(textureBlock[i]);
+                                TextureCount++;
+                            }
                             Materials.Add(newMaterial);
                         }
                     }
                 }
+            }
+
+            CalculateBoundingBox();
+        }
+    
+        private void CalculateBoundingBox()
+        {
+            foreach(Vector3 renderVert in RenderMesh.Verticies)
+            {
+                if (renderVert.X < BoundingBox.BottomCorner.X)
+                    BoundingBox.BottomCorner.X = renderVert.X;
+                if (renderVert.Y < BoundingBox.BottomCorner.Y)
+                    BoundingBox.BottomCorner.Y = renderVert.Y;
+                if (renderVert.Z < BoundingBox.BottomCorner.Z)
+                    BoundingBox.BottomCorner.Z = renderVert.Z;
+
+                if (renderVert.X > BoundingBox.TopCorner.X)
+                    BoundingBox.TopCorner.X = renderVert.X;
+                if (renderVert.Y > BoundingBox.TopCorner.Y)
+                    BoundingBox.TopCorner.Y = renderVert.Y;
+                if (renderVert.Z > BoundingBox.TopCorner.Z)
+                    BoundingBox.TopCorner.Z = renderVert.Z;
+            }
+            foreach(Vector3 collisionVert in CollisionMesh.Verticies)
+            {
+                if (collisionVert.X < BoundingBox.BottomCorner.X)
+                    BoundingBox.BottomCorner.X = collisionVert.X;
+                if (collisionVert.Y < BoundingBox.BottomCorner.Y)
+                    BoundingBox.BottomCorner.Y = collisionVert.Y;
+                if (collisionVert.Z < BoundingBox.BottomCorner.Z)
+                    BoundingBox.BottomCorner.Z = collisionVert.Z;
+
+                if (collisionVert.X > BoundingBox.TopCorner.X)
+                    BoundingBox.TopCorner.X = collisionVert.X;
+                if (collisionVert.Y > BoundingBox.TopCorner.Y)
+                    BoundingBox.TopCorner.Y = collisionVert.Y;
+                if (collisionVert.Z > BoundingBox.TopCorner.Z)
+                    BoundingBox.TopCorner.Z = collisionVert.Z;
             }
         }
     }

@@ -8,9 +8,19 @@ namespace EQWOWConverter.Common
 {
     internal class ColorRGBA
     {
-        public int R;
-        public int G;
-        public int B;
-        public int A;
+        public byte R = 0;
+        public byte G = 0;
+        public byte B = 0;
+        public byte A = 0;
+
+        public List<byte> ToBytes()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.Add(R);
+            returnBytes.Add(G);
+            returnBytes.Add(B);
+            returnBytes.Add(A);
+            return returnBytes;
+        }
     }
 }
