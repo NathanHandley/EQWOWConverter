@@ -92,10 +92,28 @@ namespace EQWOWConverter
             List<byte> MOHDChunkByteBlock = WrapInChunk("MOHD", MOHDBytes.ToArray());
 
             // MOTX (Textures) --------------------------------------------------------------------
-
-            // TODO: HERE
+            //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
+            //  Pad to make the lengths multiples of 4, with minimum total of 5 "\0"
+            List<byte> textureBuffer = new List<byte>();
+            Dictionary<string, UInt32> textureNameOffsets = new Dictionary<string, UInt32>();
+            foreach(Material material in zone.Materials)
+            {
+                foreach(string textureName in material.AnimationTextures)
+                {
+                    textureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
+                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.Name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
+                    textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
+                    while (textureBuffer.Count() % 4 != 0)
+                        textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
+                }
+            }
+            // Add a final texture for 'blank' at the end
+            textureNameOffsets[String.Empty] = Convert.ToUInt32(textureBuffer.Count());
+            textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            List<byte> MOTXChunkByteBlock = WrapInChunk("MOTX", textureBuffer.ToArray());
 
             // MOMT (Materials) -------------------------------------------------------------------
+
 
             // MOGN (Groups) ----------------------------------------------------------------------
 

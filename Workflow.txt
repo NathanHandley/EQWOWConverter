@@ -5,6 +5,9 @@
 ** TODO **
 - Add source for LaternExtractor
 - Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 7200
+- Updates to Map.dbc (hight map, might need for outdoor areas)
+- Implement Collision (BSP?)
+- Need alternate solution for animated textures on map files (perhaps move to M2?)
 
 ** Extracting Everquest Assets **
 Use LaternExtractor
@@ -33,3 +36,16 @@ Use EQWOWConverter
 
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
 TODO
+
+
+
+** Folder Structure **
+Maps:
+	wmos: World\wmo\Everquest\<zone>.wmo
+	textures: World\Everquest\ZoneTextures\<zone>\<texture>.blp
+Objects (contain M2 and textures):
+	World\Everquest\PassiveDoodads\
+	World\Everquest\ActiveDoodads\
+	....
+	
+	
