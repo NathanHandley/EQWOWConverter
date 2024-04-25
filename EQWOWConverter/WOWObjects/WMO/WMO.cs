@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EQWOWConverter.Common;
+using EQWOWConverter.EQObjects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,16 +9,21 @@ using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWObjects
 {
-    // TODO: Delete?
     internal class WMO
     {
-        public WMORoot RootObject = new WMORoot();
+        public WMORoot RootObject;
         public List<WMOGroup> GroupObjects = new List<WMOGroup>();
         public string BaseFileName;
 
-        public WMO(string baseFileName)
+        public WMO(string baseFileName, EQZone zone)
         {
             BaseFileName = baseFileName;
+
+            // Create root object
+            RootObject = new WMORoot(zone);
+
+            // Create the groups (only one for now)
+            GroupObjects.Add(new WMOGroup(zone));
         }
 
         public void WriteToDisk(string baseFolderpath)

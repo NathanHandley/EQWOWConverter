@@ -13,6 +13,19 @@ namespace EQWOWConverter.Common
         public byte B = 0;
         public byte A = 0;
 
+        public ColorRGBA()
+        {
+
+        }
+
+        public ColorRGBA(byte r, byte g, byte b, byte a)
+        {
+            R = r;
+            G = g;
+            B = b;
+            A = a;
+        }
+
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();
