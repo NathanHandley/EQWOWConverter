@@ -322,7 +322,12 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MFOG Generation unimplemented!");
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.FogSettings.HasInfiniteRadius ? 0x01 : 0x00)));
+            chunkBytes.AddRange(zone.FogSettings.Position.ToBytes());
+
+
+
+
 
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }

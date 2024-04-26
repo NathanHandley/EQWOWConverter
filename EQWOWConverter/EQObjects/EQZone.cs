@@ -24,6 +24,8 @@ namespace EQWOWConverter.EQObjects
 
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
 
+        public Fog FogSettings = new Fog();
+
         public EQZone(string name, string zoneFolder, uint wmoid)
         {
             // Store name and WMOID
@@ -120,6 +122,7 @@ namespace EQWOWConverter.EQObjects
                                 continue;
                             }
                             LightInstance newLightInstance = new LightInstance();
+                            break here
                             newLightInstance.Position.X = float.Parse(blocks[0]);
                             newLightInstance.Position.Y = float.Parse(blocks[1]);
                             newLightInstance.Position.Z = float.Parse(blocks[2]);
