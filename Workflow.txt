@@ -3,6 +3,7 @@
 - World of Warcraft WOTLK v3.3.5a (original, not classic re-release)
 
 ** TODO **
+- Chunks use little-endian style byte order.  Make sure the chunk identifier is in the right order!
 - Add source for LaternExtractor
 - Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 7200
 - Updates to Map.dbc (hight map, might need for outdoor areas)

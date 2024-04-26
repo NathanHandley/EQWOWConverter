@@ -35,20 +35,28 @@ namespace EQWOWConverter.WOWObjects
             rootBytes.AddRange(GenerateMOGIChunk(zone));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
+            // Not implementing yet
 
             // MOPV (Portal Verticies) ------------------------------------------------------------
+            rootBytes.AddRange(GenerateMOPVChunk(zone));
 
             // MOPT (Portal Information) ----------------------------------------------------------
+            rootBytes.AddRange(GenerateMOPTChunk(zone));
 
             // MOPR (Map Object Portal References) ------------------------------------------------
+            rootBytes.AddRange(GenerateMOPRChunk(zone));
 
             // MOLT (Lighting Information) --------------------------------------------------------
+            rootBytes.AddRange(GenerateMOLTChunk(zone));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
+            rootBytes.AddRange(GenerateMODSChunk(zone));
 
             // MODN (List of M2s) -----------------------------------------------------------------
+            rootBytes.AddRange(GenerateMODNChunk(zone));
 
             // MODD (Doodad Instance Information) -------------------------------------------------
+            rootBytes.AddRange(GenerateMODDChunk(zone));
 
             // MFOG (Fog Information) -------------------------------------------------------------
 
@@ -73,7 +81,7 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count()))); // Number of Lights
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Sets
@@ -230,7 +238,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPV Generation unimplemented!");
+            Logger.WriteLine("MOPV is intentially empty (no implementation)");
 
             return WrapInChunk("MOPV", chunkBytes.ToArray());
         }
@@ -242,7 +250,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPT Generation unimplemented!");
+            Logger.WriteLine("MOPT is intentially empty (no implementation)");
 
             return WrapInChunk("MOPT", chunkBytes.ToArray());
         }
@@ -254,7 +262,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPR Generation unimplemented!");
+            Logger.WriteLine("MOPR is intentially empty (no implementation)");
 
             return WrapInChunk("MOPR", chunkBytes.ToArray());
         }
@@ -265,9 +273,9 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOLTChunk(EQZone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            Logger.WriteLine("MOLT Generation unimplemented!");
-
+            
+            Logger.WriteLine("MOLT is intentially empty (no implementation)");
+            
             return WrapInChunk("MOLT", chunkBytes.ToArray());
         }
 
@@ -278,7 +286,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODS Generation unimplemented!");
+            Logger.WriteLine("MODS is intentially empty (no implementation)");
 
             return WrapInChunk("MODS", chunkBytes.ToArray());
         }
@@ -290,7 +298,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODN Generation unimplemented!");
+            Logger.WriteLine("MODN is intentially empty (no implementation)");
 
             return WrapInChunk("MODN", chunkBytes.ToArray());
         }
@@ -302,7 +310,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODD Generation unimplemented!");
+            Logger.WriteLine("MODD is intentially empty (no implementation)");
 
             return WrapInChunk("MODD", chunkBytes.ToArray());
         }
