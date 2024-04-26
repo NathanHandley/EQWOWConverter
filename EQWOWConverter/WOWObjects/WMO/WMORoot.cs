@@ -154,7 +154,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Second texture.  Shouldn't need for EQ. 
-                curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[material.AnimationTextures[0]]));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[String.Empty]));
 
                 // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
                 ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);

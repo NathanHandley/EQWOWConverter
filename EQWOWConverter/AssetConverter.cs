@@ -42,6 +42,10 @@ namespace EQWOWConverter
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
+                // For now, skip any zone that isn't west freeport
+                if (zoneDirectory.Name != "freportw")
+                    continue;
+
                 // Load the EQ zone
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
