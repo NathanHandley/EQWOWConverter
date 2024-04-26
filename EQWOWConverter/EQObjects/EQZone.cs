@@ -122,7 +122,6 @@ namespace EQWOWConverter.EQObjects
                                 continue;
                             }
                             LightInstance newLightInstance = new LightInstance();
-                            break here
                             newLightInstance.Position.X = float.Parse(blocks[0]);
                             newLightInstance.Position.Y = float.Parse(blocks[1]);
                             newLightInstance.Position.Z = float.Parse(blocks[2]);

@@ -59,8 +59,7 @@ namespace EQWOWConverter.WOWObjects
             rootBytes.AddRange(GenerateMODDChunk(zone));
 
             // MFOG (Fog Information) -------------------------------------------------------------
-
-            // Assemble the byte blocks
+            rootBytes.AddRange(GenerateMFOGChunk(zone));
         }
 
         /// <summary>
@@ -321,14 +320,7 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMFOGChunk(EQZone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.FogSettings.HasInfiniteRadius ? 0x01 : 0x00)));
-            chunkBytes.AddRange(zone.FogSettings.Position.ToBytes());
-
-
-
-
-
+            chunkBytes.AddRange(zone.FogSettings.ToBytes());
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
     }

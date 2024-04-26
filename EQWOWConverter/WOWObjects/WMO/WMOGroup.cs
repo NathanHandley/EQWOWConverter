@@ -18,38 +18,39 @@ namespace EQWOWConverter.WOWObjects
             // ====================================================================================
 
             // MVER (Version) ---------------------------------------------------------------------
+            groupBytes.AddRange(GenerateMVERChunk(zone));
 
             // MOGP (Container for all other chunks) ----------------------------------------------
 
-                // MOPY (Material info for triangles) -------------------------------------------------
+            // MOPY (Material info for triangles) -------------------------------------------------
 
-                // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
+            // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
 
-                // MOVT (Verticies) -------------------------------------------------------------------
+            // MOVT (Verticies) -------------------------------------------------------------------
 
-                // MONR (Normals) ---------------------------------------------------------------------
+            // MONR (Normals) ---------------------------------------------------------------------
 
-                // MOTV (Texture Coordinates) ---------------------------------------------------------
+            // MOTV (Texture Coordinates) ---------------------------------------------------------
 
-                // MOBA (Render Batches) --------------------------------------------------------------
+            // MOBA (Render Batches) --------------------------------------------------------------
 
-                // MOLR (Light References) ------------------------------------------------------------
-                // -- If has Lights
+            // MOLR (Light References) ------------------------------------------------------------
+            // -- If has Lights
 
-                // MODR (Doodad References) -----------------------------------------------------------
-                // -- If has Doodads
+            // MODR (Doodad References) -----------------------------------------------------------
+            // -- If has Doodads
 
-                // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
-                // -- If HasBSPTree flag
+            // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
+            // -- If HasBSPTree flag
 
-                // MOBR (Face / Triangle Incidies) ----------------------------------------------------
-                // -- If HasBSPTree flag
+            // MOBR (Face / Triangle Incidies) ----------------------------------------------------
+            // -- If HasBSPTree flag
 
-                // MOCV (Vertex Colors) ---------------------------------------------------------------
-                // - If HasVertexColor Flag
+            // MOCV (Vertex Colors) ---------------------------------------------------------------
+            // - If HasVertexColor Flag
 
-                // MLIQ (Liquid/Water details) --------------------------------------------------------
-                // - If HasWater flag
+            // MLIQ (Liquid/Water details) --------------------------------------------------------
+            // - If HasWater flag
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
         }
@@ -59,11 +60,8 @@ namespace EQWOWConverter.WOWObjects
         /// </summary>
         private List<byte> GenerateMVERChunk(EQZone zone)
         {
-            List<byte> chunkBytes = new List<byte>();
-
-            Logger.WriteLine("MVER Generation unimplemented!");
-
-            return WrapInChunk("MVER", chunkBytes.ToArray());
+            UInt32 version = 17;
+            return WrapInChunk("MVER", BitConverter.GetBytes(version));
         }
 
         /// <summary>
