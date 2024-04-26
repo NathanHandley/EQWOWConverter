@@ -1,5 +1,4 @@
 ﻿using EQWOWConverter.Common;
-using EQWOWConverter.EQObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,7 @@ namespace EQWOWConverter.WOWObjects
         public List<WMOGroup> GroupObjects = new List<WMOGroup>();
         public string BaseFileName;
 
-        public WMO(string baseFileName, EQZone zone)
+        public WMO(string baseFileName, Zone zone)
         {
             BaseFileName = baseFileName;
 
@@ -23,7 +22,7 @@ namespace EQWOWConverter.WOWObjects
             RootObject = new WMORoot(zone);
 
             // Create the groups (only one for now)
-            GroupObjects.Add(new WMOGroup(zone));
+            GroupObjects.Add(new WMOGroup(zone, RootObject));
         }
 
         public void WriteToDisk(string baseFolderpath)

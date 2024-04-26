@@ -5,7 +5,6 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using EQWOWConverter.EQObjects;
 using EQWOWConverter.WOWObjects;
 using EQWOWConverter.Common;
 using Vector3 = EQWOWConverter.Common.Vector3;
@@ -46,7 +45,7 @@ namespace EQWOWConverter
                 // Load the EQ zone
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
-                EQZone curZone = new EQZone(zoneDirectory.Name, curZoneDirectory, curWMOID);
+                Zone curZone = new Zone(zoneDirectory.Name, curZoneDirectory, curWMOID);
                 curWMOID++;
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
@@ -62,7 +61,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(EQZone zone)
+        public static void CreateWoWZoneFromEQZone(Zone zone)
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
 

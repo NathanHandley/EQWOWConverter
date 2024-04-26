@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.EQObjects
+namespace EQWOWConverter.Common
 {
     // TODO: Change name to be more generic
-    internal class EQZone
+    internal class Zone
     {
         public string Name = string.Empty;
+        public string DescriptiveName = string.Empty;
         public UInt32 WMOID = 0;
 
         public Mesh RenderMesh = new Mesh();
@@ -26,10 +27,11 @@ namespace EQWOWConverter.EQObjects
 
         public Fog FogSettings = new Fog();
 
-        public EQZone(string name, string zoneFolder, uint wmoid)
+        public Zone(string name, string zoneFolder, uint wmoid)
         {
             // Store name and WMOID
             Name = name;
+            DescriptiveName = name;
             WMOID = wmoid;
 
             if (Directory.Exists(zoneFolder) == false)

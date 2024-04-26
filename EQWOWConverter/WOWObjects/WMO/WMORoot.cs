@@ -1,5 +1,4 @@
 ﻿using EQWOWConverter.Common;
-using EQWOWConverter.EQObjects;
 using EQWOWConverter.WOWObjects;
 using System;
 using System.Collections.Generic;
@@ -13,8 +12,10 @@ namespace EQWOWConverter.WOWObjects
     {
         private List<byte> rootBytes = new List<byte>();
         private Dictionary<string, UInt32> textureNameOffsets = new Dictionary<string, UInt32>();
+        public UInt32 GroupNameOffset = 0;
+        public UInt32 GroupNameDescriptiveOffset = 0;
 
-        public WMORoot(EQZone zone)
+        public WMORoot(Zone zone)
         {
             // MVER (Version) ---------------------------------------------------------------------
             rootBytes.AddRange(GenerateMVERChunk(zone));
@@ -65,7 +66,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(EQZone zone)
+        private List<byte> GenerateMVERChunk(Zone zone)
         {
             UInt32 version = 17;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -74,7 +75,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOHD (Header)
         /// </summary>
-        private List<byte> GenerateMOHDChunk(EQZone zone)
+        private List<byte> GenerateMOHDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
             chunkBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
@@ -97,7 +98,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOTX (Textures)
         /// </summary>
-        private List<byte> GenerateMOTXChunk(EQZone zone)
+        private List<byte> GenerateMOTXChunk(Zone zone)
         {
             //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
             //  Pad to make the lengths multiples of 4, with minimum total of 5 "\0"
@@ -123,7 +124,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOMT (Materials)
         /// </summary>
-        private List<byte> GenerateMOMTChunk(EQZone zone)
+        private List<byte> GenerateMOMTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (Material material in zone.Materials)
@@ -186,17 +187,23 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOGN (Groups)
         /// </summary>
-        private List<byte> GenerateMOGNChunk(EQZone zone)
+        private List<byte> GenerateMOGNChunk(Zone zone)
         {
-            // For now, only have one group name since we'll have only one group for the whole zone
-            string zoneGroupName = "ZONEGROUP\0\0\0\0\0";
-            return WrapInChunk("MOGN", Encoding.ASCII.GetBytes(zoneGroupName));
+            List<byte> chunkBytes = new List<byte>();
+            
+            // For now, only have one group name since we'll have only one group for the whole zone (both a name and descriptive name)
+            string zoneGroupName = zone.Name + "\0\0\0\0\0";
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));
+            GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
+            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0\0\0\0\0";
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
+            return WrapInChunk("MOGN", chunkBytes.ToArray());
         }
 
         /// <summary>
         /// MOGI (Group Information)
         /// </summary>
-        private List<byte> GenerateMOGIChunk(EQZone zone)
+        private List<byte> GenerateMOGIChunk(Zone zone)
         {
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
@@ -221,7 +228,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOSB (Skybox, optional)
         /// </summary>
-        private List<byte> GenerateMOSBChunk(EQZone zone)
+        private List<byte> GenerateMOSBChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -233,7 +240,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPV (Portal Verticies)
         /// </summary>
-        private List<byte> GenerateMOPVChunk(EQZone zone)
+        private List<byte> GenerateMOPVChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -245,7 +252,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPT (Portal Information)
         /// </summary>
-        private List<byte> GenerateMOPTChunk(EQZone zone)
+        private List<byte> GenerateMOPTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -257,7 +264,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPR (Map Object Portal References)
         /// </summary>
-        private List<byte> GenerateMOPRChunk(EQZone zone)
+        private List<byte> GenerateMOPRChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -269,7 +276,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk(EQZone zone)
+        private List<byte> GenerateMOLTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
             
@@ -281,7 +288,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODS (Doodad Set Definitions)
         /// </summary>
-        private List<byte> GenerateMODSChunk(EQZone zone)
+        private List<byte> GenerateMODSChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -293,7 +300,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODN (List of M2s)
         /// </summary>
-        private List<byte> GenerateMODNChunk(EQZone zone)
+        private List<byte> GenerateMODNChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -305,7 +312,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODD (Doodad Instance Information)
         /// </summary>
-        private List<byte> GenerateMODDChunk(EQZone zone)
+        private List<byte> GenerateMODDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -317,7 +324,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MFOG (Fog Information)
         /// </summary>
-        private List<byte> GenerateMFOGChunk(EQZone zone)
+        private List<byte> GenerateMFOGChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
             chunkBytes.AddRange(zone.FogSettings.ToBytes());
