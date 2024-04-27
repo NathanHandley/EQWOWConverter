@@ -10,5 +10,13 @@ namespace EQWOWConverter.Common
     {
         public float X;
         public float Y;
+
+        public List<byte> ToBytes()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(X));
+            returnBytes.AddRange(BitConverter.GetBytes(Y));
+            return returnBytes;
+        }
     }
 }

@@ -28,5 +28,15 @@ namespace EQWOWConverter.WOWObjects
             }
             return packedFlags;
         }
+
+        protected byte GetPackedFlags(params byte[] flags)
+        {
+            byte packedFlags = 0;
+            foreach (byte flag in flags)
+            {
+                packedFlags |= flag;
+            }
+            return packedFlags;
+        }
     }
 }

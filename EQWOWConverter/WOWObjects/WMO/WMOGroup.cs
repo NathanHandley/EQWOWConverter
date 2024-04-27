@@ -75,16 +75,22 @@ namespace EQWOWConverter.WOWObjects
             // SUB CHUNKS
             // ------------------------------------------------------------------------------------
             // MOPY (Material info for triangles) -------------------------------------------------
+            chunkBytes.AddRange(GenerateMOPYChunk(zone));
 
             // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
+            chunkBytes.AddRange(GenerateMOVIChunk(zone));
 
             // MOVT (Verticies) -------------------------------------------------------------------
+            chunkBytes.AddRange(GenerateMOVTChunk(zone));
 
             // MONR (Normals) ---------------------------------------------------------------------
+            chunkBytes.AddRange(GenerateMONRChunk(zone));
 
             // MOTV (Texture Coordinates) ---------------------------------------------------------
+            chunkBytes.AddRange(GenerateMOTVChunk(zone));
 
             // MOBA (Render Batches) --------------------------------------------------------------
+            chunkBytes.AddRange(GenerateMOBAChunk(zone));
 
             // MOLR (Light References) ------------------------------------------------------------
             // -- If has Lights
@@ -116,7 +122,12 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPY Generation unimplemented!");
+            // For now, just one material
+            byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Collision),
+                                                   Convert.ToByte(WMOPolyMaterialFlags.CollideHit),
+                                                   Convert.ToByte(WMOPolyMaterialFlags.Render));
+            chunkBytes.Add(polyMaterialFlag);
+            chunkBytes.Add(0); // This is the material index, which we'll make 0 so it's the first for now
 
             return WrapInChunk("MOPY", chunkBytes.ToArray());
         }
@@ -128,7 +139,9 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOVI Generation unimplemented!");
+            Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
+            foreach(PolyIndex polyIndex in zone.RenderMesh.Indicies)
+                chunkBytes.AddRange(polyIndex.ToBytes());
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());
         }
@@ -140,7 +153,8 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOVT Generation unimplemented!");
+            foreach (Vector3 vertex in zone.RenderMesh.Verticies)
+                chunkBytes.AddRange(vertex.ToBytes());
 
             return WrapInChunk("MOVT", chunkBytes.ToArray());
         }
@@ -152,7 +166,8 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MONR Generation unimplemented!");
+            foreach (Vector3 normal in zone.RenderMesh.Normals)
+                chunkBytes.AddRange(normal.ToBytes());
 
             return WrapInChunk("MONR", chunkBytes.ToArray());
         }
@@ -164,7 +179,8 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOTV Generation unimplemented!");
+            foreach (TextureUv textureCoords in zone.RenderMesh.TextureCoords)
+                chunkBytes.AddRange(textureCoords.ToBytes());
 
             return WrapInChunk("MOTV", chunkBytes.ToArray());
         }
@@ -176,7 +192,27 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOBA Generation unimplemented!");
+            // TODO: Make this work with multiple render batches, as it a render batch needs to be 1 material only
+            // Bounding Box
+            chunkBytes.AddRange(zone.BoundingBox.ToBytes());
+
+            // Poly Start Index, 0 for now
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Number of poly indexes
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Indicies.Count)));
+
+            // Vertex Start Index, 0 for now
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+
+            // Vertex End Index
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Verticies.Count-1)));
+
+            // Byte padding (or unknown flag, unsure)
+            chunkBytes.Add(0);
+
+            // Index of the material, which will be blank for now so it picks the first material
+            chunkBytes.Add(0);
 
             return WrapInChunk("MOBA", chunkBytes.ToArray());
         }
