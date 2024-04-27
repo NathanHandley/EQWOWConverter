@@ -13,7 +13,7 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
-        public static bool ConvertEQZonesToWOW(string eqExportsCondensedPath)
+        public static bool ConvertEQZonesToWOW(string eqExportsCondensedPath, string wowExportPath)
         {
             // TODO: Move this to a config
             UInt32 curWMOID = 7000; // Reserving 7000-7200
@@ -54,7 +54,7 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
-                CreateWoWZoneFromEQZone(curZone);
+                CreateWoWZoneFromEQZone(curZone, wowExportPath);
             }
 
             // Update the 
@@ -65,11 +65,15 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone)
+        public static void CreateWoWZoneFromEQZone(Zone zone, string wowExportPath)
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
 
+            // Create the zone
             WMO zoneWMO = new WMO(zone.Name, zone);
+
+            // Output the files
+            zoneWMO.WriteToDisk(wowExportPath);
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }

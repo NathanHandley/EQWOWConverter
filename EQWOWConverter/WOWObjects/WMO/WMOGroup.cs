@@ -9,15 +9,15 @@ namespace EQWOWConverter.WOWObjects
 {
     internal class WMOGroup : WOWChunkedObject
     {
-        private List<byte> groupBytes = new List<byte>();
+        public List<byte> GroupBytes = new List<byte>();
 
         public WMOGroup(Zone zone, WMORoot wmoRoot)
         {
             // MVER (Version) ---------------------------------------------------------------------
-            groupBytes.AddRange(GenerateMVERChunk(zone));
+            GroupBytes.AddRange(GenerateMVERChunk(zone));
 
             // MOGP (Container for all other chunks) ----------------------------------------------
-            groupBytes.AddRange(GenerateMOGPChunk(zone, wmoRoot));
+            GroupBytes.AddRange(GenerateMOGPChunk(zone, wmoRoot));
         }
 
         /// <summary>

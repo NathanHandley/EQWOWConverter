@@ -7,8 +7,9 @@ using System.Runtime.CompilerServices;
 internal class Program
 {
     // TODO: Move to config
-    public static string CONFIG_PATH_EQEXPORTSRAW       = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
-    public static string CONFIG_PATH_EQEXPORTSCONDITIONED = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
+    public static string CONFIG_PATH_EQEXPORTSRAW           = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
+    public static string CONFIG_PATH_EQEXPORTSCONDITIONED   = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
+    public static string CONFIG_PATH_EXPORT_FOLDER          = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
 
     private static void Main(string[] args)
     {
@@ -67,7 +68,7 @@ internal class Program
                         {
                             Logger.WriteLine("Converting zones from EQ to WoW...");
                             AssetConverter converter = new AssetConverter();
-                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(CONFIG_PATH_EQEXPORTSCONDITIONED, CONFIG_PATH_EXPORT_FOLDER);
                             if (conversionResult == false)
                             {
                                 Logger.WriteLine("EQ to WoW zone conversion Failed.");

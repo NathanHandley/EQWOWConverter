@@ -10,57 +10,57 @@ namespace EQWOWConverter.WOWObjects
 {
     internal class WMORoot : WOWChunkedObject
     {
-        private List<byte> rootBytes = new List<byte>();
-        private Dictionary<string, UInt32> textureNameOffsets = new Dictionary<string, UInt32>();
+        public List<byte> RootBytes = new List<byte>();
+        public Dictionary<string, UInt32> TextureNameOffsets = new Dictionary<string, UInt32>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
 
         public WMORoot(Zone zone)
         {
             // MVER (Version) ---------------------------------------------------------------------
-            rootBytes.AddRange(GenerateMVERChunk(zone));
+            RootBytes.AddRange(GenerateMVERChunk(zone));
 
             // MOHD (Header) ----------------------------------------------------------------------
-            rootBytes.AddRange(GenerateMOHDChunk(zone));
+            RootBytes.AddRange(GenerateMOHDChunk(zone));
 
             // MOTX (Textures) --------------------------------------------------------------------
-            rootBytes.AddRange(GenerateMOTXChunk(zone));
+            RootBytes.AddRange(GenerateMOTXChunk(zone));
 
             // MOMT (Materials) -------------------------------------------------------------------
-            rootBytes.AddRange(GenerateMOMTChunk(zone));
+            RootBytes.AddRange(GenerateMOMTChunk(zone));
 
             // MOGN (Groups) ----------------------------------------------------------------------
-            rootBytes.AddRange(GenerateMOGNChunk(zone));
+            RootBytes.AddRange(GenerateMOGNChunk(zone));
 
             // MOGI (Group Information) -----------------------------------------------------------
-            rootBytes.AddRange(GenerateMOGIChunk(zone));
+            RootBytes.AddRange(GenerateMOGIChunk(zone));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
             // Not implementing yet
 
             // MOPV (Portal Verticies) ------------------------------------------------------------
-            rootBytes.AddRange(GenerateMOPVChunk(zone));
+            RootBytes.AddRange(GenerateMOPVChunk(zone));
 
             // MOPT (Portal Information) ----------------------------------------------------------
-            rootBytes.AddRange(GenerateMOPTChunk(zone));
+            RootBytes.AddRange(GenerateMOPTChunk(zone));
 
             // MOPR (Map Object Portal References) ------------------------------------------------
-            rootBytes.AddRange(GenerateMOPRChunk(zone));
+            RootBytes.AddRange(GenerateMOPRChunk(zone));
 
             // MOLT (Lighting Information) --------------------------------------------------------
-            rootBytes.AddRange(GenerateMOLTChunk(zone));
+            RootBytes.AddRange(GenerateMOLTChunk(zone));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
-            rootBytes.AddRange(GenerateMODSChunk(zone));
+            RootBytes.AddRange(GenerateMODSChunk(zone));
 
             // MODN (List of M2s) -----------------------------------------------------------------
-            rootBytes.AddRange(GenerateMODNChunk(zone));
+            RootBytes.AddRange(GenerateMODNChunk(zone));
 
             // MODD (Doodad Instance Information) -------------------------------------------------
-            rootBytes.AddRange(GenerateMODDChunk(zone));
+            RootBytes.AddRange(GenerateMODDChunk(zone));
 
             // MFOG (Fog Information) -------------------------------------------------------------
-            rootBytes.AddRange(GenerateMFOGChunk(zone));
+            RootBytes.AddRange(GenerateMFOGChunk(zone));
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace EQWOWConverter.WOWObjects
             {
                 foreach (string textureName in material.AnimationTextures)
                 {
-                    textureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
+                    TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
                     string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.Name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
                     while (textureBuffer.Count() % 4 != 0)
@@ -115,7 +115,7 @@ namespace EQWOWConverter.WOWObjects
                 }
             }
             // Add a final texture for 'blank' at the end
-            textureNameOffsets[String.Empty] = Convert.ToUInt32(textureBuffer.Count());
+            TextureNameOffsets[String.Empty] = Convert.ToUInt32(textureBuffer.Count());
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
 
             return WrapInChunk("MOTX", textureBuffer.ToArray());
@@ -142,9 +142,9 @@ namespace EQWOWConverter.WOWObjects
 
                 // Texture reference (for diffuse above)
                 if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
-                    curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[String.Empty]));
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
                 else
-                    curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[material.AnimationTextures[0]]));
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[material.AnimationTextures[0]]));
 
                 // Emissive color (default to blank for now)
                 ColorRGBA emissiveColor = new ColorRGBA(0, 0, 0, 255);
@@ -154,7 +154,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Second texture.  Shouldn't need for EQ. 
-                curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[String.Empty]));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
 
                 // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
                 ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);
@@ -164,7 +164,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(6)));
 
                 // 3rd texture offset (Specular?).  Not using it
-                curMaterialBytes.AddRange(BitConverter.GetBytes(textureNameOffsets[String.Empty]));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
 
                 // Not 100% on this color.  Seems related to the 3rd texture.  Investigate if useful.
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
