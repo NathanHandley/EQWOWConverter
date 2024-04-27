@@ -51,7 +51,25 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // First portal index
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Number of portals
 
-            // TODO: HERE!  transBatchCount
+            // NOTE: Temp code in place. Making everything a single render batch for testing.
+            // What exactly is "transbatchcount"?
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1))); // externalBatchCount
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // padding/unknown
+
+            // This fog Id list may be wrong, but hoping that 0 works
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // 4 fog IDs that are all zero, I hope...
+
+            // Liquid type (zero until I figure this out)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // WMOGroupID (inside WMOAreaTable) - Need to calculate later, so make it 30000
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(30000)));
+
+            // Unknown values.  Hopefully not needed
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // ------------------------------------------------------------------------------------
             // SUB CHUNKS

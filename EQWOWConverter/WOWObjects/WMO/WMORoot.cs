@@ -215,7 +215,7 @@ namespace EQWOWConverter.WOWObjects
                                                    Convert.ToUInt32(WMOGroupFlags.AlwaysDraw)); // Unsure if this should be set
             chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
 
-            // Since only one group, use the overall bounding  box
+            // Since only one group, use the overall bounding box
             chunkBytes.AddRange(zone.BoundingBox.ToBytes());
 
             // Group name is the first offset

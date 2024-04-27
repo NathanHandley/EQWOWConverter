@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class Mesh
+    internal class ZoneMesh
     {
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureUv> TextureCoords = new List<TextureUv>();
@@ -15,11 +15,17 @@ namespace EQWOWConverter.Common
         public List<PolyIndex> Indicies = new List<PolyIndex>();
         public string MaterialListName = string.Empty;
         
-        public Mesh()
+        public ZoneMesh()
         {
 
         }
-        public Mesh(string parentName, string inputData)
+        public ZoneMesh(string parentName, string inputData)
+        {
+            GenerateCompleteZoneMesh(parentName, inputData);
+            GenerateZoneSubMeshes(parentName, inputData);
+        }
+
+        private void GenerateCompleteZoneMesh(string parentName, string inputData)
         {
             string[] inputRows = inputData.Split(Environment.NewLine);
             foreach (string inputRow in inputRows)
@@ -135,6 +141,10 @@ namespace EQWOWConverter.Common
                     Logger.WriteLine("- [" + parentName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
+        }
+        private void GenerateZoneSubMeshes(string parentName, string inputData)
+        {
+            // TODO: Break the zone into 1000x1000 x/y position chunks so larger zones can be loaded.
         }
     }
 }

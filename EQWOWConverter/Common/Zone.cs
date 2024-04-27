@@ -14,8 +14,8 @@ namespace EQWOWConverter.Common
         public string DescriptiveName = string.Empty;
         public UInt32 WMOID = 0;
 
-        public Mesh RenderMesh = new Mesh();
-        public Mesh CollisionMesh = new Mesh();
+        public ZoneMesh RenderMesh = new ZoneMesh();
+        public ZoneMesh CollisionMesh = new ZoneMesh();
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
@@ -46,7 +46,7 @@ namespace EQWOWConverter.Common
             if (File.Exists(renderMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
             else
-                RenderMesh = new Mesh(name, File.ReadAllText(renderMeshFileName));
+                RenderMesh = new ZoneMesh(name, File.ReadAllText(renderMeshFileName));
 
             // Get the collision mesh data
             Logger.WriteLine("- [" + Name + "]: Reading collision mesh data...");
@@ -55,7 +55,7 @@ namespace EQWOWConverter.Common
             if (File.Exists(collisionMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: No collision mesh found.");
             else
-                CollisionMesh = new Mesh(name, File.ReadAllText(collisionMeshFileName));
+                CollisionMesh = new ZoneMesh(name, File.ReadAllText(collisionMeshFileName));
 
             // Get the ambient light
             Logger.WriteLine("- [" + Name + "]: Reading ambiant light data...");

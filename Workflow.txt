@@ -5,7 +5,8 @@
 ** TODO **
 - Chunks use little-endian style byte order.  Make sure the chunk identifier is in the right order!
 - Add source for LaternExtractor
-- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 7200
+- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 8000
+- Respective Updates in WMOAreaTable.dbc related to WMOGRoupID.  Range will be 30000-40000
 - Updates to Map.dbc (hight map, might need for outdoor areas)
 - Implement Collision (BSP?)
 - Need alternate solution for animated textures on map files (perhaps move to M2?)
@@ -50,3 +51,12 @@ Objects (contain M2 and textures):
 	....
 	
 	
+** Coordinate and Space **
+- Everquest: X-Axis is S(neg) to N(pos), Y-Axis is E(neg) to W(pos)
+- WoW: X-Axis is N(pos) to S(neg), Y-Axis is W(pos), to E(neg).  Z is up(pos) and down (neg)
+- WoW maps are divided into 64x64 blocks (total of 4096) and each block is divided into 16x16 chunks.
+- WoW map blocks are 533.33333 yards (1600 feet) w x height.  Coordinate origin is center, so +/- 17066.66656
+- Each map chunk is 33.3333 yards (100 feet)
+- In EQ, 1 unit of space is about 1 foot
+- In WoW, 1 unit of space is about 1 meter (3.28 feet)
+- Everquest maps to be broken up into 1000 x 1000 unit sub areas

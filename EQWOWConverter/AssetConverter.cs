@@ -42,8 +42,8 @@ namespace EQWOWConverter
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                // For now, skip any zone that isn't west freeport
-                if (zoneDirectory.Name != "freportw")
+                // For now, skip any zone that isn't the arena
+                if (zoneDirectory.Name != "arena")
                     continue;
 
                 // Load the EQ zone
