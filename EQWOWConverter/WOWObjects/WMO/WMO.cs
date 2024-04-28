@@ -49,7 +49,7 @@ namespace EQWOWConverter.WOWObjects
 
         public void WriteToDisk(string baseFolderPath)
         {
-            FileTool.CreateBlankDirectory(FullWMOFolderPath);
+            FileTool.CreateBlankDirectory(FullWMOFolderPath, true);
             string RootFileFullPathAndFileName = Path.Combine(FullWMOFolderPath, BaseFileName + ".wmo");
             File.WriteAllBytes(RootFileFullPathAndFileName, RootObject.RootBytes.ToArray());
             

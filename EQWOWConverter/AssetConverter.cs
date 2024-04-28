@@ -91,9 +91,13 @@ namespace EQWOWConverter
             // Create the WDT
             WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
 
+            // Create the WDL
+            WDL zoneWDL = new WDL(zone);
+
             // Output the files
             zoneWMO.WriteToDisk(wowExportPath);
             zoneWDT.WriteToDisk(wowExportPath);
+            zoneWDL.WriteToDisk(wowExportPath);
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }

@@ -51,7 +51,7 @@ namespace EQWOWConverter
             }
 
             // Create base folder
-            FileTool.CreateBlankDirectory(eqExportsCondensedPath);
+            FileTool.CreateBlankDirectory(eqExportsCondensedPath, false);
 
             // Delete/Recreate the output folders
             string outputObjectsFolderRoot = Path.Combine(eqExportsCondensedPath, "objects");
@@ -62,14 +62,14 @@ namespace EQWOWConverter
             string outputCharactersTexturesFolderRoot = Path.Combine(outputCharactersFolderRoot, "textures");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
-            FileTool.CreateBlankDirectory(outputObjectsFolderRoot);
-            FileTool.CreateBlankDirectory(outputObjectsTexturesFolderRoot);
-            FileTool.CreateBlankDirectory(outputObjectsMeshesFolderRoot);
-            FileTool.CreateBlankDirectory(outputObjectsMaterialsFolderRoot);
-            FileTool.CreateBlankDirectory(outputCharactersFolderRoot);
-            FileTool.CreateBlankDirectory(outputCharactersTexturesFolderRoot);
-            FileTool.CreateBlankDirectory(outputZoneFolderRoot);
-            FileTool.CreateBlankDirectory(tempFolderRoot);
+            FileTool.CreateBlankDirectory(outputObjectsFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputObjectsTexturesFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputObjectsMeshesFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputObjectsMaterialsFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputCharactersFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputCharactersTexturesFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputZoneFolderRoot, false);
+            FileTool.CreateBlankDirectory(tempFolderRoot, false);
 
             // Iterate through each exported directory and process objects and zones
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);

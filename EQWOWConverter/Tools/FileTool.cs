@@ -76,10 +76,15 @@ namespace EQWOWConverter
             return ((file1byte - file2byte) == 0);
         }
 
-        public static void CreateBlankDirectory(string targetDirectory)
+        public static void CreateBlankDirectory(string targetDirectory, bool skipIfExists)
         {
             if (Directory.Exists(targetDirectory))
-                Directory.Delete(targetDirectory, true);
+            {
+                if (skipIfExists)
+                    return;
+                else
+                    Directory.Delete(targetDirectory, true);
+            }
             Directory.CreateDirectory(targetDirectory);
         }
 
