@@ -69,11 +69,15 @@ namespace EQWOWConverter
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
 
-            // Create the zone
-            WMO zoneWMO = new WMO(zone.Name, zone);
+            // Create the zone WMO objects
+            WMO zoneWMO = new WMO(zone, wowExportPath);
+
+            // Create the WDT
+            WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
 
             // Output the files
             zoneWMO.WriteToDisk(wowExportPath);
+            zoneWDT.WriteToDisk(wowExportPath);
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }

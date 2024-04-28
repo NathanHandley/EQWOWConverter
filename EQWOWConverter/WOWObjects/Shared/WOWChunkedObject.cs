@@ -13,7 +13,10 @@ namespace EQWOWConverter.WOWObjects
             if (token.Length != 4)
                 Logger.WriteLine("Error, WrapInChunk has a token that isn't a length of 4 (value = '" + token + "')");
             List<byte> wrappedChunk = new List<byte>();
-            wrappedChunk.AddRange(Encoding.ASCII.GetBytes(token));
+            wrappedChunk.Add((byte)token[3]);
+            wrappedChunk.Add((byte)token[2]);
+            wrappedChunk.Add((byte)token[1]);
+            wrappedChunk.Add((byte)token[0]);
             wrappedChunk.AddRange(BitConverter.GetBytes(Convert.ToUInt32(dataBlock.Length)));
             wrappedChunk.AddRange(dataBlock);
             return wrappedChunk;

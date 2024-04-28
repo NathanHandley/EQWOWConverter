@@ -49,7 +49,9 @@ TODO
 
 ** Folder Structure **
 Maps:
-	wmos: World\wmo\Everquest\<zone>.wmo
+	wmo: World\wmo\Everquest\<zone>.wmo
+	wdt: World\Everquest\<zone>\<zone>.wdt
+	wdl: World\Everquest\<zone>\<zone>.wdl
 	textures: World\Everquest\ZoneTextures\<zone>\<texture>.blp
 Objects (contain M2 and textures):
 	World\Everquest\PassiveDoodads\
