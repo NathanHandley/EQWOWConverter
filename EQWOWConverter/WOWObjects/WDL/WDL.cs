@@ -47,6 +47,7 @@ namespace EQWOWConverter.WOWObjects
             ObjectBytes.AddRange(GenerateMODFChunk(zone));
 
             // MAOF (Map Area Offset) -------------------------------------------------------------
+            // Watch this, Stockades has a lot of blank data here
             ObjectBytes.AddRange(GenerateMAOFChunk(zone));
         }
 
@@ -140,7 +141,7 @@ namespace EQWOWConverter.WOWObjects
 
         public void WriteToDisk(string baseFolderPath)
         {
-            string folderToWrite = Path.Combine(baseFolderPath, "World", "Everquest", BaseFileName);
+            string folderToWrite = Path.Combine(baseFolderPath, "World", "EQ_" + BaseFileName);
             FileTool.CreateBlankDirectory(folderToWrite, true);
             string fullFilePath = Path.Combine(folderToWrite, BaseFileName + ".wdl");
             File.WriteAllBytes(fullFilePath, ObjectBytes.ToArray());

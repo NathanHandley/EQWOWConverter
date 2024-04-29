@@ -41,17 +41,26 @@ Use BLPNG Converter
 
 ** Clean up png files **
 Use EQWOWConverter
+- TODO
 
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
-TODO
+Use EQWOWConverter
+- Run command "Convert zones to WMO"
 
+** Update related DBC files
+1) AreaTable.dbc
+- Each map needs a record.  6000+ values
+2) Each map needs a value.  
+
+** Package everything up
+Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy
 
 
 ** Folder Structure **
 Maps:
 	wmo: World\wmo\Everquest\<zone>.wmo
-	wdt: World\Everquest\<zone>\<zone>.wdt
-	wdl: World\Everquest\<zone>\<zone>.wdl
+	wdt: World\Maps\EQ_<zone>\<zone>.wdt
+	wdl: World\Maps\EQ_<zone>\<zone>.wdl
 	textures: World\Everquest\ZoneTextures\<zone>\<texture>.blp
 Objects (contain M2 and textures):
 	World\Everquest\PassiveDoodads\

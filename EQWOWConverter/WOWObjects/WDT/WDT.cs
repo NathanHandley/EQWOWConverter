@@ -154,7 +154,7 @@ namespace EQWOWConverter.WOWObjects
 
         public void WriteToDisk(string baseFolderPath)
         {
-            string folderToWrite = Path.Combine(baseFolderPath, "World", "Everquest", BaseFileName);
+            string folderToWrite = Path.Combine(baseFolderPath, "World", "EQ_" + BaseFileName);
             FileTool.CreateBlankDirectory(folderToWrite, true);
             string fullFilePath = Path.Combine(folderToWrite, BaseFileName + ".wdt");
             File.WriteAllBytes(fullFilePath, ObjectBytes.ToArray());
