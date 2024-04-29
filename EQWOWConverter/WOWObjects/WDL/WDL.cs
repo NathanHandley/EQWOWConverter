@@ -143,7 +143,7 @@ namespace EQWOWConverter.WOWObjects
         {
             string folderToWrite = Path.Combine(baseFolderPath, "World", "Maps", "EQ_" + BaseFileName);
             FileTool.CreateBlankDirectory(folderToWrite, true);
-            string fullFilePath = Path.Combine(folderToWrite, BaseFileName + ".wdl");
+            string fullFilePath = Path.Combine(folderToWrite, "EQ_" + BaseFileName + ".wdl");
             File.WriteAllBytes(fullFilePath, ObjectBytes.ToArray());
         }
     }

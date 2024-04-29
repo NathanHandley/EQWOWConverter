@@ -55,18 +55,29 @@ Use EQWOWConverter
 ** Package everything up
 Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy
 
+** Create the tele position
+Example:
+DELETE FROM game_tele WHERE id = 1492;
+INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (1492, 10, 10, 10, 0.5, 725, 'EQArena');
+
+** Create instance_template record
+Example:
+DELETE FROM `instance_template` WHERE map = 725;
+INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (725, 0, '', 0);
+
 
 ** Folder Structure **
 Maps:
 	wmo: World\wmo\Everquest\<zone>.wmo
-	wdt: World\Maps\EQ_<zone>\<zone>.wdt
-	wdl: World\Maps\EQ_<zone>\<zone>.wdl
+	wdt: World\Maps\EQ_<zone>\EQ_<zone>.wdt
+	wdl: World\Maps\EQ_<zone>\EQ_<zone>.wdl
 	textures: World\Everquest\ZoneTextures\<zone>\<texture>.blp
 Objects (contain M2 and textures):
 	World\Everquest\PassiveDoodads\
 	World\Everquest\ActiveDoodads\
 	....
-	
+Notes:
+	wdt/wdl file names need to match the folder name exactly
 	
 ** Coordinate and Space **
 - Everquest: X-Axis is S(neg) to N(pos), Y-Axis is E(neg) to W(pos)
