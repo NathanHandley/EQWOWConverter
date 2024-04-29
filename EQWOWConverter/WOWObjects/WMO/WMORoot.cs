@@ -52,7 +52,7 @@ namespace EQWOWConverter.WOWObjects
             RootBytes.AddRange(GenerateMOGIChunk(zone));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
-            // Not implementing yet
+            RootBytes.AddRange(GenerateMOSBChunk(zone));
 
             // MOPV (Portal Verticies) ------------------------------------------------------------
             RootBytes.AddRange(GenerateMOPVChunk(zone));
@@ -62,6 +62,12 @@ namespace EQWOWConverter.WOWObjects
 
             // MOPR (Map Object Portal References) ------------------------------------------------
             RootBytes.AddRange(GenerateMOPRChunk(zone));
+
+            // MOVV (Visible Block Verticies) -----------------------------------------------------
+            RootBytes.AddRange(GenerateMOVVChunk(zone));
+
+            // MOVB (Visible Block List) ----------------------------------------------------------
+            RootBytes.AddRange(GenerateMOVBChunk(zone));
 
             // MOLT (Lighting Information) --------------------------------------------------------
             RootBytes.AddRange(GenerateMOLTChunk(zone));
@@ -104,9 +110,12 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
             chunkBytes.AddRange(BitConverter.GetBytes(zone.WMOID));          // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(zone.BoundingBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
-            UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
-                                              Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
-            chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
+
+            // For now, get rid of these 
+            //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
+            //                                  Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
+            //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
 
             return WrapInChunk("MOHD", chunkBytes.ToArray());
         }
@@ -133,6 +142,8 @@ namespace EQWOWConverter.WOWObjects
             // Add a final texture for 'blank' at the end
             TextureNameOffsets[String.Empty] = Convert.ToUInt32(textureBuffer.Count());
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            while (textureBuffer.Count() % 4 != 0)
+                textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             return WrapInChunk("MOTX", textureBuffer.ToArray());
         }
@@ -192,6 +203,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Add to the bigger container
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
@@ -206,13 +218,23 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOGNChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            
-            // For now, only have one group name since we'll have only one group for the whole zone (both a name and descriptive name)
-            string zoneGroupName = zone.Name + "\0\0\0\0\0";
+
+            // For reason unknown to me, put a blank spot in front
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+
+            // Zone Name
+            string zoneGroupName = zone.Name + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));
+
+            // Descriptive Name
             GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0\0\0\0\0";
+            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
+
+            // Align the chunk with empty
+            while (chunkBytes.Count() % 4 != 0)
+                chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+
             return WrapInChunk("MOGN", chunkBytes.ToArray());
         }
 
@@ -242,13 +264,14 @@ namespace EQWOWConverter.WOWObjects
         }
 
         /// <summary>
-        /// MOSB (Skybox, optional)
+        /// MOSB (Skybox)
         /// </summary>
         private List<byte> GenerateMOSBChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOSB Generation unimplemented!");
+            // For now, just populate with blank (4 bytes)
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
 
             return WrapInChunk("MOSB", chunkBytes.ToArray());
         }
@@ -287,6 +310,30 @@ namespace EQWOWConverter.WOWObjects
             Logger.WriteLine("MOPR is intentially empty (no implementation)");
 
             return WrapInChunk("MOPR", chunkBytes.ToArray());
+        }
+
+        /// <summary>
+        /// MOVV (Visible Block Verticies)
+        /// </summary>
+        private List<byte> GenerateMOVVChunk(Zone zone)
+        {
+            List<byte> chunkBytes = new List<byte>();
+
+            Logger.WriteLine("MOVV is intentially empty (no implementation)");
+
+            return WrapInChunk("MOVV", chunkBytes.ToArray());
+        }
+
+        /// <summary>
+        /// MOVB (Visible Block List)
+        /// </summary>
+        private List<byte> GenerateMOVBChunk(Zone zone)
+        {
+            List<byte> chunkBytes = new List<byte>();
+
+            Logger.WriteLine("MOVB is intentially empty (no implementation)");
+
+            return WrapInChunk("MOVB", chunkBytes.ToArray());
         }
 
         /// <summary>
