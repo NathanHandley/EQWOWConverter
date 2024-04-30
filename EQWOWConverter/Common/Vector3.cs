@@ -28,6 +28,18 @@ namespace EQWOWConverter.Common
         public float Y;
         public float Z;
 
+        public Vector3()
+        {
+
+        }
+
+        public Vector3(float x, float y, float z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();

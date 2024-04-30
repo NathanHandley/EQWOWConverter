@@ -100,6 +100,7 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOHDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
+            /*
             chunkBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
@@ -110,6 +111,28 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
             chunkBytes.AddRange(BitConverter.GetBytes(zone.WMOID));          // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(zone.BoundingBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
+
+            // For now, get rid of these 
+            //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
+            //                                  Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
+            //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
+            */
+
+            // TEMP
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Textures
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Doodad Sets (first is the global)
+            chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
+            chunkBytes.AddRange(BitConverter.GetBytes(1093));          // WMOID (inside WMOAreaTable.dbc)
+            AxisAlignedBox boundBox = new AxisAlignedBox();
+            boundBox.TopCorner = new Vector3(16.14454f, 22.01656f, 27.09178f);
+            boundBox.BottomCorner = new Vector3(-17.27154f, -19.03119f, -25.38542f);            
+            chunkBytes.AddRange(boundBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
 
             // For now, get rid of these 
             //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
@@ -127,6 +150,7 @@ namespace EQWOWConverter.WOWObjects
         {
             //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
             //  Pad to make the lengths multiples of 4, with minimum total of 5 "\0"
+            /*
             List<byte> textureBuffer = new List<byte>();
             foreach (Material material in zone.Materials)
             {
@@ -143,6 +167,10 @@ namespace EQWOWConverter.WOWObjects
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
             while (textureBuffer.Count() % 4 != 0)
                 textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
+            */
+            // Temp
+            List<byte> textureBuffer = new List<byte>();
+            textureBuffer.AddRange(Encoding.ASCII.GetBytes("DUNGEONS\\TEXTURES\\TEMP\\64.BLP\0"));
 
             return WrapInChunk("MOTX", textureBuffer.ToArray());
         }
@@ -153,6 +181,7 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOMTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
+            /*
             foreach (Material material in zone.Materials)
             {
                 List<byte> curMaterialBytes = new List<byte>();
@@ -212,7 +241,57 @@ namespace EQWOWConverter.WOWObjects
                 // Add to the bigger container
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
             }
+            */
 
+            // Temp
+            List<byte> curMaterialBytes = new List<byte>();
+
+            // For now, don't put any flags. But see WMOMaterialFlags later
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // This is the shader, but just use Diffuse for now (0).  1 = Specular, 2 = Metal, 3 = Environment, etc see wowdev
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Blend Mode (zero for now)
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Texture reference (for diffuse above)
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Emissive color (default to blank for now)
+            ColorRGBA emissiveColor = new ColorRGBA(0, 0, 0, 255);
+            curMaterialBytes.AddRange(emissiveColor.ToBytes());
+
+            // Not sure what this is.  wowdev has this as sidnColor and 010 template shows flags_1.  Setting to zero for now.
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Second texture.  Shouldn't need for EQ. 
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
+            ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);
+            curMaterialBytes.AddRange(diffuseColor.ToBytes());
+
+            // TerrainType ID (from the DBC). TODO: Find a way to map this to be useful for EQ.  Setting to 6 for grass for now.
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(6)));
+
+            // 3rd texture offset (Specular?).  Not using it
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Not 100% on this color.  Seems related to the 3rd texture.  Investigate if useful.
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Can't find a definition for this other than it's a flag
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // 4 values that can be ignored, I think.  They seem runtime related.
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Add to the bigger container
+            chunkBytes.AddRange(curMaterialBytes.ToArray());
             return WrapInChunk("MOMT", chunkBytes.ToArray());
         }
 
@@ -223,6 +302,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
+            /*
             // For reason unknown to me, put a blank spot in front
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
 
@@ -238,7 +318,10 @@ namespace EQWOWConverter.WOWObjects
             // Align the chunk with empty
             while (chunkBytes.Count() % 4 != 0)
                 chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+            */
 
+            // Temp
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0oid\0\0\0"));
             return WrapInChunk("MOGN", chunkBytes.ToArray());
         }
 
@@ -250,6 +333,7 @@ namespace EQWOWConverter.WOWObjects
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
+            /*
             // Group flags
             UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors));
             chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
@@ -258,7 +342,23 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(zone.BoundingBox.ToBytes());
 
             // Group name is the first offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(0)));
+            List<byte> MOGIChunkByteBlock = WrapInChunk("MOGI", chunkBytes.ToArray());
+            */
+
+            // Temp
+            // Group flags
+            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors), Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
+            chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
+
+            // Since only one group, use the overall bounding box
+            AxisAlignedBox boundBox = new AxisAlignedBox();
+            boundBox.TopCorner = new Vector3(16.14454f, 22.01656f, 27.09178f);
+            boundBox.BottomCorner = new Vector3(-17.27154f, -19.03119f, -25.38542f);
+            chunkBytes.AddRange(boundBox.ToBytes());
+
+            // Group name is the first offset
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(-1)));
             List<byte> MOGIChunkByteBlock = WrapInChunk("MOGI", chunkBytes.ToArray());
 
             return WrapInChunk("MOGI", chunkBytes.ToArray());
@@ -272,7 +372,10 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             // For now, just populate with blank (4 bytes)
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            //chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+
+            // Temp
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             return WrapInChunk("MOSB", chunkBytes.ToArray());
         }

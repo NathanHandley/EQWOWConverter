@@ -109,9 +109,10 @@ namespace EQWOWConverter.WOWObjects
 
             // TEMP TESTING
             //chunkBytes.AddRange(Encoding.ASCII.GetBytes("World\\wmo\\Dungeon\\AZ_StormwindPrisons\\StormwindJail.wmo\0"));
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("World\\wmo\\Azeroth\\Buildings\\Oil_Platform\\oil_platform.wmo\0"));
 
             // Write out the wmo root file name
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
+            //chunkBytes.AddRange(Encoding.ASCII.GetBytes(wmoFileName + "\0"));
             return WrapInChunk("MWMO", chunkBytes.ToArray());
         }
 
