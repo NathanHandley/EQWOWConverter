@@ -146,9 +146,10 @@ namespace EQWOWConverter.Common
                     }
                     PolyIndex index = new PolyIndex();
                     index.MaterialIndex = int.Parse(blocks[1]);
-                    index.V1 = int.Parse(blocks[2]);
+                    // Reverse the culling rotation
+                    index.V3 = int.Parse(blocks[2]);
                     index.V2 = int.Parse(blocks[3]);
-                    index.V3 = int.Parse(blocks[4]);
+                    index.V1 = int.Parse(blocks[4]);
                     Indicies.Add(index);
                 }
 
