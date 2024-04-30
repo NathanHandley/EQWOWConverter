@@ -67,8 +67,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // Blank padding for now
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            // Intentionally blank for now
 
             return WrapInChunk("MWMO", chunkBytes.ToArray());
         }
@@ -80,8 +79,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // Blank padding for now
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            // Intentionally blank for now
 
             return WrapInChunk("MWID", chunkBytes.ToArray());
         }
@@ -93,8 +91,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // Blank padding for now
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            // Intentionally blank for now
 
             return WrapInChunk("MODF", chunkBytes.ToArray());
         }
@@ -106,35 +103,15 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // If there's an orientation issue, it could be that this matrix will need to map to world coordinates...
-            // ID.  Unsure what this is exactly, so setting to zero for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Unique ID.  Not sure if used, but see references of it to -1
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(-1)));
-
-            // Position - Set zero now, and maybe mess with later
-            Vector3 positionVector = new Vector3();
-            chunkBytes.AddRange(positionVector.ToBytes());
-
-            // Rotation - Set zero now, and maybe mess with later.  Format is ABC not XYZ....
-            Vector3 rotation = new Vector3();
-            chunkBytes.AddRange(rotation.ToBytes());
-
-            // Bounding Box... again?
-            chunkBytes.AddRange(zone.BoundingBox.ToBytes());
-
-            // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
-
-            // DoodadSet - None for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
-
-            // NameSet - Unsure on purpose
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
-
-            // Unsure / Unused?
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            // Map Area Offsets, set to zero for all 4096 (64*64)
+            for (int mapX = 0; mapX < 64; ++mapX)
+            {
+                for (int mapY = 0; mapY < 64; ++mapY)
+                {
+                    // Since this is a WMO-based map, blank seems okay...
+                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                }
+            }
 
             return WrapInChunk("MAOF", chunkBytes.ToArray());
         }

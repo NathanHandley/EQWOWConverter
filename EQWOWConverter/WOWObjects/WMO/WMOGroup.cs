@@ -109,19 +109,19 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(GenerateMOBAChunk(zone));
 
             // MOLR (Light References) ------------------------------------------------------------
-            // -- If has Lights
+            chunkBytes.AddRange(GenerateMOLRChunk(zone));
 
             // MODR (Doodad References) -----------------------------------------------------------
-            // -- If has Doodads
+            chunkBytes.AddRange(GenerateMODRChunk(zone));
 
             // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
-            // -- If HasBSPTree flag
+            chunkBytes.AddRange(GenerateMOBNChunk(zone));
 
             // MOBR (Face / Triangle Incidies) ----------------------------------------------------
-            // -- If HasBSPTree flag
+            chunkBytes.AddRange(GenerateMOBRChunk(zone));
 
             // MOCV (Vertex Colors) ---------------------------------------------------------------
-            // - If HasVertexColor Flag
+            chunkBytes.AddRange(GenerateMOCVChunk(zone));
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // - If HasWater flag
@@ -138,12 +138,14 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // For now, just one material
-            byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Collision),
-                                                   Convert.ToByte(WMOPolyMaterialFlags.CollideHit),
-                                                   Convert.ToByte(WMOPolyMaterialFlags.Render));
-            chunkBytes.Add(polyMaterialFlag);
-            chunkBytes.Add(0); // This is the material index, which we'll make 0 so it's the first for now
+            // One for each triangle
+            foreach (PolyIndex polyIndexTriangle in zone.RenderMesh.Indicies)
+            {
+                // For now, just one material
+                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render)); // TODO: Add collide?
+                chunkBytes.Add(polyMaterialFlag);
+                chunkBytes.Add(0); // This is the material index, which we'll make 0 so it's the first for now
+            }
 
             return WrapInChunk("MOPY", chunkBytes.ToArray());
         }
@@ -210,13 +212,13 @@ namespace EQWOWConverter.WOWObjects
 
             // TODO: Make this work with multiple render batches, as it a render batch needs to be 1 material only
             // Bounding Box
-            chunkBytes.AddRange(zone.BoundingBox.ToBytes());
+            chunkBytes.AddRange(zone.BoundingBoxLowRes.ToBytes());
 
             // Poly Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of poly indexes
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Indicies.Count)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Indicies.Count * 3)));
 
             // Vertex Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));

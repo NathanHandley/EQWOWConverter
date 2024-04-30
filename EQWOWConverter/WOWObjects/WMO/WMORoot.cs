@@ -247,10 +247,7 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             // Group flags
-            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors),
-                                                   Convert.ToUInt32(WMOGroupFlags.HasLights),
-                                                   // Convert.ToUInt32(WMOGroupFlags.DoShowSkybox) TODO: Uncomment when there's a skybox
-                                                   Convert.ToUInt32(WMOGroupFlags.AlwaysDraw)); // Unsure if this should be set
+            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors));
             chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
 
             // Since only one group, use the overall bounding box

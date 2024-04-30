@@ -40,6 +40,7 @@ namespace EQWOWConverter.Common
         public UInt32 TextureCount = 0;
 
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
+        public AxisAlignedBoxLR BoundingBoxLowRes = new AxisAlignedBoxLR();
 
         public Fog FogSettings = new Fog();
 
@@ -238,6 +239,8 @@ namespace EQWOWConverter.Common
                 if (collisionVert.Z > BoundingBox.TopCorner.Z)
                     BoundingBox.TopCorner.Z = collisionVert.Z;
             }
+
+            BoundingBoxLowRes = new AxisAlignedBoxLR(BoundingBox);
         }
     }
 }
