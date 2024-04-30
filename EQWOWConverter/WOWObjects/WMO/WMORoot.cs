@@ -106,7 +106,7 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Sets
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
             chunkBytes.AddRange(BitConverter.GetBytes(zone.WMOID));          // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(zone.BoundingBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
@@ -352,7 +352,18 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODS is intentially empty (no implementation)");
+            // Set Name, always 20 characters
+            // There is always at least one set, the global set (Set_$DefaultGlobal)
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("Set_$DefaultGlobal\0\0"));
+
+            // First doodad index
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Number of doodads
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+
+            // Padding
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
 
             return WrapInChunk("MODS", chunkBytes.ToArray());
         }
