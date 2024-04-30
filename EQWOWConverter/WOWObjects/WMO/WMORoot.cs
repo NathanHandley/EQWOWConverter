@@ -139,8 +139,7 @@ namespace EQWOWConverter.WOWObjects
                         textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
                 }
             }
-            // Add a final texture for 'blank' at the end
-            TextureNameOffsets[String.Empty] = Convert.ToUInt32(textureBuffer.Count());
+            // Add a buffer at the end
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
             while (textureBuffer.Count() % 4 != 0)
                 textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
@@ -169,7 +168,12 @@ namespace EQWOWConverter.WOWObjects
 
                 // Texture reference (for diffuse above)
                 if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
-                    curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
+                {
+                    // If there was a missing texture, use the first in the list
+                    // TODO: Figure out why this can happen. arena has i_m0000 as a material
+                    Logger.WriteLine("Missing texture in material binding, so using first");
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                }
                 else
                     curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[material.AnimationTextures[0]]));
 
@@ -181,7 +185,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Second texture.  Shouldn't need for EQ. 
-                curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
                 ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);
@@ -191,7 +195,7 @@ namespace EQWOWConverter.WOWObjects
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(6)));
 
                 // 3rd texture offset (Specular?).  Not using it
-                curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[String.Empty]));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Not 100% on this color.  Seems related to the 3rd texture.  Investigate if useful.
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
