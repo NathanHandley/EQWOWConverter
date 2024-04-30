@@ -142,7 +142,8 @@ namespace EQWOWConverter.WOWObjects
             foreach (PolyIndex polyIndexTriangle in zone.RenderMesh.Indicies)
             {
                 // For now, just one material
-                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render)); // TODO: Add collide?
+                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render),
+                                                       Convert.ToByte(WMOPolyMaterialFlags.Unknown1)); // TODO: Add collide?
                 chunkBytes.Add(polyMaterialFlag);
                 chunkBytes.Add(0); // This is the material index, which we'll make 0 so it's the first for now
             }
