@@ -117,7 +117,6 @@ namespace EQWOWConverter.WOWObjects
             //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
             return WrapInChunk("MOHD", chunkBytes.ToArray());
-
         }
 
         /// <summary>
@@ -213,57 +212,6 @@ namespace EQWOWConverter.WOWObjects
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
             }            
 
-            /*
-            // Temp
-            List<byte> curMaterialBytes = new List<byte>();
-
-            // For now, don't put any flags. But see WMOMaterialFlags later
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // This is the shader, but just use Diffuse for now (0).  1 = Specular, 2 = Metal, 3 = Environment, etc see wowdev
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Blend Mode (zero for now)
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Texture reference (for diffuse above)
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Emissive color (default to blank for now)
-            ColorRGBA emissiveColor = new ColorRGBA(0, 0, 0, 255);
-            curMaterialBytes.AddRange(emissiveColor.ToBytes());
-
-            // Not sure what this is.  wowdev has this as sidnColor and 010 template shows flags_1.  Setting to zero for now.
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Second texture.  Shouldn't need for EQ. 
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
-            ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);
-            curMaterialBytes.AddRange(diffuseColor.ToBytes());
-
-            // TerrainType ID (from the DBC). TODO: Find a way to map this to be useful for EQ.  Setting to 6 for grass for now.
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(6)));
-
-            // 3rd texture offset (Specular?).  Not using it
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Not 100% on this color.  Seems related to the 3rd texture.  Investigate if useful.
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Can't find a definition for this other than it's a flag
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // 4 values that can be ignored, I think.  They seem runtime related.
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-
-            // Add to the bigger container
-            chunkBytes.AddRange(curMaterialBytes.ToArray());
-            */
             return WrapInChunk("MOMT", chunkBytes.ToArray());
         }
 
@@ -274,13 +222,13 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            /*
-            // For reason unknown to me, put a blank spot in front
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+            // For reason unknown to me, put blank space in front (I've seen this in existing wmos)
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0"));
 
             // Zone Name
+            GroupNameOffset = Convert.ToUInt32(chunkBytes.Count);
             string zoneGroupName = zone.Name + "\0";
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));
+            chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));            
 
             // Descriptive Name
             GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
@@ -290,10 +238,7 @@ namespace EQWOWConverter.WOWObjects
             // Align the chunk with empty
             while (chunkBytes.Count() % 4 != 0)
                 chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
-            */
 
-            // Temp
-            chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0oid\0\0\0"));
             return WrapInChunk("MOGN", chunkBytes.ToArray());
         }
 

@@ -53,10 +53,8 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             // Group name offsets in MOGN
-            // chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
-            //chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
+            chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
             // Flags
             UInt32 groupHeaderFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors), Convert.ToUInt32(WMOGroupFlags.HasBSPTree));
