@@ -100,9 +100,8 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOHDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            /*
             chunkBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1 for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
@@ -117,30 +116,8 @@ namespace EQWOWConverter.WOWObjects
             //                                  Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
             //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
-            */
-
-            // TEMP
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Textures
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Doodad Sets (first is the global)
-            chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
-            chunkBytes.AddRange(BitConverter.GetBytes(7000));          // WMOID (inside WMOAreaTable.dbc)
-            AxisAlignedBox boundBox = new AxisAlignedBox();
-            boundBox.TopCorner = new Vector3(10f, 10f, 10f);
-            boundBox.BottomCorner = new Vector3(-10f, -10f, -10f);            
-            chunkBytes.AddRange(boundBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
-
-            // For now, get rid of these 
-            //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
-            //                                  Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
-            //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
-
             return WrapInChunk("MOHD", chunkBytes.ToArray());
+
         }
 
         /// <summary>
@@ -176,7 +153,6 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOMTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            /*
             foreach (Material material in zone.Materials)
             {
                 List<byte> curMaterialBytes = new List<byte>();
@@ -235,9 +211,9 @@ namespace EQWOWConverter.WOWObjects
 
                 // Add to the bigger container
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
-            }
-            */
+            }            
 
+            /*
             // Temp
             List<byte> curMaterialBytes = new List<byte>();
 
@@ -287,6 +263,7 @@ namespace EQWOWConverter.WOWObjects
 
             // Add to the bigger container
             chunkBytes.AddRange(curMaterialBytes.ToArray());
+            */
             return WrapInChunk("MOMT", chunkBytes.ToArray());
         }
 
