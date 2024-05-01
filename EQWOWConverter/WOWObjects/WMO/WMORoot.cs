@@ -250,9 +250,8 @@ namespace EQWOWConverter.WOWObjects
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            /*
             // Group flags
-            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors));
+            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors)); // Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
             chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
 
             // Since only one group, use the overall bounding box
@@ -260,22 +259,6 @@ namespace EQWOWConverter.WOWObjects
 
             // Group name is the first offset
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(0)));
-            List<byte> MOGIChunkByteBlock = WrapInChunk("MOGI", chunkBytes.ToArray());
-            */
-
-            // Temp
-            // Group flags
-            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors), Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
-            chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
-
-            // Since only one group, use the overall bounding box
-            AxisAlignedBox boundBox = new AxisAlignedBox();
-            boundBox.TopCorner = new Vector3(10f, 10f, 10f);
-            boundBox.BottomCorner = new Vector3(-10f, -10f, -10f);
-            chunkBytes.AddRange(boundBox.ToBytes());
-
-            // Group name is the first offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(-1)));
             List<byte> MOGIChunkByteBlock = WrapInChunk("MOGI", chunkBytes.ToArray());
 
             return WrapInChunk("MOGI", chunkBytes.ToArray());
@@ -288,10 +271,7 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // For now, just populate with blank (4 bytes)
-            //chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
-
-            // Temp
+            // Blank for now
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             // Align
