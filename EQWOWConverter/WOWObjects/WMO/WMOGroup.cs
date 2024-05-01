@@ -77,8 +77,8 @@ namespace EQWOWConverter.WOWObjects
             // This fog Id list may be wrong, but hoping that 0 works
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // 4 fog IDs that are all zero, I hope...
 
-            // Liquid type (zero until I figure this out)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            // Liquid type (zero causes whole WMO to be underwater, but 15 seems to fix that)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
 
             // WMOGroupID (inside WMOAreaTable) - Need to calculate later, so make it 30000
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(30000)));

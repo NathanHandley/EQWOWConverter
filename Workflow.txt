@@ -5,17 +5,11 @@
 ** TODO **
 - Chunks use little-endian style byte order.  Make sure the chunk identifier is in the right order!
 - Add source for LaternExtractor
-
 - Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 8000, AreaTable.ID range 6000-7000, AreaBit 3800+
 - Respective Updates in WMOAreaTable.dbc related to WMOGRoupID.  Range will be 30000-40000
 - Respective Updates in Map.dbc and MapDifficulty.dbc.  Range will be 750+
 - Make changes to SQL table game_tele
-- Generate .wdl file
-- Generate .wdt file
-
-
 - Need alternate solution for animated textures on map files (perhaps move to M2?)
-
 
 ** Extracting Everquest Assets **
 Use LaternExtractor
@@ -78,6 +72,9 @@ Objects (contain M2 and textures):
 	....
 Notes:
 	wdt/wdl file names need to match the folder name exactly
+	
+** Issues
+
 	
 ** Coordinate and Space **
 - Everquest: X-Axis is S(neg) to N(pos), Y-Axis is E(neg) to W(pos)
