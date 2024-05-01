@@ -27,6 +27,17 @@ namespace EQWOWConverter.Common
         public float X;
         public float Y;
 
+        public TextureUv()
+        {
+
+        }
+
+        public TextureUv(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
+
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();

@@ -128,10 +128,10 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
-            chunkBytes.AddRange(BitConverter.GetBytes(1093));          // WMOID (inside WMOAreaTable.dbc)
+            chunkBytes.AddRange(BitConverter.GetBytes(7000));          // WMOID (inside WMOAreaTable.dbc)
             AxisAlignedBox boundBox = new AxisAlignedBox();
-            boundBox.TopCorner = new Vector3(16.14454f, 22.01656f, 27.09178f);
-            boundBox.BottomCorner = new Vector3(-17.27154f, -19.03119f, -25.38542f);            
+            boundBox.TopCorner = new Vector3(10f, 10f, 10f);
+            boundBox.BottomCorner = new Vector3(-10f, -10f, -10f);            
             chunkBytes.AddRange(boundBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
 
             // For now, get rid of these 
@@ -171,6 +171,11 @@ namespace EQWOWConverter.WOWObjects
             // Temp
             List<byte> textureBuffer = new List<byte>();
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("DUNGEONS\\TEXTURES\\TEMP\\64.BLP\0"));
+
+            // Add a buffer at the end
+            textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
+            while (textureBuffer.Count() % 4 != 0)
+                textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             return WrapInChunk("MOTX", textureBuffer.ToArray());
         }
@@ -353,8 +358,8 @@ namespace EQWOWConverter.WOWObjects
 
             // Since only one group, use the overall bounding box
             AxisAlignedBox boundBox = new AxisAlignedBox();
-            boundBox.TopCorner = new Vector3(16.14454f, 22.01656f, 27.09178f);
-            boundBox.BottomCorner = new Vector3(-17.27154f, -19.03119f, -25.38542f);
+            boundBox.TopCorner = new Vector3(10f, 10f, 10f);
+            boundBox.BottomCorner = new Vector3(-10f, -10f, -10f);
             chunkBytes.AddRange(boundBox.ToBytes());
 
             // Group name is the first offset
@@ -376,6 +381,10 @@ namespace EQWOWConverter.WOWObjects
 
             // Temp
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+
+            // Align
+            while (chunkBytes.Count() % 4 != 0)
+                chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             return WrapInChunk("MOSB", chunkBytes.ToArray());
         }

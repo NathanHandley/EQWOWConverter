@@ -29,6 +29,15 @@ namespace EQWOWConverter.Common
             BottomY = Convert.ToInt16(Math.Round(axisAlignedBox.BottomCorner.Y, 0, MidpointRounding.AwayFromZero));
             BottomZ = Convert.ToInt16(Math.Round(axisAlignedBox.BottomCorner.Z, 0, MidpointRounding.AwayFromZero));
         }
+        public AxisAlignedBoxLR(short topX, short topY, short topZ, short bottomX, short bottomY, short bottomZ)
+        {
+            TopX = topX;
+            TopY = topY;
+            TopZ = topZ;
+            BottomX = bottomX;
+            BottomY = bottomY;
+            BottomZ = bottomZ;
+        }
 
         public List<byte> ToBytes()
         {

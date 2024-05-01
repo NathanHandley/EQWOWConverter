@@ -53,11 +53,13 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             // Group name offsets in MOGN
-            chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
-            chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
+            // chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
+            //chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Flags
-            UInt32 groupHeaderFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors));
+            UInt32 groupHeaderFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors), Convert.ToUInt32(WMOGroupFlags.HasBSPTree));
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -109,10 +111,10 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(GenerateMOBAChunk(zone));
 
             // MOLR (Light References) ------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOLRChunk(zone));
+            //chunkBytes.AddRange(GenerateMOLRChunk(zone));
 
             // MODR (Doodad References) -----------------------------------------------------------
-            chunkBytes.AddRange(GenerateMODRChunk(zone));
+            //chunkBytes.AddRange(GenerateMODRChunk(zone));
 
             // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
             chunkBytes.AddRange(GenerateMOBNChunk(zone));
@@ -121,7 +123,7 @@ namespace EQWOWConverter.WOWObjects
             chunkBytes.AddRange(GenerateMOBRChunk(zone));
 
             // MOCV (Vertex Colors) ---------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOCVChunk(zone));
+            //chunkBytes.AddRange(GenerateMOCVChunk(zone));
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // - If HasWater flag
@@ -139,15 +141,23 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
+            /*
             foreach (PolyIndex polyIndexTriangle in zone.RenderMesh.Indicies)
             {
                 // For now, just one material
-                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render),     // TODO: Add collide?
-                                                       Convert.ToByte(WMOPolyMaterialFlags.Unknown1));  // Adding Unknown1 since that's in oil_platform_000.wmo
+                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
                 chunkBytes.Add(polyMaterialFlag);
                 chunkBytes.Add(0); // This is the material index, which we'll make 0 so it's the first for now
-            }
+            }*/
 
+            // Temp
+            byte poly1MaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
+            chunkBytes.Add(poly1MaterialFlag);
+            chunkBytes.Add(0);
+            byte poly2MaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
+            chunkBytes.Add(poly2MaterialFlag);
+            chunkBytes.Add(0);
+            
             return WrapInChunk("MOPY", chunkBytes.ToArray());
         }
 
@@ -159,8 +169,18 @@ namespace EQWOWConverter.WOWObjects
             List<byte> chunkBytes = new List<byte>();
 
             Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
-            foreach(PolyIndex polyIndex in zone.RenderMesh.Indicies)
-                chunkBytes.AddRange(polyIndex.ToBytes());
+            //foreach(PolyIndex polyIndex in zone.RenderMesh.Indicies)
+            //    chunkBytes.AddRange(polyIndex.ToBytes());
+
+            // Temp, creating a simple quad
+            // 0 1
+            // 2 3
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(2)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(3)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(2)));
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());
         }
@@ -172,8 +192,21 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 vertex in zone.RenderMesh.Verticies)
-                chunkBytes.AddRange(vertex.ToBytes());
+            //foreach (Vector3 vertex in zone.RenderMesh.Verticies)
+            //    chunkBytes.AddRange(vertex.ToBytes());
+
+            // Temp, creating a simple quad
+            // 0 1
+            // 2 3
+            Vector3 vec0 = new Vector3(0f, 0f, 0f);
+            Vector3 vec1 = new Vector3(10f, 0f, 0f);
+            Vector3 vec2 = new Vector3(0f, 10f, 0f);
+            Vector3 vec3 = new Vector3(10f, 10f, 0f);
+
+            chunkBytes.AddRange(vec0.ToBytes());
+            chunkBytes.AddRange(vec1.ToBytes());
+            chunkBytes.AddRange(vec2.ToBytes());
+            chunkBytes.AddRange(vec3.ToBytes());
 
             return WrapInChunk("MOVT", chunkBytes.ToArray());
         }
@@ -185,8 +218,20 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 normal in zone.RenderMesh.Normals)
-                chunkBytes.AddRange(normal.ToBytes());
+            //foreach (Vector3 normal in zone.RenderMesh.Normals)
+            //  chunkBytes.AddRange(normal.ToBytes());
+            // Temp, creating a simple quad
+            // 0 1
+            // 2 3
+            Vector3 vec0 = new Vector3(0f, 0f, 0f);
+            Vector3 vec1 = new Vector3(1f, 0f, 0f);
+            Vector3 vec2 = new Vector3(0f, 1f, 0f);
+            Vector3 vec3 = new Vector3(1f, 1f, 0f);
+
+            chunkBytes.AddRange(vec0.ToBytes());
+            chunkBytes.AddRange(vec1.ToBytes());
+            chunkBytes.AddRange(vec2.ToBytes());
+            chunkBytes.AddRange(vec3.ToBytes());
 
             return WrapInChunk("MONR", chunkBytes.ToArray());
         }
@@ -198,8 +243,21 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (TextureUv textureCoords in zone.RenderMesh.TextureCoords)
-                chunkBytes.AddRange(textureCoords.ToBytes());
+            //foreach (TextureUv textureCoords in zone.RenderMesh.TextureCoords)
+            //chunkBytes.AddRange(textureCoords.ToBytes());
+
+            // Temp, creating a simple quad
+            // 0 1
+            // 2 3
+            TextureUv tu0 = new TextureUv(0f, 0f);
+            TextureUv tu1 = new TextureUv(1f, 0f);
+            TextureUv tu2 = new TextureUv(0f, 1f);
+            TextureUv tu3 = new TextureUv(1f, 1f);
+
+            chunkBytes.AddRange(tu0.ToBytes());
+            chunkBytes.AddRange(tu1.ToBytes());
+            chunkBytes.AddRange(tu2.ToBytes());
+            chunkBytes.AddRange(tu3.ToBytes());
 
             return WrapInChunk("MOTV", chunkBytes.ToArray());
         }
@@ -213,19 +271,23 @@ namespace EQWOWConverter.WOWObjects
 
             // TODO: Make this work with multiple render batches, as it a render batch needs to be 1 material only
             // Bounding Box
-            chunkBytes.AddRange(zone.BoundingBoxLowRes.ToBytes());
+            AxisAlignedBoxLR axisAlignedBoxLR = new AxisAlignedBoxLR(10, 10, 10, -10, -10, -10);
+            chunkBytes.AddRange(axisAlignedBoxLR.ToBytes());
+            //chunkBytes.AddRange(zone.BoundingBoxLowRes.ToBytes());
 
             // Poly Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of poly indexes
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Indicies.Count * 3)));
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Indicies.Count * 3)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(6)));
 
             // Vertex Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
             // Vertex End Index
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Verticies.Count-1)));
+            // chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(zone.RenderMesh.Verticies.Count-1)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(4)));
 
             // Byte padding (or unknown flag, unsure)
             chunkBytes.Add(0);
@@ -270,7 +332,9 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOBN Generation unimplemented!");
+            // Temp, for now make one node
+            BSPNode node = new BSPNode(BSPNodeFlag.XYPlane, -1, -1, 2, 0, 0);
+            chunkBytes.AddRange(node.ToBytes());
 
             return WrapInChunk("MOBN", chunkBytes.ToArray());
         }
@@ -283,7 +347,9 @@ namespace EQWOWConverter.WOWObjects
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOBR Generation unimplemented!");
+            // Temp, list both faces
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1)));
 
             return WrapInChunk("MOBR", chunkBytes.ToArray());
         }
