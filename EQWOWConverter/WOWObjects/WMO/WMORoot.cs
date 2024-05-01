@@ -149,8 +149,7 @@ namespace EQWOWConverter.WOWObjects
         private List<byte> GenerateMOTXChunk(Zone zone)
         {
             //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
-            //  Pad to make the lengths multiples of 4, with minimum total of 5 "\0"
-            /*
+            //  Pad to make the lengths multiples of 4, with a buffer at the end
             List<byte> textureBuffer = new List<byte>();
             foreach (Material material in zone.Materials)
             {
@@ -163,15 +162,6 @@ namespace EQWOWConverter.WOWObjects
                         textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
                 }
             }
-            // Add a buffer at the end
-            textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
-            while (textureBuffer.Count() % 4 != 0)
-                textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
-            */
-            // Temp
-            List<byte> textureBuffer = new List<byte>();
-            textureBuffer.AddRange(Encoding.ASCII.GetBytes("DUNGEONS\\TEXTURES\\TEMP\\64.BLP\0"));
-
             // Add a buffer at the end
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
             while (textureBuffer.Count() % 4 != 0)
