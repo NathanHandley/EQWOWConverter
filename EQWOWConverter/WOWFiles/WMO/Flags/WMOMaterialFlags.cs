@@ -20,13 +20,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal enum WMORootFlags : UInt32
+    internal enum WMOMaterialFlags : UInt32
     {
-        DoNotAttenuateVerticesBasedOnDistanceToPortal = 0x01,
-        UseUnifiedRenderingPath = 0x02,
-        UseLiquidTypeDBCID = 0x04,
-        DoNotFixVertexColorAlpha = 0x08,
+        DisableLighting = 0x1,
+        DisableFogShadow = 0x2,
+        Unculled = 0x4,
+        ExteriorLit = 0x8,
+        LightAtNight = 0x10,
+        IsWindow = 0x20,
+        ClampTextureS = 0x40,
+        ClampTextureT = 0x80,
+        Unused = 0x100
     }
 }

@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
     internal enum WMOPolyMaterialFlags : byte
     {

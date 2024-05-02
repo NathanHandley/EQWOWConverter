@@ -20,18 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal enum WMOMaterialFlags : UInt32
+    internal enum WDTHeaderFlags : uint
     {
-        DisableLighting = 0x1,
-        DisableFogShadow = 0x2,
-        Unculled = 0x4,
-        ExteriorLit = 0x8,
-        LightAtNight = 0x10,
-        IsWindow = 0x20,
-        ClampTextureS = 0x40,
-        ClampTextureT = 0x80,
-        Unused = 0x100
+        HasGlobalMapObject      = 0x01,
+        UseADTMCCV              = 0x02,
+        UseTerrainShaders       = 0x04,
+        DoodadRefsSortedBySize  = 0x08
     }
 }

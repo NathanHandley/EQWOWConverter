@@ -21,17 +21,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.Maps
 {
     // TODO: Change name to be more generic
-    internal class Zone
+    internal class GameMap
     {
         public string Name = string.Empty;
         public string DescriptiveName = string.Empty;
         public UInt32 WMOID = 0;
 
-        public ZoneMesh RenderMesh = new ZoneMesh();
-        public ZoneMesh CollisionMesh = new ZoneMesh();
+        public EQMapData RenderMesh = new EQMapData();
+        public EQMapData CollisionMesh = new EQMapData();
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
@@ -39,12 +39,9 @@ namespace EQWOWConverter.Common
 
         public UInt32 TextureCount = 0;
 
-        public AxisAlignedBox BoundingBox = new AxisAlignedBox();
-        public AxisAlignedBoxLR BoundingBoxLowRes = new AxisAlignedBoxLR();
-
         public Fog FogSettings = new Fog();
 
-        public Zone(string name, string zoneFolder, uint wmoid)
+        public GameMap(string name, string zoneFolder, uint wmoid)
         {
             // Store name and WMOID
             Name = name;
@@ -56,6 +53,53 @@ namespace EQWOWConverter.Common
                 Logger.WriteLine("- [" + Name + "]: ERROR - Could not find path at '" + zoneFolder + "'");
                 return;
             }
+            // Get the materials
+            Logger.WriteLine("- [" + Name + "]: Reading materials...");
+            string materialListFileName = Path.Combine(zoneFolder, "MaterialLists", Name + ".txt");
+            if (File.Exists(materialListFileName) == false)
+                Logger.WriteLine("- [" + Name + "]: No material data found.");
+            else
+            {
+                using (var materialListReader = new StreamReader(materialListFileName))
+                {
+                    string? curLine;
+                    while ((curLine = materialListReader.ReadLine()) != null)
+                    {
+                        // Nothing for blank lines
+                        if (curLine.Length == 0)
+                            continue;
+
+                        // # = comment
+                        else if (curLine.StartsWith("#"))
+                            continue;
+
+
+                        // 3-blocks is a material instance
+                        else
+                        {
+                            string[] blocks = curLine.Split(",");
+                            if (blocks.Length != 3)
+                            {
+                                Logger.WriteLine("- [" + Name + "]: Error, material data is 3 components");
+                                continue;
+                            }
+                            Material newMaterial = new Material();
+                            newMaterial.Index = uint.Parse(blocks[0]);
+                            newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+
+                            // Texture block
+                            string[] textureBlock = blocks[1].Split(":");
+                            newMaterial.Name = textureBlock[0];
+                            for (int i = 1; i < textureBlock.Length; i++)
+                            {
+                                newMaterial.AnimationTextures.Add(textureBlock[i]);
+                                TextureCount++;
+                            }
+                            Materials.Add(newMaterial);
+                        }
+                    }
+                }
+            }
 
             // Get the render mesh data
             Logger.WriteLine("- [" + Name + "]: Reading render mesh data...");
@@ -63,7 +107,7 @@ namespace EQWOWConverter.Common
             if (File.Exists(renderMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
             else
-                RenderMesh = new ZoneMesh(name, File.ReadAllText(renderMeshFileName));
+                RenderMesh = new EQMapData(name, File.ReadAllText(renderMeshFileName), Materials);
 
             // Get the collision mesh data
             Logger.WriteLine("- [" + Name + "]: Reading collision mesh data...");
@@ -72,7 +116,7 @@ namespace EQWOWConverter.Common
             if (File.Exists(collisionMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: No collision mesh found.");
             else
-                CollisionMesh = new ZoneMesh(name, File.ReadAllText(collisionMeshFileName));
+                CollisionMesh = new EQMapData(name, File.ReadAllText(collisionMeshFileName));
 
             // Get the ambient light
             Logger.WriteLine("- [" + Name + "]: Reading ambiant light data...");
@@ -154,93 +198,7 @@ namespace EQWOWConverter.Common
                 }
             }
 
-            // Get the materials
-            Logger.WriteLine("- [" + Name + "]: Reading materials...");
-            string materialListFileName = Path.Combine(zoneFolder, "MaterialLists", Name + ".txt");
-            if (File.Exists(materialListFileName) == false)
-                Logger.WriteLine("- [" + Name + "]: No material data found.");
-            else
-            {
-                using (var materialListReader = new StreamReader(materialListFileName))
-                {
-                    string? curLine;
-                    while ((curLine = materialListReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-
-                        // 3-blocks is a material instance
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length != 3)
-                            {
-                                Logger.WriteLine("- [" + Name + "]: Error, material data is 3 components");
-                                continue;
-                            }
-                            Material newMaterial = new Material();
-                            newMaterial.Index = uint.Parse(blocks[0]);
-                            newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-
-                            // Texture block
-                            string[] textureBlock = blocks[1].Split(":");
-                            newMaterial.Name = textureBlock[0];
-                            for (int i = 1; i < textureBlock.Length; i++)
-                            {
-                                newMaterial.AnimationTextures.Add(textureBlock[i]);
-                                TextureCount++;
-                            }
-                            Materials.Add(newMaterial);
-                        }
-                    }
-                }
-            }
-
-            CalculateBoundingBox();
-        }
-    
-        private void CalculateBoundingBox()
-        {
-            foreach(Vector3 renderVert in RenderMesh.Verticies)
-            {
-                if (renderVert.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = renderVert.X;
-                if (renderVert.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = renderVert.Y;
-                if (renderVert.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = renderVert.Z;
-
-                if (renderVert.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = renderVert.X;
-                if (renderVert.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = renderVert.Y;
-                if (renderVert.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = renderVert.Z;
-            }
-            foreach(Vector3 collisionVert in CollisionMesh.Verticies)
-            {
-                if (collisionVert.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = collisionVert.X;
-                if (collisionVert.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = collisionVert.Y;
-                if (collisionVert.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = collisionVert.Z;
-
-                if (collisionVert.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = collisionVert.X;
-                if (collisionVert.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = collisionVert.Y;
-                if (collisionVert.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = collisionVert.Z;
-            }
-
-            BoundingBoxLowRes = new AxisAlignedBoxLR(BoundingBox);
+            RenderMesh.CalculateBoundingBox();
         }
     }
 }

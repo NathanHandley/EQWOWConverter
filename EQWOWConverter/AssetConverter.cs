@@ -21,7 +21,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
-using EQWOWConverter.WOWObjects;
+using EQWOWConverter.WOWFiles;
+using EQWOWConverter.Maps;
 using EQWOWConverter.Common;
 using Vector3 = EQWOWConverter.Common.Vector3;
 
@@ -65,7 +66,7 @@ namespace EQWOWConverter
                 // Load the EQ zone
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
-                Zone curZone = new Zone(zoneDirectory.Name, curZoneDirectory, curWMOID);
+                GameMap curZone = new GameMap(zoneDirectory.Name, curZoneDirectory, curWMOID);
                 curWMOID++;
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
@@ -81,25 +82,25 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone, string wowExportPath)
+        public static void CreateWoWZoneFromEQZone(GameMap gameMap, string wowExportPath)
         {
-            Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
+            Logger.WriteLine("- [" + gameMap.Name + "]: Converting zone '" + gameMap.Name + "' into a wow gameMap...");
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, wowExportPath);
+            WMO zoneWMO = new WMO(gameMap, wowExportPath);
 
             // Create the WDT
-            WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
+            WDT zoneWDT = new WDT(gameMap, zoneWMO.RootFileRelativePathWithFileName);
 
             // Create the WDL
-            WDL zoneWDL = new WDL(zone);
+            WDL zoneWDL = new WDL(gameMap);
 
             // Output the files
             zoneWMO.WriteToDisk(wowExportPath);
             zoneWDT.WriteToDisk(wowExportPath);
             zoneWDL.WriteToDisk(wowExportPath);
 
-            Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
+            Logger.WriteLine("- [" + gameMap.Name + "]: Converting of zone '" + gameMap.Name + "' complete");
         }
     }
 }

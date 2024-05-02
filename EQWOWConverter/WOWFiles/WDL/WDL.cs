@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
     internal class WDL : WOWChunkedObject
     {
@@ -30,31 +31,31 @@ namespace EQWOWConverter.WOWObjects
         private string BaseFileName;
 
         // TODO: This is where the heightmap will go for rendering 'in the distance'
-        public WDL(Zone zone)
+        public WDL(GameMap gameMap)
         {
-            BaseFileName = zone.Name;
+            BaseFileName = gameMap.Name;
 
             // MVER (Version) ---------------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMVERChunk(zone));
+            ObjectBytes.AddRange(GenerateMVERChunk(gameMap));
 
             // MWMO (WMO Filenames in the map) ----------------------------------------------------
-            ObjectBytes.AddRange(GenerateMWMOChunk(zone));
+            ObjectBytes.AddRange(GenerateMWMOChunk(gameMap));
 
             // MWID (List of indexes into the MWMO chunk) -----------------------------------------
-            ObjectBytes.AddRange(GenerateMWIDChunk(zone));
+            ObjectBytes.AddRange(GenerateMWIDChunk(gameMap));
 
             // MODF (Placement Information) -------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMODFChunk(zone));
+            ObjectBytes.AddRange(GenerateMODFChunk(gameMap));
 
             // MAOF (Map Area Offset) -------------------------------------------------------------
             // Watch this, Stockades has a lot of blank data here
-            ObjectBytes.AddRange(GenerateMAOFChunk(zone));
+            ObjectBytes.AddRange(GenerateMAOFChunk(gameMap));
         }
 
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(Zone zone)
+        private List<byte> GenerateMVERChunk(GameMap gameMap)
         {
             UInt32 version = 18;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -63,7 +64,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MWMO (WMO Filenames in the map)
         /// </summary>
-        private List<byte> GenerateMWMOChunk(Zone zone)
+        private List<byte> GenerateMWMOChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -75,7 +76,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MWID (List of indexes into the MWMO chunk)
         /// </summary>
-        private List<byte> GenerateMWIDChunk(Zone zone)
+        private List<byte> GenerateMWIDChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -87,7 +88,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODF (Placement Information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(Zone zone)
+        private List<byte> GenerateMODFChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -99,7 +100,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MAOF (Map Area Offset)
         /// </summary>
-        private List<byte> GenerateMAOFChunk(Zone zone)
+        private List<byte> GenerateMAOFChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 

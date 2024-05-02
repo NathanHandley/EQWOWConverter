@@ -15,14 +15,15 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.WOWObjects;
+using EQWOWConverter.Maps;
+using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
     internal class WMORoot : WOWChunkedObject
     {
@@ -31,64 +32,64 @@ namespace EQWOWConverter.WOWObjects
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
 
-        public WMORoot(Zone zone)
+        public WMORoot(GameMap gameMap)
         {
             // MVER (Version) ---------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMVERChunk(zone));
+            RootBytes.AddRange(GenerateMVERChunk(gameMap));
 
             // MOHD (Header) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOHDChunk(zone));
+            RootBytes.AddRange(GenerateMOHDChunk(gameMap));
 
             // MOTX (Textures) --------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOTXChunk(zone));
+            RootBytes.AddRange(GenerateMOTXChunk(gameMap));
 
             // MOMT (Materials) -------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOMTChunk(zone));
+            RootBytes.AddRange(GenerateMOMTChunk(gameMap));
 
             // MOGN (Groups) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGNChunk(zone));
+            RootBytes.AddRange(GenerateMOGNChunk(gameMap));
 
             // MOGI (Group Information) -----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGIChunk(zone));
+            RootBytes.AddRange(GenerateMOGIChunk(gameMap));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOSBChunk(zone));
+            RootBytes.AddRange(GenerateMOSBChunk(gameMap));
 
             // MOPV (Portal Verticies) ------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPVChunk(zone));
+            RootBytes.AddRange(GenerateMOPVChunk(gameMap));
 
             // MOPT (Portal Information) ----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPTChunk(zone));
+            RootBytes.AddRange(GenerateMOPTChunk(gameMap));
 
             // MOPR (Map Object Portal References) ------------------------------------------------
-            RootBytes.AddRange(GenerateMOPRChunk(zone));
+            RootBytes.AddRange(GenerateMOPRChunk(gameMap));
 
             // MOVV (Visible Block Verticies) -----------------------------------------------------
-            RootBytes.AddRange(GenerateMOVVChunk(zone));
+            RootBytes.AddRange(GenerateMOVVChunk(gameMap));
 
             // MOVB (Visible Block List) ----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOVBChunk(zone));
+            RootBytes.AddRange(GenerateMOVBChunk(gameMap));
 
             // MOLT (Lighting Information) --------------------------------------------------------
-            RootBytes.AddRange(GenerateMOLTChunk(zone));
+            RootBytes.AddRange(GenerateMOLTChunk(gameMap));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
-            RootBytes.AddRange(GenerateMODSChunk(zone));
+            RootBytes.AddRange(GenerateMODSChunk(gameMap));
 
             // MODN (List of M2s) -----------------------------------------------------------------
-            RootBytes.AddRange(GenerateMODNChunk(zone));
+            RootBytes.AddRange(GenerateMODNChunk(gameMap));
 
             // MODD (Doodad Instance Information) -------------------------------------------------
-            RootBytes.AddRange(GenerateMODDChunk(zone));
+            RootBytes.AddRange(GenerateMODDChunk(gameMap));
 
             // MFOG (Fog Information) -------------------------------------------------------------
-            RootBytes.AddRange(GenerateMFOGChunk(zone));
+            RootBytes.AddRange(GenerateMFOGChunk(gameMap));
         }
 
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(Zone zone)
+        private List<byte> GenerateMVERChunk(GameMap gameMap)
         {
             UInt32 version = 17;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -97,19 +98,22 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOHD (Header)
         /// </summary>
-        private List<byte> GenerateMOHDChunk(Zone zone)
+        private List<byte> GenerateMOHDChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(BitConverter.GetBytes(zone.TextureCount));   // Number of Textures
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Groups (always 1 for now)
+            chunkBytes.AddRange(BitConverter.GetBytes(gameMap.TextureCount));   // Number of Textures
+
+            // Number of Groups
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(gameMap.RenderMesh.TextureAlignedSubMeshes.Count())));             
+            
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Portals (Zero for now, but may cause problems?)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Lights (TBD)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Names
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Number of Doodad Definitions
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1))); // Number of Doodad Sets (first is the global)
-            chunkBytes.AddRange(zone.AmbientLight.ToBytes());                // Ambiant Light
-            chunkBytes.AddRange(BitConverter.GetBytes(zone.WMOID));          // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(zone.BoundingBox.ToBytes());                 // Axis aligned bounding box for the zone mesh(es)
+            chunkBytes.AddRange(gameMap.AmbientLight.ToBytes());                // Ambiant Light
+            chunkBytes.AddRange(BitConverter.GetBytes(gameMap.WMOID));          // WMOID (inside WMOAreaTable.dbc)
+            chunkBytes.AddRange(gameMap.RenderMesh.BoundingBox.ToBytes());      // Axis aligned bounding box for the zone mesh(es)
 
             // For now, get rid of these 
             //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
@@ -122,17 +126,17 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOTX (Textures)
         /// </summary>
-        private List<byte> GenerateMOTXChunk(Zone zone)
+        private List<byte> GenerateMOTXChunk(GameMap gameMap)
         {
             //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
             //  Pad to make the lengths multiples of 4, with a buffer at the end
             List<byte> textureBuffer = new List<byte>();
-            foreach (Material material in zone.Materials)
+            foreach (Material material in gameMap.Materials)
             {
                 foreach (string textureName in material.AnimationTextures)
                 {
                     TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
-                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.Name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
+                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + gameMap.Name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
                     while (textureBuffer.Count() % 4 != 0)
                         textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
@@ -149,10 +153,10 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOMT (Materials)
         /// </summary>
-        private List<byte> GenerateMOMTChunk(Zone zone)
+        private List<byte> GenerateMOMTChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (Material material in zone.Materials)
+            foreach (Material material in gameMap.Materials)
             {
                 List<byte> curMaterialBytes = new List<byte>();
 
@@ -218,7 +222,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOGN (Groups)
         /// </summary>
-        private List<byte> GenerateMOGNChunk(Zone zone)
+        private List<byte> GenerateMOGNChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -227,12 +231,12 @@ namespace EQWOWConverter.WOWObjects
 
             // Zone Name
             GroupNameOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupName = zone.Name + "\0";
+            string zoneGroupName = gameMap.Name + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));            
 
             // Descriptive Name
             GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0";
+            string zoneGroupNameDescriptive = gameMap.DescriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
 
             // Align the chunk with empty
@@ -245,21 +249,23 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOGI (Group Information)
         /// </summary>
-        private List<byte> GenerateMOGIChunk(Zone zone)
+        private List<byte> GenerateMOGIChunk(GameMap gameMap)
         {
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            // Group flags
-            UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors)); // Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
-            chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
+            foreach(EQMapData curMesh in gameMap.RenderMesh.TextureAlignedSubMeshes)
+            {
+                // Group flags
+                UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors)); // Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
+                chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
 
-            // Since only one group, use the overall bounding box
-            chunkBytes.AddRange(zone.BoundingBox.ToBytes());
+                // Since only one group, use the overall bounding box
+                chunkBytes.AddRange(curMesh.BoundingBox.ToBytes());
 
-            // Group name is the first offset
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToInt32(0)));
-            List<byte> MOGIChunkByteBlock = WrapInChunk("MOGI", chunkBytes.ToArray());
+                // Group name is the first offset
+                chunkBytes.AddRange(BitConverter.GetBytes(GroupNameOffset));
+            }
 
             return WrapInChunk("MOGI", chunkBytes.ToArray());
         }
@@ -267,7 +273,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOSB (Skybox)
         /// </summary>
-        private List<byte> GenerateMOSBChunk(Zone zone)
+        private List<byte> GenerateMOSBChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -284,7 +290,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPV (Portal Verticies)
         /// </summary>
-        private List<byte> GenerateMOPVChunk(Zone zone)
+        private List<byte> GenerateMOPVChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -296,7 +302,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPT (Portal Information)
         /// </summary>
-        private List<byte> GenerateMOPTChunk(Zone zone)
+        private List<byte> GenerateMOPTChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -308,7 +314,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOPR (Map Object Portal References)
         /// </summary>
-        private List<byte> GenerateMOPRChunk(Zone zone)
+        private List<byte> GenerateMOPRChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -320,7 +326,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOVV (Visible Block Verticies)
         /// </summary>
-        private List<byte> GenerateMOVVChunk(Zone zone)
+        private List<byte> GenerateMOVVChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -332,7 +338,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOVB (Visible Block List)
         /// </summary>
-        private List<byte> GenerateMOVBChunk(Zone zone)
+        private List<byte> GenerateMOVBChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -344,7 +350,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk(Zone zone)
+        private List<byte> GenerateMOLTChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
             
@@ -356,7 +362,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODS (Doodad Set Definitions)
         /// </summary>
-        private List<byte> GenerateMODSChunk(Zone zone)
+        private List<byte> GenerateMODSChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -379,7 +385,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODN (List of M2s)
         /// </summary>
-        private List<byte> GenerateMODNChunk(Zone zone)
+        private List<byte> GenerateMODNChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -391,7 +397,7 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MODD (Doodad Instance Information)
         /// </summary>
-        private List<byte> GenerateMODDChunk(Zone zone)
+        private List<byte> GenerateMODDChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -403,10 +409,10 @@ namespace EQWOWConverter.WOWObjects
         /// <summary>
         /// MFOG (Fog Information)
         /// </summary>
-        private List<byte> GenerateMFOGChunk(Zone zone)
+        private List<byte> GenerateMFOGChunk(GameMap gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(zone.FogSettings.ToBytes());
+            chunkBytes.AddRange(gameMap.FogSettings.ToBytes());
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
     }

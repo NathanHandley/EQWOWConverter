@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Maps;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace EQWOWConverter.WOWObjects
+namespace EQWOWConverter.WOWFiles
 {
     internal class WMO
     {
@@ -32,15 +33,16 @@ namespace EQWOWConverter.WOWObjects
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
 
-        public WMO(Zone zone, string baseFolderPath)
+        public WMO(GameMap gameMap, string baseFolderPath)
         {
-            BaseFileName = zone.Name;
+            BaseFileName = gameMap.Name;
 
             // Create root object
-            RootObject = new WMORoot(zone);
+            RootObject = new WMORoot(gameMap);
 
-            // Create the groups (only one for now)
-            GroupObjects.Add(new WMOGroup(zone, RootObject));
+            // Create the groups
+            for(int i = 0; i < gameMap.RenderMesh.TextureAlignedSubMeshes.Count; i++)
+                GroupObjects.Add(new WMOGroup(gameMap, RootObject, i));
 
             // Generate the root file name
             FullWMOFolderPath = Path.Combine(baseFolderPath,"World", "wmo", "Everquest");
