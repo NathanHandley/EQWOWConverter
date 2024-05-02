@@ -29,19 +29,19 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> GroupBytes = new List<byte>();
         static UInt32 UniqueID = 30000;
 
-        public WMOGroup(Zone gameMap, WMORoot wmoRoot, int subMeshID)
+        public WMOGroup(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
             // MVER (Version) ---------------------------------------------------------------------
-            GroupBytes.AddRange(GenerateMVERChunk(gameMap));
+            GroupBytes.AddRange(GenerateMVERChunk(worldModelObject));
 
             // MOGP (Container for all other chunks) ----------------------------------------------
-            GroupBytes.AddRange(GenerateMOGPChunk(gameMap, wmoRoot, subMeshID));
+            GroupBytes.AddRange(GenerateMOGPChunk(wmoRoot, worldModelObject));
         }
 
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(Zone gameMap)
+        private List<byte> GenerateMVERChunk(WorldModelObject worldModelObject)
         {
             UInt32 version = 17;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGP (Main container for all other chunks)
         /// </summary>
-        private List<byte> GenerateMOGPChunk(Zone gameMap, WMORoot wmoRoot, int subMeshID)
+        private List<byte> GenerateMOGPChunk(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
-            chunkBytes.AddRange(gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].BoundingBox.ToBytes());
+            chunkBytes.AddRange(worldModelObject.BoundingBox.ToBytes());
 
             // Portal references (zero for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // First portal index
@@ -94,22 +94,22 @@ namespace EQWOWConverter.WOWFiles
             // SUB CHUNKS
             // ------------------------------------------------------------------------------------
             // MOPY (Material info for triangles) -------------------------------------------------
-            chunkBytes.AddRange(GenerateMOPYChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMOPYChunk(worldModelObject));
 
             // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
-            chunkBytes.AddRange(GenerateMOVIChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMOVIChunk(worldModelObject));
 
             // MOVT (Verticies) -------------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOVTChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMOVTChunk(worldModelObject));
 
             // MONR (Normals) ---------------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMONRChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMONRChunk(worldModelObject));
 
             // MOTV (Texture Coordinates) ---------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOTVChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMOTVChunk(worldModelObject));
 
             // MOBA (Render Batches) --------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOBAChunk(gameMap, subMeshID));
+            chunkBytes.AddRange(GenerateMOBAChunk(worldModelObject));
 
             // MOLR (Light References) ------------------------------------------------------------
             //chunkBytes.AddRange(GenerateMOLRChunk(zone));
@@ -118,10 +118,10 @@ namespace EQWOWConverter.WOWFiles
             //chunkBytes.AddRange(GenerateMODRChunk(zone));
 
             // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
-            chunkBytes.AddRange(GenerateMOBNChunk(gameMap));
+            chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
 
             // MOBR (Face / Triangle Incidies) ----------------------------------------------------
-            chunkBytes.AddRange(GenerateMOBRChunk(gameMap));
+            chunkBytes.AddRange(GenerateMOBRChunk(worldModelObject));
 
             // MOCV (Vertex Colors) ---------------------------------------------------------------
             //chunkBytes.AddRange(GenerateMOCVChunk(zone));
@@ -137,12 +137,12 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPY (Material info for triangles)
         /// </summary>
-        private List<byte> GenerateMOPYChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMOPYChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
-            foreach (TriangleFace polyIndexTriangle in gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].TriangleFaces)
+            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
             {
                 // For now, just one material
                 byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
@@ -156,12 +156,12 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVI (MapObject Vertex Indicies)
         /// </summary>
-        private List<byte> GenerateMOVIChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMOVIChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
             Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
-            foreach(TriangleFace polyIndex in gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].TriangleFaces)
+            foreach(TriangleFace polyIndex in worldModelObject.TriangleFaces)
                 chunkBytes.AddRange(polyIndex.ToBytes());
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());
@@ -170,11 +170,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVT (Verticies)
         /// </summary>
-        private List<byte> GenerateMOVTChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMOVTChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 vertex in gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].Verticies)
+            foreach (Vector3 vertex in worldModelObject.Verticies)
                 chunkBytes.AddRange(vertex.ToBytes());
 
             return WrapInChunk("MOVT", chunkBytes.ToArray());
@@ -183,11 +183,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MONR (Normals)
         /// </summary>
-        private List<byte> GenerateMONRChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMONRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 normal in gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].Normals)
+            foreach (Vector3 normal in worldModelObject.Normals)
               chunkBytes.AddRange(normal.ToBytes());
 
             return WrapInChunk("MONR", chunkBytes.ToArray());
@@ -196,11 +196,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOTV (Texture Coordinates)
         /// </summary>
-        private List<byte> GenerateMOTVChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMOTVChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (TextureUv textureCoords in gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].TextureCoords)
+            foreach (TextureUv textureCoords in worldModelObject.TextureCoords)
                 chunkBytes.AddRange(textureCoords.ToBytes());
 
             return WrapInChunk("MOTV", chunkBytes.ToArray());
@@ -209,25 +209,25 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOBA (Render Batches)
         /// </summary>
-        private List<byte> GenerateMOBAChunk(Zone gameMap, int subMeshID)
+        private List<byte> GenerateMOBAChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
             // TODO: Make this work with multiple render batches, as it a render batch needs to be 1 material only
             // Bounding Box
-            chunkBytes.AddRange(gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].BoundingBoxLowRes.ToBytes());
+            chunkBytes.AddRange(worldModelObject.BoundingBoxLowRes.ToBytes());
 
             // Poly Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of poly indexes
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].TriangleFaces.Count * 3)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.TriangleFaces.Count * 3)));
 
             // Vertex Start Index, 0 for now
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
 
             // Vertex End Index
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(gameMap.RenderMesh.TextureAlignedSubMeshes[subMeshID].Verticies.Count-1)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.Verticies.Count-1)));
 
             // Byte padding (or unknown flag, unsure)
             chunkBytes.Add(0);
@@ -242,7 +242,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOLR (Light References)
         /// Optional.  Only if it has lights
         /// </summary>
-        private List<byte> GenerateMOLRChunk(Zone gameMap)
+        private List<byte> GenerateMOLRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -255,7 +255,7 @@ namespace EQWOWConverter.WOWFiles
         /// MODR (Doodad References)
         /// Optional.  If has Doodads
         /// </summary>
-        private List<byte> GenerateMODRChunk(Zone gameMap)
+        private List<byte> GenerateMODRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -268,7 +268,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBN (Nodes of the BSP tree, used also for collision?)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBNChunk(Zone gameMap)
+        private List<byte> GenerateMOBNChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -283,7 +283,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBR (Face / Triangle Incidies)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBRChunk(Zone gameMap)
+        private List<byte> GenerateMOBRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -298,7 +298,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOCV (Vertex Colors)
         /// Optional.  If HasVertexColor Flag
         /// </summary>
-        private List<byte> GenerateMOCVChunk(Zone gameMap)
+        private List<byte> GenerateMOCVChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -311,7 +311,7 @@ namespace EQWOWConverter.WOWFiles
         /// MLIQ (Liquid/Water details)
         /// Optional.  If HasWater flag
         /// </summary>
-        private List<byte> GenerateMLIQChunk(Zone gameMap)
+        private List<byte> GenerateMLIQChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 

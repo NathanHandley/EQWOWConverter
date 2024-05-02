@@ -29,30 +29,30 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ObjectBytes = new List<byte>();
         private string BaseFileName;
 
-        public WDT(Zone gameMap, string wmoFileName)
+        public WDT(Zone zone, string wmoFileName)
         {
-            BaseFileName = gameMap.Name;
+            BaseFileName = zone.Name;
 
             // MVER (Version) ---------------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMVERChunk(gameMap));
+            ObjectBytes.AddRange(GenerateMVERChunk(zone));
 
             // MPHD (Header) ----------------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMPHDChunk(gameMap));
+            ObjectBytes.AddRange(GenerateMPHDChunk(zone));
 
             // MAIN (Map Tile Table) --------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMAINChunk(gameMap));
+            ObjectBytes.AddRange(GenerateMAINChunk(zone));
 
             // MWMO (Main WMO lookup) -------------------------------------------------------------
-            ObjectBytes.AddRange(GenerateMWMOChunk(gameMap, wmoFileName));
+            ObjectBytes.AddRange(GenerateMWMOChunk(zone, wmoFileName));
 
             // MODF (WMO placement information) ---------------------------------------------------
-            ObjectBytes.AddRange(GenerateMODFChunk(gameMap));
+            ObjectBytes.AddRange(GenerateMODFChunk(zone));
         }
 
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(Zone gameMap)
+        private List<byte> GenerateMVERChunk(Zone zone)
         {
             UInt32 version = 18;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -61,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MPHD (Header)
         /// </summary>
-        private List<byte> GenerateMPHDChunk(Zone gameMap)
+        private List<byte> GenerateMPHDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -84,7 +84,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MAIN (Map Tile Table)
         /// </summary>
-        private List<byte> GenerateMAINChunk(Zone gameMap)
+        private List<byte> GenerateMAINChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -104,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MWMO (Main WMO lookup)
         /// </summary>
-        private List<byte> GenerateMWMOChunk(Zone gameMap, string wmoFileName)
+        private List<byte> GenerateMWMOChunk(Zone zone, string wmoFileName)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -116,7 +116,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (WMO placement information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(Zone gameMap)
+        private List<byte> GenerateMODFChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(rotation.ToBytes());
 
             // Bounding Box... again?
-            chunkBytes.AddRange(gameMap.RenderMesh.BoundingBox.ToBytes());
+            chunkBytes.AddRange(zone.WOWZoneData.BoundingBox.ToBytes());
 
             // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));

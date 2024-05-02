@@ -33,16 +33,16 @@ namespace EQWOWConverter.WOWFiles
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
 
-        public WMO(Zone gameMap, string baseFolderPath)
+        public WMO(Zone zone, string baseFolderPath)
         {
-            BaseFileName = gameMap.Name;
+            BaseFileName = zone.Name;
 
             // Create root object
-            RootObject = new WMORoot(gameMap);
+            RootObject = new WMORoot(zone);
 
             // Create the groups
-            for(int i = 0; i < gameMap.RenderMesh.TextureAlignedSubMeshes.Count; i++)
-                GroupObjects.Add(new WMOGroup(gameMap, RootObject, i));
+            foreach(WorldModelObject curWorldModelObject in zone.WOWZoneData.WorldObjects)
+                GroupObjects.Add(new WMOGroup(RootObject,curWorldModelObject));
 
             // Generate the root file name
             FullWMOFolderPath = Path.Combine(baseFolderPath,"World", "wmo", "Everquest");

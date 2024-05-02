@@ -19,42 +19,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.Common
 {
     internal class EQZoneData
     {
-        public List<Vector3> Verticies = new List<Vector3>();
-        public List<TextureUv> TextureCoords = new List<TextureUv>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
-        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
-        public List<Material> Materials = new List<Material>();
-        public string MaterialListName = string.Empty;
+        public List<Vector3> Verticies { get; } = new List<Vector3>();
+        public List<TextureUv> TextureCoords { get; } = new List<TextureUv>();
+        public List<Vector3> Normals { get; } = new List<Vector3>();
+        public List<ColorRGBA> VertexColors { get; } = new List<ColorRGBA>();
+        public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
+        public List<Material> Materials { get; } = new List<Material>();
 
-        public AxisAlignedBox BoundingBox = new AxisAlignedBox();
-        public AxisAlignedBoxLR BoundingBoxLowRes = new AxisAlignedBoxLR();
+        public ColorRGBA AmbientLight { get; } = new ColorRGBA();
+        public List<LightInstance> LightInstances { get; } = new List<LightInstance>();
+        public List<Vector3> CollisionVerticies { get; } = new List<Vector3>();
+        public List<TriangleFace> CollisionTriangleFaces { get; } = new List<TriangleFace>();
 
-        public List<EQZoneData> TextureAlignedSubMeshes = new List<EQZoneData>();
+        private string MaterialListName = string.Empty;
 
-        public EQZoneData()
+        public void LoadDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
+            if (Directory.Exists(inputZoneFolderFullPath) == false)
+            {
+                Logger.WriteLine("- [" + inputZoneFolderName + "]: ERROR - Could not find path at '" + inputZoneFolderFullPath + "'");
+                return;
+            }
 
+            // Load the various blocks
+            LoadRenderMeshData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadMaterialDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);            
+            LoadCollisionMeshData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadAmbientLightData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
         }
-        public EQZoneData(string parentName, string inputData)
-        {
-            GenerateCompleteZoneMesh(parentName, inputData);
-        }
 
-        public EQZoneData(string parentName, string inputData, List<Material> materials)
+        private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            GenerateCompleteZoneMesh(parentName, inputData);
-            Materials = materials;
-            GenerateTextureAlignedSubMeshes(parentName);
-        }
+            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading render mesh data...");
+            string renderMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + ".txt");
+            if (File.Exists(renderMeshFileName) == false)
+            {
+                Logger.WriteLine("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                return;
+            }
 
-        private void GenerateCompleteZoneMesh(string parentName, string inputData)
-        {
+            // Load the core data
+            string inputData = File.ReadAllText(renderMeshFileName);
             string[] inputRows = inputData.Split(Environment.NewLine);
             foreach (string inputRow in inputRows)
             {
@@ -72,12 +84,12 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 2)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, material list name needs to be 2 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material list name needs to be 2 components");
                         continue;
                     }
                     if (MaterialListName != string.Empty)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, a second material list was found");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, a second material list was found");
                         continue;
                     }
                     MaterialListName = blocks[1];
@@ -89,7 +101,7 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, vertex block was not 4 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();
@@ -105,7 +117,7 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 3)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, texture coordinate block was not 3 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, texture coordinate block was not 3 components");
                         continue;
                     }
                     TextureUv textureUv = new TextureUv();
@@ -120,7 +132,7 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, normals block was not 4 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, normals block was not 4 components");
                         continue;
                     }
                     Vector3 normal = new Vector3();
@@ -136,7 +148,7 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error, vertex color block was not 5 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex color block was not 5 components");
                         continue;
                     }
                     ColorRGBA color = new ColorRGBA();
@@ -153,175 +165,218 @@ namespace EQWOWConverter.Common
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + parentName + "]: Error,indicies block was not 5 components");
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();
                     index.MaterialIndex = int.Parse(blocks[1]);
-                    // Reverse the culling rotation
-                    index.V3 = int.Parse(blocks[2]);
+                    index.V1 = int.Parse(blocks[2]);
                     index.V2 = int.Parse(blocks[3]);
-                    index.V1 = int.Parse(blocks[4]);
+                    index.V3 = int.Parse(blocks[4]);
                     TriangleFaces.Add(index);
                 }
 
                 else
                 {
-                    Logger.WriteLine("- [" + parentName + "]: Error, unknown line '" + inputRow + "'");
+                    Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
         }
-
-        private void GenerateTextureAlignedSubMeshes(string parentName)
+        private void LoadMaterialDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            if (Materials.Count == 0)
+            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading materials...");
+            string materialListFileName = Path.Combine(inputZoneFolderFullPath, "MaterialLists", inputZoneFolderName + ".txt");
+            if (File.Exists(materialListFileName) == false)
+                Logger.WriteLine("- [" + inputZoneFolderName + "]: No material data found.");
+            else
             {
-                Logger.WriteLine("- [" + parentName + "]: Could not generate sub meshes since there are no materials");
+                using (var materialListReader = new StreamReader(materialListFileName))
+                {
+                    string? curLine;
+                    while ((curLine = materialListReader.ReadLine()) != null)
+                    {
+                        // Nothing for blank lines
+                        if (curLine.Length == 0)
+                            continue;
+
+                        // # = comment
+                        else if (curLine.StartsWith("#"))
+                            continue;
+
+
+                        // 3-blocks is a material instance
+                        else
+                        {
+                            string[] blocks = curLine.Split(",");
+                            if (blocks.Length != 3)
+                            {
+                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material data is 3 components");
+                                continue;
+                            }
+                            Material newMaterial = new Material();
+                            newMaterial.Index = uint.Parse(blocks[0]);
+                            newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+
+                            // Texture block
+                            string[] textureBlock = blocks[1].Split(":");
+                            newMaterial.Name = textureBlock[0];
+                            for (int i = 1; i < textureBlock.Length; i++)
+                            {
+                                newMaterial.AnimationTextures.Add(textureBlock[i]);
+                            }
+                            Materials.Add(newMaterial);
+                        }
+                    }
+                }
+            }
+        }
+        private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
+        {
+            // Get the collision mesh data
+            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
+            string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
+            string collisionMeshData = string.Empty;
+            if (File.Exists(collisionMeshFileName) == false)
+            {
+                Logger.WriteLine("- [" + inputZoneFolderName + "]: No collision mesh found.");
                 return;
             }
 
-            // Perform unique copy of faces into sub objects
-            List<TriangleFace> facesToConsume = new List<TriangleFace>(TriangleFaces);
-            while (facesToConsume.Count > 0)
+            // Load the collision data
+            string inputData = File.ReadAllText(collisionMeshFileName);
+            string[] inputRows = inputData.Split(Environment.NewLine);
+            foreach (string inputRow in inputRows)
             {
-                List<int> facesToDelete = new List<int>();
-                List<TriangleFace> newMeshTriangles = new List<TriangleFace>();
+                // Nothing for blank lines
+                if (inputRow.Length == 0)
+                    continue;
 
-                // Iterate through and collect like faces
-                int curMaterialIndex = -2;
-                for (int i = 0; i < facesToConsume.Count; i++)
+                // # = comment
+                else if (inputRow.StartsWith("#"))
+                    continue;
+
+                // v = Verticies
+                else if (inputRow.StartsWith("v"))
                 {
-                    // If there is no assigned working material index, grab it
-                    if (curMaterialIndex == -2)
+                    string[] blocks = inputRow.Split(",");
+                    if (blocks.Length != 4)
                     {
-                        // If it's an invalid index, just delete it
-                        if (facesToConsume[i].MaterialIndex < 0)
-                        {
-                            facesToDelete.Add(i);
-                            break;
-                        }
-                        curMaterialIndex = facesToConsume[i].MaterialIndex;
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
+                        continue;
                     }
-
-                    // Capture like faces
-                    if (facesToConsume[i].MaterialIndex == curMaterialIndex)
-                    {
-                        // TODO: Add data to mesh
-                        newMeshTriangles.Add(facesToConsume[i]);
-                        curMaterialIndex = facesToConsume[i].MaterialIndex;
-                        facesToDelete.Add(i);
-                    }
+                    Vector3 vertex = new Vector3();
+                    vertex.X = float.Parse(blocks[1]);
+                    vertex.Z = float.Parse(blocks[2]);
+                    vertex.Y = float.Parse(blocks[3]);
+                    CollisionVerticies.Add(vertex);
                 }
 
-                // Remove the faces
-                for (int j = facesToDelete.Count - 1; j >= 0; j--)
-                    facesToConsume.RemoveAt(j);
-
-                // Save the mesh
-                if (newMeshTriangles.Count > 0)
+                // i = Indicies
+                else if (inputRow.StartsWith("i"))
                 {
-                    // When creating the new mesh, the indicies of the faces to include need to be remapped because
-                    // the related arrays will be subsets
-                    EQZoneData newZoneMesh = new EQZoneData();
-                    newZoneMesh.Materials = new List<Material>(Materials);
-                    Dictionary<int, int> copiedIndiciesAndNewValues = new Dictionary<int, int>();
-                    foreach(TriangleFace face in newMeshTriangles)
+                    string[] blocks = inputRow.Split(",");
+                    if (blocks.Length != 5)
                     {
-                        TriangleFace realignedFace = new TriangleFace();
-                        if (copiedIndiciesAndNewValues.ContainsKey(face.V1) == true)
-                        {
-                            realignedFace.V1 = copiedIndiciesAndNewValues[face.V1];
-                        }
-                        else
-                        {
-                            realignedFace.V1 = newZoneMesh.Verticies.Count;
-                            copiedIndiciesAndNewValues.Add(face.V1, realignedFace.V1);
-                            newZoneMesh.Verticies.Add(Verticies[face.V1]);
-                            newZoneMesh.Normals.Add(Normals[face.V1]);
-                            newZoneMesh.VertexColors.Add(VertexColors[face.V1]);
-                            newZoneMesh.TextureCoords.Add(TextureCoords[face.V1]);
-                        }
-
-                        if (copiedIndiciesAndNewValues.ContainsKey(face.V2) == true)
-                        {
-                            realignedFace.V2 = copiedIndiciesAndNewValues[face.V2];
-                        }
-                        else
-                        {
-                            realignedFace.V2 = newZoneMesh.Verticies.Count;
-                            copiedIndiciesAndNewValues.Add(face.V2, realignedFace.V2);
-                            newZoneMesh.Verticies.Add(Verticies[face.V2]);
-                            newZoneMesh.Normals.Add(Normals[face.V2]);
-                            newZoneMesh.VertexColors.Add(VertexColors[face.V2]);
-                            newZoneMesh.TextureCoords.Add(TextureCoords[face.V2]);
-                        }
-
-                        if (copiedIndiciesAndNewValues.ContainsKey(face.V3) == true)
-                        {
-                            realignedFace.V3 = copiedIndiciesAndNewValues[face.V3];
-                        }
-                        else
-                        {
-                            realignedFace.V3 = newZoneMesh.Verticies.Count;
-                            copiedIndiciesAndNewValues.Add(face.V3, realignedFace.V3);
-                            newZoneMesh.Verticies.Add(Verticies[face.V3]);
-                            newZoneMesh.Normals.Add(Normals[face.V3]);
-                            newZoneMesh.VertexColors.Add(VertexColors[face.V3]);
-                            newZoneMesh.TextureCoords.Add(TextureCoords[face.V3]);
-                        }
-
-                        realignedFace.MaterialIndex = face.MaterialIndex;
-                        newZoneMesh.TriangleFaces.Add(realignedFace);
+                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
+                        continue;
                     }
-                    newZoneMesh.CalculateBoundingBox();
-                    TextureAlignedSubMeshes.Add(newZoneMesh);
+                    TriangleFace index = new TriangleFace();
+                    index.MaterialIndex = int.Parse(blocks[1]);
+                    index.V1 = int.Parse(blocks[2]);
+                    index.V2 = int.Parse(blocks[3]);
+                    index.V3 = int.Parse(blocks[4]);
+                    CollisionTriangleFaces.Add(index);
                 }
+
                 else
-                    Logger.WriteLine("-[" + parentName + "]: Error: In the loop to generate TextureAlignedSubMeshes, there were no verticies added but a mesh was added.");
-            }
-
-            if (TextureAlignedSubMeshes.Count >= 1000)
-            {
-                Logger.WriteLine("-[" + parentName + "]: Error: More than 1000 sub meshes was generated, so WMO generation will fail...");
+                {
+                    Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
+                }
             }
         }
-
-        public void CalculateBoundingBox()
+        private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            foreach (Vector3 renderVert in Verticies)
+            // Get the ambient light
+            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading ambiant light data...");
+            string ambientLightFileName = Path.Combine(inputZoneFolderFullPath, "ambient_light.txt");
+            if (File.Exists(ambientLightFileName) == false)
+                Logger.WriteLine("- [" + inputZoneFolderName + "]: No ambient light data found.");
+            else
             {
-                if (renderVert.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = renderVert.X;
-                if (renderVert.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = renderVert.Y;
-                if (renderVert.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = renderVert.Z;
+                using (var ambiantlightReader = new StreamReader(ambientLightFileName))
+                {
+                    string? curLine;
+                    while ((curLine = ambiantlightReader.ReadLine()) != null)
+                    {
+                        // Nothing for blank lines
+                        if (curLine.Length == 0)
+                            continue;
 
-                if (renderVert.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = renderVert.X;
-                if (renderVert.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = renderVert.Y;
-                if (renderVert.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = renderVert.Z;
+                        // # = comment
+                        else if (curLine.StartsWith("#"))
+                            continue;
+
+                        // 3-block is the light
+                        else
+                        {
+                            string[] blocks = curLine.Split(",");
+                            if (blocks.Length != 3)
+                            {
+                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, ambiant light data must be in 3 components");
+                                continue;
+                            }
+                            AmbientLight.R = byte.Parse(blocks[0]);
+                            AmbientLight.G = byte.Parse(blocks[1]);
+                            AmbientLight.B = byte.Parse(blocks[2]);
+                        }
+                    }
+                }
             }
-            foreach (Vector3 collisionVert in Verticies)
+        }
+        private void LoadLightInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
+        {
+            // Get the light instances
+            Logger.WriteLine("- [" + inputZoneFolder + "]: Reading light instances...");
+            string lightInstancesFileName = Path.Combine(inputZoneFolderFullPath, "light_instances.txt");
+            if (File.Exists(lightInstancesFileName) == false)
+                Logger.WriteLine("- [" + inputZoneFolder + "]: No light instance data found.");
+            else
             {
-                if (collisionVert.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = collisionVert.X;
-                if (collisionVert.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = collisionVert.Y;
-                if (collisionVert.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = collisionVert.Z;
+                using (var lightInstancesReader = new StreamReader(lightInstancesFileName))
+                {
+                    string? curLine;
+                    while ((curLine = lightInstancesReader.ReadLine()) != null)
+                    {
+                        // Nothing for blank lines
+                        if (curLine.Length == 0)
+                            continue;
 
-                if (collisionVert.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = collisionVert.X;
-                if (collisionVert.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = collisionVert.Y;
-                if (collisionVert.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = collisionVert.Z;
+                        // # = comment
+                        else if (curLine.StartsWith("#"))
+                            continue;
+
+                        // 7-blocks is a light instance
+                        else
+                        {
+                            string[] blocks = curLine.Split(",");
+                            if (blocks.Length != 7)
+                            {
+                                Logger.WriteLine("- [" + inputZoneFolder + "]: Error, light instance data is 7 components");
+                                continue;
+                            }
+                            LightInstance newLightInstance = new LightInstance();
+                            newLightInstance.Position.X = float.Parse(blocks[0]);
+                            newLightInstance.Position.Y = float.Parse(blocks[1]);
+                            newLightInstance.Position.Z = float.Parse(blocks[2]);
+                            newLightInstance.Radius = float.Parse(blocks[3]);
+                            newLightInstance.Color.R = float.Parse(blocks[4]);
+                            newLightInstance.Color.G = float.Parse(blocks[5]);
+                            newLightInstance.Color.B = float.Parse(blocks[6]);
+                            LightInstances.Add(newLightInstance);
+                        }
+                    }
+                }
             }
-
-            BoundingBoxLowRes = new AxisAlignedBoxLR(BoundingBox);
         }
     }
 }
