@@ -1,16 +1,3 @@
-** Versions **
-- Everquest Trilogy (note: COULD use Titanium, but would need to parse down list of assets)
-- World of Warcraft WOTLK v3.3.5a (original, not classic re-release)
-
-** TODO **
-- Chunks use little-endian style byte order.  Make sure the chunk identifier is in the right order!
-- Add source for LaternExtractor
-- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 8000, AreaTable.ID range 6000-7000, AreaBit 3800+
-- Respective Updates in WMOAreaTable.dbc related to WMOGRoupID.  Range will be 30000-40000
-- Respective Updates in Map.dbc and MapDifficulty.dbc.  Range will be 750+
-- Make changes to SQL table game_tele
-- Need alternate solution for animated textures on map files (perhaps move to M2?)
-
 ** Extracting Everquest Assets **
 Use LaternExtractor
 - Edit 'settings.txt' inside the respective Release/Debug binary folder
@@ -58,30 +45,3 @@ INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orient
 Example:
 DELETE FROM `instance_template` WHERE map = 725;
 INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (725, 0, '', 0);
-
-
-** Folder Structure **
-Maps:
-	wmo: World\wmo\Everquest\<zone>.wmo
-	wdt: World\Maps\EQ_<zone>\EQ_<zone>.wdt
-	wdl: World\Maps\EQ_<zone>\EQ_<zone>.wdl
-	textures: World\Everquest\ZoneTextures\<zone>\<texture>.blp
-Objects (contain M2 and textures):
-	World\Everquest\PassiveDoodads\
-	World\Everquest\ActiveDoodads\
-	....
-Notes:
-	wdt/wdl file names need to match the folder name exactly
-	
-** Issues
-
-	
-** Coordinate and Space **
-- Everquest: X-Axis is S(neg) to N(pos), Y-Axis is E(neg) to W(pos)
-- WoW: X-Axis is N(pos) to S(neg), Y-Axis is W(pos), to E(neg).  Z is up(pos) and down (neg)
-- WoW maps are divided into 64x64 blocks (total of 4096) and each block is divided into 16x16 chunks.
-- WoW map blocks are 533.33333 yards (1600 feet) w x height.  Coordinate origin is center, so +/- 17066.66656
-- Each map chunk is 33.3333 yards (100 feet)
-- In EQ, 1 unit of space is about 1 foot
-- In WoW, 1 unit of space is about 1 meter (3.28 feet)
-- Everquest maps to be broken up into 1000 x 1000 unit sub areas
