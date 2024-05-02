@@ -22,7 +22,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.WOWFiles;
-using EQWOWConverter.Maps;
+using EQWOWConverter.Zones;
 using EQWOWConverter.Common;
 using Vector3 = EQWOWConverter.Common.Vector3;
 
@@ -66,7 +66,7 @@ namespace EQWOWConverter
                 // Load the EQ zone
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name + "' at '" + curZoneDirectory);
-                GameMap curZone = new GameMap(zoneDirectory.Name, curZoneDirectory, curWMOID);
+                Zone curZone = new Zone(zoneDirectory.Name, curZoneDirectory, curWMOID);
                 curWMOID++;
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
@@ -82,7 +82,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(GameMap gameMap, string wowExportPath)
+        public static void CreateWoWZoneFromEQZone(Zone gameMap, string wowExportPath)
         {
             Logger.WriteLine("- [" + gameMap.Name + "]: Converting zone '" + gameMap.Name + "' into a wow gameMap...");
 

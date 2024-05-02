@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Maps;
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> GroupBytes = new List<byte>();
         static UInt32 UniqueID = 30000;
 
-        public WMOGroup(GameMap gameMap, WMORoot wmoRoot, int subMeshID)
+        public WMOGroup(Zone gameMap, WMORoot wmoRoot, int subMeshID)
         {
             // MVER (Version) ---------------------------------------------------------------------
             GroupBytes.AddRange(GenerateMVERChunk(gameMap));
@@ -41,7 +41,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(GameMap gameMap)
+        private List<byte> GenerateMVERChunk(Zone gameMap)
         {
             UInt32 version = 17;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGP (Main container for all other chunks)
         /// </summary>
-        private List<byte> GenerateMOGPChunk(GameMap gameMap, WMORoot wmoRoot, int subMeshID)
+        private List<byte> GenerateMOGPChunk(Zone gameMap, WMORoot wmoRoot, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -137,7 +137,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPY (Material info for triangles)
         /// </summary>
-        private List<byte> GenerateMOPYChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMOPYChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -156,7 +156,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVI (MapObject Vertex Indicies)
         /// </summary>
-        private List<byte> GenerateMOVIChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMOVIChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -170,7 +170,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVT (Verticies)
         /// </summary>
-        private List<byte> GenerateMOVTChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMOVTChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -183,7 +183,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MONR (Normals)
         /// </summary>
-        private List<byte> GenerateMONRChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMONRChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -196,7 +196,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOTV (Texture Coordinates)
         /// </summary>
-        private List<byte> GenerateMOTVChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMOTVChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -209,7 +209,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOBA (Render Batches)
         /// </summary>
-        private List<byte> GenerateMOBAChunk(GameMap gameMap, int subMeshID)
+        private List<byte> GenerateMOBAChunk(Zone gameMap, int subMeshID)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -242,7 +242,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOLR (Light References)
         /// Optional.  Only if it has lights
         /// </summary>
-        private List<byte> GenerateMOLRChunk(GameMap gameMap)
+        private List<byte> GenerateMOLRChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -255,7 +255,7 @@ namespace EQWOWConverter.WOWFiles
         /// MODR (Doodad References)
         /// Optional.  If has Doodads
         /// </summary>
-        private List<byte> GenerateMODRChunk(GameMap gameMap)
+        private List<byte> GenerateMODRChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -268,7 +268,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBN (Nodes of the BSP tree, used also for collision?)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBNChunk(GameMap gameMap)
+        private List<byte> GenerateMOBNChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -283,7 +283,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBR (Face / Triangle Incidies)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBRChunk(GameMap gameMap)
+        private List<byte> GenerateMOBRChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -298,7 +298,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOCV (Vertex Colors)
         /// Optional.  If HasVertexColor Flag
         /// </summary>
-        private List<byte> GenerateMOCVChunk(GameMap gameMap)
+        private List<byte> GenerateMOCVChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -311,7 +311,7 @@ namespace EQWOWConverter.WOWFiles
         /// MLIQ (Liquid/Water details)
         /// Optional.  If HasWater flag
         /// </summary>
-        private List<byte> GenerateMLIQChunk(GameMap gameMap)
+        private List<byte> GenerateMLIQChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 

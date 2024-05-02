@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Maps;
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ObjectBytes = new List<byte>();
         private string BaseFileName;
 
-        public WDT(GameMap gameMap, string wmoFileName)
+        public WDT(Zone gameMap, string wmoFileName)
         {
             BaseFileName = gameMap.Name;
 
@@ -52,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(GameMap gameMap)
+        private List<byte> GenerateMVERChunk(Zone gameMap)
         {
             UInt32 version = 18;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -61,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MPHD (Header)
         /// </summary>
-        private List<byte> GenerateMPHDChunk(GameMap gameMap)
+        private List<byte> GenerateMPHDChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -84,7 +84,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MAIN (Map Tile Table)
         /// </summary>
-        private List<byte> GenerateMAINChunk(GameMap gameMap)
+        private List<byte> GenerateMAINChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -104,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MWMO (Main WMO lookup)
         /// </summary>
-        private List<byte> GenerateMWMOChunk(GameMap gameMap, string wmoFileName)
+        private List<byte> GenerateMWMOChunk(Zone gameMap, string wmoFileName)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -116,7 +116,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (WMO placement information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(GameMap gameMap)
+        private List<byte> GenerateMODFChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 

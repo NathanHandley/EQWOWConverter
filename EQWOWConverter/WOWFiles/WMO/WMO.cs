@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Maps;
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
 
-        public WMO(GameMap gameMap, string baseFolderPath)
+        public WMO(Zone gameMap, string baseFolderPath)
         {
             BaseFileName = gameMap.Name;
 

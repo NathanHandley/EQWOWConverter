@@ -21,17 +21,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Maps
+namespace EQWOWConverter.Zones
 {
-    // TODO: Change name to be more generic
-    internal class GameMap
+    internal class Zone
     {
         public string Name = string.Empty;
         public string DescriptiveName = string.Empty;
         public UInt32 WMOID = 0;
 
-        public EQMapData RenderMesh = new EQMapData();
-        public EQMapData CollisionMesh = new EQMapData();
+        public EQZoneData RenderMesh = new EQZoneData();
+        public EQZoneData CollisionMesh = new EQZoneData();
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
@@ -41,7 +40,7 @@ namespace EQWOWConverter.Maps
 
         public Fog FogSettings = new Fog();
 
-        public GameMap(string name, string zoneFolder, uint wmoid)
+        public Zone(string name, string zoneFolder, uint wmoid)
         {
             // Store name and WMOID
             Name = name;
@@ -107,7 +106,7 @@ namespace EQWOWConverter.Maps
             if (File.Exists(renderMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
             else
-                RenderMesh = new EQMapData(name, File.ReadAllText(renderMeshFileName), Materials);
+                RenderMesh = new EQZoneData(name, File.ReadAllText(renderMeshFileName), Materials);
 
             // Get the collision mesh data
             Logger.WriteLine("- [" + Name + "]: Reading collision mesh data...");
@@ -116,7 +115,7 @@ namespace EQWOWConverter.Maps
             if (File.Exists(collisionMeshFileName) == false)
                 Logger.WriteLine("- [" + Name + "]: No collision mesh found.");
             else
-                CollisionMesh = new EQMapData(name, File.ReadAllText(collisionMeshFileName));
+                CollisionMesh = new EQZoneData(name, File.ReadAllText(collisionMeshFileName));
 
             // Get the ambient light
             Logger.WriteLine("- [" + Name + "]: Reading ambiant light data...");

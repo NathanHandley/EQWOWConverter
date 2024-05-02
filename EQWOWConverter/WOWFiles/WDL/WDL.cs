@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Maps;
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
         private string BaseFileName;
 
         // TODO: This is where the heightmap will go for rendering 'in the distance'
-        public WDL(GameMap gameMap)
+        public WDL(Zone gameMap)
         {
             BaseFileName = gameMap.Name;
 
@@ -55,7 +55,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(GameMap gameMap)
+        private List<byte> GenerateMVERChunk(Zone gameMap)
         {
             UInt32 version = 18;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -64,7 +64,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MWMO (WMO Filenames in the map)
         /// </summary>
-        private List<byte> GenerateMWMOChunk(GameMap gameMap)
+        private List<byte> GenerateMWMOChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -76,7 +76,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MWID (List of indexes into the MWMO chunk)
         /// </summary>
-        private List<byte> GenerateMWIDChunk(GameMap gameMap)
+        private List<byte> GenerateMWIDChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -88,7 +88,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODF (Placement Information)
         /// </summary>
-        private List<byte> GenerateMODFChunk(GameMap gameMap)
+        private List<byte> GenerateMODFChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -100,7 +100,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MAOF (Map Area Offset)
         /// </summary>
-        private List<byte> GenerateMAOFChunk(GameMap gameMap)
+        private List<byte> GenerateMAOFChunk(Zone gameMap)
         {
             List<byte> chunkBytes = new List<byte>();
 

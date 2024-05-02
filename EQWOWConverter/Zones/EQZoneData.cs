@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class EQMapData
+    internal class EQZoneData
     {
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureUv> TextureCoords = new List<TextureUv>();
@@ -35,18 +35,18 @@ namespace EQWOWConverter.Common
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
         public AxisAlignedBoxLR BoundingBoxLowRes = new AxisAlignedBoxLR();
 
-        public List<EQMapData> TextureAlignedSubMeshes = new List<EQMapData>();
+        public List<EQZoneData> TextureAlignedSubMeshes = new List<EQZoneData>();
 
-        public EQMapData()
+        public EQZoneData()
         {
 
         }
-        public EQMapData(string parentName, string inputData)
+        public EQZoneData(string parentName, string inputData)
         {
             GenerateCompleteZoneMesh(parentName, inputData);
         }
 
-        public EQMapData(string parentName, string inputData, List<Material> materials)
+        public EQZoneData(string parentName, string inputData, List<Material> materials)
         {
             GenerateCompleteZoneMesh(parentName, inputData);
             Materials = materials;
@@ -222,7 +222,7 @@ namespace EQWOWConverter.Common
                 {
                     // When creating the new mesh, the indicies of the faces to include need to be remapped because
                     // the related arrays will be subsets
-                    EQMapData newZoneMesh = new EQMapData();
+                    EQZoneData newZoneMesh = new EQZoneData();
                     newZoneMesh.Materials = new List<Material>(Materials);
                     Dictionary<int, int> copiedIndiciesAndNewValues = new Dictionary<int, int>();
                     foreach(TriangleFace face in newMeshTriangles)
