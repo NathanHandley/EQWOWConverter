@@ -32,37 +32,9 @@ namespace EQWOWConverter.Zones
         public UInt16 FirstVertexIndex = 0;
         public UInt16 LastVertexIndex = 0;
 
-        public WorldModelRenderBatch(byte materialIndex, uint firstTriangleFaceIndex, ushort numOfFaceIndicies, 
-            ushort firstVertexIndex, ushort lastVertexIndex, List<Vector3> worldModelObjectVerticies)
+        public WorldModelRenderBatch()
         {
-            MaterialIndex = materialIndex;
-            FirstTriangleFaceIndex = firstTriangleFaceIndex;
-            NumOfFaceIndicies = numOfFaceIndicies;
-            FirstVertexIndex = firstVertexIndex;
-            LastVertexIndex = lastVertexIndex;
-            CalculateBoundingBox(worldModelObjectVerticies);
-        }
 
-        private void CalculateBoundingBox(List<Vector3> verticies)
-        {
-            AxisAlignedBox boundingBox = new AxisAlignedBox();
-            foreach (Vector3 renderVert in verticies)
-            {
-                if (renderVert.X < boundingBox.BottomCorner.X)
-                    boundingBox.BottomCorner.X = renderVert.X;
-                if (renderVert.Y < boundingBox.BottomCorner.Y)
-                    boundingBox.BottomCorner.Y = renderVert.Y;
-                if (renderVert.Z < boundingBox.BottomCorner.Z)
-                    boundingBox.BottomCorner.Z = renderVert.Z;
-
-                if (renderVert.X > boundingBox.TopCorner.X)
-                    boundingBox.TopCorner.X = renderVert.X;
-                if (renderVert.Y > boundingBox.TopCorner.Y)
-                    boundingBox.TopCorner.Y = renderVert.Y;
-                if (renderVert.Z > boundingBox.TopCorner.Z)
-                    boundingBox.TopCorner.Z = renderVert.Z;
-            }
-            BoundingBoxLowRes = new AxisAlignedBoxLR(boundingBox);
         }
     }
 }

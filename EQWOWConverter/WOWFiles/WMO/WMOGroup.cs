@@ -143,9 +143,8 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
-            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFacesSortedByMaterial)
+            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
             {
-                // For now, just one material
                 byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
                 chunkBytes.Add(polyMaterialFlag);
                 chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
@@ -162,7 +161,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
-            foreach(TriangleFace polyIndex in worldModelObject.TriangleFacesSortedByMaterial)
+            foreach(TriangleFace polyIndex in worldModelObject.TriangleFaces)
                 chunkBytes.AddRange(polyIndex.ToBytes());
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());

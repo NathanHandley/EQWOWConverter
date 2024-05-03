@@ -65,8 +65,6 @@ namespace EQWOWConverter.Zones
                 // Add it
                 newFaces.Add(newFace);
             }
-            // Sort by material ID for render batching reasons
-            newFaces.Sort();
 
             // Texture count is calculated from the material list
             foreach (Material material in Materials)

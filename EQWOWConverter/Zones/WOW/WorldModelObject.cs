@@ -30,96 +30,159 @@ namespace EQWOWConverter.Zones
         public List<TextureUv> TextureCoords = new List<TextureUv>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
-        public List<TriangleFace> TriangleFacesSortedByMaterial = new List<TriangleFace>();
+        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
 
         public WorldModelObject(List<Vector3> verticies, List<TextureUv> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
-            List<TriangleFace> triangleFacesSortedByMaterial, List<Material> materials)
+            List<TriangleFace> triangleFaces, List<Material> materials)
         {
             Verticies = verticies;
             TextureCoords = textureCoords;
             Normals = normals;
             VertexColors = vertexColors;
-            TriangleFacesSortedByMaterial = triangleFacesSortedByMaterial;
+            TriangleFaces = triangleFaces;
             CalculateBoundingBox();
             GenerateRenderBatches(materials);
         }
 
         private void GenerateRenderBatches(List<Material> materials)
         {
-            RenderBatches = new List<WorldModelRenderBatch>();
-            RenderBatches.Add(new WorldModelRenderBatch(0, 0, Convert.ToUInt16(TriangleFacesSortedByMaterial.Count * 3), 0, Convert.ToUInt16(Verticies.Count-1), Verticies));
-            /*
-            // Build a render batch per material, using the sorted triangle face array as the base
-            int curMaterialIndex = -2;
-            UInt32 curFirstTriangleFaceIndex = 0;
-            UInt16 curNumOfTriangleFaces = 0;
-            UInt16 curFirstVertexIndex = 0;
-            UInt16 curLastVertexIndex = 0;
-            List<Vector3> curVerticies = new List<Vector3>();
-            for (int faceIndex = 0;  faceIndex < TriangleFacesSortedByMaterial.Count; faceIndex++)
+            // Reorder the faces and related objects
+            SortRenderObjects();
+
+            // Build a render batch per material
+            Dictionary<int, WorldModelRenderBatch> renderBatchesByMaterialID = new Dictionary<int, WorldModelRenderBatch>();
+            for (int i = 0; i < TriangleFaces.Count; i++)
             {
-                // If it's a new material index, work on a new batch
-                if (TriangleFacesSortedByMaterial[faceIndex].MaterialIndex != curMaterialIndex)
+                // Work off material index
+                int curMaterialIndex = TriangleFaces[i].MaterialIndex;
+
+                // Skip materials that shouldn't be rendered
+                if (materials[curMaterialIndex].MaterialType == MaterialType.Invisible)
+                    continue;
+
+                // Create a new one if this is the first instance of the material
+                if (renderBatchesByMaterialID.ContainsKey(curMaterialIndex) == false)
                 {
-                    // Only save the batch if it wasn't the first
-                    if (curMaterialIndex != -2)
-                    {
-                        // Only make render batches for visable material types
-                        if (materials[curMaterialIndex].MaterialType == MaterialType.Diffuse)
-                        {
-                            WorldModelRenderBatch newRenderBatch = new WorldModelRenderBatch(Convert.ToByte(curMaterialIndex), curFirstTriangleFaceIndex, curNumOfTriangleFaces,
-                            curFirstVertexIndex, curLastVertexIndex, curVerticies);
-                            RenderBatches.Add(newRenderBatch);
-                        }
-                        else
-                        {
-                            Logger.WriteLine("Skipped generating rendering batch since material " + curMaterialIndex.ToString() + " type was " + materials[curMaterialIndex].MaterialType.ToString());
-                        }
-                    }                    
-                    curMaterialIndex = TriangleFacesSortedByMaterial[faceIndex].MaterialIndex;
-                    curFirstTriangleFaceIndex = Convert.ToUInt32(faceIndex);
-                    curNumOfTriangleFaces = 1;
-                    curFirstVertexIndex = TriangleFacesSortedByMaterial[faceIndex].GetSmallestIndex();
-                    curLastVertexIndex = TriangleFacesSortedByMaterial[faceIndex].GetLargestIndex();
-                    curVerticies = new List<Vector3>
-                    {
-                        Verticies[TriangleFacesSortedByMaterial[faceIndex].V1],
-                        Verticies[TriangleFacesSortedByMaterial[faceIndex].V2],
-                        Verticies[TriangleFacesSortedByMaterial[faceIndex].V3]
-                    };
+                    renderBatchesByMaterialID.Add(curMaterialIndex, new WorldModelRenderBatch());
+                    renderBatchesByMaterialID[curMaterialIndex].MaterialIndex = Convert.ToByte(curMaterialIndex);
+                    renderBatchesByMaterialID[curMaterialIndex].FirstTriangleFaceIndex = Convert.ToUInt32(i * 3);
+                    renderBatchesByMaterialID[curMaterialIndex].NumOfFaceIndicies = 3;
+                    renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex = TriangleFaces[i].GetSmallestIndex();
+                    renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = TriangleFaces[i].GetLargestIndex();
                 }
-                // This is a continuation...
+                // Otherwise add to an existing
                 else
                 {
-                    curNumOfTriangleFaces++;
-                    if (TriangleFacesSortedByMaterial[faceIndex].GetSmallestIndex() < curFirstVertexIndex)
-                        curFirstVertexIndex = TriangleFacesSortedByMaterial[faceIndex].GetSmallestIndex();
-                    if (TriangleFacesSortedByMaterial[faceIndex].GetLargestIndex() > curLastVertexIndex)
-                        curLastVertexIndex = TriangleFacesSortedByMaterial[faceIndex].GetLargestIndex();
-                    curVerticies.Add(Verticies[TriangleFacesSortedByMaterial[faceIndex].V1]);
-                    curVerticies.Add(Verticies[TriangleFacesSortedByMaterial[faceIndex].V2]);
-                    curVerticies.Add(Verticies[TriangleFacesSortedByMaterial[faceIndex].V3]);
+                    renderBatchesByMaterialID[curMaterialIndex].NumOfFaceIndicies += 3;
+                    int curFaceMinIndex = TriangleFaces[i].GetSmallestIndex();
+                    if (curFaceMinIndex < renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex)
+                        renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex = Convert.ToUInt16(curFaceMinIndex);
+                    int curFaceMaxIndex = TriangleFaces[i].GetLargestIndex();
+                    if (curFaceMaxIndex > renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex)
+                        renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = Convert.ToUInt16(curFaceMaxIndex);
                 }
             }
 
-            // Save the last as long as it was more than zero faces
-            if (curMaterialIndex != -2)
+            // Store the new render batches
+            RenderBatches.Clear();
+            foreach (var renderBatch in renderBatchesByMaterialID)
             {
-                // Only make render batches for visable material types
-                if (materials[curMaterialIndex].MaterialType == MaterialType.Diffuse)
+                    renderBatch.Value.BoundingBoxLowRes = new AxisAlignedBoxLR(BoundingBox);
+                    RenderBatches.Add(renderBatch.Value);
+            }
+
+        }
+
+        private void SortRenderObjects()
+        {
+            TriangleFaces.Sort();
+
+            // Reorder the verticies / texcoords / normals / vertcolors to match the sorted triangle faces
+            List<Vector3> sortedVerticies = new List<Vector3>();
+            List<TextureUv> sortedTextureCoords = new List<TextureUv>();
+            List<Vector3> sortedNormals = new List<Vector3>();
+            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
+            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
+            for (int i = 0; i < TriangleFaces.Count; i++)
+            {
+                TriangleFace curTriangleFace = TriangleFaces[i];
+
+                // Face vertex 1
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
                 {
-                    WorldModelRenderBatch newRenderBatch = new WorldModelRenderBatch(Convert.ToByte(curMaterialIndex), curFirstTriangleFaceIndex, Convert.ToUInt16(curNumOfTriangleFaces * 3),
-                    curFirstVertexIndex, curLastVertexIndex, curVerticies);
-                    RenderBatches.Add(newRenderBatch);
+                    // This index was aready remapped
+                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
                 }
                 else
                 {
-                    Logger.WriteLine("Skipped generating rendering batch since material " + curMaterialIndex.ToString() + " type was " + materials[curMaterialIndex].MaterialType.ToString());
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V1;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V1 = newVertIndex;
+
+                    // Add objects
+                    sortedVerticies.Add(Verticies[oldVertIndex]);
+                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
+                    sortedNormals.Add(Normals[oldVertIndex]);
+                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
                 }
+
+                // Face vertex 2
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V2;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V2 = newVertIndex;
+
+                    // Add objects
+                    sortedVerticies.Add(Verticies[oldVertIndex]);
+                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
+                    sortedNormals.Add(Normals[oldVertIndex]);
+                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                }
+
+                // Face vertex 3
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V3;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V3 = newVertIndex;
+
+                    // Add objects
+                    sortedVerticies.Add(Verticies[oldVertIndex]);
+                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
+                    sortedNormals.Add(Normals[oldVertIndex]);
+                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                }
+
+                // Save this updated triangle
+                sortedTriangleFaces.Add(curTriangleFace);
             }
-            */
+
+            // Save the sorted values
+            Verticies = sortedVerticies;
+            TextureCoords = sortedTextureCoords;
+            Normals = sortedNormals;
+            VertexColors = sortedVertexColors;
+            TriangleFaces = sortedTriangleFaces;
         }
 
         private void CalculateBoundingBox()
