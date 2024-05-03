@@ -173,7 +173,7 @@ namespace EQWOWConverter.WOWFiles
                 if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
                 {
                     // If there was a missing texture, use the first in the list
-                    // TODO: Figure out why this can happen. arena has i_m0000 as a material
+                    // TODO: This needs to be handled differently
                     Logger.WriteLine("Missing texture in material binding, so using first");
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 }

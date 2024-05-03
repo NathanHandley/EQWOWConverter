@@ -24,9 +24,39 @@ namespace EQWOWConverter.Common
 {
     internal class Material
     {
-        public uint Index;
+        public uint Index = 0;
+        public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
         public List<string> AnimationTextures = new List<string>();
-        public uint AnimationDelayMs;
+        public uint AnimationDelayMs = 0;
+
+        public Material(string name)
+        {
+            Name = name;
+            if (name.Contains("_"))
+            {
+                string[] parts = name.Split('_');
+                switch (parts[0])
+                {
+                    case "d": MaterialType = MaterialType.Diffuse; break;
+                    case "i": MaterialType = MaterialType.Invisible; break;
+                    case "b": MaterialType = MaterialType.Boundary; break;
+                    case "t25": MaterialType = MaterialType.Transparent25Percent; break;
+                    case "t50": MaterialType = MaterialType.Transparent50Percent; break;
+                    case "t75": MaterialType = MaterialType.Transparent75Percent; break;
+                    case "ta": MaterialType = MaterialType.TransparentAdditive; break;
+                    case "tau": MaterialType = MaterialType.TransparentAdditiveUnlit; break;
+                    case "tm": MaterialType = MaterialType.TransparentMasked; break;
+                    case "ds": MaterialType = MaterialType.DiffuseSkydome; break;
+                    case "ts": MaterialType = MaterialType.TransparentSkydome; break;
+                    case "taus": MaterialType = MaterialType.Boundary; break;
+                    default:
+                        {
+                            Logger.WriteLine("Error, Material had a name of " + name + " which doesn't map to a type");
+                            MaterialType = MaterialType.Diffuse;
+                        } break;
+                }
+            }
+        }
     }
 }

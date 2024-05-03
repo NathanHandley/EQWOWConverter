@@ -203,7 +203,6 @@ namespace EQWOWConverter.Common
                         else if (curLine.StartsWith("#"))
                             continue;
 
-
                         // 3-blocks is a material instance
                         else
                         {
@@ -213,7 +212,7 @@ namespace EQWOWConverter.Common
                                 Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material data is 3 components");
                                 continue;
                             }
-                            Material newMaterial = new Material();
+                            Material newMaterial = new Material(blocks[1]);
                             newMaterial.Index = uint.Parse(blocks[0]);
                             newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
 

@@ -25,6 +25,12 @@ Notes:
 	wdt/wdl file names need to match the folder name exactly
 	
 ** Issues
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Render Batches aren't quite right, as the model looks like a mess
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 ** Breakup notes
 Comb mesh for indicies that share a material, and group by that

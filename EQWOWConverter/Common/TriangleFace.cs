@@ -22,12 +22,32 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace
+    internal class TriangleFace : IComparable
     {
         public int MaterialIndex;
         public int V1;
         public int V2;
         public int V3;
+
+        public UInt16 GetSmallestIndex()
+        {
+            int smallestIndex = V1;
+            if (V2 < smallestIndex)
+                smallestIndex = V2;
+            if (V3 < smallestIndex)
+                smallestIndex = V3;
+            return Convert.ToUInt16(smallestIndex);
+        }
+
+        public UInt16 GetLargestIndex()
+        {
+            int largestIndex = V1;
+            if (V2 > largestIndex)
+                largestIndex = V2;
+            if (V3 > largestIndex)
+                largestIndex = V3;
+            return Convert.ToUInt16(largestIndex);
+        }
 
         // WARNING, these are converting to short int from int, remediate TODO:
         public List<byte> ToBytes()
@@ -37,6 +57,16 @@ namespace EQWOWConverter.Common
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(V2)));
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(V3)));
             return returnBytes;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj == null) return 1;
+            TriangleFace? otherTriangle = obj as TriangleFace;
+            if (otherTriangle != null)
+                return this.MaterialIndex.CompareTo(otherTriangle.MaterialIndex);
+            else
+                throw new ArgumentException("Object is not a TriangleFace");
         }
     }
 }

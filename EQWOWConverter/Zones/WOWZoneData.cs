@@ -50,29 +50,33 @@ namespace EQWOWConverter.Zones
             // For now, only load into a single world object
             WorldObjects = new List<WorldModelObject>();
             
-            // For this temp example, only store the first texture and copy all of the model data
+            // Store a new copy of the materials
             List<TriangleFace> newFaces = new List<TriangleFace>();
             foreach(TriangleFace eqFace in eqZoneData.TriangleFaces)
             {
                 TriangleFace newFace = new TriangleFace();
-                
+                newFace.MaterialIndex = eqFace.MaterialIndex;
+
                 // Rotate the verticies for culling differences
                 newFace.V1 = eqFace.V3;
                 newFace.V2 = eqFace.V2;
-                newFace.V3 = eqFace.V1;
+                newFace.V3 = eqFace.V1;               
 
-                // For now, set to zero so it's the first one
-                newFace.MaterialIndex = 0;
-
+                // Add it
                 newFaces.Add(newFace);
             }
+            // Sort by material ID for render batching reasons
+            newFaces.Sort();
 
             // Texture count is calculated from the material list
-            foreach(Material material in Materials)
-                TextureCount += Convert.ToUInt32(material.AnimationTextures.Count);
+            foreach (Material material in Materials)
+            {
+                if (material.AnimationTextures.Count > 0)
+                    TextureCount++;
+            }
 
             WorldModelObject curWorldModelObject = new WorldModelObject(eqZoneData.Verticies, eqZoneData.TextureCoords, eqZoneData.Normals,
-                eqZoneData.VertexColors, newFaces);
+                eqZoneData.VertexColors, newFaces, Materials);
             WorldObjects.Add(curWorldModelObject);
 
             // Rebuild the bounding box

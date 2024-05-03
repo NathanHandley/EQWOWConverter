@@ -73,7 +73,8 @@ namespace EQWOWConverter.WOWFiles
             // What exactly is "transbatchcount"?
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1))); // externalBatchCount
+            // TODO: This count should split above/below based on internal and external batch details
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // padding/unknown
 
             // This fog Id list may be wrong, but hoping that 0 works
@@ -142,7 +143,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
-            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
+            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFacesSortedByMaterial)
             {
                 // For now, just one material
                 byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
@@ -161,7 +162,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
-            foreach(TriangleFace polyIndex in worldModelObject.TriangleFaces)
+            foreach(TriangleFace polyIndex in worldModelObject.TriangleFacesSortedByMaterial)
                 chunkBytes.AddRange(polyIndex.ToBytes());
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());
@@ -212,28 +213,29 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOBAChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
+            foreach (WorldModelRenderBatch renderBatch in worldModelObject.RenderBatches)
+            {
+                // Bounding Box
+                chunkBytes.AddRange(renderBatch.BoundingBoxLowRes.ToBytes());
 
-            // TODO: Make this work with multiple render batches, as it a render batch needs to be 1 material only
-            // Bounding Box
-            chunkBytes.AddRange(worldModelObject.BoundingBoxLowRes.ToBytes());
+                // Poly Start Index
+                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.FirstTriangleFaceIndex));
 
-            // Poly Start Index, 0 for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                // Number of poly indexes
+                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.NumOfFaceIndicies));
 
-            // Number of poly indexes
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.TriangleFaces.Count * 3)));
+                // Vertex Start Index
+                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.FirstVertexIndex));
 
-            // Vertex Start Index, 0 for now
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+                // Vertex End Index
+                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.LastVertexIndex));
 
-            // Vertex End Index
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.Verticies.Count-1)));
+                // Byte padding (or unknown flag, unsure)
+                chunkBytes.Add(0);
 
-            // Byte padding (or unknown flag, unsure)
-            chunkBytes.Add(0);
-
-            // Index of the material, which will be blank for now so it picks the first material
-            chunkBytes.Add(0);
+                // Index of the material
+                chunkBytes.Add(renderBatch.MaterialIndex);
+            }
 
             return WrapInChunk("MOBA", chunkBytes.ToArray());
         }
