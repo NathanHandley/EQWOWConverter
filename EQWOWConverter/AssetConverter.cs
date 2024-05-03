@@ -69,6 +69,9 @@ namespace EQWOWConverter
 
                 // Convert to WOW zone
                 CreateWoWZoneFromEQZone(curZone, wowExportPath);
+
+                // Place the related textures
+                ExportTexturesForZone(curZone, curZoneDirectory, wowExportPath);
             }
 
             // Update the 
@@ -83,24 +86,46 @@ namespace EQWOWConverter
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
 
+            // Clean out the export folder
+            Directory.Delete(wowExportPath, true);
+
             // Generate the WOW zone data first
             zone.PopulateWOWZoneDataFromEQZoneData();
 
             // Create the zone WMO objects
             WMO zoneWMO = new WMO(zone, wowExportPath);
+            zoneWMO.WriteToDisk(wowExportPath);
 
             // Create the WDT
             WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
+            zoneWDT.WriteToDisk(wowExportPath);
 
             // Create the WDL
             WDL zoneWDL = new WDL(zone);
-
-            // Output the files
-            zoneWMO.WriteToDisk(wowExportPath);
-            zoneWDT.WriteToDisk(wowExportPath);
             zoneWDL.WriteToDisk(wowExportPath);
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
+        }
+
+        public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath)
+        {
+            Logger.WriteLine("- [" + zone.Name + "]: Exporting textures for zone '" + zone.Name + "'...");
+
+            // Create the folder to output
+            string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.Name);
+            if (Directory.Exists(zoneOutputTextureFolder) == false)
+                FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
+
+            // Go through every texture to move and put it there
+            foreach (string textureName in zone.WOWZoneData.TextureNames)
+            {
+                string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
+                string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
+                File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
+                Logger.WriteLine("- [" + zone.Name + "]: Texture named '" + textureName + "' copied");
+            }
+
+            Logger.WriteLine("- [" + zone.Name + "]: Texture output for zone '" + zone.Name + "' complete");
         }
     }
 }

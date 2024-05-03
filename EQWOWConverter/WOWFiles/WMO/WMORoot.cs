@@ -101,7 +101,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOHDChunk(WOWZoneData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.TextureCount));   // Number of Textures
+            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.TextureNames.Count));   // Number of Textures
 
             // Number of Groups
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));             

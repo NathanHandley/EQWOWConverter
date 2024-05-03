@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
         public Fog FogSettings = new Fog();
-        public UInt32 TextureCount = 0;
+        public List<string> TextureNames = new List<string>();
 
         public UInt32 WMOID { get; }
 
@@ -66,11 +66,13 @@ namespace EQWOWConverter.Zones
                 newFaces.Add(newFace);
             }
 
-            // Texture count is calculated from the material list
+            // Create a list of the textures
+            // NOTE: Only the first texture in an material is captured
+            // TODO: Handle animated textures
             foreach (Material material in Materials)
             {
                 if (material.AnimationTextures.Count > 0)
-                    TextureCount++;
+                    TextureNames.Add(material.AnimationTextures[0]);
             }
 
             WorldModelObject curWorldModelObject = new WorldModelObject(eqZoneData.Verticies, eqZoneData.TextureCoords, eqZoneData.Normals,
