@@ -25,6 +25,7 @@ namespace EQWOWConverter
     internal class FileTool
     {
         // Method taken from  https://stackoverflow.com/questions/7931304/comparing-two-files-in-c-sharp
+        // Rights of this method belong to James Johnson (https://stackoverflow.com/users/879420/james-johnson)
         public static bool AreFilesTheSame(string file1, string file2)
         {
             int file1byte;
