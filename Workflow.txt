@@ -20,6 +20,10 @@ Use EQWOWConverter
 Use BLPNG Converter
 - To BLP > Choose Folder  (select the conditioned assets folder)
 
+** Generating Association Maps **
+Use EQWOWConverter
+- Run command "Generate EQ Zone Index and Face Index Assocation Maps"
+
 ** Clean up png files **
 Use EQWOWConverter
 - TODO

@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace : IComparable
+    internal class TriangleFace : IComparable, IEquatable<TriangleFace>
     {
         public int MaterialIndex;
         public int V1;
@@ -49,7 +49,6 @@ namespace EQWOWConverter.Common
             return Convert.ToUInt16(largestIndex);
         }
 
-        // WARNING, these are converting to short int from int, remediate TODO:
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();
@@ -57,6 +56,34 @@ namespace EQWOWConverter.Common
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(V2)));
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(V3)));
             return returnBytes;
+        }
+
+        public bool ContainsIndex(int index)
+        {
+            if (V1 == index || V2 == index || V3 == index)
+                return true;
+            return false;
+        }
+
+        public bool ContainsIndex(SortedSet<int> indicies)
+        {
+            foreach (int i in indicies)
+                if (ContainsIndex(i) == true)
+                    return true;
+
+            return false;
+        }
+
+        public bool SharesIndexWith(TriangleFace otherFace)
+        {
+            if (V1 == otherFace.V1 || V1 == otherFace.V2 || V1 == otherFace.V3)
+                return true;
+            if (V2 == otherFace.V1 || V2 == otherFace.V2 || V2 == otherFace.V3)
+                return true;
+            if (V3 == otherFace.V1 || V3 == otherFace.V2 || V3 == otherFace.V3)
+                return true;
+
+            return false;
         }
 
         public int CompareTo(object? obj)
@@ -67,6 +94,15 @@ namespace EQWOWConverter.Common
                 return this.MaterialIndex.CompareTo(otherTriangle.MaterialIndex);
             else
                 throw new ArgumentException("Object is not a TriangleFace");
+        }
+
+        public bool Equals(TriangleFace other)
+        {
+            if (V1 != other.V1) return false;
+            if (V2 != other.V2) return false;
+            if (V3 != other.V3) return false;
+            if (MaterialIndex != other.MaterialIndex) return false;
+            return true;
         }
     }
 }

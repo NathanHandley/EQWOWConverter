@@ -35,6 +35,7 @@ internal class Program
             Logger.WriteLine("Options:");
             Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
             Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");
+            Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)");
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command: ");
@@ -76,6 +77,18 @@ internal class Program
                                 break;
                             }
                             Logger.WriteLine("Image reference updates complete.");
+                        } break;
+                    case "3":
+                        {
+                            Logger.WriteLine("Generating Association Maps (takes a very long time)...");
+                            AssetConditioner conditioner = new AssetConditioner();
+                            bool condenseResult = conditioner.GenerateAssociationMaps(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            if (condenseResult == false)
+                            {
+                                Logger.WriteLine("Association Map Generation Failure.");
+                                break;
+                            }
+                            Logger.WriteLine("Assocation Maps Generated.");
                         } break;
                     case "5":
                         {
