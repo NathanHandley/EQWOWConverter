@@ -160,7 +160,6 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("WARNING, poly indexes are restricted to short int so big maps will overflow...");
             foreach(TriangleFace polyIndex in worldModelObject.TriangleFaces)
                 chunkBytes.AddRange(polyIndex.ToBytes());
 

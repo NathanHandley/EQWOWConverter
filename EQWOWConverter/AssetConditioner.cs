@@ -139,6 +139,16 @@ namespace EQWOWConverter
             return true;
         }
 
+        // TODO: Rewrite to be quick.  Approach:
+        // TBD: Delete
+        // 1) Generate 'vertexkey' for verticies (Vector3) by using the input row string literal 
+        // 2) Make a Dictionary<string, SortedSet<int>> with key as the vertexkey, value array is triangleface index which has a vert sharing the key
+        // 3) 
+        // ...
+        // 2) Make a Dictionary<string, SortedSet<int>> with key as the vertexkey, and set be matching vertex index
+        // 3) Populate with Verticies
+        // 4) Pivot table into another Dictionary<int, SortedSet<int>> with key as each vertex index, and value set as indexes that share the same vertexkey
+        // 5) 
         public bool GenerateAssociationMaps(string eqExportsCondensedPath)
         {
             // Make sure the raw path exists

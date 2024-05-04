@@ -51,14 +51,19 @@ namespace EQWOWConverter
                 return false;
             }
 
+            // Clean out the mpq folder
+            string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
+            if (Directory.Exists(exportMPQRootFolder))
+                Directory.Delete(exportMPQRootFolder, true);
+
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                // For now, skip any zone that isn't the arena
-                if (zoneDirectory.Name != "arena")
-                    continue;
+                // Only do erudes crossing
+               // if (zoneDirectory.Name != "erudsxing" && zoneDirectory.Name != "crystal")
+               //     continue;
 
                 // Load the EQ zone
                 Zone curZone = new Zone(zoneDirectory.Name);
@@ -68,10 +73,10 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
-                CreateWoWZoneFromEQZone(curZone, wowExportPath);
+                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder);
 
                 // Place the related textures
-                ExportTexturesForZone(curZone, curZoneDirectory, wowExportPath);
+                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder);
             }
 
             // Update the 
@@ -82,27 +87,24 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone, string wowExportPath)
+        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder)
         {
             Logger.WriteLine("- [" + zone.Name + "]: Converting zone '" + zone.Name + "' into a wow zone...");
-
-            // Clean out the export folder
-            Directory.Delete(wowExportPath, true);
 
             // Generate the WOW zone data first
             zone.PopulateWOWZoneDataFromEQZoneData();
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, wowExportPath);
-            zoneWMO.WriteToDisk(wowExportPath);
+            WMO zoneWMO = new WMO(zone, exportMPQRootFolder);
+            zoneWMO.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDT
             WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
-            zoneWDT.WriteToDisk(wowExportPath);
+            zoneWDT.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDL
             WDL zoneWDL = new WDL(zone);
-            zoneWDL.WriteToDisk(wowExportPath);
+            zoneWDL.WriteToDisk(exportMPQRootFolder);
 
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }

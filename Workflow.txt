@@ -20,6 +20,11 @@ Use EQWOWConverter
 Use BLPNG Converter
 - To BLP > Choose Folder  (select the conditioned assets folder)
 
+** Copy missing textures **
+Texture "maywall" should exist in \EQExports\fearplane\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
+Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
+Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
+
 ** Generating Association Maps **
 Use EQWOWConverter
 - Run command "Generate EQ Zone Index and Face Index Assocation Maps"
@@ -49,3 +54,7 @@ INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orient
 Example:
 DELETE FROM `instance_template` WHERE map = 725;
 INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (725, 0, '', 0);
+
+** Important **
+Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably
+- In Ladik's MPQ Editor, Operationns > Set Max File Count

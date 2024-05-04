@@ -40,18 +40,25 @@ namespace EQWOWConverter.Zones
             // Save and gen WMOID
             WMOID = wmoid;
         }
-
-        public void LoadFromEQZone(EQZoneData eqZoneData)
+        
+        // TODO: Delete texturesToGroupIsolate
+        public void LoadFromEQZone(EQZoneData eqZoneData, List<string> texturesToGroupIsolate)
         {
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
             LightInstances = eqZoneData.LightInstances;
-            
-            // For now, only load into a single world object
-            WorldObjects = new List<WorldModelObject>();
-            
-            // Store a new copy of the materials
-            List<TriangleFace> newFaces = new List<TriangleFace>();
+
+            // Create a list of the textures
+            // NOTE: Only the first texture in an material is captured
+            // TODO: Handle animated textures
+            foreach (Material material in Materials)
+            {
+                if (material.AnimationTextures.Count > 0)
+                    TextureNames.Add(material.AnimationTextures[0]);
+            }
+
+            // Change face orientation for culling differences between EQ and WoW
+            List<TriangleFace> triangleFaces = new List<TriangleFace>();
             foreach(TriangleFace eqFace in eqZoneData.TriangleFaces)
             {
                 TriangleFace newFace = new TriangleFace();
@@ -63,27 +70,171 @@ namespace EQWOWConverter.Zones
                 newFace.V3 = eqFace.V1;               
 
                 // Add it
-                newFaces.Add(newFace);
+                triangleFaces.Add(newFace);
             }
 
-            // Create a list of the textures
-            // NOTE: Only the first texture in an material is captured
-            // TODO: Handle animated textures
-            foreach (Material material in Materials)
+            // Change texture mapping differences between EQ and WoW
+            List<TextureUv> textureCoords = new List<TextureUv>();
+            foreach (TextureUv uv in eqZoneData.TextureCoords)
             {
-                if (material.AnimationTextures.Count > 0)
-                    TextureNames.Add(material.AnimationTextures[0]);
+                TextureUv curTextureCoords = new TextureUv(uv.X, uv.Y * -1);
+                textureCoords.Add(curTextureCoords);
             }
 
-            WorldModelObject curWorldModelObject = new WorldModelObject(eqZoneData.Verticies, eqZoneData.TextureCoords, eqZoneData.Normals,
-                eqZoneData.VertexColors, newFaces, Materials);
-            WorldObjects.Add(curWorldModelObject);
+            // Create world model objects by identifying connected triangles and grouping them
+            List<Vector3> verticies = eqZoneData.Verticies;
+            List<Vector3> normals = eqZoneData.Normals;
+            List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
+
+            // Extract out isolated texture groups first, creating world objects
+            WorldObjects.Clear();
+            foreach (string texture in TextureNames)
+            {
+                Int32 materialID = -2;
+                // Get the related material
+                foreach (Material material in Materials)
+                {
+                    if (material.AnimationTextures.Count > 0 && material.AnimationTextures[0].ToUpper() == texture.ToUpper())
+                    {
+                        materialID = Convert.ToInt32(material.Index);
+                        break;
+                    }
+                }
+                if (materialID == -2)
+                {
+                    Logger.WriteLine(" ERROR! Texture name '" + texture + " 'passed to isolate did not exist in the zone");
+                    continue;
+                }
+
+                // Build a list of faces specific to this material, controlling for overflow
+                bool facesLeftToProcess = true;
+                while (facesLeftToProcess)
+                {
+                    facesLeftToProcess = false;
+                    List<TriangleFace> facesInGroup = new List<TriangleFace>();
+                    SortedSet<int> faceIndexesToDelete = new SortedSet<int>();
+                    for (int i = 0; i < triangleFaces.Count; i++)
+                    {
+                        // Skip anything not matching the material
+                        if (triangleFaces[i].MaterialIndex != materialID)
+                            continue;
+
+                        // Save it
+                        facesInGroup.Add(triangleFaces[i]);
+                        faceIndexesToDelete.Add(i);
+
+                        // Only go up to a maximum to avoid overflowing the model arrays
+                        if (facesInGroup.Count >= 60000)
+                        {
+                            facesLeftToProcess = true;
+                            break;
+                        }
+                    }
+
+                    // Purge the faces from the original list
+                    foreach (int faceIndex in faceIndexesToDelete.Reverse())
+                        triangleFaces.RemoveAt(faceIndex);
+
+                    // Generate the world model object
+                    GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords);
+                }
+            }
 
             // Rebuild the bounding box
             CalculateBoundingBox();
         }
 
-        public void CalculateBoundingBox()
+        private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
+            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+        {
+            // Since the face list is likely to not include all faces, rebuild the render object lists
+            List<Vector3> condensedVerticies = new List<Vector3>();
+            List<Vector3> condensedNormals = new List<Vector3>();
+            List<ColorRGBA> condensedVertexColors = new List<ColorRGBA>();
+            List<TextureUv> condensedTextureCoords = new List<TextureUv>();
+            List<TriangleFace> remappedTriangleFaces = new List<TriangleFace>();
+            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
+            for (int i = 0; i < faces.Count; i++)
+            {
+                TriangleFace curTriangleFace = faces[i];
+
+                // Face vertex 1
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V1;
+                    int newVertIndex = condensedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V1 = newVertIndex;
+
+                    // Add objects
+                    condensedVerticies.Add(verticies[oldVertIndex]);
+                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
+                    condensedNormals.Add(normals[oldVertIndex]);
+                    if (vertexColors.Count != 0)
+                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                }
+
+                // Face vertex 2
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V2;
+                    int newVertIndex = condensedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V2 = newVertIndex;
+
+                    // Add objects
+                    condensedVerticies.Add(verticies[oldVertIndex]);
+                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
+                    condensedNormals.Add(normals[oldVertIndex]);
+                    if (vertexColors.Count != 0)
+                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                }
+
+                // Face vertex 3
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V3;
+                    int newVertIndex = condensedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V3 = newVertIndex;
+
+                    // Add objects
+                    condensedVerticies.Add(verticies[oldVertIndex]);
+                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
+                    condensedNormals.Add(normals[oldVertIndex]);
+                    if (vertexColors.Count != 0)
+                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                }
+
+                // Save this updated triangle
+                remappedTriangleFaces.Add(curTriangleFace);
+            }
+
+            // Generate and add the world model object
+            WorldModelObject curWorldModelObject = new WorldModelObject(condensedVerticies, condensedTextureCoords, 
+                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials);
+            WorldObjects.Add(curWorldModelObject);
+        }
+
+        private void CalculateBoundingBox()
         {
             // Calculate it by using the bounding box of all WorldModelObjects
             BoundingBox = new AxisAlignedBox();
@@ -103,120 +254,6 @@ namespace EQWOWConverter.Zones
                 if (worldModelObject.BoundingBox.BottomCorner.Z < BoundingBox.BottomCorner.Z)
                     BoundingBox.BottomCorner.Z = worldModelObject.BoundingBox.BottomCorner.Z;
             }
-        }
-
-        private void GenerateTextureAlignedSubMeshes(string parentName)
-        {
-            //if (Materials.Count == 0)
-            //{
-            //    Logger.WriteLine("- [" + parentName + "]: Could not generate sub meshes since there are no materials");
-            //    return;
-            //}
-
-            //// Perform unique copy of faces into sub objects
-            //List<TriangleFace> facesToConsume = new List<TriangleFace>(TriangleFaces);
-            //while (facesToConsume.Count > 0)
-            //{
-            //    List<int> facesToDelete = new List<int>();
-            //    List<TriangleFace> newMeshTriangles = new List<TriangleFace>();
-
-            //    // Iterate through and collect like faces
-            //    int curMaterialIndex = -2;
-            //    for (int i = 0; i < facesToConsume.Count; i++)
-            //    {
-            //        // If there is no assigned working material index, grab it
-            //        if (curMaterialIndex == -2)
-            //        {
-            //            // If it's an invalid index, just delete it
-            //            if (facesToConsume[i].MaterialIndex < 0)
-            //            {
-            //                facesToDelete.Add(i);
-            //                break;
-            //            }
-            //            curMaterialIndex = facesToConsume[i].MaterialIndex;
-            //        }
-
-            //        // Capture like faces
-            //        if (facesToConsume[i].MaterialIndex == curMaterialIndex)
-            //        {
-            //            // TODO: Add data to mesh
-            //            newMeshTriangles.Add(facesToConsume[i]);
-            //            curMaterialIndex = facesToConsume[i].MaterialIndex;
-            //            facesToDelete.Add(i);
-            //        }
-            //    }
-
-            //    // Remove the faces
-            //    for (int j = facesToDelete.Count - 1; j >= 0; j--)
-            //        facesToConsume.RemoveAt(j);
-
-            //    // Save the mesh
-            //    if (newMeshTriangles.Count > 0)
-            //    {
-            //        // When creating the new mesh, the indicies of the faces to include need to be remapped because
-            //        // the related arrays will be subsets
-            //        EQZoneData newZoneMesh = new EQZoneData();
-            //        newZoneMesh.Materials = new List<Material>(Materials);
-            //        Dictionary<int, int> copiedIndiciesAndNewValues = new Dictionary<int, int>();
-            //        foreach(TriangleFace face in newMeshTriangles)
-            //        {
-            //            TriangleFace realignedFace = new TriangleFace();
-            //            if (copiedIndiciesAndNewValues.ContainsKey(face.V1) == true)
-            //            {
-            //                realignedFace.V1 = copiedIndiciesAndNewValues[face.V1];
-            //            }
-            //            else
-            //            {
-            //                realignedFace.V1 = newZoneMesh.Verticies.Count;
-            //                copiedIndiciesAndNewValues.Add(face.V1, realignedFace.V1);
-            //                newZoneMesh.Verticies.Add(Verticies[face.V1]);
-            //                newZoneMesh.Normals.Add(Normals[face.V1]);
-            //                newZoneMesh.VertexColors.Add(VertexColors[face.V1]);
-            //                newZoneMesh.TextureCoords.Add(TextureCoords[face.V1]);
-            //            }
-
-            //            if (copiedIndiciesAndNewValues.ContainsKey(face.V2) == true)
-            //            {
-            //                realignedFace.V2 = copiedIndiciesAndNewValues[face.V2];
-            //            }
-            //            else
-            //            {
-            //                realignedFace.V2 = newZoneMesh.Verticies.Count;
-            //                copiedIndiciesAndNewValues.Add(face.V2, realignedFace.V2);
-            //                newZoneMesh.Verticies.Add(Verticies[face.V2]);
-            //                newZoneMesh.Normals.Add(Normals[face.V2]);
-            //                newZoneMesh.VertexColors.Add(VertexColors[face.V2]);
-            //                newZoneMesh.TextureCoords.Add(TextureCoords[face.V2]);
-            //            }
-
-            //            if (copiedIndiciesAndNewValues.ContainsKey(face.V3) == true)
-            //            {
-            //                realignedFace.V3 = copiedIndiciesAndNewValues[face.V3];
-            //            }
-            //            else
-            //            {
-            //                realignedFace.V3 = newZoneMesh.Verticies.Count;
-            //                copiedIndiciesAndNewValues.Add(face.V3, realignedFace.V3);
-            //                newZoneMesh.Verticies.Add(Verticies[face.V3]);
-            //                newZoneMesh.Normals.Add(Normals[face.V3]);
-            //                newZoneMesh.VertexColors.Add(VertexColors[face.V3]);
-            //                newZoneMesh.TextureCoords.Add(TextureCoords[face.V3]);
-            //            }
-
-            //            realignedFace.MaterialIndex = face.MaterialIndex;
-            //            newZoneMesh.TriangleFaces.Add(realignedFace);
-            //        }
-            //        newZoneMesh.CalculateBoundingBox();
-            //        TextureAlignedSubMeshes.Add(newZoneMesh);
-            //    }
-            //    else
-            //        Logger.WriteLine("-[" + parentName + "]: Error: In the loop to generate TextureAlignedSubMeshes, there were no verticies added but a mesh was added.");
-            //}
-
-            //if (TextureAlignedSubMeshes.Count >= 1000)
-            //{
-            //    Logger.WriteLine("-[" + parentName + "]: Error: More than 1000 sub meshes was generated, so WMO generation will fail...");
-            //}
         }
     }
 }

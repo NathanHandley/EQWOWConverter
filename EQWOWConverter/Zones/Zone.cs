@@ -49,7 +49,8 @@ namespace EQWOWConverter.Zones
             // Clear any old data and reload
             WOWZoneData = new WOWZoneData(CURRENTWMOID);
             CURRENTWMOID++;
-            WOWZoneData.LoadFromEQZone(EQZoneData);
+            List<string> texturesToGroupIsolate = new List<string>();
+            WOWZoneData.LoadFromEQZone(EQZoneData, texturesToGroupIsolate);
         }
     }
 }

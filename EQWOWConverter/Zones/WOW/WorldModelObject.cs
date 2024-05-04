@@ -128,7 +128,8 @@ namespace EQWOWConverter.Zones
                     sortedVerticies.Add(Verticies[oldVertIndex]);
                     sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
                     sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -149,7 +150,8 @@ namespace EQWOWConverter.Zones
                     sortedVerticies.Add(Verticies[oldVertIndex]);
                     sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
                     sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -170,7 +172,8 @@ namespace EQWOWConverter.Zones
                     sortedVerticies.Add(Verticies[oldVertIndex]);
                     sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
                     sortedNormals.Add(Normals[oldVertIndex]);
-                    sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
                 }
 
                 // Save this updated triangle

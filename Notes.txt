@@ -26,7 +26,14 @@ Notes:
 	
 ** Issues
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Texture "maywall" should exist in \EQExports\fearplane\Zone, but doesn't.  It's in the material.  It's in the \Objects\
+Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
+Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
 
+Test Skyfire, I had to break it up
+- Doesn't look good
+- Also timmourous
+Mistmoore missing a lot of textures...
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
