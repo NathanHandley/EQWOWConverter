@@ -116,8 +116,10 @@ namespace EQWOWConverter
         public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteLine("Creating DBC Update Scripts...");
-            // Create the DBC update scripts
+
             string dbcUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts");
+
+            // Create the DBC update scripts
             AreaTableDBC areaTableDBC = new AreaTableDBC();
             MapDBC mapDBC = new MapDBC();
             MapDifficultyDBC difficultyDBC = new MapDifficultyDBC();
@@ -125,7 +127,7 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.Name);
-                mapDBC.AddRow(zone.WOWZoneData.MapID, zone.ShortName, zone.Name, Convert.ToInt32(zone.WOWZoneData.AreaID));
+                mapDBC.AddRow(zone.WOWZoneData.MapID, "EQ_" + zone.ShortName, zone.Name, Convert.ToInt32(zone.WOWZoneData.AreaID));
                 difficultyDBC.AddRow(zone.WOWZoneData.MapID);
                 foreach(WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
                 {
@@ -139,12 +141,31 @@ namespace EQWOWConverter
             mapDBC.WriteToDisk(dbcUpdateScriptFolder);
             difficultyDBC.WriteToDisk(dbcUpdateScriptFolder);
             wmoAreaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
+
             Logger.WriteLine("DBC Update Scripts created successfully");
         }
 
         public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
         {
+            Logger.WriteLine("Creating AzerothCore SQL Scripts...");
 
+            string sqlScriptFolder = Path.Combine(wowExportPath, "AzerothCoreSQLScripts");
+
+            // Create the SQL Scripts
+            GameTeleSQL gameTeleSQL = new GameTeleSQL();
+            InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
+
+            foreach (Zone zone in zones)
+            {
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.Name);
+                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID));
+            }
+
+            // Output them
+            gameTeleSQL.WriteToDisk(sqlScriptFolder);
+            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
+            
+            Logger.WriteLine("AzerothCore SQL Scripts created successfully");
         }
 
         public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath)

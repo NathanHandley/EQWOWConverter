@@ -25,9 +25,9 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
-        private static UInt32 CURRENT_WMOID = 7000; // Reserving 7000-7122
-        private static UInt32 CURRENT_AREAID = 6000; // Reserving 6000-6122
-        private static int CURRENT_MAPID = 750;  // Reserving 750-872
+        private static UInt32 CURRENT_WMOID = 7000; // Reserving 7000-7200
+        private static UInt32 CURRENT_AREAID = 6000; // Reserving 6000-6200
+        private static int CURRENT_MAPID = 750;  // Reserving 750-900
 
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<Material> Materials = new List<Material>();

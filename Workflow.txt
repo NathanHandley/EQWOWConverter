@@ -1,5 +1,5 @@
 ** Extracting Everquest Assets **
-Use LaternExtractor
+Use LaternExtractor (https://github.com/NathanHandley/LanternExtractor)
 - Edit 'settings.txt' inside the respective Release/Debug binary folder
  - Set the Everquest directory
  - Set ModelExportFormat = 0 (Intermediate)
@@ -36,17 +36,11 @@ Go into the exports directory, and import the csv script files in \DBCUpdateScri
 
 ** Package everything up
 Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy
+Important: Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably
+- In Ladik's MPQ Editor, Operations > Set Max File Count
 
-** Create the tele position
-Example:
-DELETE FROM game_tele WHERE id = 1492;
-INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (1492, 10, 10, 10, 0.5, 725, 'EQArena');
+** Update the AzerothCore Database **
+Run the scripts located into the exports directory subfolder \AzerothCoreScripts\
 
-** Create instance_template record
-Example:
-DELETE FROM `instance_template` WHERE map = 725;
-INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (725, 0, '', 0);
-
-** Important **
-Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably
-- In Ladik's MPQ Editor, Operationns > Set Max File Count
+** Regenerate map files for AzerothCore **
+- Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor
