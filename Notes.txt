@@ -5,9 +5,10 @@
 ** TODO **
 - Chunks use little-endian style byte order.  Make sure the chunk identifier is in the right order!
 - Add source for LaternExtractor
-- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 8000, AreaTable.ID range 6000-7000, AreaBit 3800+
-- Respective Updates in WMOAreaTable.dbc related to WMOGRoupID.  Range will be 30000-40000
+- Respective Updates in WMOAreaTable.dbc and AreaTable.dbc  NOTE: Reserving WMOID range 7000 - 8000, AreaTable.ID range 6000-7000, AreaBit 3800+, WMOAreaTable.ID range 52000-60000
+- Respective Updates in WMOAreaTable.dbc related to WMOGRoupID.  Range will be 30000-38000
 - Respective Updates in Map.dbc and MapDifficulty.dbc.  Range will be 750+
+- Respective Updates in MapDifficulty.dbc.  Range will be 800+
 - Make changes to SQL table game_tele
 - Need alternate solution for animated textures on map files (perhaps move to M2?)
 

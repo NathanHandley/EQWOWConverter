@@ -25,16 +25,15 @@ namespace EQWOWConverter.Zones
 {
     internal class Zone
     {
-        private static readonly UInt32 CONFIG_START_WMOID = 7000; // Reserving 7000-7200
-        private static UInt32 CURRENTWMOID = CONFIG_START_WMOID;
-
         public string Name { get; } = string.Empty;
+        public string ShortName { get; } = string.Empty;
         public EQZoneData EQZoneData = new EQZoneData();
-        public WOWZoneData WOWZoneData = new WOWZoneData(0);
+        public WOWZoneData WOWZoneData = new WOWZoneData();
 
-        public Zone(string name)
+        public Zone(string name, string shortName)
         {
             Name = name;
+            ShortName = shortName;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -46,9 +45,6 @@ namespace EQWOWConverter.Zones
         
         public void PopulateWOWZoneDataFromEQZoneData()
         {
-            // Clear any old data and reload
-            WOWZoneData = new WOWZoneData(CURRENTWMOID);
-            CURRENTWMOID++;
             List<string> texturesToGroupIsolate = new List<string>();
             WOWZoneData.LoadFromEQZone(EQZoneData, texturesToGroupIsolate);
         }

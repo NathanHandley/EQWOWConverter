@@ -25,22 +25,14 @@ Texture "maywall" should exist in \EQExports\fearplane\Zone, but doesn't.  It's 
 Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
 Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
 
-** Generating Association Maps **
-Use EQWOWConverter
-- Run command "Generate EQ Zone Index and Face Index Assocation Maps"
-
-** Clean up png files **
-Use EQWOWConverter
-- TODO
-
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
 Use EQWOWConverter
 - Run command "Convert zones to WMO"
 
 ** Update related DBC files
-1) AreaTable.dbc
-- Each map needs a record.  6000+ values
-2) Each map needs a value.  
+Use WDBX Editor
+Go into the exports directory, and import the csv script files in \DBCUpdateScripts\.  Replace any values that exist, and there is no header row
+(To do this, uncheck "Has Header Row?" and select "Update Existing" on the CSV settings pop-up on import)
 
 ** Package everything up
 Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy

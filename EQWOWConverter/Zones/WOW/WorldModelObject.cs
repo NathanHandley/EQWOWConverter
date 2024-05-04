@@ -26,6 +26,9 @@ namespace EQWOWConverter.Zones
 {
     internal class WorldModelObject
     {
+        private static UInt32 CURRENT_WMOGROUPID = 30000;
+
+        public UInt32 WMOGroupID;
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureUv> TextureCoords = new List<TextureUv>();
         public List<Vector3> Normals = new List<Vector3>();
@@ -44,6 +47,8 @@ namespace EQWOWConverter.Zones
             TriangleFaces = triangleFaces;
             CalculateBoundingBox();
             GenerateRenderBatches(materials);
+            WMOGroupID = CURRENT_WMOGROUPID;
+            CURRENT_WMOGROUPID++;
         }
 
         private void GenerateRenderBatches(List<Material> materials)

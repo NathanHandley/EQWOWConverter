@@ -25,6 +25,10 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
+        private static UInt32 CURRENT_WMOID = 7000; // Reserving 7000-7122
+        private static UInt32 CURRENT_AREAID = 6000; // Reserving 6000-6122
+        private static int CURRENT_MAPID = 750;  // Reserving 750-872
+
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<Material> Materials = new List<Material>();
         public ColorRGBA AmbientLight = new ColorRGBA();
@@ -32,13 +36,19 @@ namespace EQWOWConverter.Zones
         public AxisAlignedBox BoundingBox = new AxisAlignedBox();
         public Fog FogSettings = new Fog();
         public List<string> TextureNames = new List<string>();
+        public UInt32 AreaID;
+        public UInt32 WMOID;
+        public int MapID;
 
-        public UInt32 WMOID { get; }
-
-        public WOWZoneData(UInt32 wmoid)
+        public WOWZoneData()
         {
-            // Save and gen WMOID
-            WMOID = wmoid;
+            // Gen/Update IDs
+            AreaID = CURRENT_AREAID;
+            CURRENT_AREAID++;
+            WMOID = CURRENT_WMOID;
+            CURRENT_WMOID++;
+            MapID = CURRENT_MAPID;
+            CURRENT_MAPID++;
         }
         
         // TODO: Delete texturesToGroupIsolate

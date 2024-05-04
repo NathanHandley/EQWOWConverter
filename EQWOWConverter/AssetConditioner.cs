@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
+using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 
 // Intentially ignoring 'vertex colors'.  Come back if this is needed.
@@ -174,7 +175,7 @@ namespace EQWOWConverter
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Load the EQ zone
-                Zone curZone = new Zone(zoneDirectory.Name);
+                Zone curZone = new Zone(zoneDirectory.Name, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Starting association map generation for '" + zoneDirectory.Name + "...");
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);

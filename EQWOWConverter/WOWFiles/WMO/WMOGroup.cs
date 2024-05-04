@@ -27,7 +27,6 @@ namespace EQWOWConverter.WOWFiles
     internal class WMOGroup : WOWChunkedObject
     {
         public List<byte> GroupBytes = new List<byte>();
-        static UInt32 UniqueID = 30000;
 
         public WMOGroup(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
@@ -84,8 +83,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
 
             // WMOGroupID (inside WMOAreaTable)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(UniqueID)));
-            UniqueID++; // TODO: This needs to get managed!
+            chunkBytes.AddRange(BitConverter.GetBytes(worldModelObject.WMOGroupID));
 
             // Unknown values.  Hopefully not needed
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));

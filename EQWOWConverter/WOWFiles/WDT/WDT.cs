@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
 
         public WDT(Zone zone, string wmoFileName)
         {
-            BaseFileName = zone.Name;
+            BaseFileName = zone.ShortName;
 
             // MVER (Version) ---------------------------------------------------------------------
             ObjectBytes.AddRange(GenerateMVERChunk(zone));

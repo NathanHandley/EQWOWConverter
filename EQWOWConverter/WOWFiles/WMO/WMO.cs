@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
 
         public WMO(Zone zone, string baseFolderPath)
         {
-            BaseFileName = zone.Name;
+            BaseFileName = zone.ShortName;
 
             // Create root object
             RootObject = new WMORoot(zone);

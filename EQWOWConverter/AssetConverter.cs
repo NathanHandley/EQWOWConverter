@@ -59,14 +59,14 @@ namespace EQWOWConverter
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
+            List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                // Only do erudes crossing
-               // if (zoneDirectory.Name != "erudsxing" && zoneDirectory.Name != "crystal")
-               //     continue;
+                //if (zoneDirectory.Name != "erudsxing" && zoneDirectory.Name != "crystal")
+                //    continue;
 
                 // Load the EQ zone
-                Zone curZone = new Zone(zoneDirectory.Name);
+                Zone curZone = new Zone(zoneDirectory.Name, zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);                
@@ -77,11 +77,15 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder);
+
+                zones.Add(curZone);
             }
 
-            // Update the 
-            Logger.WriteLine(" TODO: WMOAreaTable.dbc ");
-            Logger.WriteLine(" TODO: AreaTable.dbc ");
+            // Create the DBC update scripts
+            CreateDBCUpdateScripts(zones, wowExportPath);
+
+            // Create the Azeroth Core Scripts
+            CreateAzerothCoreScripts(zones, wowExportPath);
 
             Logger.WriteLine("Conversion Successful");
             return true;
@@ -109,12 +113,46 @@ namespace EQWOWConverter
             Logger.WriteLine("- [" + zone.Name + "]: Converting of zone '" + zone.Name + "' complete");
         }
 
+        public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
+        {
+            Logger.WriteLine("Creating DBC Update Scripts...");
+            // Create the DBC update scripts
+            string dbcUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts");
+            AreaTableDBC areaTableDBC = new AreaTableDBC();
+            MapDBC mapDBC = new MapDBC();
+            MapDifficultyDBC difficultyDBC = new MapDifficultyDBC();
+            WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
+            foreach (Zone zone in zones)
+            {
+                areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.Name);
+                mapDBC.AddRow(zone.WOWZoneData.MapID, zone.ShortName, zone.Name, Convert.ToInt32(zone.WOWZoneData.AreaID));
+                difficultyDBC.AddRow(zone.WOWZoneData.MapID);
+                foreach(WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
+                {
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(wmo.WMOGroupID),
+                        Convert.ToInt32(zone.WOWZoneData.AreaID), zone.Name);
+                }
+            }
+
+            // Output them
+            areaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
+            mapDBC.WriteToDisk(dbcUpdateScriptFolder);
+            difficultyDBC.WriteToDisk(dbcUpdateScriptFolder);
+            wmoAreaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
+            Logger.WriteLine("DBC Update Scripts created successfully");
+        }
+
+        public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
+        {
+
+        }
+
         public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath)
         {
             Logger.WriteLine("- [" + zone.Name + "]: Exporting textures for zone '" + zone.Name + "'...");
 
             // Create the folder to output
-            string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.Name);
+            string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.ShortName);
             if (Directory.Exists(zoneOutputTextureFolder) == false)
                 FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
 

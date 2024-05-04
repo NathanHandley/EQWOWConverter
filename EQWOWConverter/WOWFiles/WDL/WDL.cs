@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
         // TODO: This is where the heightmap will go for rendering 'in the distance'
         public WDL(Zone zone)
         {
-            BaseFileName = zone.Name;
+            BaseFileName = zone.ShortName;
 
             // MVER (Version) ---------------------------------------------------------------------
             ObjectBytes.AddRange(GenerateMVERChunk(zone));

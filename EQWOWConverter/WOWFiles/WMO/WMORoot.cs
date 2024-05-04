@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
                 foreach (string textureName in material.AnimationTextures)
                 {
                     TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
-                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.Name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
+                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.ShortName.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
                     while (textureBuffer.Count() % 4 != 0)
                         textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
