@@ -36,6 +36,7 @@ namespace EQWOWConverter.Zones
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
         public BoundingBox BoundingBox = new BoundingBox();
+        public BSPTree bspTree;
 
         public WorldModelObject(List<Vector3> verticies, List<TextureUv> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
             List<TriangleFace> triangleFaces, List<Material> materials)
@@ -49,6 +50,7 @@ namespace EQWOWConverter.Zones
             GenerateRenderBatches(materials);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
+            bspTree = new BSPTree(BoundingBox, Verticies, TriangleFaces);
         }
 
         private void GenerateRenderBatches(List<Material> materials)
@@ -97,7 +99,6 @@ namespace EQWOWConverter.Zones
                     renderBatch.Value.BoundingBox = BoundingBox;
                     RenderBatches.Add(renderBatch.Value);
             }
-
         }
 
         private void SortRenderObjects()

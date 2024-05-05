@@ -27,6 +27,17 @@ namespace EQWOWConverter.Common
         public Vector3 TopCornerHighRes = new Vector3();
         public Vector3 BottomCornerHigHRes = new Vector3();
 
+        public BoundingBox()
+        {
+
+        }
+
+        public BoundingBox(BoundingBox box)
+        {
+            TopCornerHighRes = new Vector3(box.TopCornerHighRes);
+            BottomCornerHigHRes = new Vector3(box.BottomCornerHigHRes);
+        }
+
         public List<byte> ToBytesHighRes()
         {
             List<byte> returnBytes = new List<byte>();
@@ -48,7 +59,116 @@ namespace EQWOWConverter.Common
             Int16 BottomX = Convert.ToInt16(Math.Round(BottomCornerHigHRes.X, 0, MidpointRounding.AwayFromZero));
             Int16 BottomY = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Y, 0, MidpointRounding.AwayFromZero));
             Int16 BottomZ = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Z, 0, MidpointRounding.AwayFromZero));
+            returnBytes.AddRange(BitConverter.GetBytes(TopX));
+            returnBytes.AddRange(BitConverter.GetBytes(TopY));
+            returnBytes.AddRange(BitConverter.GetBytes(TopZ));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomX));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomY));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomZ));
             return returnBytes;
+        }
+
+        public float GetXDistance()
+        {
+            return TopCornerHighRes.X - BottomCornerHigHRes.X;
+        }
+
+        public float GetYDistance()
+        {
+            return TopCornerHighRes.Y - BottomCornerHigHRes.Y;
+        }
+
+        public float GetZDistance()
+        {
+            return TopCornerHighRes.Z - BottomCornerHigHRes.Z;
+        }
+
+        public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
+        {
+            // Verticies contained in the box are given collisions, and should be checked first
+            if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
+                return true;
+
+            // Edge 1
+            Vector3 line1Min = GetMinsForLine(point1, point2);
+            Vector3 line1Max = GetMaxForLine(point1, point2);
+            if (DoesLineCastOverlapExist(line1Min, line1Max) == false)
+                return false;
+
+            // Edge 2
+            Vector3 line2Min = GetMinsForLine(point2, point3);
+            Vector3 line2Max = GetMaxForLine(point2, point3);
+            if (DoesLineCastOverlapExist(line2Min, line2Max) == false)
+                return false;
+
+            // Edge 3
+            Vector3 line3Min = GetMinsForLine(point3, point1);
+            Vector3 line3Max = GetMaxForLine(point3, point1);
+            if (DoesLineCastOverlapExist(line3Min, line3Max) == false)
+                return false;
+
+            return true;
+        }
+
+        private bool DoesLineCastOverlapExist(Vector3 line1Min, Vector3 line1Max)
+        {
+            // Only works because this is an axis aligned box
+            if (line1Min.X > TopCornerHighRes.X)
+                return false;
+            else if (line1Min.Y > TopCornerHighRes.Y)
+                return false;
+            else if (line1Min.Z > TopCornerHighRes.Z)
+                return false;
+            else if (line1Max.X < BottomCornerHigHRes.X)
+                return false;
+            else if (line1Max.Y <  BottomCornerHigHRes.Y)
+                return false;
+            else if (line1Max.Z <  BottomCornerHigHRes.Z)
+                return false;
+            return true;
+        }
+
+        private Vector3 GetMinsForLine(Vector3 point1, Vector3 point2)
+        {
+            Vector3 returnVector = new Vector3();
+            if (point1.X < point2.X)
+                returnVector.X = point1.X;
+            else
+                returnVector.X = point2.X;
+            if (point1.Y < point2.Y)
+                returnVector.Y = point1.Y;
+            else
+                returnVector.Y = point2.Y;
+            if (point1.Z < point2.Z)
+                returnVector.Z = point1.Z;
+            else
+                returnVector.Z = point2.Z;
+            return returnVector;
+        }
+
+        private Vector3 GetMaxForLine(Vector3 point1, Vector3 point2)
+        {
+            Vector3 returnVector = new Vector3();
+            if (point1.X > point2.X)
+                returnVector.X = point1.X;
+            else
+                returnVector.X = point2.X;
+            if (point1.Y > point2.Y)
+                returnVector.Y = point1.Y;
+            else
+                returnVector.Y = point2.Y;
+            if (point1.Z > point2.Z)
+                returnVector.Z = point1.Z;
+            else
+                returnVector.Z = point2.Z;
+            return returnVector;
+        }
+
+        private bool IsPointInside(Vector3 point)
+        {
+            return point.X >= BottomCornerHigHRes.X && point.X <= TopCornerHighRes.X &&
+                   point.Y >= BottomCornerHigHRes.Y && point.Y <= TopCornerHighRes.Y &&
+                   point.Z >= BottomCornerHigHRes.Z && point.Z <= TopCornerHighRes.Z;
         }
     }
 }

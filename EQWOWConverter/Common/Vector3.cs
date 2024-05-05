@@ -33,6 +33,13 @@ namespace EQWOWConverter.Common
 
         }
 
+        public Vector3(Vector3 vector)
+        {
+            X = vector.X;
+            Y = vector.Y;
+            Z = vector.Z;
+        }
+
         // Note that this is not a good practice in most instances outside of this use case.  Since the float data is
         // being generated and read in a fixed way, this equal comparison works fine.  But, if this is to be used
         // outside of this engine, a different approach using abs and epsilon should be used
