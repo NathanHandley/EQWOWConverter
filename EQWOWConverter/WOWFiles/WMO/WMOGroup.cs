@@ -62,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
-            chunkBytes.AddRange(worldModelObject.BoundingBox.ToBytes());
+            chunkBytes.AddRange(worldModelObject.BoundingBox.ToBytesHighRes());
 
             // Portal references (zero for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // First portal index
@@ -212,7 +212,7 @@ namespace EQWOWConverter.WOWFiles
             foreach (WorldModelRenderBatch renderBatch in worldModelObject.RenderBatches)
             {
                 // Bounding Box
-                chunkBytes.AddRange(renderBatch.BoundingBoxLowRes.ToBytes());
+                chunkBytes.AddRange(renderBatch.BoundingBox.ToBytesLowRes());
 
                 // Poly Start Index
                 chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.FirstTriangleFaceIndex));

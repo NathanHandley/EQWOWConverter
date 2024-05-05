@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(rotation.ToBytes());
 
             // Bounding Box... again?
-            chunkBytes.AddRange(zone.WOWZoneData.BoundingBox.ToBytes());
+            chunkBytes.AddRange(zone.WOWZoneData.BoundingBox.ToBytesHighRes());
 
             // Flags - I don't think any are relevant, so zeroing it out (IsDestructible = 1, UsesLOD = 2)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));

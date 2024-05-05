@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones
 {
     internal class WorldModelRenderBatch
     {
-        public AxisAlignedBoxLR BoundingBoxLowRes = new AxisAlignedBoxLR();
+        public BoundingBox BoundingBox = new BoundingBox();
         public byte MaterialIndex = 0;
         public UInt32 FirstTriangleFaceIndex = 0;
         public UInt16 NumOfFaceIndicies = 0;

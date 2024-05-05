@@ -113,7 +113,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));    // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytes());            // Ambiant Light
             chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));      // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytes());             // Axis aligned bounding box for the zone mesh(es)
+            chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      // Axis aligned bounding box for the zone mesh(es)
 
             // For now, get rid of these 
             //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
@@ -261,7 +261,7 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
 
                 // Since only one group, use the overall bounding box
-                chunkBytes.AddRange(curWorldModelObject.BoundingBox.ToBytes());
+                chunkBytes.AddRange(curWorldModelObject.BoundingBox.ToBytesHighRes());
 
                 // Group name is the first offset
                 chunkBytes.AddRange(BitConverter.GetBytes(GroupNameOffset));
