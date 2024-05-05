@@ -25,6 +25,7 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
+        private static readonly int MAX_FACES_PER_WMOGROUP = 20000; // Any more than this seems to cause wmo group loading issues
         private static UInt32 CURRENT_WMOID = 7000; // Reserving 7000-7200
         private static UInt32 CURRENT_AREAID = 6000; // Reserving 6000-6200
         private static int CURRENT_MAPID = 750;  // Reserving 750-900
@@ -143,7 +144,7 @@ namespace EQWOWConverter.Zones
                         faceIndexesToDelete.Add(i);
 
                         // Only go up to a maximum to avoid overflowing the model arrays
-                        if (facesInGroup.Count >= 60000)
+                        if (facesInGroup.Count >= MAX_FACES_PER_WMOGROUP)
                         {
                             facesLeftToProcess = true;
                             break;
