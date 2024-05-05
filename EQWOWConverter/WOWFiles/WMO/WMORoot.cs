@@ -294,7 +294,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPV is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MOPV", chunkBytes.ToArray());
         }
@@ -306,7 +306,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPT is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MOPT", chunkBytes.ToArray());
         }
@@ -318,7 +318,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOPR is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MOPR", chunkBytes.ToArray());
         }
@@ -330,7 +330,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOVV is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MOVV", chunkBytes.ToArray());
         }
@@ -342,7 +342,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOVB is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MOVB", chunkBytes.ToArray());
         }
@@ -353,9 +353,9 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOLTChunk()
         {
             List<byte> chunkBytes = new List<byte>();
-            
-            Logger.WriteLine("MOLT is intentially empty (no implementation)");
-            
+
+            // Intentionally blank for now
+
             return WrapInChunk("MOLT", chunkBytes.ToArray());
         }
 
@@ -389,7 +389,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODN is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MODN", chunkBytes.ToArray());
         }
@@ -401,7 +401,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODD is intentially empty (no implementation)");
+            // Intentionally blank for now
 
             return WrapInChunk("MODD", chunkBytes.ToArray());
         }

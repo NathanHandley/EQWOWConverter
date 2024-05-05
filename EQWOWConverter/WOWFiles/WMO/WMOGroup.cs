@@ -244,7 +244,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOLR Generation unimplemented!");
+            // Intentionally blank for now
 
             return WrapInChunk("MOLR", chunkBytes.ToArray());
         }
@@ -257,7 +257,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MODR Generation unimplemented!");
+            // Intentionally blank for now
 
             return WrapInChunk("MODR", chunkBytes.ToArray());
         }
@@ -300,7 +300,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MOCV Generation unimplemented!");
+            // Intentionally blank for now
 
             return WrapInChunk("MOCV", chunkBytes.ToArray());
         }
@@ -313,7 +313,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            Logger.WriteLine("MLIQ Generation unimplemented!");
+            // Intentionally blank for now
 
             return WrapInChunk("MLIQ", chunkBytes.ToArray());
         }
