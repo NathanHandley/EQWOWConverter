@@ -34,8 +34,8 @@ internal class Program
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
             Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
-            Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");
-            Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)");
+            Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");// TODO: Delete?
+            Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command: ");

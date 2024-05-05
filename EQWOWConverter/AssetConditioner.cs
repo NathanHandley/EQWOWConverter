@@ -121,6 +121,7 @@ namespace EQWOWConverter
             return true;
         }
 
+        // TODO: Delete?
         public bool UpdateImageReferences(string eqExportsCondensedPath)
         {
             Logger.WriteLine("Updating image references...");
@@ -140,6 +141,7 @@ namespace EQWOWConverter
             return true;
         }
 
+        // TODO: Delete this?
         // TODO: Rewrite to be quick.  Approach:
         // TBD: Delete
         // 1) Generate 'vertexkey' for verticies (Vector3) by using the input row string literal 
