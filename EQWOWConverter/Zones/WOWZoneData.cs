@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones
         }
         
         // TODO: Delete texturesToGroupIsolate
-        public void LoadFromEQZone(EQZoneData eqZoneData, List<string> texturesToGroupIsolate)
+        public void LoadFromEQZone(EQZoneData eqZoneData, List<string> texturesToGroupIsolate, float worldScale)
         {
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
@@ -91,8 +91,17 @@ namespace EQWOWConverter.Zones
                 textureCoords.Add(curTextureCoords);
             }
 
+            // Reduce size of verticies.
+            List<Vector3> verticies = new List<Vector3>();
+            foreach (Vector3 vertex in eqZoneData.Verticies)
+            {
+                vertex.X *= worldScale;
+                vertex.Y *= worldScale;
+                vertex.Z *= worldScale;
+                verticies.Add(vertex);
+            }
+
             // Create world model objects by identifying connected triangles and grouping them
-            List<Vector3> verticies = eqZoneData.Verticies;
             List<Vector3> normals = eqZoneData.Normals;
             List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
 

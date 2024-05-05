@@ -25,6 +25,8 @@ namespace EQWOWConverter.Zones
 {
     internal class Zone
     {
+        public static readonly float WORLD_SCALE = 0.35f;
+
         public string Name { get; } = string.Empty;
         public string ShortName { get; } = string.Empty;
         public EQZoneData EQZoneData = new EQZoneData();
@@ -46,7 +48,7 @@ namespace EQWOWConverter.Zones
         public void PopulateWOWZoneDataFromEQZoneData()
         {
             List<string> texturesToGroupIsolate = new List<string>();
-            WOWZoneData.LoadFromEQZone(EQZoneData, texturesToGroupIsolate);
+            WOWZoneData.LoadFromEQZone(EQZoneData, texturesToGroupIsolate, WORLD_SCALE);
         }
     }
 }
