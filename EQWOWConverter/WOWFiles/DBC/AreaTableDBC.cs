@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
             public int Flags = 0;
             public int ZoneMusic = 0;
             public int IntroSound = 0;
-            public int ExplorationLevel;
+            public int ExplorationLevel = 0;
             public string AreaName = string.Empty;       
         }
 
