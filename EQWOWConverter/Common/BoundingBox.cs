@@ -54,17 +54,17 @@ namespace EQWOWConverter.Common
         {
             List<byte> returnBytes = new List<byte>();
             Int16 TopX = Convert.ToInt16(Math.Round(TopCornerHighRes.X, 0, MidpointRounding.AwayFromZero));
-            Int16 TopY = Convert.ToInt16(Math.Round(TopCornerHighRes.Y, MidpointRounding.AwayFromZero));
-            Int16 TopZ = Convert.ToInt16(Math.Round(TopCornerHighRes.Z, MidpointRounding.AwayFromZero));
+            Int16 TopY = Convert.ToInt16(Math.Round(TopCornerHighRes.Y, 0, MidpointRounding.AwayFromZero));
+            Int16 TopZ = Convert.ToInt16(Math.Round(TopCornerHighRes.Z, 0, MidpointRounding.AwayFromZero));
             Int16 BottomX = Convert.ToInt16(Math.Round(BottomCornerHigHRes.X, 0, MidpointRounding.AwayFromZero));
             Int16 BottomY = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Y, 0, MidpointRounding.AwayFromZero));
             Int16 BottomZ = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Z, 0, MidpointRounding.AwayFromZero));
-            returnBytes.AddRange(BitConverter.GetBytes(TopX));
-            returnBytes.AddRange(BitConverter.GetBytes(TopY));
-            returnBytes.AddRange(BitConverter.GetBytes(TopZ));
             returnBytes.AddRange(BitConverter.GetBytes(BottomX));
             returnBytes.AddRange(BitConverter.GetBytes(BottomY));
             returnBytes.AddRange(BitConverter.GetBytes(BottomZ));
+            returnBytes.AddRange(BitConverter.GetBytes(TopX));
+            returnBytes.AddRange(BitConverter.GetBytes(TopY));
+            returnBytes.AddRange(BitConverter.GetBytes(TopZ));
             return returnBytes;
         }
 

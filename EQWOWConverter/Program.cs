@@ -110,7 +110,5 @@ internal class Program
                 }
             }
         }
-        Logger.WriteLine("Press any key to quit...");
-        Console.ReadKey();
     }
 }

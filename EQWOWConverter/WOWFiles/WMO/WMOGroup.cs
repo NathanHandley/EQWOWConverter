@@ -270,14 +270,8 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            BoundingBox Box = new BoundingBox();
-            List<uint> uints = new List<uint>();
-            BSPNode node = new BSPNode(false, Box, uints);
-            node.SetValues(BSPNodeFlag.Leaf, -1, -1, 2, 0, 0.0f);
-
-            chunkBytes.AddRange(node.ToBytes());
-            //foreach (BSPNode node in worldModelObject.BSPTree.Nodes)
-            //    chunkBytes.AddRange(node.ToBytes());
+            foreach (BSPNode node in worldModelObject.BSPTree.Nodes)
+                chunkBytes.AddRange(node.ToBytes());
 
             return WrapInChunk("MOBN", chunkBytes.ToArray());
         }
@@ -290,13 +284,8 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            /*
             foreach(UInt32 faceIndex in worldModelObject.BSPTree.FaceTriangleIndicies)
                 chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(faceIndex)));
-            */
-            // Temp, list both faces
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(1)));
 
             return WrapInChunk("MOBR", chunkBytes.ToArray());
         }
