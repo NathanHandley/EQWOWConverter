@@ -40,7 +40,7 @@ namespace EQWOWConverter
         // Generator Rules
         // ====================================================================
         // The value EQ verticies multiply by when translated into WOW verticies
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.40f;
+        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.25f; // 0.4 - taurens can get through doors
 
         // Maximum number of faces that fit into a WMO group before it subdivides
         // - Note: Any more than this (20000) seems to not load
@@ -54,6 +54,9 @@ namespace EQWOWConverter
 
         // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc. (~7000-7200)
         public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
+
+        // Specific rows in WMOAReaTable.dbc. (~52000-60000)
+        public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
 
         // Identifies Area rows in AreaTable.dbc. (~6000-6200)
         public static readonly UInt32 CONFIG_DBCID_AREAID_START = 6000;
@@ -70,13 +73,11 @@ namespace EQWOWConverter
         // Start row for `game_tele` records. (~2000-2200)
         public static readonly int CONFIG_GAMETELE_ROWID_START = 2000;
 
-
         // ====================================================================
         // BSP Tree Generation
         // ====================================================================
-
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 50;
+        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 250;
 
         // BSP tree nodes won't operate on bounding boxes smaller than this
         public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 1.0f;

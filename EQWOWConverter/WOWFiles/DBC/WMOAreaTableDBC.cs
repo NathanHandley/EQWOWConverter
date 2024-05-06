@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_ID = 52000; // Reserving 52000-60000
+            private static int CURRENT_ID = Configuration.CONFIG_DBCID_WMOAREATABLEID_START;
 
             public int ID;
             public int WMOID;
