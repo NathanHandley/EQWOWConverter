@@ -1,6 +1,5 @@
 ﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2024 Nathan Handley
-//  
 //
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -26,29 +25,47 @@ namespace EQWOWConverter.Common
     internal class BSPNode
     {
         public BSPNodeFlag Flags;
-        public Int16 NegChild; // Right side, negative
-        public Int16 PosChild; // Left side, positive
-        public UInt16 NumFaces; // Number of faces (found in WMO MOBR)
-        public UInt32 FaceStartIndex; // first triangle (found in WMO MOBR)
-        public float PlaneDistance;
+        public Int16 ChildANodeIndex = -1; // Right side, negative
+        public Int16 ChildBNodeIndex = -1; // Left side, positive
+        public UInt16 NumFaces = 0; // Number of faces (found in WMO MOBR)
+        public UInt32 FaceStartIndex = 0; // first triangle index (found in WMO MOBR)
+        public float PlaneDistance = 0;
 
-        public BSPNode() { }
-        public BSPNode(BSPNodeFlag singleFlag, short negChild, short posChild, ushort numFaces, uint faceStartIndex, float planeDistance)
+        // Related to tree generation
+        public bool TreeGenHaveMoreToProcess = false;
+        public BoundingBox TreeGenBoundingBox = new BoundingBox();
+        public List<UInt32> TreeGenFaceIndicies = new List<UInt32>();
+
+        public BSPNode(bool haveMoreToProcess, BoundingBox boundingBox, List<UInt32> faceIndicies)
+        {
+            TreeGenHaveMoreToProcess = haveMoreToProcess;
+            TreeGenFaceIndicies = new List<uint>(faceIndicies);
+            TreeGenBoundingBox = new BoundingBox(boundingBox);
+        }
+
+        public void SetValues(BSPNodeFlag singleFlag, short childANodeIndex, short childBNodeIndex, ushort numFaces, uint faceStartIndex, float planeDistance)
         {
             Flags = singleFlag;
-            NegChild = negChild;
-            PosChild = posChild;
+            ChildANodeIndex = childANodeIndex;
+            ChildBNodeIndex = childBNodeIndex;
             NumFaces = numFaces;
             FaceStartIndex = faceStartIndex;
             PlaneDistance = planeDistance;
+        }
+
+        public void ClearTreeGenData()
+        {
+            TreeGenHaveMoreToProcess = false;
+            TreeGenBoundingBox = new BoundingBox();
+            TreeGenFaceIndicies.Clear();
         }
 
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();
             returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(Flags)));
-            returnBytes.AddRange(BitConverter.GetBytes(NegChild));
-            returnBytes.AddRange(BitConverter.GetBytes(PosChild));
+            returnBytes.AddRange(BitConverter.GetBytes(ChildANodeIndex));
+            returnBytes.AddRange(BitConverter.GetBytes(ChildBNodeIndex));
             returnBytes.AddRange(BitConverter.GetBytes(NumFaces));
             returnBytes.AddRange(BitConverter.GetBytes(FaceStartIndex));
             returnBytes.AddRange(BitConverter.GetBytes(PlaneDistance));

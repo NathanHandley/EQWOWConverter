@@ -62,7 +62,7 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                //if (zoneDirectory.Name != "erudsxing" && zoneDirectory.Name != "crystal")
+                //if (zoneDirectory.Name != "iceclad")
                 //    continue;
 
                 // Load the EQ zone

@@ -25,7 +25,8 @@ namespace EQWOWConverter.Common
 {
     internal class BSPTree
     {
-        private static readonly UInt16 CONFIG_MIN_SPLIT_SIZE = 2000;
+        private static readonly UInt16  CONFIG_MIN_SPLIT_SIZE       = 50;   // Not sure what the best number is here
+        private static readonly float CONFIG_MIN_BOX_SIZE_TOTAL     = 1.0f; // Min size of a valid bound box
 
         private class SplitBox
         {
@@ -35,16 +36,28 @@ namespace EQWOWConverter.Common
         }
 
         public List<BSPNode> Nodes = new List<BSPNode>();
-        public List<UInt16> FaceIndicies = new List<UInt16>();
+        public List<UInt32> FaceTriangleIndicies = new List<UInt32>();
+        private List<int> NodesToProcess = new List<int>();
 
         // Generate on create
         public BSPTree(BoundingBox boundingBox, List<Vector3> verticies, List<TriangleFace> triangleFaces)
         {
-            // Spawn out from the root node
+            // Create a root node
             List<UInt32> faceIndicies = new List<UInt32>();
             for (uint i = 0; i < triangleFaces.Count; i++)
                 faceIndicies.Add(i);
-            AddNode(boundingBox, faceIndicies, triangleFaces, verticies);
+            BSPNode rootNode = new BSPNode(true, boundingBox, faceIndicies);
+            Nodes.Add(rootNode);
+            NodesToProcess.Add(0);
+
+            // Loop through nodes until there are none to process
+            while (NodesToProcess.Count > 0)
+            {
+                List<int> nodesToProcessCopy = new List<int>(NodesToProcess);
+                NodesToProcess.Clear();
+                foreach (int nodeIndexToProcess in nodesToProcessCopy)
+                    ProcessNode(nodeIndexToProcess, triangleFaces, verticies);
+            }
         }
 
         private SplitBox GenerateSplitBox(BoundingBox box, BSPNodeFlag planeSplitType)
@@ -83,43 +96,64 @@ namespace EQWOWConverter.Common
             return splitBox;
         }
 
-        private UInt16 AddNode(BoundingBox boundingBox, List<UInt32> boxFacesIndicies, List<TriangleFace> allTriangleFaces, List<Vector3> allVerticies)
+        private void ProcessNode(int nodeIndex, List<TriangleFace> allTriangleFaces, List<Vector3> allVerticies)
         {
-            // If we reach the minimum split size, terminate this branch
-            if (boxFacesIndicies.Count <= CONFIG_MIN_SPLIT_SIZE)
+            BoundingBox curNodeBoundingBox = new BoundingBox(Nodes[nodeIndex].TreeGenBoundingBox);
+            float xDistance = curNodeBoundingBox.GetXDistance();
+            float yDistance = curNodeBoundingBox.GetYDistance();
+            float zDistance = curNodeBoundingBox.GetZDistance();
+            float totalDistance = xDistance + yDistance + zDistance;
+
+            // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
+            if (Nodes[nodeIndex].TreeGenFaceIndicies.Count <= CONFIG_MIN_SPLIT_SIZE || totalDistance < CONFIG_MIN_BOX_SIZE_TOTAL)
             {
-                // Create this final leaf
-                BSPNode leafNode = new BSPNode(BSPNodeFlag.Leaf, -1, -1,
-                    Convert.ToUInt16(boxFacesIndicies.Count), Convert.ToUInt16(FaceIndicies.Count), 0.0f);
-                foreach (UInt32 faceIndex in boxFacesIndicies)
-                    FaceIndicies.Add(Convert.ToUInt16(faceIndex));
-                Nodes.Add(leafNode);
-                return Convert.ToUInt16(Nodes.Count - 1);
+                // Store the faces on the master list
+                UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndicies.Count);
+                foreach(UInt32 faceIndex in Nodes[nodeIndex].TreeGenFaceIndicies)
+                    FaceTriangleIndicies.Add(faceIndex);
+
+                // Update leaf values
+                Nodes[nodeIndex].SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(Nodes[nodeIndex].TreeGenFaceIndicies.Count), curFaceStartIndex, 0.0f);
+
+                // No more processing
+                Nodes[nodeIndex].ClearTreeGenData();
+                return;
             }
 
             // Calculate plane type and split the box long way
             BSPNodeFlag planeSplitType;
-            if (boundingBox.GetXDistance() > boundingBox.GetYDistance() && (boundingBox.GetXDistance() > boundingBox.GetZDistance()))
+            if (xDistance >= yDistance && (xDistance > zDistance))
                 planeSplitType = BSPNodeFlag.YZPlane;
-            else if (boundingBox.GetYDistance() > boundingBox.GetXDistance() && (boundingBox.GetYDistance() > boundingBox.GetZDistance()))
+            else if (yDistance >= xDistance && (yDistance > zDistance))
                 planeSplitType = BSPNodeFlag.XZPlane;
             else
                 planeSplitType = BSPNodeFlag.XYPlane;
-            SplitBox splitBox = GenerateSplitBox(boundingBox, planeSplitType);
+            SplitBox splitBox = GenerateSplitBox(curNodeBoundingBox, planeSplitType);
+            Nodes[nodeIndex].Flags = planeSplitType;
+            Nodes[nodeIndex].PlaneDistance = splitBox.PlaneDistance;
 
-            // Store face indicies that collide with each box
+            // Store face indicies that collide with each box, and either update the node half or create appropriate nodes to reflect
             List<UInt32> boxAFaceIndicies = new List<UInt32>();
-            foreach(UInt32 boxFaceIndex in boxFacesIndicies)
+            foreach(UInt32 boxFaceIndex in Nodes[nodeIndex].TreeGenFaceIndicies)
             {
                 Vector3 point1 = allVerticies[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V1];
                 Vector3 point2 = allVerticies[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V2];
                 Vector3 point3 = allVerticies[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V3];
                 if (splitBox.BoxA.DoesIntersectTriangle(point1, point2, point3))
                     boxAFaceIndicies.Add(boxFaceIndex);
-
             }
+            if (boxAFaceIndicies.Count == 0)
+                Nodes[nodeIndex].ChildANodeIndex = -1;
+            else
+            {
+                BSPNode newChildNode = new BSPNode(true, splitBox.BoxA, boxAFaceIndicies);
+                Nodes[nodeIndex].ChildANodeIndex = Convert.ToInt16(Nodes.Count);
+                NodesToProcess.Add(Nodes.Count);
+                Nodes.Add(newChildNode);
+            }
+
             List<UInt32> boxBFaceIndicies = new List<UInt32>();
-            foreach (UInt32 boxFaceIndex in boxFacesIndicies)
+            foreach (UInt32 boxFaceIndex in Nodes[nodeIndex].TreeGenFaceIndicies)
             {
                 Vector3 point1 = allVerticies[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V1];
                 Vector3 point2 = allVerticies[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V2];
@@ -127,13 +161,19 @@ namespace EQWOWConverter.Common
                 if (splitBox.BoxB.DoesIntersectTriangle(point1, point2, point3))
                     boxBFaceIndicies.Add(boxFaceIndex);
             }
+            if (boxBFaceIndicies.Count == 0)
+                Nodes[nodeIndex].ChildBNodeIndex = -1;
+            else
+            {
+                BSPNode newChildNode = new BSPNode(true, splitBox.BoxB, boxBFaceIndicies);
+                Nodes[nodeIndex].ChildBNodeIndex = Convert.ToInt16(Nodes.Count);
+                NodesToProcess.Add(Nodes.Count);
+                Nodes.Add(newChildNode);
+            }
 
-            // Create this split node
-            Int16 faceCountBoxA = Convert.ToInt16((boxAFaceIndicies.Count == 0) ? -1 : AddNode(splitBox.BoxA, boxAFaceIndicies, allTriangleFaces, allVerticies));
-            Int16 faceCountBoxB = Convert.ToInt16((boxBFaceIndicies.Count == 0) ? -1 : AddNode(splitBox.BoxB, boxBFaceIndicies, allTriangleFaces, allVerticies));
-            BSPNode newNode = new BSPNode(planeSplitType, faceCountBoxA, faceCountBoxB, 0, 0, splitBox.PlaneDistance);
-            Nodes.Add(newNode);
-            return Convert.ToUInt16(Nodes.Count - 1);
+            // No more processing
+            Nodes[nodeIndex].ClearTreeGenData();
+            return;
         }        
     }
 }

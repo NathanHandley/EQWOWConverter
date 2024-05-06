@@ -70,17 +70,17 @@ namespace EQWOWConverter.Common
 
         public float GetXDistance()
         {
-            return TopCornerHighRes.X - BottomCornerHigHRes.X;
+            return Math.Abs(TopCornerHighRes.X - BottomCornerHigHRes.X);
         }
 
         public float GetYDistance()
         {
-            return TopCornerHighRes.Y - BottomCornerHigHRes.Y;
+            return Math.Abs(TopCornerHighRes.Y - BottomCornerHigHRes.Y);
         }
 
         public float GetZDistance()
         {
-            return TopCornerHighRes.Z - BottomCornerHigHRes.Z;
+            return Math.Abs(TopCornerHighRes.Z - BottomCornerHigHRes.Z);
         }
 
         public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
