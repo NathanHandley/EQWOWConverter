@@ -162,12 +162,14 @@ namespace EQWOWConverter.WOWFiles
 
                 // For now, don't put any flags. But see WMOMaterialFlags later
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                //UInt32 materialFlags = GetPackedFlags(Convert.ToUInt32(WMOMaterialFlags.ClampTextureS), Convert.ToUInt32(WMOMaterialFlags.ClampTextureT));
+                //chunkBytes.AddRange(BitConverter.GetBytes(materialFlags));
 
                 // This is the shader, but just use Diffuse for now (0).  1 = Specular, 2 = Metal, 3 = Environment, etc see wowdev
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
-                // Blend Mode (zero for now)
-                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                // Blend Mode (2 = GxBlend_Alpha, 3 = GxBlend_Add and ghosty)
+                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
 
                 // Texture reference (for diffuse above)
                 if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
