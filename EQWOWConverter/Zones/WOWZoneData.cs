@@ -25,10 +25,9 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
-        private static readonly int MAX_FACES_PER_WMOGROUP = 20000; // Any more than this seems to cause wmo group loading issues
-        private static UInt32 CURRENT_WMOID = 7000; // Reserving 7000-7200
-        private static UInt32 CURRENT_AREAID = 6000; // Reserving 6000-6200
-        private static int CURRENT_MAPID = 750;  // Reserving 750-900
+        private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
+        private static UInt32 CURRENT_AREAID = Configuration.CONFIG_DBCID_AREAID_START;
+        private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
 
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<Material> Materials = new List<Material>();
@@ -144,7 +143,7 @@ namespace EQWOWConverter.Zones
                         faceIndexesToDelete.Add(i);
 
                         // Only go up to a maximum to avoid overflowing the model arrays
-                        if (facesInGroup.Count >= MAX_FACES_PER_WMOGROUP)
+                        if (facesInGroup.Count >= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
                         {
                             facesLeftToProcess = true;
                             break;

@@ -25,9 +25,6 @@ namespace EQWOWConverter.Common
 {
     internal class BSPTree
     {
-        private static readonly UInt16  CONFIG_MIN_SPLIT_SIZE       = 50;   // Not sure what the best number is here
-        private static readonly float CONFIG_MIN_BOX_SIZE_TOTAL     = 1.0f; // Min size of a valid bound box
-
         private class SplitBox
         {
             public BoundingBox BoxA = new BoundingBox();
@@ -105,7 +102,7 @@ namespace EQWOWConverter.Common
             float totalDistance = xDistance + yDistance + zDistance;
 
             // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
-            if (Nodes[nodeIndex].TreeGenFaceIndicies.Count <= CONFIG_MIN_SPLIT_SIZE || totalDistance < CONFIG_MIN_BOX_SIZE_TOTAL)
+            if (Nodes[nodeIndex].TreeGenFaceIndicies.Count <= Configuration.CONFIG_BSPTREE_MIN_SPLIT_SIZE || totalDistance < Configuration.CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL)
             {
                 // Store the faces on the master list
                 UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndicies.Count);

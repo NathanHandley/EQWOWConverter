@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones
 {
     internal class WorldModelObject
     {
-        private static UInt32 CURRENT_WMOGROUPID = 30000;
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
         public List<Vector3> Verticies = new List<Vector3>();

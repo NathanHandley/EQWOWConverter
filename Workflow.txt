@@ -40,7 +40,7 @@ Important: Make sure the max file count inside the MPQ is set to something quite
 - In Ladik's MPQ Editor, Operations > Set Max File Count
 
 ** Update the AzerothCore Database **
-Run the scripts located into the exports directory subfolder \AzerothCoreScripts\
+Run the scripts located into the exports directory subfolder \AzerothCoreSQLScripts\
 
 ** Regenerate map files for AzerothCore **
 - Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor

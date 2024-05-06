@@ -19,11 +19,6 @@ using System.Runtime.CompilerServices;
 
 internal class Program
 {
-    // TODO: Move to config
-    public static string CONFIG_PATH_EQEXPORTSRAW           = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
-    public static string CONFIG_PATH_EQEXPORTSCONDITIONED   = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
-    public static string CONFIG_PATH_EXPORT_FOLDER          = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
-
     private static void Main(string[] args)
     {
         Logger.ResetLog();
@@ -58,7 +53,7 @@ internal class Program
                         {
                             Logger.WriteLine("Conditioning Exported EQ Data...");
                             AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.ConditionAllModels(CONFIG_PATH_EQEXPORTSRAW, CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            bool condenseResult = conditioner.ConditionAllModels(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
                                 Logger.WriteLine("Exported EQ Data Conditioning Failed.");
@@ -70,7 +65,7 @@ internal class Program
                         {
                             Logger.WriteLine("Updating image references...");
                             AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.UpdateImageReferences(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            bool condenseResult = conditioner.UpdateImageReferences(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
                                 Logger.WriteLine("Updating image references failed.");
@@ -82,7 +77,7 @@ internal class Program
                         {
                             Logger.WriteLine("Generating Association Maps (takes a very long time)...");
                             AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.GenerateAssociationMaps(CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            bool condenseResult = conditioner.GenerateAssociationMaps(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
                                 Logger.WriteLine("Association Map Generation Failure.");
@@ -94,7 +89,7 @@ internal class Program
                         {
                             Logger.WriteLine("Converting zones from EQ to WoW...");
                             AssetConverter converter = new AssetConverter();
-                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(CONFIG_PATH_EQEXPORTSCONDITIONED, CONFIG_PATH_EXPORT_FOLDER);
+                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
                             if (conversionResult == false)
                             {
                                 Logger.WriteLine("EQ to WoW zone conversion Failed.");

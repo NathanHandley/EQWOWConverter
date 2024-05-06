@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_ROWID = 800; // Reserving 800-922
+            private static int CURRENT_ROWID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
             public int Id;
             public int MapID;
             public int Diffculty = 0; // Not sure 100%

@@ -10,7 +10,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_ROWID = 2000; // Reserving 2000-2200
+            private static int CURRENT_ROWID = Configuration.CONFIG_GAMETELE_ROWID_START;
 
             public int ID;
             public float XPosition = 10;
