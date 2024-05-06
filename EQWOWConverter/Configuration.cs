@@ -40,7 +40,7 @@ namespace EQWOWConverter
         // Generator Rules
         // ====================================================================
         // The value EQ verticies multiply by when translated into WOW verticies
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.25f; // 0.4 - taurens can get through doors
+        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
 
         // Maximum number of faces that fit into a WMO group before it subdivides
         // - Note: Any more than this (20000) seems to not load
