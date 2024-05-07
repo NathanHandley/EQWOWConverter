@@ -29,11 +29,14 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int mapID, string name)
+        public void AddRow(int mapID, string name, float x, float y, float z)
         {
             Row newRow = new Row();
             newRow.MapID = mapID;
             newRow.Name = name;
+            newRow.XPosition = x;
+            newRow.YPosition = y;
+            newRow.ZPosition = z;
             rows.Add(newRow);
         }
 

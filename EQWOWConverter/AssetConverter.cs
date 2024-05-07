@@ -62,8 +62,8 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                //if (zoneDirectory.Name != "iceclad")
-                //    continue;
+                if (zoneDirectory.Name != "gfaydark")
+                    continue;
 
                 // Load the EQ zone
                 Zone curZone = new Zone(zoneDirectory.Name);
@@ -160,7 +160,8 @@ namespace EQWOWConverter
 
             foreach (Zone zone in zones)
             {
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.DescriptiveNameOnlyLetters);
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.DescriptiveNameOnlyLetters,
+                    zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID));
             }
 

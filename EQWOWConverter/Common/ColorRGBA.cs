@@ -34,6 +34,13 @@ namespace EQWOWConverter.Common
 
         }
 
+        public ColorRGBA(ColorRGB colorRGB)
+        {
+            R = Convert.ToByte(colorRGB.R);
+            G = Convert.ToByte(colorRGB.G);
+            B = Convert.ToByte(colorRGB.B);
+        }
+
         public ColorRGBA(byte r, byte g, byte b, byte a)
         {
             R = r;

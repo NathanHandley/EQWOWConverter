@@ -28,8 +28,8 @@ namespace EQWOWConverter.Common
         public Vector3 Position = new Vector3();
         public float NearRadius = 0;
         public float FarRadius = 0;
-        public float NormalStartScalar = 0.50f;         // Default is 0.25f
-        public float NormalEnd = 1000f;                 // Default is 444.4445f
+        public float NormalStartScalar = 0.25f;         // Default is 0.25f
+        public float NormalEnd = 444.4445f;             // Default is 444.4445f
         public ColorRGBA NormalColor = new ColorRGBA(255, 255, 255, 255);
         public float UnderwaterStartScalar = -0.5f;
         public float UnderwaterEnd = 222.2222f;
