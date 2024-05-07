@@ -20,8 +20,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using EQWOWConverter.Common;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.Zones
 {
     internal class EQZoneData
     {

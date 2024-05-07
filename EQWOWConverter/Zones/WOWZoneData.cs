@@ -51,8 +51,7 @@ namespace EQWOWConverter.Zones
             CURRENT_MAPID++;
         }
         
-        // TODO: Delete texturesToGroupIsolate
-        public void LoadFromEQZone(EQZoneData eqZoneData, List<string> texturesToGroupIsolate, float worldScale)
+        public void LoadFromEQZone(EQZoneData eqZoneData, ZoneProperties zoneProperties)
         {
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
@@ -95,9 +94,9 @@ namespace EQWOWConverter.Zones
             List<Vector3> verticies = new List<Vector3>();
             foreach (Vector3 vertex in eqZoneData.Verticies)
             {
-                vertex.X *= worldScale;
-                vertex.Y *= worldScale;
-                vertex.Z *= worldScale;
+                vertex.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 verticies.Add(vertex);
             }
 

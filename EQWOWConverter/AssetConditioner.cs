@@ -177,7 +177,7 @@ namespace EQWOWConverter
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Load the EQ zone
-                Zone curZone = new Zone(zoneDirectory.Name, zoneDirectory.Name);
+                Zone curZone = new Zone(zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Starting association map generation for '" + zoneDirectory.Name + "...");
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);

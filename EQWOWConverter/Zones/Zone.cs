@@ -19,21 +19,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
     internal class Zone
     {
-        public string Name { get; } = string.Empty;
+        public string DescriptiveName = string.Empty;
         public string ShortName { get; } = string.Empty;
+        public string DescriptiveNameOnlyLetters = string.Empty;
         public EQZoneData EQZoneData = new EQZoneData();
         public WOWZoneData WOWZoneData = new WOWZoneData();
 
-        public Zone(string name, string shortName)
+        public Zone(string shortName)
         {
-            Name = name;
             ShortName = shortName;
+            DescriptiveName = shortName;
+            DescriptiveNameOnlyLetters = shortName;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -43,10 +46,21 @@ namespace EQWOWConverter.Zones
             EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
         }
         
-        public void PopulateWOWZoneDataFromEQZoneData()
+        public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
         {
-            List<string> texturesToGroupIsolate = new List<string>();
-            WOWZoneData.LoadFromEQZone(EQZoneData, texturesToGroupIsolate, Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            if (zoneProperties.DescriptiveName != string.Empty)
+                SetDescriptiveName(zoneProperties.DescriptiveName);
+            WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
+
+        }
+
+        public void SetDescriptiveName(string name)
+        {
+            DescriptiveName = name;
+            DescriptiveNameOnlyLetters = name;
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            DescriptiveNameOnlyLetters = rgx.Replace(DescriptiveNameOnlyLetters, "");
+            DescriptiveNameOnlyLetters = DescriptiveNameOnlyLetters.Replace(" ", "");
         }
     }
 }

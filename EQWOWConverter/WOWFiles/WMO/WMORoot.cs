@@ -233,12 +233,12 @@ namespace EQWOWConverter.WOWFiles
 
             // Zone Name
             GroupNameOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupName = zone.Name + "\0";
+            string zoneGroupName = zone.DescriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));            
 
             // Descriptive Name
             GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupNameDescriptive = zone.Name + "\0";
+            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
 
             // Align the chunk with empty
