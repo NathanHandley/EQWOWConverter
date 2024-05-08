@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,8 +44,11 @@ namespace EQWOWConverter
         public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
 
         // Maximum number of faces that fit into a WMO group before it subdivides
-        // - Note: Any more than this (20000) seems to not load
-        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 20000;
+        // - Note: This can't go any higher because this value * 3 needs to fit in an unsigned short (65535)
+        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21800;
+
+        // The algorithm to use when selecting what faces need to be associated in world model objects
+        public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_TEXTURE;
 
         // ====================================================================
         // WOW DBC/File IDs

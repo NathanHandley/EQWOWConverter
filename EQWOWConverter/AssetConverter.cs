@@ -69,7 +69,7 @@ namespace EQWOWConverter
                 Zone curZone = new Zone(zoneDirectory.Name);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
-                curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);                
+                curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
@@ -493,7 +493,7 @@ namespace EQWOWConverter
                         zoneProperties.SetSafePosition(10f, -20f, 0f);
                         zoneProperties.AddMaterialGrouping("rockw2", "sfrg4", "sfrg5", "sfrg6", "sfrg7", "sfrg8", "sfrg9", "sfrg10", "sgrass",
                             "spath", "spath45", "spathend", "spathlh", "spathrh", "spatht", "spathtol", "spathtor", "spathy1", "xgrass1",
-                            "grastran", "citystone", "citywall", "1dirtfloor");
+                            "grastran");
                     }
                     break;
                 case "greatdivide":

@@ -70,7 +70,7 @@ namespace EQWOWConverter.Zones
 
             // Change face orientation for culling differences between EQ and WoW
             List<TriangleFace> triangleFaces = new List<TriangleFace>();
-            foreach(TriangleFace eqFace in eqZoneData.TriangleFaces)
+            foreach (TriangleFace eqFace in eqZoneData.TriangleFaces)
             {
                 TriangleFace newFace = new TriangleFace();
                 newFace.MaterialIndex = eqFace.MaterialIndex;
@@ -78,7 +78,7 @@ namespace EQWOWConverter.Zones
                 // Rotate the verticies for culling differences
                 newFace.V1 = eqFace.V3;
                 newFace.V2 = eqFace.V2;
-                newFace.V3 = eqFace.V1;               
+                newFace.V3 = eqFace.V1;
 
                 // Add it
                 triangleFaces.Add(newFace);
@@ -106,25 +106,108 @@ namespace EQWOWConverter.Zones
             List<Vector3> normals = eqZoneData.Normals;
             List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
 
-            // Generate world groups based on textures.  If there are groups of textures, do those first
             WorldObjects.Clear();
-            List<string> textureNamesLeftToProcess = new List<string>(TextureNames);
-            foreach(List<string> materialGroupTextureList in zoneProperties.MaterialGroupsByTextureNames)
+
+            // If this can be generated as a single WMO, just do that
+            if (triangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
             {
-                GenerateWorldModelObjectByTextures(materialGroupTextureList, triangleFaces, verticies, normals, vertexColors, textureCoords);
-                foreach (string textureName in materialGroupTextureList)
-                    if (textureNamesLeftToProcess.Contains(textureName))
-                        textureNamesLeftToProcess.Remove(textureName);
+                GenerateWorldModelObjectByTextures(TextureNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
-            foreach(string textureName in textureNamesLeftToProcess)
+            // Otherwise, generate based on generation type provided
+            else
             {
-                List<string> textureNameListContainer = new List<string>();
-                textureNameListContainer.Add(textureName);
-                GenerateWorldModelObjectByTextures(textureNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                switch (Configuration.CONFIG_GENERATION_TYPE)
+                {
+                    case WorldModelObjectGenerationType.BY_TEXTURE:
+                        {
+                            // Generate world groups based on textures.  If there are groups of textures, do those first
+                            List<string> textureNamesLeftToProcess = new List<string>(TextureNames);
+                            foreach (List<string> materialGroupTextureList in zoneProperties.MaterialGroupsByTextureNames)
+                            {
+                                GenerateWorldModelObjectByTextures(materialGroupTextureList, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                                foreach (string textureName in materialGroupTextureList)
+                                    if (textureNamesLeftToProcess.Contains(textureName))
+                                        textureNamesLeftToProcess.Remove(textureName);
+                            }
+                            foreach (string textureName in textureNamesLeftToProcess)
+                            {
+                                List<string> textureNameListContainer = new List<string>();
+                                textureNameListContainer.Add(textureName);
+                                GenerateWorldModelObjectByTextures(textureNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                            }
+                        }
+                        break;
+                    case WorldModelObjectGenerationType.BY_MAP_CHUNK:
+                        {
+                            // Generate world groups based on chunks
+                            GenerateWorldModelObjectsByChunks(eqZoneData.MapChunks, verticies, normals, vertexColors, textureCoords);
+                        }
+                        break;
+                    default:
+                        {
+                            Logger.WriteLine("Error generating world objects due to invalid WorldModelGenerationType of '" + Configuration.CONFIG_GENERATION_TYPE.ToString() + "'");
+                        }
+                        break;
+                }
             }
 
             // Rebuild the bounding box
             CalculateBoundingBox();
+        }
+
+        private void GenerateWorldModelObjectsByChunks(List<MapChunk> mapChunks, List<Vector3> verticies, List<Vector3> normals,
+            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+        {
+            // Group map chunks by ID
+            Dictionary<int, MapChunk> mapChunksByID = new Dictionary<int, MapChunk>();
+            foreach(MapChunk mapChunk in mapChunks)
+                mapChunksByID.Add(mapChunk.ID, mapChunk);
+
+            // Process as long as there are map chunks
+            while (mapChunksByID.Count > 0)
+            {
+                List<TriangleFace> triangleFacesInGroup = new List<TriangleFace>();
+                int curVertexCount = 0;
+
+                // Fill up local buffers with map chunk data until a limit is reached
+                bool doGetAnotherMapChunk = true;
+                while (doGetAnotherMapChunk == true)
+                {
+                    var mapChunkByID = mapChunksByID.First();
+                    int mapChunkID = mapChunkByID.Key;
+                    MapChunk curMapChunk = mapChunksByID[mapChunkID];
+                    if (curVertexCount + curMapChunk.Verticies.Count < Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+                    {
+                        curVertexCount += curMapChunk.Verticies.Count;
+
+                        // Save the faces
+                        foreach (TriangleFace chunkFace in curMapChunk.TriangleFaces)
+                        {
+                            // Skip any without a valid texture ID
+                            if (Materials[chunkFace.MaterialIndex].AnimationTextures.Count == 0)
+                                continue;
+
+                            TriangleFace newFace = new TriangleFace();
+                            newFace.MaterialIndex = chunkFace.MaterialIndex;
+
+                            // Rotate the verticies for culling differences
+                            newFace.V1 = chunkFace.V3;
+                            newFace.V2 = chunkFace.V2;
+                            newFace.V3 = chunkFace.V1;
+                            triangleFacesInGroup.Add(newFace);
+                        }
+
+                        mapChunksByID.Remove(mapChunkID);
+                        if (mapChunksByID.Count == 0)
+                            doGetAnotherMapChunk = false;
+                    }
+                    else
+                        doGetAnotherMapChunk = false;                  
+                }
+
+                // Generate the world model object
+                GenerateWorldModelObjectFromFaces(triangleFacesInGroup, verticies, normals, vertexColors, textureCoords);
+            }
         }
 
         private void GenerateWorldModelObjectByTextures(List<string> textureNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,

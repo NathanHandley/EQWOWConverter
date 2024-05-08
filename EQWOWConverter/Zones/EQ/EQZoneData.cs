@@ -32,6 +32,7 @@ namespace EQWOWConverter.Zones
         public List<ColorRGBA> VertexColors { get; } = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
         public List<Material> Materials { get; } = new List<Material>();
+        public List<MapChunk> MapChunks { get; } = new List<MapChunk>();
 
         public ColorRGBA AmbientLight { get; } = new ColorRGBA();
         public List<LightInstance> LightInstances { get; } = new List<LightInstance>();
@@ -69,6 +70,10 @@ namespace EQWOWConverter.Zones
             // Load the core data
             string inputData = File.ReadAllText(renderMeshFileName);
             string[] inputRows = inputData.Split(Environment.NewLine);
+            int curMapChunkID = 0;
+            MapChunk curMapChunk = new MapChunk(curMapChunkID);
+            MapChunks.Add(curMapChunk);
+            bool lastRowVasVertex = true;
             foreach (string inputRow in inputRows)
             {
                 // Nothing for blank lines
@@ -99,6 +104,13 @@ namespace EQWOWConverter.Zones
                 // v = Verticies
                 else if (inputRow.StartsWith("v"))
                 {
+                    if (lastRowVasVertex == false)
+                    {
+                        curMapChunkID++;
+                        curMapChunk = new MapChunk(curMapChunkID);
+                        MapChunks.Add(curMapChunk);
+                        lastRowVasVertex = true;
+                    }
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
@@ -110,6 +122,7 @@ namespace EQWOWConverter.Zones
                     vertex.Z = float.Parse(blocks[2]);
                     vertex.Y = float.Parse(blocks[3]);
                     Verticies.Add(vertex);
+                    curMapChunk.Verticies.Add(vertex);
                 }
 
                 // uv = Texture Coordinates
@@ -125,6 +138,8 @@ namespace EQWOWConverter.Zones
                     textureUv.X = float.Parse(blocks[1]);
                     textureUv.Y = float.Parse(blocks[2]);
                     TextureCoords.Add(textureUv);
+                    curMapChunk.TextureCoords.Add(textureUv);
+                    lastRowVasVertex = false;
                 }
 
                 // n = Normal
@@ -141,6 +156,8 @@ namespace EQWOWConverter.Zones
                     normal.Y = float.Parse(blocks[2]);
                     normal.Z = float.Parse(blocks[3]);
                     Normals.Add(normal);
+                    curMapChunk.Normals.Add(normal);
+                    lastRowVasVertex = false;
                 }
 
                 // c = Vertex Color
@@ -158,6 +175,8 @@ namespace EQWOWConverter.Zones
                     color.R = byte.Parse(blocks[3]);
                     color.A = byte.Parse(blocks[4]);
                     VertexColors.Add(color);
+                    curMapChunk.VertexColors.Add(color);
+                    lastRowVasVertex = false;
                 }
 
                 // i = Indicies
@@ -175,6 +194,8 @@ namespace EQWOWConverter.Zones
                     index.V2 = int.Parse(blocks[3]);
                     index.V3 = int.Parse(blocks[4]);
                     TriangleFaces.Add(index);
+                    curMapChunk.TriangleFaces.Add(index);
+                    lastRowVasVertex = false;
                 }
 
                 else
