@@ -491,6 +491,9 @@ namespace EQWOWConverter
                         zoneProperties.DescriptiveName = "Greater Faydark";
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
                         zoneProperties.SetSafePosition(10f, -20f, 0f);
+                        zoneProperties.AddMaterialGrouping("rockw2", "sfrg4", "sfrg5", "sfrg6", "sfrg7", "sfrg8", "sfrg9", "sfrg10", "sgrass",
+                            "spath", "spath45", "spathend", "spathlh", "spathrh", "spatht", "spathtol", "spathtor", "spathy1", "xgrass1",
+                            "grastran", "citystone", "citywall", "1dirtfloor");
                     }
                     break;
                 case "greatdivide":

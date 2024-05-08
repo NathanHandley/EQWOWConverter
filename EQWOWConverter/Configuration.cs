@@ -77,7 +77,7 @@ namespace EQWOWConverter
         // BSP Tree Generation
         // ====================================================================
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 500;
+        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 50;
 
         // BSP tree nodes won't operate on bounding boxes smaller than this
         public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 5.0f;

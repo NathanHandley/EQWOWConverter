@@ -106,62 +106,84 @@ namespace EQWOWConverter.Zones
             List<Vector3> normals = eqZoneData.Normals;
             List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
 
-            // Extract out isolated texture groups first, creating world objects
+            // Generate world groups based on textures.  If there are groups of textures, do those first
             WorldObjects.Clear();
-            foreach (string texture in TextureNames)
+            List<string> textureNamesLeftToProcess = new List<string>(TextureNames);
+            foreach(List<string> materialGroupTextureList in zoneProperties.MaterialGroupsByTextureNames)
             {
-                Int32 materialID = -2;
-                // Get the related material
-                foreach (Material material in Materials)
-                {
-                    if (material.AnimationTextures.Count > 0 && material.AnimationTextures[0].ToUpper() == texture.ToUpper())
-                    {
-                        materialID = Convert.ToInt32(material.Index);
-                        break;
-                    }
-                }
-                if (materialID == -2)
-                {
-                    Logger.WriteLine(" ERROR! Texture name '" + texture + " 'passed to isolate did not exist in the zone");
-                    continue;
-                }
-
-                // Build a list of faces specific to this material, controlling for overflow
-                bool facesLeftToProcess = true;
-                while (facesLeftToProcess)
-                {
-                    facesLeftToProcess = false;
-                    List<TriangleFace> facesInGroup = new List<TriangleFace>();
-                    SortedSet<int> faceIndexesToDelete = new SortedSet<int>();
-                    for (int i = 0; i < triangleFaces.Count; i++)
-                    {
-                        // Skip anything not matching the material
-                        if (triangleFaces[i].MaterialIndex != materialID)
-                            continue;
-
-                        // Save it
-                        facesInGroup.Add(triangleFaces[i]);
-                        faceIndexesToDelete.Add(i);
-
-                        // Only go up to a maximum to avoid overflowing the model arrays
-                        if (facesInGroup.Count >= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
-                        {
-                            facesLeftToProcess = true;
-                            break;
-                        }
-                    }
-
-                    // Purge the faces from the original list
-                    foreach (int faceIndex in faceIndexesToDelete.Reverse())
-                        triangleFaces.RemoveAt(faceIndex);
-
-                    // Generate the world model object
-                    GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords);
-                }
+                GenerateWorldModelObjectByTextures(materialGroupTextureList, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                foreach (string textureName in materialGroupTextureList)
+                    if (textureNamesLeftToProcess.Contains(textureName))
+                        textureNamesLeftToProcess.Remove(textureName);
+            }
+            foreach(string textureName in textureNamesLeftToProcess)
+            {
+                List<string> textureNameListContainer = new List<string>();
+                textureNameListContainer.Add(textureName);
+                GenerateWorldModelObjectByTextures(textureNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
 
             // Rebuild the bounding box
             CalculateBoundingBox();
+        }
+
+        private void GenerateWorldModelObjectByTextures(List<string> textureNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
+            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+        {
+            List<UInt32> materialIDs = new List<UInt32>();
+            bool materialFoundForTexture = false;
+
+            // Get the related materials
+            foreach (string textureName in textureNames)
+            {
+                foreach (Material material in Materials)
+                {
+                    if (material.AnimationTextures.Count > 0 && material.AnimationTextures[0].ToUpper() == textureName.ToUpper())
+                    {
+                        materialIDs.Add(material.Index);
+                        materialFoundForTexture = true;
+                        break;
+                    }
+                }
+                if (materialFoundForTexture == false)
+                {
+                    Logger.WriteLine("Error generating world model object, as textured named '" + textureName +"' could not be found");
+                    return;
+                }
+            }
+
+            // Build a list of faces specific to these materials, controlling for overflow
+            bool facesLeftToProcess = true;
+            while (facesLeftToProcess)
+            {
+                facesLeftToProcess = false;
+                List<TriangleFace> facesInGroup = new List<TriangleFace>();
+                SortedSet<int> faceIndexesToDelete = new SortedSet<int>();
+                for (int i = 0; i < triangleFaces.Count; i++)
+                {
+                    // Skip anything not matching the material
+                    if (materialIDs.Contains(Convert.ToUInt32(triangleFaces[i].MaterialIndex)) == false)
+                        continue;
+
+                    // Save it
+                    facesInGroup.Add(triangleFaces[i]);
+                    faceIndexesToDelete.Add(i);
+
+                    // Only go up to a maximum to avoid overflowing the model arrays
+                    if (facesInGroup.Count >= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+                    {
+                        facesLeftToProcess = true;
+                        break;
+                    }
+                }
+
+                // Purge the faces from the original list
+                foreach (int faceIndex in faceIndexesToDelete.Reverse())
+                    triangleFaces.RemoveAt(faceIndex);
+
+                // Generate the world model object
+                GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords);
+            }
         }
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
