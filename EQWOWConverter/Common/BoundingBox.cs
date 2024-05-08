@@ -24,41 +24,47 @@ namespace EQWOWConverter.Common
 {
     internal class BoundingBox
     {
-        public Vector3 TopCornerHighRes = new Vector3();
-        public Vector3 BottomCornerHigHRes = new Vector3();
+        public Vector3 TopCorner = new Vector3();
+        public Vector3 BottomCorner = new Vector3();
 
         public BoundingBox()
         {
 
         }
 
+        public BoundingBox(float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
+        {
+            BottomCorner = new Vector3(bottomX, bottomY, bottomZ);
+            TopCorner = new Vector3(topX, topY, topZ);
+        }
+
         public BoundingBox(BoundingBox box)
         {
-            TopCornerHighRes = new Vector3(box.TopCornerHighRes);
-            BottomCornerHigHRes = new Vector3(box.BottomCornerHigHRes);
+            TopCorner = new Vector3(box.TopCorner);
+            BottomCorner = new Vector3(box.BottomCorner);
         }
 
         public List<byte> ToBytesHighRes()
         {
             List<byte> returnBytes = new List<byte>();
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCornerHigHRes.X));
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCornerHigHRes.Y));
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCornerHigHRes.Z));
-            returnBytes.AddRange(BitConverter.GetBytes(TopCornerHighRes.X));
-            returnBytes.AddRange(BitConverter.GetBytes(TopCornerHighRes.Y));
-            returnBytes.AddRange(BitConverter.GetBytes(TopCornerHighRes.Z));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.X));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Y));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Z));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.X));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Y));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Z));
             return returnBytes;
         }
 
         public List<byte> ToBytesLowRes()
         {
             List<byte> returnBytes = new List<byte>();
-            Int16 TopX = Convert.ToInt16(Math.Round(TopCornerHighRes.X, 0, MidpointRounding.AwayFromZero));
-            Int16 TopY = Convert.ToInt16(Math.Round(TopCornerHighRes.Y, 0, MidpointRounding.AwayFromZero));
-            Int16 TopZ = Convert.ToInt16(Math.Round(TopCornerHighRes.Z, 0, MidpointRounding.AwayFromZero));
-            Int16 BottomX = Convert.ToInt16(Math.Round(BottomCornerHigHRes.X, 0, MidpointRounding.AwayFromZero));
-            Int16 BottomY = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Y, 0, MidpointRounding.AwayFromZero));
-            Int16 BottomZ = Convert.ToInt16(Math.Round(BottomCornerHigHRes.Z, 0, MidpointRounding.AwayFromZero));
+            Int16 TopX = Convert.ToInt16(Math.Round(TopCorner.X, 0, MidpointRounding.AwayFromZero));
+            Int16 TopY = Convert.ToInt16(Math.Round(TopCorner.Y, 0, MidpointRounding.AwayFromZero));
+            Int16 TopZ = Convert.ToInt16(Math.Round(TopCorner.Z, 0, MidpointRounding.AwayFromZero));
+            Int16 BottomX = Convert.ToInt16(Math.Round(BottomCorner.X, 0, MidpointRounding.AwayFromZero));
+            Int16 BottomY = Convert.ToInt16(Math.Round(BottomCorner.Y, 0, MidpointRounding.AwayFromZero));
+            Int16 BottomZ = Convert.ToInt16(Math.Round(BottomCorner.Z, 0, MidpointRounding.AwayFromZero));
             returnBytes.AddRange(BitConverter.GetBytes(BottomX));
             returnBytes.AddRange(BitConverter.GetBytes(BottomY));
             returnBytes.AddRange(BitConverter.GetBytes(BottomZ));
@@ -70,17 +76,17 @@ namespace EQWOWConverter.Common
 
         public float GetXDistance()
         {
-            return Math.Abs(TopCornerHighRes.X - BottomCornerHigHRes.X);
+            return Math.Abs(TopCorner.X - BottomCorner.X);
         }
 
         public float GetYDistance()
         {
-            return Math.Abs(TopCornerHighRes.Y - BottomCornerHigHRes.Y);
+            return Math.Abs(TopCorner.Y - BottomCorner.Y);
         }
 
         public float GetZDistance()
         {
-            return Math.Abs(TopCornerHighRes.Z - BottomCornerHigHRes.Z);
+            return Math.Abs(TopCorner.Z - BottomCorner.Z);
         }
 
         public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
@@ -89,86 +95,94 @@ namespace EQWOWConverter.Common
             if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
                 return true;
 
-            // Edge 1
-            Vector3 line1Min = GetMinsForLine(point1, point2);
-            Vector3 line1Max = GetMaxForLine(point1, point2);
-            if (DoesLineCastOverlapExist(line1Min, line1Max) == false)
+            // Next test is to bounding box the triangle and see if there is a separating axis
+            BoundingBox triangleBox = GenerateBoxFromVectors(point1, point2, point3);
+            if (DoesCollideWithBox(triangleBox) == false)
                 return false;
 
-            // Edge 2
-            Vector3 line2Min = GetMinsForLine(point2, point3);
-            Vector3 line2Max = GetMaxForLine(point2, point3);
-            if (DoesLineCastOverlapExist(line2Min, line2Max) == false)
-                return false;
+            // Since all triangle points are outside the box but there is a bounding collision,
+            // the faces need to be tested against each line segment (much slower)
+            if (DoesLineCollide(point1, point2))
+                return true;
+            if (DoesLineCollide(point1, point3))
+                return true;
+            if (DoesLineCollide(point2, point3))
+                return true;
 
-            // Edge 3
-            Vector3 line3Min = GetMinsForLine(point3, point1);
-            Vector3 line3Max = GetMaxForLine(point3, point1);
-            if (DoesLineCastOverlapExist(line3Min, line3Max) == false)
-                return false;
-
-            return true;
-        }
-
-        private bool DoesLineCastOverlapExist(Vector3 line1Min, Vector3 line1Max)
-        {
-            // Only works because this is an axis aligned box
-            if (line1Min.X > TopCornerHighRes.X)
-                return false;
-            else if (line1Min.Y > TopCornerHighRes.Y)
-                return false;
-            else if (line1Min.Z > TopCornerHighRes.Z)
-                return false;
-            else if (line1Max.X < BottomCornerHigHRes.X)
-                return false;
-            else if (line1Max.Y <  BottomCornerHigHRes.Y)
-                return false;
-            else if (line1Max.Z <  BottomCornerHigHRes.Z)
-                return false;
-            return true;
-        }
-
-        private Vector3 GetMinsForLine(Vector3 point1, Vector3 point2)
-        {
-            Vector3 returnVector = new Vector3();
-            if (point1.X < point2.X)
-                returnVector.X = point1.X;
-            else
-                returnVector.X = point2.X;
-            if (point1.Y < point2.Y)
-                returnVector.Y = point1.Y;
-            else
-                returnVector.Y = point2.Y;
-            if (point1.Z < point2.Z)
-                returnVector.Z = point1.Z;
-            else
-                returnVector.Z = point2.Z;
-            return returnVector;
-        }
-
-        private Vector3 GetMaxForLine(Vector3 point1, Vector3 point2)
-        {
-            Vector3 returnVector = new Vector3();
-            if (point1.X > point2.X)
-                returnVector.X = point1.X;
-            else
-                returnVector.X = point2.X;
-            if (point1.Y > point2.Y)
-                returnVector.Y = point1.Y;
-            else
-                returnVector.Y = point2.Y;
-            if (point1.Z > point2.Z)
-                returnVector.Z = point1.Z;
-            else
-                returnVector.Z = point2.Z;
-            return returnVector;
+            return false;
         }
 
         private bool IsPointInside(Vector3 point)
         {
-            return point.X >= BottomCornerHigHRes.X && point.X <= TopCornerHighRes.X &&
-                   point.Y >= BottomCornerHigHRes.Y && point.Y <= TopCornerHighRes.Y &&
-                   point.Z >= BottomCornerHigHRes.Z && point.Z <= TopCornerHighRes.Z;
+            return point.X >= BottomCorner.X && point.X <= TopCorner.X &&
+                   point.Y >= BottomCorner.Y && point.Y <= TopCorner.Y &&
+                   point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
+        }
+
+        private bool DoesCollideWithBox(BoundingBox otherBox)
+        {
+            if (otherBox.BottomCorner.X > TopCorner.X)
+                return false;
+            if (otherBox.BottomCorner.Y > TopCorner.Y)
+                return false;
+            if (otherBox.BottomCorner.Z > TopCorner.Z)
+                return false;
+            if (otherBox.TopCorner.X < BottomCorner.X)
+                return false;
+            if (otherBox.TopCorner.Y < BottomCorner.Y)
+                return false;
+            if (otherBox.TopCorner.Z < BottomCorner.Z)
+                return false;
+            return true;
+        }
+
+        private BoundingBox GenerateBoxFromVectors(Vector3 point1, Vector3 point2, Vector3 point3)
+        {
+            float minX = Math.Min(Math.Min(point1.X, point2.X), point3.X);
+            float minY = Math.Min(Math.Min(point1.Y, point2.Y), point3.Y);
+            float minZ = Math.Min(Math.Min(point1.Z, point2.Z), point3.Z);
+            
+            float maxX = Math.Max(Math.Max(point1.X, point2.X), point3.X);
+            float maxY = Math.Max(Math.Max(point1.Y, point2.Y), point3.Y);
+            float maxZ = Math.Max(Math.Max(point1.Z, point2.Z), point3.Z);
+
+            return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
+        }
+
+        // The following three methods were adapted from an answer found here: https://stackoverflow.com/questions/3235385/given-a-bounding-box-and-a-line-two-points-determine-if-the-line-intersects-t
+        private bool DoesLineCollide(Vector3 point1, Vector3 point2)
+        {
+            Vector3 collidePoint = new Vector3();
+            if (GetIntersection(point1.X - TopCorner.X, point2.X - TopCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
+                return true;
+            if (GetIntersection(point1.Y - TopCorner.Y, point2.Y - TopCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
+                return true;
+            if (GetIntersection(point1.Z - TopCorner.Z, point2.Z - TopCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
+                return true;
+            if (GetIntersection(point1.X - BottomCorner.X, point2.X - BottomCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
+                return true;
+            if (GetIntersection(point1.Y - BottomCorner.Y, point2.Y - BottomCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
+                return true;
+            if (GetIntersection(point1.Z - BottomCorner.Z, point2.Z - BottomCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
+                return true;
+            return false;
+        }
+        bool InBox(Vector3 collidePoint, int testAxis)
+        {
+            if (testAxis == 1 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
+                return true;
+            else if (testAxis == 2 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X)
+                return true;
+            else if (testAxis == 3 && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
+                return true;
+            return false;
+        }
+        bool GetIntersection(float distance1, float distance2, Vector3 point1, Vector3 point2, ref Vector3 collidePoint)
+        {
+            if ((distance1 * distance2) >= 0.0f) return false;
+            if (distance1 == distance2) return false;
+            collidePoint = point1 + (point2 - point1) * (-distance1 / (distance2 - distance1));
+            return true;
         }
     }
 }

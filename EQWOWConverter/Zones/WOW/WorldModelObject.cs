@@ -199,19 +199,19 @@ namespace EQWOWConverter.Zones
             BoundingBox = new BoundingBox();
             foreach (Vector3 renderVert in Verticies)
             {
-                if (renderVert.X < BoundingBox.BottomCornerHigHRes.X)
-                    BoundingBox.BottomCornerHigHRes.X = renderVert.X;
-                if (renderVert.Y < BoundingBox.BottomCornerHigHRes.Y)
-                    BoundingBox.BottomCornerHigHRes.Y = renderVert.Y;
-                if (renderVert.Z < BoundingBox.BottomCornerHigHRes.Z)
-                    BoundingBox.BottomCornerHigHRes.Z = renderVert.Z;
+                if (renderVert.X < BoundingBox.BottomCorner.X)
+                    BoundingBox.BottomCorner.X = renderVert.X;
+                if (renderVert.Y < BoundingBox.BottomCorner.Y)
+                    BoundingBox.BottomCorner.Y = renderVert.Y;
+                if (renderVert.Z < BoundingBox.BottomCorner.Z)
+                    BoundingBox.BottomCorner.Z = renderVert.Z;
 
-                if (renderVert.X > BoundingBox.TopCornerHighRes.X)
-                    BoundingBox.TopCornerHighRes.X = renderVert.X;
-                if (renderVert.Y > BoundingBox.TopCornerHighRes.Y)
-                    BoundingBox.TopCornerHighRes.Y = renderVert.Y;
-                if (renderVert.Z > BoundingBox.TopCornerHighRes.Z)
-                    BoundingBox.TopCornerHighRes.Z = renderVert.Z;
+                if (renderVert.X > BoundingBox.TopCorner.X)
+                    BoundingBox.TopCorner.X = renderVert.X;
+                if (renderVert.Y > BoundingBox.TopCorner.Y)
+                    BoundingBox.TopCorner.Y = renderVert.Y;
+                if (renderVert.Z > BoundingBox.TopCorner.Z)
+                    BoundingBox.TopCorner.Z = renderVert.Z;
             }
         }
     }

@@ -32,11 +32,12 @@ Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in 
 Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
 
 Test Skyfire, I had to break it up
-- Doesn't look good
-- Also timmourous
 Mistmoore missing a lot of textures...
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+** Floor Fall Points
+Greater Faydark - at 0.3 scale, 47.696289, -3.476796, -0.74280
 
 ** Breakup notes
 Comb mesh for indicies that share a material, and group by that

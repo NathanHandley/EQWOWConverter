@@ -62,8 +62,8 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                if (zoneDirectory.Name != "gfaydark")
-                    continue;
+                //if (zoneDirectory.Name != "gfaydark")
+                //    continue;
 
                 // Load the EQ zone
                 Zone curZone = new Zone(zoneDirectory.Name);

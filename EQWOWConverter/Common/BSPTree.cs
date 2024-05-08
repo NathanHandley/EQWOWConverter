@@ -66,24 +66,24 @@ namespace EQWOWConverter.Common
             {
                 case BSPNodeFlag.XYPlane:
                     {
-                        float planeSplitDistance = (box.TopCornerHighRes.Z + box.BottomCornerHigHRes.Z) * 0.5f;
+                        float planeSplitDistance = (box.TopCorner.Z + box.BottomCorner.Z) * 0.5f;
                         splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCornerHighRes.Z = planeSplitDistance;
-                        splitBox.BoxB.BottomCornerHigHRes.Z = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.Z = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.Z = planeSplitDistance;
                     } break;
                 case BSPNodeFlag.YZPlane:
                     {
-                        float planeSplitDistance = (box.TopCornerHighRes.X + box.BottomCornerHigHRes.X) * 0.5f;
+                        float planeSplitDistance = (box.TopCorner.X + box.BottomCorner.X) * 0.5f;
                         splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCornerHighRes.X = planeSplitDistance;
-                        splitBox.BoxB.BottomCornerHigHRes.X = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.X = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.X = planeSplitDistance;
                     } break;
                 case BSPNodeFlag.XZPlane:
                     {
-                        float planeSplitDistance = (box.TopCornerHighRes.Y + box.BottomCornerHigHRes.Y) * 0.5f;
+                        float planeSplitDistance = (box.TopCorner.Y + box.BottomCorner.Y) * 0.5f;
                         splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCornerHighRes.Y = planeSplitDistance;
-                        splitBox.BoxB.BottomCornerHigHRes.Y = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.Y = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.Y = planeSplitDistance;
                     } break;
                 default:
                     {

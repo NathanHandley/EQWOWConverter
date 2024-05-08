@@ -40,6 +40,8 @@ namespace EQWOWConverter.Zones
         public UInt32 WMOID;
         public int MapID;
 
+        public Vector3 SafePosition = new Vector3();
+
         public WOWZoneData()
         {
             // Gen/Update IDs
@@ -258,19 +260,19 @@ namespace EQWOWConverter.Zones
             BoundingBox = new BoundingBox();
             foreach(WorldModelObject worldModelObject in WorldObjects)
             {
-                if (worldModelObject.BoundingBox.TopCornerHighRes.X > BoundingBox.TopCornerHighRes.X)
-                    BoundingBox.TopCornerHighRes.X = worldModelObject.BoundingBox.TopCornerHighRes.X;
-                if (worldModelObject.BoundingBox.TopCornerHighRes.Y > BoundingBox.TopCornerHighRes.Y)
-                    BoundingBox.TopCornerHighRes.Y = worldModelObject.BoundingBox.TopCornerHighRes.Y;
-                if (worldModelObject.BoundingBox.TopCornerHighRes.Z > BoundingBox.TopCornerHighRes.Z)
-                    BoundingBox.TopCornerHighRes.Z = worldModelObject.BoundingBox.TopCornerHighRes.Z;
+                if (worldModelObject.BoundingBox.TopCorner.X > BoundingBox.TopCorner.X)
+                    BoundingBox.TopCorner.X = worldModelObject.BoundingBox.TopCorner.X;
+                if (worldModelObject.BoundingBox.TopCorner.Y > BoundingBox.TopCorner.Y)
+                    BoundingBox.TopCorner.Y = worldModelObject.BoundingBox.TopCorner.Y;
+                if (worldModelObject.BoundingBox.TopCorner.Z > BoundingBox.TopCorner.Z)
+                    BoundingBox.TopCorner.Z = worldModelObject.BoundingBox.TopCorner.Z;
 
-                if (worldModelObject.BoundingBox.BottomCornerHigHRes.X < BoundingBox.BottomCornerHigHRes.X)
-                    BoundingBox.BottomCornerHigHRes.X = worldModelObject.BoundingBox.BottomCornerHigHRes.X;
-                if (worldModelObject.BoundingBox.BottomCornerHigHRes.Y < BoundingBox.BottomCornerHigHRes.Y)
-                    BoundingBox.BottomCornerHigHRes.Y = worldModelObject.BoundingBox.BottomCornerHigHRes.Y;
-                if (worldModelObject.BoundingBox.BottomCornerHigHRes.Z < BoundingBox.BottomCornerHigHRes.Z)
-                    BoundingBox.BottomCornerHigHRes.Z = worldModelObject.BoundingBox.BottomCornerHigHRes.Z;
+                if (worldModelObject.BoundingBox.BottomCorner.X < BoundingBox.BottomCorner.X)
+                    BoundingBox.BottomCorner.X = worldModelObject.BoundingBox.BottomCorner.X;
+                if (worldModelObject.BoundingBox.BottomCorner.Y < BoundingBox.BottomCorner.Y)
+                    BoundingBox.BottomCorner.Y = worldModelObject.BoundingBox.BottomCorner.Y;
+                if (worldModelObject.BoundingBox.BottomCorner.Z < BoundingBox.BottomCorner.Z)
+                    BoundingBox.BottomCorner.Z = worldModelObject.BoundingBox.BottomCorner.Z;
             }
         }
     }
