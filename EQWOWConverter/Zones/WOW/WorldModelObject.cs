@@ -66,7 +66,10 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
+                // TODO: Handle this better for invisible collision
                 if (materials[curMaterialIndex].MaterialType == MaterialType.Invisible)
+                    continue;
+                if (materials[curMaterialIndex].AnimationTextures.Count == 0)
                     continue;
 
                 // Create a new one if this is the first instance of the material

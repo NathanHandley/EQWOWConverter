@@ -167,6 +167,10 @@ namespace EQWOWConverter.WOWFiles
             {
                 List<byte> curMaterialBytes = new List<byte>();
 
+                bool hasNoTexture = false;
+                if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
+                    hasNoTexture = true;
+
                 // For now, don't put any flags. But see WMOMaterialFlags later
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 //UInt32 materialFlags = GetPackedFlags(Convert.ToUInt32(WMOMaterialFlags.ClampTextureS), Convert.ToUInt32(WMOMaterialFlags.ClampTextureT));
@@ -179,11 +183,9 @@ namespace EQWOWConverter.WOWFiles
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
 
                 // Texture reference (for diffuse above)
-                if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
+                if (hasNoTexture)
                 {
                     // If there was a missing texture, use the first in the list
-                    // TODO: This needs to be handled differently
-                    Logger.WriteLine("Missing texture in material binding, so using first");
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 }
                 else
