@@ -96,9 +96,9 @@ namespace EQWOWConverter.Common
                 return true;
 
             // Next test is to bounding box the triangle and see if there is a separating axis
-            BoundingBox triangleBox = GenerateBoxFromVectors(point1, point2, point3);
-            if (DoesCollideWithBox(triangleBox) == false)
-                return false;
+            //BoundingBox triangleBox = GenerateBoxFromVectors(point1, point2, point3);
+            //if (DoesCollideWithBox(triangleBox) == false)
+            //    return false;
 
             // Since all triangle points are outside the box but there is a bounding collision,
             // the faces need to be tested against each line segment (much slower)

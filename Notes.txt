@@ -34,6 +34,9 @@ Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  
 Test Skyfire, I had to break it up
 Mistmoore missing a lot of textures...
 
+BSP generation just doesn't work for maps.  Setting to produce only 1 node (a leaf) for the full zone.  Revisit later if performance matters.
+- The issue is that there are sometimes a 'hole' triangle.  I don't know why not all of the triangles get picked up.
+
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ** Floor Fall Points

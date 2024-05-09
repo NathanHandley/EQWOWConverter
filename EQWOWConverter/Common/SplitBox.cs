@@ -12,7 +12,7 @@ namespace EQWOWConverter.Common
         public BoundingBox BoxB = new BoundingBox();
         public float PlaneDistance;
 
-        public static SplitBox GenerateXYSplitBoxFromBoundingBox(BoundingBox box, float overlapAmount)
+        public static SplitBox GenerateXYSplitBoxFromBoundingBox(BoundingBox box)
         {
             SplitBox splitBox = new SplitBox();
             splitBox.BoxA = new BoundingBox(box);
@@ -22,15 +22,15 @@ namespace EQWOWConverter.Common
             {
                 float planeSplitDistance = (box.TopCorner.X + box.BottomCorner.X) * 0.5f;
                 splitBox.PlaneDistance = planeSplitDistance;
-                splitBox.BoxA.TopCorner.X = planeSplitDistance + (overlapAmount * 0.5f);
-                splitBox.BoxB.BottomCorner.X = planeSplitDistance - (overlapAmount * 0.5f);
+                splitBox.BoxA.TopCorner.X = planeSplitDistance;
+                splitBox.BoxB.BottomCorner.X = planeSplitDistance;
             }
             else
             {
                 float planeSplitDistance = (box.TopCorner.Y + box.BottomCorner.Y) * 0.5f;
                 splitBox.PlaneDistance = planeSplitDistance;
-                splitBox.BoxA.TopCorner.Y = planeSplitDistance + (overlapAmount * 0.5f);
-                splitBox.BoxB.BottomCorner.Y = planeSplitDistance - (overlapAmount * 0.5f);
+                splitBox.BoxA.TopCorner.Y = planeSplitDistance;
+                splitBox.BoxB.BottomCorner.Y = planeSplitDistance;
             }
 
             return splitBox;

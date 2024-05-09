@@ -62,7 +62,7 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                //if (zoneDirectory.Name != "gfaydark")
+                //if (zoneDirectory.Name != "ecommons")
                 //    continue;
 
                 // Load the EQ zone

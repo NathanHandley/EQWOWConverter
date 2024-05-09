@@ -169,7 +169,7 @@ namespace EQWOWConverter.Zones
             if (faces.Count > Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
             {
                 // Create two new bounding boxes
-                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox, Configuration.CONFIG_GENERATION_XY_OVERLAP);
+                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox);
 
                 // Calculate what triangles fit into these boxes
                 List<TriangleFace> aBoxTriangles = new List<TriangleFace>();

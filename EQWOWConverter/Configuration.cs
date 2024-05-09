@@ -43,15 +43,12 @@ namespace EQWOWConverter
         // The value EQ verticies multiply by when translated into WOW verticies
         public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
 
-        // Maximum number of faces that fit into a WMO group before it subdivides
-        // - Note: This can't go any higher because this value * 3 needs to fit in an unsigned short (65535)
-        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21800;
+        // Maximum number of faces that fit into a WMO group before it subdivides (max value can only ever be 21,840
+        // NOTE: Do not change this until BSP tree generation is working properly
+        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
 
         // The algorithm to use when selecting what faces need to be associated in world model objects
         public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_XY_REGION;
-
-        // The amount to overlap subdivision boxes when generating by XY region
-        public static readonly float CONFIG_GENERATION_XY_OVERLAP = 20.0f;
 
         // ====================================================================
         // WOW DBC/File IDs
@@ -62,7 +59,7 @@ namespace EQWOWConverter
         // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc. (~7000-7200)
         public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
 
-        // Specific rows in WMOAReaTable.dbc. (~52000-60000)
+        // Specific rows in WMOAreaTable.dbc. (~52000-60000)
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
 
         // Identifies Area rows in AreaTable.dbc. (~6000-6200)
@@ -82,9 +79,12 @@ namespace EQWOWConverter
 
         // ====================================================================
         // BSP Tree Generation
+        // NOTE: BSP Tree Generation isn't working right if there are any nodes,
+        // as some triangles don't get a home.  Don't adjust the min split size
+        // until it's fixed
         // ====================================================================
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 50;
+        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 2101; // Do not change
 
         // BSP tree nodes won't operate on bounding boxes smaller than this
         public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
