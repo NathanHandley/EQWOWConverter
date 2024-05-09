@@ -35,7 +35,6 @@ namespace EQWOWConverter.Zones
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public Fog FogSettings = new Fog();
-        public List<string> TextureNames = new List<string>();
         public UInt32 AreaID;
         public UInt32 WMOID;
         public int MapID;
@@ -58,15 +57,6 @@ namespace EQWOWConverter.Zones
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
             LightInstances = eqZoneData.LightInstances;
-
-            // Create a list of the textures
-            // NOTE: Only the first texture in an material is captured
-            // TODO: Handle animated textures
-            foreach (Material material in Materials)
-            {
-                if (material.AnimationTextures.Count > 0)
-                    TextureNames.Add(material.AnimationTextures[0]);
-            }
 
             // Change face orientation for culling differences between EQ and WoW
             List<TriangleFace> triangleFaces = new List<TriangleFace>();
@@ -111,29 +101,34 @@ namespace EQWOWConverter.Zones
             // If this can be generated as a single WMO, just do that
             if (triangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
             {
-                GenerateWorldModelObjectByTextures(TextureNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                List<string> materialNames = new List<string>();
+                foreach(Material material in Materials)
+                    materialNames.Add(material.Name);
+                GenerateWorldModelObjectByMaterials(materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
             // Otherwise, generate based on generation type provided
             else
             {
                 switch (Configuration.CONFIG_GENERATION_TYPE)
                 {
-                    case WorldModelObjectGenerationType.BY_TEXTURE:
+                    case WorldModelObjectGenerationType.BY_MATERIAL:
                         {
-                            // Generate world groups based on textures.  If there are groups of textures, do those first
-                            List<string> textureNamesLeftToProcess = new List<string>(TextureNames);
-                            foreach (List<string> materialGroupTextureList in zoneProperties.MaterialGroupsByTextureNames)
+                            // Generate world groups based on materials.  If there are groups of materials, do those first
+                            List<string> materialNamesLeftToProcess = new List<string>();
+                            foreach (Material material in Materials)
+                                materialNamesLeftToProcess.Add(material.Name);
+                            foreach (List<string> materialGroupList in zoneProperties.MaterialGroupsByName)
                             {
-                                GenerateWorldModelObjectByTextures(materialGroupTextureList, triangleFaces, verticies, normals, vertexColors, textureCoords);
-                                foreach (string textureName in materialGroupTextureList)
-                                    if (textureNamesLeftToProcess.Contains(textureName))
-                                        textureNamesLeftToProcess.Remove(textureName);
+                                GenerateWorldModelObjectByMaterials(materialGroupList, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                                foreach (string materialName in materialGroupList)
+                                    if (materialNamesLeftToProcess.Contains(materialName))
+                                        materialNamesLeftToProcess.Remove(materialName);
                             }
-                            foreach (string textureName in textureNamesLeftToProcess)
+                            foreach (string materialName in materialNamesLeftToProcess)
                             {
-                                List<string> textureNameListContainer = new List<string>();
-                                textureNameListContainer.Add(textureName);
-                                GenerateWorldModelObjectByTextures(textureNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                                List<string> materialNameListContainer = new List<string>();
+                                materialNameListContainer.Add(materialName);
+                                GenerateWorldModelObjectByMaterials(materialNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
                             }
                         }
                         break;
@@ -147,7 +142,10 @@ namespace EQWOWConverter.Zones
                         {
                             // Generate the world groups by splitting the map down into subregions as needed
                             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
-                            GenerateWorldModelObjectsByXYRegion(fullBoundingBox, TextureNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                            List<string> materialNames = new List<string>();
+                            foreach (Material material in Materials)
+                                materialNames.Add(material.Name);
+                            GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
                         }
                         break;
                     default:
@@ -162,7 +160,7 @@ namespace EQWOWConverter.Zones
             CalculateBoundingBox();
         }
 
-        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> textureNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
+        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
             List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
@@ -198,11 +196,11 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Generate for the two sub boxes
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, TextureNames, aBoxTriangles, verticies, normals, vertexColors, textureCoords);
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, TextureNames, bBoxTriangles, verticies, normals, vertexColors, textureCoords);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, verticies, normals, vertexColors, textureCoords);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, verticies, normals, vertexColors, textureCoords);
             }
             else
-                GenerateWorldModelObjectByTextures(TextureNames, faces, verticies, normals, vertexColors, textureCoords);
+                GenerateWorldModelObjectByMaterials(materialNames, faces, verticies, normals, vertexColors, textureCoords);
         }
 
 
@@ -261,27 +259,27 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateWorldModelObjectByTextures(List<string> textureNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
+        private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
             List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
         {
             List<UInt32> materialIDs = new List<UInt32>();
-            bool materialFoundForTexture = false;
+            bool materialFound = false;
 
             // Get the related materials
-            foreach (string textureName in textureNames)
+            foreach (string materialName in materialNames)
             {
                 foreach (Material material in Materials)
                 {
-                    if (material.AnimationTextures.Count > 0 && material.AnimationTextures[0].ToUpper() == textureName.ToUpper())
+                    if (material.Name == materialName)
                     {
                         materialIDs.Add(material.Index);
-                        materialFoundForTexture = true;
+                        materialFound = true;
                         break;
                     }
                 }
-                if (materialFoundForTexture == false)
+                if (materialFound == false)
                 {
-                    Logger.WriteLine("Error generating world model object, as textured named '" + textureName +"' could not be found");
+                    Logger.WriteLine("Error generating world model object, as material named '" + materialName +"' could not be found");
                     return;
                 }
             }

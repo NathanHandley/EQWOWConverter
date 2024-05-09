@@ -101,7 +101,13 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOHDChunk(WOWZoneData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.TextureNames.Count));   // Number of Textures
+
+            // Number of Textures
+            UInt32 numOfTextures = 0;
+            foreach (Material material in wowZoneData.Materials)
+                if (material.AnimationTextures.Count > 0)
+                    numOfTextures++;
+            chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));             
@@ -133,8 +139,9 @@ namespace EQWOWConverter.WOWFiles
             List<byte> textureBuffer = new List<byte>();
             foreach (Material material in zone.WOWZoneData.Materials)
             {
-                foreach (string textureName in material.AnimationTextures)
+                if (material.AnimationTextures.Count > 0)
                 {
+                    string textureName = material.AnimationTextures[0];
                     TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
                     string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.ShortName.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));

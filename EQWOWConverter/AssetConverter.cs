@@ -62,7 +62,7 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                //if (zoneDirectory.Name != "ecommons")
+                //if (zoneDirectory.Name != "unrest")
                 //    continue;
 
                 // Load the EQ zone
@@ -182,8 +182,11 @@ namespace EQWOWConverter
                 FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
 
             // Go through every texture to move and put it there
-            foreach (string textureName in zone.WOWZoneData.TextureNames)
+            foreach (Material material in zone.WOWZoneData.Materials)
             {
+                if (material.AnimationTextures.Count == 0)
+                    continue;
+                string textureName = material.AnimationTextures[0];
                 string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
                 string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
                 File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
@@ -491,9 +494,9 @@ namespace EQWOWConverter
                         zoneProperties.DescriptiveName = "Greater Faydark";
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
                         zoneProperties.SetSafePosition(10f, -20f, 0f);
-                        zoneProperties.AddMaterialGrouping("rockw2", "sfrg4", "sfrg5", "sfrg6", "sfrg7", "sfrg8", "sfrg9", "sfrg10", "sgrass",
-                            "spath", "spath45", "spathend", "spathlh", "spathrh", "spatht", "spathtol", "spathtor", "spathy1", "xgrass1",
-                            "grastran");
+                        //zoneProperties.AddMaterialGrouping("rockw2", "sfrg4", "sfrg5", "sfrg6", "sfrg7", "sfrg8", "sfrg9", "sfrg10", "sgrass",
+                        //    "spath", "spath45", "spathend", "spathlh", "spathrh", "spatht", "spathtol", "spathtor", "spathy1", "xgrass1",
+                        //    "grastran");
                     }
                     break;
                 case "greatdivide":

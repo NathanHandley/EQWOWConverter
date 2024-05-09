@@ -33,11 +33,12 @@ internal class Program
             Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
-            Console.Write("Command: ");
+            Console.Write("Command (Default: X): ");
             string? enteredCommand = Console.ReadLine();
             if (enteredCommand == null)
             {
-                Logger.WriteLine("Enter a command");
+                Logger.WriteLine("Exiting.");
+                doLoopForCommands = false;
             }
             else
             {
@@ -99,7 +100,8 @@ internal class Program
                         } break;
                     default:
                         {
-                            Logger.WriteLine("Unknown Command");
+                            Logger.WriteLine("Exiting.");
+                            doLoopForCommands = false;
                         }
                         break;
                 }

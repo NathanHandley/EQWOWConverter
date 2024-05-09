@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones
         public int FogMaxClip = -1;
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
-        public List<List<string>>MaterialGroupsByTextureNames = new List<List<string>>();
+        public List<List<string>>MaterialGroupsByName = new List<List<string>>();
 
         public void SetFogProperties(int red, int green, int blue, int minClip, int maxClip)
         {
@@ -48,12 +48,12 @@ namespace EQWOWConverter.Zones
             SafePosition.Z = z;
         }
 
-        public void AddMaterialGrouping(params string[] textureNames)
+        public void AddMaterialGrouping(params string[] materialNames)
         {
             List<string> grouping = new List<string>();
-            foreach (string textureName in textureNames)
-                grouping.Add(textureName);
-            MaterialGroupsByTextureNames.Add(grouping);
+            foreach (string materialName in materialNames)
+                grouping.Add(materialName);
+            MaterialGroupsByName.Add(grouping);
         }
     }
 }
