@@ -29,6 +29,17 @@ namespace EQWOWConverter.Common
         public int V2;
         public int V3;
 
+        public TriangleFace()
+        { }
+
+        public TriangleFace(TriangleFace face)
+        {
+            MaterialIndex = face.MaterialIndex;
+            V1 = face.V1;
+            V2 = face.V2;
+            V3 = face.V3;
+        }
+
         public UInt16 GetSmallestIndex()
         {
             int smallestIndex = V1;

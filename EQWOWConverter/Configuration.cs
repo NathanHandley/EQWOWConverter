@@ -48,7 +48,10 @@ namespace EQWOWConverter
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21800;
 
         // The algorithm to use when selecting what faces need to be associated in world model objects
-        public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_TEXTURE;
+        public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_XY_REGION;
+
+        // The amount to overlap subdivision boxes when generating by XY region
+        public static readonly float CONFIG_GENERATION_XY_OVERLAP = 20.0f;
 
         // ====================================================================
         // WOW DBC/File IDs

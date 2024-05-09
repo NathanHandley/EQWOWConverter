@@ -85,9 +85,9 @@ namespace EQWOWConverter.Common
             return new Vector3(v1.X + v2.X, v1.Y + v2.Y, v1.Z + v2.Z);
         }
 
-        public static Vector3 operator *(Vector3 v1, float fval)
+        public static Vector3 operator *(Vector3 v1, float val)
         {
-            return new Vector3(v1.X * fval, v1.Y * fval, v1.Z * fval);
+            return new Vector3(v1.X * val, v1.Y * val, v1.Z * val);
         }
     }
 }

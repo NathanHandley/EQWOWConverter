@@ -25,13 +25,6 @@ namespace EQWOWConverter.Common
 {
     internal class BSPTree
     {
-        private class SplitBox
-        {
-            public BoundingBox BoxA = new BoundingBox();
-            public BoundingBox BoxB = new BoundingBox();
-            public float PlaneDistance;
-        }
-
         public List<BSPNode> Nodes = new List<BSPNode>();
         public List<UInt32> FaceTriangleIndicies = new List<UInt32>();
         private List<int> NodesToProcess = new List<int>();

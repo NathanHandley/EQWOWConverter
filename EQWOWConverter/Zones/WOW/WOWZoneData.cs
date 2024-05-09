@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones
             MapID = CURRENT_MAPID;
             CURRENT_MAPID++;
         }
-        
+
         public void LoadFromEQZone(EQZoneData eqZoneData, ZoneProperties zoneProperties)
         {
             Materials = eqZoneData.Materials;
@@ -143,6 +143,13 @@ namespace EQWOWConverter.Zones
                             GenerateWorldModelObjectsByChunks(eqZoneData.MapChunks, verticies, normals, vertexColors, textureCoords);
                         }
                         break;
+                    case WorldModelObjectGenerationType.BY_XY_REGION:
+                        {
+                            // Generate the world groups by splitting the map down into subregions as needed
+                            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
+                            GenerateWorldModelObjectsByXYRegion(fullBoundingBox, TextureNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
+                        }
+                        break;
                     default:
                         {
                             Logger.WriteLine("Error generating world objects due to invalid WorldModelGenerationType of '" + Configuration.CONFIG_GENERATION_TYPE.ToString() + "'");
@@ -154,6 +161,50 @@ namespace EQWOWConverter.Zones
             // Rebuild the bounding box
             CalculateBoundingBox();
         }
+
+        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> textureNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
+            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+        {
+            // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
+            if (faces.Count > Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+            {
+                // Create two new bounding boxes
+                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox, Configuration.CONFIG_GENERATION_XY_OVERLAP);
+
+                // Calculate what triangles fit into these boxes
+                List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
+                List<TriangleFace> bBoxTriangles = new List<TriangleFace>();
+
+                foreach (TriangleFace triangle in faces)
+                {
+                    // Get center point
+                    Vector3 v1 = verticies[triangle.V1];
+                    Vector3 v2 = verticies[triangle.V2];
+                    Vector3 v3 = verticies[triangle.V3];
+                    Vector3 center = new Vector3((v1.X + v2.X + v3.X) / 3, (v1.Y + v2.Y + v3.Y) / 3, (v1.Z + v2.Z + v3.Z) / 3);
+                    
+                    // Align to the first box if it is inside it (only based on xy), otherwise put in the other box
+                    // and don't do if/else since there is intentional overlap
+                    if (center.X >= splitBox.BoxA.BottomCorner.X && center.X <= splitBox.BoxA.TopCorner.X &&
+                        center.Y >= splitBox.BoxA.BottomCorner.Y && center.Y <= splitBox.BoxA.TopCorner.Y)
+                    {
+                        aBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                    if (center.X >= splitBox.BoxB.BottomCorner.X && center.X <= splitBox.BoxB.TopCorner.X &&
+                        center.Y >= splitBox.BoxB.BottomCorner.Y && center.Y <= splitBox.BoxB.TopCorner.Y)
+                    {
+                        bBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                }
+
+                // Generate for the two sub boxes
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, TextureNames, aBoxTriangles, verticies, normals, vertexColors, textureCoords);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, TextureNames, bBoxTriangles, verticies, normals, vertexColors, textureCoords);
+            }
+            else
+                GenerateWorldModelObjectByTextures(TextureNames, faces, verticies, normals, vertexColors, textureCoords);
+        }
+
 
         private void GenerateWorldModelObjectsByChunks(List<MapChunk> mapChunks, List<Vector3> verticies, List<Vector3> normals,
             List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)

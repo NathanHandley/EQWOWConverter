@@ -149,6 +149,28 @@ namespace EQWOWConverter.Common
             return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
+        public static BoundingBox GenerateBoxFromVectors(List<Vector3> verticies)
+        {
+            BoundingBox boundingBox = new BoundingBox();
+            foreach (Vector3 renderVert in verticies)
+            {
+                if (renderVert.X < boundingBox.BottomCorner.X)
+                    boundingBox.BottomCorner.X = renderVert.X;
+                if (renderVert.Y < boundingBox.BottomCorner.Y)
+                    boundingBox.BottomCorner.Y = renderVert.Y;
+                if (renderVert.Z < boundingBox.BottomCorner.Z)
+                    boundingBox.BottomCorner.Z = renderVert.Z;
+
+                if (renderVert.X > boundingBox.TopCorner.X)
+                    boundingBox.TopCorner.X = renderVert.X;
+                if (renderVert.Y > boundingBox.TopCorner.Y)
+                    boundingBox.TopCorner.Y = renderVert.Y;
+                if (renderVert.Z > boundingBox.TopCorner.Z)
+                    boundingBox.TopCorner.Z = renderVert.Z;
+            }
+            return boundingBox;
+        }
+
         // The following three methods were adapted from an answer found here: https://stackoverflow.com/questions/3235385/given-a-bounding-box-and-a-line-two-points-determine-if-the-line-intersects-t
         private bool DoesLineCollide(Vector3 point1, Vector3 point2)
         {
