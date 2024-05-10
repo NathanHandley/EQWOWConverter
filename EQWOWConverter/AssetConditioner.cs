@@ -61,6 +61,7 @@ namespace EQWOWConverter
             string outputCharactersFolderRoot = Path.Combine(eqExportsCondensedPath, "characters");
             string outputSoundsFolderRoot = Path.Combine(eqExportsCondensedPath, "sounds");
             string outputMusicFolderRoot = Path.Combine(eqExportsCondensedPath, "music");
+            string outputEquipmentFolderRoot = Path.Combine(eqExportsCondensedPath, "equipment");
             string outputMiscImagesFolderRoot = Path.Combine(eqExportsCondensedPath, "miscimages");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
@@ -71,6 +72,7 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(outputCharactersFolderRoot, false);
             FileTool.CreateBlankDirectory(outputSoundsFolderRoot, false);
             FileTool.CreateBlankDirectory(outputMusicFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputEquipmentFolderRoot, false);
             FileTool.CreateBlankDirectory(outputMiscImagesFolderRoot, false);
             FileTool.CreateBlankDirectory(outputZoneFolderRoot, false);
             FileTool.CreateBlankDirectory(tempFolderRoot, false);
@@ -85,8 +87,8 @@ namespace EQWOWConverter
                 // Bring in the objects of this directory
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
 
-                // If it's the character, music, or sound folder then copy it as-is
-                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music")
+                // If it's the character, music, equipment, or sound folder then copy it as-is
+                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
                 {
                     Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
                     string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
@@ -136,8 +138,34 @@ namespace EQWOWConverter
                         string outputZoneObjectVertexColorFolder = Path.Combine(outputZoneFolder, "StaticObjectVertexColors");
                         FileTool.CopyDirectoryAndContents(tempZoneObjectVertexColorFolder, outputZoneObjectVertexColorFolder, true, true);
                     }
+
+                    // Copy files that were missing in the original folders for some reason
+                    if (topDirectoryFolderNameOnly == "fearplane")
+                    {
+                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
+                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "maywall.png");
+                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "maywall.png");
+                        File.Copy(inputFileName, outputFileName, true);
+                    }
+                    else if (topDirectoryFolderNameOnly == "oasis")
+                    {
+                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
+                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "canwall1.png");
+                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "canwall1.png");
+                        File.Copy(inputFileName, outputFileName, true);
+                    }
+                    else if (topDirectoryFolderNameOnly == "swampofnohope")
+                    {
+                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
+                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "kruphse3.png");
+                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "kruphse3.png");
+                        File.Copy(inputFileName, outputFileName, true);
+                    }
                 }
             }
+
+            // Convert loading screen images into 
+
 
             // Clean up the temp folder and exit
             Directory.Delete(tempFolderRoot, true);
