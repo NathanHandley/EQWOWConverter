@@ -16,12 +16,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EQWOWConverter
 {
@@ -99,9 +103,29 @@ namespace EQWOWConverter
                 // If it's a bmpwad (contains misc images) then copy that into the miscimages folder
                 if (topDirectoryFolderNameOnly.StartsWith("bmpwad"))
                 {
-                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
-                    string outputCharacterFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
-                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputCharacterFolder, false, true);
+                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
+                    string outputMiscImagesFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
+                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputMiscImagesFolder, false, true);
+
+                    // Resize the loading screens
+                    if (topDirectoryFolderNameOnly == "bmpwad")
+                    {
+                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "logo03.png");
+                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "logo03resized.png");
+                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                    }
+                    else if (topDirectoryFolderNameOnly == "bmpwad4")
+                    {
+                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqkload.png");
+                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqkloadresized.png");
+                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                    }
+                    else if (topDirectoryFolderNameOnly == "bmpwad5")
+                    {
+                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqvload.png");
+                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqvloadresized.png");
+                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                    }
                     continue;
                 }
 
@@ -163,9 +187,6 @@ namespace EQWOWConverter
                     }
                 }
             }
-
-            // Convert loading screen images into 
-
 
             // Clean up the temp folder and exit
             Directory.Delete(tempFolderRoot, true);
@@ -321,6 +342,29 @@ namespace EQWOWConverter
         //    }
         //    return true;
         //}
+
+        private void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
+        {
+            Bitmap inputImage = new Bitmap(inputFilePath);
+            Bitmap outputImage = new Bitmap(newWidth, newHeight);
+            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
+            using (var graphics = Graphics.FromImage(outputImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                using (ImageAttributes wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    Rectangle outputRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                    graphics.DrawImage(inputImage, outputRectangle, 0, 0, inputImage.Width, inputImage.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+            outputImage.Save(outputFilePath);
+            inputImage.Dispose();
+        }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {
