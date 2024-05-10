@@ -66,8 +66,13 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
-                // TODO: Handle this better for invisible collision
                 if (materials[curMaterialIndex].MaterialType == MaterialType.Invisible)
+                    continue;
+                if (materials[curMaterialIndex].MaterialType == MaterialType.Boundary)
+                    continue;
+                if (materials[curMaterialIndex].MaterialType == MaterialType.DiffuseSkydome)
+                    continue;
+                if (materials[curMaterialIndex].MaterialType == MaterialType.TransparentSkydome)
                     continue;
                 if (materials[curMaterialIndex].AnimationTextures.Count == 0)
                     continue;
