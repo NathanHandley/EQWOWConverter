@@ -37,7 +37,7 @@ namespace EQWOWConverter.WOWFiles
             public string AreaName = string.Empty;       
         }
 
-        List<Row> rows = new List<Row>();
+        private List<Row> rows = new List<Row>();
 
         public void AddRow(int id, string areaName)
         {

@@ -25,25 +25,26 @@ using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using EQWOWConverter.Common;
 using Vector3 = EQWOWConverter.Common.Vector3;
+using EQWOWConverter.WOWFiles.DBC;
 
 namespace EQWOWConverter
 {
     internal class AssetConverter
     {
-        public static bool ConvertEQZonesToWOW(string eqExportsCondensedPath, string wowExportPath)
+        public static bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteLine("Converting EQ zones to WOW zones...");
 
             // Make sure the root path exists
-            if (Directory.Exists(eqExportsCondensedPath) == false)
+            if (Directory.Exists(eqExportsConditionedPath) == false)
             {
-                Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
+                Logger.WriteLine("ERROR - Conditioned path of '" + eqExportsConditionedPath + "' does not exist.");
                 Logger.WriteLine("Conversion Failed!");
                 return false;
             }
 
             // Make sure the zone folder path exists
-            string zoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
+            string zoneFolderRoot = Path.Combine(eqExportsConditionedPath, "zones");
             if (Directory.Exists(zoneFolderRoot) == false)
             {
                 Logger.WriteLine("ERROR - Zone folder that should be at path '" + zoneFolderRoot + "' does not exist.");
@@ -81,6 +82,9 @@ namespace EQWOWConverter
                 zones.Add(curZone);
             }
 
+            // Copy the loading screens
+            CreateLoadingScreens(eqExportsConditionedPath, exportMPQRootFolder);
+
             // Create the DBC update scripts
             CreateDBCUpdateScripts(zones, wowExportPath);
 
@@ -116,13 +120,41 @@ namespace EQWOWConverter
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
+        public static void CreateLoadingScreens(string eqExportsConditionedPath, string exportMPQRootFolder)
+        {
+            Logger.WriteLine("Copying loading screens");
+            string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
+            Directory.CreateDirectory(loadingScreensTextureFolder);
+
+            // Classic
+            string classicInputFile = Path.Combine(eqExportsConditionedPath, "miscimages", "logo03resized.blp");
+            string classicOutputFile = Path.Combine(loadingScreensTextureFolder, "LoadingScreenEQClassic.blp");
+            File.Copy(classicInputFile, classicOutputFile);
+
+            // Kunark
+            string kunarkInputFile = Path.Combine(eqExportsConditionedPath, "miscimages", "eqkloadresized.blp");
+            string kunarkOutputFile = Path.Combine(loadingScreensTextureFolder, "LoadingScreenEQKunark.blp");
+            File.Copy(kunarkInputFile, kunarkOutputFile);
+
+            // Velious
+            string veliousInputFile = Path.Combine(eqExportsConditionedPath, "miscimages", "eqvloadresized.blp");
+            string veliousOutputFile = Path.Combine(loadingScreensTextureFolder, "LoadingScreenEQVelious.blp");
+            File.Copy(veliousInputFile, veliousOutputFile);
+        }
+
         public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteLine("Creating DBC Update Scripts...");
 
             string dbcUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts");
 
-            // Create the DBC update scripts
+            // Populate the loading screens script
+            LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
+
+            // Create the map-level DBC update scripts
             AreaTableDBC areaTableDBC = new AreaTableDBC();
             MapDBC mapDBC = new MapDBC();
             MapDifficultyDBC difficultyDBC = new MapDifficultyDBC();
@@ -130,7 +162,7 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zone.WOWZoneData.MapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.AreaID));
+                mapDBC.AddRow(zone.WOWZoneData.MapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.AreaID), zone.WOWZoneData.LoadingScreenID);
                 difficultyDBC.AddRow(zone.WOWZoneData.MapID);
                 foreach(WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
                 {
@@ -144,6 +176,7 @@ namespace EQWOWConverter
             mapDBC.WriteToDisk(dbcUpdateScriptFolder);
             difficultyDBC.WriteToDisk(dbcUpdateScriptFolder);
             wmoAreaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
+            loadingScreensDBC.WriteToDisk(dbcUpdateScriptFolder);
 
             Logger.WriteLine("DBC Update Scripts created successfully");
         }

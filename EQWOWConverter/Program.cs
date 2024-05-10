@@ -50,18 +50,18 @@ internal class Program
                             doLoopForCommands = false;
                         }
                         break;
-                    case "1":
-                        {
-                            Logger.WriteLine("Conditioning Exported EQ Data...");
-                            AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
-                            if (condenseResult == false)
-                            {
-                                Logger.WriteLine("Exported EQ Data Conditioning Failed.");
-                                break;
-                            }
-                            Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
-                        } break;
+                    //case "1":
+                    //    {
+                    //        Logger.WriteLine("Conditioning Exported EQ Data...");
+                    //        AssetConditioner conditioner = new AssetConditioner();
+                    //        bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                    //        if (condenseResult == false)
+                    //        {
+                    //            Logger.WriteLine("Exported EQ Data Conditioning Failed.");
+                    //            break;
+                    //        }
+                    //        Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
+                    //    } break;
                     //case "2":
                     //    {
                     //        Logger.WriteLine("Updating image references...");

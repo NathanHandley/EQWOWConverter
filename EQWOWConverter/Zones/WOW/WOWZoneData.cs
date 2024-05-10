@@ -38,6 +38,7 @@ namespace EQWOWConverter.Zones
         public UInt32 AreaID;
         public UInt32 WMOID;
         public int MapID;
+        public int LoadingScreenID;
 
         public Vector3 SafePosition = new Vector3();
 
@@ -154,6 +155,32 @@ namespace EQWOWConverter.Zones
                         }
                         break;
                 }
+            }
+
+            // Save the loading screen
+            switch (zoneProperties.Continent)
+            {
+                case ZoneContinent.Antonica:
+                case ZoneContinent.Faydwer:
+                case ZoneContinent.Development:
+                case ZoneContinent.Odus:
+                    {
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START;
+                    } break;
+                case ZoneContinent.Kunark:
+                    {
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1;
+                    }
+                    break;
+                case ZoneContinent.Velious:
+                    {
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2;
+                    }
+                    break;                
+                default:
+                    {
+                        Logger.WriteLine("Error setting loading screen, as the passed continent was not handled");
+                    } break;
             }
 
             // Rebuild the bounding box

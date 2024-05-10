@@ -71,6 +71,9 @@ namespace EQWOWConverter
         // Specific rows in MapDifficulty.dbc. (~800-922)
         public static readonly int CONFIG_DBCID_MAPDIFFICULTYID_START = 800;
 
+        // IDs for the loading screen
+        public static readonly int CONFIG_DBCID_LOADINGSCREENID_START = 255;
+
         // ====================================================================
         // AzerothCore Database IDs
         // ====================================================================

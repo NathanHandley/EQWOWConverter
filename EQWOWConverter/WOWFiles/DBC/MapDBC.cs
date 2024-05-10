@@ -28,22 +28,23 @@ namespace EQWOWConverter.WOWFiles
         {
             public int Id;
             public string Directory = string.Empty;
-            public int InstanceType = 0;// 0 = All, 1 = Group Only, 2 = Raid, 3 = Battleground
+            public int InstanceType = 0;// 0 = All, 1 = Group Only, 2 = Raid, 3 = Battleground, 4 = PVP?
             public int Flags = 0;       // Unsure what this is, looks mostly 0 or 1
             public string MapName = string.Empty;
             public int AreaTableID;
-            public int LoadingScreenID = 254; // Temporary Assignment
+            public int LoadingScreenID;
         }
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int id, string directory, string mapName, int areaTableID)
+        public void AddRow(int id, string directory, string mapName, int areaTableID, int loadingScreenID)
         {
             Row newRow = new Row();
             newRow.Id = id;
             newRow.Directory = directory;
             newRow.AreaTableID = areaTableID;
             newRow.MapName = mapName;
+            newRow.LoadingScreenID = loadingScreenID;
             rows.Add(newRow);
         }
 
