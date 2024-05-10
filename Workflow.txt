@@ -20,11 +20,6 @@ Use EQWOWConverter
 Use BLPNG Converter
 - To BLP > Choose Folder  (select the conditioned assets folder)
 
-** Copy missing textures **
-Texture "maywall" should exist in \EQExports\fearplane\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
-Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
-Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
-
 ** Converting Everquest Map Assets (as obj) into World of Warcraft 3.3.5 assets (wmo) **
 Use EQWOWConverter
 - Run command "Convert zones to WMO"

@@ -36,6 +36,7 @@ namespace EQWOWConverter
         private static uint objectMeshesCondensed = 0;
         private static uint objectMaterialsCondensed = 0;
         private static uint objectTexturesCondensed = 0;
+        private static uint transparentTexturesGenerated = 0;
 
         public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
@@ -45,6 +46,7 @@ namespace EQWOWConverter
             objectMeshesCondensed = 0;
             objectMaterialsCondensed = 0;
             objectTexturesCondensed = 0;
+            transparentTexturesGenerated = 0;
 
             // Make sure the raw path exists
             if (Directory.Exists(eqExportsRawPath) == false)
@@ -188,9 +190,36 @@ namespace EQWOWConverter
                 }
             }
 
-            // Clean up the temp folder and exit
+            // Clean up the temp folder
             Directory.Delete(tempFolderRoot, true);
-            Logger.WriteLine("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "'");
+
+            // Perform additional material/texture adjustments in output folders
+            Logger.WriteLine("Creating textures with transparent materials...");
+            topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
+            foreach (string topDirectory in topDirectories)
+            {
+                // Get just the folder name itself for later
+                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+
+                // Different logic based on type of folder
+                if (topDirectoryFolderNameOnly == "zones")
+                {
+                    string[] zoneDirectories = Directory.GetDirectories(topDirectory);
+                    foreach(string zoneDirectory in zoneDirectories)
+                    {
+                        // Get just the zone folder
+                        string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+                        GenerateTransparentImagesByMaterials(zoneDirectoryFolderNameOnly, zoneDirectory);
+                    }
+                }
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" 
+                    || topDirectoryFolderNameOnly == "equipment")
+                {
+                    GenerateTransparentImagesByMaterials(topDirectoryFolderNameOnly, topDirectory);
+                }
+            }
+            
+            Logger.WriteLine("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "', Transparent textures generated: '" + transparentTexturesGenerated + "'");
             return true;
         }
 
@@ -343,8 +372,10 @@ namespace EQWOWConverter
         //    return true;
         //}
 
+        // Note: These image operations make this a Windows only solution.  Look into alternatives later.
         private void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
         {
+            // Resize the image to the passed parameters
             Bitmap inputImage = new Bitmap(inputFilePath);
             Bitmap outputImage = new Bitmap(newWidth, newHeight);
             outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
@@ -364,6 +395,112 @@ namespace EQWOWConverter
             }
             outputImage.Save(outputFilePath);
             inputImage.Dispose();
+        }
+
+        private void GenerateTransparentImagesByMaterials(string topFolderName, string workingRootFolderPath)
+        {
+            string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
+            string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
+            string[] materialListFiles = Directory.GetFiles(materialListFolder);
+            foreach (string materialListFile in materialListFiles)
+            {
+                bool doWriteOutMaterialListFile = false;
+                string materialFileText = File.ReadAllText(materialListFile);
+                string[] materialFileRows = materialFileText.Split(Environment.NewLine);
+                string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                int rowIndex = -1;
+                foreach (string materialFileRow in materialFileRows)
+                {
+                    rowIndex++;
+                    // Skip blank lines and comments
+                    if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
+                        continue;
+
+                    // Grab material details
+                    string[] blocks = materialFileRow.Split(",");
+                    Material curMaterial = new Material(blocks[1]);
+                    curMaterial.Index = uint.Parse(blocks[0]);
+                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+                    string[] textureBlock = blocks[1].Split(":");
+                    curMaterial.Name = textureBlock[0];
+                    for (int i = 1; i < textureBlock.Length; i++)
+                        curMaterial.AnimationTextures.Add(textureBlock[i]);
+
+                    // Only perform action if there's a transparent material
+                    if (curMaterial.MaterialType == MaterialType.Transparent25Percent || curMaterial.MaterialType == MaterialType.Transparent50Percent || curMaterial.MaterialType == MaterialType.Transparent75Percent)
+                    {
+                        foreach(string textureName in curMaterial.AnimationTextures)
+                        {
+                            // Generate a new texture name
+                            string newTextureName = textureName;
+                            switch (curMaterial.MaterialType)
+                            {
+                                case MaterialType.Transparent25Percent: newTextureName = textureName + "a25"; break;
+                                case MaterialType.Transparent50Percent: newTextureName = textureName + "a50"; break;
+                                case MaterialType.Transparent75Percent: newTextureName = textureName + "a75"; break;
+                                default:
+                                    {
+                                        Logger.WriteLine("GenerateTransparentImagesByMaterials failed.  Unhandled material type.");
+                                        continue;
+                                    }
+                            }
+
+                            // Check if texture already exists and if not, create it
+                            string existingTextureFullPath = Path.Combine(textureFolder, textureName + ".png");
+                            string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
+                            if (File.Exists(newTextureFullPath) == false)
+                                GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
+
+                            // Update texture references for the material
+                            materialFileRowsForWrite[rowIndex] = materialFileRow.Replace(textureName, newTextureName);
+                            doWriteOutMaterialListFile = true;
+                        }
+                    }
+                }
+                if (doWriteOutMaterialListFile == true)
+                {
+                    StringBuilder newMaterialListFileContents = new StringBuilder();
+                    foreach (string materialFileRow in materialFileRowsForWrite)
+                        newMaterialListFileContents.AppendLine(materialFileRow);
+                    File.WriteAllText(materialListFile, newMaterialListFileContents.ToString());
+                }
+            }
+        }
+
+        private bool GenerateTransparentImage(string inputFilePath, string outputFilePath, MaterialType materialType)
+        {
+            // Calculate the new alpha value
+            double newPixelAlphaMultiplier;
+            switch (materialType)
+            {
+                case MaterialType.Transparent25Percent: newPixelAlphaMultiplier = 0.75; break;
+                case MaterialType.Transparent50Percent: newPixelAlphaMultiplier = 0.50;break;
+                case MaterialType.Transparent75Percent: newPixelAlphaMultiplier = 0.25;break;
+                default:
+                    {
+                        Logger.WriteLine("GenerateTransparentImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
+                        return false;
+                    }
+            }
+
+            // Edit the alpha pixel value
+            Bitmap inputImage = new Bitmap(inputFilePath);
+            for (int x = 0; x < inputImage.Width; x++)
+            {
+                for (int y = 0; y < inputImage.Height; y++)
+                {
+                    Color curPixelColor = inputImage.GetPixel(x, y);
+                    byte newAlpha = Convert.ToByte(Math.Round(Convert.ToDouble(curPixelColor.A) * newPixelAlphaMultiplier, 0, MidpointRounding.ToZero));
+                    Color newPixelColor = Color.FromArgb(newAlpha, curPixelColor.R, curPixelColor.G, curPixelColor.B);
+                    inputImage.SetPixel(x, y, newPixelColor);
+                }
+            }
+
+            // Save the new image
+            inputImage.Save(outputFilePath);
+            inputImage.Dispose();
+            transparentTexturesGenerated++;
+            return true;
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
