@@ -380,6 +380,7 @@ namespace EQWOWConverter.Zones
                 if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
                 {
                     // This index was aready remapped
+                    // This index was aready remapped,,,,,,,,,
                     curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
                 }
                 else

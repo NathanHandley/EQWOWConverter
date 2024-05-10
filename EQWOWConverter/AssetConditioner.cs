@@ -23,8 +23,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 
-// Intentially ignoring 'vertex colors'.  Come back if this is needed.
-
 namespace EQWOWConverter
 {
     internal class AssetConditioner
@@ -61,7 +59,9 @@ namespace EQWOWConverter
             string outputObjectsMeshesFolderRoot = Path.Combine(outputObjectsFolderRoot, "meshes");
             string outputObjectsMaterialsFolderRoot = Path.Combine(outputObjectsFolderRoot, "materiallists");
             string outputCharactersFolderRoot = Path.Combine(eqExportsCondensedPath, "characters");
-            string outputCharactersTexturesFolderRoot = Path.Combine(outputCharactersFolderRoot, "textures");
+            string outputSoundsFolderRoot = Path.Combine(eqExportsCondensedPath, "sounds");
+            string outputMusicFolderRoot = Path.Combine(eqExportsCondensedPath, "music");
+            string outputMiscImagesFolderRoot = Path.Combine(eqExportsCondensedPath, "miscimages");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
             FileTool.CreateBlankDirectory(outputObjectsFolderRoot, false);
@@ -69,7 +69,9 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(outputObjectsMeshesFolderRoot, false);
             FileTool.CreateBlankDirectory(outputObjectsMaterialsFolderRoot, false);
             FileTool.CreateBlankDirectory(outputCharactersFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputCharactersTexturesFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputSoundsFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputMusicFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputMiscImagesFolderRoot, false);
             FileTool.CreateBlankDirectory(outputZoneFolderRoot, false);
             FileTool.CreateBlankDirectory(tempFolderRoot, false);
 
@@ -83,6 +85,24 @@ namespace EQWOWConverter
                 // Bring in the objects of this directory
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
 
+                // If it's the character, music, or sound folder then copy it as-is
+                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music")
+                {
+                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
+                    string outputCharacterFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
+                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputCharacterFolder, true, true);
+                    continue;
+                }
+
+                // If it's a bmpwad (contains misc images) then copy that into the miscimages folder
+                if (topDirectoryFolderNameOnly.StartsWith("bmpwad"))
+                {
+                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
+                    string outputCharacterFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
+                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputCharacterFolder, false, true);
+                    continue;
+                }
+
                 // Determine what objects exist in this folder
                 string tempZoneFolder = Path.Combine(tempFolderRoot, "Zone");
                 string tempObjectsFolder = Path.Combine(tempFolderRoot, "Objects");
@@ -92,11 +112,6 @@ namespace EQWOWConverter
                 // Process objects
                 if (topDirectoryHasObjects)
                 {
-                    // Delete vertex color data (Hopefully we won't need this...)
-                    string objectVertexDataFolder = Path.Combine(tempObjectsFolder, "VertexColors");
-                    if (Directory.Exists(objectVertexDataFolder))
-                        Directory.Delete(objectVertexDataFolder, true);
-
                     // Process the object textures
                     ProcessAndCopyObjectTextures(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsTexturesFolderRoot);
 
@@ -110,8 +125,17 @@ namespace EQWOWConverter
                 // Process Zones
                 if (topDirectoryHasZone)
                 {
+                    // Copy the core zone folder
                     string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
                     FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
+
+                    // Bring over any object vertex colors
+                    string tempZoneObjectVertexColorFolder = Path.Combine(tempObjectsFolder, "VertexColors");
+                    if (Directory.Exists(tempZoneObjectVertexColorFolder))
+                    {
+                        string outputZoneObjectVertexColorFolder = Path.Combine(outputZoneFolder, "StaticObjectVertexColors");
+                        FileTool.CopyDirectoryAndContents(tempZoneObjectVertexColorFolder, outputZoneObjectVertexColorFolder, true, true);
+                    }
                 }
             }
 
@@ -122,24 +146,24 @@ namespace EQWOWConverter
         }
 
         // TODO: Delete?
-        public bool UpdateImageReferences(string eqExportsCondensedPath)
-        {
-            Logger.WriteLine("Updating image references...");
+        //public bool UpdateImageReferences(string eqExportsCondensedPath)
+        //{
+        //    Logger.WriteLine("Updating image references...");
 
-            // Make sure the raw path exists
-            if (Directory.Exists(eqExportsCondensedPath) == false)
-            {
-                Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
-                Logger.WriteLine("Conditioning Failed!");
-                return false;
-            }
+        //    // Make sure the raw path exists
+        //    if (Directory.Exists(eqExportsCondensedPath) == false)
+        //    {
+        //        Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
+        //        Logger.WriteLine("Conditioning Failed!");
+        //        return false;
+        //    }
 
-            // Delete any .png files
-            FileTool.DeleteFilesInDirectory(eqExportsCondensedPath, "*.png", true);
+        //    // Delete any .png files
+        //    FileTool.DeleteFilesInDirectory(eqExportsCondensedPath, "*.png", true);
 
-            Logger.WriteLine("Image reference updates complete");
-            return true;
-        }
+        //    Logger.WriteLine("Image reference updates complete");
+        //    return true;
+        //}
 
         // TODO: Delete this?
         // TODO: Rewrite to be quick.  Approach:
@@ -152,123 +176,123 @@ namespace EQWOWConverter
         // 3) Populate with Verticies
         // 4) Pivot table into another Dictionary<int, SortedSet<int>> with key as each vertex index, and value set as indexes that share the same vertexkey
         // 5) 
-        public bool GenerateAssociationMaps(string eqExportsCondensedPath)
-        {
-            // Make sure the raw path exists
-            if (Directory.Exists(eqExportsCondensedPath) == false)
-            {
-                Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
-                Logger.WriteLine("Association Maps Generation Failured");
-                return false;
-            }
+        //public bool GenerateAssociationMaps(string eqExportsCondensedPath)
+        //{
+        //    // Make sure the raw path exists
+        //    if (Directory.Exists(eqExportsCondensedPath) == false)
+        //    {
+        //        Logger.WriteLine("ERROR - Condensed path of '" + eqExportsCondensedPath + "' does not exist.");
+        //        Logger.WriteLine("Association Maps Generation Failured");
+        //        return false;
+        //    }
 
-            // Make sure the zone folder path exists
-            string zoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
-            if (Directory.Exists(zoneFolderRoot) == false)
-            {
-                Logger.WriteLine("ERROR - Zone folder that should be at path '" + zoneFolderRoot + "' does not exist.");
-                Logger.WriteLine("Association Maps Generation Failured");
-                return false;
-            }
+        //    // Make sure the zone folder path exists
+        //    string zoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
+        //    if (Directory.Exists(zoneFolderRoot) == false)
+        //    {
+        //        Logger.WriteLine("ERROR - Zone folder that should be at path '" + zoneFolderRoot + "' does not exist.");
+        //        Logger.WriteLine("Association Maps Generation Failured");
+        //        return false;
+        //    }
 
-            // Go through the subfolders for each zone generate the maps
-            DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
-            DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
-            foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
-            {
-                // Load the EQ zone
-                Zone curZone = new Zone(zoneDirectory.Name);
-                Logger.WriteLine("- [" + zoneDirectory.Name + "]: Starting association map generation for '" + zoneDirectory.Name + "...");
-                string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
-                curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);
+        //    // Go through the subfolders for each zone generate the maps
+        //    DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
+        //    DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
+        //    foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
+        //    {
+        //        // Load the EQ zone
+        //        Zone curZone = new Zone(zoneDirectory.Name);
+        //        Logger.WriteLine("- [" + zoneDirectory.Name + "]: Starting association map generation for '" + zoneDirectory.Name + "...");
+        //        string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
+        //        curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);
 
-                // Generate vertex map
-                Logger.WriteLine("- [" + zoneDirectory.Name + "]: Generating vertex association map...");
+        //        // Generate vertex map
+        //        Logger.WriteLine("- [" + zoneDirectory.Name + "]: Generating vertex association map...");
 
-                // Find alike verticies and group their indicies
-                Dictionary<int, SortedSet<int>> alikeVertexIndiciesByVertexIndex = new Dictionary<int, SortedSet<int>>();
-                for (int i = 0; i < curZone.EQZoneData.Verticies.Count; i++)
-                {
-                    if (alikeVertexIndiciesByVertexIndex.ContainsKey(i) == false)
-                        alikeVertexIndiciesByVertexIndex.Add(i, new SortedSet<int>());
-                    for (int j = i + 1; j < curZone.EQZoneData.Verticies.Count; j++)
-                    {
-                        if (curZone.EQZoneData.Verticies[i].IsEqualForIndexComparisons(curZone.EQZoneData.Verticies[j]))
-                        {
-                            // On match, store in both lists
-                            alikeVertexIndiciesByVertexIndex[i].Add(j);
-                            if (alikeVertexIndiciesByVertexIndex.ContainsKey(j) == false)
-                                alikeVertexIndiciesByVertexIndex.Add(j, new SortedSet<int>());
-                            alikeVertexIndiciesByVertexIndex[j].Add(i);
-                        }
-                    }
-                }
+        //        // Find alike verticies and group their indicies
+        //        Dictionary<int, SortedSet<int>> alikeVertexIndiciesByVertexIndex = new Dictionary<int, SortedSet<int>>();
+        //        for (int i = 0; i < curZone.EQZoneData.Verticies.Count; i++)
+        //        {
+        //            if (alikeVertexIndiciesByVertexIndex.ContainsKey(i) == false)
+        //                alikeVertexIndiciesByVertexIndex.Add(i, new SortedSet<int>());
+        //            for (int j = i + 1; j < curZone.EQZoneData.Verticies.Count; j++)
+        //            {
+        //                if (curZone.EQZoneData.Verticies[i].IsEqualForIndexComparisons(curZone.EQZoneData.Verticies[j]))
+        //                {
+        //                    // On match, store in both lists
+        //                    alikeVertexIndiciesByVertexIndex[i].Add(j);
+        //                    if (alikeVertexIndiciesByVertexIndex.ContainsKey(j) == false)
+        //                        alikeVertexIndiciesByVertexIndex.Add(j, new SortedSet<int>());
+        //                    alikeVertexIndiciesByVertexIndex[j].Add(i);
+        //                }
+        //            }
+        //        }
 
-                // Put vertex map into an output string array and write it
-                StringBuilder outputVertexMap = new StringBuilder();
-                outputVertexMap.AppendLine("# First value is the core index, and all following are associated (the same value in the vertex array)");
-                foreach(var alikeVertexIndicies in alikeVertexIndiciesByVertexIndex)
-                {
-                    outputVertexMap.Append(alikeVertexIndicies.Key.ToString());
-                    foreach(int refIndex in alikeVertexIndicies.Value)
-                        outputVertexMap.Append("," + refIndex.ToString());
-                    outputVertexMap.AppendLine(string.Empty);
-                }
-                string vertexMapFilePath = Path.Combine(curZoneDirectory, "map_verticies.txt");
-                File.WriteAllText(vertexMapFilePath, outputVertexMap.ToString());
+        //        // Put vertex map into an output string array and write it
+        //        StringBuilder outputVertexMap = new StringBuilder();
+        //        outputVertexMap.AppendLine("# First value is the core index, and all following are associated (the same value in the vertex array)");
+        //        foreach(var alikeVertexIndicies in alikeVertexIndiciesByVertexIndex)
+        //        {
+        //            outputVertexMap.Append(alikeVertexIndicies.Key.ToString());
+        //            foreach(int refIndex in alikeVertexIndicies.Value)
+        //                outputVertexMap.Append("," + refIndex.ToString());
+        //            outputVertexMap.AppendLine(string.Empty);
+        //        }
+        //        string vertexMapFilePath = Path.Combine(curZoneDirectory, "map_verticies.txt");
+        //        File.WriteAllText(vertexMapFilePath, outputVertexMap.ToString());
 
-                // Generate the face triangle map
-                Logger.WriteLine("- [" + zoneDirectory.Name + "]: Generating face incidies association map...");
+        //        // Generate the face triangle map
+        //        Logger.WriteLine("- [" + zoneDirectory.Name + "]: Generating face incidies association map...");
 
-                // Find alike faces and group their indicies
-                Dictionary<int, SortedSet<int>> connectedFaceIndiciesByFaceIndex = new Dictionary<int, SortedSet<int>>();
-                for (int i = 0; i < curZone.EQZoneData.TriangleFaces.Count; i++)
-                {
-                    if (connectedFaceIndiciesByFaceIndex.ContainsKey(i) == false)
-                        connectedFaceIndiciesByFaceIndex.Add(i, new SortedSet<int>());
-                    TriangleFace leftFace = curZone.EQZoneData.TriangleFaces[i];
-                    for (int j = i + 1; j < curZone.EQZoneData.TriangleFaces.Count; j++)
-                    {
-                        TriangleFace rightFace = curZone.EQZoneData.TriangleFaces[j];
-                        bool facesConnect = false;
-                        if (leftFace.SharesIndexWith(rightFace) == true)
-                            facesConnect = true;
-                        else
-                        {
-                            if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V1]))
-                                facesConnect = true;
-                            else if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V2]))
-                                facesConnect = true;
-                            else if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V3]))
-                                facesConnect = true;
-                        }
+        //        // Find alike faces and group their indicies
+        //        Dictionary<int, SortedSet<int>> connectedFaceIndiciesByFaceIndex = new Dictionary<int, SortedSet<int>>();
+        //        for (int i = 0; i < curZone.EQZoneData.TriangleFaces.Count; i++)
+        //        {
+        //            if (connectedFaceIndiciesByFaceIndex.ContainsKey(i) == false)
+        //                connectedFaceIndiciesByFaceIndex.Add(i, new SortedSet<int>());
+        //            TriangleFace leftFace = curZone.EQZoneData.TriangleFaces[i];
+        //            for (int j = i + 1; j < curZone.EQZoneData.TriangleFaces.Count; j++)
+        //            {
+        //                TriangleFace rightFace = curZone.EQZoneData.TriangleFaces[j];
+        //                bool facesConnect = false;
+        //                if (leftFace.SharesIndexWith(rightFace) == true)
+        //                    facesConnect = true;
+        //                else
+        //                {
+        //                    if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V1]))
+        //                        facesConnect = true;
+        //                    else if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V2]))
+        //                        facesConnect = true;
+        //                    else if (rightFace.ContainsIndex(alikeVertexIndiciesByVertexIndex[leftFace.V3]))
+        //                        facesConnect = true;
+        //                }
 
-                        if (facesConnect == true)
-                        {
-                            // On match, store in both lists
-                            connectedFaceIndiciesByFaceIndex[i].Add(j);
-                            if (connectedFaceIndiciesByFaceIndex.ContainsKey(j) == false)
-                                connectedFaceIndiciesByFaceIndex.Add(j, new SortedSet<int>());
-                            connectedFaceIndiciesByFaceIndex[j].Add(i);
-                        }
-                    }
-                }
+        //                if (facesConnect == true)
+        //                {
+        //                    // On match, store in both lists
+        //                    connectedFaceIndiciesByFaceIndex[i].Add(j);
+        //                    if (connectedFaceIndiciesByFaceIndex.ContainsKey(j) == false)
+        //                        connectedFaceIndiciesByFaceIndex.Add(j, new SortedSet<int>());
+        //                    connectedFaceIndiciesByFaceIndex[j].Add(i);
+        //                }
+        //            }
+        //        }
 
-                // Put face map into an output string array and write it
-                StringBuilder outputFaceMap = new StringBuilder();
-                outputFaceMap.AppendLine("# First value is the core index, and all following are associated (the same value in the face indicies array)");
-                foreach (var alikeFaceIndicies in connectedFaceIndiciesByFaceIndex)
-                {
-                    outputFaceMap.Append(alikeFaceIndicies.Key.ToString());
-                    foreach (int refIndex in alikeFaceIndicies.Value)
-                        outputFaceMap.Append("," + refIndex.ToString());
-                    outputFaceMap.AppendLine(string.Empty);
-                }
-                string faceMapFilePath = Path.Combine(curZoneDirectory, "map_indicies.txt");
-                File.WriteAllText(faceMapFilePath, outputFaceMap.ToString());
-            }
-            return true;
-        }
+        //        // Put face map into an output string array and write it
+        //        StringBuilder outputFaceMap = new StringBuilder();
+        //        outputFaceMap.AppendLine("# First value is the core index, and all following are associated (the same value in the face indicies array)");
+        //        foreach (var alikeFaceIndicies in connectedFaceIndiciesByFaceIndex)
+        //        {
+        //            outputFaceMap.Append(alikeFaceIndicies.Key.ToString());
+        //            foreach (int refIndex in alikeFaceIndicies.Value)
+        //                outputFaceMap.Append("," + refIndex.ToString());
+        //            outputFaceMap.AppendLine(string.Empty);
+        //        }
+        //        string faceMapFilePath = Path.Combine(curZoneDirectory, "map_indicies.txt");
+        //        File.WriteAllText(faceMapFilePath, outputFaceMap.ToString());
+        //    }
+        //    return true;
+        //}
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {

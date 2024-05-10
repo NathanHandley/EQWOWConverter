@@ -29,8 +29,8 @@ internal class Program
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
             Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
-            Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");// TODO: Delete?
-            Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
+            //Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");// TODO: Delete?
+            //Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command (Default: X): ");
@@ -62,30 +62,30 @@ internal class Program
                             }
                             Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
                         } break;
-                    case "2":
-                        {
-                            Logger.WriteLine("Updating image references...");
-                            AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.UpdateImageReferences(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
-                            if (condenseResult == false)
-                            {
-                                Logger.WriteLine("Updating image references failed.");
-                                break;
-                            }
-                            Logger.WriteLine("Image reference updates complete.");
-                        } break;
-                    case "3":
-                        {
-                            Logger.WriteLine("Generating Association Maps (takes a very long time)...");
-                            AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.GenerateAssociationMaps(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
-                            if (condenseResult == false)
-                            {
-                                Logger.WriteLine("Association Map Generation Failure.");
-                                break;
-                            }
-                            Logger.WriteLine("Assocation Maps Generated.");
-                        } break;
+                    //case "2":
+                    //    {
+                    //        Logger.WriteLine("Updating image references...");
+                    //        AssetConditioner conditioner = new AssetConditioner();
+                    //        bool condenseResult = conditioner.UpdateImageReferences(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                    //        if (condenseResult == false)
+                    //        {
+                    //            Logger.WriteLine("Updating image references failed.");
+                    //            break;
+                    //        }
+                    //        Logger.WriteLine("Image reference updates complete.");
+                    //    } break;
+                    //case "3":
+                    //    {
+                    //        Logger.WriteLine("Generating Association Maps (takes a very long time)...");
+                    //        AssetConditioner conditioner = new AssetConditioner();
+                    //        bool condenseResult = conditioner.GenerateAssociationMaps(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                    //        if (condenseResult == false)
+                    //        {
+                    //            Logger.WriteLine("Association Map Generation Failure.");
+                    //            break;
+                    //        }
+                    //        Logger.WriteLine("Assocation Maps Generated.");
+                    //    } break;
                     case "5":
                         {
                             Logger.WriteLine("Converting zones from EQ to WoW...");
