@@ -33,9 +33,9 @@ namespace EQWOWConverter
         private static uint objectMaterialsCondensed = 0;
         private static uint objectTexturesCondensed = 0;
 
-        public bool ConditionAllModels(string eqExportsRawPath, string eqExportsCondensedPath)
+        public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Logger.WriteLine("Conditioning Raw EQ Model Data (Zones, Characters, Objects)...");
+            Logger.WriteLine("Conditioning Raw EQ Data...");
 
             // Reset counters
             objectMeshesCondensed = 0;
@@ -89,8 +89,8 @@ namespace EQWOWConverter
                 if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music")
                 {
                     Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
-                    string outputCharacterFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
-                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputCharacterFolder, true, true);
+                    string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
+                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputFolder, true, true);
                     continue;
                 }
 

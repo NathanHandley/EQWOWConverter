@@ -28,7 +28,7 @@ internal class Program
         {   
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
-            Logger.WriteLine(" [1] - Condition Exported EQ Model Data");
+            Logger.WriteLine(" [1] - Condition Exported EQ Data");
             //Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");// TODO: Delete?
             //Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
             Logger.WriteLine(" [5] - Convert Zones to WMO");
@@ -54,7 +54,7 @@ internal class Program
                         {
                             Logger.WriteLine("Conditioning Exported EQ Data...");
                             AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.ConditionAllModels(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                            bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
                                 Logger.WriteLine("Exported EQ Data Conditioning Failed.");
