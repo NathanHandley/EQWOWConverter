@@ -26,12 +26,24 @@ namespace EQWOWConverter.Zones
     internal class ZoneProperties
     {
         public string DescriptiveName = string.Empty;
+        public ZoneContinent Continent;
         public ColorRGB FogColor = new ColorRGB();
         public int FogMinClip = -1;
         public int FogMaxClip = -1;
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
-        public List<List<string>>MaterialGroupsByName = new List<List<string>>();
+        public float SafeOrientation = 0;
+        public List<List<string>>MaterialGroupsByName = new List<List<string>>(); // To Delete
+
+        public void SetBaseZoneProperties(string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinent continent)
+        {
+            DescriptiveName = descriptiveName;
+            Continent = continent;
+            SafePosition.X = safeX;
+            SafePosition.Y = safeY;
+            SafePosition.Z = safeZ;
+            SafeOrientation = safeOrientation;
+        }
 
         public void SetFogProperties(int red, int green, int blue, int minClip, int maxClip)
         {
@@ -41,19 +53,13 @@ namespace EQWOWConverter.Zones
             FogMinClip = minClip;
             FogMaxClip = maxClip;
         }
-        public void SetSafePosition(float x, float y, float z)
-        {
-            SafePosition.X = x;
-            SafePosition.Y = y;
-            SafePosition.Z = z;
-        }
 
-        public void AddMaterialGrouping(params string[] materialNames)
-        {
-            List<string> grouping = new List<string>();
-            foreach (string materialName in materialNames)
-                grouping.Add(materialName);
-            MaterialGroupsByName.Add(grouping);
-        }
+        //public void AddMaterialGrouping(params string[] materialNames)
+        //{
+        //    List<string> grouping = new List<string>();
+        //    foreach (string materialName in materialNames)
+        //        grouping.Add(materialName);
+        //    MaterialGroupsByName.Add(grouping);
+        //}
     }
 }
