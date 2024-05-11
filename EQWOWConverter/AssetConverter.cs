@@ -63,7 +63,7 @@ namespace EQWOWConverter
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
             DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
             FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            List<StaticObject> staticObjects = new List<StaticObject>();
+            List<Objects.ModelObject> staticObjects = new List<Objects.ModelObject>();
             foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
@@ -73,7 +73,7 @@ namespace EQWOWConverter
                     continue;
 
                 // Load the EQ object
-                StaticObject curObject = new StaticObject(staticObjectMeshNameNoExt);
+                Objects.ModelObject curObject = new Objects.ModelObject(staticObjectMeshNameNoExt);
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
                 curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot);
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
