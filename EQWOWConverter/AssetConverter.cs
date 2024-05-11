@@ -979,7 +979,7 @@ namespace EQWOWConverter
                     break;
                 case "thurgadinb":
                     {
-                        zoneProperties.SetBaseZoneProperties("Thurgadin Mines", 0f, 250f, 0f, 0, ZoneContinent.Velious);
+                        zoneProperties.SetBaseZoneProperties("Icewell Keep", 0f, 250f, 0f, 0, ZoneContinent.Velious);
                         zoneProperties.SetFogProperties(25, 25, 25, 100, 300);
                     }
                     break;

@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Objects
 {
-    internal class EQStaticData
+    internal class EQStaticObjectData
     {
         public AnimatedVerticies AnimatedVerticies { get; } = new AnimatedVerticies();
         public List<Vector3> Verticies { get; } = new List<Vector3>();

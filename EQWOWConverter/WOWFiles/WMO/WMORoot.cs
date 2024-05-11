@@ -401,6 +401,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Intentionally blank for now
+            // Important note: M2 files MUST be referenced as MDX in WMOs
 
             return WrapInChunk("MODN", chunkBytes.ToArray());
         }

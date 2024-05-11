@@ -10,7 +10,7 @@ namespace EQWOWConverter.Objects
     internal class StaticObject
     {
         public string Name = string.Empty;
-        public EQStaticData EQObjectData = new EQStaticData();
+        public EQStaticObjectData EQStaticObjectData = new EQStaticObjectData();
 
         public StaticObject(string name)
         {
@@ -20,8 +20,8 @@ namespace EQWOWConverter.Objects
         public void LoadEQObjectData(string inputObjectName, string inputObjectFolder)
         {
             // Clear any old data and reload
-            EQObjectData = new EQStaticData();
-            EQObjectData.LoadDataFromDisk(inputObjectName, inputObjectFolder);
+            EQStaticObjectData = new EQStaticObjectData();
+            EQStaticObjectData.LoadDataFromDisk(inputObjectName, inputObjectFolder);
         }
     }
 }
