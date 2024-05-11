@@ -107,7 +107,7 @@ namespace EQWOWConverter.Common
                 throw new ArgumentException("Object is not a TriangleFace");
         }
 
-        public bool Equals(TriangleFace other)
+        public bool Equals(TriangleFace? other)
         {
             if (other == null) return false;
             if (V1 != other.V1) return false;

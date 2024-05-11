@@ -28,9 +28,10 @@ internal class Program
         {   
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
-            Logger.WriteLine(" [1] - Condition Exported EQ Data");
+            //Logger.WriteLine(" [1] - Condition Exported EQ Data");
             //Logger.WriteLine(" [2] - Update image references - NOTE: Do after stop 1 AND converting .png -> .blp");// TODO: Delete?
             //Logger.WriteLine(" [3] - Generate EQ Zone Index and Face Index Association Maps (Takes a long time)"); // TODO: Delete?
+            Logger.WriteLine(" [4] - Convert Objects to M2");
             Logger.WriteLine(" [5] - Convert Zones to WMO");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command (Default: X): ");
@@ -86,6 +87,18 @@ internal class Program
                     //        }
                     //        Logger.WriteLine("Assocation Maps Generated.");
                     //    } break;
+                    case "4":
+                        {
+                            Logger.WriteLine("Converting objects from EQ to WoW...");
+                            AssetConverter converter = new AssetConverter();
+                            bool conversionResult = AssetConverter.ConvertEQObjectsToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
+                            if (conversionResult == false)
+                            {
+                                Logger.WriteLine("EQ to WoW object conversion Failed.");
+                                break;
+                            }
+                            Logger.WriteLine("Conversion of objects complete");
+                        } break;
                     case "5":
                         {
                             Logger.WriteLine("Converting zones from EQ to WoW...");

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using EQWOWConverter.Common;
+using EQWOWConverter.Objects;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 
@@ -31,6 +32,71 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
+        public static bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
+        {
+            Logger.WriteLine("Converting EQ objects to WOW zones...");
+
+            // Make sure the root path exists
+            if (Directory.Exists(eqExportsConditionedPath) == false)
+            {
+                Logger.WriteLine("ERROR - Conditioned path of '" + eqExportsConditionedPath + "' does not exist.");
+                Logger.WriteLine("Conversion Failed!");
+                return false;
+            }
+
+            // Make sure the object folder path exists
+            string objectFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
+            if (Directory.Exists(objectFolderRoot) == false)
+            {
+                Logger.WriteLine("ERROR - Object folder that should be at path '" + objectFolderRoot + "' does not exist.");
+                Logger.WriteLine("Conversion Failed!");
+                return false;
+            }
+
+            // Clean out the static objects folder
+            string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
+            string exportStaticObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Static");
+            if (Directory.Exists(exportStaticObjectsFolder))
+                Directory.Delete(exportStaticObjectsFolder, true);
+
+            // Go through all of the object meshes and process them one at a time
+            string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
+            DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
+            FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
+            List<StaticObject> staticObjects = new List<StaticObject>();
+            foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
+            {
+                string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
+
+                // Skip the collision mesh files
+                if (objectMeshFileInfo.Name.Contains("_collision"))
+                    continue;
+
+                // Load the EQ object
+                StaticObject curObject = new StaticObject(staticObjectMeshNameNoExt);
+                Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
+                curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot);
+                Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
+
+                // Covert to WOW static object
+                // TODO
+
+                // Place the related textures
+                // TODO
+
+                staticObjects.Add(curObject);
+            }
+
+            // Create the DBC update scripts
+            // TODO
+
+            // Create the Azeroth Core Scripts
+            // TODO?
+
+            Logger.WriteLine("Conversion Successful");
+            return true;
+        }
+
         public static bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteLine("Converting EQ zones to WOW zones...");
@@ -52,10 +118,20 @@ namespace EQWOWConverter
                 return false;
             }
 
-            // Clean out the mpq folder
+            // Clean out the zone and interface folders
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
-            if (Directory.Exists(exportMPQRootFolder))
-                Directory.Delete(exportMPQRootFolder, true);
+            string exportMapsFolder = Path.Combine(exportMPQRootFolder, "World", "Maps");
+            if (Directory.Exists(exportMapsFolder))
+                Directory.Delete(exportMapsFolder, true);
+            string exportWMOFolder = Path.Combine(exportMPQRootFolder, "World", "wmo");
+            if (Directory.Exists(exportWMOFolder))
+                Directory.Delete(exportWMOFolder, true);
+            string zoneTexturesFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneTextures");
+            if (Directory.Exists(zoneTexturesFolder))
+                Directory.Delete(zoneTexturesFolder, true);
+            string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
+            if (Directory.Exists(exportInterfaceFolder))
+                Directory.Delete(exportInterfaceFolder, true);
 
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
