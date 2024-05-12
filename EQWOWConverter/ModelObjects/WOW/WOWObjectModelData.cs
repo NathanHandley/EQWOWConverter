@@ -52,8 +52,11 @@ namespace EQWOWConverter.Objects
 
         }
 
-        public void LoadFromEQObject(EQModelObjectData eqObject)
+        public void LoadFromEQObject(string name, EQModelObjectData eqObject)
         {
+            // Save Name
+            Name = name;
+
 
 
         }

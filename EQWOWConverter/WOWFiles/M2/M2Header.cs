@@ -133,7 +133,7 @@ namespace EQWOWConverter.WOWFiles
             size += 8;  // Bones
             size += 8;  // BoneKeyLookup
             size += 8;  // Vertices
-            size += 8;  // SkinProfileCount
+            size += 4;  // SkinProfileCount
             size += 8;  // Colors
             size += 8;  // Textures
             size += 8;  // TextureTransparencyWeights

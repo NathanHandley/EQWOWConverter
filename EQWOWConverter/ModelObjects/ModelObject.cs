@@ -44,7 +44,7 @@ namespace EQWOWConverter.Objects
         public void PopulateWOWModelObjectDataFromEQModelObjectData()
         {
             WOWModelObjectData = new WOWObjectModelData();
-            WOWModelObjectData.LoadFromEQObject(EQModelObjectData);
+            WOWModelObjectData.LoadFromEQObject(Name, EQModelObjectData);
         }
     }
 }

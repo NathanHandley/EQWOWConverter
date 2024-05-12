@@ -38,6 +38,7 @@ namespace EQWOWConverter.WOWFiles
             int curOffset = Header.GetSize();
 
             // Name
+            Name = modelObject.WOWModelObjectData.Name;
             List<byte> nameBytes = GenerateNameBlock(modelObject.WOWModelObjectData);
             Header.Name.Offset = Convert.ToUInt32(curOffset);
             Header.Name.Size = Convert.ToUInt32(nameBytes.Count);
