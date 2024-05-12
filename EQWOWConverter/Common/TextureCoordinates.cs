@@ -20,13 +20,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.Common
 {
-    internal class ModelAnimationVertex
+    internal class TextureCoordinates
     {
+        public float X;
+        public float Y;
+
+        public TextureCoordinates()
+        {
+
+        }
+
+        public TextureCoordinates(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
+
         public List<byte> ToBytes()
         {
-            return new List<byte>();
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(X));
+            returnBytes.AddRange(BitConverter.GetBytes(Y));
+            return returnBytes;
         }
     }
 }

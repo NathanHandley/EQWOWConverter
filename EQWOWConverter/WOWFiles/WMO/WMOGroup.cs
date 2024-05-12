@@ -197,7 +197,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (TextureUv textureCoords in worldModelObject.TextureCoords)
+            foreach (TextureCoordinates textureCoords in worldModelObject.TextureCoords)
                 chunkBytes.AddRange(textureCoords.ToBytes());
 
             return WrapInChunk("MOTV", chunkBytes.ToArray());

@@ -29,7 +29,7 @@ namespace EQWOWConverter.Objects
     {
         public string Name = string.Empty;
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
-        public List<ModelAnimationVertex> ModelAnimationVerticies = new List<ModelAnimationVertex>();
+        public List<ModelVertex> ModelAnimationVerticies = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
         public List<UInt16> ModelBoneKeyLookups = new List<UInt16>();
         public List<Int16> ModelBoneLookups = new List<Int16>();

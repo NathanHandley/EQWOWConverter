@@ -28,7 +28,7 @@ namespace EQWOWConverter.Objects
     {
         public AnimatedVerticies AnimatedVerticies { get; } = new AnimatedVerticies();
         public List<Vector3> Verticies { get; } = new List<Vector3>();
-        public List<TextureUv> TextureCoords { get; } = new List<TextureUv>();
+        public List<TextureCoordinates> TextureCoords { get; } = new List<TextureCoordinates>();
         public List<Vector3> Normals { get; } = new List<Vector3>();
         public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
         public List<Material> Materials { get; } = new List<Material>();
@@ -151,7 +151,7 @@ namespace EQWOWConverter.Objects
                         Logger.WriteLine("- [" + inputObjectName + "]: Error, texture coordinate block was not 3 components");
                         continue;
                     }
-                    TextureUv textureUv = new TextureUv();
+                    TextureCoordinates textureUv = new TextureCoordinates();
                     textureUv.X = float.Parse(blocks[1]);
                     textureUv.Y = float.Parse(blocks[2]);
                     TextureCoords.Add(textureUv);

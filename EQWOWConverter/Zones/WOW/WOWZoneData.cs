@@ -76,10 +76,10 @@ namespace EQWOWConverter.Zones
             }
 
             // Change texture mapping differences between EQ and WoW
-            List<TextureUv> textureCoords = new List<TextureUv>();
-            foreach (TextureUv uv in eqZoneData.TextureCoords)
+            List<TextureCoordinates> textureCoords = new List<TextureCoordinates>();
+            foreach (TextureCoordinates uv in eqZoneData.TextureCoords)
             {
-                TextureUv curTextureCoords = new TextureUv(uv.X, uv.Y * -1);
+                TextureCoordinates curTextureCoords = new TextureCoordinates(uv.X, uv.Y * -1);
                 textureCoords.Add(curTextureCoords);
             }
 
@@ -188,7 +188,7 @@ namespace EQWOWConverter.Zones
         }
 
         private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
             if (faces.Count > Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
@@ -232,7 +232,7 @@ namespace EQWOWConverter.Zones
 
 
         private void GenerateWorldModelObjectsByChunks(List<MapChunk> mapChunks, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // Group map chunks by ID
             Dictionary<int, MapChunk> mapChunksByID = new Dictionary<int, MapChunk>();
@@ -287,7 +287,7 @@ namespace EQWOWConverter.Zones
         }
 
         private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             List<UInt32> materialIDs = new List<UInt32>();
             bool materialFound = false;
@@ -346,13 +346,13 @@ namespace EQWOWConverter.Zones
         }
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureUv> textureCoords)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // Since the face list is likely to not include all faces, rebuild the render object lists
             List<Vector3> condensedVerticies = new List<Vector3>();
             List<Vector3> condensedNormals = new List<Vector3>();
             List<ColorRGBA> condensedVertexColors = new List<ColorRGBA>();
-            List<TextureUv> condensedTextureCoords = new List<TextureUv>();
+            List<TextureCoordinates> condensedTextureCoords = new List<TextureCoordinates>();
             List<TriangleFace> remappedTriangleFaces = new List<TriangleFace>();
             Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
             for (int i = 0; i < faces.Count; i++)

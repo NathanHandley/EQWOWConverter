@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones
     internal class EQZoneData
     {
         public List<Vector3> Verticies { get; } = new List<Vector3>();
-        public List<TextureUv> TextureCoords { get; } = new List<TextureUv>();
+        public List<TextureCoordinates> TextureCoords { get; } = new List<TextureCoordinates>();
         public List<Vector3> Normals { get; } = new List<Vector3>();
         public List<ColorRGBA> VertexColors { get; } = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
@@ -134,7 +134,7 @@ namespace EQWOWConverter.Zones
                         Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, texture coordinate block was not 3 components");
                         continue;
                     }
-                    TextureUv textureUv = new TextureUv();
+                    TextureCoordinates textureUv = new TextureCoordinates();
                     textureUv.X = float.Parse(blocks[1]);
                     textureUv.Y = float.Parse(blocks[2]);
                     TextureCoords.Add(textureUv);

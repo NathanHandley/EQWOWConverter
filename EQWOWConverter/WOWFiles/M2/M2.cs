@@ -264,7 +264,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateVerticiesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelAnimationVertex vertex in modelObject.ModelAnimationVerticies)
+            foreach(ModelVertex vertex in modelObject.ModelAnimationVerticies)
                 blockBytes.AddRange(vertex.ToBytes());
             return blockBytes;
         }

@@ -30,7 +30,7 @@ namespace EQWOWConverter.Zones
 
         public UInt32 WMOGroupID;
         public List<Vector3> Verticies = new List<Vector3>();
-        public List<TextureUv> TextureCoords = new List<TextureUv>();
+        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
@@ -38,7 +38,7 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree;
 
-        public WorldModelObject(List<Vector3> verticies, List<TextureUv> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
+        public WorldModelObject(List<Vector3> verticies, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
             List<TriangleFace> triangleFaces, List<Material> materials)
         {
             Verticies = verticies;
@@ -115,7 +115,7 @@ namespace EQWOWConverter.Zones
 
             // Reorder the verticies / texcoords / normals / vertcolors to match the sorted triangle faces
             List<Vector3> sortedVerticies = new List<Vector3>();
-            List<TextureUv> sortedTextureCoords = new List<TextureUv>();
+            List<TextureCoordinates> sortedTextureCoords = new List<TextureCoordinates>();
             List<Vector3> sortedNormals = new List<Vector3>();
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
             List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();

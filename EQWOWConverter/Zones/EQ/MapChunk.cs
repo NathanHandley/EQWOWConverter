@@ -11,7 +11,7 @@ namespace EQWOWConverter.Zones
     {
         public int ID;
         public List<Vector3> Verticies = new List<Vector3>();
-        public List<TextureUv> TextureCoords = new List<TextureUv>();
+        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
