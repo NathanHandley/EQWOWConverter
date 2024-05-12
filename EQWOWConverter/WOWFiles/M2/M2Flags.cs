@@ -24,5 +24,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal enum M2Flags : UInt32
     {
+        TiltedOnX = 0x1,
+        TiltedOnY = 0x2,
+        Unknown1 = 0x4,
+        BlendModeOverrides = 0x8
     }
 }

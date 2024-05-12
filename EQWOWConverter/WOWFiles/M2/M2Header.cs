@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,12 +27,12 @@ namespace EQWOWConverter.WOWFiles
 {
     public class M2HeaderElement
     {
-        public UInt32 Size = 0;
+        public UInt32 Count = 0;
         public UInt32 Offset = 0;
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Size));
+            bytes.AddRange(BitConverter.GetBytes(Count));
             bytes.AddRange(BitConverter.GetBytes(Offset));
             return bytes;
         }
@@ -80,7 +81,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(Encoding.ASCII.GetBytes("MD20"));
+            bytes.AddRange(Encoding.ASCII.GetBytes(TokenMagic));
             bytes.AddRange(BitConverter.GetBytes(Version));
             bytes.AddRange(Name.ToBytes());
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
@@ -117,7 +118,8 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(CamerasIndiciesLookup.ToBytes());
             bytes.AddRange(RibbonEmitters.ToBytes());
             bytes.AddRange(ParticleEmitters.ToBytes());
-            bytes.AddRange(SecondTextureMaterialOverrides.ToBytes());
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+                bytes.AddRange(SecondTextureMaterialOverrides.ToBytes());
             return bytes;
         }
         public int GetSize()
@@ -160,7 +162,8 @@ namespace EQWOWConverter.WOWFiles
             size += 8;  // CamerasIndiciesLookup
             size += 8;  // RibbonEmitters
             size += 8;  // ParticleEmitters
-            size += 8;  // SecondTextureMaterialOverrides
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+                size += 8;  // SecondTextureMaterialOverrides
             return size;
         }
     }

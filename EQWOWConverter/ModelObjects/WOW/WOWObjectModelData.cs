@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,13 +53,38 @@ namespace EQWOWConverter.Objects
 
         }
 
+        // Note: Only working for static for now, but more to come
         public void LoadFromEQObject(string name, EQModelObjectData eqObject)
         {
             // Save Name
             Name = name;
 
+            // Make one animation
+            ModelAnimations.Add(new ModelAnimation());
 
+            CalculateBoundingBoxAndRadius();
+        }
 
+        private void CalculateBoundingBoxAndRadius()
+        {
+            //// Calculate it by using the bounding box of all WorldModelObjects
+            //BoundingBox = new BoundingBox();
+            //foreach (WorldModelObject worldModelObject in WorldObjects)
+            //{
+            //    if (worldModelObject.BoundingBox.TopCorner.X > BoundingBox.TopCorner.X)
+            //        BoundingBox.TopCorner.X = worldModelObject.BoundingBox.TopCorner.X;
+            //    if (worldModelObject.BoundingBox.TopCorner.Y > BoundingBox.TopCorner.Y)
+            //        BoundingBox.TopCorner.Y = worldModelObject.BoundingBox.TopCorner.Y;
+            //    if (worldModelObject.BoundingBox.TopCorner.Z > BoundingBox.TopCorner.Z)
+            //        BoundingBox.TopCorner.Z = worldModelObject.BoundingBox.TopCorner.Z;
+
+            //    if (worldModelObject.BoundingBox.BottomCorner.X < BoundingBox.BottomCorner.X)
+            //        BoundingBox.BottomCorner.X = worldModelObject.BoundingBox.BottomCorner.X;
+            //    if (worldModelObject.BoundingBox.BottomCorner.Y < BoundingBox.BottomCorner.Y)
+            //        BoundingBox.BottomCorner.Y = worldModelObject.BoundingBox.BottomCorner.Y;
+            //    if (worldModelObject.BoundingBox.BottomCorner.Z < BoundingBox.BottomCorner.Z)
+            //        BoundingBox.BottomCorner.Z = worldModelObject.BoundingBox.BottomCorner.Z;
+            //}
         }
     }
 }
