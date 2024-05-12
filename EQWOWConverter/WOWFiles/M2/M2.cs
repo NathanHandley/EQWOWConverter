@@ -34,8 +34,7 @@ namespace EQWOWConverter.WOWFiles
         public M2(ModelObject modelObject)
         {
             // Set header Flags (MUST BE DONE FIRST)
-            // Blank for now
-            // Header.Flags =
+            // Header.Flags =               // Blank for now
 
             ModelBytes.Clear();
             List<byte> nonHeaderBytes = new List<byte>();
@@ -44,8 +43,7 @@ namespace EQWOWConverter.WOWFiles
             // Name
             Name = modelObject.WOWModelObjectData.Name;
             List<byte> nameBytes = GenerateNameBlock(modelObject.WOWModelObjectData);
-            Header.Name.Offset = Convert.ToUInt32(curOffset);
-            Header.Name.Count = Convert.ToUInt32(nameBytes.Count);
+            Header.Name.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(nameBytes.Count));
             curOffset += nameBytes.Count;
             nonHeaderBytes.AddRange(nameBytes);
 
@@ -54,8 +52,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Animation Sequences
             List<byte> animationSequencesBytes = GenerateAnimationSequencesBlock(modelObject.WOWModelObjectData);
-            Header.AnimationSequences.Offset = Convert.ToUInt32(curOffset);
-            Header.AnimationSequences.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimations.Count);
+            Header.AnimationSequences.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimations.Count));
             curOffset += animationSequencesBytes.Count;
             nonHeaderBytes.AddRange(animationSequencesBytes);
 
@@ -63,23 +60,20 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Bones
-            List<byte> bonesBytes = GenerateBonesBlock(modelObject.WOWModelObjectData);
-            Header.Bones.Offset = Convert.ToUInt32(curOffset);
-            Header.Bones.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBones.Count);
+            List<byte> bonesBytes = GenerateBonesBlock(modelObject.WOWModelObjectData, curOffset);
+            Header.Bones.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBones.Count));
             curOffset += bonesBytes.Count;
-            nonHeaderBytes.AddRange(bonesBytes);
+            nonHeaderBytes.AddRange(bonesBytes);            
 
             // Key Bone ID Lookup
             List<byte> boneKeyLookupBytes = GenerateBoneKeyLookupBlock(modelObject.WOWModelObjectData);
-            Header.BoneKeyLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.BoneKeyLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneKeyLookups.Count);
+            Header.BoneKeyLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneKeyLookups.Count));
             curOffset += boneKeyLookupBytes.Count;
             nonHeaderBytes.AddRange(boneKeyLookupBytes);
 
             // Verticies
             List<byte> verticiesBytes = GenerateVerticiesBlock(modelObject.WOWModelObjectData);
-            Header.Vertices.Offset = Convert.ToUInt32(curOffset);
-            Header.Vertices.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimationVerticies.Count);
+            Header.Vertices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimationVerticies.Count));
             curOffset += verticiesBytes.Count;
             nonHeaderBytes.AddRange(verticiesBytes);
 
@@ -91,15 +85,13 @@ namespace EQWOWConverter.WOWFiles
 
             // Textures
             List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData);
-            Header.Textures.Offset = Convert.ToUInt32(curOffset);
-            Header.Textures.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextures.Count);
+            Header.Textures.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextures.Count));
             curOffset += textureBytes.Count;
             nonHeaderBytes.AddRange(textureBytes);
 
             // Texture Transparencies (Weights)
             List<byte> textureTransparenciesBytes = GenerateTextureTransparencyWeightsBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransparencyWeights.Offset = Convert.ToUInt32(curOffset);
-            Header.TextureTransparencyWeights.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencies.Count);
+            Header.TextureTransparencyWeights.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencies.Count));
             curOffset += textureTransparenciesBytes.Count;
             nonHeaderBytes.AddRange(textureTransparenciesBytes);
 
@@ -108,50 +100,43 @@ namespace EQWOWConverter.WOWFiles
 
             // Replaceable Texture ID Lookup
             List<byte> replaceableTextureLookupBytes = GenerateReplaceableTextureLookupBlock(modelObject.WOWModelObjectData);
-            Header.ReplaceableTextureLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.ReplaceableTextureLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelReplaceableTextureLookups.Count);
+            Header.ReplaceableTextureLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelReplaceableTextureLookups.Count));
             curOffset += replaceableTextureLookupBytes.Count;
             nonHeaderBytes.AddRange(replaceableTextureLookupBytes);
 
             // Materials
             List<byte> materialBytes = GenerateMaterialsBlock(modelObject.WOWModelObjectData);
-            Header.Materials.Offset = Convert.ToUInt32(curOffset);
-            Header.Materials.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelMaterials.Count);
+            Header.Materials.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelMaterials.Count));
             curOffset += materialBytes.Count;
             nonHeaderBytes.AddRange(materialBytes);
 
             // Bone Lookup
             List<byte> boneLookupBytes = GenerateBoneLookupBlock(modelObject.WOWModelObjectData);
-            Header.BoneLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.BoneLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneLookups.Count);
+            Header.BoneLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneLookups.Count));
             curOffset += boneLookupBytes.Count;
             nonHeaderBytes.AddRange(boneLookupBytes);
 
             // Texture Lookup
             List<byte> textureLookupBytes = GenerateTextureLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.TextureLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureLookups.Count);
+            Header.TextureLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureLookups.Count));
             curOffset += textureLookupBytes.Count;
             nonHeaderBytes.AddRange(textureLookupBytes);
 
             // Texture Mapping Lookup
             List<byte> textureMappingLookupBytes = GenerateTextureMappingLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureMappingLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.TextureMappingLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureMappingLookups.Count);
+            Header.TextureMappingLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureMappingLookups.Count));
             curOffset += textureMappingLookupBytes.Count;
             nonHeaderBytes.AddRange(textureMappingLookupBytes);
 
             // Texture Transparency Lookup (Weights)
             List<byte> textureTransparencyLookupBytes = GenerateTextureTransparencyLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransparencyLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.TextureTransparencyLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencyWeightsLookups.Count);
+            Header.TextureTransparencyLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencyWeightsLookups.Count));
             curOffset += textureTransparencyLookupBytes.Count;
             nonHeaderBytes.AddRange(textureTransparencyLookupBytes);
 
             // Texture Transformations Lookup
             List<byte> textureTransformationLookupBytes = GenerateTextureTransformsLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransformsLookup.Offset = Convert.ToUInt32(curOffset);
-            Header.TextureTransformsLookup.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransformationsLookup.Count);
+            Header.TextureTransformsLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransformationsLookup.Count));
             curOffset += textureTransformationLookupBytes.Count;
             nonHeaderBytes.AddRange(textureTransformationLookupBytes);
 
@@ -189,11 +174,12 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Second Texture Material Override (Combos)
-            List<byte> secondTextureMaterialOverrideBytes = GenerateSecondTextureMaterialOverridesBlock(modelObject.WOWModelObjectData);
-            Header.SecondTextureMaterialOverrides.Offset = Convert.ToUInt32(curOffset);
-            Header.SecondTextureMaterialOverrides.Count = Convert.ToUInt32(modelObject.WOWModelObjectData.ModelSecondTextureMaterialOverrides.Count);
-            curOffset += textureTransformationLookupBytes.Count;
-            nonHeaderBytes.AddRange(textureTransformationLookupBytes);
+            if (Header.Flags.HasFlag(M2Flags.BlendModeOverrides))
+            {
+                List<byte> secondTextureMaterialOverrideBytes = GenerateSecondTextureMaterialOverridesBlock(modelObject.WOWModelObjectData);
+                Header.SecondTextureMaterialOverrides.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelSecondTextureMaterialOverrides.Count));
+                nonHeaderBytes.AddRange(secondTextureMaterialOverrideBytes);
+            }
 
             // Bounding and Collision Properties
             Header.BoundingBox = modelObject.WOWModelObjectData.BoundingBox;
@@ -253,11 +239,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Bones
         /// </summary>
-        private List<byte> GenerateBonesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateBonesBlock(WOWObjectModelData modelObject, int curOffset)
         {
             List<byte> blockBytes = new List<byte>();
             foreach(ModelBone bone in modelObject.ModelBones)
-                blockBytes.AddRange(bone.ToBytes());
+                blockBytes.AddRange(bone.ToBytes(ref curOffset));
             return blockBytes;
         }
 
