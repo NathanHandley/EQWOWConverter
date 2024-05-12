@@ -48,10 +48,10 @@ namespace EQWOWConverter.Zones
         
         public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
         {
+            WOWZoneData = new WOWZoneData();
             if (zoneProperties.DescriptiveName != string.Empty)
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
-
         }
 
         public void SetDescriptiveName(string name)

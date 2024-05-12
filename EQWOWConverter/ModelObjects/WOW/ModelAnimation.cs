@@ -14,37 +14,19 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Objects
+namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelObject
+    internal class ModelAnimation
     {
-        public string Name = string.Empty;
-        public EQModelObjectData EQModelObjectData = new EQModelObjectData();
-        public WOWObjectModelData WOWModelObjectData = new WOWObjectModelData();
-
-        public ModelObject(string name)
+        public List<byte> ToBytes()
         {
-            Name = name;
-        }
-
-        public void LoadEQObjectData(string inputObjectName, string inputObjectFolder)
-        {
-            // Clear any old data and reload
-            EQModelObjectData = new EQModelObjectData();
-            EQModelObjectData.LoadDataFromDisk(inputObjectName, inputObjectFolder);
-        }
-
-        public void PopulateWOWModelObjectDataFromEQModelObjectData()
-        {
-            WOWModelObjectData = new WOWObjectModelData();
-            WOWModelObjectData.LoadFromEQObject(EQModelObjectData);
+            return new List<byte>();
         }
     }
 }

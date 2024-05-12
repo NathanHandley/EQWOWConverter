@@ -63,27 +63,30 @@ namespace EQWOWConverter
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
             DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
             FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            List<Objects.ModelObject> staticObjects = new List<Objects.ModelObject>();
+            List<ModelObject> staticObjects = new List<ModelObject>();
             foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
+                string curStaticObjectOutputFolder = Path.Combine(exportStaticObjectsFolder, staticObjectMeshNameNoExt);
 
                 // Skip the collision mesh files
                 if (objectMeshFileInfo.Name.Contains("_collision"))
                     continue;
 
                 // Load the EQ object
-                Objects.ModelObject curObject = new Objects.ModelObject(staticObjectMeshNameNoExt);
+                ModelObject curObject = new ModelObject(staticObjectMeshNameNoExt);
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
                 curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot);
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object
-                // TODO
+                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder);
 
                 // Place the related textures
-                // TODO
+                string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
+                ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
 
+                // Save the object
                 staticObjects.Add(curObject);
             }
 
@@ -196,6 +199,37 @@ namespace EQWOWConverter
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
+        public static void CreateWoWObjectFromEQObject(ModelObject modelObject, string exportMPQObjectRootFolder)
+        {
+            Logger.WriteLine("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
+
+            //// Capture any zone properties
+            //ZoneProperties zoneProperties = GetZonePropertiesForZone(zone.ShortName);
+
+            // Generate the object
+            modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
+
+            // Create the M2
+            M2 objectM2 = new M2(modelObject);
+            objectM2.WriteToDisk(exportMPQObjectRootFolder);
+
+            // Create the Skin
+
+            //// Create the zone WMO objects
+            //WMO zoneWMO = new WMO(zone, exportMPQRootFolder);
+            //zoneWMO.WriteToDisk(exportMPQRootFolder);
+
+            //// Create the WDT
+            //WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
+            //zoneWDT.WriteToDisk(exportMPQRootFolder);
+
+            //// Create the WDL
+            //WDL zoneWDL = new WDL(zone);
+            //zoneWDL.WriteToDisk(exportMPQRootFolder);
+
+            Logger.WriteLine("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
+        }
+
         public static void CreateLoadingScreens(string eqExportsConditionedPath, string exportMPQRootFolder)
         {
             Logger.WriteLine("Copying loading screens");
@@ -303,6 +337,30 @@ namespace EQWOWConverter
             }
 
             Logger.WriteLine("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
+        }
+
+        public static void ExportTexturesForObject(ModelObject modelObject, string objectTextureInputFolder, string objectExportPath)
+        {
+            Logger.WriteLine("- [" + modelObject.Name + "]: Exporting textures for object '" + modelObject.Name + "'...");
+
+            //// Create the folder to output
+            //string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.ShortName);
+            //if (Directory.Exists(zoneOutputTextureFolder) == false)
+            //    FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
+
+            //// Go through every texture to move and put it there
+            //foreach (Material material in zone.WOWZoneData.Materials)
+            //{
+            //    if (material.AnimationTextures.Count == 0)
+            //        continue;
+            //    string textureName = material.AnimationTextures[0];
+            //    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
+            //    string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
+            //    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
+            //    Logger.WriteLine("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
+            //}
+
+            Logger.WriteLine("- [" + modelObject.Name + "]: Texture output for object '" + modelObject.Name + "' complete");
         }
 
         private static ZoneProperties GetZonePropertiesForZone(string zoneShortName)
