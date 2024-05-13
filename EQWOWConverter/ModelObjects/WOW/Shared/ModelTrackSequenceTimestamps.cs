@@ -20,36 +20,44 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.ModelObjects
 {
-    internal class Quaternion : ByteSerializable
+    internal class ModelTrackSequenceTimestamps
     {
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-        public float W = 0;
+        public List<UInt32> Timestamps = new List<UInt32>();
+        public UInt32 DataOffset = 0;
 
-        public Quaternion() { }
-        public Quaternion(float x, float y, float z, float w)
+        public void AddTimestamp(UInt32 timestamp)
         {
-            X = x; 
-            Y = y; 
-            Z = z; 
-            W = w;
+            Timestamps.Add(timestamp);
         }
 
-        public UInt32 GetBytesSize()
+        public UInt32 GetHeaderSize()
         {
-            return 16;
+            UInt32 size = 0;
+            size += 4; // Number of elements
+            size += 4; // Data offset
+            return size;
         }
 
-        public List<Byte> ToBytes()
+        public List<Byte> GetHeaderBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
+            bytes.AddRange(BitConverter.GetBytes(DataOffset));
+            return bytes;
+        }
+
+        public UInt32 GetDataSize()
+        {
+            return Convert.ToUInt32(Timestamps.Count * 4);
+        }
+
+        public List<Byte> GetDataBytes()
         {
             List<Byte> bytes = new List<Byte>();
-            bytes.AddRange(BitConverter.GetBytes(X));
-            bytes.AddRange(BitConverter.GetBytes(Y));
-            bytes.AddRange(BitConverter.GetBytes(Z));
-            bytes.AddRange(BitConverter.GetBytes(W));
+            foreach (UInt32 value in Timestamps)
+                bytes.AddRange(BitConverter.GetBytes(value));
             return bytes;
         }
     }

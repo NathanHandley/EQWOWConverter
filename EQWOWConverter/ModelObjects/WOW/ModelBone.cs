@@ -26,71 +26,21 @@ namespace EQWOWConverter.ModelObjects
 {
     internal class ModelBone
     {
-        public class ModelBoneTimeTrack<SerializableObject>
-        {
-            ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
-            public UInt16 GlobalSequenceID = 65535;
-            public UInt32 TimestampsOffset = 0;
-            public UInt32 ValuesOffset = 0;
-            public List<UInt32> Timestamps = new List<UInt32>();
-            public List<ByteSerializable> Values = new List<ByteSerializable>();
-
-            public List<byte> TrackMetaToBytes()
-            {
-                List<byte> bytes = new List<byte>();
-                bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(InterpolationType)));
-                bytes.AddRange(BitConverter.GetBytes(GlobalSequenceID));
-                bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
-                bytes.AddRange(BitConverter.GetBytes(TimestampsOffset));
-                bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
-                bytes.AddRange(BitConverter.GetBytes(ValuesOffset));
-                return bytes;
-            }
-            public List<byte> TimestampsToBytes(ref int curOffset)
-            {
-                TimestampsOffset = Convert.ToUInt32(curOffset);
-                List<byte> bytes = new List<byte>();
-                foreach (UInt32 timestamp in Timestamps)
-                    bytes.AddRange(BitConverter.GetBytes(timestamp));
-                curOffset += bytes.Count;
-                return bytes;
-            }
-            public List<byte> ValuesToBytes(ref int curOffset)
-            {
-                ValuesOffset = Convert.ToUInt32(curOffset);
-                List<byte> bytes = new List<byte>();
-                foreach (ByteSerializable value in Values)
-                    bytes.AddRange(value.ToBytes());
-                curOffset += bytes.Count;
-                return bytes;
-            }
-            public int GetMetaSize()
-            {
-                int size = 0;
-                size += 2; // InterpolationType
-                size += 2; // GlobalSequenceID
-                size += 4; // TimestampsCount
-                size += 4; // TimestampsOffset
-                size += 4; // ValuesCount
-                size += 4; // ValuesOffset
-                return size;
-            }
-        }
-
         public Int32 KeyBoneID = -1;
         public ModelBoneFlags Flags = 0;
         public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
         public UInt16 SubMeshID = 0;
         public UInt32 BoneNameCRC = 300463684;  // Looks like this isn't used, so copied value in CaveMineSpiderPillar01. Revisit
-        public ModelBoneTimeTrack<Vector3> TranslationTrack = new ModelBoneTimeTrack<Vector3>();
-        public ModelBoneTimeTrack<Quaternion> RotationTrack = new ModelBoneTimeTrack<Quaternion>();
-        public ModelBoneTimeTrack<Vector3> ScaleTrack = new ModelBoneTimeTrack<Vector3>();
+        public ModelTrackSequences<Vector3> TranslationTrack = new ModelTrackSequences<Vector3>();
+        public ModelTrackSequences<Quaternion> RotationTrack = new ModelTrackSequences<Quaternion>();
+        public ModelTrackSequences<Vector3> ScaleTrack = new ModelTrackSequences<Vector3>();
         public Vector3 PivotPoint = new Vector3();
 
         public ModelBone()
         {
             //// TESTING
-            AddTranslation(10, new Vector3(1, 2, 3));
+            int newTranslationTrackID = TranslationTrack.AddSequence();
+            TranslationTrack.AddValueToSequence(newTranslationTrackID, 1, new Vector3(1, 2, 3));
          //   AddRotation(20, new Quaternion(4, 5, 6, 7));
          //   AddRotation(21, new Quaternion(8, 9, 10, 11));
          //   AddScale(40, new Vector3(12, 13, 14));
@@ -99,40 +49,22 @@ namespace EQWOWConverter.ModelObjects
             ////////////
         }
 
-        public void AddTranslation(UInt32 timestamp, Vector3 translation)
+        public UInt32 GetHeaderSize()
         {
-            TranslationTrack.Timestamps.Add(timestamp);
-            TranslationTrack.Values.Add(translation);
-        }
-
-        public void AddRotation(UInt32 timestamp, Quaternion rotation)
-        {
-            RotationTrack.Timestamps.Add(timestamp);
-            RotationTrack.Values.Add(rotation);
-        }
-
-        public void AddScale(UInt32 timestamp, Vector3 scale)
-        {
-            ScaleTrack.Timestamps.Add(timestamp);
-            ScaleTrack.Values.Add(scale);
-        }
-
-        public int GetMetaSize()
-        {
-            int size = 0;
+            UInt32 size = 0;
             size += 4; // KeyBoneID
             size += 4; // ModelBoneFlags
             size += 2; // ParentBone
             size += 2; // SubMeshID
             size += 4; // BoneNameCRC
-            size += TranslationTrack.GetMetaSize();
-            size += RotationTrack.GetMetaSize();
-            size += ScaleTrack.GetMetaSize();
+            size += TranslationTrack.GetHeaderSize();
+            size += RotationTrack.GetHeaderSize();
+            size += ScaleTrack.GetHeaderSize();
             size += 12; // PivotPoint
             return size;
         }
 
-        public List<byte> ToBytesMeta()
+        public List<byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(KeyBoneID));
@@ -140,23 +72,20 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(BitConverter.GetBytes(ParentBone));
             bytes.AddRange(BitConverter.GetBytes(SubMeshID));
             bytes.AddRange(BitConverter.GetBytes(BoneNameCRC));
-            bytes.AddRange(TranslationTrack.TrackMetaToBytes());
-            bytes.AddRange(RotationTrack.TrackMetaToBytes());
-            bytes.AddRange(ScaleTrack.TrackMetaToBytes());
+            bytes.AddRange(TranslationTrack.GetHeaderBytes());
+            bytes.AddRange(RotationTrack.GetHeaderBytes());
+            bytes.AddRange(ScaleTrack.GetHeaderBytes());
             bytes.AddRange(PivotPoint.ToBytes());
             return bytes;
         }
 
-        public List<byte> ToBytesData(ref int curOffset)
+        public List<byte> GetDataBytes()
         {
-            List<byte> tracksBytes = new List<byte>();
-            tracksBytes.AddRange(TranslationTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(TranslationTrack.ValuesToBytes(ref curOffset));
-            tracksBytes.AddRange(RotationTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(RotationTrack.ValuesToBytes(ref curOffset));
-            tracksBytes.AddRange(ScaleTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(ScaleTrack.ValuesToBytes(ref curOffset));
-            return tracksBytes;
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(TranslationTrack.GetDataBytes());
+            bytes.AddRange(RotationTrack.GetDataBytes());
+            bytes.AddRange(ScaleTrack.GetDataBytes());
+            return new List<byte>();
         }
     }
 }

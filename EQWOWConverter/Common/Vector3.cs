@@ -66,6 +66,11 @@ namespace EQWOWConverter.Common
             Z = z;
         }
 
+        public UInt32 GetBytesSize()
+        {
+            return 12;
+        }
+
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();

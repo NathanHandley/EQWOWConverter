@@ -24,6 +24,7 @@ namespace EQWOWConverter.Common
 {
     internal interface ByteSerializable
     {
+        public UInt32 GetBytesSize();
         public List<byte> ToBytes();
     }
 }

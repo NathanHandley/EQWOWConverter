@@ -35,9 +35,9 @@ namespace EQWOWConverter.WOWFiles
         {
             // TESTING
             modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
-            //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
-            modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
-            modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
+            modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
+            //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
+            //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
 
             //////////////////////////////
 
@@ -250,25 +250,35 @@ namespace EQWOWConverter.WOWFiles
         /// </summary>
         private List<byte> GenerateBonesBlock(WOWObjectModelData modelObject, int curOffset)
         {
-            // Calculate space just for the metadata
-            int totalMetaBlockSpaceNeeded = 0;
+            // Calculate space need for the header data
+            UInt32 totalMetaBlockSpaceNeeded = 0;
             foreach (ModelBone bone in modelObject.ModelBones)
-                totalMetaBlockSpaceNeeded += bone.GetMetaSize();
+                totalMetaBlockSpaceNeeded += bone.GetHeaderSize();
 
-            // Generate the content sections
-            curOffset += totalMetaBlockSpaceNeeded;
+            // Determine where data can start
+            UInt32 curDataOffset = Convert.ToUInt32(curOffset) + totalMetaBlockSpaceNeeded;
+
+            // Generate each of the bone data blocks
+            List<byte> headerBytes = new List<byte>();
             List<byte> dataBytes = new List<byte>();
-            foreach (ModelBone bone in modelObject.ModelBones)
-                dataBytes.AddRange(bone.ToBytesData(ref curOffset));
+            foreach(ModelBone bone in modelObject.ModelBones)
+            {
+                // Set the data offsets
+                bone.TranslationTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.TranslationTrack.GetByteSize();
+                bone.RotationTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.RotationTrack.GetByteSize();
+                bone.ScaleTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.ScaleTrack.GetByteSize();
 
-            // Generate the bone metadata
-            List<byte> metadataBytes = new List<byte>();
-            foreach (ModelBone bone in modelObject.ModelBones)
-                metadataBytes.AddRange(bone.ToBytesMeta());
+                // Generate the data blocks
+                headerBytes.AddRange(bone.GetHeaderBytes());
+                dataBytes.AddRange(bone.GetDataBytes());
+            }
 
             // Combine them
             List<byte> blockBytes = new List<byte>();
-            blockBytes.AddRange(metadataBytes);
+            blockBytes.AddRange(headerBytes);
             blockBytes.AddRange(dataBytes);
             return blockBytes;
         }
