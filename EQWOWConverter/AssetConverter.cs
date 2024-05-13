@@ -210,7 +210,7 @@ namespace EQWOWConverter
             modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
 
             // Create the M2
-            M2 objectM2 = new M2(modelObject);
+            M2 objectM2 = new M2(modelObject, exportMPQObjectRootFolder);
             objectM2.WriteToDisk(exportMPQObjectRootFolder);
 
             // Create the Skin

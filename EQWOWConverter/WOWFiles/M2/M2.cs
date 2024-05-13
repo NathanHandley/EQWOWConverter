@@ -31,8 +31,17 @@ namespace EQWOWConverter.WOWFiles
         private M2Header Header = new M2Header();
         private string Name = string.Empty;
 
-        public M2(ModelObject modelObject)
+        public M2(ModelObject modelObject, string modelFolder)
         {
+            // TESTING
+            modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
+            //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
+            modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
+            modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
+
+            //////////////////////////////
+
+
             // Set header Flags (MUST BE DONE FIRST)
             // Header.Flags =               // Blank for now
 
@@ -84,7 +93,7 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Textures
-            List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData);
+            List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData, modelFolder, curOffset);
             Header.Textures.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextures.Count));
             curOffset += textureBytes.Count;
             nonHeaderBytes.AddRange(textureBytes);
@@ -241,9 +250,26 @@ namespace EQWOWConverter.WOWFiles
         /// </summary>
         private List<byte> GenerateBonesBlock(WOWObjectModelData modelObject, int curOffset)
         {
+            // Calculate space just for the metadata
+            int totalMetaBlockSpaceNeeded = 0;
+            foreach (ModelBone bone in modelObject.ModelBones)
+                totalMetaBlockSpaceNeeded += bone.GetMetaSize();
+
+            // Generate the content sections
+            curOffset += totalMetaBlockSpaceNeeded;
+            List<byte> dataBytes = new List<byte>();
+            foreach (ModelBone bone in modelObject.ModelBones)
+                dataBytes.AddRange(bone.ToBytesData(ref curOffset));
+
+            // Generate the bone metadata
+            List<byte> metadataBytes = new List<byte>();
+            foreach (ModelBone bone in modelObject.ModelBones)
+                metadataBytes.AddRange(bone.ToBytesMeta());
+
+            // Combine them
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelBone bone in modelObject.ModelBones)
-                blockBytes.AddRange(bone.ToBytes(ref curOffset));
+            blockBytes.AddRange(metadataBytes);
+            blockBytes.AddRange(dataBytes);
             return blockBytes;
         }
 
@@ -282,11 +308,28 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Textures
         /// </summary>
-        private List<byte> GenerateTexturesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateTexturesBlock(WOWObjectModelData modelObject, string modelTextureFolder, int curOffset)
         {
+            // Calculate space just for the metadata
+            int totalMetaBlockSpaceNeeded = 0;
+            foreach (ModelTexture texture in modelObject.ModelTextures)
+                totalMetaBlockSpaceNeeded += texture.GetMetaSize();
+
+            // Generate the content sections
+            curOffset += totalMetaBlockSpaceNeeded;
+            List<byte> dataBytes = new List<byte>();
+            foreach (ModelTexture texture in modelObject.ModelTextures)
+                dataBytes.AddRange(texture.ToBytesData(modelTextureFolder, ref curOffset));
+
+            // Generate the metadata
+            List<byte> metadataBytes = new List<byte>();
+            foreach (ModelTexture texture in modelObject.ModelTextures)
+                metadataBytes.AddRange(texture.ToBytesMeta());
+
+            // Combine them
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelTexture texture in modelObject.ModelTextures)
-                blockBytes.AddRange(texture.ToBytes());
+            blockBytes.AddRange(metadataBytes);
+            blockBytes.AddRange(dataBytes);
             return blockBytes;
         }
 

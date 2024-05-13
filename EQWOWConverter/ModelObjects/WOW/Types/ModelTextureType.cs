@@ -20,32 +20,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.ModelObjects
 {
-    internal class Quaternion : ByteSerializable
+    internal enum ModelTextureType : UInt32
     {
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-        public float W = 0;
-
-        public Quaternion() { }
-        public Quaternion(float x, float y, float z, float w)
-        {
-            X = x; 
-            Y = y; 
-            Z = z; 
-            W = w;
-        }
-
-        public List<Byte> ToBytes()
-        {
-            List<Byte> bytes = new List<Byte>();
-            bytes.AddRange(BitConverter.GetBytes(X));
-            bytes.AddRange(BitConverter.GetBytes(Y));
-            bytes.AddRange(BitConverter.GetBytes(Z));
-            bytes.AddRange(BitConverter.GetBytes(W));
-            return bytes;
-        }
+        Hardcoded = 0, // Nothing special
+        BodySkin = 1,
+        ObjectSkin = 2, // Capes
+        WeaponBlade = 3,
+        WeaponHandle = 4,
+        // 5 Obsolete
+        CharacterHair = 6,
+        // 7-10 Skip
+        CreatureSkin1 = 11
     }
 }

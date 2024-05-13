@@ -89,6 +89,14 @@ namespace EQWOWConverter.ModelObjects
 
         public ModelBone()
         {
+            //// TESTING
+            AddTranslation(10, new Vector3(1, 2, 3));
+         //   AddRotation(20, new Quaternion(4, 5, 6, 7));
+         //   AddRotation(21, new Quaternion(8, 9, 10, 11));
+         //   AddScale(40, new Vector3(12, 13, 14));
+         //   AddScale(41, new Vector3(15, 16, 17));
+         //   AddScale(42, new Vector3(18, 19, 20));
+            ////////////
         }
 
         public void AddTranslation(UInt32 timestamp, Vector3 translation)
@@ -109,7 +117,7 @@ namespace EQWOWConverter.ModelObjects
             ScaleTrack.Values.Add(scale);
         }
 
-        private int GetMetaSize()
+        public int GetMetaSize()
         {
             int size = 0;
             size += 4; // KeyBoneID
@@ -124,17 +132,8 @@ namespace EQWOWConverter.ModelObjects
             return size;
         }
 
-        public List<byte> ToBytes(ref int curOffset)
+        public List<byte> ToBytesMeta()
         {
-            List<byte> tracksBytes = new List<byte>();
-            curOffset += GetMetaSize();
-            tracksBytes.AddRange(TranslationTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(TranslationTrack.ValuesToBytes(ref curOffset));
-            tracksBytes.AddRange(RotationTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(RotationTrack.ValuesToBytes(ref curOffset));
-            tracksBytes.AddRange(ScaleTrack.TimestampsToBytes(ref curOffset));
-            tracksBytes.AddRange(ScaleTrack.ValuesToBytes(ref curOffset));
-
             List<byte> bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(KeyBoneID));
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
@@ -145,8 +144,19 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(RotationTrack.TrackMetaToBytes());
             bytes.AddRange(ScaleTrack.TrackMetaToBytes());
             bytes.AddRange(PivotPoint.ToBytes());
-            bytes.AddRange(tracksBytes);
             return bytes;
+        }
+
+        public List<byte> ToBytesData(ref int curOffset)
+        {
+            List<byte> tracksBytes = new List<byte>();
+            tracksBytes.AddRange(TranslationTrack.TimestampsToBytes(ref curOffset));
+            tracksBytes.AddRange(TranslationTrack.ValuesToBytes(ref curOffset));
+            tracksBytes.AddRange(RotationTrack.TimestampsToBytes(ref curOffset));
+            tracksBytes.AddRange(RotationTrack.ValuesToBytes(ref curOffset));
+            tracksBytes.AddRange(ScaleTrack.TimestampsToBytes(ref curOffset));
+            tracksBytes.AddRange(ScaleTrack.ValuesToBytes(ref curOffset));
+            return tracksBytes;
         }
     }
 }

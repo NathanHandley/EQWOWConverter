@@ -20,32 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.ModelObjects.WOW
 {
-    internal class Quaternion : ByteSerializable
+    internal enum ModelAnimationInterpolationType : UInt16
     {
-        public float X = 0;
-        public float Y = 0;
-        public float Z = 0;
-        public float W = 0;
-
-        public Quaternion() { }
-        public Quaternion(float x, float y, float z, float w)
-        {
-            X = x; 
-            Y = y; 
-            Z = z; 
-            W = w;
-        }
-
-        public List<Byte> ToBytes()
-        {
-            List<Byte> bytes = new List<Byte>();
-            bytes.AddRange(BitConverter.GetBytes(X));
-            bytes.AddRange(BitConverter.GetBytes(Y));
-            bytes.AddRange(BitConverter.GetBytes(Z));
-            bytes.AddRange(BitConverter.GetBytes(W));
-            return bytes;
-        }
+        None                = 0,
+        Linear              = 1,
+        CubicBezierSpline   = 2,
+        CubicHermiteSpline  = 3
     }
 }
