@@ -33,11 +33,20 @@ namespace EQWOWConverter.ModelObjects
             Values.Add(value);
         }
 
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
             size += 4; // Number of elements
             size += 4; // Data offset
+            return size;
+        }
+
+        public UInt32 GetDataSize()
+        {
+            UInt32 size = 0;
+            foreach (T value in Values)
+                size += value.GetBytesSize();
             return size;
         }
 
@@ -47,14 +56,6 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
             bytes.AddRange(BitConverter.GetBytes(DataOffset));
             return bytes;
-        }
-
-        public UInt32 GetDataSize()
-        {
-            UInt32 size = 0;
-            foreach (T value in Values)
-                size += value.GetBytesSize();
-            return size;
         }
 
         public List<Byte> GetDataBytes()

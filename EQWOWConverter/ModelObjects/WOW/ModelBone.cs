@@ -39,16 +39,28 @@ namespace EQWOWConverter.ModelObjects
         public ModelBone()
         {
             //// TESTING
-            int newTranslationTrackID = TranslationTrack.AddSequence();
-            TranslationTrack.AddValueToSequence(newTranslationTrackID, 1, new Vector3(1, 2, 3));
-         //   AddRotation(20, new Quaternion(4, 5, 6, 7));
-         //   AddRotation(21, new Quaternion(8, 9, 10, 11));
-         //   AddScale(40, new Vector3(12, 13, 14));
-         //   AddScale(41, new Vector3(15, 16, 17));
-         //   AddScale(42, new Vector3(18, 19, 20));
+            //int newTranslationTrackID = TranslationTrack.AddSequence();
+            //TranslationTrack.AddValueToSequence(newTranslationTrackID, 1, new Vector3(1, 2, 3));
+            //TranslationTrack.AddValueToSequence(newTranslationTrackID, 15, new Vector3(4, 5, 6));
+            //TranslationTrack.AddValueToSequence(newTranslationTrackID, 100, new Vector3(7, 8, 9));
+            //newTranslationTrackID = TranslationTrack.AddSequence();
+            //TranslationTrack.AddValueToSequence(newTranslationTrackID, 75, new Vector3(10, 20, 30));
+               
+            //int newRotationTrackID = RotationTrack.AddSequence();
+            //RotationTrack.AddValueToSequence(newRotationTrackID, 55, new Quaternion(66, 67, 68, 69));
+            //RotationTrack.AddValueToSequence(newRotationTrackID, 110, new Quaternion(166, 167, 168, 169));
+            //newRotationTrackID = RotationTrack.AddSequence();
+            //RotationTrack.AddValueToSequence(newRotationTrackID, 700, new Quaternion(266, 267, 268, 269));
+
+            //AddRotation(20, new Quaternion(4, 5, 6, 7));
+            //AddRotation(21, new Quaternion(8, 9, 10, 11));
+            //AddScale(40, new Vector3(12, 13, 14));
+            //AddScale(41, new Vector3(15, 16, 17));
+            //AddScale(42, new Vector3(18, 19, 20));
             ////////////
         }
 
+        
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
@@ -64,6 +76,13 @@ namespace EQWOWConverter.ModelObjects
             return size;
         }
 
+        public void AddDataAndUpdateOffsets(ref List<byte> boneDataSpace, UInt32 dataSpaceStartOffset)
+        {
+            TranslationTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
+            RotationTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
+            ScaleTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
+        }
+
         public List<byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -76,15 +95,6 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(RotationTrack.GetHeaderBytes());
             bytes.AddRange(ScaleTrack.GetHeaderBytes());
             bytes.AddRange(PivotPoint.ToBytes());
-            return bytes;
-        }
-
-        public List<byte> GetDataBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(TranslationTrack.GetDataBytes());
-            bytes.AddRange(RotationTrack.GetDataBytes());
-            bytes.AddRange(ScaleTrack.GetDataBytes());
             return bytes;
         }
     }

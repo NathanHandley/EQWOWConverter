@@ -32,6 +32,7 @@ namespace EQWOWConverter.ModelObjects
             Timestamps.Add(timestamp);
         }
 
+        
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
@@ -40,17 +41,17 @@ namespace EQWOWConverter.ModelObjects
             return size;
         }
 
+        public UInt32 GetDataSize()
+        {
+            return Convert.ToUInt32(Timestamps.Count * 4);
+        }
+
         public List<Byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
             bytes.AddRange(BitConverter.GetBytes(DataOffset));
             return bytes;
-        }
-
-        public UInt32 GetDataSize()
-        {
-            return Convert.ToUInt32(Timestamps.Count * 4);
         }
 
         public List<Byte> GetDataBytes()
