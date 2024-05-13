@@ -62,6 +62,9 @@ namespace EQWOWConverter.Objects
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());
 
+            // Make one material for now
+            ModelMaterials.Add(new ModelMaterial());
+
             CalculateBoundingBoxAndRadius();
         }
 

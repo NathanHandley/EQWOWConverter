@@ -22,17 +22,12 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelMaterial
+    internal enum ModelMaterialFlag : UInt16
     {
-        ModelMaterialFlag Flags = ModelMaterialFlag.None;
-        ModelMaterialBlendType BlendingMode = ModelMaterialBlendType.Opaque;
-
-        public List<byte> ToBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(Flags)));
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(BlendingMode)));
-            return bytes;
-        }
+        None        = 0,
+        Unlit       = 0x1,
+        Unfogged    = 0x2,
+        TwoSided    = 0x4
+        // There are more, but probably don't need them
     }
 }
