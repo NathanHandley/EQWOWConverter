@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
         {
             // TESTING
             modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
-            modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
+            //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
             //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
             //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
 
@@ -264,12 +264,15 @@ namespace EQWOWConverter.WOWFiles
             foreach(ModelBone bone in modelObject.ModelBones)
             {
                 // Set the data offsets
-                bone.TranslationTrack.DataOffset = curDataOffset;
-                curDataOffset += bone.TranslationTrack.GetByteSize();
-                bone.RotationTrack.DataOffset = curDataOffset;
-                curDataOffset += bone.RotationTrack.GetByteSize();
-                bone.ScaleTrack.DataOffset = curDataOffset;
-                curDataOffset += bone.ScaleTrack.GetByteSize();
+                if (bone.TranslationTrack.Timestamps.Count > 0)
+                    bone.TranslationTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.TranslationTrack.GetDataByteSize();
+                if (bone.RotationTrack.Timestamps.Count > 0)
+                    bone.RotationTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.RotationTrack.GetDataByteSize();
+                if (bone.ScaleTrack.Timestamps.Count > 0)
+                    bone.ScaleTrack.DataOffset = curDataOffset;
+                curDataOffset += bone.ScaleTrack.GetDataByteSize();
 
                 // Generate the data blocks
                 headerBytes.AddRange(bone.GetHeaderBytes());

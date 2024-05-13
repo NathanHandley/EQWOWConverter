@@ -85,7 +85,7 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(TranslationTrack.GetDataBytes());
             bytes.AddRange(RotationTrack.GetDataBytes());
             bytes.AddRange(ScaleTrack.GetDataBytes());
-            return new List<byte>();
+            return bytes;
         }
     }
 }

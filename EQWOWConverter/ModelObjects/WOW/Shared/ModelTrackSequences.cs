@@ -29,8 +29,8 @@ namespace EQWOWConverter.ModelObjects
     {
         ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
         public UInt16 GlobalSequenceID = 65535;
-        private List<ModelTrackSequenceTimestamps> Timestamps = new List<ModelTrackSequenceTimestamps>();
-        private List<ModelTrackSequenceValues<T>> Values = new List<ModelTrackSequenceValues<T>>();
+        public List<ModelTrackSequenceTimestamps> Timestamps = new List<ModelTrackSequenceTimestamps>();
+        public List<ModelTrackSequenceValues<T>> Values = new List<ModelTrackSequenceValues<T>>();
         public UInt32 DataOffset = 0;
 
         /// <summary>
@@ -73,11 +73,11 @@ namespace EQWOWConverter.ModelObjects
         {
             // Calculate the offset for the timestamps and values
             UInt32 timestampOffset = DataOffset;
-            UInt32 valuesDatOffset = timestampOffset;
+            UInt32 valuesDataOffset = timestampOffset;
             foreach (ModelTrackSequenceTimestamps timeStamps in Timestamps)
             {
-                valuesDatOffset += timeStamps.GetHeaderSize();
-                valuesDatOffset += timeStamps.GetDataSize();
+                valuesDataOffset += timeStamps.GetHeaderSize();
+                valuesDataOffset += timeStamps.GetDataSize();
             }
 
             // Write the data
@@ -87,7 +87,7 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
             bytes.AddRange(BitConverter.GetBytes(timestampOffset));
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
-            bytes.AddRange(BitConverter.GetBytes(valuesDatOffset));
+            bytes.AddRange(BitConverter.GetBytes(valuesDataOffset));
             return bytes;
         }
 
@@ -95,6 +95,22 @@ namespace EQWOWConverter.ModelObjects
         {
             UInt32 size = 0;
             size += GetHeaderSize();
+            foreach (ModelTrackSequenceTimestamps timeStamps in Timestamps)
+            {
+                size += timeStamps.GetHeaderSize();
+                size += timeStamps.GetDataSize();
+            }
+            foreach (ModelTrackSequenceValues<T> values in Values)
+            {
+                size += values.GetHeaderSize();
+                size += values.GetDataSize();
+            }
+            return size;
+        }
+
+        public UInt32 GetDataByteSize()
+        {
+            UInt32 size = 0;
             foreach (ModelTrackSequenceTimestamps timeStamps in Timestamps)
             {
                 size += timeStamps.GetHeaderSize();
