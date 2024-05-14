@@ -27,27 +27,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2Header
     {
-        public class M2HeaderElement
-        {
-            public UInt32 Count = 0;
-            public UInt32 Offset = 0;
-            public void Set(UInt32 offset, UInt32 count)
-            {
-                Count = count;
-                if (count == 0)
-                    Offset = 0;
-                else
-                    Offset = offset;
-            }
-            public List<byte> ToBytes()
-            {
-                List<byte> bytes = new List<byte>();
-                bytes.AddRange(BitConverter.GetBytes(Count));
-                bytes.AddRange(BitConverter.GetBytes(Offset));
-                return bytes;
-            }
-        }
-
         private string TokenMagic = "MD20";
         private UInt32 Version = 264;
         public M2HeaderElement Name = new M2HeaderElement();

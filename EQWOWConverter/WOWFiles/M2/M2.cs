@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2
     {
-        private M2Skin Skin = new M2Skin();
+        public M2Skin Skin;
         public List<byte> ModelBytes = new List<byte>();
         private M2Header Header = new M2Header();
         private string Name = string.Empty;
@@ -46,6 +46,7 @@ namespace EQWOWConverter.WOWFiles
             ModelBytes.Clear();
             List<byte> nonHeaderBytes = new List<byte>();
             int curOffset = Header.GetSize();
+            Skin = new M2Skin(modelObject);
 
             // Name
             Name = modelObject.WOWModelObjectData.Name;

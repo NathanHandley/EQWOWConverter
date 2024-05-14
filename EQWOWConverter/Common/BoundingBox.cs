@@ -89,19 +89,30 @@ namespace EQWOWConverter.Common
             return Math.Abs(TopCorner.Z - BottomCorner.Z);
         }
 
+        public Vector3 GetCenter()
+        {
+            Vector3 vector3 = new Vector3();
+            vector3.X = (TopCorner.X + BottomCorner.X) / 2;
+            vector3.Y = (TopCorner.Y + BottomCorner.Y) / 2;
+            vector3.Z = (TopCorner.Z + BottomCorner.Z) / 2;
+            return vector3;            
+        }
+        
+        public float FurthestPointDistanceFromCenter()
+        {
+            System.Numerics.Vector3 cornerSystem = new System.Numerics.Vector3(TopCorner.X, TopCorner.Y, TopCorner.Z);
+            Vector3 center = GetCenter();
+            System.Numerics.Vector3 centerSystem = new System.Numerics.Vector3(center.X, center.Y, center.Z);
+            return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
+        }
+
         public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
         {
             // Verticies contained in the box are given collisions, and should be checked first
             if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
                 return true;
 
-            // Next test is to bounding box the triangle and see if there is a separating axis
-            //BoundingBox triangleBox = GenerateBoxFromVectors(point1, point2, point3);
-            //if (DoesCollideWithBox(triangleBox) == false)
-            //    return false;
-
-            // Since all triangle points are outside the box but there is a bounding collision,
-            // the faces need to be tested against each line segment (much slower)
+            // Test each line of the triangle for collision
             if (DoesLineCollide(point1, point2))
                 return true;
             if (DoesLineCollide(point1, point3))
@@ -117,36 +128,6 @@ namespace EQWOWConverter.Common
             return point.X >= BottomCorner.X && point.X <= TopCorner.X &&
                    point.Y >= BottomCorner.Y && point.Y <= TopCorner.Y &&
                    point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
-        }
-
-        private bool DoesCollideWithBox(BoundingBox otherBox)
-        {
-            if (otherBox.BottomCorner.X > TopCorner.X)
-                return false;
-            if (otherBox.BottomCorner.Y > TopCorner.Y)
-                return false;
-            if (otherBox.BottomCorner.Z > TopCorner.Z)
-                return false;
-            if (otherBox.TopCorner.X < BottomCorner.X)
-                return false;
-            if (otherBox.TopCorner.Y < BottomCorner.Y)
-                return false;
-            if (otherBox.TopCorner.Z < BottomCorner.Z)
-                return false;
-            return true;
-        }
-
-        private BoundingBox GenerateBoxFromVectors(Vector3 point1, Vector3 point2, Vector3 point3)
-        {
-            float minX = Math.Min(Math.Min(point1.X, point2.X), point3.X);
-            float minY = Math.Min(Math.Min(point1.Y, point2.Y), point3.Y);
-            float minZ = Math.Min(Math.Min(point1.Z, point2.Z), point3.Z);
-            
-            float maxX = Math.Max(Math.Max(point1.X, point2.X), point3.X);
-            float maxY = Math.Max(Math.Max(point1.Y, point2.Y), point3.Y);
-            float maxZ = Math.Max(Math.Max(point1.Z, point2.Z), point3.Z);
-
-            return new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         public static BoundingBox GenerateBoxFromVectors(List<Vector3> verticies)
