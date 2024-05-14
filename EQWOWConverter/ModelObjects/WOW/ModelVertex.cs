@@ -32,7 +32,7 @@ namespace EQWOWConverter.ModelObjects
         public TextureCoordinates Texture1TextureCoordinates = new TextureCoordinates();
         public TextureCoordinates Texture2TextureCoordinates = new TextureCoordinates();
 
-        ModelVertex()
+        public ModelVertex()
         {
             // First bone weight is always max by default
             BoneWeights[0] = 255;

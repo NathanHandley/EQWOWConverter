@@ -33,11 +33,7 @@ namespace EQWOWConverter.ModelObjects
 
         public ModelTexture()
         {
-            // TESTING ////////////////////////////////////////////////
-            Type = ModelTextureType.CreatureSkin1;
-            WrapType = ModelTextureWrapType.XY;
-            TextureName = "SomeTestingTextureName";
-            ////////////////////////////////////////////////////////////
+
         }
 
         private string GenerateFullFileNameAndPath(string modelTextureFolder)

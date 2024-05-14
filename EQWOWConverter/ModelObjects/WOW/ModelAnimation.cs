@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.ModelObjects.WOW.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,7 +26,7 @@ namespace EQWOWConverter.ModelObjects
 {
     internal class ModelAnimation
     {
-        UInt16 ID = 0; // This correlates to AnimationData.dbc.  0 is standing
+        ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         UInt32 DurationInMS = 10000;
         float MoveSpeed = 0f;
@@ -43,7 +44,7 @@ namespace EQWOWConverter.ModelObjects
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(ID));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(AnimationType)));
             bytes.AddRange(BitConverter.GetBytes(SubAnimationID));
             bytes.AddRange(BitConverter.GetBytes(DurationInMS));
             bytes.AddRange(BitConverter.GetBytes(MoveSpeed));

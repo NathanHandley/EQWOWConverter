@@ -80,7 +80,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Verticies
             List<byte> verticiesBytes = GenerateVerticiesBlock(modelObject.WOWModelObjectData);
-            Header.Vertices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimationVerticies.Count));
+            Header.Vertices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelVerticies.Count));
             curOffset += verticiesBytes.Count;
             nonHeaderBytes.AddRange(verticiesBytes);
 
@@ -292,7 +292,7 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateVerticiesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelVertex vertex in modelObject.ModelAnimationVerticies)
+            foreach(ModelVertex vertex in modelObject.ModelVerticies)
                 blockBytes.AddRange(vertex.ToBytes());
             return blockBytes;
         }

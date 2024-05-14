@@ -29,7 +29,7 @@ namespace EQWOWConverter.Objects
     {
         public string Name = string.Empty;
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
-        public List<ModelVertex> ModelAnimationVerticies = new List<ModelVertex>();
+        public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
         public List<UInt16> ModelBoneKeyLookups = new List<UInt16>();
         public List<Int16> ModelBoneLookups = new List<Int16>();
@@ -42,6 +42,7 @@ namespace EQWOWConverter.Objects
         public List<ModelTextureTransparency> ModelTextureTransparencies = new List<ModelTextureTransparency>();
         public List<Int16> ModelTextureTransformationsLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
+        public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
 
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
@@ -65,10 +66,69 @@ namespace EQWOWConverter.Objects
             // Make one material for now
             ModelMaterials.Add(new ModelMaterial());
 
-            CalculateBoundingBoxAndRadius();
+            // Change face orientation for culling differences between EQ and WoW
+            List<TriangleFace> triangleFaces = new List<TriangleFace>();
+            foreach (TriangleFace eqFace in eqObject.TriangleFaces)
+            {
+                TriangleFace newFace = new TriangleFace();
+                newFace.MaterialIndex = eqFace.MaterialIndex;
+
+                // Rotate the verticies for culling differences
+                newFace.V1 = eqFace.V3;
+                newFace.V2 = eqFace.V2;
+                newFace.V3 = eqFace.V1;
+
+                // Add it
+                triangleFaces.Add(newFace);
+            }
+
+            if (eqObject.Verticies.Count != eqObject.TextureCoords.Count && eqObject.Verticies.Count != eqObject.Normals.Count)
+            {
+                Logger.WriteLine("Failed to load wowobject from eqobject named '" + name + "' since vertex count doesn't match texture coordinate count or normal count");
+                return;
+            }
+
+            // Read in all the verticies
+            for (int i = 0; i < eqObject.Verticies.Count; i++)
+            {
+                ModelVertex newModelVertex = new ModelVertex();
+
+                // Read vertex, and account for world scale
+                Vector3 curVertex = eqObject.Verticies[i];
+                newModelVertex.Position.X = curVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                newModelVertex.Position.Y = curVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                newModelVertex.Position.Z = curVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+                // Read texture coordinates, and factor for mapping differences between EQ and WoW
+                TextureCoordinates curTextureCoordinates = eqObject.TextureCoords[i];
+                newModelVertex.Texture1TextureCoordinates.X = curTextureCoordinates.X;
+                newModelVertex.Texture1TextureCoordinates.Y = curTextureCoordinates.Y * -1;
+
+                // Read normals
+                Vector3 curNormal = eqObject.Normals[i];
+                newModelVertex.Normal.X = curNormal.X;
+                newModelVertex.Normal.Y = curNormal.Y;
+                newModelVertex.Normal.Z = curNormal.Z;
+
+                ModelVerticies.Add(newModelVertex);
+            }
+
+            // Read in the textures
+            foreach(Material material in eqObject.Materials)
+            {
+                // Only grab first for now
+                if (material.AnimationTextures.Count > 0)
+                {
+                    ModelTexture newModelTexture = new ModelTexture();
+                    newModelTexture.TextureName = material.AnimationTextures[0];
+                    ModelTextures.Add(newModelTexture);
+                }
+            }
+
+            CalculateBoundingBoxesAndRadius();
         }
 
-        private void CalculateBoundingBoxAndRadius()
+        private void CalculateBoundingBoxesAndRadius()
         {
             //// Calculate it by using the bounding box of all WorldModelObjects
             //BoundingBox = new BoundingBox();
