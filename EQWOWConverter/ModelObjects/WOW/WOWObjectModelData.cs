@@ -55,6 +55,12 @@ namespace EQWOWConverter.Objects
 
         }
 
+        public UInt16 GetTextureLookupIndexForMaterial(int materialID)
+        {
+            // For now, it's a 1 to 1 match
+            return Convert.ToUInt16(materialID);
+        }
+
         // Note: Only working for static for now, but more to come
         public void LoadFromEQObject(string name, EQModelObjectData eqObject)
         {
@@ -68,7 +74,6 @@ namespace EQWOWConverter.Objects
             ModelMaterials.Add(new ModelMaterial());
 
             // Change face orientation for culling differences between EQ and WoW
-            List<TriangleFace> triangleFaces = new List<TriangleFace>();
             foreach (TriangleFace eqFace in eqObject.TriangleFaces)
             {
                 TriangleFace newFace = new TriangleFace();
@@ -80,7 +85,7 @@ namespace EQWOWConverter.Objects
                 newFace.V3 = eqFace.V1;
 
                 // Add it
-                triangleFaces.Add(newFace);
+                ModelTriangles.Add(newFace);
             }
 
             if (eqObject.Verticies.Count != eqObject.TextureCoords.Count && eqObject.Verticies.Count != eqObject.Normals.Count)

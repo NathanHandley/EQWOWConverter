@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -148,6 +149,28 @@ namespace EQWOWConverter.Common
                     boundingBox.TopCorner.Y = renderVert.Y;
                 if (renderVert.Z > boundingBox.TopCorner.Z)
                     boundingBox.TopCorner.Z = renderVert.Z;
+            }
+            return boundingBox;
+        }
+
+        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> verticies)
+        {
+            BoundingBox boundingBox = new BoundingBox();
+            foreach (ModelVertex renderVert in verticies)
+            {
+                if (renderVert.Position.X < boundingBox.BottomCorner.X)
+                    boundingBox.BottomCorner.X = renderVert.Position.X;
+                if (renderVert.Position.Y < boundingBox.BottomCorner.Y)
+                    boundingBox.BottomCorner.Y = renderVert.Position.Y;
+                if (renderVert.Position.Z < boundingBox.BottomCorner.Z)
+                    boundingBox.BottomCorner.Z = renderVert.Position.Z;
+
+                if (renderVert.Position.X > boundingBox.TopCorner.X)
+                    boundingBox.TopCorner.X = renderVert.Position.X;
+                if (renderVert.Position.Y > boundingBox.TopCorner.Y)
+                    boundingBox.TopCorner.Y = renderVert.Position.Y;
+                if (renderVert.Position.Z > boundingBox.TopCorner.Z)
+                    boundingBox.TopCorner.Z = renderVert.Position.Z;
             }
             return boundingBox;
         }

@@ -195,9 +195,6 @@ namespace EQWOWConverter.WOWFiles
             Header.CollisionBox = modelObject.WOWModelObjectData.CollisionBoundingBox;
             Header.CollisionSphereRadius = modelObject.WOWModelObjectData.CollisionSphereRaidus;
 
-            // Skin Profile Count (just one for now)
-            Header.SkinProfileCount = 1;
-
             // Assemble the byte stream together, header first
             ModelBytes.AddRange(Header.ToBytes());
             ModelBytes.AddRange(nonHeaderBytes);
@@ -558,13 +555,15 @@ namespace EQWOWConverter.WOWFiles
         public void WriteToDisk(string outputFolderPath)
         {
             // Make the directory
-            if (Directory.Exists(outputFolderPath))
-                Directory.Delete(outputFolderPath, true);
-            FileTool.CreateBlankDirectory(outputFolderPath, true);
+            if (Directory.Exists(outputFolderPath) == false)
+                FileTool.CreateBlankDirectory(outputFolderPath, true);
 
             // Create the M2
             string m2FileName = Path.Combine(outputFolderPath, Name + ".m2");
             File.WriteAllBytes(m2FileName, ModelBytes.ToArray());
+
+            // Create the skin
+            Skin.WriteToDisk(outputFolderPath);
         }
     }
 }

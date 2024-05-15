@@ -209,11 +209,9 @@ namespace EQWOWConverter
             // Generate the object
             modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
 
-            // Create the M2
+            // Create the M2 and Skin
             M2 objectM2 = new M2(modelObject, exportMPQObjectRootFolder);
             objectM2.WriteToDisk(exportMPQObjectRootFolder);
-
-            // Create the Skin
 
             //// Create the zone WMO objects
             //WMO zoneWMO = new WMO(zone, exportMPQRootFolder);

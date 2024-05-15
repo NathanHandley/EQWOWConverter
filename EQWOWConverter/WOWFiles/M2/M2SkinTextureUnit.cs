@@ -39,9 +39,12 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 TextureTransformationsLookupIndex = 0;
 
         
-        public M2SkinTextureUnit()
+        public M2SkinTextureUnit(UInt16 subMeshID, UInt16 materialIndex, UInt16 textureLookupIndex)
         {
-
+            MaterialIndex = materialIndex;
+            TextureLookupIndex = textureLookupIndex;
+            SkinSectionIndex = subMeshID;
+            GeosetIndex = subMeshID; // I'm not 100% sure why this is the same as submeshID, but data in WOTLK skins seem to do that
         }
 
         public List<byte> ToBytes()
