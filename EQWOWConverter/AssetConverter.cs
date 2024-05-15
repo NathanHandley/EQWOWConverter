@@ -27,6 +27,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Objects;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
+using EQWOWConverter.ModelObjects;
 
 namespace EQWOWConverter
 {
@@ -80,7 +81,8 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object
-                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder);
+                string relativeMPQPath = Path.Combine("World", "Everquest", "Static", staticObjectMeshNameNoExt);
+                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
@@ -199,7 +201,7 @@ namespace EQWOWConverter
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
-        public static void CreateWoWObjectFromEQObject(ModelObject modelObject, string exportMPQObjectRootFolder)
+        public static void CreateWoWObjectFromEQObject(ModelObject modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
         {
             Logger.WriteLine("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
 
@@ -210,7 +212,7 @@ namespace EQWOWConverter
             modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
 
             // Create the M2 and Skin
-            M2 objectM2 = new M2(modelObject, exportMPQObjectRootFolder);
+            M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
             objectM2.WriteToDisk(exportMPQObjectRootFolder);
 
             //// Create the zone WMO objects
@@ -341,22 +343,14 @@ namespace EQWOWConverter
         {
             Logger.WriteLine("- [" + modelObject.Name + "]: Exporting textures for object '" + modelObject.Name + "'...");
 
-            //// Create the folder to output
-            //string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.ShortName);
-            //if (Directory.Exists(zoneOutputTextureFolder) == false)
-            //    FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
-
-            //// Go through every texture to move and put it there
-            //foreach (Material material in zone.WOWZoneData.Materials)
-            //{
-            //    if (material.AnimationTextures.Count == 0)
-            //        continue;
-            //    string textureName = material.AnimationTextures[0];
-            //    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
-            //    string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
-            //    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
-            //    Logger.WriteLine("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
-            //}
+            // Go through every texture and copy it
+            foreach(ModelTexture texture in modelObject.WOWModelObjectData.ModelTextures)
+            {
+                string inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
+                string outputTextureName = Path.Combine(objectExportPath, texture.TextureName + ".blp");
+                File.Copy(inputTextureName, outputTextureName, true);
+                Logger.WriteLine("- [" + modelObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+            }
 
             Logger.WriteLine("- [" + modelObject.Name + "]: Texture output for object '" + modelObject.Name + "' complete");
         }

@@ -32,7 +32,7 @@ namespace EQWOWConverter.Objects
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
         public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
-        public List<UInt16> ModelBoneKeyLookups = new List<UInt16>();
+        public List<Int16> ModelBoneKeyLookups = new List<Int16>();
         public List<Int16> ModelBoneLookups = new List<Int16>();
         public List<ModelMaterial> ModelMaterials = new List<ModelMaterial>();
         public List<ModelTexture> ModelTextures = new List<ModelTexture>();
@@ -70,8 +70,18 @@ namespace EQWOWConverter.Objects
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());
 
-            // Make one material for now
-            ModelMaterials.Add(new ModelMaterial());
+            // HARD CODED FOR STATIC --------------------------------------------------------------------
+            // Create a base bone
+            ModelBones.Add(new ModelBone());
+            ModelBoneKeyLookups.Add(-1);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelTextureMappingLookups.Add(0);
+            ModelTextureTransformationsLookup.Add(0);
+            ModelReplaceableTextureLookups.Add(-1);
+            //-------------------------------------------------------------------------------------------
 
             // Change face orientation for culling differences between EQ and WoW
             foreach (TriangleFace eqFace in eqObject.TriangleFaces)
@@ -119,7 +129,8 @@ namespace EQWOWConverter.Objects
                 ModelVerticies.Add(newModelVertex);
             }
 
-            // Read in the textures
+            // Read in the textures and save a material for each
+            Int16 curIndex = 0;
             foreach(Material material in eqObject.Materials)
             {
                 // Only grab first for now
@@ -128,6 +139,9 @@ namespace EQWOWConverter.Objects
                     ModelTexture newModelTexture = new ModelTexture();
                     newModelTexture.TextureName = material.AnimationTextures[0];
                     ModelTextures.Add(newModelTexture);
+                    ModelMaterials.Add(new ModelMaterial());
+                    ModelTextureLookups.Add(curIndex);
+                    ++curIndex;
                 }
             }
 

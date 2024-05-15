@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
         private M2Header Header = new M2Header();
         private string Name = string.Empty;
 
-        public M2(ModelObject modelObject, string modelFolder)
+        public M2(ModelObject modelObject, string mpqObjectFolder)
         {
             // TESTING
             //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
@@ -92,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Textures
-            List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData, modelFolder, curOffset);
+            List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData, mpqObjectFolder, curOffset);
             Header.Textures.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextures.Count));
             curOffset += textureBytes.Count;
             nonHeaderBytes.AddRange(textureBytes);

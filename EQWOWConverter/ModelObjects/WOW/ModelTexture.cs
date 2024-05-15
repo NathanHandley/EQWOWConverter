@@ -65,7 +65,8 @@ namespace EQWOWConverter.ModelObjects
         public List<byte> ToBytesData(string modelTextureFolder, ref int curOffset)
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(Encoding.ASCII.GetBytes(GenerateFullFileNameAndPath(modelTextureFolder) + "\0"));
+            string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
+            bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
             FileNameLength = Convert.ToUInt32(bytes.Count);
             FileNameOffset = Convert.ToUInt32(curOffset);
             curOffset += bytes.Count;            
