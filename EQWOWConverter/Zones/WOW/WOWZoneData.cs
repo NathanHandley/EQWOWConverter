@@ -230,7 +230,6 @@ namespace EQWOWConverter.Zones
                 GenerateWorldModelObjectByMaterials(materialNames, faces, verticies, normals, vertexColors, textureCoords);
         }
 
-
         private void GenerateWorldModelObjectsByChunks(List<MapChunk> mapChunks, List<Vector3> verticies, List<Vector3> normals,
             List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {

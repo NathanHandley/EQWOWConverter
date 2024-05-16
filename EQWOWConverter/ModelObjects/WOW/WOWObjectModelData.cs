@@ -145,7 +145,83 @@ namespace EQWOWConverter.Objects
                 }
             }
 
+            SortGeometry();
             CalculateBoundingBoxesAndRadius();
+        }
+
+        private void SortGeometry()
+        {
+            ModelTriangles.Sort();
+
+            // Reorder the verticies / texcoords / normals / vertcolors to match the sorted triangle faces
+            List<ModelVertex> sortedVerticies = new List<ModelVertex>();
+            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
+            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
+            for (int i = 0; i < ModelTriangles.Count; i++)
+            {
+                TriangleFace curTriangleFace = ModelTriangles[i];
+
+                // Face vertex 1
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V1;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V1 = newVertIndex;
+
+                    // Add verticies
+                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
+                }
+
+                // Face vertex 2
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V2;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V2 = newVertIndex;
+
+                    // Add verticies
+                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
+                }
+
+                // Face vertex 3
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V3;
+                    int newVertIndex = sortedVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V3 = newVertIndex;
+
+                    // Add verticies
+                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
+                }
+
+                // Save this updated triangle
+                sortedTriangleFaces.Add(curTriangleFace);
+            }
+
+            // Save the sorted values
+            ModelVerticies = sortedVerticies;
+            ModelTriangles = sortedTriangleFaces;
         }
 
         private void CalculateBoundingBoxesAndRadius()
