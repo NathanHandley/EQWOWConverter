@@ -30,7 +30,7 @@ namespace EQWOWConverter.ModelObjects
         public ModelBoneFlags Flags = 0;
         public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
         public UInt16 SubMeshID = 0;
-        public UInt32 BoneNameCRC = 300463684;  // Looks like this isn't used, so copied value in CaveMineSpiderPillar01. Revisit
+        public UInt32 BoneNameCRC = 3391571450;  // Took this from Sack01.  Figure out how to generate this
         public ModelTrackSequences<Vector3> TranslationTrack = new ModelTrackSequences<Vector3>();
         public ModelTrackSequences<Quaternion> RotationTrack = new ModelTrackSequences<Quaternion>();
         public ModelTrackSequences<Vector3> ScaleTrack = new ModelTrackSequences<Vector3>();

@@ -20,13 +20,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.Common
 {
-    internal class ModelTextureTransparency
+    internal class Fixed16 : ByteSerializable
     {
+        public UInt16 Value = 0;
+
+        public Fixed16()
+        {
+
+        }
+        public Fixed16(UInt16 value)
+        {
+            Value = value;
+        }
+
+        public UInt32 GetBytesSize()
+        {
+            return 2;
+        }
+
         public List<byte> ToBytes()
         {
-            return new List<byte>();
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(Value));
+            return returnBytes;
         }
     }
 }

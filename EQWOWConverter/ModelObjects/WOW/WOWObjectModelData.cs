@@ -40,7 +40,7 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelTextureMappingLookups = new List<Int16>();
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureTransparencyWeightsLookups = new List<Int16>();
-        public List<ModelTextureTransparency> ModelTextureTransparencies = new List<ModelTextureTransparency>();
+        public ModelTrackSequences<Fixed16> ModelTextureTransparencies = new ModelTrackSequences<Fixed16>();
         public List<Int16> ModelTextureTransformationsLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
@@ -81,9 +81,11 @@ namespace EQWOWConverter.Objects
             ModelBoneLookups.Add(0);
             ModelBoneLookups.Add(0);
             ModelBoneLookups.Add(0);
+            ModelTextureTransparencyWeightsLookups.Add(0);
+            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
             ModelTextureMappingLookups.Add(0);
-            ModelTextureTransformationsLookup.Add(0);
-            ModelReplaceableTextureLookups.Add(-1);
+            ModelTextureTransformationsLookup.Add(-1);
+            ModelReplaceableTextureLookups.Add(0);
             //-------------------------------------------------------------------------------------------
 
             // Change face orientation for culling differences between EQ and WoW
@@ -164,9 +166,15 @@ namespace EQWOWConverter.Objects
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
 
-            // Store positions
+            // Store positions, factoring for world scailing
             foreach (Vector3 collisionVertex in eqObject.CollisionVerticies)
-                CollisionPositions.Add(new Vector3(collisionVertex));
+            {
+                Vector3 curVertex = new Vector3();
+                curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                curVertex.Y = collisionVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                curVertex.Z = collisionVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                CollisionPositions.Add(new Vector3(curVertex));
+            }
 
             // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
             foreach (TriangleFace collisionTriangle in eqObject.CollisionTriangleFaces)
@@ -273,24 +281,10 @@ namespace EQWOWConverter.Objects
 
         private void CalculateBoundingBoxesAndRadii()
         {
-            //// Calculate it by using the bounding box of all WorldModelObjects
-            //BoundingBox = new BoundingBox();
-            //foreach (WorldModelObject worldModelObject in WorldObjects)
-            //{
-            //    if (worldModelObject.BoundingBox.TopCorner.X > BoundingBox.TopCorner.X)
-            //        BoundingBox.TopCorner.X = worldModelObject.BoundingBox.TopCorner.X;
-            //    if (worldModelObject.BoundingBox.TopCorner.Y > BoundingBox.TopCorner.Y)
-            //        BoundingBox.TopCorner.Y = worldModelObject.BoundingBox.TopCorner.Y;
-            //    if (worldModelObject.BoundingBox.TopCorner.Z > BoundingBox.TopCorner.Z)
-            //        BoundingBox.TopCorner.Z = worldModelObject.BoundingBox.TopCorner.Z;
-
-            //    if (worldModelObject.BoundingBox.BottomCorner.X < BoundingBox.BottomCorner.X)
-            //        BoundingBox.BottomCorner.X = worldModelObject.BoundingBox.BottomCorner.X;
-            //    if (worldModelObject.BoundingBox.BottomCorner.Y < BoundingBox.BottomCorner.Y)
-            //        BoundingBox.BottomCorner.Y = worldModelObject.BoundingBox.BottomCorner.Y;
-            //    if (worldModelObject.BoundingBox.BottomCorner.Z < BoundingBox.BottomCorner.Z)
-            //        BoundingBox.BottomCorner.Z = worldModelObject.BoundingBox.BottomCorner.Z;
-            //}
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVerticies);
+            BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
+            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions);
+            CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
         }
     }
 }

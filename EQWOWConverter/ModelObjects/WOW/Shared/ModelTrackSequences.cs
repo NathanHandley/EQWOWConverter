@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,6 +59,10 @@ namespace EQWOWConverter.ModelObjects
             Values[sequenceID].AddValue(value);
         }
 
+        public UInt32 GetCount()
+        {
+            return Convert.ToUInt32(Timestamps.Count);
+        }
         
         public UInt32 GetHeaderSize()
         {

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
 using EQWOWConverter.Objects;
 
@@ -98,8 +99,8 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(textureBytes);
 
             // Texture Transparencies (Weights)
-            List<byte> textureTransparenciesBytes = GenerateTextureTransparencyWeightsBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransparencyWeights.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencies.Count));
+            List<byte> textureTransparenciesBytes = GenerateTextureTransparencyWeightsBlock(modelObject.WOWModelObjectData, curOffset);
+            Header.TextureTransparencyWeights.Set(Convert.ToUInt32(curOffset), modelObject.WOWModelObjectData.ModelTextureTransparencies.GetCount());
             curOffset += textureTransparenciesBytes.Count;
             nonHeaderBytes.AddRange(textureTransparenciesBytes);
 
@@ -149,13 +150,22 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(textureTransformationLookupBytes);
 
             // Collision Triangle Incidies
-            // none for now
+            List<byte> collisionTriangleBytes = GenerateCollisionTriangleIncidiesBlock(modelObject.WOWModelObjectData);
+            Header.CollisionTriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionTriangles.Count));
+            curOffset += collisionTriangleBytes.Count;
+            nonHeaderBytes.AddRange(collisionTriangleBytes);
 
             // Collision Verticies
-            // none for now
+            List<byte> collisionPositionsBytes = GenerateCollisionVerticiesBlock(modelObject.WOWModelObjectData);
+            Header.CollisionVerticies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionPositions.Count));
+            curOffset += collisionPositionsBytes.Count;
+            nonHeaderBytes.AddRange(collisionPositionsBytes);
 
             // Collision Face Normals
-            // none for now
+            List<byte> collisionFaceNormalsBytes = GenerateCollisionFaceNormalsBlock(modelObject.WOWModelObjectData);
+            Header.CollisionFaceNormals.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionFaceNormals.Count));
+            curOffset += collisionFaceNormalsBytes.Count;
+            nonHeaderBytes.AddRange(collisionFaceNormalsBytes);
 
             // Attachments
             // none for now
@@ -336,11 +346,22 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Texture Transparency Weights
         /// </summary>
-        private List<byte> GenerateTextureTransparencyWeightsBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateTextureTransparencyWeightsBlock(WOWObjectModelData modelObject, int curOffset)
         {
+            // Determine where data can start
+            UInt32 dataSpaceStartOffset = Convert.ToUInt32(curOffset) + modelObject.ModelTextureTransparencies.GetHeaderSize();
+
+            // Create memory space for the data and fill it
+            List<byte> dataSpace = new List<byte>();
+            modelObject.ModelTextureTransparencies.AddDataAndUpdateOffsets(ref dataSpace, dataSpaceStartOffset);
+
+            // Get header data
+            List<byte> headerBytes = modelObject.ModelTextureTransparencies.GetHeaderBytes();
+
+            // Combine it with the data
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelTextureTransparency textureTransparency in modelObject.ModelTextureTransparencies)
-                blockBytes.AddRange(textureTransparency.ToBytes());
+            blockBytes.AddRange(headerBytes);
+            blockBytes.AddRange(dataSpace);
             return blockBytes;
         }
 
@@ -437,17 +458,19 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateCollisionTriangleIncidiesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-
+            foreach (TriangleFace triangle in modelObject.CollisionTriangles)
+                blockBytes.AddRange(triangle.ToBytes());
             return blockBytes;
         }
 
         /// <summary>
-        /// Collision Verticies
+        /// Collision Verticies (Positions)
         /// </summary>
         private List<byte> GenerateCollisionVerticiesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-
+            foreach (Vector3 position in modelObject.CollisionPositions)
+                blockBytes.AddRange(position.ToBytes());
             return blockBytes;
         }
 
@@ -457,7 +480,8 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateCollisionFaceNormalsBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-
+            foreach(Vector3 normal in modelObject.CollisionFaceNormals)
+                blockBytes.AddRange(normal.ToBytes());
             return blockBytes;
         }
 
