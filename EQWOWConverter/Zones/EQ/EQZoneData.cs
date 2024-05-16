@@ -36,6 +36,7 @@ namespace EQWOWConverter.Zones
 
         public ColorRGBA AmbientLight { get; } = new ColorRGBA();
         public List<LightInstance> LightInstances { get; } = new List<LightInstance>();
+        public List<ObjectInstance> ObjectInstances { get; } = new List<ObjectInstance>();
         public List<Vector3> CollisionVerticies { get; } = new List<Vector3>();
         public List<TriangleFace> CollisionTriangleFaces { get; } = new List<TriangleFace>();
 
@@ -55,6 +56,7 @@ namespace EQWOWConverter.Zones
             LoadCollisionMeshData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadAmbientLightData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
         }
 
         private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -354,6 +356,58 @@ namespace EQWOWConverter.Zones
                 }
             }
         }
+
+        private void LoadObjectInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
+        {
+            // Get the object instances
+            Logger.WriteLine("- [" + inputZoneFolder + "]: Reading object instances...");
+            string objectInstancesFileName = Path.Combine(inputZoneFolderFullPath, "object_instances.txt");
+            if (File.Exists(objectInstancesFileName) == false)
+                Logger.WriteLine("- [" + inputZoneFolder + "]: No object instance data found.");
+            else
+            {
+                using (var objectInstancesReader = new StreamReader(objectInstancesFileName))
+                {
+                    string? curLine;
+                    while ((curLine = objectInstancesReader.ReadLine()) != null)
+                    {
+                        // Nothing for blank lines
+                        if (curLine.Length == 0)
+                            continue;
+
+                        // # = comment
+                        else if (curLine.StartsWith("#"))
+                            continue;
+
+                        //11-blocks is an object instance
+                        else
+                        {
+                            string[] blocks = curLine.Split(",");
+                            if (blocks.Length != 11)
+                            {
+                                Logger.WriteLine("- [" + inputZoneFolder + "]: Error, object instance data is 7 components");
+                                continue;
+                            }
+
+                            ObjectInstance newObjectInstance = new ObjectInstance();
+                            newObjectInstance.ModelName = blocks[0];
+                            newObjectInstance.Position.X = float.Parse(blocks[1]);
+                            newObjectInstance.Position.Y = float.Parse(blocks[2]);
+                            newObjectInstance.Position.Z = float.Parse(blocks[3]);
+                            newObjectInstance.Rotation.X = float.Parse(blocks[4]);
+                            newObjectInstance.Rotation.Y = float.Parse(blocks[5]);
+                            newObjectInstance.Rotation.Z = float.Parse(blocks[6]);
+                            newObjectInstance.Scale.X = float.Parse(blocks[7]);
+                            newObjectInstance.Scale.Y = float.Parse(blocks[8]);
+                            newObjectInstance.Scale.Z = float.Parse(blocks[9]);
+                            newObjectInstance.ColorIndex = Int32.Parse(blocks[10]);
+                            ObjectInstances.Add(newObjectInstance);
+                        }
+                    }
+                }
+            }
+        }
+
         private void LoadLightInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the light instances

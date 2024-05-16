@@ -58,7 +58,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
             // Flags
-            UInt32 groupHeaderFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors), Convert.ToUInt32(WMOGroupFlags.HasBSPTree));
+            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
+            groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
+            if (worldModelObject.DoodadInstances.Count > 0)
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -114,7 +117,8 @@ namespace EQWOWConverter.WOWFiles
             //chunkBytes.AddRange(GenerateMOLRChunk(zone));
 
             // MODR (Doodad References) -----------------------------------------------------------
-            //chunkBytes.AddRange(GenerateMODRChunk(zone));
+            if (worldModelObject.DoodadInstances.Count > 0)
+                chunkBytes.AddRange(GenerateMODRChunk(worldModelObject));
 
             // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
             chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
@@ -256,9 +260,8 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMODRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            // Intentionally blank for now
-
+            foreach (var doodadInstanceReference in worldModelObject.DoodadInstances)
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(doodadInstanceReference.Key)));
             return WrapInChunk("MODR", chunkBytes.ToArray());
         }
 

@@ -124,7 +124,7 @@ namespace EQWOWConverter.Common
             return false;
         }
 
-        private bool IsPointInside(Vector3 point)
+        public bool IsPointInside(Vector3 point)
         {
             return point.X >= BottomCorner.X && point.X <= TopCorner.X &&
                    point.Y >= BottomCorner.Y && point.Y <= TopCorner.Y &&

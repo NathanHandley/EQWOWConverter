@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
+using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,11 +36,12 @@ namespace EQWOWConverter.Zones
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
+        public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree;
 
         public WorldModelObject(List<Vector3> verticies, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
-            List<TriangleFace> triangleFaces, List<Material> materials)
+            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances)
         {
             Verticies = verticies;
             TextureCoords = textureCoords;
@@ -51,6 +53,7 @@ namespace EQWOWConverter.Zones
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, Verticies, TriangleFaces);
+            CreateDoodadAssociations(zoneWideDoodadInstances);
         }
 
         private void GenerateRenderBatches(List<Material> materials)
@@ -106,6 +109,17 @@ namespace EQWOWConverter.Zones
             {
                 renderBatch.Value.BoundingBox = new BoundingBox(BoundingBox);
                 RenderBatches.Add(renderBatch.Value);
+            }
+        }
+
+        private void CreateDoodadAssociations(List<WorldModelObjectDoodadInstance> zoneWidedoodadInstances)
+        {
+            // Associate any doodads that have a position inside of this wmo bounding box
+            for (int i = 0; i < zoneWidedoodadInstances.Count; i++)
+            {
+                WorldModelObjectDoodadInstance doodadInstance = zoneWidedoodadInstances[i];
+                if (BoundingBox.IsPointInside(doodadInstance.Position))
+                    DoodadInstances.Add(i, doodadInstance);
             }
         }
 

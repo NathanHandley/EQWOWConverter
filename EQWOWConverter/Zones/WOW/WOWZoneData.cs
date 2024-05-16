@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace EQWOWConverter.Zones
         public List<Material> Materials = new List<Material>();
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
+        public List<WorldModelObjectDoodadInstance> DoodadInstances = new List<WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public Fog FogSettings = new Fog();
         public UInt32 AreaID;
@@ -57,7 +59,7 @@ namespace EQWOWConverter.Zones
         {
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
-            LightInstances = eqZoneData.LightInstances;
+            LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
 
             // Change face orientation for culling differences between EQ and WoW
             List<TriangleFace> triangleFaces = new List<TriangleFace>();
@@ -83,7 +85,7 @@ namespace EQWOWConverter.Zones
                 textureCoords.Add(curTextureCoords);
             }
 
-            // Reduce size of verticies.
+            // Adjust verticies for world scale
             List<Vector3> verticies = new List<Vector3>();
             foreach (Vector3 vertex in eqZoneData.Verticies)
             {
@@ -91,6 +93,24 @@ namespace EQWOWConverter.Zones
                 vertex.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 verticies.Add(vertex);
+            }
+
+            // Adjust object instances for world scale
+            foreach(ObjectInstance objectInstance in eqZoneData.ObjectInstances)
+            {
+                WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+                doodadInstance.ObjectName = objectInstance.ModelName;
+                doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                // Invert Z and Y because of mapping differences
+                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+                // TODO: Rotation/Orientation
+
+                // Scale is confirmed to always have the same value in x, y, z
+                doodadInstance.Scale = objectInstance.Scale.X;
+
+                DoodadInstances.Add(doodadInstance);
             }
 
             // Create world model objects by identifying connected triangles and grouping them
@@ -431,7 +451,7 @@ namespace EQWOWConverter.Zones
 
             // Generate and add the world model object
             WorldModelObject curWorldModelObject = new WorldModelObject(condensedVerticies, condensedTextureCoords, 
-                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials);
+                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances);
             WorldObjects.Add(curWorldModelObject);
         }
 

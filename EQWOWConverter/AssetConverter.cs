@@ -54,11 +54,11 @@ namespace EQWOWConverter
                 return false;
             }
 
-            // Clean out the static objects folder
+            // Clean out the objects folder
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
-            string exportStaticObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Static");
-            if (Directory.Exists(exportStaticObjectsFolder))
-                Directory.Delete(exportStaticObjectsFolder, true);
+            string exportObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Objects");
+            if (Directory.Exists(exportObjectsFolder))
+                Directory.Delete(exportObjectsFolder, true);
 
             // Go through all of the object meshes and process them one at a time
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
@@ -68,11 +68,15 @@ namespace EQWOWConverter
             foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
-                string curStaticObjectOutputFolder = Path.Combine(exportStaticObjectsFolder, staticObjectMeshNameNoExt);
+                string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectMeshNameNoExt);
 
                 // Skip the collision mesh files
                 if (objectMeshFileInfo.Name.Contains("_collision"))
                     continue;
+
+                // Only look at banner
+                //if (staticObjectMeshNameNoExt != "akabanner")
+                //    continue;
 
                 // Load the EQ object
                 ModelObject curObject = new ModelObject(staticObjectMeshNameNoExt);
@@ -81,7 +85,7 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object
-                string relativeMPQPath = Path.Combine("World", "Everquest", "Static", staticObjectMeshNameNoExt);
+                string relativeMPQPath = Path.Combine("World", "Everquest", "Objects", staticObjectMeshNameNoExt);
                 CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
 
                 // Place the related textures
@@ -138,13 +142,16 @@ namespace EQWOWConverter
             if (Directory.Exists(exportInterfaceFolder))
                 Directory.Delete(exportInterfaceFolder, true);
 
+            // Generate folder name for objects
+            string exportObjectsFolderRelative = Path.Combine("World", "Everquest", "Objects");
+
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                //if (zoneDirectory.Name != "unrest")
+                //if (zoneDirectory.Name != "freportw")
                 //    continue;
 
                 // Load the EQ zone
@@ -155,7 +162,7 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
-                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder);
+                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, exportObjectsFolderRelative);
 
                 // Place the related textures
                 ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder);
@@ -176,7 +183,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder)
+        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string exportObjectsFolder)
         {
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
@@ -187,7 +194,7 @@ namespace EQWOWConverter
             zone.PopulateWOWZoneDataFromEQZoneData(zoneProperties);
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, exportMPQRootFolder);
+            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, exportObjectsFolder);
             zoneWMO.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDT
