@@ -44,9 +44,12 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelTextureTransformationsLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
-
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
+
+        public List<Vector3> CollisionPositions = new List<Vector3>();
+        public List<Vector3> CollisionFaceNormals = new List<Vector3>();
+        public List<TriangleFace> CollisionTriangles = new List<TriangleFace>();
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
 
@@ -145,8 +148,52 @@ namespace EQWOWConverter.Objects
                 }
             }
 
+            ProcessCollisionData(eqObject);
             SortGeometry();
-            CalculateBoundingBoxesAndRadius();
+            CalculateBoundingBoxesAndRadii();
+        }
+
+        private void ProcessCollisionData(EQModelObjectData eqObject)
+        {
+            // Exit if there is no data, meaning there is no collision
+            if (eqObject.CollisionVerticies.Count == 0)
+                return;
+
+            // Purge prior data
+            CollisionPositions.Clear();
+            CollisionFaceNormals.Clear();
+            CollisionTriangles.Clear();
+
+            // Store positions
+            foreach (Vector3 collisionVertex in eqObject.CollisionVerticies)
+                CollisionPositions.Add(new Vector3(collisionVertex));
+
+            // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
+            foreach (TriangleFace collisionTriangle in eqObject.CollisionTriangleFaces)
+                if (collisionTriangle.V1 != collisionTriangle.V2)
+                    CollisionTriangles.Add(new TriangleFace(collisionTriangle));
+
+            // Calculate normals using the triangles provided
+            foreach(TriangleFace collisionTriangle in CollisionTriangles)
+            {
+                // Grab related verticies
+                Vector3 vertex1 = CollisionPositions[collisionTriangle.V1];
+                Vector3 vertex2 = CollisionPositions[collisionTriangle.V2];
+                Vector3 vertex3 = CollisionPositions[collisionTriangle.V3];
+
+                // Calculate two edges
+                Vector3 edge1 = vertex2 - vertex1;
+                Vector3 edge2 = vertex3 - vertex1;
+
+                // Cross product determise the vector, then normalize (using C# libraries to save coding time)
+                System.Numerics.Vector3 edge1System = new System.Numerics.Vector3(edge1.X, edge1.Y, edge1.Z);
+                System.Numerics.Vector3 edge2System = new System.Numerics.Vector3(edge2.X, edge2.Y, edge2.Z);
+                System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);
+                System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
+
+                Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
+                CollisionFaceNormals.Add(normal);
+            }
         }
 
         private void SortGeometry()
@@ -224,7 +271,7 @@ namespace EQWOWConverter.Objects
             ModelTriangles = sortedTriangleFaces;
         }
 
-        private void CalculateBoundingBoxesAndRadius()
+        private void CalculateBoundingBoxesAndRadii()
         {
             //// Calculate it by using the bounding box of all WorldModelObjects
             //BoundingBox = new BoundingBox();
