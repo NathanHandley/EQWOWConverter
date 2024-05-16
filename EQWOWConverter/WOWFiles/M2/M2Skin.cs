@@ -49,7 +49,7 @@ namespace EQWOWConverter.WOWFiles
             nonHeaderBytes.AddRange(indiciesBytes);
 
             // Triangles
-            List<byte> triangleBytes = GenerateIndiciesBlock(modelObject.WOWModelObjectData);
+            List<byte> triangleBytes = GenerateTrianglesBlock(modelObject.WOWModelObjectData);
             Header.TriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTriangles.Count * 3));
             curOffset += triangleBytes.Count;
             nonHeaderBytes.AddRange(triangleBytes);
