@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTrackSequences<T> where T : ByteSerializable
+    internal class ModelTrackSequences<T> : ByteSerializable where T : ByteSerializable
     {
         ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
         public UInt16 GlobalSequenceID = 65535;
@@ -63,7 +63,29 @@ namespace EQWOWConverter.ModelObjects
         {
             return Convert.ToUInt32(Timestamps.Count);
         }
-        
+
+        public UInt32 GetBytesSize()
+        {
+            UInt32 size = 0;
+            size += 2;  // InterpolationType
+            size += 2;  // GlobalSequenceID
+            foreach (ModelTrackSequenceTimestamps timestamp in Timestamps)
+            {
+                size += timestamp.GetHeaderSize();
+                size += timestamp.GetDataSize();
+            }
+            foreach (ModelTrackSequenceValues<T> value in Values)
+            {
+                size += value.GetHeaderSize();
+                size += value.GetDataSize();
+            }
+            size += 4;  // Number of timestamps
+            size += 4;  // Offset of timestamps
+            size += 4;  // Number of values
+            size += 4;  // Offset of values
+            return size;
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
@@ -89,58 +111,55 @@ namespace EQWOWConverter.ModelObjects
             return bytes;
         }
 
-        // Data is arranged as follows: [TimestampHeaders][ValueHeaders][TimestampData][ValueData]
-        public void AddDataAndUpdateOffsets(ref List<byte> boneDataSpace, UInt32 dataSpaceStartOffset)
+        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
         {
             // Don't add anything if there's no data to add
             if (Timestamps.Count == 0)
                 return;
 
-            // Determine first available data offset
-            UInt32 firstUnusedBoneDataSpaceOffset = Convert.ToUInt32(boneDataSpace.Count) + dataSpaceStartOffset;
-            // Get the size of the header data to know where the start of timestampdata can begin
-            UInt32 sizeOfHeaderData = 0;
-            TimestampsOffset = firstUnusedBoneDataSpaceOffset;
-            foreach (ModelTrackSequenceTimestamps sequenceTimestamps in Timestamps)
-                sizeOfHeaderData += sequenceTimestamps.GetHeaderSize();
-            ValuesOffset = TimestampsOffset + sizeOfHeaderData;
-            foreach (ModelTrackSequenceValues<T> sequenceValues in Values)
-                sizeOfHeaderData += sequenceValues.GetHeaderSize();
-            UInt32 curUnusedDataBytesStartOffset = firstUnusedBoneDataSpaceOffset + sizeOfHeaderData;
+            // Calculate space for timestamp headers
+            UInt32 allTimestampHeaderSize = 0;
+            foreach (ModelTrackSequenceTimestamps timestampSequence in Timestamps)
+                allTimestampHeaderSize += timestampSequence.GetHeaderSize();
 
-            // Collect timestamp data bytes and update timestamp header offsets accordingly
-            List<byte> timestampDataBytes = new List<byte>();
-            foreach (ModelTrackSequenceTimestamps sequenceTimestamps in Timestamps)
+            // Calculate space for value headers
+            UInt32 allValueHeadersSize = 0;
+            foreach (ModelTrackSequenceValues<T> modelTrackSequenceValues in Values)
+                allValueHeadersSize += modelTrackSequenceValues.GetHeaderSize();
+
+            // Collect all the data, updating headers along the way
+            UInt32 dataCursorOffset = workingCursorOffset + allTimestampHeaderSize + allValueHeadersSize;
+            List<byte> allValueAndTimestampDataBytes = new List<byte>();
+            foreach (ModelTrackSequenceTimestamps timestampSequence in Timestamps)
             {
-                sequenceTimestamps.DataOffset = curUnusedDataBytesStartOffset;
-                timestampDataBytes.AddRange(sequenceTimestamps.GetDataBytes());
-                curUnusedDataBytesStartOffset += sequenceTimestamps.GetDataSize();
+                timestampSequence.DataOffset = dataCursorOffset;
+                allValueAndTimestampDataBytes.AddRange(timestampSequence.GetDataBytes());
+                dataCursorOffset += timestampSequence.GetDataSize();
+            }
+            foreach (ModelTrackSequenceValues<T> modelTrackSequenceValues in Values)
+            {
+                modelTrackSequenceValues.DataOffset = dataCursorOffset;
+                allValueAndTimestampDataBytes.AddRange(modelTrackSequenceValues.GetDataBytes());
+                dataCursorOffset += modelTrackSequenceValues.GetDataSize();
             }
 
-            // Collect timestamp headers
-            List<byte> timestampHeaderBytes = new List<byte>();
-            foreach (ModelTrackSequenceTimestamps sequenceTimestamps in Timestamps)
-                timestampHeaderBytes.AddRange(sequenceTimestamps.GetHeaderBytes());
+            // Collect all of the timestamp and value headers
+            List<byte> allValueAndTimestampSubheaderBytes = new List<byte>();
+            foreach (ModelTrackSequenceTimestamps timestampSequence in Timestamps)
+                allValueAndTimestampSubheaderBytes.AddRange(timestampSequence.GetHeaderBytes());
+            foreach (ModelTrackSequenceValues<T> modelTrackSequenceValues in Values)
+                allValueAndTimestampSubheaderBytes.AddRange(modelTrackSequenceValues.GetHeaderBytes());
 
-            // Collect value data bytes and update timestamp header offsets accordingly
-            List<byte> valueDataBytes = new List<byte>();
-            foreach (ModelTrackSequenceValues<T> sequenceValues in Values)
-            {
-                sequenceValues.DataOffset = curUnusedDataBytesStartOffset;
-                valueDataBytes.AddRange(sequenceValues.GetDataBytes());
-                curUnusedDataBytesStartOffset += sequenceValues.GetDataSize();
-            }
+            // Stick data together and update the offset
+            byteBuffer.AddRange(allValueAndTimestampSubheaderBytes);
+            byteBuffer.AddRange(allValueAndTimestampDataBytes);
+            workingCursorOffset += Convert.ToUInt32(allValueAndTimestampSubheaderBytes.Count + allValueAndTimestampDataBytes.Count);
+        }
 
-            // Collect value headers
-            List<byte> valueHeaderBytes = new List<byte>();
-            foreach (ModelTrackSequenceValues<T> sequenceValues in Values)
-                timestampHeaderBytes.AddRange(sequenceValues.GetHeaderBytes());
-
-            // Combine the data together and return it
-            boneDataSpace.AddRange(timestampHeaderBytes);
-            boneDataSpace.AddRange(valueHeaderBytes);
-            boneDataSpace.AddRange(timestampDataBytes);
-            boneDataSpace.AddRange(valueDataBytes);
+        public List<byte> ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            return bytes;
         }
     }
 }

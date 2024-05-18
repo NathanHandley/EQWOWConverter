@@ -21,23 +21,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal class ModelMaterial : ByteSerializable
+    internal class M2Color : ByteSerializable
     {
-        ModelMaterialFlag Flags = ModelMaterialFlag.None;
-        ModelMaterialBlendType BlendingMode = ModelMaterialBlendType.Opaque;
-
         public UInt32 GetBytesSize()
         {
-            return 4;
+            return 0;
         }
 
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(Flags)));
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(BlendingMode)));
             return bytes;
         }
     }

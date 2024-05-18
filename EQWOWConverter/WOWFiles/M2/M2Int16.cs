@@ -21,47 +21,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal class ModelTrackSequenceValues<T> where T : ByteSerializable
+    internal class M2Int16 : ByteSerializable
     {
-        public List<T> Values = new List<T>();
-        public UInt32 DataOffset = 0;
+        public Int16 Value = 0;
 
-        public void AddValue(T value)
+        public M2Int16(short value) 
         {
-            Values.Add(value);
+            Value = value;
         }
 
-        public UInt32 GetHeaderSize()
+        public UInt32 GetBytesSize()
         {
-            UInt32 size = 0;
-            size += 4; // Number of elements
-            size += 4; // Data offset
-            return size;
+            return 2;
         }
 
-        public UInt32 GetDataSize()
-        {
-            UInt32 size = 0;
-            foreach (T value in Values)
-                size += value.GetBytesSize();
-            return size;
-        }
-
-        public List<Byte> GetHeaderBytes()
+        public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
-            bytes.AddRange(BitConverter.GetBytes(DataOffset));
-            return bytes;
-        }
-
-        public List<Byte> GetDataBytes()
-        {
-            List<Byte> bytes = new List<Byte>();
-            foreach (T value in Values)
-                bytes.AddRange(value.ToBytes());
+            bytes.AddRange(BitConverter.GetBytes(Value));
             return bytes;
         }
     }

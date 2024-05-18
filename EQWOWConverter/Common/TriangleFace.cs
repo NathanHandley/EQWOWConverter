@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace : IComparable, IEquatable<TriangleFace>
+    internal class TriangleFace : ByteSerializable, IComparable, IEquatable<TriangleFace>
     {
         public int MaterialIndex;
         public int V1;
@@ -58,6 +58,11 @@ namespace EQWOWConverter.Common
             if (V3 > largestIndex)
                 largestIndex = V3;
             return Convert.ToUInt16(largestIndex);
+        }
+
+        public UInt32 GetBytesSize()
+        {
+            return 6; // 2 bytes per index, 3 indicies
         }
 
         public List<byte> ToBytes()

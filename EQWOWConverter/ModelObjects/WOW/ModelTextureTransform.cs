@@ -23,45 +23,16 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTrackSequenceValues<T> where T : ByteSerializable
+    internal class ModelTextureTransform : ByteSerializable
     {
-        public List<T> Values = new List<T>();
-        public UInt32 DataOffset = 0;
-
-        public void AddValue(T value)
+        public UInt32 GetBytesSize()
         {
-            Values.Add(value);
+            return 0;
         }
 
-        public UInt32 GetHeaderSize()
-        {
-            UInt32 size = 0;
-            size += 4; // Number of elements
-            size += 4; // Data offset
-            return size;
-        }
-
-        public UInt32 GetDataSize()
-        {
-            UInt32 size = 0;
-            foreach (T value in Values)
-                size += value.GetBytesSize();
-            return size;
-        }
-
-        public List<Byte> GetHeaderBytes()
+        public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
-            bytes.AddRange(BitConverter.GetBytes(DataOffset));
-            return bytes;
-        }
-
-        public List<Byte> GetDataBytes()
-        {
-            List<Byte> bytes = new List<Byte>();
-            foreach (T value in Values)
-                bytes.AddRange(value.ToBytes());
             return bytes;
         }
     }

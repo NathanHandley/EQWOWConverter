@@ -16,7 +16,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
@@ -27,145 +29,158 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2
     {
+        private string TokenMagic = "MD20";
+        private UInt32 Version = 264;
+        private M2StringByOffset Name = new M2StringByOffset();
+        private M2Flags Flags = 0; // UInt32
+        private M2DataArrayByOffset<M2Timestamps> GlobalLoopTimestamps = new M2DataArrayByOffset<M2Timestamps>();
+        private M2DataArrayByOffset<ModelAnimation> AnimationSequences = new M2DataArrayByOffset<ModelAnimation>();
+        private M2DataArrayByOffset<M2Int16> AnimationSequenceLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2BoneDataArrayByOffset Bones = new M2BoneDataArrayByOffset();
+        private M2DataArrayByOffset<M2Int16> BoneKeyLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<ModelVertex> Vertices = new M2DataArrayByOffset<ModelVertex>();
+        private UInt32 SkinProfileCount = 1; // Always 1 for this purpose
+        private M2DataArrayByOffset<M2Color> Colors = new M2DataArrayByOffset<M2Color>();
+        private M2DataArrayByOffset<ModelTexture> Textures = new M2DataArrayByOffset<ModelTexture>();
+        private M2DataArrayByOffset<ModelTrackSequences<Fixed16>> TextureTransparencyWeights = new M2DataArrayByOffset<ModelTrackSequences<Fixed16>>();
+        private M2DataArrayByOffset<ModelTextureTransform> TextureTransforms = new M2DataArrayByOffset<ModelTextureTransform>();
+        private M2DataArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<ModelMaterial> Materials = new M2DataArrayByOffset<ModelMaterial>();
+        private M2DataArrayByOffset<M2Int16> BoneLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Int16> TextureLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Int16> TextureMappingLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Int16> TextureTransparencyLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Int16> TextureTransformsLookup = new M2DataArrayByOffset<M2Int16>();
+        private BoundingBox BoundingBox = new BoundingBox();
+        private float BoundingSphereRadius = 0f;
+        private BoundingBox CollisionBox = new BoundingBox();
+        private float CollisionSphereRadius = 0f;
+        private M2DataArrayByOffset<TriangleFace> CollisionTriangleIndicies = new M2DataArrayByOffset<TriangleFace>();
+        private M2DataArrayByOffset<Vector3> CollisionVerticies = new M2DataArrayByOffset<Vector3>();
+        private M2DataArrayByOffset<Vector3> CollisionFaceNormals = new M2DataArrayByOffset<Vector3>();
+        private M2DataArrayByOffset<M2Attachment> Attachments = new M2DataArrayByOffset<M2Attachment>();
+        private M2DataArrayByOffset<M2Int16> AttachmentIndiciesLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Dummy> Events = new M2DataArrayByOffset<M2Dummy>();
+        private M2DataArrayByOffset<M2Dummy> Lights = new M2DataArrayByOffset<M2Dummy>();
+        private M2DataArrayByOffset<M2Dummy> Cameras = new M2DataArrayByOffset<M2Dummy>();
+        private M2DataArrayByOffset<M2Int16> CamerasIndiciesLookup = new M2DataArrayByOffset<M2Int16>();
+        private M2DataArrayByOffset<M2Dummy> RibbonEmitters = new M2DataArrayByOffset<M2Dummy>();
+        private M2DataArrayByOffset<M2Dummy> ParticleEmitters = new M2DataArrayByOffset<M2Dummy>();
+        private M2DataArrayByOffset<M2Dummy> SecondTextureMaterialOverrides = new M2DataArrayByOffset<M2Dummy>(); // Multitexturing will use second material from here for blending with first
+
         public M2Skin Skin;
-        public List<byte> ModelBytes = new List<byte>();
-        private M2Header Header = new M2Header();
-        private string Name = string.Empty;
+        private List<byte> FileBytes = new List<byte>();
 
         public M2(ModelObject modelObject, string mpqObjectFolder)
         {
-            // TESTING
-            //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
-            //modelObject.WOWModelObjectData.ModelBones.Add(new ModelBone());
-            //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
-            //modelObject.WOWModelObjectData.ModelTextures.Add(new ModelTexture());
-            //////////////////////////////
-
-            // Set header Flags (MUST BE DONE FIRST)
-            // Header.Flags =               // Blank for now
-
-            ModelBytes.Clear();
-            List<byte> nonHeaderBytes = new List<byte>();
-            int curOffset = Header.GetSize();
+            // Populate the M2 Data objects
+            PopulateElements(modelObject, mpqObjectFolder);
             Skin = new M2Skin(modelObject);
 
+            // Build the raw data
+            UInt32 m2HeaderSize = GetM2HeaderSize();
+            List<byte> dataBytes = GetDataBytes(m2HeaderSize);
+            List<byte> headerBytes = GetHeaderBytes();
+            FileBytes.AddRange(headerBytes);
+            FileBytes.AddRange(dataBytes);
+        }
+
+        private void PopulateElements(ModelObject modelObject, string mpqObjectFolder)
+        {
+            WOWObjectModelData wowModelObject = modelObject.WOWModelObjectData;
+
             // Name
-            Name = modelObject.WOWModelObjectData.Name;
-            List<byte> nameBytes = GenerateNameBlock(modelObject.WOWModelObjectData);
-            Header.Name.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(nameBytes.Count));
-            curOffset += nameBytes.Count;
-            nonHeaderBytes.AddRange(nameBytes);
+            Name.Data = modelObject.WOWModelObjectData.Name;
 
             // Global Loop Timestamps
             // None for now
 
             // Animation Sequences
-            List<byte> animationSequencesBytes = GenerateAnimationSequencesBlock(modelObject.WOWModelObjectData);
-            Header.AnimationSequences.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelAnimations.Count));
-            curOffset += animationSequencesBytes.Count;
-            nonHeaderBytes.AddRange(animationSequencesBytes);
+            AnimationSequences.AddDataArray(wowModelObject.ModelAnimations);
 
             // Animation Sequence ID Lookup
-            // none for now
+            foreach(Int16 value in wowModelObject.AnimationSequenceIDLookups)
+                AnimationSequenceLookup.AddDataElement(new M2Int16(value));
 
             // Bones
-            List<byte> bonesBytes = GenerateBonesBlock(modelObject.WOWModelObjectData, curOffset);
-            Header.Bones.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBones.Count));
-            curOffset += bonesBytes.Count;
-            nonHeaderBytes.AddRange(bonesBytes);            
+            Bones.AddBones(wowModelObject.ModelBones);
 
             // Key Bone ID Lookup
-            List<byte> boneKeyLookupBytes = GenerateBoneKeyLookupBlock(modelObject.WOWModelObjectData);
-            Header.BoneKeyLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneKeyLookups.Count));
-            curOffset += boneKeyLookupBytes.Count;
-            nonHeaderBytes.AddRange(boneKeyLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelBoneKeyLookups)
+                BoneKeyLookup.AddDataElement(new M2Int16(value));
 
             // Verticies
-            List<byte> verticiesBytes = GenerateVerticiesBlock(modelObject.WOWModelObjectData);
-            Header.Vertices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelVerticies.Count));
-            curOffset += verticiesBytes.Count;
-            nonHeaderBytes.AddRange(verticiesBytes);
+            Vertices.AddDataArray(wowModelObject.ModelVerticies);
 
             // Number of Skin Profiles
-            Header.SkinProfileCount = 1; // Fix it to 1 for now
+            // Already set to 1
 
             // Color and Alpha Animation Definitions
             // none for now
 
             // Textures
-            List<byte> textureBytes = GenerateTexturesBlock(modelObject.WOWModelObjectData, mpqObjectFolder, curOffset);
-            Header.Textures.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextures.Count));
-            curOffset += textureBytes.Count;
-            nonHeaderBytes.AddRange(textureBytes);
+            foreach(ModelTexture texture in wowModelObject.ModelTextures)
+            {
 
-            // Texture Transparencies (Weights)
-            List<byte> textureTransparenciesBytes = GenerateTextureTransparencyWeightsBlock(modelObject.WOWModelObjectData, curOffset);
-            Header.TextureTransparencyWeights.Set(Convert.ToUInt32(curOffset), modelObject.WOWModelObjectData.ModelTextureTransparencies.GetCount());
-            curOffset += textureTransparenciesBytes.Count;
-            nonHeaderBytes.AddRange(textureTransparenciesBytes);
+                
+                Textures.AddDataArray(wowModelObject.ModelTextures);
+
+            }
+            
+
+            // Texture Transparencies (Weights, just 1 for now)
+            TextureTransparencyWeights.AddDataElement(wowModelObject.ModelTextureTransparencies);
 
             // Texture Transforms
             // none for now
 
             // Replaceable Texture ID Lookup
-            List<byte> replaceableTextureLookupBytes = GenerateReplaceableTextureLookupBlock(modelObject.WOWModelObjectData);
-            Header.ReplaceableTextureLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelReplaceableTextureLookups.Count));
-            curOffset += replaceableTextureLookupBytes.Count;
-            nonHeaderBytes.AddRange(replaceableTextureLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelReplaceableTextureLookups)
+                ReplaceableTextureLookup.AddDataElement(new M2Int16(value));
 
             // Materials
-            List<byte> materialBytes = GenerateMaterialsBlock(modelObject.WOWModelObjectData);
-            Header.Materials.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelMaterials.Count));
-            curOffset += materialBytes.Count;
-            nonHeaderBytes.AddRange(materialBytes);
+            Materials.AddDataArray(wowModelObject.ModelMaterials);
 
             // Bone Lookup
-            List<byte> boneLookupBytes = GenerateBoneLookupBlock(modelObject.WOWModelObjectData);
-            Header.BoneLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelBoneLookups.Count));
-            curOffset += boneLookupBytes.Count;
-            nonHeaderBytes.AddRange(boneLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelBoneLookups)
+                BoneLookup.AddDataElement(new M2Int16(value));
 
             // Texture Lookup
-            List<byte> textureLookupBytes = GenerateTextureLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureLookups.Count));
-            curOffset += textureLookupBytes.Count;
-            nonHeaderBytes.AddRange(textureLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelTextureLookups)
+                TextureLookup.AddDataElement(new M2Int16(value));
 
             // Texture Mapping Lookup
-            List<byte> textureMappingLookupBytes = GenerateTextureMappingLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureMappingLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureMappingLookups.Count));
-            curOffset += textureMappingLookupBytes.Count;
-            nonHeaderBytes.AddRange(textureMappingLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelTextureMappingLookups)
+                TextureMappingLookup.AddDataElement(new M2Int16(value));
 
             // Texture Transparency Lookup (Weights)
-            List<byte> textureTransparencyLookupBytes = GenerateTextureTransparencyLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransparencyLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransparencyWeightsLookups.Count));
-            curOffset += textureTransparencyLookupBytes.Count;
-            nonHeaderBytes.AddRange(textureTransparencyLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelTextureTransparencyWeightsLookups)
+                TextureTransparencyLookup.AddDataElement(new M2Int16(value));
 
             // Texture Transformations Lookup
-            List<byte> textureTransformationLookupBytes = GenerateTextureTransformsLookupBlock(modelObject.WOWModelObjectData);
-            Header.TextureTransformsLookup.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTextureTransformationsLookup.Count));
-            curOffset += textureTransformationLookupBytes.Count;
-            nonHeaderBytes.AddRange(textureTransformationLookupBytes);
+            foreach (Int16 value in wowModelObject.ModelTextureTransformationsLookup)
+                TextureTransformsLookup.AddDataElement(new M2Int16(value));
+
+            // Bounding Box
+            BoundingBox = wowModelObject.BoundingBox;
+
+            // Bounding Sphere Radius
+            BoundingSphereRadius = wowModelObject.BoundingSphereRadius;
+
+            // Collision Box
+            CollisionBox = wowModelObject.CollisionBoundingBox;
+
+            // Collision Sphere Raidus
+            CollisionSphereRadius = wowModelObject.CollisionSphereRaidus;
 
             // Collision Triangle Incidies
-            List<byte> collisionTriangleBytes = GenerateCollisionTriangleIncidiesBlock(modelObject.WOWModelObjectData);
-            Header.CollisionTriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionTriangles.Count));
-            curOffset += collisionTriangleBytes.Count;
-            nonHeaderBytes.AddRange(collisionTriangleBytes);
+            CollisionTriangleIndicies.AddDataArray(wowModelObject.CollisionTriangles);
 
             // Collision Verticies
-            List<byte> collisionPositionsBytes = GenerateCollisionVerticiesBlock(modelObject.WOWModelObjectData);
-            Header.CollisionVerticies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionPositions.Count));
-            curOffset += collisionPositionsBytes.Count;
-            nonHeaderBytes.AddRange(collisionPositionsBytes);
+            CollisionVerticies.AddDataArray(wowModelObject.CollisionPositions);
 
             // Collision Face Normals
-            List<byte> collisionFaceNormalsBytes = GenerateCollisionFaceNormalsBlock(modelObject.WOWModelObjectData);
-            Header.CollisionFaceNormals.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.CollisionFaceNormals.Count));
-            curOffset += collisionFaceNormalsBytes.Count;
-            nonHeaderBytes.AddRange(collisionFaceNormalsBytes);
+            CollisionFaceNormals.AddDataArray(wowModelObject.CollisionFaceNormals);
 
             // Attachments
             // none for now
@@ -192,388 +207,137 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Second Texture Material Override (Combos)
-            if (Header.Flags.HasFlag(M2Flags.BlendModeOverrides))
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
             {
-                List<byte> secondTextureMaterialOverrideBytes = GenerateSecondTextureMaterialOverridesBlock(modelObject.WOWModelObjectData);
-                Header.SecondTextureMaterialOverrides.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelSecondTextureMaterialOverrides.Count));
-                nonHeaderBytes.AddRange(secondTextureMaterialOverrideBytes);
+                // Do nothing for now, so this flag can't be set
             }
-
-            // Bounding and Collision Properties
-            Header.BoundingBox = modelObject.WOWModelObjectData.BoundingBox;
-            Header.BoundingSphereRadius = modelObject.WOWModelObjectData.BoundingSphereRadius;
-            Header.CollisionBox = modelObject.WOWModelObjectData.CollisionBoundingBox;
-            Header.CollisionSphereRadius = modelObject.WOWModelObjectData.CollisionSphereRaidus;
-
-            // Assemble the byte stream together, header first
-            ModelBytes.AddRange(Header.ToBytes());
-            ModelBytes.AddRange(nonHeaderBytes);
         }
 
-        /// <summary>
-        /// Name
-        /// </summary>
-        private List<byte> GenerateNameBlock(WOWObjectModelData modelObject)
+        private UInt32 GetM2HeaderSize()
         {
-            List<byte> blockBytes = new List<byte>();
-            blockBytes.AddRange(Encoding.ASCII.GetBytes(modelObject.Name + "\0"));
-            return blockBytes;
+            UInt32 headerSize = 0;
+            headerSize += 4;  // TokenMagic
+            headerSize += 4;  // Version
+            headerSize += 8;  // Name
+            headerSize += 4;  // Flags
+            headerSize += 8;  // GlobalLoopTimestamps
+            headerSize += 8;  // AnimationSequences
+            headerSize += 8;  // AnimationSequenceLookup
+            headerSize += 8;  // Bones
+            headerSize += 8;  // BoneKeyLookup
+            headerSize += 8;  // Vertices
+            headerSize += 4;  // SkinProfileCount
+            headerSize += 8;  // Colors
+            headerSize += 8;  // Textures
+            headerSize += 8;  // TextureTransparencyWeights
+            headerSize += 8;  // TextureTransforms
+            headerSize += 8;  // ReplaceableTextureLookup
+            headerSize += 8;  // Materials
+            headerSize += 8;  // BoneLookup
+            headerSize += 8;  // TextureLookup
+            headerSize += 8;  // TextureMappingLookup
+            headerSize += 8;  // TextureTransparencyLookup
+            headerSize += 8;  // TextureTransformsLookup
+            headerSize += 24; // BoundingBox
+            headerSize += 4;  // BoundingSphereRadius
+            headerSize += 24; // CollisionBox
+            headerSize += 4;  // CollisionSphereRadius
+            headerSize += 8;  // CollisionTriangleIndicies
+            headerSize += 8;  // CollisionVerticies
+            headerSize += 8;  // CollisionFaceNormals
+            headerSize += 8;  // Attachments
+            headerSize += 8;  // AttachmentIndiciesLookup
+            headerSize += 8;  // Events
+            headerSize += 8;  // Lights
+            headerSize += 8;  // Cameras
+            headerSize += 8;  // CamerasIndiciesLookup
+            headerSize += 8;  // RibbonEmitters
+            headerSize += 8;  // ParticleEmitters
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+                headerSize += 8;  // SecondTextureMaterialOverrides
+            return headerSize;
         }
 
-        /// <summary>
-        /// Global Loop Timestamps
-        /// </summary>
-        private List<byte> GenerateGlobalLoopTimestampsBlock(WOWObjectModelData modelObject)
+        private List<Byte> GetHeaderBytes()
         {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
+            List<byte> headerBytes = new List<byte>();
+            headerBytes.AddRange(Encoding.ASCII.GetBytes(TokenMagic));
+            headerBytes.AddRange(BitConverter.GetBytes(Version));
+            headerBytes.AddRange(Name.GetHeaderBytes());
+            headerBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
+            headerBytes.AddRange(GlobalLoopTimestamps.GetHeaderBytes());
+            headerBytes.AddRange(AnimationSequences.GetHeaderBytes());
+            headerBytes.AddRange(AnimationSequenceLookup.GetHeaderBytes());
+            headerBytes.AddRange(Bones.GetHeaderBytes());
+            headerBytes.AddRange(BoneKeyLookup.GetHeaderBytes());
+            headerBytes.AddRange(Vertices.GetHeaderBytes());
+            headerBytes.AddRange(BitConverter.GetBytes(SkinProfileCount));
+            headerBytes.AddRange(Colors.GetHeaderBytes());
+            headerBytes.AddRange(Textures.GetHeaderBytes());
+            headerBytes.AddRange(TextureTransparencyWeights.GetHeaderBytes());
+            headerBytes.AddRange(TextureTransforms.GetHeaderBytes());
+            headerBytes.AddRange(ReplaceableTextureLookup.GetHeaderBytes());
+            headerBytes.AddRange(Materials.GetHeaderBytes());
+            headerBytes.AddRange(BoneLookup.GetHeaderBytes());
+            headerBytes.AddRange(TextureLookup.GetHeaderBytes());
+            headerBytes.AddRange(TextureMappingLookup.GetHeaderBytes());
+            headerBytes.AddRange(TextureTransparencyLookup.GetHeaderBytes());
+            headerBytes.AddRange(TextureTransformsLookup.GetHeaderBytes());
+            headerBytes.AddRange(BoundingBox.ToBytesHighRes());
+            headerBytes.AddRange(BitConverter.GetBytes(BoundingSphereRadius));
+            headerBytes.AddRange(CollisionBox.ToBytesHighRes());
+            headerBytes.AddRange(BitConverter.GetBytes(CollisionSphereRadius));
+            headerBytes.AddRange(CollisionTriangleIndicies.GetHeaderBytes());
+            headerBytes.AddRange(CollisionVerticies.GetHeaderBytes());
+            headerBytes.AddRange(CollisionFaceNormals.GetHeaderBytes());
+            headerBytes.AddRange(Attachments.GetHeaderBytes());
+            headerBytes.AddRange(AttachmentIndiciesLookup.GetHeaderBytes());
+            headerBytes.AddRange(Events.GetHeaderBytes());
+            headerBytes.AddRange(Lights.GetHeaderBytes());
+            headerBytes.AddRange(Cameras.GetHeaderBytes());
+            headerBytes.AddRange(CamerasIndiciesLookup.GetHeaderBytes());
+            headerBytes.AddRange(RibbonEmitters.GetHeaderBytes());
+            headerBytes.AddRange(ParticleEmitters.GetHeaderBytes());
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+                headerBytes.AddRange(SecondTextureMaterialOverrides.GetHeaderBytes());
+            return headerBytes;
         }
 
-        /// <summary>
-        /// Animation Sequences
-        /// </summary>
-        private List<byte> GenerateAnimationSequencesBlock(WOWObjectModelData modelObject)
+        public List<Byte> GetDataBytes(UInt32 dataStartOffset)
         {
-            List<byte> blockBytes = new List<byte>();
-            foreach (ModelAnimation animation in modelObject.ModelAnimations)
-                blockBytes.AddRange(animation.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Animation Sequences Lookup
-        /// </summary>
-        private List<byte> GenerateAnimationSequencesLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Bones
-        /// </summary>
-        private List<byte> GenerateBonesBlock(WOWObjectModelData modelObject, int curOffset)
-        {
-            // Calculate space need for the header data for all bones
-            UInt32 totalAllBonesMetaBlockSpaceNeeded = 0;
-            foreach (ModelBone bone in modelObject.ModelBones)
-                totalAllBonesMetaBlockSpaceNeeded += bone.GetHeaderSize();
-
-            // Determine where data can start
-            UInt32 dataSpaceStartOffset = Convert.ToUInt32(curOffset) + totalAllBonesMetaBlockSpaceNeeded;
-
-            // Create a memory space for bone data
-            List<byte> boneDataSpace = new List<byte>();
-
-            // Gather all of the data
-            foreach (ModelBone bone in modelObject.ModelBones)
-                bone.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
-
-            // Get the header data
-            List<byte> headerData = new List<byte>();
-            foreach (ModelBone bone in modelObject.ModelBones)
-                headerData.AddRange(bone.GetHeaderBytes());
-
-            // Combine it all up
-            List<byte> blockBytes = new List<byte>();
-            blockBytes.AddRange(headerData);
-            blockBytes.AddRange(boneDataSpace);
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Bone Key Lookup
-        /// </summary>
-        private List<byte> GenerateBoneKeyLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (UInt16 boneKeyLookup in modelObject.ModelBoneKeyLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(boneKeyLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Verticies
-        /// </summary>
-        private List<byte> GenerateVerticiesBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach(ModelVertex vertex in modelObject.ModelVerticies)
-                blockBytes.AddRange(vertex.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Colors
-        /// </summary>
-        private List<byte> GenerateColorsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Textures
-        /// </summary>
-        private List<byte> GenerateTexturesBlock(WOWObjectModelData modelObject, string modelTextureFolder, int curOffset)
-        {
-            // Calculate space just for the metadata
-            int totalMetaBlockSpaceNeeded = 0;
-            foreach (ModelTexture texture in modelObject.ModelTextures)
-                totalMetaBlockSpaceNeeded += texture.GetMetaSize();
-
-            // Generate the content sections
-            curOffset += totalMetaBlockSpaceNeeded;
             List<byte> dataBytes = new List<byte>();
-            foreach (ModelTexture texture in modelObject.ModelTextures)
-                dataBytes.AddRange(texture.ToBytesData(modelTextureFolder, ref curOffset));
-
-            // Generate the metadata
-            List<byte> metadataBytes = new List<byte>();
-            foreach (ModelTexture texture in modelObject.ModelTextures)
-                metadataBytes.AddRange(texture.ToBytesMeta());
-
-            // Combine them
-            List<byte> blockBytes = new List<byte>();
-            blockBytes.AddRange(metadataBytes);
-            blockBytes.AddRange(dataBytes);
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Transparency Weights
-        /// </summary>
-        private List<byte> GenerateTextureTransparencyWeightsBlock(WOWObjectModelData modelObject, int curOffset)
-        {
-            // Determine where data can start
-            UInt32 dataSpaceStartOffset = Convert.ToUInt32(curOffset) + modelObject.ModelTextureTransparencies.GetHeaderSize();
-
-            // Create memory space for the data and fill it
-            List<byte> dataSpace = new List<byte>();
-            modelObject.ModelTextureTransparencies.AddDataAndUpdateOffsets(ref dataSpace, dataSpaceStartOffset);
-
-            // Get header data
-            List<byte> headerBytes = modelObject.ModelTextureTransparencies.GetHeaderBytes();
-
-            // Combine it with the data
-            List<byte> blockBytes = new List<byte>();
-            blockBytes.AddRange(headerBytes);
-            blockBytes.AddRange(dataSpace);
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Transforms
-        /// </summary>
-        private List<byte> GenerateTextureTransformsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Replaceable Texture Lookup
-        /// </summary>
-        private List<byte> GenerateReplaceableTextureLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach(Int16 replaceableTextureLookup in modelObject.ModelReplaceableTextureLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(replaceableTextureLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Materials
-        /// </summary>
-        private List<byte> GenerateMaterialsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (ModelMaterial material in modelObject.ModelMaterials)
-                blockBytes.AddRange(material.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Bone Lookup
-        /// </summary>
-        private List<byte> GenerateBoneLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach(Int16 boneLookup in modelObject.ModelBoneLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(boneLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Lookup
-        /// </summary>
-        private List<byte> GenerateTextureLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (Int16 textureLookup in modelObject.ModelTextureLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(textureLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Mapping Lookup
-        /// </summary>
-        private List<byte> GenerateTextureMappingLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (Int16 textureMappingLookup in modelObject.ModelTextureMappingLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(textureMappingLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Transparency Lookup (Weights)
-        /// </summary>
-        private List<byte> GenerateTextureTransparencyLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (Int16 textureTransLookup in modelObject.ModelTextureTransparencyWeightsLookups)
-                blockBytes.AddRange(BitConverter.GetBytes(textureTransLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Texture Transforms Lookup
-        /// </summary>
-        private List<byte> GenerateTextureTransformsLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (Int16 textureTransformationLookup in modelObject.ModelTextureTransformationsLookup)
-                blockBytes.AddRange(BitConverter.GetBytes(textureTransformationLookup));
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Collision Triangle Indicies
-        /// </summary>
-        private List<byte> GenerateCollisionTriangleIncidiesBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (TriangleFace triangle in modelObject.CollisionTriangles)
-                blockBytes.AddRange(triangle.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Collision Verticies (Positions)
-        /// </summary>
-        private List<byte> GenerateCollisionVerticiesBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach (Vector3 position in modelObject.CollisionPositions)
-                blockBytes.AddRange(position.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Collision Face Normals
-        /// </summary>
-        private List<byte> GenerateCollisionFaceNormalsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach(Vector3 normal in modelObject.CollisionFaceNormals)
-                blockBytes.AddRange(normal.ToBytes());
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Attachments
-        /// </summary>
-        private List<byte> GenerateAttachmentsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Attachment Incidies Lookup
-        /// </summary>
-        private List<byte> GenerateAttachmentIncidiesLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Events
-        /// </summary>
-        private List<byte> GenerateEventsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Lights
-        /// </summary>
-        private List<byte> GenerateLightsBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Cameras
-        /// </summary>
-        private List<byte> GenerateCamerasBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Cameras Indicies Lookup
-        /// </summary>
-        private List<byte> GenerateCamerasIndiciesLookupBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Ribbon Emitters
-        /// </summary>
-        private List<byte> GenerateRibbonEmittersBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// Particle Emitters
-        /// </summary>
-        private List<byte> GenerateParticleEmittersBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-
-            return blockBytes;
-        }
-
-        /// <summary>
-        /// SecondTextureMaterialOverrides
-        /// </summary>
-        private List<byte> GenerateSecondTextureMaterialOverridesBlock(WOWObjectModelData modelObject)
-        {
-            List<byte> blockBytes = new List<byte>();
-            foreach(UInt16 overideSecondTexture in modelObject.ModelSecondTextureMaterialOverrides)
-                blockBytes.AddRange(BitConverter.GetBytes(overideSecondTexture));
-            return blockBytes;
+            Name.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            GlobalLoopTimestamps.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            AnimationSequences.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            AnimationSequenceLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Bones.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            BoneKeyLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Vertices.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Colors.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Textures.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureTransparencyWeights.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureTransforms.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            ReplaceableTextureLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Materials.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            BoneLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureMappingLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureTransparencyLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            TextureTransformsLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            CollisionTriangleIndicies.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            CollisionVerticies.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            CollisionFaceNormals.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Attachments.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            AttachmentIndiciesLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Events.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Lights.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            Cameras.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            CamerasIndiciesLookup.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            RibbonEmitters.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            ParticleEmitters.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+                SecondTextureMaterialOverrides.AddDataToByteBufferAndUpdateHeader(ref dataStartOffset, ref dataBytes);
+            return dataBytes;
         }
 
         public void WriteToDisk(string outputFolderPath)
@@ -583,8 +347,8 @@ namespace EQWOWConverter.WOWFiles
                 FileTool.CreateBlankDirectory(outputFolderPath, true);
 
             // Create the M2
-            string m2FileName = Path.Combine(outputFolderPath, Name + ".m2");
-            File.WriteAllBytes(m2FileName, ModelBytes.ToArray());
+            string m2FileName = Path.Combine(outputFolderPath, Name.Data + ".m2");
+            File.WriteAllBytes(m2FileName, FileBytes.ToArray());
 
             // Create the skin
             Skin.WriteToDisk(outputFolderPath);

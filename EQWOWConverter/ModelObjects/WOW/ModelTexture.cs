@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
@@ -23,23 +24,28 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTexture
+    internal class ModelTexture : ByteSerializable
     {
         public ModelTextureType Type = ModelTextureType.Hardcoded;
         public ModelTextureWrapType WrapType = ModelTextureWrapType.None;
         public string TextureName = string.Empty;
         private UInt32 FileNameLength = 0;
         private UInt32 FileNameOffset = 0;
+        private string TextureFullNameAndPath = string.Empty;
 
         public ModelTexture()
         {
 
         }
 
-        private string GenerateFullFileNameAndPath(string modelTextureFolder)
+        public void GenerateFullFileNameAndPath(string modelTextureFolder)
         {
-            string fullFilePath = Path.Combine(modelTextureFolder, TextureName + ".blp");
-            return fullFilePath;
+            TextureFullNameAndPath = Path.Combine(modelTextureFolder, TextureName + ".blp\0");
+        }
+
+        public UInt32 GetBytesSize()
+        {
+            return Convert.ToUInt32(TextureName.Length);
         }
 
         public int GetMetaSize()
@@ -62,14 +68,14 @@ namespace EQWOWConverter.ModelObjects
             return bytes;
         }
 
-        public List<byte> ToBytesData(string modelTextureFolder, ref int curOffset)
+        public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
             string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
             bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
             FileNameLength = Convert.ToUInt32(bytes.Count);
             FileNameOffset = Convert.ToUInt32(curOffset);
-            curOffset += bytes.Count;            
+            curOffset += bytes.Count;
             return bytes;
         }
     }

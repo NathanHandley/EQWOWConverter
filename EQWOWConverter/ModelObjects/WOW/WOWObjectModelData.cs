@@ -30,6 +30,7 @@ namespace EQWOWConverter.Objects
     {
         public string Name = string.Empty;
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
+        public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
         public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
@@ -55,7 +56,12 @@ namespace EQWOWConverter.Objects
 
         public WOWObjectModelData()
         {
-
+            // TODO: Figure out why(if) we need it like this for static
+            AnimationSequenceIDLookups.Add(0);    // Stand
+            AnimationSequenceIDLookups.Add(-1);   // Death
+            AnimationSequenceIDLookups.Add(-1);   // Spell
+            AnimationSequenceIDLookups.Add(-1);   // Stop
+            AnimationSequenceIDLookups.Add(-1);   // Walk
         }
 
         public UInt16 GetTextureLookupIndexForMaterial(int materialID)
@@ -69,24 +75,6 @@ namespace EQWOWConverter.Objects
         {
             // Save Name
             Name = name;
-
-            // Make one animation
-            ModelAnimations.Add(new ModelAnimation());
-
-            // HARD CODED FOR STATIC --------------------------------------------------------------------
-            // Create a base bone
-            ModelBones.Add(new ModelBone());
-            ModelBoneKeyLookups.Add(-1);
-            ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            ModelTextureTransparencyWeightsLookups.Add(0);
-            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
-            ModelTextureMappingLookups.Add(0);
-            ModelTextureTransformationsLookup.Add(-1);
-            ModelReplaceableTextureLookups.Add(0);
-            //-------------------------------------------------------------------------------------------
 
             // Change face orientation for culling differences between EQ and WoW
             foreach (TriangleFace eqFace in eqObject.TriangleFaces)
@@ -153,6 +141,31 @@ namespace EQWOWConverter.Objects
             ProcessCollisionData(eqObject);
             SortGeometry();
             CalculateBoundingBoxesAndRadii();
+
+            // HARD CODED FOR STATIC --------------------------------------------------------------------
+            // Create a base bone
+            ModelBones.Add(new ModelBone());
+            ModelBoneKeyLookups.Add(-1);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
+            ModelTextureTransparencyWeightsLookups.Add(0);
+            ModelTextureTransparencyWeightsLookups.Add(0);
+            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
+            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
+            ModelTextureMappingLookups.Add(0);
+            ModelTextureMappingLookups.Add(0);
+            ModelTextureTransformationsLookup.Add(-1);
+            ModelTextureTransformationsLookup.Add(-1);
+            ModelReplaceableTextureLookups.Add(0);
+            ModelReplaceableTextureLookups.Add(0);
+
+            // Make one animation
+            ModelAnimations.Add(new ModelAnimation());
+            ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+            ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+            //-------------------------------------------------------------------------------------------
         }
 
         private void ProcessCollisionData(EQModelObjectData eqObject)

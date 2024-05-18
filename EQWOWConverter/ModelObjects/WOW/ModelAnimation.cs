@@ -24,22 +24,42 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelAnimation
+    internal class ModelAnimation : ByteSerializable
     {
-        ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
-        UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
-        UInt32 DurationInMS = 10000;
-        float MoveSpeed = 0f;
-        ModelAnimationFlags Flags = 0;
-        Int16 PlayFrequency = 32767; // Always make this add up to 32767 for animations of same type
-        UInt16 Padding = 0;
-        UInt32 ReplayMin = 0;
-        UInt32 ReplayMax = 0;
-        UInt32 BlendTime = 150; 
-        BoundingBox BoundingBox = new BoundingBox();
-        float BoundingRadius = 0f;
-        Int16 NextAnimation = -1; // aka, variationNext
-        UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
+        public ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
+        public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
+        public UInt32 DurationInMS = 10000;
+        public float MoveSpeed = 0f;
+        public ModelAnimationFlags Flags = 0;
+        public Int16 PlayFrequency = 32767; // Always make this add up to 32767 for animations of same type
+        public UInt16 Padding = 0;
+        public UInt32 ReplayMin = 0;
+        public UInt32 ReplayMax = 0;
+        public UInt32 BlendTime = 150; 
+        public BoundingBox BoundingBox = new BoundingBox();
+        public float BoundingRadius = 0f;
+        public Int16 NextAnimation = -1; // aka, variationNext
+        public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
+
+        public UInt32 GetBytesSize()
+        {
+            UInt32 size = 0;
+            size += 2; // AnimationType
+            size += 2; // SubAnimationID
+            size += 4; // DurationInMs
+            size += 4; // MoveSpeed
+            size += 4; // Flags
+            size += 2; // PlayFrequency
+            size += 2; // Padding
+            size += 4; // ReplayMin
+            size += 4; // ReplayMax
+            size += 4; // BlendTime
+            size += 24;// Bounding Box
+            size += 4; // BoundingRadius
+            size += 2; // NextAnimation;
+            size += 2; // AliasNext
+            return size;
+        }
 
         public List<byte> ToBytes()
         {

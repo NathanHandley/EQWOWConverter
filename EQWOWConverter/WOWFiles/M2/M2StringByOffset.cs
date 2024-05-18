@@ -15,54 +15,52 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal class ModelTrackSequenceValues<T> where T : ByteSerializable
+    internal class M2StringByOffset
     {
-        public List<T> Values = new List<T>();
-        public UInt32 DataOffset = 0;
+        private UInt32 Count = 0;
+        private UInt32 Offset = 0;
+        public string Data = string.Empty;
 
-        public void AddValue(T value)
+        public M2StringByOffset()
         {
-            Values.Add(value);
-        }
 
-        public UInt32 GetHeaderSize()
-        {
-            UInt32 size = 0;
-            size += 4; // Number of elements
-            size += 4; // Data offset
-            return size;
         }
-
-        public UInt32 GetDataSize()
-        {
-            UInt32 size = 0;
-            foreach (T value in Values)
-                size += value.GetBytesSize();
-            return size;
-        }
-
         public List<Byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
-            bytes.AddRange(BitConverter.GetBytes(DataOffset));
+            bytes.AddRange(BitConverter.GetBytes(Count));
+            bytes.AddRange(BitConverter.GetBytes(Offset));
             return bytes;
         }
 
-        public List<Byte> GetDataBytes()
+        public UInt32 GetBytesSize()
         {
-            List<Byte> bytes = new List<Byte>();
-            foreach (T value in Values)
-                bytes.AddRange(value.ToBytes());
-            return bytes;
+            return Convert.ToUInt32(Data.Length + 1);
+        }
+
+
+        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
+        {
+            // Update header values
+            Offset = workingCursorOffset;
+            Count = Convert.ToUInt32(Data.Length + 1);
+
+            // Generate the data block
+            List<byte> dataBytes = new List<byte>();
+            dataBytes.AddRange(Encoding.ASCII.GetBytes(Data + "\0"));
+            byteBuffer.AddRange(dataBytes);
+
+            // Update cursor
+            workingCursorOffset += Convert.ToUInt32(dataBytes.Count);
         }
     }
 }

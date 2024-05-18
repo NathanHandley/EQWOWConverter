@@ -30,7 +30,7 @@ namespace EQWOWConverter.ModelObjects
         public ModelBoneFlags Flags = 0;
         public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
         public UInt16 SubMeshID = 0;
-        public UInt32 BoneNameCRC = 3391571450;  // Took this from Sack01.  Figure out how to generate this
+        public UInt32 BoneNameCRC = 0;
         public ModelTrackSequences<Vector3> TranslationTrack = new ModelTrackSequences<Vector3>();
         public ModelTrackSequences<Quaternion> RotationTrack = new ModelTrackSequences<Quaternion>();
         public ModelTrackSequences<Vector3> ScaleTrack = new ModelTrackSequences<Vector3>();
@@ -38,9 +38,32 @@ namespace EQWOWConverter.ModelObjects
 
         public ModelBone()
         {
-
+            //// TESTING ONLY!!!!!!!!
+            //TranslationTrack.AddValueToSequence(TranslationTrack.AddSequence(), 1, new Vector3(1, 1, 1));
+            //RotationTrack.AddValueToSequence(RotationTrack.AddSequence(), 2, new Quaternion(2, 2, 2, 2));
+            //RotationTrack.AddValueToSequence(0, 3, new Quaternion(3, 3, 3, 3));
+            //RotationTrack.AddValueToSequence(RotationTrack.AddSequence(), 4, new Quaternion(4, 4, 4, 4));
+            // REMOVE ME
+            // REMOVE ME
+            // REMOVE ME
+            // REMOVE ME
         }
-        
+
+        public UInt32 GetBytesSize()
+        {
+            UInt32 size = 0;
+            size += 4; // KeyBoneID
+            size += 4; // ModelBoneFlags
+            size += 2; // ParentBone
+            size += 2; // SubMeshID
+            size += 4; // BoneNameCRC
+            size += TranslationTrack.GetBytesSize();
+            size += RotationTrack.GetBytesSize();
+            size += ScaleTrack.GetBytesSize();
+            size += 12; // PivotPoint
+            return size;
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
@@ -56,13 +79,6 @@ namespace EQWOWConverter.ModelObjects
             return size;
         }
 
-        public void AddDataAndUpdateOffsets(ref List<byte> boneDataSpace, UInt32 dataSpaceStartOffset)
-        {
-            TranslationTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
-            RotationTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
-            ScaleTrack.AddDataAndUpdateOffsets(ref boneDataSpace, dataSpaceStartOffset);
-        }
-
         public List<byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -76,6 +92,13 @@ namespace EQWOWConverter.ModelObjects
             bytes.AddRange(ScaleTrack.GetHeaderBytes());
             bytes.AddRange(PivotPoint.ToBytes());
             return bytes;
+        }
+
+        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
+        {
+            TranslationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+            RotationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+            ScaleTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
         }
     }
 }
