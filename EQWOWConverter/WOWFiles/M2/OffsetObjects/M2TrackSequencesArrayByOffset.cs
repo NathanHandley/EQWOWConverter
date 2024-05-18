@@ -23,16 +23,30 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2BoneArray
+    internal class M2TrackSequencesArrayByOffset<T>
     {
-        private List<M2Bone> Bones = new List<M2Bone>();
+        private List<M2TrackSequences<T>> TrackSequences = new List<M2TrackSequences<T>>();
+        private UInt32 Count = 0;
+        private UInt32 Offset = 0;
 
-        public void AddModelBones(List<ModelBone> bones)
+        public void AddModelTrackSequences(ModelTrackSequences<T> modelTrackSequences)
         {
-            foreach(ModelBone bone in bones)
-            {
-                Bones.Add(new M2Bone(bone));
-            }
+            TrackSequences.Add(new M2TrackSequences<T>(modelTrackSequences));
+            Count = Convert.ToUInt32(TrackSequences.Count);
+        }
+
+        public List<Byte> GetHeaderBytes()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(Count));
+            returnBytes.AddRange(BitConverter.GetBytes(Offset));
+            return returnBytes;
+        }
+
+        public void AddDataBytes(ref List<byte> byteBuffer)
+        {
+            // TODO
+            Offset = Convert.ToUInt32(byteBuffer.Count);
         }
     }
 }

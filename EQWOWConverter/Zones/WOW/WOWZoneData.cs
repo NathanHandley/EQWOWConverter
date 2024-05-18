@@ -96,7 +96,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Adjust object instances for world scale
-            foreach(ObjectInstance objectInstance in eqZoneData.ObjectInstances)
+            foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
             {
                 WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
                 doodadInstance.ObjectName = objectInstance.ModelName;

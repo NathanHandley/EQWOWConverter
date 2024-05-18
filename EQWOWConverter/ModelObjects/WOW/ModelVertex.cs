@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelVertex
+    internal class ModelVertex : ByteSerializable
     {
         public Vector3 Position = new Vector3();
         public List<byte> BoneWeights = new List<byte>(new byte[4]);    // Any more than 4 elements will be ignored
@@ -39,38 +39,28 @@ namespace EQWOWConverter.ModelObjects
             BoneWeights[0] = 255;
         }
 
-        //public UInt32 GetBytesSize()
-        //{
-        //    UInt32 size = 0;
-        //    size += 12;// Position
-        //    size += 4; // BoneWeights
-        //    size += 4; // BoneIndicies
-        //    size += 12;// Normal
-        //    size += 8; // Texture1TextureCoordinates
-        //    size += 8; // Texture2TextureCoordinates
-        //    return size;
-        //}
+        public UInt32 GetBytesSize()
+        {
+            UInt32 size = 0;
+            size += 12;// Position
+            size += 4; // BoneWeights
+            size += 4; // BoneIndicies
+            size += 12;// Normal
+            size += 8; // Texture1TextureCoordinates
+            size += 8; // Texture2TextureCoordinates
+            return size;
+        }
 
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(Position.ToBytes());
-        //    bytes.AddRange(BoneWeights.ToArray());
-        //    bytes.AddRange(BoneIndicies.ToArray());
-        //    bytes.AddRange(Normal.ToBytes());
-        //    bytes.AddRange(Texture1TextureCoordinates.ToBytes());
-        //    bytes.AddRange(Texture2TextureCoordinates.ToBytes());
-        //    return bytes;
-        //}
-
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(Position.ToBytes());
-        //    byteBuffer.AddRange(BoneWeights.ToArray());
-        //    byteBuffer.AddRange(BoneIndicies.ToArray());
-        //    byteBuffer.AddRange(Normal.ToBytes());
-        //    byteBuffer.AddRange(Texture1TextureCoordinates.ToBytes());
-        //    byteBuffer.AddRange(Texture2TextureCoordinates.ToBytes());
-        //}
+        public List<byte> ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(Position.ToBytes());
+            bytes.AddRange(BoneWeights.ToArray());
+            bytes.AddRange(BoneIndicies.ToArray());
+            bytes.AddRange(Normal.ToBytes());
+            bytes.AddRange(Texture1TextureCoordinates.ToBytes());
+            bytes.AddRange(Texture2TextureCoordinates.ToBytes());
+            return bytes;
+        }
     }
 }

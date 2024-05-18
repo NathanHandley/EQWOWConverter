@@ -25,11 +25,11 @@ namespace EQWOWConverter.WOWFiles
     internal class M2SkinHeader
     {
         private string TokenMagic = "SKIN";
-        public M2HeaderElement Indicies = new M2HeaderElement();
-        public M2HeaderElement TriangleIndicies = new M2HeaderElement(); // This will be 3x the number of triangle records
-        public M2HeaderElement BoneIndicies = new M2HeaderElement(); // I've also seen this as 'properties' for some reason.  Relates to Verticies
-        public M2HeaderElement SubMeshes = new M2HeaderElement();
-        public M2HeaderElement TextureUnits = new M2HeaderElement(); // "Batches"?
+        public M2SkinHeaderElement Indicies = new M2SkinHeaderElement();
+        public M2SkinHeaderElement TriangleIndicies = new M2SkinHeaderElement(); // This will be 3x the number of triangle records
+        public M2SkinHeaderElement BoneIndicies = new M2SkinHeaderElement(); // I've also seen this as 'properties' for some reason.  Relates to Verticies
+        public M2SkinHeaderElement SubMeshes = new M2SkinHeaderElement();
+        public M2SkinHeaderElement TextureUnits = new M2SkinHeaderElement(); // "Batches"?
         private UInt32 BoneCountMax = 21;   // Values seem to be 21, 53, 64, 256
 
         public List<byte> ToBytes()

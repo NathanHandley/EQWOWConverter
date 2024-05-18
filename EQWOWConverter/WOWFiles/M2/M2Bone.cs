@@ -31,5 +31,43 @@ namespace EQWOWConverter.WOWFiles
         {
             Bone = modelBone;
         }
+
+        public UInt32 GetHeaderSize()
+        {
+            UInt32 size = 0;
+            size += 4; // KeyBoneID
+            size += 4; // ModelBoneFlags
+            size += 2; // ParentBone
+            size += 2; // SubMeshID
+            size += 4; // BoneNameCRC
+            size += Bone.TranslationTrack.GetHeaderSize();
+            size += Bone.RotationTrack.GetHeaderSize();
+            size += Bone.ScaleTrack.GetHeaderSize();
+            size += 12; // PivotPoint
+            return size;
+        }
+
+        public List<byte> GetHeaderBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Bone.KeyBoneID));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Bone.Flags)));
+            bytes.AddRange(BitConverter.GetBytes(Bone.ParentBone));
+            bytes.AddRange(BitConverter.GetBytes(Bone.SubMeshID));
+            bytes.AddRange(BitConverter.GetBytes(Bone.BoneNameCRC));
+            bytes.AddRange(Bone.TranslationTrack.GetHeaderBytes());
+            bytes.AddRange(Bone.RotationTrack.GetHeaderBytes());
+            bytes.AddRange(Bone.ScaleTrack.GetHeaderBytes());
+            bytes.AddRange(Bone.PivotPoint.ToBytes());
+            return bytes;
+        }
+
+        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
+        {
+            Bone.TranslationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+            Bone.RotationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+            Bone.ScaleTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+        }
+
     }
 }

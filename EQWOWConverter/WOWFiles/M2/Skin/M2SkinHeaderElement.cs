@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using EQWOWConverter.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,44 +22,24 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2StringByOffset
+    internal class M2SkinHeaderElement
     {
-        private UInt32 Count = 0;
-        private UInt32 Offset = 0;
-        public string Data = string.Empty;
-
-        public M2StringByOffset()
+        public UInt32 Count = 0;
+        public UInt32 Offset = 0;
+        public void Set(UInt32 offset, UInt32 count)
         {
-
+            Count = count;
+            if (count == 0)
+                Offset = 0;
+            else
+                Offset = offset;
         }
-
-        public List<Byte> GetHeaderBytes()
+        public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Count));
             bytes.AddRange(BitConverter.GetBytes(Offset));
             return bytes;
-        }
-
-        //public UInt32 GetBytesSize()
-        //{
-        //    return Convert.ToUInt32(Data.Length + 1);
-        //}
-
-
-        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
-        {
-            // Update header values
-            Offset = workingCursorOffset;
-            Count = Convert.ToUInt32(Data.Length + 1);
-
-            // Generate the data block
-            List<byte> dataBytes = new List<byte>();
-            dataBytes.AddRange(Encoding.ASCII.GetBytes(Data + "\0"));
-            byteBuffer.AddRange(dataBytes);
-
-            // Update cursor
-            workingCursorOffset += Convert.ToUInt32(dataBytes.Count);
         }
     }
 }

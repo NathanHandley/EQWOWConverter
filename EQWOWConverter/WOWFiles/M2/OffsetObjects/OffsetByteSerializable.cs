@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,22 +23,10 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2TextureArray
+    internal interface OffsetByteSerializable
     {
-        private List<M2Texture> Textures = new List<M2Texture>();
-        private string TextureFolder;
+        public List<Byte> GetHeaderBytes();
 
-        public M2TextureArray(string textureFolder)
-        {
-            TextureFolder = textureFolder;
-        }
-
-        public void AddModelTextures(List<ModelTexture> modelTextures)
-        {
-            foreach(ModelTexture texture in modelTextures)
-            {
-                Textures.Add(new M2Texture(texture, TextureFolder));
-            }
-        }
+        public void AddDataBytes(ref List<Byte> byteBuffer);
     }
 }

@@ -29,9 +29,6 @@ namespace EQWOWConverter.ModelObjects
         public ModelTextureType Type = ModelTextureType.Hardcoded;
         public ModelTextureWrapType WrapType = ModelTextureWrapType.None;
         public string TextureName = string.Empty;
-        private UInt32 FileNameLength = 0;
-        private UInt32 FileNameOffset = 0;
-        private string TextureFullNameAndPath = string.Empty;
 
         //public ModelTexture()
         //{

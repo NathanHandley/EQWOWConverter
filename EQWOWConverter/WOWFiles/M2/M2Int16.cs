@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Int16
+    internal class M2Int16 : ByteSerializable
     {
         public Int16 Value = 0;
 
@@ -32,20 +32,16 @@ namespace EQWOWConverter.WOWFiles
             Value = value;
         }
 
-        //public UInt32 GetBytesSize()
-        //{
-        //    return 2;
-        //}
+        public UInt32 GetBytesSize()
+        {
+            return 2;
+        }
 
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(BitConverter.GetBytes(Value));
-        //    return bytes;
-        //}
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Value));
-        //}
+        public List<byte> ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Value));
+            return bytes;
+        }
     }
 }

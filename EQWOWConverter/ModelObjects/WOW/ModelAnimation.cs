@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelAnimation
+    internal class ModelAnimation : ByteSerializable
     {
         public ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
@@ -42,62 +42,44 @@ namespace EQWOWConverter.ModelObjects
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
 
-        //public UInt32 GetBytesSize()
-        //{
-        //    UInt32 size = 0;
-        //    size += 2; // AnimationType
-        //    size += 2; // SubAnimationID
-        //    size += 4; // DurationInMs
-        //    size += 4; // MoveSpeed
-        //    size += 4; // Flags
-        //    size += 2; // PlayFrequency
-        //    size += 2; // Padding
-        //    size += 4; // ReplayMin
-        //    size += 4; // ReplayMax
-        //    size += 4; // BlendTime
-        //    size += 24;// Bounding Box
-        //    size += 4; // BoundingRadius
-        //    size += 2; // NextAnimation;
-        //    size += 2; // AliasNext
-        //    return size;
-        //}
+        public UInt32 GetBytesSize()
+        {
+            UInt32 size = 0;
+            size += 2; // AnimationType
+            size += 2; // SubAnimationID
+            size += 4; // DurationInMs
+            size += 4; // MoveSpeed
+            size += 4; // Flags
+            size += 2; // PlayFrequency
+            size += 2; // Padding
+            size += 4; // ReplayMin
+            size += 4; // ReplayMax
+            size += 4; // BlendTime
+            size += 24;// Bounding Box
+            size += 4; // BoundingRadius
+            size += 2; // NextAnimation;
+            size += 2; // AliasNext
+            return size;
+        }
 
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(AnimationType)));
-        //    bytes.AddRange(BitConverter.GetBytes(SubAnimationID));
-        //    bytes.AddRange(BitConverter.GetBytes(DurationInMS));
-        //    bytes.AddRange(BitConverter.GetBytes(MoveSpeed));
-        //    bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
-        //    bytes.AddRange(BitConverter.GetBytes(PlayFrequency));
-        //    bytes.AddRange(BitConverter.GetBytes(Padding));
-        //    bytes.AddRange(BitConverter.GetBytes(ReplayMin));
-        //    bytes.AddRange(BitConverter.GetBytes(ReplayMax));
-        //    bytes.AddRange(BitConverter.GetBytes(BlendTime));
-        //    bytes.AddRange(BoundingBox.ToBytesHighRes());
-        //    bytes.AddRange(BitConverter.GetBytes(BoundingRadius));
-        //    bytes.AddRange(BitConverter.GetBytes(NextAnimation));
-        //    bytes.AddRange(BitConverter.GetBytes(AliasNext));
-        //    return bytes;
-        //}
-
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Convert.ToUInt16(AnimationType)));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(SubAnimationID));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(DurationInMS));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(MoveSpeed));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(PlayFrequency));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Padding));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(ReplayMin));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(ReplayMax));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(BlendTime));
-        //    byteBuffer.AddRange(BoundingBox.ToBytesHighRes());
-        //    byteBuffer.AddRange(BitConverter.GetBytes(BoundingRadius));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(NextAnimation));
-        //    byteBuffer.AddRange(BitConverter.GetBytes(AliasNext));
-        //}
+        public List<byte> ToBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(AnimationType)));
+            bytes.AddRange(BitConverter.GetBytes(SubAnimationID));
+            bytes.AddRange(BitConverter.GetBytes(DurationInMS));
+            bytes.AddRange(BitConverter.GetBytes(MoveSpeed));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Flags)));
+            bytes.AddRange(BitConverter.GetBytes(PlayFrequency));
+            bytes.AddRange(BitConverter.GetBytes(Padding));
+            bytes.AddRange(BitConverter.GetBytes(ReplayMin));
+            bytes.AddRange(BitConverter.GetBytes(ReplayMax));
+            bytes.AddRange(BitConverter.GetBytes(BlendTime));
+            bytes.AddRange(BoundingBox.ToBytesHighRes());
+            bytes.AddRange(BitConverter.GetBytes(BoundingRadius));
+            bytes.AddRange(BitConverter.GetBytes(NextAnimation));
+            bytes.AddRange(BitConverter.GetBytes(AliasNext));
+            return bytes;
+        }
     }
 }

@@ -27,18 +27,49 @@ namespace EQWOWConverter.WOWFiles
     {
         public ModelTexture Texture;
         public string FullTexturePath;
+        public UInt32 FileNameLength = 0;
+        public UInt32 FileNameOffset = 0;
 
         public M2Texture(ModelTexture texture, string textureFolder)
         {
             Texture = texture;
             FullTexturePath = Path.Combine(textureFolder, texture.TextureName + ".blp\0");
+            FileNameLength = Convert.ToUInt32(FullTexturePath.Length);
+        }
+
+        public UInt32 GetHeaderSize()
+        {
+            UInt32 size = 0;
+            size += 4;  // Type
+            size += 4;  // WrapType
+            size += 4;  // Texture Name Length
+            size += 4;  // Texture Offset
+            return size;
+        }
+
+        public List<byte> GetHeaderBytes()
+        {
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Texture.Type)));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Texture.WrapType)));
+            bytes.AddRange(BitConverter.GetBytes(FileNameLength));
+            bytes.AddRange(BitConverter.GetBytes(FileNameOffset));
+            return bytes;
+        }
+
+        public List<Byte> GetDataBytes(ref UInt32 curOffset)
+        {
+            List<byte> bytes = new List<byte>();
+
+
+            return bytes;
         }
 
         //public List<byte> ToBytes()
         //{
         //    List<byte> bytes = new List<byte>();
         //    string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
-        //    bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
+        //    bytes.AddRange();
         //    FileNameLength = Convert.ToUInt32(bytes.Count);
         //    FileNameOffset = Convert.ToUInt32(curOffset);
         //    curOffset += bytes.Count;
