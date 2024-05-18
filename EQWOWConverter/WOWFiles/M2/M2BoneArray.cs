@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
+using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,29 +23,16 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Int16
+    internal class M2BoneArray
     {
-        public Int16 Value = 0;
+        private List<M2Bone> Bones = new List<M2Bone>();
 
-        public M2Int16(short value) 
+        public void AddModelBones(List<ModelBone> bones)
         {
-            Value = value;
+            foreach(ModelBone bone in bones)
+            {
+                Bones.Add(new M2Bone(bone));
+            }
         }
-
-        //public UInt32 GetBytesSize()
-        //{
-        //    return 2;
-        //}
-
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(BitConverter.GetBytes(Value));
-        //    return bytes;
-        //}
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Value));
-        //}
     }
 }

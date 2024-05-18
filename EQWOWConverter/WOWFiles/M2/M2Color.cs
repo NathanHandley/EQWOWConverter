@@ -23,17 +23,11 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Color : ByteSerializable
+    internal class M2Color
     {
-        public UInt32 GetBytesSize()
-        {
-            return 0;
-        }
+        //public void AddToByteBuffer(ref List<byte> byteBuffer)
+        //{
 
-        public List<byte> ToBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            return bytes;
-        }
+        //}
     }
 }

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTrackSequenceValues<T> where T : ByteSerializable
+    internal class ModelTrackSequenceValues<T>
     {
         public List<T> Values = new List<T>();
         public UInt32 DataOffset = 0;
@@ -44,8 +44,8 @@ namespace EQWOWConverter.ModelObjects
         public UInt32 GetDataSize()
         {
             UInt32 size = 0;
-            foreach (T value in Values)
-                size += value.GetBytesSize();
+            //foreach (T value in Values)
+            //    size += value.GetBytesSize();
             return size;
         }
 
@@ -60,8 +60,8 @@ namespace EQWOWConverter.ModelObjects
         public List<Byte> GetDataBytes()
         {
             List<Byte> bytes = new List<Byte>();
-            foreach (T value in Values)
-                bytes.AddRange(value.ToBytes());
+            //foreach (T value in Values)
+            //    bytes.AddRange(value.ToBytes());
             return bytes;
         }
     }

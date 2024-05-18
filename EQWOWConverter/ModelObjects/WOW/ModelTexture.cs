@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTexture : ByteSerializable
+    internal class ModelTexture
     {
         public ModelTextureType Type = ModelTextureType.Hardcoded;
         public ModelTextureWrapType WrapType = ModelTextureWrapType.None;
@@ -33,50 +33,60 @@ namespace EQWOWConverter.ModelObjects
         private UInt32 FileNameOffset = 0;
         private string TextureFullNameAndPath = string.Empty;
 
-        public ModelTexture()
-        {
+        //public ModelTexture()
+        //{
 
-        }
+        //}
 
-        public void GenerateFullFileNameAndPath(string modelTextureFolder)
-        {
-            TextureFullNameAndPath = Path.Combine(modelTextureFolder, TextureName + ".blp\0");
-        }
+        //public void GenerateFullFileNameAndPath(string modelTextureFolder)
+        //{
+        //    TextureFullNameAndPath = Path.Combine(modelTextureFolder, TextureName + ".blp\0");
+        //}
 
-        public UInt32 GetBytesSize()
-        {
-            return Convert.ToUInt32(TextureName.Length);
-        }
+        //public void AddToByteBuffer(ref List<byte> byteBuffer)
+        //{
+        //    byteBuffer.AddRange(Position.ToBytes());
+        //    byteBuffer.AddRange(BoneWeights.ToArray());
+        //    byteBuffer.AddRange(BoneIndicies.ToArray());
+        //    byteBuffer.AddRange(Normal.ToBytes());
+        //    byteBuffer.AddRange(Texture1TextureCoordinates.ToBytes());
+        //    byteBuffer.AddRange(Texture2TextureCoordinates.ToBytes());
+        //}
 
-        public int GetMetaSize()
-        {
-            int size = 0;
-            size += 4;  // Type
-            size += 4;  // WrapType
-            size += 4;  // Texture Name Length
-            size += 4;  // Texture Offset
-            return size;
-        }
+        //public UInt32 GetBytesSize()
+        //{
+        //    return Convert.ToUInt32(TextureName.Length);
+        //}
 
-        public List<byte> ToBytesMeta()
-        {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Type)));
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WrapType)));
-            bytes.AddRange(BitConverter.GetBytes(FileNameLength));
-            bytes.AddRange(BitConverter.GetBytes(FileNameOffset));
-            return bytes;
-        }
+        //public int GetMetaSize()
+        //{
+        //    int size = 0;
+        //    size += 4;  // Type
+        //    size += 4;  // WrapType
+        //    size += 4;  // Texture Name Length
+        //    size += 4;  // Texture Offset
+        //    return size;
+        //}
 
-        public List<byte> ToBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
-            bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
-            FileNameLength = Convert.ToUInt32(bytes.Count);
-            FileNameOffset = Convert.ToUInt32(curOffset);
-            curOffset += bytes.Count;
-            return bytes;
-        }
+        //public List<byte> ToBytesMeta()
+        //{
+        //    List<byte> bytes = new List<byte>();
+        //    bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Type)));
+        //    bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WrapType)));
+        //    bytes.AddRange(BitConverter.GetBytes(FileNameLength));
+        //    bytes.AddRange(BitConverter.GetBytes(FileNameOffset));
+        //    return bytes;
+        //}
+
+        //public List<byte> ToBytes()
+        //{
+        //    List<byte> bytes = new List<byte>();
+        //    string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
+        //    bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
+        //    FileNameLength = Convert.ToUInt32(bytes.Count);
+        //    FileNameOffset = Convert.ToUInt32(curOffset);
+        //    curOffset += bytes.Count;
+        //    return bytes;
+        //}
     }
 }

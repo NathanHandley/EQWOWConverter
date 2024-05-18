@@ -220,7 +220,7 @@ namespace EQWOWConverter
 
             // Create the M2 and Skin
             M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
-            objectM2.WriteToDisk(exportMPQObjectRootFolder);
+            objectM2.WriteToDisk(modelObject.Name, exportMPQObjectRootFolder);
 
             //// Create the zone WMO objects
             //WMO zoneWMO = new WMO(zone, exportMPQRootFolder);

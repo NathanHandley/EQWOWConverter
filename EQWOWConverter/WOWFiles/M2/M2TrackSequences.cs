@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
+using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,29 +23,13 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Int16
+    internal class M2TrackSequences<T>
     {
-        public Int16 Value = 0;
+        private ModelTrackSequences<T> TrackSequences;
 
-        public M2Int16(short value) 
+        public M2TrackSequences(ModelTrackSequences<T> trackSequences)
         {
-            Value = value;
+            TrackSequences = trackSequences;
         }
-
-        //public UInt32 GetBytesSize()
-        //{
-        //    return 2;
-        //}
-
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(BitConverter.GetBytes(Value));
-        //    return bytes;
-        //}
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Value));
-        //}
     }
 }

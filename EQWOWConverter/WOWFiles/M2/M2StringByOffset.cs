@@ -34,6 +34,7 @@ namespace EQWOWConverter.WOWFiles
         {
 
         }
+
         public List<Byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
@@ -42,10 +43,10 @@ namespace EQWOWConverter.WOWFiles
             return bytes;
         }
 
-        public UInt32 GetBytesSize()
-        {
-            return Convert.ToUInt32(Data.Length + 1);
-        }
+        //public UInt32 GetBytesSize()
+        //{
+        //    return Convert.ToUInt32(Data.Length + 1);
+        //}
 
 
         public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)

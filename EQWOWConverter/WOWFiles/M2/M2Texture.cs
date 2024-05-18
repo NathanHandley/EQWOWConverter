@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
+using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,29 +23,36 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Int16
+    internal class M2Texture
     {
-        public Int16 Value = 0;
+        public ModelTexture Texture;
+        public string FullTexturePath;
 
-        public M2Int16(short value) 
+        public M2Texture(ModelTexture texture, string textureFolder)
         {
-            Value = value;
+            Texture = texture;
+            FullTexturePath = Path.Combine(textureFolder, texture.TextureName + ".blp\0");
         }
-
-        //public UInt32 GetBytesSize()
-        //{
-        //    return 2;
-        //}
 
         //public List<byte> ToBytes()
         //{
         //    List<byte> bytes = new List<byte>();
-        //    bytes.AddRange(BitConverter.GetBytes(Value));
+        //    string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
+        //    bytes.AddRange(Encoding.ASCII.GetBytes(fullPath.ToUpper()));
+        //    FileNameLength = Convert.ToUInt32(bytes.Count);
+        //    FileNameOffset = Convert.ToUInt32(curOffset);
+        //    curOffset += bytes.Count;
         //    return bytes;
         //}
+
         //public void AddToByteBuffer(ref List<byte> byteBuffer)
         //{
-        //    byteBuffer.AddRange(BitConverter.GetBytes(Value));
+        //    byteBuffer.AddRange(Position.ToBytes());
+        //    byteBuffer.AddRange(BoneWeights.ToArray());
+        //    byteBuffer.AddRange(BoneIndicies.ToArray());
+        //    byteBuffer.AddRange(Normal.ToBytes());
+        //    byteBuffer.AddRange(Texture1TextureCoordinates.ToBytes());
+        //    byteBuffer.AddRange(Texture2TextureCoordinates.ToBytes());
         //}
     }
 }

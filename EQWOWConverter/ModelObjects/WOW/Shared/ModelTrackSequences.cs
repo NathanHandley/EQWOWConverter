@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTrackSequences<T> : ByteSerializable where T : ByteSerializable
+    internal class ModelTrackSequences<T>
     {
         ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
         public UInt16 GlobalSequenceID = 65535;
