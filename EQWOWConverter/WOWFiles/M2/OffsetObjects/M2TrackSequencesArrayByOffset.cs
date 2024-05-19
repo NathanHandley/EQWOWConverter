@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2TrackSequencesArrayByOffset<T>
+    internal class M2TrackSequencesArrayByOffset<T> where T : ByteSerializable
     {
         private List<M2TrackSequences<T>> TrackSequences = new List<M2TrackSequences<T>>();
         private UInt32 Count = 0;

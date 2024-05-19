@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2TrackSequences<T>
+    internal class M2TrackSequences<T> where T : ByteSerializable
     {
         public ModelTrackSequences<T> TrackSequences;
         public UInt32 TimestampsOffset = 0;
@@ -84,11 +85,17 @@ namespace EQWOWConverter.WOWFiles
 
             // Add timestamp data
             foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+            {
+                timestamp.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(timestamp.GetDataBytes());
+            }
 
             // Add value data
             foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+            {
+                values.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(values.GetDataBytes());
+            }
 
             // Write the track header data
             List<byte> trackHeaderBytes = new List<byte>();
