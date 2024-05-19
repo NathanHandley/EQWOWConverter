@@ -25,11 +25,79 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2TrackSequences<T>
     {
-        private ModelTrackSequences<T> TrackSequences;
+        public ModelTrackSequences<T> TrackSequences;
+        public UInt32 TimestampsOffset = 0;
+        public UInt32 ValuesOffset = 0;
 
         public M2TrackSequences(ModelTrackSequences<T> trackSequences)
         {
             TrackSequences = trackSequences;
+        }
+
+        public UInt32 GetHeaderSize()
+        {
+            UInt32 size = 0;
+            size += 2;  // InterpolationType
+            size += 2;  // GlobalSequenceID
+            size += 4;  // Number of timestamps
+            size += 4;  // Offset of timestamps
+            size += 4;  // Number of values
+            size += 4;  // Offset of values
+            return size;
+        }
+
+        public List<byte> GetHeaderBytes()
+        {
+            // Write the data
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(TrackSequences.InterpolationType)));
+            bytes.AddRange(BitConverter.GetBytes(TrackSequences.GlobalSequenceID));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(TrackSequences.Timestamps.Count)));
+            bytes.AddRange(BitConverter.GetBytes(TimestampsOffset));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(TrackSequences.Values.Count)));
+            bytes.AddRange(BitConverter.GetBytes(ValuesOffset));
+            return bytes;
+        }
+
+        public void AddDataBytes(ref List<byte> byteBuffer)
+        {
+            // Don't add anything if there's no data to add
+            if (TrackSequences.Timestamps.Count == 0)
+                return;
+
+            // Set space aside for timestamp headers
+            TimestampsOffset = Convert.ToUInt32(byteBuffer.Count);
+            UInt32 timestampHeaderBlockSize = 0;
+            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+                timestampHeaderBlockSize += timestamp.GetHeaderSize();
+
+            // Set space aside for the value headers
+            ValuesOffset = TimestampsOffset + timestampHeaderBlockSize;
+            UInt32 valueHeaderBlockSize = 0;
+            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+                valueHeaderBlockSize += values.GetHeaderSize();
+
+            // Reserve the space for all headers in the byte buffer
+            UInt32 totalSubHeaderSpaceToReserve = timestampHeaderBlockSize + valueHeaderBlockSize;
+            for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
+                byteBuffer.Add(0);
+
+            // Add timestamp data
+            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+                byteBuffer.AddRange(timestamp.GetDataBytes());
+
+            // Add value data
+            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+                byteBuffer.AddRange(values.GetDataBytes());
+
+            // Write the track header data
+            List<byte> trackHeaderBytes = new List<byte>();
+            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+                trackHeaderBytes.AddRange(timestamp.GetHeaderBytes());
+            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+                trackHeaderBytes.AddRange(values.GetHeaderBytes());
+            for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
+                byteBuffer[i + Convert.ToInt32(TimestampsOffset)] = trackHeaderBytes[i];
         }
     }
 }

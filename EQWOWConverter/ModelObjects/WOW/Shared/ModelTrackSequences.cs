@@ -28,10 +28,10 @@ namespace EQWOWConverter.ModelObjects
 {
     internal class ModelTrackSequences<T>
     {
-        ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
+        public ModelAnimationInterpolationType InterpolationType = ModelAnimationInterpolationType.None;
         public UInt16 GlobalSequenceID = 65535;
-        private List<ModelTrackSequenceTimestamps> Timestamps = new List<ModelTrackSequenceTimestamps>();
-        private List<ModelTrackSequenceValues<T>> Values = new List<ModelTrackSequenceValues<T>>();
+        public List<ModelTrackSequenceTimestamps> Timestamps = new List<ModelTrackSequenceTimestamps>();
+        public List<ModelTrackSequenceValues<T>> Values = new List<ModelTrackSequenceValues<T>>();
         public UInt32 TimestampsOffset = 0;
         public UInt32 ValuesOffset = 0;
 

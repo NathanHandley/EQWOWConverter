@@ -29,10 +29,16 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 Count = 0;
         private UInt32 Offset = 0;
 
-        public void AddModelTrackSequences(ModelTrackSequences<T> modelTrackSequences)
+        public void Add(ModelTrackSequences<T> modelTrackSequences)
         {
             TrackSequences.Add(new M2TrackSequences<T>(modelTrackSequences));
             Count = Convert.ToUInt32(TrackSequences.Count);
+        }
+
+        public void AddArray(List<ModelTrackSequences<T>> trackSequences)
+        {
+            foreach(var trackSequence in trackSequences)
+                Add(trackSequence);
         }
 
         public List<Byte> GetHeaderBytes()
@@ -45,9 +51,32 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
-            // TODO
-            if (Count > 0)
-                Offset = Convert.ToUInt32(byteBuffer.Count);
+            // Don't add anything if there's nothing
+            if (Count == 0)
+            {
+                Offset = 0;
+                return;
+            }
+            else Offset = Convert.ToUInt32(byteBuffer.Count);
+
+            // Calculate the space needed for the track sequence headers and reserve it
+            int trackSequencesHeaderStartOffset = byteBuffer.Count;
+            UInt32 allTrackSequenceHeaderBytesCount = 0;
+            foreach (var trackSequence in TrackSequences)
+                allTrackSequenceHeaderBytesCount += trackSequence.GetHeaderSize();
+            for (int i = 0; i < allTrackSequenceHeaderBytesCount; i++)
+                byteBuffer.Add(0);
+
+            // Add the data bytes
+            foreach (var trackSequence in TrackSequences)
+                trackSequence.AddDataBytes(ref byteBuffer);
+
+            // Write the header data into the byte buffer
+                List<byte> headerBytes = new List<byte>();
+            foreach(var trackSequence in TrackSequences)
+                headerBytes.AddRange(trackSequence.GetHeaderBytes());
+            for (int i = 0; i < headerBytes.Count; i++)
+                byteBuffer[i + trackSequencesHeaderStartOffset] = headerBytes[i];
         }
     }
 }

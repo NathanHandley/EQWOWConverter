@@ -29,9 +29,9 @@ namespace EQWOWConverter.ModelObjects
     {
         public ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
-        public UInt32 DurationInMS = 10000;
+        public UInt32 DurationInMS = 33329; // Old value was 10000
         public float MoveSpeed = 0f;
-        public ModelAnimationFlags Flags = 0;
+        public ModelAnimationFlags Flags = ModelAnimationFlags.AnimationInM2; // Look to putting this back
         public Int16 PlayFrequency = 32767; // Always make this add up to 32767 for animations of same type
         public UInt16 Padding = 0;
         public UInt32 ReplayMin = 0;

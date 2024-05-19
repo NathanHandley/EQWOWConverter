@@ -41,8 +41,8 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelTextureMappingLookups = new List<Int16>();
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureTransparencyWeightsLookups = new List<Int16>();
-        public ModelTrackSequences<Fixed16> ModelTextureTransparencies = new ModelTrackSequences<Fixed16>();
-        public List<Int16> ModelTextureTransformationsLookup = new List<Int16>();
+        public List<ModelTrackSequences<Fixed16>> ModelTextureTransparencySequencesSet = new List<ModelTrackSequences<Fixed16>>();
+        public List<Int16> ModelTextureTransformationAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -134,6 +134,7 @@ namespace EQWOWConverter.Objects
                     ModelTextures.Add(newModelTexture);
                     ModelMaterials.Add(new ModelMaterial());
                     ModelTextureLookups.Add(curIndex);
+                    ModelTextureLookups.Add(curIndex); // Why 2?
                     ++curIndex;
                 }
             }
@@ -147,17 +148,19 @@ namespace EQWOWConverter.Objects
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            //ModelBoneLookups.Add(0);
+            ModelBoneLookups.Add(0);
             //ModelBoneLookups.Add(0);
             //ModelBoneLookups.Add(0);
             ModelTextureTransparencyWeightsLookups.Add(0);
-            //ModelTextureTransparencyWeightsLookups.Add(0);
-            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
-            //ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
+            ModelTextureTransparencyWeightsLookups.Add(1);
+            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
+            ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
+            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
+            ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
             ModelTextureMappingLookups.Add(0);
-            //ModelTextureMappingLookups.Add(0);
-            ModelTextureTransformationsLookup.Add(-1);
-            //ModelTextureTransformationsLookup.Add(-1);
+            ModelTextureMappingLookups.Add(1);
+            ModelTextureTransformationAnimationLookup.Add(-1);
+            ModelTextureTransformationAnimationLookup.Add(-1);
             ModelReplaceableTextureLookups.Add(0);
             //ModelReplaceableTextureLookups.Add(0);
 
