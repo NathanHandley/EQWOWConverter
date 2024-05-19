@@ -413,10 +413,10 @@ namespace EQWOWConverter.WOWFiles
             foreach (var doodadNameOffset in DoodadNameOffsets)
             {
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
+                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
                 //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
                 //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
-                //string objectFullPath = Path.Combine(exportObjectsFolder, doodadNameOffset.Key, doodadNameOffset.Key + ".MDX" + "\0").ToUpper();
+                string objectFullPath = Path.Combine(exportObjectsFolder, doodadNameOffset.Key, doodadNameOffset.Key + ".MDX" + "\0").ToUpper();
                 doodadNameBuffer.AddRange(Encoding.ASCII.GetBytes(objectFullPath));
             }
             return WrapInChunk("MODN", doodadNameBuffer.ToArray());
@@ -454,10 +454,10 @@ namespace EQWOWConverter.WOWFiles
             foreach (WorldModelObjectDoodadInstance objectInstance in wowZoneData.DoodadInstances)
             {
                 string objectName = objectInstance.ObjectName;
-                //string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+                string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
                 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                 //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
-                string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
+                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
                 if (DoodadNameOffsets.ContainsKey(objectName) == false)
                 {
                     DoodadNameOffsets.Add(objectName, Convert.ToUInt32(curNameOffset));

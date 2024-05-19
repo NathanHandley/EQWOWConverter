@@ -46,7 +46,8 @@ namespace EQWOWConverter.WOWFiles
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
             // TODO
-            Offset = Convert.ToUInt32(byteBuffer.Count);
+            if (Count > 0)
+                Offset = Convert.ToUInt32(byteBuffer.Count);
         }
     }
 }

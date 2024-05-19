@@ -62,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             return bytes;
         }
 
-        public void AddDataToByteBufferAndUpdateHeader(ref UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
+        public void AddDataToByteBufferAndUpdateHeader(UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
         {
             Bone.TranslationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
             Bone.RotationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);

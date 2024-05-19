@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
         private M2TrackSequencesArrayByOffset<Fixed16> TextureTransparencyWeights = new M2TrackSequencesArrayByOffset<Fixed16>();
-        private M2GenericArrayByOffset<ModelTextureTransform> TextureTransforms = new M2GenericArrayByOffset<ModelTextureTransform>();
+        private M2GenericArrayByOffset<ModelTextureTransformAnimation> TextureTransforms = new M2GenericArrayByOffset<ModelTextureTransformAnimation>();
         private M2GenericArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<ModelMaterial> Materials = new M2GenericArrayByOffset<ModelMaterial>();
         private M2GenericArrayByOffset<M2Int16> BoneLookup = new M2GenericArrayByOffset<M2Int16>();
@@ -115,11 +115,19 @@ namespace EQWOWConverter.WOWFiles
             Textures = new M2TextureArrayByOffset(mpqObjectFolder);
             Textures.AddModelTextures(wowModelObject.ModelTextures);
 
+
+            //============================================================
+
+            //Enabling either of these causes crashes in the template
+
             // Texture Transparencies (Weights, just 1 for now)
             TextureTransparencyWeights.AddModelTrackSequences(wowModelObject.ModelTextureTransparencies);
 
             // Texture Transforms
-            // none for now
+            // For testing, add 1 for now
+            TextureTransforms.Add(new ModelTextureTransformAnimation());
+
+            //=============================================================
 
             // Replaceable Texture ID Lookup
             foreach (Int16 value in wowModelObject.ModelReplaceableTextureLookups)

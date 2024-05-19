@@ -147,19 +147,19 @@ namespace EQWOWConverter.Objects
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
+            //ModelBoneLookups.Add(0);
+            //ModelBoneLookups.Add(0);
+            //ModelBoneLookups.Add(0);
             ModelTextureTransparencyWeightsLookups.Add(0);
-            ModelTextureTransparencyWeightsLookups.Add(0);
+            //ModelTextureTransparencyWeightsLookups.Add(0);
             ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
-            ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
+            //ModelTextureTransparencies.AddValueToSequence(ModelTextureTransparencies.AddSequence(), 0, new Fixed16(32767));
             ModelTextureMappingLookups.Add(0);
-            ModelTextureMappingLookups.Add(0);
+            //ModelTextureMappingLookups.Add(0);
             ModelTextureTransformationsLookup.Add(-1);
-            ModelTextureTransformationsLookup.Add(-1);
+            //ModelTextureTransformationsLookup.Add(-1);
             ModelReplaceableTextureLookups.Add(0);
-            ModelReplaceableTextureLookups.Add(0);
+            //ModelReplaceableTextureLookups.Add(0);
 
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());

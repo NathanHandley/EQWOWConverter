@@ -14,26 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.WOWFiles
 {
-    internal class ModelTextureTransform : ByteSerializable
+    internal class M2TextureTransformAnimation
     {
-        public UInt32 GetBytesSize()
-        {
-            return 0;
-        }
-
-        public List<byte> ToBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            return bytes;
-        }
     }
 }

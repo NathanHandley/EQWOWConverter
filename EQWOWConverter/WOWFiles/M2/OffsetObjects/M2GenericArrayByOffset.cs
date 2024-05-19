@@ -37,6 +37,8 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
+            if (Count == 0)
+                return;
             Offset = Convert.ToUInt32(byteBuffer.Count);
             for (int i = 0; i < Elements.Count; ++i)
                 byteBuffer.AddRange(Elements[i].ToBytes());

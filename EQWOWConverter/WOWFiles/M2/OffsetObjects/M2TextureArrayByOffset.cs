@@ -42,6 +42,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 Textures.Add(new M2Texture(texture, TextureFolder));
             }
+            Count = Convert.ToUInt32(Textures.Count);
         }
 
         public List<Byte> GetHeaderBytes()
@@ -54,6 +55,8 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
+            Offset = Convert.ToUInt32(byteBuffer.Count);
+
             // Calculate space just for the metadata/headers
             UInt32 totalSubHeaderSpaceNeeded = 0;
             foreach (M2Texture texture in Textures)
