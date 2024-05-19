@@ -73,7 +73,7 @@ namespace EQWOWConverter.WOWFiles
                 trackSequence.AddDataBytes(ref byteBuffer);
 
             // Write the header data into the byte buffer
-                List<byte> headerBytes = new List<byte>();
+            List<byte> headerBytes = new List<byte>();
             foreach(var trackSequence in TrackSequences)
                 headerBytes.AddRange(trackSequence.GetHeaderBytes());
             for (int i = 0; i < headerBytes.Count; i++)

@@ -43,7 +43,6 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 SkinProfileCount = 0;
         private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
-        //private  TextureTransparencyWeights = new M2TrackSequencesArrayByOffset<Fixed16>();
         private M2TrackSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackSequencesArrayByOffset<Fixed16>();
         private M2GenericArrayByOffset<ModelTextureTransformAnimation> TextureTransformAnimations = new M2GenericArrayByOffset<ModelTextureTransformAnimation>();
         private M2GenericArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2GenericArrayByOffset<M2Int16>();
@@ -84,8 +83,7 @@ namespace EQWOWConverter.WOWFiles
             WOWObjectModelData wowModelObject = modelObject.WOWModelObjectData;
 
             // Name
-            //Name = new M2StringByOffset(wowModelObject.Name);
-            Name = new M2StringByOffset("oggrugNew.m2");
+            Name = new M2StringByOffset(wowModelObject.Name);
 
             // Global Loop Timestamps
             // None for now
@@ -121,8 +119,7 @@ namespace EQWOWConverter.WOWFiles
             TextureTransparencySequences.AddArray(wowModelObject.ModelTextureTransparencySequencesSet);
 
             // Texture Transforms
-            // For testing, add 1 for now
-            TextureTransformAnimations.Add(new ModelTextureTransformAnimation());
+            // none for now
 
             // Replaceable Texture ID Lookup
             foreach (Int16 value in wowModelObject.ModelReplaceableTextureLookups)

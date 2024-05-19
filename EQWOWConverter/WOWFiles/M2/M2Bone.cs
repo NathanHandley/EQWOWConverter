@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
 using System;
 using System.Collections.Generic;
@@ -26,10 +27,16 @@ namespace EQWOWConverter.WOWFiles
     internal class M2Bone
     {
         public ModelBone Bone;
+        public M2TrackSequences<Vector3> TranslationTrack;
+        public M2TrackSequences<Quaternion> RotationTrack;
+        public M2TrackSequences<Vector3> ScaleTrack;
 
         public M2Bone(ModelBone modelBone)
         {
             Bone = modelBone;
+            TranslationTrack = new M2TrackSequences<Vector3>(modelBone.TranslationTrack);
+            RotationTrack = new M2TrackSequences<Quaternion>(modelBone.RotationTrack);
+            ScaleTrack = new M2TrackSequences<Vector3>(modelBone.ScaleTrack);
         }
 
         public UInt32 GetHeaderSize()
@@ -55,19 +62,18 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(BitConverter.GetBytes(Bone.ParentBone));
             bytes.AddRange(BitConverter.GetBytes(Bone.SubMeshID));
             bytes.AddRange(BitConverter.GetBytes(Bone.BoneNameCRC));
-            bytes.AddRange(Bone.TranslationTrack.GetHeaderBytes());
-            bytes.AddRange(Bone.RotationTrack.GetHeaderBytes());
-            bytes.AddRange(Bone.ScaleTrack.GetHeaderBytes());
+            bytes.AddRange(TranslationTrack.GetHeaderBytes());
+            bytes.AddRange(RotationTrack.GetHeaderBytes());
+            bytes.AddRange(ScaleTrack.GetHeaderBytes());
             bytes.AddRange(Bone.PivotPoint.ToBytes());
             return bytes;
         }
 
-        public void AddDataToByteBufferAndUpdateHeader(UInt32 workingCursorOffset, ref List<Byte> byteBuffer)
+        public void AddDataBytes(ref List<byte> byteBuffer)
         {
-            Bone.TranslationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
-            Bone.RotationTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
-            Bone.ScaleTrack.AddDataToByteBufferAndUpdateHeader(ref workingCursorOffset, ref byteBuffer);
+            TranslationTrack.AddDataBytes(ref byteBuffer);
+            RotationTrack.AddDataBytes(ref byteBuffer);
+            ScaleTrack.AddDataBytes(ref byteBuffer);
         }
-
     }
 }

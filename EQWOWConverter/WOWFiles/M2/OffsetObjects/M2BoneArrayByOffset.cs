@@ -57,33 +57,23 @@ namespace EQWOWConverter.WOWFiles
             }
             Offset = Convert.ToUInt32(byteBuffer.Count);
 
-            // Determine space needed for all bone headers
+            // Determine space needed for all bone headers and reserve it
             UInt32 allBoneSubHeaderSize = 0;
             foreach (M2Bone bone in Bones)
                 allBoneSubHeaderSize += bone.GetHeaderSize();
+            for (int i = 0; i < allBoneSubHeaderSize; i++)
+                byteBuffer.Add(0);
 
-            // Create a block of data representing all of the data
-            UInt32 startDataOffset = Convert.ToUInt32(byteBuffer.Count + allBoneSubHeaderSize);
-            UInt32 curDataOffset = startDataOffset;
-            List<byte> dataBytes = new List<byte>();
+            // Add all of the data
             foreach (M2Bone bone in Bones)
-            {
-                // TODO: Add the track data information
-                //AddDataToByteBufferAndUpdateHeader
+                bone.AddDataBytes(ref byteBuffer);
 
-                //texture.FileNameOffset = curOffset;
-                //dataBytes.AddRange(Encoding.ASCII.GetBytes(texture.FullTexturePath.ToUpper()));
-                //curOffset += texture.FileNameLength;
-            }
-
-            // Generate the headers
+            // Write the header data
             List<byte> headerBytes = new List<byte>();
             foreach (M2Bone bone in Bones)
                 headerBytes.AddRange(bone.GetHeaderBytes());
-
-            // Combine them
-            byteBuffer.AddRange(headerBytes);
-            byteBuffer.AddRange(dataBytes);
+            for (int i = 0; i < allBoneSubHeaderSize; i++)
+                byteBuffer[i + Convert.ToInt32(Offset)] = headerBytes[i];
         }
     }
 }
