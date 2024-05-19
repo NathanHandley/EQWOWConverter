@@ -35,7 +35,7 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 StartTriangleIndex = 0;
         public UInt16 TriangleIndexCount = 0;
         public UInt16 BoneCount = 1;
-        public UInt16 BoneLookupIndex = 1; // This is 3 in a couple of simple passive doodads (Sack01, CaveMineSpiderPillar01)
+        public UInt16 BoneLookupIndex = 0;
         public UInt16 NumOfBonesInfluencing = 1; // Max number of bones needed at one time?  How does this differ from Bone Count?
         public UInt16 centerBoneIndex = 0;  // This will likely need to change later
         public Vector3 AverageVertexCenterPosition = new Vector3(); // Average position between all verts

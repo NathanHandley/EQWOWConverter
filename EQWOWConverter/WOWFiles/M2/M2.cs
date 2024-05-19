@@ -308,7 +308,11 @@ namespace EQWOWConverter.WOWFiles
             List<Byte> headerBytes = GetHeaderBytes();
             for (int i = 0; i < headerSize; ++i)
                 fileBytes[i] = headerBytes[i];
-            
+
+            // Fill out the tail to a multiple of 16 (not actually required?)
+            while (fileBytes.Count() % 16 != 0)
+                fileBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+
             return fileBytes;
         }
 

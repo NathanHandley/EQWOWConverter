@@ -27,7 +27,7 @@ namespace EQWOWConverter.ModelObjects
     internal class ModelTexture
     {
         public ModelTextureType Type = ModelTextureType.Hardcoded;
-        public ModelTextureWrapType WrapType = ModelTextureWrapType.None;
+        public ModelTextureWrapType WrapType = ModelTextureWrapType.XY;
         public string TextureName = string.Empty;
 
         //public ModelTexture()

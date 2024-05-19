@@ -56,12 +56,7 @@ namespace EQWOWConverter.Objects
 
         public WOWObjectModelData()
         {
-            // TODO: Figure out why(if) we need it like this for static
-            AnimationSequenceIDLookups.Add(0);    // Stand
-            AnimationSequenceIDLookups.Add(-1);   // Death
-            AnimationSequenceIDLookups.Add(-1);   // Spell
-            AnimationSequenceIDLookups.Add(-1);   // Stop
-            AnimationSequenceIDLookups.Add(-1);   // Walk
+
         }
 
         public UInt16 GetTextureLookupIndexForMaterial(int materialID)
@@ -111,7 +106,7 @@ namespace EQWOWConverter.Objects
                 // Read texture coordinates, and factor for mapping differences between EQ and WoW
                 TextureCoordinates curTextureCoordinates = eqObject.TextureCoords[i];
                 newModelVertex.Texture1TextureCoordinates.X = curTextureCoordinates.X;
-                newModelVertex.Texture1TextureCoordinates.Y = curTextureCoordinates.Y * -1;
+                newModelVertex.Texture1TextureCoordinates.Y = -1 * curTextureCoordinates.Y;
 
                 // Read normals
                 Vector3 curNormal = eqObject.Normals[i];
@@ -134,7 +129,9 @@ namespace EQWOWConverter.Objects
                     ModelTextures.Add(newModelTexture);
                     ModelMaterials.Add(new ModelMaterial());
                     ModelTextureLookups.Add(curIndex);
-                    ModelTextureLookups.Add(curIndex); // Why 2?
+                    ModelTextureMappingLookups.Add(0); // 
+                    ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
+                    ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
                     ++curIndex;
                 }
             }
@@ -145,24 +142,15 @@ namespace EQWOWConverter.Objects
 
             // HARD CODED FOR STATIC --------------------------------------------------------------------
             // Create a base bone
+            //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            ModelBoneLookups.Add(0);
-            //ModelBoneLookups.Add(0);
-            //ModelBoneLookups.Add(0);
             ModelTextureTransparencyWeightsLookups.Add(0);
-            ModelTextureTransparencyWeightsLookups.Add(1);
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
-            ModelTextureMappingLookups.Add(0);
-            ModelTextureMappingLookups.Add(1);
-            ModelTextureTransformationAnimationLookup.Add(-1);
-            ModelTextureTransformationAnimationLookup.Add(-1);
-            ModelReplaceableTextureLookups.Add(0);
-            //ModelReplaceableTextureLookups.Add(0);
 
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());
@@ -173,17 +161,27 @@ namespace EQWOWConverter.Objects
 
         private void ProcessCollisionData(EQModelObjectData eqObject)
         {
-            // Exit if there is no data, meaning there is no collision
-            if (eqObject.CollisionVerticies.Count == 0)
-                return;
-
             // Purge prior data
             CollisionPositions.Clear();
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
 
+            // If there was no collision data then the whole object is collidable otherwise use the collision data
+            List<Vector3> collisionPositions = new List<Vector3>();
+            List<TriangleFace> collisionTriangles = new List<TriangleFace>();
+            if (eqObject.CollisionVerticies.Count == 0)
+            {
+                collisionPositions = eqObject.Verticies;
+                collisionTriangles = eqObject.TriangleFaces;
+            }
+            else
+            {
+                collisionPositions = eqObject.CollisionVerticies;
+                collisionTriangles = eqObject.CollisionTriangleFaces;
+            }
+
             // Store positions, factoring for world scailing
-            foreach (Vector3 collisionVertex in eqObject.CollisionVerticies)
+            foreach (Vector3 collisionVertex in collisionPositions)
             {
                 Vector3 curVertex = new Vector3();
                 curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -193,12 +191,12 @@ namespace EQWOWConverter.Objects
             }
 
             // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
-            foreach (TriangleFace collisionTriangle in eqObject.CollisionTriangleFaces)
+            foreach (TriangleFace collisionTriangle in collisionTriangles)
                 if (collisionTriangle.V1 != collisionTriangle.V2)
                     CollisionTriangles.Add(new TriangleFace(collisionTriangle));
 
             // Calculate normals using the triangles provided
-            foreach(TriangleFace collisionTriangle in CollisionTriangles)
+            foreach (TriangleFace collisionTriangle in CollisionTriangles)
             {
                 // Grab related verticies
                 Vector3 vertex1 = CollisionPositions[collisionTriangle.V1];

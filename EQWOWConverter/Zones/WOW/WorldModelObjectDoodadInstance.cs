@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones.WOW
         public DoodadInstanceFlags Flags = DoodadInstanceFlags.AcceptProjectedTexture;
         public Vector3 Position = new Vector3();
         public Quaternion Orientation = new Quaternion();
-        public float Scale = 0.0f;
+        public float Scale = 1.0f;
         public ColorBGRA Color = new ColorBGRA();
 
         public List<byte> ToBytes()

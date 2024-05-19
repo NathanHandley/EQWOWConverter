@@ -74,8 +74,8 @@ namespace EQWOWConverter
                 if (objectMeshFileInfo.Name.Contains("_collision"))
                     continue;
 
-                // Only look at banner
-                //if (staticObjectMeshNameNoExt != "akabanner")
+                // Restrict to one object for testing
+                //if (staticObjectMeshNameNoExt != "oggrug")
                 //    continue;
 
                 // Load the EQ object
