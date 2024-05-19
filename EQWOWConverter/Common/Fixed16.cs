@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class Fixed16 : ByteSerializable
+    internal class Fixed16 : IByteSerializable
     {
         public UInt16 Value = 0;
 

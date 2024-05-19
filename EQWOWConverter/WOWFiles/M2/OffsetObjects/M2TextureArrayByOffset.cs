@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2TextureArrayByOffset : OffsetByteSerializable
+    internal class M2TextureArrayByOffset : IOffsetByteSerializable
     {
         private List<M2Texture> Textures = new List<M2Texture>();
         private string TextureFolder;

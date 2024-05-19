@@ -412,11 +412,6 @@ namespace EQWOWConverter.WOWFiles
             List<byte> doodadNameBuffer = new List<byte>();
             foreach (var doodadNameOffset in DoodadNameOffsets)
             {
-                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\OGGRUG\\OGGRUG.MDX\0";
-                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
-                //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
-                //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
                 string objectFullPath = Path.Combine(exportObjectsFolder, doodadNameOffset.Key, doodadNameOffset.Key + ".MDX" + "\0").ToUpper();
                 doodadNameBuffer.AddRange(Encoding.ASCII.GetBytes(objectFullPath));
             }
@@ -456,10 +451,6 @@ namespace EQWOWConverter.WOWFiles
             {
                 string objectName = objectInstance.ObjectName;
                 string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
-                // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ TEST ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\OGGRUG\\OGGRUG.MDX\0";
-                //string objectFullPath = "WORLD\\GENERIC\\PASSIVEDOODADS\\FURNITURE\\CONTAINERS\\SACK01.MDX\0";
-                //string objectFullPath = "WORLD\\EVERQUEST\\OBJECTS\\FREEDUNE1\\FREEDUNE1.MDX\0";
                 if (DoodadNameOffsets.ContainsKey(objectName) == false)
                 {
                     DoodadNameOffsets.Add(objectName, Convert.ToUInt32(curNameOffset));

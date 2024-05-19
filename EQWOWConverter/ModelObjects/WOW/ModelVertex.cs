@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelVertex : ByteSerializable
+    internal class ModelVertex : IByteSerializable
     {
         public Vector3 Position = new Vector3();
         public List<byte> BoneWeights = new List<byte>(new byte[4]);    // Any more than 4 elements will be ignored

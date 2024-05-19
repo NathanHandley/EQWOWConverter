@@ -14,19 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWFiles
+namespace EQWOWConverter.Common
 {
-    internal interface OffsetByteSerializable
+    internal interface IByteSerializable
     {
-        public List<Byte> GetHeaderBytes();
-
-        public void AddDataBytes(ref List<Byte> byteBuffer);
+        public UInt32 GetBytesSize();
+        public List<byte> ToBytes();
     }
 }

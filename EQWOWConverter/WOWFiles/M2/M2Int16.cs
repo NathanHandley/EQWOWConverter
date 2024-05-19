@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Int16 : ByteSerializable
+    internal class M2Int16 : IByteSerializable
     {
         public Int16 Value = 0;
 

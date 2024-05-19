@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTrackSequenceValues<T> where T : ByteSerializable
+    internal class ModelTrackSequenceValues<T> where T : IByteSerializable
     {
         public List<T> Values = new List<T>();
         public UInt32 DataOffset = 0;

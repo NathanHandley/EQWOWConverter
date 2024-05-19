@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelMaterial : ByteSerializable
+    internal class ModelMaterial : IByteSerializable
     {
         ModelMaterialFlag Flags = ModelMaterialFlag.None;
         ModelMaterialBlendType BlendingMode = ModelMaterialBlendType.Alpha;

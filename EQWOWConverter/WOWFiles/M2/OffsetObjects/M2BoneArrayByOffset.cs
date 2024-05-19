@@ -24,7 +24,7 @@ using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2BoneArrayByOffset : OffsetByteSerializable
+    internal class M2BoneArrayByOffset : IOffsetByteSerializable
     {
         private UInt32 Count = 0;
         private UInt32 Offset = 0;

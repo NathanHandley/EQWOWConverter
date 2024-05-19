@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2TrackSequencesArrayByOffset<T> where T : ByteSerializable
+    internal class M2TrackSequencesArrayByOffset<T> where T : IByteSerializable
     {
         private List<M2TrackSequences<T>> TrackSequences = new List<M2TrackSequences<T>>();
         private UInt32 Count = 0;

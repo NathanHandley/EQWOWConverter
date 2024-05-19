@@ -31,8 +31,7 @@ namespace EQWOWConverter.ModelObjects
         {
             Timestamps.Add(timestamp);
         }
-
-        
+                
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;

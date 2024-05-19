@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Dummy : ByteSerializable
+    internal class M2Dummy : IByteSerializable
     {
         public UInt32 GetBytesSize()
         {

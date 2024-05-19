@@ -56,34 +56,5 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(BitConverter.GetBytes(FileNameOffset));
             return bytes;
         }
-
-        public List<Byte> GetDataBytes(ref UInt32 curOffset)
-        {
-            List<byte> bytes = new List<byte>();
-
-
-            return bytes;
-        }
-
-        //public List<byte> ToBytes()
-        //{
-        //    List<byte> bytes = new List<byte>();
-        //    string fullPath = GenerateFullFileNameAndPath(modelTextureFolder) + "\0";
-        //    bytes.AddRange();
-        //    FileNameLength = Convert.ToUInt32(bytes.Count);
-        //    FileNameOffset = Convert.ToUInt32(curOffset);
-        //    curOffset += bytes.Count;
-        //    return bytes;
-        //}
-
-        //public void AddToByteBuffer(ref List<byte> byteBuffer)
-        //{
-        //    byteBuffer.AddRange(Position.ToBytes());
-        //    byteBuffer.AddRange(BoneWeights.ToArray());
-        //    byteBuffer.AddRange(BoneIndicies.ToArray());
-        //    byteBuffer.AddRange(Normal.ToBytes());
-        //    byteBuffer.AddRange(Texture1TextureCoordinates.ToBytes());
-        //    byteBuffer.AddRange(Texture2TextureCoordinates.ToBytes());
-        //}
     }
 }

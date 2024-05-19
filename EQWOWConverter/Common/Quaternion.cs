@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class Quaternion : ByteSerializable
+    internal class Quaternion : IByteSerializable
     {
         public float X = 0;
         public float Y = 0;

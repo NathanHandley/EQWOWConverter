@@ -8,7 +8,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2StringByOffset : OffsetByteSerializable
+    internal class M2StringByOffset : IOffsetByteSerializable
     {
         private UInt32 Length = 0;
         private UInt32 Offset = 0;

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class Vector3 : ByteSerializable
+    internal class Vector3 : IByteSerializable
     {
         public float X;
         public float Y;

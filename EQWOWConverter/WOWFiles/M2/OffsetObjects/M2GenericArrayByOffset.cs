@@ -9,7 +9,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2GenericArrayByOffset<T> : OffsetByteSerializable where T : ByteSerializable
+    internal class M2GenericArrayByOffset<T> : IOffsetByteSerializable where T : IByteSerializable
     {
         private UInt32 Count = 0;
         private UInt32 Offset = 0;

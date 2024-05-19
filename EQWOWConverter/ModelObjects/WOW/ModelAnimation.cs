@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelAnimation : ByteSerializable
+    internal class ModelAnimation : IByteSerializable
     {
         public ModelAnimationType AnimationType = ModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex

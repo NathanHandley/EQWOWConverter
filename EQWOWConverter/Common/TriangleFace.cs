@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace : ByteSerializable, IComparable, IEquatable<TriangleFace>
+    internal class TriangleFace : IByteSerializable, IComparable, IEquatable<TriangleFace>
     {
         public int MaterialIndex;
         public int V1;

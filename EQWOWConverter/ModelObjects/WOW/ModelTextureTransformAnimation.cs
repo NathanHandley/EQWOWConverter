@@ -24,11 +24,12 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelTextureTransformAnimation : ByteSerializable
+    internal class ModelTextureTransformAnimation : IByteSerializable
     {
         public UInt32 GetBytesSize()
         {
             // Temp, hard coded
+            Logger.WriteLine("WARNING ModelTextureTransformAnimation.GetBytesSize is NYI");
             UInt32 size = 0;
             size += 2;  // InterpolationType
             size += 2;  // GlobalSequenceID
@@ -57,6 +58,8 @@ namespace EQWOWConverter.ModelObjects
         {
             List<byte> bytes = new List<byte>();
             // Temp, hard coded
+            Logger.WriteLine("WARNING ModelTextureTransformAnimation.ToBytes is NYI");
+
             // Translation
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(65535)));

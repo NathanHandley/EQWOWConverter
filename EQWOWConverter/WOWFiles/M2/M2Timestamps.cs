@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Timestamps : ByteSerializable
+    internal class M2Timestamps : IByteSerializable
     {
         public List<UInt32> Timestamps = new List<UInt32>();
 
