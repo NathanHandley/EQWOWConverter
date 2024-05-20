@@ -12,7 +12,7 @@ namespace EQWOWConverter.WOWFiles
         {
             public int MapID;
             public string ScriptName = string.Empty;
-            public int AllowMountBool = 0; // 0 no, 1 yes
+            public int AllowMountBool = 1; // 0 no, 1 yes
         }
 
         List<Row> rows = new List<Row>();
