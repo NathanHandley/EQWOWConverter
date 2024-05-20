@@ -20,6 +20,7 @@ using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -127,9 +128,27 @@ namespace EQWOWConverter.Objects
                     ModelTexture newModelTexture = new ModelTexture();
                     newModelTexture.TextureName = material.AnimationTextures[0];
                     ModelTextures.Add(newModelTexture);
-                    ModelMaterials.Add(new ModelMaterial());
+                    switch (material.MaterialType)
+                    {
+                        case MaterialType.TransparentAdditive:
+                        case MaterialType.TransparentAdditiveUnlit:
+                        case MaterialType.TransparentAdditiveUnlitSkydome:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Add));
+                            } break;
+                        case MaterialType.Transparent25Percent:
+                        case MaterialType.Transparent75Percent:
+                        case MaterialType.Transparent50Percent:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Alpha));
+                            } break;
+                        default:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Opaque));
+                            } break;
+                    }
                     ModelTextureLookups.Add(curIndex);
-                    ModelTextureMappingLookups.Add(0); // 
+                    ModelTextureMappingLookups.Add(0);
                     ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
                     ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
                     ++curIndex;

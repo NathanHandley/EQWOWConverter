@@ -28,6 +28,11 @@ namespace EQWOWConverter.ModelObjects
         ModelMaterialFlag Flags = ModelMaterialFlag.None;
         ModelMaterialBlendType BlendingMode = ModelMaterialBlendType.Alpha;
 
+        public ModelMaterial(ModelMaterialBlendType blendType)
+        {
+            BlendingMode = blendType;
+        }
+
         public UInt32 GetBytesSize()
         {
             return 4;
