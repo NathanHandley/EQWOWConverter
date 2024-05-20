@@ -105,11 +105,20 @@ namespace EQWOWConverter.Zones
                 doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
-                // TODO: Rotation/Orientation
+                // Calculate the rotation
+                float rotateYaw = (Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Z);
+                float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
+                float rotateRoll = Convert.ToSingle(Math.PI / 180) * (objectInstance.Rotation.Y * -1); // Flip the sign EQ vs WoW
+                System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                doodadInstance.Orientation.X = rotationQ.X;
+                doodadInstance.Orientation.Y = rotationQ.Y;
+                doodadInstance.Orientation.Z = rotationQ.Z;
+                doodadInstance.Orientation.W = rotationQ.W;
 
                 // Scale is confirmed to always have the same value in x, y, z
                 doodadInstance.Scale = objectInstance.Scale.X;
 
+                // Add it
                 DoodadInstances.Add(doodadInstance);
             }
 
