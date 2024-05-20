@@ -1,4 +1,4 @@
-# EQWOW
+# EQ to WOW Converter
 Converts the EverQuest assets from the original three game releases (Initial, Ruins of Kunark, Scars of Velious) into World of Warcraft 3.3.5
 
 # Current State
