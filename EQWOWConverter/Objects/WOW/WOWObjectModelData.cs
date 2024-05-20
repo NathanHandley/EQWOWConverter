@@ -139,6 +139,7 @@ namespace EQWOWConverter.Objects
                         case MaterialType.Transparent25Percent:
                         case MaterialType.Transparent75Percent:
                         case MaterialType.Transparent50Percent:
+                        case MaterialType.TransparentMasked:
                             {
                                 ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Alpha));
                             } break;
@@ -232,7 +233,8 @@ namespace EQWOWConverter.Objects
                 System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);
                 System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
 
-                Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
+                // Invert the normal due to winding order difference
+                Vector3 normal = new Vector3(normalizedNormalSystem.X * -1, normalizedNormalSystem.Y * -1, normalizedNormalSystem.Z * -1);
                 CollisionFaceNormals.Add(normal);
             }
         }
