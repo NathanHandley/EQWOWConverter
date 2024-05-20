@@ -295,7 +295,7 @@ namespace EQWOWConverter.Objects
 
         private void CalculateBoundingBoxesAndRadii()
         {
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVerticies);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVerticies, Configuration.CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
             CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();

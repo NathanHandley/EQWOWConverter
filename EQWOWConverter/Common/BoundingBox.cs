@@ -153,7 +153,7 @@ namespace EQWOWConverter.Common
             return boundingBox;
         }
 
-        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> verticies)
+        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> verticies, float minSize = 0)
         {
             BoundingBox boundingBox = new BoundingBox();
             foreach (ModelVertex renderVert in verticies)
@@ -172,6 +172,21 @@ namespace EQWOWConverter.Common
                 if (renderVert.Position.Z > boundingBox.TopCorner.Z)
                     boundingBox.TopCorner.Z = renderVert.Position.Z;
             }
+
+            // Enforce a min size if needed
+            if (minSize > 0)
+            {
+                float amountToAddX = (boundingBox.TopCorner.X - boundingBox.BottomCorner.X);
+                boundingBox.TopCorner.X += amountToAddX;
+                boundingBox.BottomCorner.X -= amountToAddX;
+                float amountToAddY = (boundingBox.TopCorner.Y - boundingBox.BottomCorner.Y);
+                boundingBox.TopCorner.Y += amountToAddY;
+                boundingBox.BottomCorner.Y -= amountToAddY;
+                float amountToAddZ = (boundingBox.TopCorner.Z - boundingBox.BottomCorner.Z);
+                boundingBox.TopCorner.Z += amountToAddZ;
+                boundingBox.BottomCorner.Z -= amountToAddZ;
+            }
+
             return boundingBox;
         }
 

@@ -27,17 +27,13 @@ Notes:
 	
 ** Issues
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-Texture "maywall" should exist in \EQExports\fearplane\Zone, but doesn't.  It's in the material.  It's in the \Objects\
-Texture "canwall1" should exist in \EQExports\oasis\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
-Texture "kruphse3" should exist in \EQExports\swampofnohope\Zone, but doesn't.  It's in the materiallist.  It's in the \Objects\  Copy this manually
 
-BSP generation just doesn't work for maps.  Setting to produce only 1 node (a leaf) for the full zone.  Revisit later if performance matters.
-- The issue is that there are sometimes a 'hole' triangle.  I don't know why not all of the triangles get picked up.
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 ** Floor Fall Points
 Greater Faydark - at 0.3 scale, 47.696289, -3.476796, -0.74280
+Greater Faydark - at 0.3 scale, -161.151520, -684.006409, -0.803443
 
 ** Breakup notes
 Comb mesh for indicies that share a material, and group by that

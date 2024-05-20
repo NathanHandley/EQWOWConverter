@@ -50,6 +50,12 @@ namespace EQWOWConverter
         // The algorithm to use when selecting what faces need to be associated in world model objects
         public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_XY_REGION;
 
+        //=====================================================================
+        // Objects
+        //=====================================================================
+        // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
+        public static readonly float CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE = 25f;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
