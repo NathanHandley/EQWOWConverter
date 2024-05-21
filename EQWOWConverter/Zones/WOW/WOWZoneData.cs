@@ -106,10 +106,14 @@ namespace EQWOWConverter.Zones
                 doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
                 // Calculate the rotation
-                float xRotateDegrees = objectInstance.Rotation.X;
-                float yRotateDegrees = objectInstance.Rotation.Z; // Z and Y are flipped between EQ and WoW
-                float zRotateDegrees = objectInstance.Rotation.Y * -1; // Y rotation must be multiplied by -1 to work
-                doodadInstance.Orientation = Quaternion.GenerateQuaternionRotation(xRotateDegrees, yRotateDegrees, zRotateDegrees);
+                float rotateYaw = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Z;
+                float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
+                float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
+                System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                doodadInstance.Orientation.X = rotationQ.X;
+                doodadInstance.Orientation.Y = rotationQ.Y;
+                doodadInstance.Orientation.Z = rotationQ.Z;
+                doodadInstance.Orientation.W = -rotationQ.W; // Flip the sign for handedness
 
                 // Scale is confirmed to always have the same value in x, y, z
                 doodadInstance.Scale = objectInstance.Scale.X;
