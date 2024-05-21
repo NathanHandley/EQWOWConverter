@@ -52,5 +52,31 @@ namespace EQWOWConverter.Common
             bytes.AddRange(BitConverter.GetBytes(W));
             return bytes;
         }
+
+        public static Quaternion GenerateQuaternionRotation(float x, float y, float z)
+        {
+            // Convert to radians
+            float radiansX = MathF.PI * x / 180.0f;
+            float radiansY = MathF.PI * y / 180.0f;
+            float radiansZ = MathF.PI * z / 180.0f;
+
+            // Create quaternions for each axis rotation (using .Net library)
+            System.Numerics.Quaternion qZ = System.Numerics.Quaternion.CreateFromAxisAngle(System.Numerics.Vector3.UnitZ, radiansZ);
+            System.Numerics.Quaternion qX = System.Numerics.Quaternion.CreateFromAxisAngle(System.Numerics.Vector3.UnitX, radiansX);
+            System.Numerics.Quaternion qY = System.Numerics.Quaternion.CreateFromAxisAngle(System.Numerics.Vector3.UnitY, radiansY);
+
+            // Combine the quaternions in the Z, X, Y order
+            System.Numerics.Quaternion combined = qY * qX * qZ;
+
+            // Generate and return the quaternion
+            System.Numerics.Quaternion rotated = combined * System.Numerics.Quaternion.Identity;
+            Quaternion returnResult = new Quaternion();
+            returnResult.X = rotated.X;
+            returnResult.Y = rotated.Y;
+            returnResult.Z = rotated.Z;
+            returnResult.W = rotated.W;
+
+            return returnResult;
+        }
     }
 }
