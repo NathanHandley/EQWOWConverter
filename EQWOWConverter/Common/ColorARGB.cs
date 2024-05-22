@@ -22,33 +22,33 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class ColorRGBA
+    internal class ColorARGB
     {
+        public byte A = 0;
         public byte R = 0;
         public byte G = 0;
         public byte B = 0;
-        public byte A = 0;
 
-        public ColorRGBA()
+        public ColorARGB()
         {
 
         }
 
-        public ColorRGBA(byte r, byte g, byte b, byte a)
+        public ColorARGB(byte a, byte r, byte g, byte b)
         {
+            A = a;
             R = r;
             G = g;
             B = b;
-            A = a;
         }
 
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();
+            returnBytes.Add(A);
             returnBytes.Add(R);
             returnBytes.Add(G);
             returnBytes.Add(B);
-            returnBytes.Add(A);
             return returnBytes;
         }
     }

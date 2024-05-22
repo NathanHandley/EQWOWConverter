@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones
 
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<Material> Materials = new List<Material>();
-        public ColorRGBA AmbientLight = new ColorRGBA();
+        public ColorARGB AmbientLight = new ColorARGB();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<WorldModelObjectDoodadInstance> DoodadInstances = new List<WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -61,7 +61,7 @@ namespace EQWOWConverter.Zones
             if (IsLoaded == true)
                 return;
             Materials = eqZoneData.Materials;
-            AmbientLight = eqZoneData.AmbientLight;
+            AmbientLight = new ColorARGB(eqZoneData.AmbientLight.A, eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, AmbientLight.B);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
 
             // Change face orientation for culling differences between EQ and WoW
