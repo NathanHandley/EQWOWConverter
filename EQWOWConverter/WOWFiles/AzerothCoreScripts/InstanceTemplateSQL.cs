@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `instance_template` WHERE `map` >= 750 AND `map` <= 900;");
+            stringBuilder.AppendLine("DELETE FROM `instance_template` WHERE `map` >= " + Configuration.CONFIG_DBCID_MAPID_START + " AND `map` <= " + (Configuration.CONFIG_DBCID_MAPID_START + 122) + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (");

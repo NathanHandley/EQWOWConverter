@@ -27,14 +27,22 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
+            private static int CURRENT_AREABIT = Configuration.CONFIG_DBIC_AREATABLE_AREABIT_START;
+
             public int Id;
             public int ContinentID = 724;
-            public int AreaBit = 3617;
+            public int AreaBit = 0;
             public int Flags = 0;
             public int ZoneMusic = 0;
             public int IntroSound = 0;
             public int ExplorationLevel = 0;
             public string AreaName = string.Empty;       
+
+            public Row()
+            {
+                AreaBit = CURRENT_AREABIT;
+                CURRENT_AREABIT++;
+            }
         }
 
         private List<Row> rows = new List<Row>();

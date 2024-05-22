@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
+        private bool IsLoaded = false;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
         private static UInt32 CURRENT_AREAID = Configuration.CONFIG_DBCID_AREAID_START;
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -57,6 +58,8 @@ namespace EQWOWConverter.Zones
 
         public void LoadFromEQZone(EQZoneData eqZoneData, ZoneProperties zoneProperties)
         {
+            if (IsLoaded == true)
+                return;
             Materials = eqZoneData.Materials;
             AmbientLight = eqZoneData.AmbientLight;
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
@@ -214,6 +217,7 @@ namespace EQWOWConverter.Zones
 
             // Rebuild the bounding box
             CalculateBoundingBox();
+            IsLoaded = true;
         }
 
         private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,

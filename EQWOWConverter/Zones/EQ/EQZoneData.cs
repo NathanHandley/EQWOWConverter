@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones
 {
     internal class EQZoneData
     {
+        private bool IsLoaded = false;
         public List<Vector3> Verticies { get; } = new List<Vector3>();
         public List<TextureCoordinates> TextureCoords { get; } = new List<TextureCoordinates>();
         public List<Vector3> Normals { get; } = new List<Vector3>();
@@ -44,6 +45,8 @@ namespace EQWOWConverter.Zones
 
         public void LoadDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
+            if (IsLoaded == true)
+                return;
             if (Directory.Exists(inputZoneFolderFullPath) == false)
             {
                 Logger.WriteLine("- [" + inputZoneFolderName + "]: ERROR - Could not find path at '" + inputZoneFolderFullPath + "'");
@@ -57,6 +60,7 @@ namespace EQWOWConverter.Zones
             LoadAmbientLightData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+            IsLoaded = true;
         }
 
         private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)

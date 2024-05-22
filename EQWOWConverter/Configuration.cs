@@ -80,6 +80,9 @@ namespace EQWOWConverter
         // IDs for the loading screen
         public static readonly int CONFIG_DBCID_LOADINGSCREENID_START = 255;
 
+        // IDs for AreaBit used in AreaTable, should be unique
+        public static readonly int CONFIG_DBIC_AREATABLE_AREABIT_START = 3800;
+
         // ====================================================================
         // AzerothCore Database IDs
         // ====================================================================

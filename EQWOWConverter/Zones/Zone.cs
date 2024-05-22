@@ -41,14 +41,12 @@ namespace EQWOWConverter.Zones
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            // Clear any old data and reload
-            EQZoneData = new EQZoneData();
+            // Load
             EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
         }
         
         public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
         {
-            WOWZoneData = new WOWZoneData();
             if (zoneProperties.DescriptiveName != string.Empty)
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
