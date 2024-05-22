@@ -30,10 +30,10 @@ namespace EQWOWConverter.Common
         public float FarRadius = 0;
         public float NormalStartScalar = 0.25f;         // Default is 0.25f
         public float NormalEnd = 444.4445f;             // Default is 444.4445f
-        public ColorRGBA NormalColor = new ColorRGBA(255, 255, 255, 255);
+        public ColorBGRA NormalColor = new ColorBGRA(255, 255, 255, 255);
         public float UnderwaterStartScalar = -0.5f;
         public float UnderwaterEnd = 222.2222f;
-        public ColorRGBA UnderwaterColor = new ColorRGBA(255, 255, 255, 255);
+        public ColorBGRA UnderwaterColor = new ColorBGRA(255, 255, 255, 255);
 
         public List<byte> ToBytes()
         {

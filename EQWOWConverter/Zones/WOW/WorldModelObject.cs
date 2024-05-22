@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
-        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
+        public List<ColorBGRA> VertexColors = new List<ColorBGRA>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
@@ -46,7 +46,8 @@ namespace EQWOWConverter.Zones
             Verticies = verticies;
             TextureCoords = textureCoords;
             Normals = normals;
-            VertexColors = vertexColors;
+            foreach(var vertexColor in vertexColors)
+                VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
             TriangleFaces = triangleFaces;
             CalculateBoundingBox();
             GenerateRenderBatches(materials);
@@ -131,7 +132,7 @@ namespace EQWOWConverter.Zones
             List<Vector3> sortedVerticies = new List<Vector3>();
             List<TextureCoordinates> sortedTextureCoords = new List<TextureCoordinates>();
             List<Vector3> sortedNormals = new List<Vector3>();
-            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            List<ColorBGRA> sortedVertexColors = new List<ColorBGRA>();
             List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
             Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
             for (int i = 0; i < TriangleFaces.Count; i++)
