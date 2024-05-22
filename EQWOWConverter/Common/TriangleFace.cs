@@ -80,46 +80,5 @@ namespace EQWOWConverter.Common
                 return true;
             return false;
         }
-
-        public bool ContainsIndex(SortedSet<int> indicies)
-        {
-            foreach (int i in indicies)
-                if (ContainsIndex(i) == true)
-                    return true;
-
-            return false;
-        }
-
-        public bool SharesIndexWith(TriangleFace otherFace)
-        {
-            if (V1 == otherFace.V1 || V1 == otherFace.V2 || V1 == otherFace.V3)
-                return true;
-            if (V2 == otherFace.V1 || V2 == otherFace.V2 || V2 == otherFace.V3)
-                return true;
-            if (V3 == otherFace.V1 || V3 == otherFace.V2 || V3 == otherFace.V3)
-                return true;
-
-            return false;
-        }
-
-        public int CompareTo(object? obj)
-        {
-            if (obj == null) return 1;
-            TriangleFace? otherTriangle = obj as TriangleFace;
-            if (otherTriangle != null)
-                return this.MaterialIndex.CompareTo(otherTriangle.MaterialIndex);
-            else
-                throw new ArgumentException("Object is not a TriangleFace");
-        }
-
-        public bool Equals(TriangleFace? other)
-        {
-            if (other == null) return false;
-            if (V1 != other.V1) return false;
-            if (V2 != other.V2) return false;
-            if (V3 != other.V3) return false;
-            if (MaterialIndex != other.MaterialIndex) return false;
-            return true;
-        }
     }
 }

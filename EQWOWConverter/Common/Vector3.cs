@@ -41,24 +41,6 @@ namespace EQWOWConverter.Common
             Z = vector.Z;
         }
 
-        // Note that this is not a good practice in most instances outside of this use case.  Since the float data is
-        // being generated and read in a fixed way, this equal comparison works fine.  But, if this is to be used
-        // outside of this engine, a different approach using abs and epsilon should be used
-        public bool IsEqualForIndexComparisons(Vector3 otherVector)
-        {
-            // Itself is always a match
-            if (otherVector == this)
-                return true;
-            if (X != otherVector.X)
-                return false;
-            if (Y != otherVector.Y)
-                return false;
-            if (Z != otherVector.Z)
-                return false;
-
-            return true;
-        }
-
         public Vector3(float x, float y, float z)
         {
             X = x;
