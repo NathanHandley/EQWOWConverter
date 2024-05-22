@@ -43,8 +43,8 @@ namespace EQWOWConverter
         // The value EQ verticies multiply by when translated into WOW verticies
         public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
 
-        // Maximum number of faces that fit into a WMO group before it subdivides (max value can only ever be 21,840
-        // NOTE: Do not change this until BSP tree generation is working properly
+        // Maximum number of faces that fit into a WMO group before it subdivides
+        // max value can only ever be 21,840, but >2100 not advised due to btree size
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
 
         // The algorithm to use when selecting what faces need to be associated in world model objects
@@ -88,17 +88,5 @@ namespace EQWOWConverter
         // ====================================================================
         // Start row for `game_tele` records. (~2000-2200)
         public static readonly int CONFIG_GAMETELE_ROWID_START = 2000;
-
-        // ====================================================================
-        // BSP Tree Generation
-        // NOTE: BSP Tree Generation isn't working right if there are any nodes,
-        // as some triangles don't get a home.  Don't adjust the min split size
-        // until it's fixed
-        // ====================================================================
-        // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 2101; // Do not change
-
-        // BSP tree nodes won't operate on bounding boxes smaller than this
-        public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
     }
 }

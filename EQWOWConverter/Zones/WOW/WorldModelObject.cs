@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones
             GenerateRenderBatches(materials);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
-            BSPTree = new BSPTree(BoundingBox, Verticies, TriangleFaces);
+            BSPTree = new BSPTree(BoundingBox, TriangleFaces);
             CreateDoodadAssociations(zoneWideDoodadInstances);
         }
 

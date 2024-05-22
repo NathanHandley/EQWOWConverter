@@ -31,16 +31,8 @@ namespace EQWOWConverter.Common
         public UInt32 FaceStartIndex = 0; // first triangle index (found in WMO MOBR)
         public float PlaneDistance = 0;
 
-        // Related to tree generation
-        public bool TreeGenHaveMoreToProcess = false;
-        public BoundingBox TreeGenBoundingBox = new BoundingBox();
-        public List<UInt32> TreeGenFaceIndicies = new List<UInt32>();
-
-        public BSPNode(bool haveMoreToProcess, BoundingBox boundingBox, List<UInt32> faceIndicies)
+        public BSPNode()
         {
-            TreeGenHaveMoreToProcess = haveMoreToProcess;
-            TreeGenFaceIndicies = new List<uint>(faceIndicies);
-            TreeGenBoundingBox = new BoundingBox(boundingBox);
         }
 
         public void SetValues(BSPNodeFlag singleFlag, short childANodeIndex, short childBNodeIndex, ushort numFaces, uint faceStartIndex, float planeDistance)
@@ -51,13 +43,6 @@ namespace EQWOWConverter.Common
             NumFaces = numFaces;
             FaceStartIndex = faceStartIndex;
             PlaneDistance = planeDistance;
-        }
-
-        public void ClearTreeGenData()
-        {
-            TreeGenHaveMoreToProcess = false;
-            TreeGenBoundingBox = new BoundingBox();
-            TreeGenFaceIndicies.Clear();
         }
 
         public List<byte> ToBytes()
