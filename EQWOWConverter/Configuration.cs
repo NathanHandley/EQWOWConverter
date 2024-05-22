@@ -47,9 +47,6 @@ namespace EQWOWConverter
         // max value can only ever be 21,840, but >2100 not advised due to btree size
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
 
-        // The algorithm to use when selecting what faces need to be associated in world model objects
-        public static readonly WorldModelObjectGenerationType CONFIG_GENERATION_TYPE = WorldModelObjectGenerationType.BY_XY_REGION;
-
         //=====================================================================
         // Objects
         //=====================================================================

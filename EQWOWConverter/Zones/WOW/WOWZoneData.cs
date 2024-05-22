@@ -139,54 +139,15 @@ namespace EQWOWConverter.Zones
                     materialNames.Add(material.Name);
                 GenerateWorldModelObjectByMaterials(materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
-            // Otherwise, generate based on generation type provided
+            // Otherwise, break into parts
             else
             {
-                switch (Configuration.CONFIG_GENERATION_TYPE)
-                {
-                    case WorldModelObjectGenerationType.BY_MATERIAL:
-                        {
-                            // Generate world groups based on materials.  If there are groups of materials, do those first
-                            List<string> materialNamesLeftToProcess = new List<string>();
-                            foreach (Material material in Materials)
-                                materialNamesLeftToProcess.Add(material.Name);
-                            foreach (List<string> materialGroupList in zoneProperties.MaterialGroupsByName)
-                            {
-                                GenerateWorldModelObjectByMaterials(materialGroupList, triangleFaces, verticies, normals, vertexColors, textureCoords);
-                                foreach (string materialName in materialGroupList)
-                                    if (materialNamesLeftToProcess.Contains(materialName))
-                                        materialNamesLeftToProcess.Remove(materialName);
-                            }
-                            foreach (string materialName in materialNamesLeftToProcess)
-                            {
-                                List<string> materialNameListContainer = new List<string>();
-                                materialNameListContainer.Add(materialName);
-                                GenerateWorldModelObjectByMaterials(materialNameListContainer, triangleFaces, verticies, normals, vertexColors, textureCoords);
-                            }
-                        }
-                        break;
-                    case WorldModelObjectGenerationType.BY_MAP_CHUNK:
-                        {
-                            // Generate world groups based on chunks
-                            GenerateWorldModelObjectsByChunks(eqZoneData.MapChunks, verticies, normals, vertexColors, textureCoords);
-                        }
-                        break;
-                    case WorldModelObjectGenerationType.BY_XY_REGION:
-                        {
-                            // Generate the world groups by splitting the map down into subregions as needed
-                            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
-                            List<string> materialNames = new List<string>();
-                            foreach (Material material in Materials)
-                                materialNames.Add(material.Name);
-                            GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
-                        }
-                        break;
-                    default:
-                        {
-                            Logger.WriteLine("Error generating world objects due to invalid WorldModelGenerationType of '" + Configuration.CONFIG_GENERATION_TYPE.ToString() + "'");
-                        }
-                        break;
-                }
+                // Generate the world groups by splitting the map down into subregions as needed
+                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
+                List<string> materialNames = new List<string>();
+                foreach (Material material in Materials)
+                    materialNames.Add(material.Name);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
 
             // Save the loading screen
@@ -263,62 +224,7 @@ namespace EQWOWConverter.Zones
                 GenerateWorldModelObjectByMaterials(materialNames, faces, verticies, normals, vertexColors, textureCoords);
         }
 
-        private void GenerateWorldModelObjectsByChunks(List<MapChunk> mapChunks, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
-        {
-            // Group map chunks by ID
-            Dictionary<int, MapChunk> mapChunksByID = new Dictionary<int, MapChunk>();
-            foreach(MapChunk mapChunk in mapChunks)
-                mapChunksByID.Add(mapChunk.ID, mapChunk);
-
-            // Process as long as there are map chunks
-            while (mapChunksByID.Count > 0)
-            {
-                List<TriangleFace> triangleFacesInGroup = new List<TriangleFace>();
-                int curVertexCount = 0;
-
-                // Fill up local buffers with map chunk data until a limit is reached
-                bool doGetAnotherMapChunk = true;
-                while (doGetAnotherMapChunk == true)
-                {
-                    var mapChunkByID = mapChunksByID.First();
-                    int mapChunkID = mapChunkByID.Key;
-                    MapChunk curMapChunk = mapChunksByID[mapChunkID];
-                    if (curVertexCount + curMapChunk.Verticies.Count < Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
-                    {
-                        curVertexCount += curMapChunk.Verticies.Count;
-
-                        // Save the faces
-                        foreach (TriangleFace chunkFace in curMapChunk.TriangleFaces)
-                        {
-                            // Skip any without a valid texture ID
-                            if (Materials[chunkFace.MaterialIndex].AnimationTextures.Count == 0)
-                                continue;
-
-                            TriangleFace newFace = new TriangleFace();
-                            newFace.MaterialIndex = chunkFace.MaterialIndex;
-
-                            // Rotate the verticies for culling differences
-                            newFace.V1 = chunkFace.V3;
-                            newFace.V2 = chunkFace.V2;
-                            newFace.V3 = chunkFace.V1;
-                            triangleFacesInGroup.Add(newFace);
-                        }
-
-                        mapChunksByID.Remove(mapChunkID);
-                        if (mapChunksByID.Count == 0)
-                            doGetAnotherMapChunk = false;
-                    }
-                    else
-                        doGetAnotherMapChunk = false;                  
-                }
-
-                // Generate the world model object
-                GenerateWorldModelObjectFromFaces(triangleFacesInGroup, verticies, normals, vertexColors, textureCoords);
-            }
-        }
-
-        private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
+         private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
             List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             List<UInt32> materialIDs = new List<UInt32>();
