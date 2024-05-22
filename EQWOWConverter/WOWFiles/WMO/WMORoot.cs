@@ -190,7 +190,32 @@ namespace EQWOWConverter.WOWFiles
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
                 // Blend Mode (2 = GxBlend_Alpha, 3 = GxBlend_Add and ghosty)
-                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
+                switch (material.MaterialType)
+                {
+                    case MaterialType.TransparentAdditive:
+                    case MaterialType.TransparentAdditiveUnlit:
+                    case MaterialType.TransparentAdditiveUnlitSkydome:
+                        {
+                            // GxBlend_Add
+                            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(3)));
+                        }
+                        break;
+                    case MaterialType.Transparent25Percent:
+                    case MaterialType.Transparent75Percent:
+                    case MaterialType.Transparent50Percent:
+                    case MaterialType.TransparentMasked:
+                        {
+                            // GxBlend_Alpha
+                            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(2)));
+                        }
+                        break;
+                    default:
+                        {
+                            // GxBlend_Opaque
+                            curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                        }
+                        break;
+                }                
 
                 // Texture reference (for diffuse above)
                 if (hasNoTexture)
