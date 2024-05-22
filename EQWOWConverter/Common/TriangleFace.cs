@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace : IByteSerializable
+    internal class TriangleFace : IByteSerializable, IComparable, IEquatable<TriangleFace>
     {
         public int MaterialIndex;
         public int V1;
@@ -79,6 +79,26 @@ namespace EQWOWConverter.Common
             if (V1 == index || V2 == index || V3 == index)
                 return true;
             return false;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj == null) return 1;
+            TriangleFace? otherTriangle = obj as TriangleFace;
+            if (otherTriangle != null)
+                return this.MaterialIndex.CompareTo(otherTriangle.MaterialIndex);
+            else
+                throw new ArgumentException("Object is not a TriangleFace");
+        }
+
+        public bool Equals(TriangleFace? other)
+        {
+            if (other == null) return false;
+            if (V1 != other.V1) return false;
+            if (V2 != other.V2) return false;
+            if (V3 != other.V3) return false;
+            if (MaterialIndex != other.MaterialIndex) return false;
+            return true;
         }
     }
 }
