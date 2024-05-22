@@ -34,6 +34,14 @@ namespace EQWOWConverter.Common
 
         }
 
+        public ColorBGRA(byte b, byte g, byte r, byte a)
+        {
+            B = b;
+            G = g;
+            R = r;
+            A = a;
+        }
+
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();
