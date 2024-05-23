@@ -2,7 +2,7 @@
 Converts the EverQuest assets from the original three game releases (Initial, Ruins of Kunark, Scars of Velious) into World of Warcraft 3.3.5
 
 # Current State
-It is currently in heavy development and not ready for release, and **no support will be offered at this time as things are changing daily**.  Currently the maps are outputting with static objects, but there are severial issues.
+It is currently still in heavy development and **no support will be offered at this time as things are changing daily**.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, fire doesn't animate, etc)
 
 # Requirements
 - Windows build environment
@@ -54,8 +54,7 @@ Use WDBX Editor and go into the exports directory and import the csv script file
 
 **Package everything up**
 
-Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy
-Important: Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably (In Ladik's MPQ Editor, Operations > Set Max File Count)
+Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy.  Important: Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably (In Ladik's MPQ Editor, Operations > Set Max File Count)
 
 **Update the AzerothCore Database**
 
@@ -63,7 +62,7 @@ Run the scripts located into the exports directory subfolder \AzerothCoreSQLScri
 
 **Regenerate map files for AzerothCore**
 
-- Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor
+- Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor (this is optional UNTIL creatures are implemented)
 
 # Special Thanks
 In no particular order...
