@@ -57,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("SELECT * FROM areatrigger_teleport WHERE `Name` LIKE 'EQ %';");
+            stringBuilder.AppendLine("DELETE FROM areatrigger_teleport WHERE `Name` LIKE 'EQ %';");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `areatrigger_teleport` (`ID`, `Name`, `target_map`, `target_position_x`, `target_position_y`, `target_position_z`, `target_orientation`) VALUES (");

@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones
             public int AreaTriggerID;
             public string TargetZoneShortName = string.Empty;
             public Vector3 TargetZonePosition = new Vector3();
-            public float TargetZoneOrientation;
+            public float TargetZoneOrientation = 0f;
             public Vector3 BoxPosition = new Vector3();
             public float BoxLength;
             public float BoxWidth;
@@ -77,23 +77,42 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddZoneLine(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
-            float targetZonePositionZ, float targetZoneOrientation, float zoneBoxPositionX, float zoneBoxPositionY, float zoneBoxPositionZ,
-            float zoneBoxWidth, float zoneBoxLength, float zoneBoxHeight, float zoneBoxOrientation)
+        // The box is oriented when facing north (when using .gps, orientation = 0 and no tilt) since zone lines are axis aligned in EQ
+        public void AddZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
+            float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY, 
+            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
+            // Scale input values
+            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            // Create the box base values
             ZoneLineBox zoneLineBox = new ZoneLineBox();
             zoneLineBox.TargetZoneShortName = targetZoneShortName;
-            zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX * Configuration.CONFIG_EQTOWOW_WORLD_SCALE,
-                                                         targetZonePositionY * Configuration.CONFIG_EQTOWOW_WORLD_SCALE,
-                                                         targetZonePositionZ * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
-            zoneLineBox.TargetZoneOrientation = targetZoneOrientation;
-            zoneLineBox.BoxPosition = new Vector3(zoneBoxPositionX * Configuration.CONFIG_EQTOWOW_WORLD_SCALE, 
-                                                  zoneBoxPositionY * Configuration.CONFIG_EQTOWOW_WORLD_SCALE, 
-                                                  zoneBoxPositionZ * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
-            zoneLineBox.BoxWidth = zoneBoxWidth * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            zoneLineBox.BoxLength = zoneBoxLength * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            zoneLineBox.BoxHeight = zoneBoxHeight * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            zoneLineBox.BoxOrientation = zoneBoxOrientation;
+            zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
+            switch(targetZoneOrientation)
+            {
+                case ZoneLineOrientationType.North: zoneLineBox.TargetZoneOrientation = 0;  break;
+                case ZoneLineOrientationType.South: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
+                case ZoneLineOrientationType.West: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
+                case ZoneLineOrientationType.East: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+            }
+
+            // Calculate the dimensions in the form needed by a wow trigger zone
+            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
+                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
+            zoneLineBox.BoxPosition = zoneLineBoxBounding.GetCenter();
+            zoneLineBox.BoxWidth = zoneLineBoxBounding.GetYDistance();
+            zoneLineBox.BoxLength = zoneLineBoxBounding.GetXDistance();
+            zoneLineBox.BoxHeight = zoneLineBoxBounding.GetZDistance();
+            ZoneLineBoxes.Add(zoneLineBox);
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)

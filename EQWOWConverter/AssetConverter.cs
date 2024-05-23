@@ -311,7 +311,8 @@ namespace EQWOWConverter
             // Create the SQL Scripts
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
-            AreaTriggerTeleportSQL areaTriggerTemplateSQL = new AreaTriggerTeleportSQL();
+            AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
+            AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
 
             foreach (Zone zone in zones)
             {
@@ -330,6 +331,8 @@ namespace EQWOWConverter
                         Logger.WriteLine("Error!  When attempting to map a zone line, there was no zone with short name '" + zoneLine.TargetZoneShortName + "'");
                         continue;
                     }
+
+                    // Area Trigger Teleport
                     int areaTriggerID = zoneLine.AreaTriggerID;
                     string descriptiveName = "EQ " + zone.ShortName + " - " + zoneLine.TargetZoneShortName + " zone line";
                     int targetMapId = zoneMapIDsByShortName[zoneLine.TargetZoneShortName];
@@ -337,15 +340,19 @@ namespace EQWOWConverter
                     float targetPositionY = zoneLine.TargetZonePosition.Y;
                     float targetPositionZ = zoneLine.TargetZonePosition.Z;
                     float targetOrientation = zoneLine.TargetZoneOrientation;
+                    areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
 
-                    areaTriggerTemplateSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+                    // Area Trigger
+                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.MapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
             }
 
             // Output them
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
-            areaTriggerTemplateSQL.WriteToDisk(sqlScriptFolder);
+            areaTriggerSQL.WriteToDisk(sqlScriptFolder);
+            areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
             
             Logger.WriteLine("AzerothCore SQL Scripts created successfully");
         }
