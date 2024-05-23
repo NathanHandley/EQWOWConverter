@@ -80,6 +80,10 @@ namespace EQWOWConverter
         // IDs for AreaBit used in AreaTable, should be unique
         public static readonly int CONFIG_DBIC_AREATABLE_AREABIT_START = 3800;
 
+        // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in AzerothCore scripts
+        // for teleports as well any other area-based triggers
+        public static readonly int CONFIG_DBIC_AREATRIGGERID_START = 6500;
+
         // ====================================================================
         // AzerothCore Database IDs
         // ====================================================================

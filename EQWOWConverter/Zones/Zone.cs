@@ -47,8 +47,8 @@ namespace EQWOWConverter.Zones
         
         public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
         {
-            if (zoneProperties.DescriptiveName != string.Empty)
-                SetDescriptiveName(zoneProperties.DescriptiveName);
+            if (zoneProperties.ShortName != string.Empty)
+                SetDescriptiveName(zoneProperties.ShortName);
             WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
         }
 
