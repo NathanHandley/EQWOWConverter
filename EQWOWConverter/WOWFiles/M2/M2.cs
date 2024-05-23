@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private string TokenMagic = "MD20";
         private UInt32 Version = 264;
-        private M2StringByOffset Name;
+        private M2StringByOffset Name = new M2StringByOffset(string.Empty);
         private M2Flags Flags = 0; // UInt32
         private M2GenericArrayByOffset<M2Timestamps> GlobalLoopTimestamps = new M2GenericArrayByOffset<M2Timestamps>();
         private M2GenericArrayByOffset<ModelAnimation> AnimationSequences = new M2GenericArrayByOffset<ModelAnimation>();
@@ -74,6 +74,8 @@ namespace EQWOWConverter.WOWFiles
         public M2(ModelObject modelObject, string mpqObjectFolder)
         {
             // Populate the M2 Data objects
+            Name = new M2StringByOffset(modelObject.WOWModelObjectData.Name);
+            Textures = new M2TextureArrayByOffset(mpqObjectFolder);
             PopulateElements(modelObject, mpqObjectFolder);
             Skin = new M2Skin(modelObject);
         }
@@ -81,9 +83,6 @@ namespace EQWOWConverter.WOWFiles
         private void PopulateElements(ModelObject modelObject, string mpqObjectFolder)
         {
             WOWObjectModelData wowModelObject = modelObject.WOWModelObjectData;
-
-            // Name
-            Name = new M2StringByOffset(wowModelObject.Name);
 
             // Global Loop Timestamps
             // None for now
@@ -112,7 +111,6 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Textures
-            Textures = new M2TextureArrayByOffset(mpqObjectFolder);
             Textures.AddModelTextures(wowModelObject.ModelTextures);
 
             // Texture Transparency Sequences
