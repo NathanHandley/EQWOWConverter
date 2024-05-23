@@ -98,10 +98,12 @@ namespace EQWOWConverter.Objects
             {
                 ModelVertex newModelVertex = new ModelVertex();
 
-                // Read vertex, and account for world scale
+                // Read vertex, and account for world scale and rotate around the z axis 180 degrees
                 Vector3 curVertex = eqObject.Verticies[i];
                 newModelVertex.Position.X = curVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                newModelVertex.Position.X = -newModelVertex.Position.X;
                 newModelVertex.Position.Y = curVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                newModelVertex.Position.Y = -newModelVertex.Position.Y;
                 newModelVertex.Position.Z = curVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
                 // Read texture coordinates, and factor for mapping differences between EQ and WoW
@@ -200,12 +202,14 @@ namespace EQWOWConverter.Objects
                 collisionTriangles = eqObject.CollisionTriangleFaces;
             }
 
-            // Store positions, factoring for world scailing
+            // Store positions, factoring for world scailing and rotation around Z axis
             foreach (Vector3 collisionVertex in collisionPositions)
             {
                 Vector3 curVertex = new Vector3();
                 curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                curVertex.X = -curVertex.X;
                 curVertex.Y = collisionVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                curVertex.Y = -curVertex.Y;
                 curVertex.Z = collisionVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 CollisionPositions.Add(new Vector3(curVertex));
             }

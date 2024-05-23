@@ -88,12 +88,14 @@ namespace EQWOWConverter.Zones
                 textureCoords.Add(curTextureCoords);
             }
 
-            // Adjust verticies for world scale
+            // Adjust verticies for world scale and rotate around the Z axis 180 degrees
             List<Vector3> verticies = new List<Vector3>();
             foreach (Vector3 vertex in eqZoneData.Verticies)
             {
                 vertex.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.X = -vertex.X;
                 vertex.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.Y = -vertex.Y;
                 vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 verticies.Add(vertex);
             }
@@ -107,6 +109,10 @@ namespace EQWOWConverter.Zones
                 // Invert Z and Y because of mapping differences
                 doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+                // Also rotate the X and Y positions around Z axis 180 degrees
+                doodadInstance.Position.X = -doodadInstance.Position.X;
+                doodadInstance.Position.Y = -doodadInstance.Position.Y;
 
                 // Calculate the rotation
                 float rotateYaw = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Z;
