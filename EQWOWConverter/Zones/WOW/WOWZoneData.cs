@@ -115,7 +115,7 @@ namespace EQWOWConverter.Zones
                 doodadInstance.Position.Y = -doodadInstance.Position.Y;
 
                 // Calculate the rotation
-                float rotateYaw = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Z;
+                float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
                 float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
                 float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
                 System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
