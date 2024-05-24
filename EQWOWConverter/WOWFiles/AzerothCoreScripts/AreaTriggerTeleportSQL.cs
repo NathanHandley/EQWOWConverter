@@ -67,7 +67,7 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append(", " + row.TargetPositionX.ToString());
                 stringBuilder.Append(", " + row.TargetPositionY.ToString());
                 stringBuilder.Append(", " + row.TargetPositionZ.ToString());
-                stringBuilder.Append(", " + row.TargetOrientation.ToString() + ");");
+                stringBuilder.AppendLine(", " + row.TargetOrientation.ToString() + ");");
             }
 
             // Output it
