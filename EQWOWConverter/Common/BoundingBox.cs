@@ -60,12 +60,12 @@ namespace EQWOWConverter.Common
         public List<byte> ToBytesForWDT()
         {
             List<byte> returnBytes = new List<byte>();
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Y)); // 1
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Z)); // 2
-            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.X)); // 3
-            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Y)); // l1
-            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Z)); // l2
-            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.X)); // l3
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Y));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.Z));
+            returnBytes.AddRange(BitConverter.GetBytes(BottomCorner.X));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Y));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.Z));
+            returnBytes.AddRange(BitConverter.GetBytes(TopCorner.X));
             return returnBytes;
         }
 
