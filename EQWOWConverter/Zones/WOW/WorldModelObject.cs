@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
             foreach(var vertexColor in vertexColors)
                 VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
             TriangleFaces = triangleFaces;
-            CalculateBoundingBox();
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(Verticies);
             GenerateRenderBatches(materials);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
@@ -215,27 +215,6 @@ namespace EQWOWConverter.Zones
             Normals = sortedNormals;
             VertexColors = sortedVertexColors;
             TriangleFaces = sortedTriangleFaces;
-        }
-
-        private void CalculateBoundingBox()
-        {
-            BoundingBox = new BoundingBox();
-            foreach (Vector3 renderVert in Verticies)
-            {
-                if (renderVert.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = renderVert.X;
-                if (renderVert.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = renderVert.Y;
-                if (renderVert.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = renderVert.Z;
-
-                if (renderVert.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = renderVert.X;
-                if (renderVert.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = renderVert.Y;
-                if (renderVert.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = renderVert.Z;
-            }
         }
     }
 }

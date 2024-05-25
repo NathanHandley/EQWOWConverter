@@ -183,7 +183,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Rebuild the bounding box
-            CalculateBoundingBox();
+            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
             IsLoaded = true;
         }
 
@@ -351,7 +351,6 @@ namespace EQWOWConverter.Zones
                 if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
                 {
                     // This index was aready remapped
-                    // This index was aready remapped,,,,,,,,,
                     curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
                 }
                 else
@@ -378,28 +377,6 @@ namespace EQWOWConverter.Zones
             WorldModelObject curWorldModelObject = new WorldModelObject(condensedVerticies, condensedTextureCoords, 
                 condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances);
             WorldObjects.Add(curWorldModelObject);
-        }
-
-        private void CalculateBoundingBox()
-        {
-            // Calculate it by using the bounding box of all WorldModelObjects
-            BoundingBox = new BoundingBox();
-            foreach(WorldModelObject worldModelObject in WorldObjects)
-            {
-                if (worldModelObject.BoundingBox.TopCorner.X > BoundingBox.TopCorner.X)
-                    BoundingBox.TopCorner.X = worldModelObject.BoundingBox.TopCorner.X;
-                if (worldModelObject.BoundingBox.TopCorner.Y > BoundingBox.TopCorner.Y)
-                    BoundingBox.TopCorner.Y = worldModelObject.BoundingBox.TopCorner.Y;
-                if (worldModelObject.BoundingBox.TopCorner.Z > BoundingBox.TopCorner.Z)
-                    BoundingBox.TopCorner.Z = worldModelObject.BoundingBox.TopCorner.Z;
-
-                if (worldModelObject.BoundingBox.BottomCorner.X < BoundingBox.BottomCorner.X)
-                    BoundingBox.BottomCorner.X = worldModelObject.BoundingBox.BottomCorner.X;
-                if (worldModelObject.BoundingBox.BottomCorner.Y < BoundingBox.BottomCorner.Y)
-                    BoundingBox.BottomCorner.Y = worldModelObject.BoundingBox.BottomCorner.Y;
-                if (worldModelObject.BoundingBox.BottomCorner.Z < BoundingBox.BottomCorner.Z)
-                    BoundingBox.BottomCorner.Z = worldModelObject.BoundingBox.BottomCorner.Z;
-            }
         }
     }
 }
