@@ -420,11 +420,6 @@ namespace EQWOWConverter.Zones
                             -20.012981f, 879.84973f, 137.60643f, -70.907234f, 839.5071f, 99.46923f);
                         zoneProperties.AddZoneLineBox("burningwood", 7357.6494f, -4147.4604f, -235.93742f, ZoneLineOrientationType.North,
                             220.71272f, 895.73254f, 138.4065f, 157.77734f, 839.54913f, 99.468735f);
-
-                        zoneProperties.AddZoneLineBox("", 0, 0, 0, ZoneLineOrientationType.West, 0, 0, 0, 0, 0, 0);
-
-                        zoneProperties.AddZoneLineBox("", 1158.570435f, -1599.747314f, 6.933439f, ZoneLineOrientationType.West, 0, 0, 0, 0, 0, 0);
-                        zoneProperties.AddZoneLineBox("", 0, 0, 0, ZoneLineOrientationType.East, 0, 0, 0, 0, 0, 0);
                     }
                     break;
                 case "citymist": // Done
@@ -1205,26 +1200,28 @@ namespace EQWOWConverter.Zones
                         zoneProperties.SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(10, 10, 10, 200, 500);
 
-                        //// paineel (normal)
-                        //zoneProperties.AddZoneLineBox("paineel", 0, 0, 0, ZoneLineOrientationType.North,
-                        //    608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);
-                        //zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType,
-                        //    0, 0, 0, 0, 0, 0);
+                        // paineel (normal)
+                        zoneProperties.AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South,
+                            608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);
+                        zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North,
+                            640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
 
-                        //// paineel (fall in hole)
-                        //zoneProperties.AddZoneLineBox("paineel", 0, 0, 0, ZoneLineOrientationType,
-                        //    0, 0, 0, 0, 0, 0);
+                        // paineel fall in hole
+                        zoneProperties.AddZoneLineBox("hole", 645.839417f, 246.516739f, -327.142517f, ZoneLineOrientationType.North,
+                            932.554138f, 434.162994f, -151.438705f, 242.766006f, 88.558594f, -332.241425f);
 
-                        //// teleports out
+                        
+                        //// TODO: Make portal geometry not obstruct
+                        //// TODO: Change these to circle with radius
                         //// neriak third gate
                         //zoneProperties.AddZoneLineBox("neriakc", 0, 0, 0, ZoneLineOrientationType,
-                        //    0, 0, 0, 0, 0, 0);
+                        //    75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
                         //// paineel
                         //zoneProperties.AddZoneLineBox("paineel", 0, 0, 0, ZoneLineOrientationType,
-                        //    0, 0, 0, 0, 0, 0);
+                        //    55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
                         //// erudin
                         //zoneProperties.AddZoneLineBox("erudnext", 0, 0, 0, ZoneLineOrientationType, // Might be erudnint
-                        //    0, 0, 0, 0, 0, 0);
+                        //    52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
                     }
                     break;
                 case "iceclad":

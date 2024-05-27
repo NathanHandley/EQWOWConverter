@@ -49,7 +49,7 @@ namespace EQWOWConverter
 
         // Any zones (by shortname) in this list will not have object instances spawned
         // TODO: Paineel crashes if there are object instances
-        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel" };
+        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc" };
 
         //=====================================================================
         // Objects
