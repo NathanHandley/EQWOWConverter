@@ -100,35 +100,38 @@ namespace EQWOWConverter.Zones
                 verticies.Add(vertex);
             }
 
-            // Adjust object instances for world scale
-            foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
+            // Add object instances
+            if (zoneProperties.ShortName.Length > 0 && Configuration.CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES.Contains(zoneProperties.ShortName) == false)
             {
-                WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
-                doodadInstance.ObjectName = objectInstance.ModelName;
-                doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                // Invert Z and Y because of mapping differences
-                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
+                {
+                    WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+                    doodadInstance.ObjectName = objectInstance.ModelName;
+                    doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    // Invert Z and Y because of mapping differences
+                    doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
-                // Also rotate the X and Y positions around Z axis 180 degrees
-                doodadInstance.Position.X = -doodadInstance.Position.X;
-                doodadInstance.Position.Y = -doodadInstance.Position.Y;
+                    // Also rotate the X and Y positions around Z axis 180 degrees
+                    doodadInstance.Position.X = -doodadInstance.Position.X;
+                    doodadInstance.Position.Y = -doodadInstance.Position.Y;
 
-                // Calculate the rotation
-                float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
-                float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
-                float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
-                System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
-                doodadInstance.Orientation.X = rotationQ.X;
-                doodadInstance.Orientation.Y = rotationQ.Y;
-                doodadInstance.Orientation.Z = rotationQ.Z;
-                doodadInstance.Orientation.W = -rotationQ.W; // Flip the sign for handedness
+                    // Calculate the rotation
+                    float rotateYaw = Convert.ToSingle(Math.PI / 180) * -objectInstance.Rotation.Z;
+                    float rotatePitch = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.X;
+                    float rotateRoll = Convert.ToSingle(Math.PI / 180) * objectInstance.Rotation.Y;
+                    System.Numerics.Quaternion rotationQ = System.Numerics.Quaternion.CreateFromYawPitchRoll(rotateYaw, rotatePitch, rotateRoll);
+                    doodadInstance.Orientation.X = rotationQ.X;
+                    doodadInstance.Orientation.Y = rotationQ.Y;
+                    doodadInstance.Orientation.Z = rotationQ.Z;
+                    doodadInstance.Orientation.W = -rotationQ.W; // Flip the sign for handedness
 
-                // Scale is confirmed to always have the same value in x, y, z
-                doodadInstance.Scale = objectInstance.Scale.X;
+                    // Scale is confirmed to always have the same value in x, y, z
+                    doodadInstance.Scale = objectInstance.Scale.X;
 
-                // Add it
-                DoodadInstances.Add(doodadInstance);
+                    // Add it
+                    DoodadInstances.Add(doodadInstance);
+                }
             }
 
             // Create world model objects by identifying connected triangles and grouping them

@@ -35,7 +35,6 @@ namespace EQWOWConverter.Zones
         public Zone(string shortName)
         {
             ShortName = shortName;
-            DescriptiveName = shortName;
             DescriptiveNameOnlyLetters = shortName;
         }
 
@@ -47,8 +46,8 @@ namespace EQWOWConverter.Zones
         
         public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
         {
-            if (zoneProperties.ShortName != string.Empty)
-                SetDescriptiveName(zoneProperties.ShortName);
+            if (zoneProperties.DescriptiveName != string.Empty)
+                SetDescriptiveName(zoneProperties.DescriptiveName);
             WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
         }
 

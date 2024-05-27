@@ -41,11 +41,15 @@ namespace EQWOWConverter
         // Generator Rules
         // ====================================================================
         // The value EQ verticies multiply by when translated into WOW verticies
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 1.0f; //0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
+        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f; // 0.25 = 1:1, 0.4 - taurens can get through rivervale bank door
 
         // Maximum number of faces that fit into a WMO group before it subdivides
         // max value can only ever be 21,840, but >2100 not advised due to btree size
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
+
+        // Any zones (by shortname) in this list will not have object instances spawned
+        // TODO: Paineel crashes if there are object instances
+        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel" };
 
         //=====================================================================
         // Objects
