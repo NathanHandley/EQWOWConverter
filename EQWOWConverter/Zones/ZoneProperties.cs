@@ -818,7 +818,7 @@ namespace EQWOWConverter.Zones
                 case "erudnext":
                     {
                         // TODO: In-zone teleport (?)
-                        zoneProperties.SetBaseZoneProperties("erudnext", "Erudin Docks", -309.75f, 109.64f, 23.75f, 0, ZoneContinent.Odus);
+                        zoneProperties.SetBaseZoneProperties("erudnext", "Erudin", -309.75f, 109.64f, 23.75f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 550);
                     }
                     break;
@@ -1195,33 +1195,20 @@ namespace EQWOWConverter.Zones
                             -986.189697f, 98.161331f, 38.800350f, -1007.820984f, 83.809853f, -0.499890f);
                     }
                     break;
-                case "hole":
+                case "hole": // Done
                     {
                         zoneProperties.SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(10, 10, 10, 200, 500);
-
-                        // paineel (normal)
                         zoneProperties.AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South,
                             608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);
-                        zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North,
-                            640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
-
-                        // paineel fall in hole
-                        zoneProperties.AddZoneLineBox("hole", 645.839417f, 246.516739f, -327.142517f, ZoneLineOrientationType.North,
-                            932.554138f, 434.162994f, -151.438705f, 242.766006f, 88.558594f, -332.241425f);
-
-                        
-                        //// TODO: Make portal geometry not obstruct
-                        //// TODO: Change these to circle with radius
-                        //// neriak third gate
-                        //zoneProperties.AddZoneLineBox("neriakc", 0, 0, 0, ZoneLineOrientationType,
-                        //    75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
-                        //// paineel
-                        //zoneProperties.AddZoneLineBox("paineel", 0, 0, 0, ZoneLineOrientationType,
-                        //    55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
-                        //// erudin
-                        //zoneProperties.AddZoneLineBox("erudnext", 0, 0, 0, ZoneLineOrientationType, // Might be erudnint
-                        //    52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
+                        // TODO: Make portal geometry not obstruct
+                        // TODO: Change these to circle with radius
+                        zoneProperties.AddZoneLineBox("neriakc", 480.001648f, -809.905090f, -55.968712f, ZoneLineOrientationType.North,
+                            75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
+                        zoneProperties.AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South,
+                            55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
+                        zoneProperties.AddZoneLineBox("erudnext", -1527.732788f, -253.023880f, -47.968700f, ZoneLineOrientationType.East,
+                            52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
                     }
                     break;
                 case "iceclad":
@@ -1230,7 +1217,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.SetFogProperties(200, 200, 200, 200, 1800);
                     }
                     break;
-                case "innothule":
+                case "innothule": // Done
                     {
                         zoneProperties.SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(170, 160, 90, 10, 500);
@@ -1240,6 +1227,8 @@ namespace EQWOWConverter.Zones
                             -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);
                         zoneProperties.AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East,
                             150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f);
+                        zoneProperties.AddZoneLineBox("sro", -3168.635742f, 1032.933105f, -26.814310f, ZoneLineOrientationType.North,
+                            2616.178711f, 1171.404907f, 41.340691f, 2557.303223f, 1118.191406f, -30f);
                     }
                     break;
                 case "kael":
@@ -1721,6 +1710,10 @@ namespace EQWOWConverter.Zones
                     {
                         zoneProperties.SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(150, 150, 150, 200, 850);
+                        zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North,
+                            640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
+                        zoneProperties.AddZoneLineBox("hole", 645.839417f, 246.516739f, -327.142517f, ZoneLineOrientationType.North,
+                            932.554138f, 434.162994f, -151.438705f, 242.766006f, 88.558594f, -332.241425f);
                     }
                     break;
                 case "paw":
@@ -1859,6 +1852,8 @@ namespace EQWOWConverter.Zones
                     {
                         zoneProperties.SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
+                        zoneProperties.AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South,
+                            -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);
                     }
                     break;
                 case "steamfont":
