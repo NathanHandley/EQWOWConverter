@@ -1138,27 +1138,37 @@ namespace EQWOWConverter.Zones
                             -2100.800537f, -115.948547f, 129.457657f, -2171.145996f, -253.399704f, -20.001289f);
                     }
                     break;
-                case "lfaydark":
+                case "lfaydark": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("lfaydark", "Lesser Faydark", -1769.93f, -108.08f, -1.11f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(230, 255, 200, 10, 300);
                         zoneProperties.AddZoneLineBox("gfaydark", -2612.000732f, -1113.000000f, 0.000290f, ZoneLineOrientationType.North,
                             2195.666504f, -1174.378906f, 67.384300f, 2176.618164f, -1215.322021f, -0.499960f);
+                        zoneProperties.AddZoneLineBox("mistmoore", -295.757965f, 160.095764f, -181.936813f, ZoneLineOrientationType.West,
+                            -1153.577759f, 3291.550049f, 110.469002f, -1182.255737f, 3372.130859f, -0.499820f);
+                        zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East,
+                            941.738403f, -2192.916504f, 121.523430f, 891.989868f, -2191.631592f, -5.281280f);
                     }
                     break;
-                case "mistmoore":
+                case "mistmoore": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("mistmoore", "Mistmoore Castle", 123f, -295f, -177f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(60, 30, 90, 10, 250);
+                        zoneProperties.AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East,
+                            -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);
                     }
                     break;
-                case "misty":
+                case "misty": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("misty", "Misty Thicket", 0f, 0f, 2.43f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(100, 120, 50, 10, 500);
+                        zoneProperties.AddZoneLineBox("runnyeye", 231.871094f, 150.141602f, 1.001060f, ZoneLineOrientationType.South,
+                            -826.740295f, 1443.224487f, 3.532040f, -840.195496f, 1415.736206f, -11.249970f);
+                        zoneProperties.AddZoneLineBox("rivervale", -83.344131f, 97.216301f, -0.000000f, ZoneLineOrientationType.East,
+                            418.880157f, -2588.360596f, 11.531500f, 394.495270f, -2613.019531f, -11.249990f);
                     }
                     break;
-                case "najena":
+                case "najena": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(30, 0, 40, 10, 110);
@@ -1166,7 +1176,7 @@ namespace EQWOWConverter.Zones
                             0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
                     }
                     break;                
-                case "nektulos":
+                case "nektulos": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(80, 90, 70, 10, 400);
@@ -1174,35 +1184,343 @@ namespace EQWOWConverter.Zones
                             1590.405884f, 772.250427f, 67.442078f, 1554.579956f, 687.366699f, -22.031260f);
                         zoneProperties.AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North,
                             3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f);
+                        zoneProperties.AddZoneLineBox("neriaka", -0.739280f, 113.977829f, 28.000000f, ZoneLineOrientationType.South,
+                            2270.015381f, -1092.749023f, 12.469000f, 2210.318115f, -1149.777344f, -0.499900f);
                     }
                     break;
-                case "neriaka":
+                case "neriaka": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
+                        zoneProperties.AddZoneLineBox("nektulos", 2294.104980f, -1105.768066f, 0.000190f, ZoneLineOrientationType.North,
+                            27.909149f, 168.129883f, 40.197109f, -14.193390f, 134.459396f, 27.500010f);
+                        zoneProperties.AddZoneLineBox("neriakb", 83.471588f, -404.715454f, -14.000000f, ZoneLineOrientationType.East,
+                            98.162216f, -339.024811f, 12.469000f, 64.296402f, -406.345734f, -14.499970f);
+                        zoneProperties.AddZoneLineBox("neriakb", -251.451813f, -455.306427f, 14.000010f, ZoneLineOrientationType.South,
+                            -244.906326f, -447.620117f, 26.469000f, -266.098633f, -468.901672f, 13.499990f);
                     }
                     break;
-                case "neriakb":
+                case "neriakb": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
+                        zoneProperties.AddZoneLineBox("neriaka", 83.959953f, -322.479065f, -14.000000f, ZoneLineOrientationType.West,
+                            98.161079f, -305.681519f, 12.467630f, 69.775436f, -384.671295f, -14.500000f);
+                        zoneProperties.AddZoneLineBox("neriaka", -238.506363f, -454.922668f, 14.000050f, ZoneLineOrientationType.North,
+                            -223.712753f, -447.620392f, 26.466810f, -245.292313f, -462.004852f, 13.500010f);
+                        zoneProperties.AddZoneLineBox("neriakc", 209.334473f, -853.563110f, -41.968079f, ZoneLineOrientationType.North,
+                            210.713379f, -844.618347f, -31.532860f, 203.079483f, -860.849731f, -42.468700f);
                     }
                     break;
-                case "neriakc":
+                case "neriakc": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
+                        zoneProperties.AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South,
+                            203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
                     }
                     break;
-                case "northkarana":
+                case "northkarana":  // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("northkarana", "Northern Karana", -382f, -284f, -7f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("eastkarana", 13.189000f, 1166.973999f, -37.343681f, ZoneLineOrientationType.East,
                             38.130348f, -3110.049316f, 42.091228f, -17.969540f, -3238.555908f, -37.988708f);
+                        zoneProperties.AddZoneLineBox("southkarana", 2777.505371f, 906.202576f, -34.406231f, ZoneLineOrientationType.South,
+                            -4530.517090f, 1250.382690f, 59.137932f, -4598.474609f, 1171.919800f, -36.060040f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4429.286621f, -15935.629883f, -69.124321f, ZoneLineOrientationType.West, -4417.983887f, 3744.417480f, 200.000000f, -5000.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4409.286621f, -15935.629883f, -69.124352f, ZoneLineOrientationType.West, -4397.983887f, 3744.417480f, 200.000000f, -4417.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4389.286621f, -15935.629883f, -69.122940f, ZoneLineOrientationType.West, -4377.983887f, 3744.417480f, 200.000000f, -4397.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4369.286621f, -15935.629883f, -69.124352f, ZoneLineOrientationType.West, -4357.983887f, 3744.417480f, 200.000000f, -4377.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4349.286621f, -15935.629883f, -69.124130f, ZoneLineOrientationType.West, -4337.983887f, 3744.417480f, 200.000000f, -4357.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4329.286621f, -15935.629883f, -69.124962f, ZoneLineOrientationType.West, -4317.983887f, 3744.417480f, 200.000000f, -4337.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4309.286621f, -15935.629883f, -69.125008f, ZoneLineOrientationType.West, -4297.983887f, 3744.417480f, 200.000000f, -4317.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4289.286621f, -15935.629883f, -69.124153f, ZoneLineOrientationType.West, -4277.983887f, 3744.417480f, 200.000000f, -4297.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4269.286621f, -15935.629883f, -69.124008f, ZoneLineOrientationType.West, -4257.983887f, 3744.417480f, 200.000000f, -4277.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4249.286621f, -15935.629883f, -69.124062f, ZoneLineOrientationType.West, -4237.983887f, 3744.417480f, 200.000000f, -4257.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4229.286621f, -15935.629883f, -66.292328f, ZoneLineOrientationType.West, -4217.983887f, 3744.417480f, 200.000000f, -4237.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4209.286621f, -15935.629883f, -61.747200f, ZoneLineOrientationType.West, -4197.983887f, 3744.417480f, 200.000000f, -4217.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4189.286621f, -15935.629883f, -57.202209f, ZoneLineOrientationType.West, -4177.983887f, 3744.417480f, 200.000000f, -4197.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4169.286621f, -15935.629883f, -52.656712f, ZoneLineOrientationType.West, -4157.983887f, 3744.417480f, 200.000000f, -4177.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4149.286621f, -15935.629883f, -48.113232f, ZoneLineOrientationType.West, -4137.983887f, 3744.417480f, 200.000000f, -4157.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4129.286621f, -15935.629883f, -43.567230f, ZoneLineOrientationType.West, -4117.983887f, 3744.417480f, 200.000000f, -4137.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4109.286621f, -15935.629883f, -39.022579f, ZoneLineOrientationType.West, -4097.983887f, 3744.417480f, 200.000000f, -4117.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4089.286621f, -15935.629883f, -34.477600f, ZoneLineOrientationType.West, -4077.983887f, 3744.417480f, 200.000000f, -4097.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4069.286621f, -15935.629883f, -29.932230f, ZoneLineOrientationType.West, -4057.983887f, 3744.417480f, 200.000000f, -4077.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4049.286621f, -15935.629883f, -25.385630f, ZoneLineOrientationType.West, -4037.983887f, 3744.417480f, 200.000000f, -4057.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4029.286621f, -15935.629883f, -20.839479f, ZoneLineOrientationType.West, -4017.983887f, 3744.417480f, 200.000000f, -4037.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -4009.286621f, -15935.629883f, -16.298170f, ZoneLineOrientationType.West, -3997.983887f, 3744.417480f, 200.000000f, -4017.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3989.286621f, -15935.629883f, -13.606570f, ZoneLineOrientationType.West, -3977.983887f, 3744.417480f, 200.000000f, -3997.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3969.286621f, -15935.629883f, -12.278990f, ZoneLineOrientationType.West, -3957.983887f, 3744.417480f, 200.000000f, -3977.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3949.286621f, -15935.629883f, -10.799740f, ZoneLineOrientationType.West, -3937.983887f, 3744.417480f, 200.000000f, -3957.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3929.286621f, -15935.629883f, -9.324460f, ZoneLineOrientationType.West, -3917.983887f, 3744.417480f, 200.000000f, -3937.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3909.286621f, -15935.629883f, -7.845920f, ZoneLineOrientationType.West, -3897.983887f, 3744.417480f, 200.000000f, -3917.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3889.286621f, -15935.629883f, -6.369650f, ZoneLineOrientationType.West, -3877.983887f, 3744.417480f, 200.000000f, -3897.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3869.286621f, -15935.629883f, -4.892200f, ZoneLineOrientationType.West, -3857.983887f, 3744.417480f, 200.000000f, -3877.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3849.286621f, -15935.629883f, -3.936970f, ZoneLineOrientationType.West, -3837.983887f, 3744.417480f, 200.000000f, -3857.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3829.286621f, -15935.629883f, -3.936510f, ZoneLineOrientationType.West, -3817.983887f, 3744.417480f, 200.000000f, -3837.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3809.286621f, -15935.629883f, -3.936450f, ZoneLineOrientationType.West, -3797.983887f, 3744.417480f, 200.000000f, -3817.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3789.286621f, -15935.629883f, -3.937420f, ZoneLineOrientationType.West, -3777.983887f, 3744.417480f, 200.000000f, -3797.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3769.286621f, -15935.629883f, -3.936300f, ZoneLineOrientationType.West, -3757.983887f, 3744.417480f, 200.000000f, -3777.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3749.286621f, -15935.629883f, -3.936550f, ZoneLineOrientationType.West, -3737.983887f, 3744.417480f, 200.000000f, -3757.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3729.286621f, -15935.629883f, -3.934840f, ZoneLineOrientationType.West, -3717.983887f, 3744.417480f, 200.000000f, -3737.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3709.286621f, -15935.629883f, -3.936970f, ZoneLineOrientationType.West, -3697.983887f, 3744.417480f, 200.000000f, -3717.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3689.286621f, -15935.629883f, -3.936690f, ZoneLineOrientationType.West, -3677.983887f, 3744.417480f, 200.000000f, -3697.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3669.286621f, -15935.629883f, -3.936980f, ZoneLineOrientationType.West, -3657.983887f, 3744.417480f, 200.000000f, -3677.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3649.286621f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -3637.983887f, 3744.417480f, 200.000000f, -3657.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3629.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -3617.983887f, 3744.417480f, 200.000000f, -3637.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3609.286621f, -15935.629883f, -3.937040f, ZoneLineOrientationType.West, -3597.983887f, 3744.417480f, 200.000000f, -3617.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3589.286621f, -15935.629883f, -3.935510f, ZoneLineOrientationType.West, -3577.983887f, 3744.417480f, 200.000000f, -3597.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3569.286621f, -15935.629883f, -3.935760f, ZoneLineOrientationType.West, -3557.983887f, 3744.417480f, 200.000000f, -3577.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3549.286621f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -3537.983887f, 3744.417480f, 200.000000f, -3557.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3529.286621f, -15935.629883f, -3.937000f, ZoneLineOrientationType.West, -3517.983887f, 3744.417480f, 200.000000f, -3537.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3509.286621f, -15935.629883f, -3.935910f, ZoneLineOrientationType.West, -3497.983887f, 3744.417480f, 200.000000f, -3517.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3489.286621f, -15935.629883f, -3.936570f, ZoneLineOrientationType.West, -3477.983887f, 3744.417480f, 200.000000f, -3497.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3469.286621f, -15935.629883f, -3.936660f, ZoneLineOrientationType.West, -3457.983887f, 3744.417480f, 200.000000f, -3477.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3449.286621f, -15935.629883f, -3.936750f, ZoneLineOrientationType.West, -3437.983887f, 3744.417480f, 200.000000f, -3457.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3429.286621f, -15935.629883f, -3.936850f, ZoneLineOrientationType.West, -3417.983887f, 3744.417480f, 200.000000f, -3437.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3409.286621f, -15935.629883f, -3.936940f, ZoneLineOrientationType.West, -3397.983887f, 3744.417480f, 200.000000f, -3417.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3389.286621f, -15935.629883f, -3.937030f, ZoneLineOrientationType.West, -3377.983887f, 3744.417480f, 200.000000f, -3397.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3369.286621f, -15935.629883f, -3.935940f, ZoneLineOrientationType.West, -3357.983887f, 3744.417480f, 200.000000f, -3377.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3349.286621f, -15935.629883f, -3.936970f, ZoneLineOrientationType.West, -3337.983887f, 3744.417480f, 200.000000f, -3357.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3329.286621f, -15935.629883f, -3.935250f, ZoneLineOrientationType.West, -3317.983887f, 3744.417480f, 200.000000f, -3337.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3309.286621f, -15935.629883f, -3.936850f, ZoneLineOrientationType.West, -3297.983887f, 3744.417480f, 200.000000f, -3317.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3289.286621f, -15935.629883f, -3.935900f, ZoneLineOrientationType.West, -3277.983887f, 3744.417480f, 200.000000f, -3297.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3269.286621f, -15935.629883f, -3.936870f, ZoneLineOrientationType.West, -3257.983887f, 3744.417480f, 200.000000f, -3277.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3249.286621f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -3237.983887f, 3744.417480f, 200.000000f, -3257.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3229.286621f, -15935.629883f, -3.936600f, ZoneLineOrientationType.West, -3217.983887f, 3744.417480f, 200.000000f, -3237.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3209.286621f, -15935.629883f, -3.936690f, ZoneLineOrientationType.West, -3197.983887f, 3744.417480f, 200.000000f, -3217.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3189.286621f, -15935.629883f, -3.936250f, ZoneLineOrientationType.West, -3177.983887f, 3744.417480f, 200.000000f, -3197.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3169.286621f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -3157.983887f, 3744.417480f, 200.000000f, -3177.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3149.286621f, -15935.629883f, -3.935880f, ZoneLineOrientationType.West, -3137.983887f, 3744.417480f, 200.000000f, -3157.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3129.286621f, -15935.629883f, -3.936910f, ZoneLineOrientationType.West, -3117.983887f, 3744.417480f, 200.000000f, -3137.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3109.286621f, -15935.629883f, -3.935590f, ZoneLineOrientationType.West, -3097.983887f, 3744.417480f, 200.000000f, -3117.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3089.286621f, -15935.629883f, -3.937250f, ZoneLineOrientationType.West, -3077.983887f, 3744.417480f, 200.000000f, -3097.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3069.286621f, -15935.629883f, -3.936240f, ZoneLineOrientationType.West, -3057.983887f, 3744.417480f, 200.000000f, -3077.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3049.286621f, -15935.629883f, -3.936800f, ZoneLineOrientationType.West, -3037.983887f, 3744.417480f, 200.000000f, -3057.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3029.286621f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -3017.983887f, 3744.417480f, 200.000000f, -3037.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -3009.286621f, -15935.629883f, -3.937170f, ZoneLineOrientationType.West, -2997.983887f, 3744.417480f, 200.000000f, -3017.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2989.286621f, -15935.629883f, -3.936590f, ZoneLineOrientationType.West, -2977.983887f, 3744.417480f, 200.000000f, -2997.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2969.286621f, -15935.629883f, -3.936680f, ZoneLineOrientationType.West, -2957.983887f, 3744.417480f, 200.000000f, -2977.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2949.286621f, -15935.629883f, -3.937260f, ZoneLineOrientationType.West, -2937.983887f, 3744.417480f, 200.000000f, -2957.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2929.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -2917.983887f, 3744.417480f, 200.000000f, -2937.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2909.286621f, -15935.629883f, -3.936970f, ZoneLineOrientationType.West, -2897.983887f, 3744.417480f, 200.000000f, -2917.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2889.286621f, -15935.629883f, -3.935150f, ZoneLineOrientationType.West, -2877.983887f, 3744.417480f, 200.000000f, -2897.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2869.286621f, -15935.629883f, -3.936860f, ZoneLineOrientationType.West, -2857.983887f, 3744.417480f, 200.000000f, -2877.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2849.286621f, -15935.629883f, -3.936090f, ZoneLineOrientationType.West, -2837.983887f, 3744.417480f, 200.000000f, -2857.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2829.286621f, -15935.629883f, -3.936650f, ZoneLineOrientationType.West, -2817.983887f, 3744.417480f, 200.000000f, -2837.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2809.286621f, -15935.629883f, -3.936390f, ZoneLineOrientationType.West, -2797.983887f, 3744.417480f, 200.000000f, -2817.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2789.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -2777.983887f, 3744.417480f, 200.000000f, -2797.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2769.286621f, -15935.629883f, -3.936970f, ZoneLineOrientationType.West, -2757.983887f, 3744.417480f, 200.000000f, -2777.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2749.286621f, -15935.629883f, -3.936490f, ZoneLineOrientationType.West, -2737.983887f, 3744.417480f, 200.000000f, -2757.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2729.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -2717.983887f, 3744.417480f, 200.000000f, -2737.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2709.286621f, -15935.629883f, -3.936570f, ZoneLineOrientationType.West, -2697.983887f, 3744.417480f, 200.000000f, -2717.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2689.286621f, -15935.629883f, -3.937060f, ZoneLineOrientationType.West, -2677.983887f, 3744.417480f, 200.000000f, -2697.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2669.286621f, -15935.629883f, -3.935750f, ZoneLineOrientationType.West, -2657.983887f, 3744.417480f, 200.000000f, -2677.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2649.286621f, -15935.629883f, -3.936820f, ZoneLineOrientationType.West, -2637.983887f, 3744.417480f, 200.000000f, -2657.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2629.286621f, -15935.629883f, -3.936020f, ZoneLineOrientationType.West, -2617.983887f, 3744.417480f, 200.000000f, -2637.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2609.286621f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -2597.983887f, 3744.417480f, 200.000000f, -2617.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2589.286621f, -15935.629883f, -3.936360f, ZoneLineOrientationType.West, -2577.983887f, 3744.417480f, 200.000000f, -2597.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2569.286621f, -15935.629883f, -3.936620f, ZoneLineOrientationType.West, -2557.983887f, 3744.417480f, 200.000000f, -2577.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2549.286621f, -15935.629883f, -3.936670f, ZoneLineOrientationType.West, -2537.983887f, 3744.417480f, 200.000000f, -2557.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2529.286621f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -2517.983887f, 3744.417480f, 200.000000f, -2537.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2509.286621f, -15935.629883f, -3.937020f, ZoneLineOrientationType.West, -2497.983887f, 3744.417480f, 200.000000f, -2517.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2489.286621f, -15935.629883f, -3.935200f, ZoneLineOrientationType.West, -2477.983887f, 3744.417480f, 200.000000f, -2497.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2469.286621f, -15935.629883f, -3.935450f, ZoneLineOrientationType.West, -2457.983887f, 3744.417480f, 200.000000f, -2477.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2449.286621f, -15935.629883f, -3.935680f, ZoneLineOrientationType.West, -2437.983887f, 3744.417480f, 200.000000f, -2457.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2429.286621f, -15935.629883f, -3.937290f, ZoneLineOrientationType.West, -2417.983887f, 3744.417480f, 200.000000f, -2437.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2409.286621f, -15935.629883f, -3.935920f, ZoneLineOrientationType.West, -2397.983887f, 3744.417480f, 200.000000f, -2417.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2389.286621f, -15935.629883f, -3.936990f, ZoneLineOrientationType.West, -2377.983887f, 3744.417480f, 200.000000f, -2397.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2369.286621f, -15935.629883f, -3.936830f, ZoneLineOrientationType.West, -2357.983887f, 3744.417480f, 200.000000f, -2377.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2349.286621f, -15935.629883f, -3.936820f, ZoneLineOrientationType.West, -2337.983887f, 3744.417480f, 200.000000f, -2357.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2329.286621f, -15935.629883f, -3.936910f, ZoneLineOrientationType.West, -2317.983887f, 3744.417480f, 200.000000f, -2337.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2309.286621f, -15935.629883f, -3.936720f, ZoneLineOrientationType.West, -2297.983887f, 3744.417480f, 200.000000f, -2317.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2289.286621f, -15935.629883f, -3.937450f, ZoneLineOrientationType.West, -2277.983887f, 3744.417480f, 200.000000f, -2297.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2269.286621f, -15935.629883f, -3.935630f, ZoneLineOrientationType.West, -2257.983887f, 3744.417480f, 200.000000f, -2277.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2249.286621f, -15935.629883f, -3.936650f, ZoneLineOrientationType.West, -2237.983887f, 3744.417480f, 200.000000f, -2257.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2229.286621f, -15935.629883f, -3.936140f, ZoneLineOrientationType.West, -2217.983887f, 3744.417480f, 200.000000f, -2237.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2209.286621f, -15935.629883f, -3.936390f, ZoneLineOrientationType.West, -2197.983887f, 3744.417480f, 200.000000f, -2217.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2189.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -2177.983887f, 3744.417480f, 200.000000f, -2197.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2169.286621f, -15935.629883f, -3.936940f, ZoneLineOrientationType.West, -2157.983887f, 3744.417480f, 200.000000f, -2177.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2149.286621f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -2137.983887f, 3744.417480f, 200.000000f, -2157.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2129.286621f, -15935.629883f, -3.936570f, ZoneLineOrientationType.West, -2117.983887f, 3744.417480f, 200.000000f, -2137.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2109.286621f, -15935.629883f, -3.936550f, ZoneLineOrientationType.West, -2097.983887f, 3744.417480f, 200.000000f, -2117.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2089.286621f, -15935.629883f, -3.936620f, ZoneLineOrientationType.West, -2077.983887f, 3744.417480f, 200.000000f, -2097.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2069.286621f, -15935.629883f, -3.937110f, ZoneLineOrientationType.West, -2057.983887f, 3744.417480f, 200.000000f, -2077.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2049.286621f, -15935.629883f, -3.936330f, ZoneLineOrientationType.West, -2037.983887f, 3744.417480f, 200.000000f, -2057.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2029.286499f, -15935.629883f, -3.936820f, ZoneLineOrientationType.West, -2017.983887f, 3744.417480f, 200.000000f, -2037.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -2009.286499f, -15935.629883f, -3.936080f, ZoneLineOrientationType.West, -1997.983887f, 3744.417480f, 200.000000f, -2017.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1989.286499f, -15935.629883f, -3.936640f, ZoneLineOrientationType.West, -1977.983887f, 3744.417480f, 200.000000f, -1997.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1969.286499f, -15935.629883f, -3.935490f, ZoneLineOrientationType.West, -1957.983887f, 3744.417480f, 200.000000f, -1977.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1949.286499f, -15935.629883f, -3.935750f, ZoneLineOrientationType.West, -1937.983887f, 3744.417480f, 200.000000f, -1957.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1929.286499f, -15935.629883f, -3.935010f, ZoneLineOrientationType.West, -1917.983887f, 3744.417480f, 200.000000f, -1937.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1909.286499f, -15935.629883f, -3.935260f, ZoneLineOrientationType.West, -1897.983887f, 3744.417480f, 200.000000f, -1917.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1889.286499f, -15935.629883f, -3.935520f, ZoneLineOrientationType.West, -1877.983887f, 3744.417480f, 200.000000f, -1897.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1869.286499f, -15935.629883f, -3.936540f, ZoneLineOrientationType.West, -1857.983887f, 3744.417480f, 200.000000f, -1877.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1849.286499f, -15935.629883f, -3.936610f, ZoneLineOrientationType.West, -1837.983887f, 3744.417480f, 200.000000f, -1857.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1829.286499f, -15935.629883f, -3.936400f, ZoneLineOrientationType.West, -1817.983887f, 3744.417480f, 200.000000f, -1837.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1809.286499f, -15935.629883f, -3.936650f, ZoneLineOrientationType.West, -1797.983887f, 3744.417480f, 200.000000f, -1817.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1789.286499f, -15935.629883f, -3.936440f, ZoneLineOrientationType.West, -1777.983887f, 3744.417480f, 200.000000f, -1797.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1769.286499f, -15935.629883f, -3.937000f, ZoneLineOrientationType.West, -1757.983887f, 3744.417480f, 200.000000f, -1777.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1749.286499f, -15935.629883f, -3.935850f, ZoneLineOrientationType.West, -1737.983887f, 3744.417480f, 200.000000f, -1757.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1729.286499f, -15935.629883f, -3.936980f, ZoneLineOrientationType.West, -1717.983887f, 3744.417480f, 200.000000f, -1737.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1709.286499f, -15935.629883f, -3.936710f, ZoneLineOrientationType.West, -1697.983887f, 3744.417480f, 200.000000f, -1717.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1689.286499f, -15935.629883f, -3.936500f, ZoneLineOrientationType.West, -1677.983887f, 3744.417480f, 200.000000f, -1697.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1669.286499f, -15935.629883f, -3.936590f, ZoneLineOrientationType.West, -1657.983887f, 3744.417480f, 200.000000f, -1677.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1649.286499f, -15935.629883f, -3.936380f, ZoneLineOrientationType.West, -1637.983887f, 3744.417480f, 200.000000f, -1657.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1629.286499f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -1617.983887f, 3744.417480f, 200.000000f, -1637.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1609.286499f, -15935.629883f, -3.934760f, ZoneLineOrientationType.West, -1597.983887f, 3744.417480f, 200.000000f, -1617.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1589.286499f, -15935.629883f, -3.937010f, ZoneLineOrientationType.West, -1577.983887f, 3744.417480f, 200.000000f, -1597.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1569.286499f, -15935.629883f, -3.936360f, ZoneLineOrientationType.West, -1557.983887f, 3744.417480f, 200.000000f, -1577.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1549.286499f, -15935.629883f, -3.936820f, ZoneLineOrientationType.West, -1537.983887f, 3744.417480f, 200.000000f, -1557.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1529.286499f, -15935.629883f, -3.936700f, ZoneLineOrientationType.West, -1517.983887f, 3744.417480f, 200.000000f, -1537.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1509.286499f, -15935.629883f, -3.936490f, ZoneLineOrientationType.West, -1497.983887f, 3744.417480f, 200.000000f, -1517.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1489.286499f, -15935.629883f, -3.936480f, ZoneLineOrientationType.West, -1477.983887f, 3744.417480f, 200.000000f, -1497.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1469.286499f, -15935.629883f, -3.934760f, ZoneLineOrientationType.West, -1457.983887f, 3744.417480f, 200.000000f, -1477.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1449.286499f, -15935.629883f, -3.937320f, ZoneLineOrientationType.West, -1437.983887f, 3744.417480f, 200.000000f, -1457.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1429.286499f, -15935.629883f, -3.935050f, ZoneLineOrientationType.West, -1417.983887f, 3744.417480f, 200.000000f, -1437.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1409.286499f, -15935.629883f, -3.936630f, ZoneLineOrientationType.West, -1397.983887f, 3744.417480f, 200.000000f, -1417.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1389.286499f, -15935.629883f, -3.936580f, ZoneLineOrientationType.West, -1377.983887f, 3744.417480f, 200.000000f, -1397.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1369.286499f, -15935.629883f, -3.936840f, ZoneLineOrientationType.West, -1357.983887f, 3744.417480f, 200.000000f, -1377.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1349.286499f, -15935.629883f, -3.936550f, ZoneLineOrientationType.West, -1337.983887f, 3744.417480f, 200.000000f, -1357.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1329.286499f, -15935.629883f, -3.935810f, ZoneLineOrientationType.West, -1317.983887f, 3744.417480f, 200.000000f, -1337.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1309.286499f, -15935.629883f, -3.937400f, ZoneLineOrientationType.West, -1297.983887f, 3744.417480f, 200.000000f, -1317.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1289.286499f, -15935.629883f, -3.936660f, ZoneLineOrientationType.West, -1277.983887f, 3744.417480f, 200.000000f, -1297.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1269.286499f, -15935.629883f, -3.936640f, ZoneLineOrientationType.West, -1257.983887f, 3744.417480f, 200.000000f, -1277.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1249.286499f, -15935.629883f, -3.936490f, ZoneLineOrientationType.West, -1237.983887f, 3744.417480f, 200.000000f, -1257.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1229.286499f, -15935.629883f, -3.936740f, ZoneLineOrientationType.West, -1217.983887f, 3744.417480f, 200.000000f, -1237.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1209.286499f, -15935.629883f, -3.937000f, ZoneLineOrientationType.West, -1197.983887f, 3744.417480f, 200.000000f, -1217.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1189.286499f, -15935.629883f, -3.936260f, ZoneLineOrientationType.West, -1177.983887f, 3744.417480f, 200.000000f, -1197.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1169.286499f, -15935.629883f, -3.937210f, ZoneLineOrientationType.West, -1157.983887f, 3744.417480f, 200.000000f, -1177.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1149.286499f, -15935.629883f, -3.936470f, ZoneLineOrientationType.West, -1137.983887f, 3744.417480f, 200.000000f, -1157.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1129.286499f, -15935.629883f, -3.936960f, ZoneLineOrientationType.West, -1117.983887f, 3744.417480f, 200.000000f, -1137.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1109.286499f, -15935.629883f, -3.935710f, ZoneLineOrientationType.West, -1097.983887f, 3744.417480f, 200.000000f, -1117.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1089.286499f, -15935.629883f, -3.937050f, ZoneLineOrientationType.West, -1077.983887f, 3744.417480f, 200.000000f, -1097.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1069.286499f, -15935.629883f, -3.936600f, ZoneLineOrientationType.West, -1057.983887f, 3744.417480f, 200.000000f, -1077.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1049.286499f, -15935.629883f, -3.936770f, ZoneLineOrientationType.West, -1037.983887f, 3744.417480f, 200.000000f, -1057.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1029.286499f, -15935.629883f, -3.936860f, ZoneLineOrientationType.West, -1017.983948f, 3744.417480f, 200.000000f, -1037.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -1009.286499f, -15935.629883f, -3.936120f, ZoneLineOrientationType.West, -997.983948f, 3744.417480f, 200.000000f, -1017.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -989.286499f, -15935.629883f, -3.936780f, ZoneLineOrientationType.West, -977.983948f, 3744.417480f, 200.000000f, -997.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -969.286499f, -15935.629883f, -3.935530f, ZoneLineOrientationType.West, -957.983948f, 3744.417480f, 200.000000f, -977.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -949.286499f, -15935.629883f, -3.936600f, ZoneLineOrientationType.West, -937.983948f, 3744.417480f, 200.000000f, -957.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -929.286499f, -15935.629883f, -3.936430f, ZoneLineOrientationType.West, -917.983948f, 3744.417480f, 200.000000f, -937.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -909.286499f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -897.983948f, 3744.417480f, 200.000000f, -917.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -889.286499f, -15935.629883f, -3.936540f, ZoneLineOrientationType.West, -877.983948f, 3744.417480f, 200.000000f, -897.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -869.286499f, -15935.629883f, -3.935390f, ZoneLineOrientationType.West, -857.983948f, 3744.417480f, 200.000000f, -877.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -849.286499f, -15935.629883f, -3.935650f, ZoneLineOrientationType.West, -837.983948f, 3744.417480f, 200.000000f, -857.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -829.286499f, -15935.629883f, -3.935900f, ZoneLineOrientationType.West, -817.983948f, 3744.417480f, 200.000000f, -837.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -809.286499f, -15935.629883f, -3.936570f, ZoneLineOrientationType.West, -797.983948f, 3744.417480f, 200.000000f, -817.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -789.286499f, -15935.629883f, -3.936010f, ZoneLineOrientationType.West, -777.983948f, 3744.417480f, 200.000000f, -797.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -769.286499f, -15935.629883f, -3.936570f, ZoneLineOrientationType.West, -757.983948f, 3744.417480f, 200.000000f, -777.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -749.286499f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -737.983948f, 3744.417480f, 200.000000f, -757.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -729.286499f, -15935.629883f, -3.936930f, ZoneLineOrientationType.West, -717.983948f, 3744.417480f, 200.000000f, -737.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -709.286499f, -15935.629883f, -3.936640f, ZoneLineOrientationType.West, -697.983948f, 3744.417480f, 200.000000f, -717.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -689.286499f, -15935.629883f, -3.936430f, ZoneLineOrientationType.West, -677.983948f, 3744.417480f, 200.000000f, -697.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -669.286499f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -657.983887f, 3744.417480f, 200.000000f, -677.983948f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -649.286499f, -15935.629883f, -3.935270f, ZoneLineOrientationType.West, -637.983887f, 3744.417480f, 200.000000f, -657.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -629.286499f, -15935.629883f, -3.937150f, ZoneLineOrientationType.West, -617.983887f, 3744.417480f, 200.000000f, -637.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -609.286499f, -15935.629883f, -3.936590f, ZoneLineOrientationType.West, -597.983887f, 3744.417480f, 200.000000f, -617.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -589.286499f, -15935.629883f, -3.937060f, ZoneLineOrientationType.West, -577.983887f, 3744.417480f, 200.000000f, -597.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -569.286499f, -15935.629883f, -3.937320f, ZoneLineOrientationType.West, -557.983887f, 3744.417480f, 200.000000f, -577.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -549.286499f, -15935.629883f, -3.934710f, ZoneLineOrientationType.West, -537.983887f, 3744.417480f, 200.000000f, -557.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -529.286499f, -15935.629883f, -3.937260f, ZoneLineOrientationType.West, -517.983887f, 3744.417480f, 200.000000f, -537.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -509.286469f, -15935.629883f, -3.936520f, ZoneLineOrientationType.West, -497.983887f, 3744.417480f, 200.000000f, -517.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -489.286469f, -15935.629883f, -3.936610f, ZoneLineOrientationType.West, -477.983887f, 3744.417480f, 200.000000f, -497.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -469.286469f, -15935.629883f, -3.936400f, ZoneLineOrientationType.West, -457.983887f, 3744.417480f, 200.000000f, -477.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -449.286469f, -15935.629883f, -3.936490f, ZoneLineOrientationType.West, -437.983887f, 3744.417480f, 200.000000f, -457.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -429.286469f, -15935.629883f, -3.936470f, ZoneLineOrientationType.West, -417.983887f, 3744.417480f, 200.000000f, -437.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -409.286469f, -15935.629883f, -3.936730f, ZoneLineOrientationType.West, -397.983887f, 3744.417480f, 200.000000f, -417.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -389.286469f, -15935.629883f, -3.936590f, ZoneLineOrientationType.West, -377.983887f, 3744.417480f, 200.000000f, -397.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -369.286469f, -15935.629883f, -3.935850f, ZoneLineOrientationType.West, -357.983887f, 3744.417480f, 200.000000f, -377.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -349.286469f, -15935.629883f, -3.936790f, ZoneLineOrientationType.West, -337.983887f, 3744.417480f, 200.000000f, -357.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -329.286499f, -15935.629883f, -3.935650f, ZoneLineOrientationType.West, -317.983887f, 3744.417480f, 200.000000f, -337.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -309.286499f, -15935.629883f, -3.937160f, ZoneLineOrientationType.West, -297.983887f, 3744.417480f, 200.000000f, -317.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -289.286499f, -15935.629883f, -3.935160f, ZoneLineOrientationType.West, -277.983887f, 3744.417480f, 200.000000f, -297.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -269.286499f, -15935.629883f, -3.937010f, ZoneLineOrientationType.West, -257.983887f, 3744.417480f, 200.000000f, -277.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -249.286499f, -15935.629883f, -3.937080f, ZoneLineOrientationType.West, -237.983887f, 3744.417480f, 200.000000f, -257.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -229.286499f, -15935.629883f, -3.937160f, ZoneLineOrientationType.West, -217.983887f, 3744.417480f, 200.000000f, -237.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -209.286499f, -15935.629883f, -3.936710f, ZoneLineOrientationType.West, -197.983887f, 3744.417480f, 200.000000f, -217.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -189.286499f, -15935.629883f, -3.936690f, ZoneLineOrientationType.West, -177.983887f, 3744.417480f, 200.000000f, -197.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -169.286499f, -15935.629883f, -3.937480f, ZoneLineOrientationType.West, -157.983887f, 3744.417480f, 200.000000f, -177.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -149.001923f, -15935.786133f, -3.896160f, ZoneLineOrientationType.West, -137.983887f, 3744.417480f, 200.000000f, -157.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -129.001923f, -15935.786133f, -3.936490f, ZoneLineOrientationType.West, -117.983887f, 3744.417480f, 200.000000f, -137.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -109.001923f, -15935.786133f, -3.936410f, ZoneLineOrientationType.West, -97.983887f, 3744.417480f, 200.000000f, -117.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -89.001923f, -15935.786133f, -3.936550f, ZoneLineOrientationType.West, -77.983887f, 3744.417480f, 200.000000f, -97.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -69.001930f, -15935.786133f, -3.937040f, ZoneLineOrientationType.West, -57.983891f, 3744.417480f, 200.000000f, -77.983887f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -49.001930f, -15935.786133f, -3.937170f, ZoneLineOrientationType.West, -37.983891f, 3744.417480f, 200.000000f, -57.983891f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -29.001921f, -15935.786133f, -3.936370f, ZoneLineOrientationType.West, -17.983891f, 3744.417480f, 200.000000f, -37.983891f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", -9.001920f, -15935.786133f, -3.936780f, ZoneLineOrientationType.West, 2.016110f, 3744.417480f, 200.000000f, -17.983891f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 10.998080f, -15935.786133f, -3.936910f, ZoneLineOrientationType.West, 22.016109f, 3744.417480f, 200.000000f, 2.016110f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 30.998079f, -15935.786133f, -3.937440f, ZoneLineOrientationType.West, 42.016121f, 3744.417480f, 200.000000f, 22.016109f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 50.998081f, -15935.786133f, -3.935660f, ZoneLineOrientationType.West, 62.016121f, 3744.417480f, 200.000000f, 42.016121f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 70.998077f, -15935.786133f, -3.936810f, ZoneLineOrientationType.West, 82.016121f, 3744.417480f, 200.000000f, 62.016121f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 90.998077f, -15935.786133f, -3.936860f, ZoneLineOrientationType.West, 102.016113f, 3744.417480f, 200.000000f, 82.016121f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 110.998077f, -15935.786133f, -3.936910f, ZoneLineOrientationType.West, 122.016113f, 3744.417480f, 200.000000f, 102.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 130.998077f, -15935.786133f, -3.936480f, ZoneLineOrientationType.West, 142.016113f, 3744.417480f, 200.000000f, 122.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 150.998077f, -15935.786133f, -3.936610f, ZoneLineOrientationType.West, 162.016113f, 3744.417480f, 200.000000f, 142.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 170.998077f, -15935.786133f, -3.937170f, ZoneLineOrientationType.West, 182.016113f, 3744.417480f, 200.000000f, 162.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 190.998077f, -15935.786133f, -3.936390f, ZoneLineOrientationType.West, 202.016113f, 3744.417480f, 200.000000f, 182.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 210.998077f, -15935.786133f, -3.935840f, ZoneLineOrientationType.West, 222.016113f, 3744.417480f, 200.000000f, 202.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 230.998077f, -15935.786133f, -3.936090f, ZoneLineOrientationType.West, 242.016113f, 3744.417480f, 200.000000f, 222.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 250.998077f, -15935.786133f, -3.936630f, ZoneLineOrientationType.West, 262.016113f, 3744.417480f, 200.000000f, 242.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 270.998077f, -15935.786133f, -3.935360f, ZoneLineOrientationType.West, 282.016113f, 3744.417480f, 200.000000f, 262.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 290.998077f, -15935.786133f, -3.936770f, ZoneLineOrientationType.West, 302.016113f, 3744.417480f, 200.000000f, 282.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 310.998077f, -15935.786133f, -3.936680f, ZoneLineOrientationType.West, 322.016113f, 3744.417480f, 200.000000f, 302.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 330.998077f, -15935.786133f, -3.936730f, ZoneLineOrientationType.West, 342.016113f, 3744.417480f, 200.000000f, 322.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 350.998077f, -15935.786133f, -3.935060f, ZoneLineOrientationType.West, 362.016113f, 3744.417480f, 200.000000f, 342.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 370.998077f, -15935.786133f, -3.936680f, ZoneLineOrientationType.West, 382.016113f, 3744.417480f, 200.000000f, 362.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 390.998077f, -15935.786133f, -3.936490f, ZoneLineOrientationType.West, 402.016113f, 3744.417480f, 200.000000f, 382.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 410.998077f, -15935.786133f, -3.936550f, ZoneLineOrientationType.West, 422.016113f, 3744.417480f, 200.000000f, 402.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 430.998077f, -15935.786133f, -3.934870f, ZoneLineOrientationType.West, 442.016113f, 3744.417480f, 200.000000f, 422.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 450.998077f, -15935.786133f, -3.936730f, ZoneLineOrientationType.West, 462.016113f, 3744.417480f, 200.000000f, 442.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 470.998077f, -15935.786133f, -3.936800f, ZoneLineOrientationType.West, 482.016113f, 3744.417480f, 200.000000f, 462.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 490.998077f, -15935.786133f, -3.935620f, ZoneLineOrientationType.West, 502.016113f, 3744.417480f, 200.000000f, 482.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 510.998077f, -15935.786133f, -3.937000f, ZoneLineOrientationType.West, 522.016113f, 3744.417480f, 200.000000f, 502.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 530.998047f, -15935.786133f, -3.936480f, ZoneLineOrientationType.West, 542.016113f, 3744.417480f, 200.000000f, 522.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 550.998047f, -15935.786133f, -3.934700f, ZoneLineOrientationType.West, 562.016113f, 3744.417480f, 200.000000f, 542.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 570.998047f, -15935.786133f, -3.936530f, ZoneLineOrientationType.West, 582.016113f, 3744.417480f, 200.000000f, 562.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 590.998047f, -15935.786133f, -3.936560f, ZoneLineOrientationType.West, 602.016113f, 3744.417480f, 200.000000f, 582.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 610.998047f, -15935.786133f, -3.935290f, ZoneLineOrientationType.West, 622.016113f, 3744.417480f, 200.000000f, 602.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 630.998047f, -15935.786133f, -3.936610f, ZoneLineOrientationType.West, 642.016113f, 3744.417480f, 200.000000f, 622.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 650.998047f, -15935.786133f, -3.937180f, ZoneLineOrientationType.West, 662.016113f, 3744.417480f, 200.000000f, 642.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 670.998047f, -15935.786133f, -3.934940f, ZoneLineOrientationType.West, 682.016052f, 3744.417480f, 200.000000f, 662.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 690.998108f, -15935.786133f, -3.935190f, ZoneLineOrientationType.West, 702.016052f, 3744.417480f, 200.000000f, 682.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 710.998108f, -15935.786133f, -3.936540f, ZoneLineOrientationType.West, 722.016052f, 3744.417480f, 200.000000f, 702.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 730.998108f, -15935.786133f, -3.934760f, ZoneLineOrientationType.West, 742.016052f, 3744.417480f, 200.000000f, 722.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 750.998108f, -15935.786133f, -3.936730f, ZoneLineOrientationType.West, 762.016052f, 3744.417480f, 200.000000f, 742.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 770.998108f, -15935.786133f, -3.936770f, ZoneLineOrientationType.West, 782.016052f, 3744.417480f, 200.000000f, 762.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 790.998108f, -15935.786133f, -3.934990f, ZoneLineOrientationType.West, 802.016052f, 3744.417480f, 200.000000f, 782.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 810.998108f, -15935.786133f, -3.936610f, ZoneLineOrientationType.West, 822.016052f, 3744.417480f, 200.000000f, 802.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 830.998108f, -15935.786133f, -3.934930f, ZoneLineOrientationType.West, 842.016052f, 3744.417480f, 200.000000f, 822.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 850.998108f, -15935.786133f, -3.935720f, ZoneLineOrientationType.West, 862.016052f, 3744.417480f, 200.000000f, 842.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 870.998108f, -15935.786133f, -3.936740f, ZoneLineOrientationType.West, 882.016052f, 3744.417480f, 200.000000f, 862.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 890.998108f, -15935.786133f, -3.936550f, ZoneLineOrientationType.West, 902.016052f, 3744.417480f, 200.000000f, 882.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 910.998108f, -15935.786133f, -3.936690f, ZoneLineOrientationType.West, 922.016052f, 3744.417480f, 200.000000f, 902.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 930.998108f, -15935.786133f, -3.936670f, ZoneLineOrientationType.West, 942.016052f, 3744.417480f, 200.000000f, 922.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 950.998108f, -15935.786133f, -3.936570f, ZoneLineOrientationType.West, 962.016052f, 3744.417480f, 200.000000f, 942.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 970.998108f, -15935.786133f, -3.935300f, ZoneLineOrientationType.West, 982.016052f, 3744.417480f, 200.000000f, 962.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 990.998108f, -15935.786133f, -3.935570f, ZoneLineOrientationType.West, 1002.016052f, 3744.417480f, 200.000000f, 982.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1010.998108f, -15935.786133f, -3.937030f, ZoneLineOrientationType.West, 1022.016052f, 3744.417480f, 200.000000f, 1002.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1030.998047f, -15935.786133f, -3.936560f, ZoneLineOrientationType.West, 1042.016113f, 3744.417480f, 200.000000f, 1022.016052f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1050.998047f, -15935.786133f, -3.936580f, ZoneLineOrientationType.West, 1062.016113f, 3744.417480f, 200.000000f, 1042.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1070.998047f, -15935.786133f, -3.936630f, ZoneLineOrientationType.West, 1082.016113f, 3744.417480f, 200.000000f, 1062.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1090.998047f, -15935.786133f, -3.936830f, ZoneLineOrientationType.West, 1102.016113f, 3744.417480f, 200.000000f, 1082.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1110.998047f, -15935.786133f, 2.664960f, ZoneLineOrientationType.West, 1122.016113f, 3744.417480f, 200.000000f, 1102.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1130.998047f, -15935.786133f, 13.462410f, ZoneLineOrientationType.West, 1142.016113f, 3744.417480f, 200.000000f, 1122.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1150.998047f, -15935.786133f, 20.513180f, ZoneLineOrientationType.West, 1162.016113f, 3744.417480f, 200.000000f, 1142.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1170.998047f, -15935.786133f, 27.565720f, ZoneLineOrientationType.West, 1182.016113f, 3744.417480f, 200.000000f, 1162.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1190.998047f, -15935.786133f, 34.615608f, ZoneLineOrientationType.West, 1202.016113f, 3744.417480f, 200.000000f, 1182.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1210.998047f, -15935.786133f, 41.667130f, ZoneLineOrientationType.West, 1222.016113f, 3744.417480f, 200.000000f, 1202.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1230.998047f, -15935.786133f, 48.718231f, ZoneLineOrientationType.West, 1242.016113f, 3744.417480f, 200.000000f, 1222.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1250.998047f, -15935.786133f, 55.769260f, ZoneLineOrientationType.West, 1262.016113f, 3744.417480f, 200.000000f, 1242.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1270.998047f, -15935.786133f, 62.820889f, ZoneLineOrientationType.West, 1282.016113f, 3744.417480f, 200.000000f, 1262.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1290.998047f, -15935.786133f, 69.871483f, ZoneLineOrientationType.West, 1302.016113f, 3744.417480f, 200.000000f, 1282.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1310.998047f, -15935.786133f, 76.923477f, ZoneLineOrientationType.West, 1322.016113f, 3744.417480f, 200.000000f, 1302.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1330.998047f, -15935.786133f, 83.973763f, ZoneLineOrientationType.West, 1342.016113f, 3744.417480f, 200.000000f, 1322.016113f, 3714.417480f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1350.998047f, -15935.786133f, 91.028137f, ZoneLineOrientationType.West, 1500.016113f, 3744.417480f, 200.000000f, 1342.016113f, 3714.417480f, -100.000000f);
                     }
                     break;
-                case "nro":
+                case "nro": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
@@ -1374,7 +1692,7 @@ namespace EQWOWConverter.Zones
                             2077.083984f, 1928.101074f, 28.065140f, 2007.522705f, 1900.196045f, -0.499880f);
                     }
                     break;
-                case "oasis":
+                case "oasis": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("oasis", "Oasis of Marr", 903.98f, 490.03f, 6.4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
@@ -1484,9 +1802,11 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -818.770020f, -6.406220f, ZoneLineOrientationType.North, 2520.233154f, -810.747498f, 300.000000f, 2590.233154f, -830.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -838.770020f, -6.406150f, ZoneLineOrientationType.North, 2520.233154f, -830.747498f, 300.000000f, 2590.233154f, -850.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -858.770020f, -6.406100f, ZoneLineOrientationType.North, 2520.233154f, -850.747498f, 300.000000f, 2590.233154f, -1200.747498f, -200.000000f);
+                        zoneProperties.AddZoneLineBox("sro", 1433.793579f, 244.703186f, -13.301640f, ZoneLineOrientationType.South,
+                            -1890.072144f, 301.506622f, 119.807327f, -1933.566406f, 58.167610f, 1.784040f);
                     }
                     break;
-                case "oggok":
+                case "oggok": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(130, 140, 80, 10, 300);
@@ -1496,24 +1816,32 @@ namespace EQWOWConverter.Zones
                     break;
                 case "oot":
                     {
+                        // TODO: Boat connecting east freeport and butcherblock
                         zoneProperties.SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                     }
                     break;                
-                case "paineel":
+                case "paineel": // ZoneLinesBuilt
                     {
+                        // TODO: In-zone teleports
                         zoneProperties.SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(150, 150, 150, 200, 850);
                         zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North,
                             640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
                         zoneProperties.AddZoneLineBox("hole", 645.839417f, 246.516739f, -327.142517f, ZoneLineOrientationType.North,
                             932.554138f, 434.162994f, -151.438705f, 242.766006f, 88.558594f, -332.241425f);
+                        zoneProperties.AddZoneLineBox("tox", -2592.465576f, -418.976410f, -45.092499f, ZoneLineOrientationType.North,
+                            872.845337f, 187.732834f, 17.467010f, 831.879700f, 133.200150f, -1.499920f);
+                        zoneProperties.AddZoneLineBox("warrens", 740.468933f, -881.437256f, -36.999771f, ZoneLineOrientationType.North,
+                            748.881470f, -874.462463f, -26.586519f, 732.721863f, -888.849670f, -37.499989f);
                     }
                     break;
-                case "paw":
+                case "paw": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("paw", "Splitpaw Lair", -7.9f, -79.3f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(30, 25, 10, 10, 180);
+                        zoneProperties.AddZoneLineBox("southkarana", -3118.534424f, 908.824341f, -11.938860f, ZoneLineOrientationType.West,
+                            -95.775307f, 64.159088f, 14.467540f, -112.163208f, 29.530199f, -0.499950f);
                     }
                     break;
                 case "permafrost": // ZoneLinesBuilt
@@ -1524,45 +1852,603 @@ namespace EQWOWConverter.Zones
                             -39.775318f, 172.344788f, 38.435791f, -80.162201f, 102.044090f, -0.499990f);
                     }
                     break;
-                case "qcat":
+                case "qcat": // ZoneLinesBuilt
                     {
-                        zoneProperties.SetBaseZoneProperties("qcat", "Qeynos Catacombs", -315f, 214f, -38f, 0, ZoneContinent.Antonica);
+                        // TODO: Secret pot to Tox
+                        zoneProperties.SetBaseZoneProperties("qcat", "Qeynos Aqueducts", -315f, 214f, -38f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
+                        zoneProperties.AddZoneLineBox("qeynos2", 301.114655f, -161.613953f, -63.449379f, ZoneLineOrientationType.North,
+                            1063.755981f, -41.776192f, 262.653015f, 1049.400269f, -56.161572f, 215f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 187.834518f, 341.638733f, -87.992813f, ZoneLineOrientationType.West,
+                            895.849731f, 224.099167f, 61.134998f, 881.462830f, 209.713654f, 39.701309f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 175.706985f, 97.447029f, -41.968739f, ZoneLineOrientationType.West,
+                            645.282104f, 140.744995f, -29.533369f, 629.556519f, 111.476059f, -42.468731f);
+                        zoneProperties.AddZoneLineBox("qeynos", 273.965027f, -553.077881f, -107.459396f, ZoneLineOrientationType.West,
+                            350.068390f, -167.744415f, 73.340729f, 335.681610f, -182.130219f, 42.217911f);
+                        zoneProperties.AddZoneLineBox("qeynos", -147.118271f, -602.695679f, -27.999969f, ZoneLineOrientationType.West,
+                            224.098785f, -251.712753f, -29.532080f, 209.713898f, -294.294037f, -42.468761f);
+                        zoneProperties.AddZoneLineBox("qeynos", 174.606125f, -482.169281f, -81.858551f, ZoneLineOrientationType.North,
+                            238.099686f, -55.775669f, 89.590897f, 223.712814f, -70.160507f, 55.560329f);
+                        zoneProperties.AddZoneLineBox("qeynos", -188.236420f, 78.551971f, -91.583946f, ZoneLineOrientationType.West,
+                            -167.744095f, 314.996979f, -71.500740f, -182.130966f, 286.822327f, -84.468750f);
                     }
                     break;
-                case "qey2hh1":
+                case "qey2hh1": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("qey2hh1", "Western Karana", -638f, 12f, -4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
+                        zoneProperties.AddZoneLineBox("northkarana", -4427.983887f, 3694.417480f, -69.281387f, ZoneLineOrientationType.East, -4419.286621f, -15915.629883f, 200.000000f, -5000.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4407.983887f, 3694.417480f, -69.280312f, ZoneLineOrientationType.East, -4399.286621f, -15915.629883f, 200.000000f, -4419.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4387.983887f, 3694.417480f, -69.281021f, ZoneLineOrientationType.East, -4379.286621f, -15915.629883f, 200.000000f, -4399.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4367.983887f, 3694.417480f, -69.281113f, ZoneLineOrientationType.East, -4359.286621f, -15915.629883f, 200.000000f, -4379.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4347.983887f, 3694.417480f, -69.281219f, ZoneLineOrientationType.East, -4339.286621f, -15915.629883f, 200.000000f, -4359.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4327.983887f, 3694.417480f, -69.280998f, ZoneLineOrientationType.East, -4319.286621f, -15915.629883f, 200.000000f, -4339.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4307.983887f, 3694.417480f, -69.281090f, ZoneLineOrientationType.East, -4299.286621f, -15915.629883f, 200.000000f, -4319.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4287.983887f, 3694.417480f, -69.281067f, ZoneLineOrientationType.East, -4279.286621f, -15915.629883f, 200.000000f, -4299.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4267.983887f, 3694.417480f, -69.281120f, ZoneLineOrientationType.East, -4259.286621f, -15915.629883f, 200.000000f, -4279.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4247.983887f, 3694.417480f, -69.281021f, ZoneLineOrientationType.East, -4239.286621f, -15915.629883f, 200.000000f, -4259.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4227.983887f, 3694.417480f, -65.794540f, ZoneLineOrientationType.East, -4219.286621f, -15915.629883f, 200.000000f, -4239.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4207.983887f, 3694.417480f, -61.161800f, ZoneLineOrientationType.East, -4199.286621f, -15915.629883f, 200.000000f, -4219.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4187.983887f, 3694.417480f, -56.529270f, ZoneLineOrientationType.East, -4179.286621f, -15915.629883f, 200.000000f, -4199.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4167.983887f, 3694.417480f, -51.893570f, ZoneLineOrientationType.East, -4159.286621f, -15915.629883f, 200.000000f, -4179.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4147.983887f, 3694.417480f, -47.257912f, ZoneLineOrientationType.East, -4139.286621f, -15915.629883f, 200.000000f, -4159.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4127.983887f, 3694.417480f, -42.622330f, ZoneLineOrientationType.East, -4119.286621f, -15915.629883f, 200.000000f, -4139.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4107.983887f, 3694.417480f, -37.987011f, ZoneLineOrientationType.East, -4099.286621f, -15915.629883f, 200.000000f, -4119.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4087.983887f, 3694.417480f, -33.355850f, ZoneLineOrientationType.East, -4079.286621f, -15915.629883f, 200.000000f, -4099.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4067.983887f, 3694.417480f, -28.725941f, ZoneLineOrientationType.East, -4059.286621f, -15915.629883f, 200.000000f, -4079.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4047.983887f, 3694.417480f, -24.095470f, ZoneLineOrientationType.East, -4039.286621f, -15915.629883f, 200.000000f, -4059.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4027.983887f, 3694.417480f, -19.465460f, ZoneLineOrientationType.East, -4019.286621f, -15915.629883f, 200.000000f, -4039.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4007.983887f, 3694.417480f, -14.835540f, ZoneLineOrientationType.East, -3999.286621f, -15915.629883f, 200.000000f, -4019.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3987.983887f, 3694.417480f, -12.321260f, ZoneLineOrientationType.East, -3979.286621f, -15915.629883f, 200.000000f, -3999.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3967.983887f, 3694.417480f, -11.047800f, ZoneLineOrientationType.East, -3959.286621f, -15915.629883f, 200.000000f, -3979.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3947.983887f, 3694.417480f, -9.774160f, ZoneLineOrientationType.East, -3939.286621f, -15915.629883f, 200.000000f, -3959.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3927.983887f, 3694.417480f, -8.500100f, ZoneLineOrientationType.East, -3919.286621f, -15915.629883f, 200.000000f, -3939.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3907.983887f, 3694.417480f, -7.226280f, ZoneLineOrientationType.East, -3899.286621f, -15915.629883f, 200.000000f, -3919.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3887.983887f, 3694.417480f, -5.952450f, ZoneLineOrientationType.East, -3879.286621f, -15915.629883f, 200.000000f, -3899.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3867.983887f, 3694.417480f, -4.678950f, ZoneLineOrientationType.East, -3859.286621f, -15915.629883f, 200.000000f, -3879.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3847.983887f, 3694.417480f, -3.937270f, ZoneLineOrientationType.East, -3839.286621f, -15915.629883f, 200.000000f, -3859.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3827.983887f, 3694.417480f, -3.936940f, ZoneLineOrientationType.East, -3819.286621f, -15915.629883f, 200.000000f, -3839.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3807.983887f, 3694.417480f, -3.937120f, ZoneLineOrientationType.East, -3799.286621f, -15915.629883f, 200.000000f, -3819.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3787.983887f, 3694.417480f, -3.937180f, ZoneLineOrientationType.East, -3779.286621f, -15915.629883f, 200.000000f, -3799.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3767.983887f, 3694.417480f, -3.937140f, ZoneLineOrientationType.East, -3759.286621f, -15915.629883f, 200.000000f, -3779.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3747.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -3739.286621f, -15915.629883f, 200.000000f, -3759.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3727.983887f, 3694.417480f, -3.937550f, ZoneLineOrientationType.East, -3719.286621f, -15915.629883f, 200.000000f, -3739.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3707.983887f, 3694.417480f, -3.937300f, ZoneLineOrientationType.East, -3699.286621f, -15915.629883f, 200.000000f, -3719.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3687.983887f, 3694.417480f, -3.937290f, ZoneLineOrientationType.East, -3679.286621f, -15915.629883f, 200.000000f, -3699.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3667.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -3659.286621f, -15915.629883f, 200.000000f, -3679.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3647.983887f, 3694.417480f, -3.937010f, ZoneLineOrientationType.East, -3639.286621f, -15915.629883f, 200.000000f, -3659.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3627.983887f, 3694.417480f, -3.936940f, ZoneLineOrientationType.East, -3619.286621f, -15915.629883f, 200.000000f, -3639.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3607.983887f, 3694.417480f, -3.936890f, ZoneLineOrientationType.East, -3599.286621f, -15915.629883f, 200.000000f, -3619.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3587.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -3579.286621f, -15915.629883f, 200.000000f, -3599.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3567.983887f, 3694.417480f, -3.937030f, ZoneLineOrientationType.East, -3559.286621f, -15915.629883f, 200.000000f, -3579.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3547.983887f, 3694.417480f, -3.937020f, ZoneLineOrientationType.East, -3539.286621f, -15915.629883f, 200.000000f, -3559.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3527.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -3519.286621f, -15915.629883f, 200.000000f, -3539.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3507.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -3499.286621f, -15915.629883f, 200.000000f, -3519.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3487.983887f, 3694.417480f, -3.937550f, ZoneLineOrientationType.East, -3479.286621f, -15915.629883f, 200.000000f, -3499.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3467.983887f, 3694.417480f, -3.937290f, ZoneLineOrientationType.East, -3459.286621f, -15915.629883f, 200.000000f, -3479.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3447.983887f, 3694.417480f, -3.937330f, ZoneLineOrientationType.East, -3439.286621f, -15915.629883f, 200.000000f, -3459.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3427.983887f, 3694.417480f, -3.937460f, ZoneLineOrientationType.East, -3419.286621f, -15915.629883f, 200.000000f, -3439.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3407.983887f, 3694.417480f, -3.937550f, ZoneLineOrientationType.East, -3399.286621f, -15915.629883f, 200.000000f, -3419.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3387.983887f, 3694.417480f, -3.936840f, ZoneLineOrientationType.East, -3379.286621f, -15915.629883f, 200.000000f, -3399.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3367.983887f, 3694.417480f, -3.936900f, ZoneLineOrientationType.East, -3359.286621f, -15915.629883f, 200.000000f, -3379.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3347.983887f, 3694.417480f, -3.937120f, ZoneLineOrientationType.East, -3339.286621f, -15915.629883f, 200.000000f, -3359.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3327.983887f, 3694.417480f, -3.937370f, ZoneLineOrientationType.East, -3319.286621f, -15915.629883f, 200.000000f, -3339.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3307.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -3299.286621f, -15915.629883f, 200.000000f, -3319.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3287.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -3279.286621f, -15915.629883f, 200.000000f, -3299.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3267.983887f, 3694.417480f, -3.937400f, ZoneLineOrientationType.East, -3259.286621f, -15915.629883f, 200.000000f, -3279.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3247.983887f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -3239.286621f, -15915.629883f, 200.000000f, -3259.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3227.983887f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -3219.286621f, -15915.629883f, 200.000000f, -3239.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3207.983887f, 3694.417480f, -3.937120f, ZoneLineOrientationType.East, -3199.286621f, -15915.629883f, 200.000000f, -3219.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3187.983887f, 3694.417480f, -3.937070f, ZoneLineOrientationType.East, -3179.286621f, -15915.629883f, 200.000000f, -3199.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3167.983887f, 3694.417480f, -3.936950f, ZoneLineOrientationType.East, -3159.286621f, -15915.629883f, 200.000000f, -3179.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3147.983887f, 3694.417480f, -3.936900f, ZoneLineOrientationType.East, -3139.286621f, -15915.629883f, 200.000000f, -3159.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3127.983887f, 3694.417480f, -3.937130f, ZoneLineOrientationType.East, -3119.286621f, -15915.629883f, 200.000000f, -3139.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3107.983887f, 3694.417480f, -3.937430f, ZoneLineOrientationType.East, -3099.286621f, -15915.629883f, 200.000000f, -3119.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3087.983887f, 3694.417480f, -3.937240f, ZoneLineOrientationType.East, -3079.286621f, -15915.629883f, 200.000000f, -3099.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3067.983887f, 3694.417480f, -3.937390f, ZoneLineOrientationType.East, -3059.286621f, -15915.629883f, 200.000000f, -3079.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3047.983887f, 3694.417480f, -3.937480f, ZoneLineOrientationType.East, -3039.286621f, -15915.629883f, 200.000000f, -3059.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3027.983887f, 3694.417480f, -3.937290f, ZoneLineOrientationType.East, -3019.286621f, -15915.629883f, 200.000000f, -3039.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -3007.983887f, 3694.417480f, -3.937320f, ZoneLineOrientationType.East, -2999.286621f, -15915.629883f, 200.000000f, -3019.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2987.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -2979.286621f, -15915.629883f, 200.000000f, -2999.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2967.983887f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -2959.286621f, -15915.629883f, 200.000000f, -2979.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2947.983887f, 3694.417480f, -3.937080f, ZoneLineOrientationType.East, -2939.286621f, -15915.629883f, 200.000000f, -2959.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2927.983887f, 3694.417480f, -3.936950f, ZoneLineOrientationType.East, -2919.286621f, -15915.629883f, 200.000000f, -2939.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2907.983887f, 3694.417480f, -3.937220f, ZoneLineOrientationType.East, -2899.286621f, -15915.629883f, 200.000000f, -2919.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2887.983887f, 3694.417480f, -3.937040f, ZoneLineOrientationType.East, -2879.286621f, -15915.629883f, 200.000000f, -2899.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2867.983887f, 3694.417480f, -3.937370f, ZoneLineOrientationType.East, -2859.286621f, -15915.629883f, 200.000000f, -2879.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2847.983887f, 3694.417480f, -3.937370f, ZoneLineOrientationType.East, -2839.286621f, -15915.629883f, 200.000000f, -2859.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2827.983887f, 3694.417480f, -3.937520f, ZoneLineOrientationType.East, -2819.286621f, -15915.629883f, 200.000000f, -2839.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2807.983887f, 3694.417480f, -3.937270f, ZoneLineOrientationType.East, -2799.286621f, -15915.629883f, 200.000000f, -2819.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2787.983887f, 3694.417480f, -3.936910f, ZoneLineOrientationType.East, -2779.286621f, -15915.629883f, 200.000000f, -2799.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2767.983887f, 3694.417480f, -3.936900f, ZoneLineOrientationType.East, -2759.286621f, -15915.629883f, 200.000000f, -2779.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2747.983887f, 3694.417480f, -3.937180f, ZoneLineOrientationType.East, -2739.286621f, -15915.629883f, 200.000000f, -2759.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2727.983887f, 3694.417480f, -3.936850f, ZoneLineOrientationType.East, -2719.286621f, -15915.629883f, 200.000000f, -2739.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2707.983887f, 3694.417480f, -3.936840f, ZoneLineOrientationType.East, -2699.286621f, -15915.629883f, 200.000000f, -2719.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2687.983887f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -2679.286621f, -15915.629883f, 200.000000f, -2699.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2667.983887f, 3694.417480f, -3.937230f, ZoneLineOrientationType.East, -2659.286621f, -15915.629883f, 200.000000f, -2679.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2647.983887f, 3694.417480f, -3.937500f, ZoneLineOrientationType.East, -2639.286621f, -15915.629883f, 200.000000f, -2659.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2627.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -2619.286621f, -15915.629883f, 200.000000f, -2639.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2607.983887f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -2599.286621f, -15915.629883f, 200.000000f, -2619.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2587.983887f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -2579.286621f, -15915.629883f, 200.000000f, -2599.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2567.983887f, 3694.417480f, -3.937480f, ZoneLineOrientationType.East, -2559.286621f, -15915.629883f, 200.000000f, -2579.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2547.983887f, 3694.417480f, -3.937020f, ZoneLineOrientationType.East, -2539.286621f, -15915.629883f, 200.000000f, -2559.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2527.983887f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -2519.286621f, -15915.629883f, 200.000000f, -2539.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2507.983887f, 3694.417480f, -3.937090f, ZoneLineOrientationType.East, -2499.286621f, -15915.629883f, 200.000000f, -2519.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2487.983887f, 3694.417480f, -3.937150f, ZoneLineOrientationType.East, -2479.286621f, -15915.629883f, 200.000000f, -2499.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2467.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -2459.286621f, -15915.629883f, 200.000000f, -2479.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2447.983887f, 3694.417480f, -3.936880f, ZoneLineOrientationType.East, -2439.286621f, -15915.629883f, 200.000000f, -2459.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2427.983887f, 3694.417480f, -3.937530f, ZoneLineOrientationType.East, -2419.286621f, -15915.629883f, 200.000000f, -2439.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2407.983887f, 3694.417480f, -3.937440f, ZoneLineOrientationType.East, -2399.286621f, -15915.629883f, 200.000000f, -2419.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2387.983887f, 3694.417480f, -3.937330f, ZoneLineOrientationType.East, -2379.286621f, -15915.629883f, 200.000000f, -2399.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2367.983887f, 3694.417480f, -3.937510f, ZoneLineOrientationType.East, -2359.286621f, -15915.629883f, 200.000000f, -2379.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2347.983887f, 3694.417480f, -3.937520f, ZoneLineOrientationType.East, -2339.286621f, -15915.629883f, 200.000000f, -2359.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2327.983887f, 3694.417480f, -3.936880f, ZoneLineOrientationType.East, -2319.286621f, -15915.629883f, 200.000000f, -2339.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2307.983887f, 3694.417480f, -3.936950f, ZoneLineOrientationType.East, -2299.286621f, -15915.629883f, 200.000000f, -2319.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2287.983887f, 3694.417480f, -3.936900f, ZoneLineOrientationType.East, -2279.286621f, -15915.629883f, 200.000000f, -2299.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2267.983887f, 3694.417480f, -3.936950f, ZoneLineOrientationType.East, -2259.286621f, -15915.629883f, 200.000000f, -2279.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2247.983887f, 3694.417480f, -3.937140f, ZoneLineOrientationType.East, -2239.286621f, -15915.629883f, 200.000000f, -2259.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2227.983887f, 3694.417480f, -3.937400f, ZoneLineOrientationType.East, -2219.286621f, -15915.629883f, 200.000000f, -2239.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2207.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -2199.286621f, -15915.629883f, 200.000000f, -2219.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2187.983887f, 3694.417480f, -3.937420f, ZoneLineOrientationType.East, -2179.286621f, -15915.629883f, 200.000000f, -2199.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2167.983887f, 3694.417480f, -3.937430f, ZoneLineOrientationType.East, -2159.286621f, -15915.629883f, 200.000000f, -2179.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2147.983887f, 3694.417480f, -3.937040f, ZoneLineOrientationType.East, -2139.286621f, -15915.629883f, 200.000000f, -2159.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2127.983887f, 3694.417480f, -3.937440f, ZoneLineOrientationType.East, -2119.286621f, -15915.629883f, 200.000000f, -2139.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2107.983887f, 3694.417480f, -3.936790f, ZoneLineOrientationType.East, -2099.286621f, -15915.629883f, 200.000000f, -2119.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2087.983887f, 3694.417480f, -3.937320f, ZoneLineOrientationType.East, -2079.286621f, -15915.629883f, 200.000000f, -2099.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2067.983887f, 3694.417480f, -3.937410f, ZoneLineOrientationType.East, -2059.286621f, -15915.629883f, 200.000000f, -2079.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2047.983887f, 3694.417480f, -3.937510f, ZoneLineOrientationType.East, -2039.286499f, -15915.629883f, 200.000000f, -2059.286621f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2027.983887f, 3694.417480f, -3.936830f, ZoneLineOrientationType.East, -2019.286499f, -15915.629883f, 200.000000f, -2039.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -2007.983887f, 3694.417480f, -3.937360f, ZoneLineOrientationType.East, -1999.286499f, -15915.629883f, 200.000000f, -2019.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1987.983887f, 3694.417480f, -3.937040f, ZoneLineOrientationType.East, -1979.286499f, -15915.629883f, 200.000000f, -1999.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1967.983887f, 3694.417480f, -3.936880f, ZoneLineOrientationType.East, -1959.286499f, -15915.629883f, 200.000000f, -1979.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1947.983887f, 3694.417480f, -3.936950f, ZoneLineOrientationType.East, -1939.286499f, -15915.629883f, 200.000000f, -1959.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1927.983887f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -1919.286499f, -15915.629883f, 200.000000f, -1939.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1907.983887f, 3694.417480f, -3.937270f, ZoneLineOrientationType.East, -1899.286499f, -15915.629883f, 200.000000f, -1919.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1887.983887f, 3694.417480f, -3.937020f, ZoneLineOrientationType.East, -1879.286499f, -15915.629883f, 200.000000f, -1899.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1867.983887f, 3694.417480f, -3.936970f, ZoneLineOrientationType.East, -1859.286499f, -15915.629883f, 200.000000f, -1879.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1847.983887f, 3694.417480f, -3.937480f, ZoneLineOrientationType.East, -1839.286499f, -15915.629883f, 200.000000f, -1859.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1827.983887f, 3694.417480f, -3.937170f, ZoneLineOrientationType.East, -1819.286499f, -15915.629883f, 200.000000f, -1839.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1807.983887f, 3694.417480f, -3.937180f, ZoneLineOrientationType.East, -1799.286499f, -15915.629883f, 200.000000f, -1819.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1787.983887f, 3694.417480f, -3.936870f, ZoneLineOrientationType.East, -1779.286499f, -15915.629883f, 200.000000f, -1799.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1767.983887f, 3694.417480f, -3.937270f, ZoneLineOrientationType.East, -1759.286499f, -15915.629883f, 200.000000f, -1779.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1747.983887f, 3694.417480f, -3.937110f, ZoneLineOrientationType.East, -1739.286499f, -15915.629883f, 200.000000f, -1759.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1727.983887f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -1719.286499f, -15915.629883f, 200.000000f, -1739.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1707.983887f, 3694.417480f, -3.936880f, ZoneLineOrientationType.East, -1699.286499f, -15915.629883f, 200.000000f, -1719.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1687.983887f, 3694.417480f, -3.937400f, ZoneLineOrientationType.East, -1679.286499f, -15915.629883f, 200.000000f, -1699.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1667.983887f, 3694.417480f, -3.937150f, ZoneLineOrientationType.East, -1659.286499f, -15915.629883f, 200.000000f, -1679.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1647.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -1639.286499f, -15915.629883f, 200.000000f, -1659.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1627.983887f, 3694.417480f, -3.937220f, ZoneLineOrientationType.East, -1619.286499f, -15915.629883f, 200.000000f, -1639.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1607.983887f, 3694.417480f, -3.937340f, ZoneLineOrientationType.East, -1599.286499f, -15915.629883f, 200.000000f, -1619.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1587.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -1579.286499f, -15915.629883f, 200.000000f, -1599.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1567.983887f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -1559.286499f, -15915.629883f, 200.000000f, -1579.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1547.983887f, 3694.417480f, -3.937140f, ZoneLineOrientationType.East, -1539.286499f, -15915.629883f, 200.000000f, -1559.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1527.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -1519.286499f, -15915.629883f, 200.000000f, -1539.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1507.983887f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -1499.286499f, -15915.629883f, 200.000000f, -1519.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1487.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -1479.286499f, -15915.629883f, 200.000000f, -1499.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1467.983887f, 3694.417480f, -3.937020f, ZoneLineOrientationType.East, -1459.286499f, -15915.629883f, 200.000000f, -1479.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1447.983887f, 3694.417480f, -3.937130f, ZoneLineOrientationType.East, -1439.286499f, -15915.629883f, 200.000000f, -1459.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1427.983887f, 3694.417480f, -3.936890f, ZoneLineOrientationType.East, -1419.286499f, -15915.629883f, 200.000000f, -1439.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1407.983887f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -1399.286499f, -15915.629883f, 200.000000f, -1419.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1387.983887f, 3694.417480f, -3.937070f, ZoneLineOrientationType.East, -1379.286499f, -15915.629883f, 200.000000f, -1399.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1367.983887f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -1359.286499f, -15915.629883f, 200.000000f, -1379.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1347.983887f, 3694.417480f, -3.937090f, ZoneLineOrientationType.East, -1339.286499f, -15915.629883f, 200.000000f, -1359.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1327.983887f, 3694.417480f, -3.937160f, ZoneLineOrientationType.East, -1319.286499f, -15915.629883f, 200.000000f, -1339.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1307.983887f, 3694.417480f, -3.936970f, ZoneLineOrientationType.East, -1299.286499f, -15915.629883f, 200.000000f, -1319.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1287.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -1279.286499f, -15915.629883f, 200.000000f, -1299.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1267.983887f, 3694.417480f, -3.937220f, ZoneLineOrientationType.East, -1259.286499f, -15915.629883f, 200.000000f, -1279.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1247.983887f, 3694.417480f, -3.937440f, ZoneLineOrientationType.East, -1239.286499f, -15915.629883f, 200.000000f, -1259.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1227.983887f, 3694.417480f, -3.937220f, ZoneLineOrientationType.East, -1219.286499f, -15915.629883f, 200.000000f, -1239.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1207.983887f, 3694.417480f, -3.936990f, ZoneLineOrientationType.East, -1199.286499f, -15915.629883f, 200.000000f, -1219.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1187.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -1179.286499f, -15915.629883f, 200.000000f, -1199.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1167.983887f, 3694.417480f, -3.937250f, ZoneLineOrientationType.East, -1159.286499f, -15915.629883f, 200.000000f, -1179.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1147.983887f, 3694.417480f, -3.937060f, ZoneLineOrientationType.East, -1139.286499f, -15915.629883f, 200.000000f, -1159.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1127.983887f, 3694.417480f, -3.936930f, ZoneLineOrientationType.East, -1119.286499f, -15915.629883f, 200.000000f, -1139.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1107.983887f, 3694.417480f, -3.937260f, ZoneLineOrientationType.East, -1099.286499f, -15915.629883f, 200.000000f, -1119.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1087.983887f, 3694.417480f, -3.937020f, ZoneLineOrientationType.East, -1079.286499f, -15915.629883f, 200.000000f, -1099.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1067.983887f, 3694.417480f, -3.936880f, ZoneLineOrientationType.East, -1059.286499f, -15915.629883f, 200.000000f, -1079.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1047.983887f, 3694.417480f, -3.937170f, ZoneLineOrientationType.East, -1039.286499f, -15915.629883f, 200.000000f, -1059.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1027.983887f, 3694.417480f, -3.937430f, ZoneLineOrientationType.East, -1019.286499f, -15915.629883f, 200.000000f, -1039.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -1007.983948f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -999.286499f, -15915.629883f, 200.000000f, -1019.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -987.983948f, 3694.417480f, -3.937010f, ZoneLineOrientationType.East, -979.286499f, -15915.629883f, 200.000000f, -999.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -967.983948f, 3694.417480f, -3.937280f, ZoneLineOrientationType.East, -959.286499f, -15915.629883f, 200.000000f, -979.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -947.983948f, 3694.417480f, -3.937390f, ZoneLineOrientationType.East, -939.286499f, -15915.629883f, 200.000000f, -959.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -927.983948f, 3694.417480f, -3.937310f, ZoneLineOrientationType.East, -919.286499f, -15915.629883f, 200.000000f, -939.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -907.983948f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -899.286499f, -15915.629883f, 200.000000f, -919.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -887.983948f, 3694.417480f, -3.937160f, ZoneLineOrientationType.East, -879.286499f, -15915.629883f, 200.000000f, -899.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -867.983948f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -859.286499f, -15915.629883f, 200.000000f, -879.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -847.983948f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -839.286499f, -15915.629883f, 200.000000f, -859.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -827.983948f, 3694.417480f, -3.937350f, ZoneLineOrientationType.East, -819.286499f, -15915.629883f, 200.000000f, -839.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -807.983948f, 3694.417480f, -3.937220f, ZoneLineOrientationType.East, -799.286499f, -15915.629883f, 200.000000f, -819.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -787.983948f, 3694.417480f, -3.937120f, ZoneLineOrientationType.East, -779.286499f, -15915.629883f, 200.000000f, -799.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -767.983948f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -759.286499f, -15915.629883f, 200.000000f, -779.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -747.983948f, 3694.417480f, -3.937140f, ZoneLineOrientationType.East, -739.286499f, -15915.629883f, 200.000000f, -759.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -727.983948f, 3694.417480f, -3.936910f, ZoneLineOrientationType.East, -719.286499f, -15915.629883f, 200.000000f, -739.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -707.983948f, 3694.417480f, -3.937170f, ZoneLineOrientationType.East, -699.286499f, -15915.629883f, 200.000000f, -719.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -687.983948f, 3694.417480f, -3.937380f, ZoneLineOrientationType.East, -679.286499f, -15915.629883f, 200.000000f, -699.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -667.983887f, 3694.417480f, -3.937240f, ZoneLineOrientationType.East, -659.286499f, -15915.629883f, 200.000000f, -679.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -647.983887f, 3694.417480f, -3.937000f, ZoneLineOrientationType.East, -639.286499f, -15915.629883f, 200.000000f, -659.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -627.983887f, 3694.417480f, -3.937270f, ZoneLineOrientationType.East, -619.286499f, -15915.629883f, 200.000000f, -639.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -607.983887f, 3694.417480f, -3.937440f, ZoneLineOrientationType.East, -599.286499f, -15915.629883f, 200.000000f, -619.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -587.983887f, 3694.417480f, -3.937200f, ZoneLineOrientationType.East, -579.286499f, -15915.629883f, 200.000000f, -599.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -567.983887f, 3694.417480f, -3.936970f, ZoneLineOrientationType.East, -559.286499f, -15915.629883f, 200.000000f, -579.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -547.983887f, 3694.417480f, -3.937300f, ZoneLineOrientationType.East, -539.286499f, -15915.629883f, 200.000000f, -559.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -527.983887f, 3694.417480f, -3.937470f, ZoneLineOrientationType.East, -519.286499f, -15915.629883f, 200.000000f, -539.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -507.983887f, 3694.417480f, -3.936820f, ZoneLineOrientationType.East, -499.286469f, -15915.629883f, 200.000000f, -519.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -487.983887f, 3694.417480f, -3.937150f, ZoneLineOrientationType.East, -479.286469f, -15915.629883f, 200.000000f, -499.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -467.983887f, 3694.417480f, -3.937360f, ZoneLineOrientationType.East, -459.286469f, -15915.629883f, 200.000000f, -479.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -447.983887f, 3694.417480f, -3.826400f, ZoneLineOrientationType.East, -439.286469f, -15915.629883f, 200.000000f, -459.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -427.983887f, 3694.417480f, -2.500250f, ZoneLineOrientationType.East, -419.286469f, -15915.629883f, 200.000000f, -439.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -407.983887f, 3694.417480f, -1.174630f, ZoneLineOrientationType.East, -399.286469f, -15915.629883f, 200.000000f, -419.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -387.983887f, 3694.417480f, 0.150980f, ZoneLineOrientationType.East, -379.286469f, -15915.629883f, 200.000000f, -399.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -367.983887f, 3694.417480f, 1.476650f, ZoneLineOrientationType.East, -359.286469f, -15915.629883f, 200.000000f, -379.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -347.983887f, 3694.417480f, 2.802750f, ZoneLineOrientationType.East, -339.286469f, -15915.629883f, 200.000000f, -359.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -327.983887f, 3694.417480f, 4.128600f, ZoneLineOrientationType.East, -319.286499f, -15915.629883f, 200.000000f, -339.286469f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -307.983887f, 3694.417480f, 4.489570f, ZoneLineOrientationType.East, -299.286499f, -15915.629883f, 200.000000f, -319.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -287.983887f, 3694.417480f, 4.489320f, ZoneLineOrientationType.East, -279.286499f, -15915.629883f, 200.000000f, -299.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -267.983887f, 3694.417480f, 4.489390f, ZoneLineOrientationType.East, -259.286499f, -15915.629883f, 200.000000f, -279.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -247.983887f, 3694.417480f, 4.489580f, ZoneLineOrientationType.East, -239.286499f, -15915.629883f, 200.000000f, -259.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -227.983887f, 3694.417480f, 4.489460f, ZoneLineOrientationType.East, -219.286499f, -15915.629883f, 200.000000f, -239.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -207.983887f, 3694.417480f, 4.489200f, ZoneLineOrientationType.East, -199.286499f, -15915.629883f, 200.000000f, -219.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -187.983887f, 3694.417480f, 4.489550f, ZoneLineOrientationType.East, -179.286499f, -15915.629883f, 200.000000f, -199.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -167.983887f, 3694.417480f, 4.489290f, ZoneLineOrientationType.East, -159.286499f, -15915.629883f, 200.000000f, -179.286499f, -15885.629883f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -147.983887f, 3694.417480f, 4.489180f, ZoneLineOrientationType.East, -139.001923f, -15915.786133f, 200.000000f, -159.001923f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -127.983887f, 3694.417480f, 4.489320f, ZoneLineOrientationType.East, -119.001923f, -15915.786133f, 200.000000f, -139.001923f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -107.983887f, 3694.417480f, 4.489390f, ZoneLineOrientationType.East, -99.001923f, -15915.786133f, 200.000000f, -119.001923f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -87.983887f, 3694.417480f, 4.489280f, ZoneLineOrientationType.East, -79.001930f, -15915.786133f, 200.000000f, -99.001923f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -67.983887f, 3694.417480f, 4.489490f, ZoneLineOrientationType.East, -59.001930f, -15915.786133f, 200.000000f, -79.001930f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -47.983891f, 3694.417480f, 4.489500f, ZoneLineOrientationType.East, -39.001919f, -15915.786133f, 200.000000f, -59.001930f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -27.983891f, 3694.417480f, 4.489520f, ZoneLineOrientationType.East, -19.001921f, -15915.786133f, 200.000000f, -39.001919f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", -7.983890f, 3694.417480f, 4.489260f, ZoneLineOrientationType.East, 0.998080f, -15915.786133f, 200.000000f, -19.001921f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 12.016110f, 3694.417480f, 4.489850f, ZoneLineOrientationType.East, 20.998079f, -15915.786133f, 200.000000f, 0.998080f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 32.016109f, 3694.417480f, 4.489460f, ZoneLineOrientationType.East, 40.998081f, -15915.786133f, 200.000000f, 20.998079f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 52.016121f, 3694.417480f, 4.489540f, ZoneLineOrientationType.East, 60.998081f, -15915.786133f, 200.000000f, 40.998081f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 72.016121f, 3694.417480f, 4.489720f, ZoneLineOrientationType.East, 80.998077f, -15915.786133f, 200.000000f, 60.998081f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 92.016113f, 3694.417480f, 4.489790f, ZoneLineOrientationType.East, 100.998077f, -15915.786133f, 200.000000f, 80.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 112.016113f, 3694.417480f, 4.489450f, ZoneLineOrientationType.East, 120.998077f, -15915.786133f, 200.000000f, 100.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 132.016113f, 3694.417480f, 4.489280f, ZoneLineOrientationType.East, 140.998077f, -15915.786133f, 200.000000f, 120.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 152.016113f, 3694.417480f, 4.489520f, ZoneLineOrientationType.East, 160.998077f, -15915.786133f, 200.000000f, 140.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 172.016113f, 3694.417480f, 4.489210f, ZoneLineOrientationType.East, 180.998077f, -15915.786133f, 200.000000f, 160.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 192.016113f, 3694.417480f, 4.489490f, ZoneLineOrientationType.East, 200.998077f, -15915.786133f, 200.000000f, 180.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 212.016113f, 3694.417480f, 4.489530f, ZoneLineOrientationType.East, 220.998077f, -15915.786133f, 200.000000f, 200.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 232.016113f, 3694.417480f, 4.489440f, ZoneLineOrientationType.East, 240.998077f, -15915.786133f, 200.000000f, 220.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 252.016113f, 3694.417480f, 4.489230f, ZoneLineOrientationType.East, 260.998077f, -15915.786133f, 200.000000f, 240.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 272.016113f, 3694.417480f, 4.489370f, ZoneLineOrientationType.East, 280.998077f, -15915.786133f, 200.000000f, 260.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 292.016113f, 3694.417480f, 4.489200f, ZoneLineOrientationType.East, 300.998077f, -15915.786133f, 200.000000f, 280.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 312.016113f, 3694.417480f, 4.489360f, ZoneLineOrientationType.East, 320.998077f, -15915.786133f, 200.000000f, 300.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 332.016113f, 3694.417480f, 4.489490f, ZoneLineOrientationType.East, 340.998077f, -15915.786133f, 200.000000f, 320.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 352.016113f, 3694.417480f, 4.489260f, ZoneLineOrientationType.East, 360.998077f, -15915.786133f, 200.000000f, 340.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 372.016113f, 3694.417480f, 4.489400f, ZoneLineOrientationType.East, 380.998077f, -15915.786133f, 200.000000f, 360.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 392.016113f, 3694.417480f, 4.489530f, ZoneLineOrientationType.East, 400.998077f, -15915.786133f, 200.000000f, 380.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 412.016113f, 3694.417480f, 4.489520f, ZoneLineOrientationType.East, 420.998077f, -15915.786133f, 200.000000f, 400.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 432.016113f, 3694.417480f, 4.489260f, ZoneLineOrientationType.East, 440.998077f, -15915.786133f, 200.000000f, 420.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 452.016113f, 3694.417480f, 4.489410f, ZoneLineOrientationType.East, 460.998077f, -15915.786133f, 200.000000f, 440.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 472.016113f, 3694.417480f, 4.489590f, ZoneLineOrientationType.East, 480.998077f, -15915.786133f, 200.000000f, 460.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 492.016113f, 3694.417480f, 4.489770f, ZoneLineOrientationType.East, 500.998077f, -15915.786133f, 200.000000f, 480.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 512.016113f, 3694.417480f, 4.489390f, ZoneLineOrientationType.East, 520.998047f, -15915.786133f, 200.000000f, 500.998077f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 532.016113f, 3694.417480f, 4.489400f, ZoneLineOrientationType.East, 540.998047f, -15915.786133f, 200.000000f, 520.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 552.016113f, 3694.417480f, 4.489570f, ZoneLineOrientationType.East, 560.998047f, -15915.786133f, 200.000000f, 540.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 572.016113f, 3694.417480f, 4.489750f, ZoneLineOrientationType.East, 580.998047f, -15915.786133f, 200.000000f, 560.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 592.016113f, 3694.417480f, 4.489420f, ZoneLineOrientationType.East, 600.998047f, -15915.786133f, 200.000000f, 580.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 612.016113f, 3694.417480f, 4.489190f, ZoneLineOrientationType.East, 620.998047f, -15915.786133f, 200.000000f, 600.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 632.016113f, 3694.417480f, 4.489770f, ZoneLineOrientationType.East, 640.998047f, -15915.786133f, 200.000000f, 620.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 652.016113f, 3694.417480f, 4.489850f, ZoneLineOrientationType.East, 660.998047f, -15915.786133f, 200.000000f, 640.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 672.016052f, 3694.417480f, 4.489460f, ZoneLineOrientationType.East, 680.998108f, -15915.786133f, 200.000000f, 660.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 692.016052f, 3694.417480f, 4.489200f, ZoneLineOrientationType.East, 700.998108f, -15915.786133f, 200.000000f, 680.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 712.016052f, 3694.417480f, 4.489460f, ZoneLineOrientationType.East, 720.998108f, -15915.786133f, 200.000000f, 700.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 732.016052f, 3694.417480f, 4.489640f, ZoneLineOrientationType.East, 740.998108f, -15915.786133f, 200.000000f, 720.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 752.016052f, 3694.417480f, 4.489710f, ZoneLineOrientationType.East, 760.998108f, -15915.786133f, 200.000000f, 740.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 772.016052f, 3694.417480f, 4.489400f, ZoneLineOrientationType.East, 780.998108f, -15915.786133f, 200.000000f, 760.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 792.016052f, 3694.417480f, 4.489360f, ZoneLineOrientationType.East, 800.998108f, -15915.786133f, 200.000000f, 780.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 812.016052f, 3694.417480f, 4.489430f, ZoneLineOrientationType.East, 820.998108f, -15915.786133f, 200.000000f, 800.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 832.016052f, 3694.417480f, 4.489230f, ZoneLineOrientationType.East, 840.998108f, -15915.786133f, 200.000000f, 820.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 852.016052f, 3694.417480f, 4.489410f, ZoneLineOrientationType.East, 860.998108f, -15915.786133f, 200.000000f, 840.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 872.016052f, 3694.417480f, 4.489370f, ZoneLineOrientationType.East, 880.998108f, -15915.786133f, 200.000000f, 860.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 892.016052f, 3694.417480f, 4.489500f, ZoneLineOrientationType.East, 900.998108f, -15915.786133f, 200.000000f, 880.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 912.016052f, 3694.417480f, 4.489250f, ZoneLineOrientationType.East, 920.998108f, -15915.786133f, 200.000000f, 900.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 932.016052f, 3694.417480f, 4.489440f, ZoneLineOrientationType.East, 940.998108f, -15915.786133f, 200.000000f, 920.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 952.016052f, 3694.417480f, 4.489300f, ZoneLineOrientationType.East, 960.998108f, -15915.786133f, 200.000000f, 940.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 972.016052f, 3694.417480f, 4.489430f, ZoneLineOrientationType.East, 980.998108f, -15915.786133f, 200.000000f, 960.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 992.016052f, 3694.417480f, 4.489310f, ZoneLineOrientationType.East, 1000.998108f, -15915.786133f, 200.000000f, 980.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1012.016052f, 3694.417480f, 4.489410f, ZoneLineOrientationType.East, 1020.998108f, -15915.786133f, 200.000000f, 1000.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1032.016113f, 3694.417480f, 4.489210f, ZoneLineOrientationType.East, 1040.998047f, -15915.786133f, 200.000000f, 1020.998108f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1052.016113f, 3694.417480f, 4.489790f, ZoneLineOrientationType.East, 1060.998047f, -15915.786133f, 200.000000f, 1040.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1072.016113f, 3694.417480f, 4.489360f, ZoneLineOrientationType.East, 1080.998047f, -15915.786133f, 200.000000f, 1060.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1092.016113f, 3694.417480f, 4.489500f, ZoneLineOrientationType.East, 1100.998047f, -15915.786133f, 200.000000f, 1080.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1112.016113f, 3694.417480f, 9.215130f, ZoneLineOrientationType.East, 1120.998047f, -15915.786133f, 200.000000f, 1100.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1132.016113f, 3694.417480f, 16.373960f, ZoneLineOrientationType.East, 1140.998047f, -15915.786133f, 200.000000f, 1120.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1152.016113f, 3694.417480f, 23.532040f, ZoneLineOrientationType.East, 1160.998047f, -15915.786133f, 200.000000f, 1140.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1172.016113f, 3694.417480f, 30.690269f, ZoneLineOrientationType.East, 1180.998047f, -15915.786133f, 200.000000f, 1160.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1192.016113f, 3694.417480f, 37.848419f, ZoneLineOrientationType.East, 1200.998047f, -15915.786133f, 200.000000f, 1180.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1212.016113f, 3694.417480f, 45.007149f, ZoneLineOrientationType.East, 1220.998047f, -15915.786133f, 200.000000f, 1200.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1232.016113f, 3694.417480f, 52.132851f, ZoneLineOrientationType.East, 1240.998047f, -15915.786133f, 200.000000f, 1220.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1252.016113f, 3694.417480f, 59.185081f, ZoneLineOrientationType.East, 1260.998047f, -15915.786133f, 200.000000f, 1240.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1272.016113f, 3694.417480f, 66.236954f, ZoneLineOrientationType.East, 1280.998047f, -15915.786133f, 200.000000f, 1260.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1292.016113f, 3694.417480f, 73.288948f, ZoneLineOrientationType.East, 1300.998047f, -15915.786133f, 200.000000f, 1280.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1312.016113f, 3694.417480f, 80.340080f, ZoneLineOrientationType.East, 1320.998047f, -15915.786133f, 200.000000f, 1300.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1332.016113f, 3694.417480f, 87.391762f, ZoneLineOrientationType.East, 1340.998047f, -15915.786133f, 200.000000f, 1320.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1352.016113f, 3694.417480f, 94.442497f, ZoneLineOrientationType.East, 1500.998047f, -15915.786133f, 200.000000f, 1340.998047f, -15885.785156f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", 20.094801f, -634.351013f, -7.000000f, ZoneLineOrientationType.East,
+                            1533.845581f, -2196.427979f, 71.894829f, 1334.352417f, -2214.859375f, -4.836120f);
                     }
                     break;
-                case "qeynos":
+                case "qeynos": // ZoneLinesBuilt
                     {
+                        // TODO: Boat to Erudes Crossing
                         zoneProperties.SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 210, 10, 450);
+                        zoneProperties.AddZoneLineBox("qcat", 342.931549f, -174.301727f, 20.630989f, ZoneLineOrientationType.South,
+                            280.068512f, -545.588013f, -130.403152f, 265.713104f, -559.974731f, -173.822586f);
+                        zoneProperties.AddZoneLineBox("qcat", 215.878342f, -307.922394f, -41.968761f, ZoneLineOrientationType.East,
+                            -139.744003f, -621.613892f, -15.531000f, -156.270111f, -644.556519f, -28.499399f);
+                        zoneProperties.AddZoneLineBox("qcat", 231.812836f, -63.370232f, 37.164181f, ZoneLineOrientationType.South,
+                            182.130966f, -475.619812f, -112.237106f, 167.745056f, -490.005890f, -150.894775f);
+                        zoneProperties.AddZoneLineBox("qcat", -175.662354f, 267.444336f, -77.394470f, ZoneLineOrientationType.East,
+                            -181.744064f, 46.723820f, -85.501877f, -196.098679f, 25.135241f, -98.468697f);
+                        zoneProperties.AddZoneLineBox("qeynos2", -28.415890f, 357.134766f, -1.000000f, ZoneLineOrientationType.North,
+                            602.557495f, -68.215889f, 18.468479f, 595.287170f, -84.163147f, -1.499980f);
+                        zoneProperties.AddZoneLineBox("qeynos2", -28.292761f, 356.805267f, -1.000020f, ZoneLineOrientationType.South,
+                            476.619080f, -430.347809f, 18.467279f, 468.250488f, -448.006866f, -1.499980f);
                     }
                     break;
-                case "qeynos2":
+                case "qeynos2": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 450);
+                        zoneProperties.AddZoneLineBox("qcat", 1056.423950f, -48.181938f, 199.885666f, ZoneLineOrientationType.South,
+                            308.068420f, -153.744324f, -87.613121f, 293.681549f, -168.130386f, -126.259743f);
+                        zoneProperties.AddZoneLineBox("qcat", 888.408264f, 216.199905f, 25.632490f, ZoneLineOrientationType.East,
+                            196.099686f, 350.067566f, -106.426399f, 181.744537f, 335.681549f, -137.562592f);
+                        zoneProperties.AddZoneLineBox("qcat", 636.627319f, 98.454399f, -41.968731f, ZoneLineOrientationType.East,
+                            182.129868f, 77.711632f, -29.531000f, 167.744064f, 41.776329f, -42.468739f);
+                        zoneProperties.AddZoneLineBox("qeynos", 587.979126f, -77.531120f, -0.999980f, ZoneLineOrientationType.South,
+                            -34.728909f, 364.036194f, 18.469000f, -56.161228f, 349.683868f, -1.498870f);
+                        zoneProperties.AddZoneLineBox("qeynos", 461.973907f, -440.615234f, -0.999980f, ZoneLineOrientationType.South,
+                            -34.504589f, 364.036255f, 18.469000f, -56.161228f, 349.683929f, -1.499930f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 1099.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1109.153198f, 200.000000f, 1500.794556f, 1089.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 1079.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1089.153198f, 200.000000f, 1500.794556f, 1069.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 1059.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1069.153198f, 200.000000f, 1500.794556f, 1049.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 1039.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1049.153198f, 200.000000f, 1500.794556f, 1029.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 1019.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1029.153198f, 200.000000f, 1500.794556f, 1009.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 999.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 1009.153198f, 200.000000f, 1500.794556f, 989.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 979.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 989.153198f, 200.000000f, 1500.794556f, 969.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 959.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 969.153198f, 200.000000f, 1500.794556f, 949.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 939.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 949.153198f, 200.000000f, 1500.794556f, 929.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 919.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 929.153198f, 200.000000f, 1500.794556f, 909.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 899.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 909.153198f, 200.000000f, 1500.794556f, 889.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 879.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 889.153198f, 200.000000f, 1500.794556f, 869.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 859.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 869.153198f, 200.000000f, 1500.794556f, 849.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 839.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 849.153198f, 200.000000f, 1500.794556f, 829.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 819.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 829.153198f, 200.000000f, 1500.794556f, 809.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 799.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 809.153198f, 200.000000f, 1500.794556f, 789.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 779.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 789.153198f, 200.000000f, 1500.794556f, 769.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 759.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 769.153198f, 200.000000f, 1500.794556f, 749.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 739.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 749.153198f, 200.000000f, 1500.794556f, 729.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 719.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 729.153198f, 200.000000f, 1500.794556f, 709.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 699.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 709.153198f, 200.000000f, 1500.794556f, 689.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 679.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 689.153198f, 200.000000f, 1500.794556f, 669.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 659.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 669.153198f, 200.000000f, 1500.794556f, 649.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 639.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 649.153198f, 200.000000f, 1500.794556f, 629.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 619.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 629.153198f, 200.000000f, 1500.794556f, 609.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 599.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 609.153198f, 200.000000f, 1500.794556f, 589.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 579.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 589.153198f, 200.000000f, 1500.794556f, 569.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 559.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 569.153198f, 200.000000f, 1500.794556f, 549.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 539.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 549.153198f, 200.000000f, 1500.794556f, 529.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 519.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 529.153198f, 200.000000f, 1500.794556f, 509.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 499.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 509.153198f, 200.000000f, 1500.794556f, 489.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 479.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 489.153198f, 200.000000f, 1500.794556f, 469.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 459.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 469.153198f, 200.000000f, 1500.794556f, 449.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 439.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 449.153198f, 200.000000f, 1500.794556f, 429.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 419.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 429.153198f, 200.000000f, 1500.794556f, 409.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 399.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 409.153198f, 200.000000f, 1500.794556f, 389.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 379.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 389.153198f, 200.000000f, 1500.794556f, 369.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 359.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 369.153198f, 200.000000f, 1500.794556f, 349.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 339.592865f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 349.153198f, 200.000000f, 1500.794556f, 329.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 319.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 329.153198f, 200.000000f, 1500.794556f, 309.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 299.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 309.153198f, 200.000000f, 1500.794556f, 289.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 279.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 289.153198f, 200.000000f, 1500.794556f, 269.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 259.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 269.153198f, 200.000000f, 1500.794556f, 249.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 239.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 249.153198f, 200.000000f, 1500.794556f, 229.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 219.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 229.153198f, 200.000000f, 1500.794556f, 209.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 199.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 209.153198f, 200.000000f, 1500.794556f, 189.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 179.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 189.153198f, 200.000000f, 1500.794556f, 169.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 159.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 169.153198f, 200.000000f, 1500.794556f, 149.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 139.592896f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 149.153198f, 200.000000f, 1500.794556f, 129.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 119.592903f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 129.153198f, 200.000000f, 1500.794556f, 109.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 99.592903f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 109.153198f, 200.000000f, 1500.794556f, 89.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 79.592903f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 89.153198f, 200.000000f, 1500.794556f, 69.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 59.592899f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 69.153198f, 200.000000f, 1500.794556f, 49.153198f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 39.592899f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 49.153198f, 200.000000f, 1500.794556f, 29.153200f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, 19.592899f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 29.153200f, 200.000000f, 1500.794556f, 9.153200f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -0.407100f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, 9.153200f, 200.000000f, 1500.794556f, -10.846800f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -20.407110f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -10.846800f, 200.000000f, 1500.794556f, -30.846800f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -40.407108f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -30.846800f, 200.000000f, 1500.794556f, -50.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -60.407108f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -50.846802f, 200.000000f, 1500.794556f, -70.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -80.407112f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -70.846802f, 200.000000f, 1500.794556f, -90.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -100.407097f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -90.846802f, 200.000000f, 1500.794556f, -110.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -120.407097f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -110.846802f, 200.000000f, 1500.794556f, -130.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -140.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -130.846802f, 200.000000f, 1500.794556f, -150.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -160.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -150.846802f, 200.000000f, 1500.794556f, -170.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -180.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -170.846802f, 200.000000f, 1500.794556f, -190.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -200.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -190.846802f, 200.000000f, 1500.794556f, -210.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -220.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -210.846802f, 200.000000f, 1500.794556f, -230.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -240.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -230.846802f, 200.000000f, 1500.794556f, -250.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -260.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -250.846802f, 200.000000f, 1500.794556f, -270.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -280.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -270.846802f, 200.000000f, 1500.794556f, -290.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -300.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -290.846802f, 200.000000f, 1500.794556f, -310.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -320.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -310.846802f, 200.000000f, 1500.794556f, -330.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -340.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -330.846802f, 200.000000f, 1500.794556f, -350.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -360.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -350.846802f, 200.000000f, 1500.794556f, -370.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -380.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -370.846802f, 200.000000f, 1500.794556f, -390.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -400.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -390.846802f, 200.000000f, 1500.794556f, -410.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -420.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -410.846802f, 200.000000f, 1500.794556f, -430.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -440.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -430.846802f, 200.000000f, 1500.794556f, -450.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -460.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -450.846802f, 200.000000f, 1500.794556f, -470.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -480.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -470.846802f, 200.000000f, 1500.794556f, -490.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -500.407135f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -490.846802f, 200.000000f, 1500.794556f, -510.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -520.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -510.846802f, 200.000000f, 1500.794556f, -530.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -540.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -530.846802f, 200.000000f, 1500.794556f, -550.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -560.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -550.846802f, 200.000000f, 1500.794556f, -570.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -580.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -570.846802f, 200.000000f, 1500.794556f, -590.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -600.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -590.846802f, 200.000000f, 1500.794556f, -610.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -620.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -610.846802f, 200.000000f, 1500.794556f, -630.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -640.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -630.846802f, 200.000000f, 1500.794556f, -650.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -660.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -650.846802f, 200.000000f, 1500.794556f, -670.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -680.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -670.846802f, 200.000000f, 1500.794556f, -690.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -700.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -690.846802f, 200.000000f, 1500.794556f, -710.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -720.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -710.846802f, 200.000000f, 1500.794556f, -730.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -740.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -730.846802f, 200.000000f, 1500.794556f, -750.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -760.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -750.846802f, 200.000000f, 1500.794556f, -770.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -780.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -770.846802f, 200.000000f, 1500.794556f, -790.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -800.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -790.846802f, 200.000000f, 1500.794556f, -810.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -820.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -810.846802f, 200.000000f, 1500.794556f, -830.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -840.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -830.846802f, 200.000000f, 1500.794556f, -850.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -860.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -850.846802f, 200.000000f, 1500.794556f, -870.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -880.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -870.846802f, 200.000000f, 1500.794556f, -890.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -900.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -890.846802f, 200.000000f, 1500.794556f, -910.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -920.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -910.846802f, 200.000000f, 1500.794556f, -930.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -940.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -930.846802f, 200.000000f, 1500.794556f, -950.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -960.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -950.846802f, 200.000000f, 1500.794556f, -970.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -980.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -970.846802f, 200.000000f, 1500.794556f, -990.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1000.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -990.846802f, 200.000000f, 1500.794556f, -1010.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1020.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1010.846802f, 200.000000f, 1500.794556f, -1030.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1040.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1030.846802f, 200.000000f, 1500.794556f, -1050.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1060.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1050.846802f, 200.000000f, 1500.794556f, -1070.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1080.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1070.846802f, 200.000000f, 1500.794556f, -1090.846802f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);
                     }
                     break;
-                case "qeytoqrg":
+                case "qeytoqrg": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
-                        zoneProperties.AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 1.1399389f, ZoneLineOrientationType.West,
-                            3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f); // Redo Z target
+                        zoneProperties.AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 0.000014f, ZoneLineOrientationType.West,
+                            3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f);
+                        zoneProperties.AddZoneLineBox("qey2hh1", 1511.277466f, -2131.969971f, -4.343800f, ZoneLineOrientationType.East,
+                            90f, -547.020996f, 60.563839f, -50f, -598.756897f, -7.500000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1099.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1109.592896f, 0.000000f, -360.758850f, 1089.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1079.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1089.592896f, 0.000000f, -360.758850f, 1069.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1059.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1069.592896f, 0.000000f, -360.758850f, 1049.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1039.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1049.592896f, 0.000000f, -360.758850f, 1029.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1019.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1029.592896f, 0.000000f, -360.758850f, 1009.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 999.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1009.592896f, 0.000000f, -360.758850f, 989.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 979.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 989.592896f, 0.000000f, -360.758850f, 969.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 959.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 969.592896f, 0.000000f, -360.758850f, 949.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 939.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 949.592896f, 0.000000f, -360.758850f, 929.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 919.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 929.592896f, 0.000000f, -360.758850f, 909.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 899.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 909.592896f, 0.000000f, -360.758850f, 889.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 879.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 889.592896f, 0.000000f, -360.758850f, 869.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 859.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 869.592896f, 0.000000f, -360.758850f, 849.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 839.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 849.592896f, 0.000000f, -360.758850f, 829.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 819.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 829.592896f, 0.000000f, -360.758850f, 809.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 799.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 809.592896f, 0.000000f, -360.758850f, 789.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 779.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 789.592896f, 0.000000f, -360.758850f, 769.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 759.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 769.592896f, 0.000000f, -360.758850f, 749.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 739.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 749.592896f, 0.000000f, -360.758850f, 729.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 719.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 729.592896f, 0.000000f, -360.758850f, 709.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 699.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 709.592896f, 0.000000f, -360.758850f, 689.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 679.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 689.592896f, 0.000000f, -360.758850f, 669.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 659.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 669.592896f, 0.000000f, -360.758850f, 649.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 639.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 649.592896f, 0.000000f, -360.758850f, 629.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 619.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 629.592896f, 0.000000f, -360.758850f, 609.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 599.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 609.592896f, 0.000000f, -360.758850f, 589.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 579.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 589.592896f, 0.000000f, -360.758850f, 569.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 559.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 569.592896f, 0.000000f, -360.758850f, 549.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 539.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 549.592896f, 0.000000f, -360.758850f, 529.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 519.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 529.592896f, 0.000000f, -360.758850f, 509.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 499.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 509.592865f, 0.000000f, -360.758850f, 489.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 479.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 489.592865f, 0.000000f, -360.758850f, 469.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 459.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 469.592865f, 0.000000f, -360.758850f, 449.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 439.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 449.592865f, 0.000000f, -360.758850f, 429.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 419.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 429.592865f, 0.000000f, -360.758850f, 409.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 399.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 409.592865f, 0.000000f, -360.758850f, 389.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 379.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 389.592865f, 0.000000f, -360.758850f, 369.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 359.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 369.592865f, 0.000000f, -360.758850f, 349.592865f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 339.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 349.592865f, 0.000000f, -360.758850f, 329.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 319.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 329.592896f, 0.000000f, -360.758850f, 309.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 299.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 309.592896f, 0.000000f, -360.758850f, 289.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 279.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 289.592896f, 0.000000f, -360.758850f, 269.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 259.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 269.592896f, 0.000000f, -360.758850f, 249.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 239.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 249.592896f, 0.000000f, -360.758850f, 229.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 219.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 229.592896f, 0.000000f, -360.758850f, 209.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 199.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 209.592896f, 0.000000f, -360.758850f, 189.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 179.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 189.592896f, 0.000000f, -360.758850f, 169.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 159.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 169.592896f, 0.000000f, -360.758850f, 149.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 139.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 149.592896f, 0.000000f, -360.758850f, 129.592896f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 119.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 129.592896f, 0.000000f, -360.758850f, 109.592903f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 99.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 109.592903f, 0.000000f, -360.758850f, 89.592903f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 79.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 89.592903f, 0.000000f, -360.758850f, 69.592903f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 59.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 69.592903f, 0.000000f, -360.758850f, 49.592899f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 39.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 49.592899f, 0.000000f, -360.758850f, 29.592899f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 19.153200f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 29.592899f, 0.000000f, -360.758850f, 9.592900f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -0.846800f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 9.592900f, 0.000000f, -360.758850f, -10.407100f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -20.846800f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -10.407100f, 0.000000f, -360.758850f, -30.407110f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -40.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -30.407110f, 0.000000f, -360.758850f, -50.407108f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -60.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -50.407108f, 0.000000f, -360.758850f, -70.407112f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -80.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -70.407112f, 0.000000f, -360.758850f, -90.407097f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -100.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -90.407097f, 0.000000f, -360.758850f, -110.407097f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -120.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -110.407097f, 0.000000f, -360.758850f, -130.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -140.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -130.407104f, 0.000000f, -360.758850f, -150.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -160.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -150.407104f, 0.000000f, -360.758850f, -170.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -180.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -170.407104f, 0.000000f, -360.758850f, -190.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -200.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -190.407104f, 0.000000f, -360.758850f, -210.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -220.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -210.407104f, 0.000000f, -360.758850f, -230.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -240.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -230.407104f, 0.000000f, -360.758850f, -250.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -260.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -250.407104f, 0.000000f, -360.758850f, -270.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -280.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -270.407104f, 0.000000f, -360.758850f, -290.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -300.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -290.407104f, 0.000000f, -360.758850f, -310.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -320.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -310.407104f, 0.000000f, -360.758850f, -330.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -340.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -330.407104f, 0.000000f, -360.758850f, -350.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -360.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -350.407135f, 0.000000f, -360.758850f, -370.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -380.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -370.407135f, 0.000000f, -360.758850f, -390.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -400.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -390.407135f, 0.000000f, -360.758850f, -410.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -420.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -410.407135f, 0.000000f, -360.758850f, -430.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -440.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -430.407135f, 0.000000f, -360.758850f, -450.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -460.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -450.407135f, 0.000000f, -360.758850f, -470.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -480.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -470.407135f, 0.000000f, -360.758850f, -490.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -500.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -490.407135f, 0.000000f, -360.758850f, -510.407135f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -520.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -510.407135f, 0.000000f, -360.758850f, -530.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -540.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -530.407104f, 0.000000f, -360.758850f, -550.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -560.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -550.407104f, 0.000000f, -360.758850f, -570.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -580.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -570.407104f, 0.000000f, -360.758850f, -590.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -600.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -590.407104f, 0.000000f, -360.758850f, -610.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -620.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -610.407104f, 0.000000f, -360.758850f, -630.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -640.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -630.407104f, 0.000000f, -360.758850f, -650.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -660.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -650.407104f, 0.000000f, -360.758850f, -670.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -680.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -670.407104f, 0.000000f, -360.758850f, -690.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -700.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -690.407104f, 0.000000f, -360.758850f, -710.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -720.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -710.407104f, 0.000000f, -360.758850f, -730.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -740.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -730.407104f, 0.000000f, -360.758850f, -750.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -760.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -750.407104f, 0.000000f, -360.758850f, -770.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -780.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -770.407104f, 0.000000f, -360.758850f, -790.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -800.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -790.407104f, 0.000000f, -360.758850f, -810.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -820.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -810.407104f, 0.000000f, -360.758850f, -830.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -840.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -830.407104f, 0.000000f, -360.758850f, -850.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -860.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -850.407104f, 0.000000f, -360.758850f, -870.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -880.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -870.407104f, 0.000000f, -360.758850f, -890.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -900.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -890.407104f, 0.000000f, -360.758850f, -910.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -920.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -910.407104f, 0.000000f, -360.758850f, -930.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -940.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -930.407104f, 0.000000f, -360.758850f, -950.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -960.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -950.407104f, 0.000000f, -360.758850f, -970.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -980.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -970.407104f, 0.000000f, -360.758850f, -990.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1000.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -990.407104f, 0.000000f, -360.758850f, -1010.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1020.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1010.407104f, 0.000000f, -360.758850f, -1030.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1040.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1030.407104f, 0.000000f, -360.758850f, -1050.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1060.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1050.407104f, 0.000000f, -360.758850f, -1070.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1080.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1070.407104f, 0.000000f, -360.758850f, -1090.407104f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1099f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1090.407104f, 0.000000f, -360.758850f, -1150f, 0.000000f);
+                        zoneProperties.AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East,
+                            5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f);
                     }
                     break;
-                case "qrg":
+                case "qrg": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 175, 183, 10, 450);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", 5180.557617f, 161.911987f, -6.594880f, ZoneLineOrientationType.West,
+                            -623.557495f, 168.640945f, 0.500030f, -639.942505f, 150.659027f, -0.499970f);
                     }
                     break;
-                case "rathemtn":
+                case "rathemtn": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("rathemtn", "Rathe Mountains", 1831f, 3825f, 29.03f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -1572,39 +2458,59 @@ namespace EQWOWConverter.Zones
                             4392.966797f, 1182.783813f, 38.361542f, 4370.978027f, 1132.520142f, -0.499070f);
                     }
                     break;
-                case "rivervale":
+                case "rivervale": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 210, 200, 10, 400);
                         zoneProperties.AddZoneLineBox("kithicor", 2012.985229f, 3825.189209f, 462.250427f, ZoneLineOrientationType.South,
                             -384.065887f, -275.682556f, 22.469000f, -396.650330f, -290.013977f, -0.499910f);
+                        zoneProperties.AddZoneLineBox("misty", 407.486847f, -2571.641357f, -10.749720f, ZoneLineOrientationType.West,
+                            -69.729698f, 134.790482f, 22.466999f, -96.162209f, 113.427109f, -0.500000f);
                     }
                     break;
-                case "runnyeye":
+                case "runnyeye": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(75, 150, 25, 10, 600);
                         zoneProperties.AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West,
                             -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f); // Tested, works fine
+                        zoneProperties.AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North,
+                            271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);
                     }
                     break;
-                case "soldunga":
+                case "soldunga": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 30, 30, 10, 100);
                         zoneProperties.AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North,
                             -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f);
+                        zoneProperties.AddZoneLineBox("soldungb", -165.686325f, -589.857544f, 14.000000f, ZoneLineOrientationType.East,
+                            -267.712738f, -490.620575f, 32.469002f, -289.431549f, -514.973633f, 21.500790f);
+                        zoneProperties.AddZoneLineBox("soldungb", -277.097534f, -507.627350f, 22.000271f, ZoneLineOrientationType.North,
+                            -267.713654f, -485.620117f, 32.466740f, -284.448181f, -514.974548f, 21.500750f);
+                        zoneProperties.AddZoneLineBox("soldungb", -364.385254f, -406.963348f, 8.000610f, ZoneLineOrientationType.East,
+                            -357.650269f, -400.866211f, 18.469000f, -377.148956f, -409.100372f, 6.500000f);
+                        zoneProperties.AddZoneLineBox("soldungb", -1081.872803f, -525.067810f, -3.999330f, ZoneLineOrientationType.West,
+                             -1068.534180f, -521.974548f, 8.468000f, -1087.309937f, -541.027771f, -4.500000f);
                     }
                     break;
-                case "soldungb":
+                case "soldungb": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 30, 30, 10, 350);
                         zoneProperties.AddZoneLineBox("lavastorm", 909.788574f, 484.493713f, 51.688461f, ZoneLineOrientationType.North,
                             -399.037048f, -259.033051f, -101.499748f, -410.349213f, -270.100739f, -112.467888f);
+                        zoneProperties.AddZoneLineBox("soldunga", -299.701935f, -508.300507f, 22.000790f, ZoneLineOrientationType.South,
+                            -158.744064f, -540.936340f, 35.467659f, -173.130875f, -574.675781f, 13.500000f);
+                        zoneProperties.AddZoneLineBox("soldunga", -302.046844f, -509.008240f, 22.000750f, ZoneLineOrientationType.South,
+                            -289.632843f, -500.232727f, 32.467770f, -300.439514f, -514.973755f, 21.500090f);
+                        zoneProperties.AddZoneLineBox("soldunga", -364.548492f, -391.234467f, 8.000000f, ZoneLineOrientationType.West,
+                            -350.692047f, -379.634491f, 19.469000f, -371.417236f, -399.513031f, 7.500610f);
+                        zoneProperties.AddZoneLineBox("soldunga", -1082.416138f, -549.995605f, -4.000000f, ZoneLineOrientationType.East,
+                            -1076.369019f, -535.692444f, 15.149850f, -1089.673218f, -559.933105f, -4.499780f);
                     }
                     break;
-                case "soltemple":
+                case "soltemple": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("soltemple", "The Temple of Solusek Ro", 7.5f, 268.8f, 3f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 5, 5, 50, 500);
@@ -1612,37 +2518,47 @@ namespace EQWOWConverter.Zones
                             244.129364f, 62.161572f, 9.468010f, 219.713821f, 44.408550f, -1.500000f);
                     }
                     break;
-                case "southkarana":
+                case "southkarana": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("southkarana", "Southern Karana", 1293.66f, 2346.69f, -5.77f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("lakerathe", 4352.154297f, 1158.142578f, -0.000990f, ZoneLineOrientationType.South,
                             -8555.652344f, 1180.041138f, 43.965542f, -8569.452148f, 1132.577637f, -0.499510f);
+                        zoneProperties.AddZoneLineBox("northkarana", -4472.277344f, 1208.014893f, -34.406212f, ZoneLineOrientationType.North,
+                            2900.742432f, 943.823730f, 17.628691f, 2821.058350f, 862.661682f, -36.353588f);
+                        zoneProperties.AddZoneLineBox("paw", -103.683167f, 16.824860f, 0.000050f, ZoneLineOrientationType.East,
+                            -3110.107910f, 895.748901f, 2.515520f, -3126.174805f, 861.375854f, -12.438860f);
                     }
                     break;
-                case "sro":
+                case "sro": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
                         zoneProperties.AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South,
                             -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);
+                        zoneProperties.AddZoneLineBox("oasis", -1859.231567f, 182.460098f, 2.406740f, ZoneLineOrientationType.North,
+                            1526.327637f, 9.256500f, 131.793716f, 1478.424438f, 292.955048f, 1.148580f);
                     }
                     break;
-                case "steamfont":
+                case "steamfont": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("steamfont", "Steamfont Mountains", -272.86f, 159.86f, -21.4f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("akanon", 57.052101f, -77.213501f, 0.000010f, ZoneLineOrientationType.South,
                             -2064.9805f, 535.8183f, -98.656f, -2077.9038f, 521.43134f, -111.624886f);
+                        zoneProperties.AddZoneLineBox("lfaydark", 920.754028f, -2181.917236f, -4.780330f, ZoneLineOrientationType.West,
+                            608.013672f, 2214.515625f, 26.767950f, 559.319153f, 2202.571045f, -113.749878f);
                     }
                     break;
-                case "stonebrunt":
+                case "stonebrunt": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("stonebrunt", "Stonebrunt Mountains", -1643.01f, -3427.84f, -6.57f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(235, 235, 235, 10, 800);
+                        zoneProperties.AddZoneLineBox("warrens", -100.582893f, 1145.348877f, -110.968758f, ZoneLineOrientationType.North,
+                            -3674.369385f, 2932.535400f, -22.218500f, -3707.896240f, 2908.150146f, -40.187389f);
                     }
                     break;                
-                case "tox":
+                case "tox": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(220, 200, 30, 50, 250);
@@ -1650,9 +2566,11 @@ namespace EQWOWConverter.Zones
                             2574.356934f, 305.599121f, -33.937248f, 2550.955078f, 289.213013f, -48.907711f);
                         zoneProperties.AddZoneLineBox("tox", -510.669922f, 2634.015625f, -38.249512f, ZoneLineOrientationType.East,
                             430.006012f, -950.447937f, 38.437752f, 399.651398f, -979.717834f, 19.500019f);
+                        zoneProperties.AddZoneLineBox("paineel", 852.573181f, 196.109207f, 0.000050f, ZoneLineOrientationType.West,
+                            -2613.365479f, -417.686676f, -26.624750f, -2628.005371f, -470f, -45.593510f);
                     }
                     break;
-                case "unrest":
+                case "unrest": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("unrest", "The Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(40, 10, 60, 10, 300);
@@ -1660,10 +2578,14 @@ namespace EQWOWConverter.Zones
                             113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
                     }
                     break;
-                case "warrens":
+                case "warrens": // ZoneLinesBuilt
                     {
                         zoneProperties.SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(0, 15, 0, 100, 300);
+                        zoneProperties.AddZoneLineBox("paineel", 721.470337f, -881.333069f, -36.999989f, ZoneLineOrientationType.South,
+                            734.975342f, -874.463745f, -26.531000f, 713.524292f, -888.849182f, -37.499908f);
+                        zoneProperties.AddZoneLineBox("stonebrunt", -3720.441895f, 2921.923096f, -39.687389f, ZoneLineOrientationType.South,
+                            -119.277092f, 1159.723511f, -93.500740f, -145.652954f, 1130f, -111.468353f);
                     }
                     break;
                 //--------------------------------------------------------------------------------------------------------------------------
