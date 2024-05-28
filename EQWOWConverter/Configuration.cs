@@ -49,7 +49,7 @@ namespace EQWOWConverter
 
         // Any zones (by shortname) in this list will not have object instances spawned
         // TODO: These zones crash if they have object instances-- Fix it
-        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc", "najena" };
+        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc", "najena", "warrens" };
 
         //=====================================================================
         // Objects
