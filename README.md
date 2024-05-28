@@ -6,6 +6,8 @@ Converts the EverQuest assets from the original three game releases (Initial, Ru
 # Current State
 It is currently still in heavy development and **no support will be offered at this time as things are changing daily**.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, fire doesn't animate, etc)
 
+Current focus is on getting original/classic content polished, then Kunark and Velious will follow.  Note that Kunark and Velious static objects and maps are already exporting.
+
 # Requirements
 - Windows build environment
 - AzerothCore based WoW 3.3.5 server
@@ -13,7 +15,7 @@ It is currently still in heavy development and **no support will be offered at t
 - BLPNG Converter (or other PNG -> BLP conversion software)
 - WDBX Editor (or other DBC editor)
 - Ladik's MPQ Editor (or other MPQ editor)
-- Installed client of the EverQuest Trilogy
+- Installed and unpatched client of the EverQuest Trilogy
 
 # Instructions
 **Extracting Everquest Assets** 
