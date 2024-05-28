@@ -48,8 +48,8 @@ namespace EQWOWConverter
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
 
         // Any zones (by shortname) in this list will not have object instances spawned
-        // TODO: Paineel crashes if there are object instances
-        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc" };
+        // TODO: These zones crash if they have object instances-- Fix it
+        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc", "najena" };
 
         //=====================================================================
         // Objects
