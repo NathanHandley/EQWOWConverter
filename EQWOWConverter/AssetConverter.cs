@@ -316,9 +316,10 @@ namespace EQWOWConverter
 
             foreach (Zone zone in zones)
             {
-                // Teleport scripts to safe positions
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.DescriptiveNameOnlyLetters,
-                    zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.DescriptiveNameOnlyLetters, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
+                    gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.ShortName, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
 
                 // Instance list
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID));
