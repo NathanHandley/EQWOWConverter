@@ -477,15 +477,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("highpass", -1014.530701f, 112.901894f, -0.000030f, ZoneLineOrientationType.East, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);
                     }
                     break;               
-                case "ecommons": // ZoneLinesBuilt - Retest
+                case "ecommons": // ZoneLinesBuilt - Tested
                     {
                         // TODO: White space in EC tunnel near zone line
                         zoneProperties.SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("nro", 2033.690186f, 1875.838257f, 0.000120f, ZoneLineOrientationType.East, -3004.062744f, -1183.421265f, 28.469000f, -3087.551270f, -1212.701660f, -0.499900f);
-                        zoneProperties.AddZoneLineBox("nektulos", -2686.337891f, -529.951477f, -21.531050f, ZoneLineOrientationType.West,
-                            1591.733643f, 696.248291f, 23.553110f, 1554.580811f, 679.187378f, -22.031260f); // TODO: Retest
-                        // Following passed testing
+                        zoneProperties.AddZoneLineBox("nektulos", -2686.337891f, -529.951477f, -21.531050f, ZoneLineOrientationType.West, 1591.733643f, 696.248291f, 23.553110f, 1554.580811f, 679.187378f, -22.031260f);
                         zoneProperties.AddZoneLineBox("commons", 1158.570435f, -1599.747314f, 6.933440f, ZoneLineOrientationType.West, 1168.777954f, 5131.237793f, 200.000000f, 1148.777954f, 5101.237793f, -100.000000f);
                         zoneProperties.AddZoneLineBox("commons", 1138.570435f, -1599.747314f, 0.914720f, ZoneLineOrientationType.West, 1148.777954f, 5131.237793f, 200.000000f, 1128.777954f, 5101.237793f, -100.000000f);
                         zoneProperties.AddZoneLineBox("commons", 1118.570435f, -1599.747314f, -5.104220f, ZoneLineOrientationType.West, 1128.777954f, 5131.237793f, 200.000000f, 1108.777954f, 5101.237793f, -100.000000f);
@@ -602,7 +600,6 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("commons", -1101.429565f, -1596.641235f, 18.104589f, ZoneLineOrientationType.West, -1091.222046f, 5131.237793f, 200.000000f, -1111.222046f, 5101.237793f, -100.000000f);
                         zoneProperties.AddZoneLineBox("commons", -1121.429565f, -1596.641235f, 25.758080f, ZoneLineOrientationType.West, -1111.222046f, 5131.237793f, 200.000000f, -1131.222046f, 5101.237793f, -100.000000f);
                         zoneProperties.AddZoneLineBox("commons", -1141.061279f, -1596.579956f, 33.031120f, ZoneLineOrientationType.West, -1131.222046f, 5131.237793f, 200.000000f, -1151.222046f, 5101.237793f, -100.000000f);
-                        // This works
                         zoneProperties.AddZoneLineBox("freportw", 577.772156f, 791.873230f, -27.999950f, ZoneLineOrientationType.East, 587.000000f, -1600.000000f, 200.000000f, 567.000000f, -1630.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freportw", 557.772156f, 791.873230f, -27.999950f, ZoneLineOrientationType.East, 567.000000f, -1600.000000f, 200.000000f, 547.000000f, -1630.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freportw", 537.772156f, 791.873230f, -27.999950f, ZoneLineOrientationType.East, 547.000000f, -1600.000000f, 200.000000f, 527.000000f, -1630.000000f, -100.000000f);
@@ -702,30 +699,23 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("feerrott", -2347.395752f, 2604.589111f, 10.280410f, ZoneLineOrientationType.North, -790.410828f, 1052.103638f, 150.821121f, -803.796631f, 1015.684509f, 105.875198f);
                     }
                     break;
-                case "feerrott": // ZoneLinesBuilt - Retest
+                case "feerrott": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("feerrott", "The Feerrott", 902.6f, 1091.7f, 28f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(60, 90, 30, 10, 175);
-                        zoneProperties.AddZoneLineBox("cazicthule", 55.471420f, -67.975937f, 0.000000f, ZoneLineOrientationType.North,
-                            -1469.255859f, -100.275429f, 58.405380f, -1499.662231f, -120.661491f, 47.437580f); // Retest
-                        zoneProperties.AddZoneLineBox("oggok", -373.311127f, -102.846184f, -0.000000f, ZoneLineOrientationType.North,
-                            1700.901245f, 832.210693f, 110.609047f, 1669.091797f, 786.900452f, 56.781330f); // Passed
-                        zoneProperties.AddZoneLineBox("innothule", -1120.934570f, 1876.716309f, -12.343200f, ZoneLineOrientationType.East,
-                            -1053.738770f, -3064.860107f, 34.236019f, -1118.701904f, -3134.157959f, -12.843610f); // Passed
-                        zoneProperties.AddZoneLineBox("rathemtn", 654.660095f, -3116.889893f, 0.000320f, ZoneLineOrientationType.North,
-                            391.610870f, 3485.147949f, 64.094902f, 348.915161f, 3365.229736f, -0.499940f); // Passed
-                        zoneProperties.AddZoneLineBox("fearplane", -817.476501f, 1032.365723f, 102.129517f, ZoneLineOrientationType.South,
-                            -2374.944580f, 2635.523193f, 98.296158f, -2399.710449f, 2569.650391f, 18.406269f); // Passed
+                        zoneProperties.AddZoneLineBox("cazicthule", 55.471420f, -67.975937f, 0.000000f, ZoneLineOrientationType.North, -1469.255859f, -100.275429f, 58.405380f, -1499.662231f, -120.661491f, 47.437580f);
+                        zoneProperties.AddZoneLineBox("oggok", -373.311127f, -102.846184f, -0.000000f, ZoneLineOrientationType.North, 1700.901245f, 832.210693f, 110.609047f, 1669.091797f, 786.900452f, 56.781330f);
+                        zoneProperties.AddZoneLineBox("innothule", -1120.934570f, 1876.716309f, -12.343200f, ZoneLineOrientationType.East, -1053.738770f, -3064.860107f, 34.236019f, -1118.701904f, -3134.157959f, -12.843610f);
+                        zoneProperties.AddZoneLineBox("rathemtn", 654.660095f, -3116.889893f, 0.000320f, ZoneLineOrientationType.North, 391.610870f, 3485.147949f, 64.094902f, 348.915161f, 3365.229736f, -0.499940f);
+                        zoneProperties.AddZoneLineBox("fearplane", -817.476501f, 1032.365723f, 102.129517f, ZoneLineOrientationType.South, -2374.944580f, 2635.523193f, 98.296158f, -2399.710449f, 2569.650391f, 18.406269f);
                     }
                     break;
-                case "felwithea": // ZoneLinesBuilt - Retest gfaydark
+                case "felwithea": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("felwithea", "North Felwithe", 94f, -25f, 3.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(100, 130, 100, 10, 300);
-                        zoneProperties.AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North,
-                            364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f); // Works
-                        zoneProperties.AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West,
-                            56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f); // Retest
+                        zoneProperties.AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North, 364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f);
+                        zoneProperties.AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West, 56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f);
                     }
                     break;
                 case "felwitheb": // ZoneLinesBuilt - Tested
@@ -886,19 +876,16 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
                     }
                     break;
-                case "gfaydark": // ZoneLinesBuilt - Retest Felwithea
+                case "gfaydark": // ZoneLinesBuilt - Tested
                     {
                         // TODO: Lifts for Kelethin
+                        // TODO: White space behind portal to North Felwithe
                         zoneProperties.SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
-                        zoneProperties.AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North,
-                            -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f); // Passed
-                        zoneProperties.AddZoneLineBox("crushbone", -625.626038f, 163.201843f, 0.000070f, ZoneLineOrientationType.North,
-                            2670.067139f, -28.324280f, 56.295769f, 2579.850830f, -75.045639f, 15.343880f); // Passed
-                        zoneProperties.AddZoneLineBox("felwithea", 41.148460f, 183.167984f, 0.000000f, ZoneLineOrientationType.East,
-                            -1917.227173f, -2623.463623f, 46.844002f, -1945.600464f, -2663.089355f, 19.906750f); // Retest
-                        zoneProperties.AddZoneLineBox("lfaydark", 2164.083984f, -1199.626953f, 0.000040f, ZoneLineOrientationType.South,
-                           -2623.411133f, -1084.083862f, 114.320740f, -2650.334229f, -1130.060669f, -0.499900f); // Passed
+                        zoneProperties.AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);
+                        zoneProperties.AddZoneLineBox("crushbone", -625.626038f, 163.201843f, 0.000070f, ZoneLineOrientationType.North, 2670.067139f, -28.324280f, 56.295769f, 2579.850830f, -75.045639f, 15.343880f);
+                        zoneProperties.AddZoneLineBox("felwithea", 41.148460f, 183.167984f, 0.000000f, ZoneLineOrientationType.East, -1917.227173f, -2623.463623f, 46.844002f, -1945.600464f, -2663.089355f, 19.906750f);
+                        zoneProperties.AddZoneLineBox("lfaydark", 2164.083984f, -1199.626953f, 0.000040f, ZoneLineOrientationType.South, -2623.411133f, -1084.083862f, 114.320740f, -2650.334229f, -1130.060669f, -0.499900f);
                     }
                     break;               
                 case "grobb": // ZoneLinesBuilt - Tested
@@ -920,21 +907,16 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("guktop", 1196.247681f, -197.502167f, -83.967888f, ZoneLineOrientationType.West, 1203.723999f, -181.743942f, -71.499748f, 1189.337769f, -204.274963f, -84.468781f);
                     }
                     break;
-                case "guktop": // ZoneLinesBuilt - Retest Dry Entry NW
+                case "guktop": // ZoneLinesBuilt - Tested
                     {
                         // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("guktop", "Upper Guk", 7f, -36f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(40, 45, 20, 10, 140);
-                        zoneProperties.AddZoneLineBox("gukbottom", 1154.039917f, 670.316589f, -93.968727f, ZoneLineOrientationType.West,
-                            1122.238281f, 644.556519f, -77.740372f, 1105.369995f, 629.647583f, -95.468483f);
-                        zoneProperties.AddZoneLineBox("gukbottom", 1665.729126f, -107.982651f, -102.307808f, ZoneLineOrientationType.East,
-                            1623.884277f, 142.214523f, -60f, 1563.454590f, 117.747520f, -110f);
-                        zoneProperties.AddZoneLineBox("gukbottom", 1493.752930f, -1.347960f, -91.878059f, ZoneLineOrientationType.East,
-                            1575f, -205.689896f, -80f, 1550.644043f, -155.016663f, -115f);
-                        zoneProperties.AddZoneLineBox("gukbottom", 1195.318848f, -209.319427f, -83.968781f, ZoneLineOrientationType.East,
-                            1203.724121f, -205.721344f, -71.500748f, 1185.029785f, -210.714722f, -84.468697f);
-                        zoneProperties.AddZoneLineBox("innothule", 144.032776f, -821.548645f, -11.500000f, ZoneLineOrientationType.West,
-                            -53.083141f, 56.776360f, 12.469000f, -70.161201f, 49.388599f, -0.499990f); // Passed
+                        zoneProperties.AddZoneLineBox("gukbottom", 1154.039917f, 670.316589f, -93.968727f, ZoneLineOrientationType.West, 1122.238281f, 644.556519f, -77.740372f, 1105.369995f, 629.647583f, -95.468483f);
+                        zoneProperties.AddZoneLineBox("gukbottom", 1665.729126f, -107.982651f, -102.307808f, ZoneLineOrientationType.East, 1623.884277f, 142.214523f, -60f, 1563.454590f, 117.747520f, -110f);
+                        zoneProperties.AddZoneLineBox("gukbottom", 1493.752930f, -1.347960f, -91.878059f, ZoneLineOrientationType.East, 1575f, -205.689896f, -80f, 1550.644043f, -155.016663f, -115f);
+                        zoneProperties.AddZoneLineBox("gukbottom", 1195.318848f, -209.319427f, -83.968781f, ZoneLineOrientationType.East, 1203.724121f, -205.721344f, -71.500748f, 1185.029785f, -210.714722f, -84.468697f);
+                        zoneProperties.AddZoneLineBox("innothule", 144.032776f, -821.548645f, -11.500000f, ZoneLineOrientationType.West, -53.083141f, 56.776360f, 12.469000f, -70.161201f, 49.388599f, -0.499990f);
                     }
                     break;
                 case "halas": // ZoneLinesBuilt - Tested
@@ -981,30 +963,23 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
                     }
                     break;                
-                case "innothule": // ZoneLinesBuilt - Retest
+                case "innothule": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(170, 160, 90, 10, 500);
-                        zoneProperties.AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North,
-                            -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f); // Redo
-                        zoneProperties.AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West,
-                            -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f); // Works
-                        zoneProperties.AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East,
-                            150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f); // Works
-                        zoneProperties.AddZoneLineBox("sro", -3168.635742f, 1032.933105f, -26.814310f, ZoneLineOrientationType.North,
-                            2800f, 1250f, 19.084551f, 2554.791748f, 1120f, -35f); // Retest
+                        zoneProperties.AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f);
+                        zoneProperties.AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West, -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);
+                        zoneProperties.AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East, 150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f);
+                        zoneProperties.AddZoneLineBox("sro", -3168.635742f, 1032.933105f, -26.814310f, ZoneLineOrientationType.North, 2800f, 1250f, 19.084551f, 2554.791748f, 1120f, -35f);
                     }
                     break;
-                case "kaladima": // ZoneLinesBuilt - Retest (right / east side)
+                case "kaladima": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("kaladima", "South Kaladim", -2f, -18f, 3.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(70, 50, 20, 10, 175);
-                        zoneProperties.AddZoneLineBox("butcher", 3121.1667f, -179.98013f, 0.00088672107f, ZoneLineOrientationType.South,
-                            -66.545395f, 47.896313f, 14.469f, -85.64434f, 34.009415f, -0.49999186f); // Passed
-                        zoneProperties.AddZoneLineBox("kaladimb", 409.332306f, 340.759308f, -24.000509f, ZoneLineOrientationType.North,
-                            334.304260f, 252.005707f, 16.310989f, 317.203705f, 225.868561f, 0.608990f);
-                        zoneProperties.AddZoneLineBox("kaladimb", 394.005920f, -270.823303f, 0.000210f, ZoneLineOrientationType.North,
-                            414.648987f, -209.715607f, 22.469000f, 405.986603f, -280f, -0.499960f);
+                        zoneProperties.AddZoneLineBox("butcher", 3121.1667f, -179.98013f, 0.00088672107f, ZoneLineOrientationType.South, -66.545395f, 47.896313f, 14.469f, -85.64434f, 34.009415f, -0.49999186f);
+                        zoneProperties.AddZoneLineBox("kaladimb", 409.332306f, 340.759308f, -24.000509f, ZoneLineOrientationType.North, 334.304260f, 252.005707f, 16.310989f, 317.203705f, 225.868561f, 0.608990f);
+                        zoneProperties.AddZoneLineBox("kaladimb", 394.005920f, -270.823303f, 0.000210f, ZoneLineOrientationType.North, 414.648987f, -209.715607f, 22.469000f, 405.986603f, -280f, -0.499960f);
                     }
                     break;
                 case "kaladimb": // ZoneLinesBuilt - Tested
@@ -1022,12 +997,12 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
                     }
                     break;
-                case "kerraridge": // ZoneLinesBuilt - Retest
+                case "kerraridge": // ZoneLinesBuilt - Failed
                     {
                         zoneProperties.SetBaseZoneProperties("kerraridge", "Kerra Island", -859.97f, 474.96f, 23.75f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(220, 220, 200, 10, 600);
                         zoneProperties.AddZoneLineBox("tox", -510.669922f, 2634.015625f, -38.249512f, ZoneLineOrientationType.East,
-                            430.006012f, -950.447937f, 38.437752f, 399.651398f, -979.717834f, 19.500019f);
+                            430.006012f, -950.447937f, 38.437752f, 399.651398f, -979.717834f, 19.500019f); // Tele's back into itself, redo completely
                     }
                     break;
                 case "kithicor": // ZoneLinesBuilt - Tested
@@ -1039,7 +1014,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("rivervale", -371.955841f, -282.273224f, 0.000020f, ZoneLineOrientationType.North, 2028.557495f, 3831.161621f, 472.718994f, 2020.498779f, 3818.663086f, 461.750427f);
                     }
                     break;                
-                case "lakerathe": // ZoneLinesBuilt - Retest
+                case "lakerathe": // ZoneLinesBuilt - Failed
                     {
                         zoneProperties.SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -1048,7 +1023,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("southkarana", -8541.681641f, 1158.678223f, 0.000370f, ZoneLineOrientationType.North,
                             4392.966797f, 1200f, 38.467892f, 4366.503906f, 1132.421143f, -0.500990f); // Works
                         zoneProperties.AddZoneLineBox("rathemtn", 3522.763916f, 2961.740234f, -3.874030f, ZoneLineOrientationType.North,
-                            4392.966797f, 1182.783813f, 38.361542f, 4370.978027f, 1132.520142f, -0.499070f); // Retest
+                            4392.966797f, 1182.783813f, 38.361542f, 4370.978027f, 1132.520142f, -0.499070f); // Doesn't Work
                         
                     }
                     break;
@@ -1063,16 +1038,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("nektulos", 3052.935791f, 312.635284f, -19.294090f, ZoneLineOrientationType.South, -2100.800537f, -115.948547f, 129.457657f, -2171.145996f, -253.399704f, -20.001289f);
                     }
                     break;
-                case "lfaydark": // ZoneLinesBuilt - Retest
+                case "lfaydark": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("lfaydark", "Lesser Faydark", -1769.93f, -108.08f, -1.11f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(230, 255, 200, 10, 300);
-                        zoneProperties.AddZoneLineBox("gfaydark", -2612.000732f, -1113.000000f, 0.000290f, ZoneLineOrientationType.North,
-                            2195.666504f, -1174.378906f, 67.384300f, 2176.618164f, -1215.322021f, -0.499960f); // Passed
-                        zoneProperties.AddZoneLineBox("mistmoore", -295.757965f, 160.095764f, -181.936813f, ZoneLineOrientationType.West,
-                            -1153.577759f, 3291.550049f, 110.469002f, -1182.255737f, 3372.130859f, -0.499820f); // Passed
-                        zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East,
-                            940.560425f, -2182.093262f, 77.329933f, 889.527710f, -2186.912109f, -5.281170f); // Retest
+                        zoneProperties.AddZoneLineBox("gfaydark", -2612.000732f, -1113.000000f, 0.000290f, ZoneLineOrientationType.North, 2195.666504f, -1174.378906f, 67.384300f, 2176.618164f, -1215.322021f, -0.499960f);
+                        zoneProperties.AddZoneLineBox("mistmoore", -295.757965f, 160.095764f, -181.936813f, ZoneLineOrientationType.West, -1153.577759f, 3291.550049f, 110.469002f, -1182.255737f, 3372.130859f, -0.499820f);
+                        zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East, 940.560425f, -2182.093262f, 77.329933f, 889.527710f, -2186.912109f, -5.281170f);
                     }
                     break;
                 case "mistmoore": // ZoneLinesBuilt - Tested
@@ -1097,19 +1069,16 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
                     }
                     break;                
-                case "nektulos": // ZoneLinesBuilt - Retest
+                case "nektulos": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(80, 90, 70, 10, 400);
-                        zoneProperties.AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East,
-                            -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f); // Retest
-                        zoneProperties.AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North,
-                            3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f); // Works
-                        zoneProperties.AddZoneLineBox("neriaka", -0.739280f, 113.977829f, 28.000000f, ZoneLineOrientationType.South,
-                            2270.015381f, -1092.749023f, 12.469000f, 2210.318115f, -1149.777344f, -0.499900f); // Works
+                        zoneProperties.AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East, -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f);
+                        zoneProperties.AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North, 3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f);
+                        zoneProperties.AddZoneLineBox("neriaka", -0.739280f, 113.977829f, 28.000000f, ZoneLineOrientationType.South, 2270.015381f, -1092.749023f, 12.469000f, 2210.318115f, -1149.777344f, -0.499900f);
                     }
                     break;
-                case "neriaka": // ZoneLinesBuilt - Retest Hidden Path
+                case "neriaka": // ZoneLinesBuilt - Failed (Hidden Path creates loop)
                     {
                         zoneProperties.SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
@@ -1121,7 +1090,7 @@ namespace EQWOWConverter.Zones
                             -223.712753f, -447.620148f, 26.466570f, -245.482864f, -462.005951f, 13.501100f); // Retest
                     }
                     break;
-                case "neriakb": // ZoneLinesBuilt - Retest Hidden Path
+                case "neriakb": // ZoneLinesBuilt - Failed (Hidden Path creates loop)
                     {
                         zoneProperties.SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
@@ -1133,23 +1102,19 @@ namespace EQWOWConverter.Zones
                             210.713379f, -844.618347f, -31.532860f, 203.079483f, -860.849731f, -42.468700f);
                     }
                     break;
-                case "neriakc": // ZoneLinesBuilt - Works
+                case "neriakc": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
                     }
                     break;
-                case "northkarana":  // ZoneLinesBuilt - Retest
+                case "northkarana":  // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("northkarana", "Northern Karana", -382f, -284f, -7f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
-                        zoneProperties.AddZoneLineBox("eastkarana", 13.189000f, 1166.973999f, -37.343681f, ZoneLineOrientationType.East,
-                            38.130348f, -3110.049316f, 42.091228f, -17.969540f, -3238.555908f, -37.988708f); // Passed
-                        zoneProperties.AddZoneLineBox("southkarana", 2777.505371f, 906.202576f, -34.406231f, ZoneLineOrientationType.South,
-                            -4530.517090f, 1250.382690f, 59.137932f, -4598.474609f, 1171.919800f, -36.060040f); // Passed
-
-                        // Retest north wall
+                        zoneProperties.AddZoneLineBox("eastkarana", 13.189000f, 1166.973999f, -37.343681f, ZoneLineOrientationType.East, 38.130348f, -3110.049316f, 42.091228f, -17.969540f, -3238.555908f, -37.988708f);
+                        zoneProperties.AddZoneLineBox("southkarana", 2777.505371f, 906.202576f, -34.406231f, ZoneLineOrientationType.South, -4530.517090f, 1250.382690f, 59.137932f, -4598.474609f, 1171.919800f, -36.060040f);
                         zoneProperties.AddZoneLineBox("qey2hh1", -4429.286621f, -15935.629883f, -69.124321f, ZoneLineOrientationType.West, -4417.983887f, 3744.417480f, 200.000000f, -5000.983887f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", -4409.286621f, -15935.629883f, -69.124352f, ZoneLineOrientationType.West, -4397.983887f, 3744.417480f, 200.000000f, -4417.983887f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", -4389.286621f, -15935.629883f, -69.122940f, ZoneLineOrientationType.West, -4377.983887f, 3744.417480f, 200.000000f, -4397.983887f, 3714.417480f, -100.000000f);
@@ -1442,11 +1407,10 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qey2hh1", 1350.998047f, -15935.786133f, 91.028137f, ZoneLineOrientationType.West, 1500.016113f, 3744.417480f, 300.000000f, 1342.016113f, 3714.417480f, -100.000000f);
                     }
                     break;
-                case "nro": // ZoneLinesBuilt - Retest to oasis
+                case "nro": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
-                        // Passed
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -128.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, 935.000000f, 200.000000f, 4172.241699f, 895.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -148.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, 895.000000f, 200.000000f, 4172.241699f, 875.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -168.602066f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, 875.000000f, 200.000000f, 4172.241699f, 855.000000f, -100.000000f);
@@ -1505,8 +1469,6 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -1228.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, -185.000000f, 200.000000f, 4172.241699f, -205.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -1248.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, -205.000000f, 200.000000f, 4172.241699f, -225.000000f, -100.000000f);
                         zoneProperties.AddZoneLineBox("freporte", -1316.303711f, -1263.602051f, -55.968739f, ZoneLineOrientationType.North, 4202.241699f, -225.000000f, 200.000000f, 4172.241699f, -265.000000f, -100.000000f);
-                        
-                        // Retest
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, 1239.252441f, 21.636360f, ZoneLineOrientationType.South, -1878f, 1500.229980f, 300.000000f, -1900f, 1231.229980f, -200.000000f);
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, 1219.252441f, 22.805220f, ZoneLineOrientationType.South, -1878f, 1231.229980f, 300.000000f, -1900f, 1211.229980f, -200.000000f);
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, 1199.252441f, 23.974270f, ZoneLineOrientationType.South, -1878f, 1211.229980f, 300.000000f, -1900f, 1191.229980f, -200.000000f);
@@ -1617,12 +1579,10 @@ namespace EQWOWConverter.Zones
                             2077.083984f, 1928.101074f, 28.065140f, 2007.522705f, 1900.196045f, -0.499880f); // Adjust in response to ecommons
                     }
                     break;
-                case "oasis": // ZoneLinesBuilt - Retest nro
+                case "oasis": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("oasis", "Oasis of Marr", 903.98f, 490.03f, 6.4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
-
-                        // Retest
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, 1241.229980f, 30.033600f, ZoneLineOrientationType.North, 2590f, 1500.252441f, 300.000000f, 2560f, 1229.252441f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, 1221.229980f, 31.204430f, ZoneLineOrientationType.North, 2590f, 1229.252441f, 300.000000f, 2560f, 1209.252441f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, 1201.229980f, 31.854610f, ZoneLineOrientationType.North, 2590f, 1209.252441f, 300.000000f, 2560f, 1189.252441f, -200.000000f);
@@ -1729,8 +1689,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -818.770020f, -6.406220f, ZoneLineOrientationType.North, 2590f, -810.747498f, 300.000000f, 2560f, -830.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -838.770020f, -6.406150f, ZoneLineOrientationType.North, 2590f, -830.747498f, 300.000000f, 2560f, -850.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -858.770020f, -6.406100f, ZoneLineOrientationType.North, 2590f, -850.747498f, 300.000000f, 2560f, -1200.747498f, -200.000000f);
-                        zoneProperties.AddZoneLineBox("sro", 1433.793579f, 244.703186f, -13.301640f, ZoneLineOrientationType.South,
-                            -1890.072144f, 301.506622f, 119.807327f, -1933.566406f, 58.167610f, 1.784040f); // Works
+                        zoneProperties.AddZoneLineBox("sro", 1433.793579f, 244.703186f, -13.301640f, ZoneLineOrientationType.South, -1890.072144f, 301.506622f, 119.807327f, -1933.566406f, 58.167610f, 1.784040f);
                     }
                     break;
                 case "oggok": // ZoneLinesBuilt - Tested
@@ -1786,14 +1745,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeynos", -188.236420f, 78.551971f, -91.583946f, ZoneLineOrientationType.West, -167.744095f, 314.996979f, -71.500740f, -182.130966f, 286.822327f, -84.468750f);
                     }
                     break;
-                case "qey2hh1": // ZoneLinesBuilt - Retest
+                case "qey2hh1": // ZoneLinesBuilt - Broken to Qeynos Hills.  North wall to NorthKarana needs retest after change
                     {
                         zoneProperties.SetBaseZoneProperties("qey2hh1", "Western Karana", -638f, 12f, -4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         
                         zoneProperties.AddZoneLineBox("qeytoqrg", 1511.277466f, -2131.969971f, -4.343800f, ZoneLineOrientationType.East,
-                            90f, -547.020996f, 60.563839f, -50f, -598.756897f, -7.500000f); // Retest
-                        // Retest
+                            90f, -547.020996f, 60.563839f, -50f, -598.756897f, -7.500000f); // Broken, puts you in the water in northern karana
+                        // Works, minus north wall.  Retest
                         zoneProperties.AddZoneLineBox("northkarana", -4427.983887f, 3694.417480f, -69.281387f, ZoneLineOrientationType.East, -4419.286621f, -15945, 200.000000f, -5000.286621f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", -4407.983887f, 3694.417480f, -69.280312f, ZoneLineOrientationType.East, -4399.286621f, -15945, 200.000000f, -4419.286621f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", -4387.983887f, 3694.417480f, -69.281021f, ZoneLineOrientationType.East, -4379.286621f, -15945, 200.000000f, -4399.286621f, -15975, -100.000000f);
@@ -2080,10 +2039,10 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("northkarana", 1232.016113f, 3694.417480f, 52.132851f, ZoneLineOrientationType.East, 1240.998047f, -15945, 200.000000f, 1220.998047f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", 1252.016113f, 3694.417480f, 59.185081f, ZoneLineOrientationType.East, 1260.998047f, -15945, 200.000000f, 1240.998047f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", 1272.016113f, 3694.417480f, 66.236954f, ZoneLineOrientationType.East, 1280.998047f, -15945, 200.000000f, 1260.998047f, -15975, -100.000000f);
-                        zoneProperties.AddZoneLineBox("northkarana", 1292.016113f, 3694.417480f, 73.288948f, ZoneLineOrientationType.East, 1300.998047f, -15945, 200.000000f, 1280.998047f, -15975, -100.000000f);
-                        zoneProperties.AddZoneLineBox("northkarana", 1312.016113f, 3694.417480f, 80.340080f, ZoneLineOrientationType.East, 1320.998047f, -15945, 200.000000f, 1300.998047f, -15975, -100.000000f);
-                        zoneProperties.AddZoneLineBox("northkarana", 1332.016113f, 3694.417480f, 87.391762f, ZoneLineOrientationType.East, 1340.998047f, -15945, 200.000000f, 1320.998047f, -15975, -100.000000f);
-                        zoneProperties.AddZoneLineBox("northkarana", 1352.016113f, 3694.417480f, 94.442497f, ZoneLineOrientationType.East, 1500.998047f, -15945, 200.000000f, 1340.998047f, -15975, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1292.016113f, 3694.417480f, 73.288948f, ZoneLineOrientationType.East, 1300.998047f, -15945, 300.000000f, 1280.998047f, -15975, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1312.016113f, 3694.417480f, 80.340080f, ZoneLineOrientationType.East, 1320.998047f, -15945, 300.000000f, 1300.998047f, -15975, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1332.016113f, 3694.417480f, 87.391762f, ZoneLineOrientationType.East, 1340.998047f, -15945, 300.000000f, 1320.998047f, -15975, -100.000000f);
+                        zoneProperties.AddZoneLineBox("northkarana", 1352.016113f, 3694.417480f, 94.442497f, ZoneLineOrientationType.East, 1650.998047f, -15945, 300.000000f, 1340.998047f, -15975, -100.000000f);
                     }
                     break;
                 case "qeynos": // ZoneLinesBuilt - Tested
@@ -2221,16 +2180,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);
                     }
                     break;
-                case "qeytoqrg": // ZoneLinesBuilt - Retest
+                case "qeytoqrg": // ZoneLinesBuilt - Failed (to qey2hh1)
                     {
                         zoneProperties.SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
-                        zoneProperties.AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 0.000014f, ZoneLineOrientationType.West,
-                            3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f); // Tested
+                        zoneProperties.AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 0.000014f, ZoneLineOrientationType.West, 3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f);
                         zoneProperties.AddZoneLineBox("qey2hh1", 20.094801f, -634.351013f, -7.000000f, ZoneLineOrientationType.East,
-                            1533.845581f, -2196.427979f, 71.894829f, 1334.352417f, -2214.859375f, -4.836120f); // Retest
-
-                        // Retest
+                            1533.845581f, -2196.427979f, 71.894829f, 1334.352417f, -2214.859375f, -4.836120f); // Failed, puts you in Western Karana in the middle of nowhere
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1099.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1109.592896f, 200.000000f, -360.758850f, 1089.592896f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1079.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1089.592896f, 200.000000f, -360.758850f, 1069.592896f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, 1059.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1069.592896f, 200.000000f, -360.758850f, 1049.592896f, -100.000000f);
@@ -2342,8 +2298,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1060.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1050.407104f, 200.000000f, -360.758850f, -1070.407104f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1080.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1070.407104f, 200.000000f, -360.758850f, -1090.407104f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1099f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1090.407104f, 200.000000f, -360.758850f, -1150f, -100.000000f);
-                        zoneProperties.AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East,
-                            5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f); // Works
+                        zoneProperties.AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East, 5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f);
                     }
                     break;
                 case "qrg": // ZoneLinesBuilt - Tested
@@ -2353,14 +2308,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", 5180.557617f, 161.911987f, -6.594880f, ZoneLineOrientationType.West, -623.557495f, 168.640945f, 0.500030f, -639.942505f, 150.659027f, -0.499970f);
                     }
                     break;
-                case "rathemtn": // ZoneLinesBuilt - Retest
+                case "rathemtn": // ZoneLinesBuilt - Failed
                     {
                         zoneProperties.SetBaseZoneProperties("rathemtn", "Rathe Mountains", 1831f, 3825f, 29.03f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("feerrott", 313.833893f, 3388.136230f, 0.000060f, ZoneLineOrientationType.South,
                             607.850098f, -3069.240234f, 77.677612f, 564.785278f, -3162.108887f, -0.499980f); // Passed
                         zoneProperties.AddZoneLineBox("lakerathe", 4349.473145f, 1156.075317f, 0.000930f, ZoneLineOrientationType.South,
-                            3492.589355f, 3001.488037f, 81.361794f, 3434.611816f, 2950f, -4.374750f); // Retest
+                            3492.589355f, 3001.488037f, 81.361794f, 3434.611816f, 2950f, -4.374750f); // Puts in the wrong spot, redo
                     }
                     break;
                 case "rivervale": // ZoneLinesBuilt - Tested
@@ -2379,23 +2334,18 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);
                     }
                     break;
-                case "soldunga": // ZoneLinesBuilt - Retest A and B
+                case "soldunga": // ZoneLinesBuilt - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 30, 30, 10, 100);
-                        zoneProperties.AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North,
-                            -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f); // Works
-                        zoneProperties.AddZoneLineBox("soldungb", -165.640060f, -595.953247f, 14.000010f, ZoneLineOrientationType.East,
-                            -158.745377f, -582.988464f, 25.937571f, -173.130524f, -600.847412f, 13.500000f);
-                        zoneProperties.AddZoneLineBox("soldungb", -275.436981f, -507.896454f, 22.000071f, ZoneLineOrientationType.North,
-                            -267.713684f, -499.620789f, 32.469002f, -286.491913f, -514.974121f, 21.500681f);
-                        zoneProperties.AddZoneLineBox("soldungb", -364.385254f, -406.963348f, 8.000610f, ZoneLineOrientationType.East,
-                            -357.650269f, -400.866211f, 18.469000f, -377.148956f, -409.100372f, 6.500000f);
-                        zoneProperties.AddZoneLineBox("soldungb", -1081.872803f, -525.067810f, -3.999330f, ZoneLineOrientationType.West,
-                             -1068.534180f, -521.974548f, 8.468000f, -1087.309937f, -541.027771f, -4.500000f);
+                        zoneProperties.AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f); // Works
+                        zoneProperties.AddZoneLineBox("soldungb", -165.640060f, -595.953247f, 14.000010f, ZoneLineOrientationType.East, -158.745377f, -582.988464f, 25.937571f, -173.130524f, -600.847412f, 13.500000f);
+                        zoneProperties.AddZoneLineBox("soldungb", -275.436981f, -507.896454f, 22.000071f, ZoneLineOrientationType.North, -267.713684f, -499.620789f, 32.469002f, -286.491913f, -514.974121f, 21.500681f);
+                        zoneProperties.AddZoneLineBox("soldungb", -364.385254f, -406.963348f, 8.000610f, ZoneLineOrientationType.East, -357.650269f, -400.866211f, 18.469000f, -377.148956f, -409.100372f, 6.500000f);
+                        zoneProperties.AddZoneLineBox("soldungb", -1081.872803f, -525.067810f, -3.999330f, ZoneLineOrientationType.West, -1068.534180f, -521.974548f, 8.468000f, -1087.309937f, -541.027771f, -4.500000f);
                     }
                     break;
-                case "soldungb": // ZoneLinesBuilt - Retest A and B
+                case "soldungb": // ZoneLinesBuilt - Failed A is going to B...
                     {
                         zoneProperties.SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(180, 30, 30, 10, 350);
@@ -2450,14 +2400,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("warrens", -100.582893f, 1145.348877f, -110.968758f, ZoneLineOrientationType.North, -3674.369385f, 2932.535400f, -22.218500f, -3707.896240f, 2908.150146f, -40.187389f);
                     }
                     break;                
-                case "tox": // ZoneLinesBuilt - Retest (Kerraridge)
+                case "tox": // ZoneLinesBuilt - Failed (teleports you back in)
                     {
                         zoneProperties.SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(220, 200, 30, 50, 250);
                         zoneProperties.AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North,
                             2574.356934f, 305.599121f, -33.937248f, 2550.955078f, 289.213013f, -48.907711f); // Passed
                         zoneProperties.AddZoneLineBox("kerraridge", 416.010834f, -930.879211f, 20.000179f, ZoneLineOrientationType.West,
-                            -496.400269f, 2684.400391f, -19.781000f, -527.412476f, 2656.403076f, -38.749512f); // Retest, was in wrong spot (now fixed)
+                            -496.400269f, 2684.400391f, -19.781000f, -527.412476f, 2656.403076f, -38.749512f); // Fails (puts you back in)
                         zoneProperties.AddZoneLineBox("paineel", 852.573181f, 196.109207f, 0.000050f, ZoneLineOrientationType.West,
                             -2613.365479f, -417.686676f, -26.624750f, -2628.005371f, -470f, -45.593510f); // Works
                     }
