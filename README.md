@@ -4,7 +4,7 @@ Converts the EverQuest assets from the original three game releases (Initial, Ru
 <img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Loading-Velious.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/WestFreeportGate.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Rivervale.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/HighKeep.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/FirionaVie.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/CrystalCaverns.png?raw=true" width="300"/>
 
 # Current State
-It is currently still in heavy development and **no support will be offered at this time as things are changing daily**.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, fire doesn't animate, etc)
+It is currently still in heavy development and things are changing daily.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, fire doesn't animate, etc)
 
 Current focus is on getting original/classic content polished, then Kunark and Velious will follow.  Note that Kunark and Velious static objects and maps are already exporting.
 
