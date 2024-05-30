@@ -152,7 +152,7 @@ namespace EQWOWConverter.Zones
             else
             {
                 // Generate the world groups by splitting the map down into subregions as needed
-                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
+                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(verticies, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
                 List<string> materialNames = new List<string>();
                 foreach (Material material in Materials)
                     materialNames.Add(material.Name);
@@ -186,7 +186,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Rebuild the bounding box
-            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(verticies);
+            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(verticies, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             IsLoaded = true;
         }
 

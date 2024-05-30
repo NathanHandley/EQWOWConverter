@@ -143,7 +143,7 @@ namespace EQWOWConverter.Common
                    point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
         }
 
-        public static BoundingBox GenerateBoxFromVectors(List<Vector3> verticies)
+        public static BoundingBox GenerateBoxFromVectors(List<Vector3> verticies, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();
             foreach (Vector3 renderVert in verticies)
@@ -162,6 +162,12 @@ namespace EQWOWConverter.Common
                 if (renderVert.Z > boundingBox.TopCorner.Z)
                     boundingBox.TopCorner.Z = renderVert.Z;
             }
+            boundingBox.BottomCorner.X -= addedBoundary;
+            boundingBox.BottomCorner.Y -= addedBoundary;
+            boundingBox.BottomCorner.Z -= addedBoundary;
+            boundingBox.TopCorner.X += addedBoundary;
+            boundingBox.TopCorner.Y += addedBoundary;
+            boundingBox.TopCorner.Z += addedBoundary;
             return boundingBox;
         }
 

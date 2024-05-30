@@ -322,7 +322,7 @@ namespace EQWOWConverter.Objects
         {
             BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVerticies, Configuration.CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
-            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions);
+            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
         }
     }

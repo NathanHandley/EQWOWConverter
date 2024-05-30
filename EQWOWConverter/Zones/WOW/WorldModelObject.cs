@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
             foreach(var vertexColor in vertexColors)
                 VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
             TriangleFaces = triangleFaces;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(Verticies);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(Verticies, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
