@@ -117,6 +117,47 @@ namespace EQWOWConverter.Zones
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
+        public void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ, 
+            ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
+            float padWidth)
+        {
+            // Scale input values
+            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterXPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterYPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterZPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padWidth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            // Create the box base values
+            ZoneLineBox zoneLineBox = new ZoneLineBox();
+            zoneLineBox.TargetZoneShortName = targetZoneShortName;
+            zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
+            switch (targetZoneOrientation)
+            {
+                case ZoneLineOrientationType.North: zoneLineBox.TargetZoneOrientation = 0; break;
+                case ZoneLineOrientationType.South: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
+                case ZoneLineOrientationType.West: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
+                case ZoneLineOrientationType.East: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+            }
+
+            // Calculate the dimensions in the form needed by a wow trigger zone
+            float boxBottomSoutheastX = padBottomCenterXPosition - (padWidth / 2);
+            float boxBottomSoutheastY = padBottomCenterYPosition - (padWidth / 2);
+            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            float boxTopNorthwestX = boxBottomSoutheastX + padWidth;
+            float boxTopNorthwestY = boxBottomSoutheastY + padWidth;
+            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);            
+            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
+                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
+            zoneLineBox.BoxPosition = zoneLineBoxBounding.GetCenter();
+            zoneLineBox.BoxWidth = zoneLineBoxBounding.GetYDistance();
+            zoneLineBox.BoxLength = zoneLineBoxBounding.GetXDistance();
+            zoneLineBox.BoxHeight = zoneLineBoxBounding.GetZDistance();
+            ZoneLineBoxes.Add(zoneLineBox);
+        }
+
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)
         {
             if (ZonePropertyListByShortName.Count == 0)
@@ -257,6 +298,7 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("westwastes", GenerateZonePropertiesForZone("westwastes"));
         }
 
+        // Define what area should only be considered when generating the world geometry, to get rid of things like temp rooms and flying tree in lfay etc
         private static ZoneProperties GenerateZonePropertiesForZone(string zoneShortName)
         {
             ZoneProperties zoneProperties = new ZoneProperties();
@@ -268,6 +310,7 @@ namespace EQWOWConverter.Zones
                 //--------------------------------------------------------------------------------------------------------------------------
                 case "airplane":
                     {
+                        // TODO: Add teleport pads
                         zoneProperties.SetBaseZoneProperties("airplane", "Plane of Sky", 542.45f, 1384.6f, -650f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
                         zoneProperties.AddZoneLineBox("freporte", -363.75037f, -1778.4629f, 100f, ZoneLineOrientationType.West, 3000f, 3000f, -1000f, -3000f, -3000f, -1200f);
@@ -275,7 +318,6 @@ namespace EQWOWConverter.Zones
                     break;
                 case "akanon":
                     {
-                        // TODO: Any in-zone teleports?
                         zoneProperties.SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(30, 60, 30, 10, 600);
                         zoneProperties.AddZoneLineBox("steamfont", -2059.579834f, 528.815857f, -111.126549f, ZoneLineOrientationType.North, 70.830750f, -69.220848f, 12.469000f, 60.770279f, -84.162193f, -0.500000f);
@@ -332,7 +374,6 @@ namespace EQWOWConverter.Zones
                     break;
                 case "cazicthule":
                     {
-                        // TODO: Any in-zone teleports?
                         zoneProperties.SetBaseZoneProperties("cazicthule", "Cazic Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 80, 20, 10, 450);
                         zoneProperties.AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
@@ -479,7 +520,7 @@ namespace EQWOWConverter.Zones
                     break;               
                 case "ecommons":
                     {
-                        // TODO: White space in EC tunnel near zone line
+                        // Bug: White space in EC tunnel near zone line
                         zoneProperties.SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("nro", 2033.690186f, 1875.838257f, 0.000120f, ZoneLineOrientationType.East, -3004.062744f, -1183.421265f, 28.469000f, -3087.551270f, -1212.701660f, -0.499900f);
@@ -662,17 +703,23 @@ namespace EQWOWConverter.Zones
                     break;                
                 case "erudnext":
                     {
-                        // TODO: In-zone teleport (?)
                         zoneProperties.SetBaseZoneProperties("erudnext", "Erudin", -309.75f, 109.64f, 23.75f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 550);
                         zoneProperties.AddZoneLineBox("tox", 2543.662842f, 297.415588f, -48.407711f, ZoneLineOrientationType.South, -1559.726196f, -175.747467f, -17.531000f, -1584.182617f, -211.414566f, -48.468529f);
+                        zoneProperties.AddTeleportPad("erudnext", -1410.466431f, -184.863327f, 34.000938f, ZoneLineOrientationType.North, -1392.625977f, -254.981995f, -42.968651f, 6.0f);
+                        zoneProperties.AddTeleportPad("erudnext", -1410.336670f, -310.649994f, -45.968410f, ZoneLineOrientationType.South, -1410.323730f, -310.856049f, 37.000172f, 6.0f);
+                        zoneProperties.AddTeleportPad("erudnint", 711.753357f, 805.382568f, 18.000059f, ZoneLineOrientationType.East, -644.927917f, -183.935837f, 75.968788f, 6.0f);
+                        zoneProperties.AddTeleportPad("erudnext", -396.419495f, -8.040450f, 38.000011f, ZoneLineOrientationType.North, -644.701294f, -278.909973f, 68.968857f, 6.0f);
+                        zoneProperties.AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, -327.673065f, -1.365350f, 37.998589f, 11f);
+                        zoneProperties.AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, -327.673065f, -8.182305f, 37.998589f, 11f);
+                        zoneProperties.AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, -327.821869f, -14.999260f, 37.998589f, 11f);
                     }
                     break;
                 case "erudnint":
                     {
-                        // TODO: In-zone teleports
                         zoneProperties.SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(0, 0, 0, 0, 0);
+                        zoneProperties.AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, 711.744934f, 806.283813f, 5.000060f, 12.0f);
                     }
                     break;
                 case "erudsxing":
@@ -719,10 +766,16 @@ namespace EQWOWConverter.Zones
                     break;
                 case "felwitheb":
                     {
-                        // TODO: Check for in-zone teleports
+                        // Bug: Hole in the doorway into the teleport room (bottom).  Might be scale related
                         zoneProperties.SetBaseZoneProperties("felwitheb", "South Felwithe", -790f, 320f, -10.25f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(100, 130, 100, 10, 300);
                         zoneProperties.AddZoneLineBox("felwithea", 336.521210f, -720.996582f, -13.999750f, ZoneLineOrientationType.South, 245.892227f, -825.463867f, -1.531000f, 218.101257f, -839.849731f, -14.500020f);
+                        zoneProperties.AddTeleportPad("felwitheb", 503.797028f, -496.463074f, -5.001940f, ZoneLineOrientationType.West, 435.755615f, -584.819824f, 31.000059f, 6.0f);
+                        zoneProperties.AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 503.520294f, -338.805695f, 3.999970f, 6.0f);
+                        zoneProperties.AddTeleportPad("felwitheb", 603.829346f, -580.765015f, 0.000040f, ZoneLineOrientationType.North, 458.797363f, -601.881165f, 31.000561f, 6.0f);
+                        zoneProperties.AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 745.727112f, -532.876404f, 4.000100f, 6.0f);
+                        zoneProperties.AddTeleportPad("felwitheb", 552.740112f, -743.948242f, 0.000020f, ZoneLineOrientationType.East, 435.665283f, -618.718323f, 31.000561f, 6.0f);
+                        zoneProperties.AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 553.732544f, -919.604370f, 4.000090f, 6.0f);
                     }
                     break;
                 case "freporte":
@@ -795,7 +848,6 @@ namespace EQWOWConverter.Zones
                     break;
                 case "freportn":
                     {
-                        // Todo: Check for in-zone ports
                         zoneProperties.SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(230, 200, 200, 10, 450);
                         zoneProperties.AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
@@ -873,18 +925,26 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freportn", -2.907860f, -440.593567f, -20.999920f, ZoneLineOrientationType.North, 758.867493f, -571.213928f, -12.532780f, 742.214172f, -587.942444f, -50f);
                         zoneProperties.AddZoneLineBox("freportn", -408.099854f, 489.939026f, -13.999160f, ZoneLineOrientationType.North, 265.374237f, -110.341187f, 14.500020f, 221.547180f, -140.130920f, -14.500000f);
                         zoneProperties.AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
+                        zoneProperties.AddTeleportPad("freportw", 146.800308f, -681.771179f, -12.999480f, ZoneLineOrientationType.East, 97.993584f, -657.753784f, -40.968651f, 7.7f);
+                        zoneProperties.AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
                     }
                     break;
-                case "gfaydark":
+                case "gfaydark": // One More Lift
                     {
                         // TODO: Lifts for Kelethin
-                        // TODO: White space behind portal to North Felwithe
+                        // Bug: White space behind portal to North Felwithe
                         zoneProperties.SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
                         zoneProperties.AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);
                         zoneProperties.AddZoneLineBox("crushbone", -625.626038f, 163.201843f, 0.000070f, ZoneLineOrientationType.North, 2670.067139f, -28.324280f, 56.295769f, 2579.850830f, -75.045639f, 15.343880f);
                         zoneProperties.AddZoneLineBox("felwithea", 41.148460f, 183.167984f, 0.000000f, ZoneLineOrientationType.East, -1917.227173f, -2623.463623f, 46.844002f, -1945.600464f, -2663.089355f, 19.906750f);
                         zoneProperties.AddZoneLineBox("lfaydark", 2164.083984f, -1199.626953f, 0.000040f, ZoneLineOrientationType.South, -2623.411133f, -1084.083862f, 114.320740f, -2650.334229f, -1130.060669f, -0.499900f);
+                        
+                        // These three teleports are temp until the lifts are put in
+                        zoneProperties.AddTeleportPad("gfaydark", 946.531250f, 222.323135f, 73.968826f, ZoneLineOrientationType.South, 988.554749f, 220.978745f, -24.697590f, 10.0f);
+                        zoneProperties.AddTeleportPad("gfaydark", 138.929764f, 275.177704f, 73.969337f, ZoneLineOrientationType.West, 136.997269f, 234.183487f, 5.157810f, 10.0f);
+                        zoneProperties.AddTeleportPad("gfaydark", -16.362190f, -136.277435f, 73.968750f, ZoneLineOrientationType.South, 26.329359f, -138.125824f, 5.380220f, 10.0f);
+                        ///
                     }
                     break;               
                 case "grobb":
@@ -1695,7 +1755,7 @@ namespace EQWOWConverter.Zones
                     break;                
                 case "paineel":
                     {
-                        // TODO: In-zone teleports
+                        // TODO: Teleporters after zone collision is mapped
                         zoneProperties.SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(150, 150, 150, 200, 850);
                         zoneProperties.AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North, 640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
@@ -2044,6 +2104,7 @@ namespace EQWOWConverter.Zones
                     break;
                 case "qeynos2":
                     {
+                        // TODO: Teleporters after zone collision is implemented
                         zoneProperties.SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 450);
                         zoneProperties.AddZoneLineBox("qcat", 1056.423950f, -48.181938f, 199.885666f, ZoneLineOrientationType.South, 308.068420f, -153.744324f, -87.613121f, 293.681549f, -168.130386f, -126.259743f);
@@ -2161,7 +2222,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1040.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1030.846802f, 200.000000f, 1500.794556f, -1050.846802f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1060.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1050.846802f, 200.000000f, 1500.794556f, -1070.846802f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1080.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1070.846802f, 200.000000f, 1500.794556f, -1090.846802f, -100.000000f);
-                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);                   
                     }
                     break;
                 case "qeytoqrg":
@@ -2387,6 +2448,7 @@ namespace EQWOWConverter.Zones
                     break;
                 case "unrest":
                     {
+                        // Bug: There's a missing wall when rescaled, near the ent
                         zoneProperties.SetBaseZoneProperties("unrest", "The Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(40, 10, 60, 10, 300);
                         zoneProperties.AddZoneLineBox("cauldron", -2014.301880f, -627.332886f, 90.001083f, ZoneLineOrientationType.North, 113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
