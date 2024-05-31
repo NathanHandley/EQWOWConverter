@@ -27,7 +27,8 @@ namespace EQWOWConverter.ModelObjects
         None        = 0,
         Unlit       = 0x1,
         Unfogged    = 0x2,
-        TwoSided    = 0x4
-        // There are more, but probably don't need them
+        TwoSided    = 0x4,
+        DepthTest   = 0x8,
+        DepthWrite  = 0x10,
     }
 }

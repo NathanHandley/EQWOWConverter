@@ -26,11 +26,12 @@ namespace EQWOWConverter.ModelObjects
     internal class ModelMaterial : IByteSerializable
     {
         ModelMaterialFlag Flags = ModelMaterialFlag.None;
-        ModelMaterialBlendType BlendingMode = ModelMaterialBlendType.Alpha;
+        ModelMaterialBlendType BlendingMode;
 
         public ModelMaterial(ModelMaterialBlendType blendType)
         {
             BlendingMode = blendType;
+            Flags |= ModelMaterialFlag.TwoSided;
         }
 
         public UInt32 GetBytesSize()

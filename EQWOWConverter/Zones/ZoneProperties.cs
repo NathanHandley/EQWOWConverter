@@ -520,7 +520,6 @@ namespace EQWOWConverter.Zones
                     break;               
                 case "ecommons":
                     {
-                        // Bug: White space in EC tunnel near zone line
                         zoneProperties.SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("nro", 2033.690186f, 1875.838257f, 0.000120f, ZoneLineOrientationType.East, -3004.062744f, -1183.421265f, 28.469000f, -3087.551270f, -1212.701660f, -0.499900f);
@@ -932,7 +931,6 @@ namespace EQWOWConverter.Zones
                 case "gfaydark": // One More Lift
                     {
                         // TODO: Lifts for Kelethin
-                        // Bug: White space behind portal to North Felwithe
                         zoneProperties.SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
                         zoneProperties.AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);
@@ -2448,7 +2446,6 @@ namespace EQWOWConverter.Zones
                     break;
                 case "unrest":
                     {
-                        // Bug: There's a missing wall when rescaled, near the ent
                         zoneProperties.SetBaseZoneProperties("unrest", "The Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(40, 10, 60, 10, 300);
                         zoneProperties.AddZoneLineBox("cauldron", -2014.301880f, -627.332886f, 90.001083f, ZoneLineOrientationType.North, 113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
