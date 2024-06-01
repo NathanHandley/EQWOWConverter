@@ -33,9 +33,9 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
-        public static bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public static bool ConvertEQDataToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
-            Logger.WriteLine("Converting EQ objects to WOW zones...");
+            Logger.WriteLine("Converting EQ Data to WOW Data...");
 
             // Make sure the root path exists
             if (Directory.Exists(eqExportsConditionedPath) == false)
@@ -45,14 +45,25 @@ namespace EQWOWConverter
                 return false;
             }
 
+            // Convert the data
+            if (ConvertEQObjectsToWOW(eqExportsConditionedPath, wowExportPath) == false)
+                return false;
+            if (ConvertEQZonesToWOW(eqExportsConditionedPath, wowExportPath) == false)
+                return false;
+
+            Logger.WriteLine("Conversion Complete");
+            return true;
+        }
+
+        // TODO: Condense above
+        public static bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
+        {
+            Logger.WriteLine("Converting EQ objects to WOW zones...");
+
             // Make sure the object folder path exists
             string objectFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
             if (Directory.Exists(objectFolderRoot) == false)
-            {
-                Logger.WriteLine("ERROR - Object folder that should be at path '" + objectFolderRoot + "' does not exist.");
-                Logger.WriteLine("Conversion Failed!");
-                return false;
-            }
+                Directory.CreateDirectory(objectFolderRoot);
 
             // Clean out the objects folder
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
@@ -90,7 +101,7 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
+                ExportTexturesForObject(curObject.WOWModelObjectData, objectTextureFolder, curStaticObjectOutputFolder);
 
                 // Save the object
                 staticObjects.Add(curObject);
@@ -106,26 +117,15 @@ namespace EQWOWConverter
             return true;
         }
 
+        // TODO: Condense above
         public static bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteLine("Converting EQ zones to WOW zones...");
 
-            // Make sure the root path exists
-            if (Directory.Exists(eqExportsConditionedPath) == false)
-            {
-                Logger.WriteLine("ERROR - Conditioned path of '" + eqExportsConditionedPath + "' does not exist.");
-                Logger.WriteLine("Conversion Failed!");
-                return false;
-            }
-
             // Make sure the zone folder path exists
             string zoneFolderRoot = Path.Combine(eqExportsConditionedPath, "zones");
             if (Directory.Exists(zoneFolderRoot) == false)
-            {
-                Logger.WriteLine("ERROR - Zone folder that should be at path '" + zoneFolderRoot + "' does not exist.");
-                Logger.WriteLine("Conversion Failed!");
-                return false;
-            }
+                Directory.CreateDirectory(zoneFolderRoot);
 
             // Clean out the zone and interface folders
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
@@ -157,8 +157,8 @@ namespace EQWOWConverter
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
 
-                //if (zoneDirectory.Name != "freportw")
-                //    continue;
+                if (zoneDirectory.Name != "freportw")
+                    continue;
 
                 // Load the EQ zone
                 Zone curZone = new Zone(zoneDirectory.Name);
@@ -171,7 +171,7 @@ namespace EQWOWConverter
                 CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, exportObjectsFolderRelative);
 
                 // Place the related textures
-                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder);
+                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, exportObjectsFolderRelative);
 
                 zones.Add(curZone);
             }
@@ -189,7 +189,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string exportObjectsFolder)
+        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
         {
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
@@ -200,7 +200,7 @@ namespace EQWOWConverter
             zone.PopulateWOWZoneDataFromEQZoneData(zoneProperties);
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, exportObjectsFolder);
+            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeExportObjectsFolder);
             zoneWMO.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDT
@@ -210,6 +210,21 @@ namespace EQWOWConverter
             // Create the WDL
             WDL zoneWDL = new WDL(zone);
             zoneWDL.WriteToDisk(exportMPQRootFolder);
+
+            // Create the zone-specific object files
+            foreach(WOWObjectModelData zoneObject in zone.WOWZoneData.GeneratedZoneObjects)
+            {
+                // Recreate the folder if needed
+                string curZoneObjectRelativePath = Path.Combine(relativeExportObjectsFolder, zoneObject.Name);
+                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
+                if (Directory.Exists(curZoneObjectFolder))
+                    Directory.Delete(curZoneObjectFolder, true);
+                Directory.CreateDirectory(curZoneObjectFolder);
+
+                // Build this zone object M2 Data
+                M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
+                objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+            }
 
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
@@ -222,7 +237,7 @@ namespace EQWOWConverter
             modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
 
             // Create the M2 and Skin
-            M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
+            M2 objectM2 = new M2(modelObject.WOWModelObjectData, mpqObjectPathRelative);
             objectM2.WriteToDisk(modelObject.Name, exportMPQObjectRootFolder);
 
             Logger.WriteLine("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
@@ -364,7 +379,7 @@ namespace EQWOWConverter
             Logger.WriteLine("AzerothCore SQL Scripts created successfully");
         }
 
-        public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath)
+        public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string objectExportPath)
         {
             Logger.WriteLine("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
 
@@ -385,28 +400,40 @@ namespace EQWOWConverter
                 Logger.WriteLine("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
             }
 
+            // Also copy textures for the zone specific objects
+            foreach (WOWObjectModelData zoneObject in zone.WOWZoneData.GeneratedZoneObjects)
+            {
+                foreach(ModelTexture texture in zoneObject.ModelTextures)
+                {
+                    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", texture.TextureName + ".blp");
+                    string outputTextureFullPath = Path.Combine(wowExportPath, objectExportPath, zoneObject.Name, texture.TextureName + ".blp");
+                    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
+                    Logger.WriteLine("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
+                }
+            }
+
             Logger.WriteLine("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
         }
 
-        public static void ExportTexturesForObject(ModelObject modelObject, string objectTextureInputFolder, string objectExportPath)
+        public static void ExportTexturesForObject(WOWObjectModelData wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
         {
-            Logger.WriteLine("- [" + modelObject.Name + "]: Exporting textures for object '" + modelObject.Name + "'...");
+            Logger.WriteLine("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
 
             // Go through every texture and copy it
-            foreach(ModelTexture texture in modelObject.WOWModelObjectData.ModelTextures)
+            foreach(ModelTexture texture in wowObjectModelData.ModelTextures)
             {
                 string inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(objectExportPath, texture.TextureName + ".blp");
                 if (Path.Exists(inputTextureName) == false)
                 {
-                    Logger.WriteLine("- [" + modelObject.Name + "]: ERROR Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                    Logger.WriteLine("- [" + wowObjectModelData.Name + "]: ERROR Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
                     return;
                 }
                 File.Copy(inputTextureName, outputTextureName, true);
-                Logger.WriteLine("- [" + modelObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                Logger.WriteLine("- [" + wowObjectModelData.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }
 
-            Logger.WriteLine("- [" + modelObject.Name + "]: Texture output for object '" + modelObject.Name + "' complete");
+            Logger.WriteLine("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
         }
     }
 }

@@ -64,5 +64,13 @@ namespace EQWOWConverter.Common
                 Name = subParts[0];
             }
         }
+
+        public bool IsAnimated()
+        {
+            if (AnimationDelayMs > 0 && AnimationTextures.Count > 1)
+                return true;
+            else
+                return false;
+        }
     }
 }

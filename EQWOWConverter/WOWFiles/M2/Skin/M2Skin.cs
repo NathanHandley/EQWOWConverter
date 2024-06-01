@@ -35,34 +35,34 @@ namespace EQWOWConverter.WOWFiles
         private M2SkinHeader Header = new M2SkinHeader();
         private List<byte> SkinBytes = new List<byte>();
 
-        public M2Skin(ModelObject modelObject)
+        public M2Skin(WOWObjectModelData wowModelObject)
         {
-            Name = modelObject.Name;
+            Name = wowModelObject.Name;
             SkinBytes.Clear();
             List<byte> nonHeaderBytes = new List<byte>();
             int curOffset = Header.GetSize();
 
             // Indicies
-            List<byte> indiciesBytes = GenerateIndiciesBlock(modelObject.WOWModelObjectData);
-            Header.Indicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelVerticies.Count));
+            List<byte> indiciesBytes = GenerateIndiciesBlock(wowModelObject);
+            Header.Indicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVerticies.Count));
             curOffset += indiciesBytes.Count;
             nonHeaderBytes.AddRange(indiciesBytes);
 
             // Triangles
-            List<byte> triangleBytes = GenerateTrianglesBlock(modelObject.WOWModelObjectData);
-            Header.TriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelTriangles.Count * 3));
+            List<byte> triangleBytes = GenerateTrianglesBlock(wowModelObject);
+            Header.TriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelTriangles.Count * 3));
             curOffset += triangleBytes.Count;
             nonHeaderBytes.AddRange(triangleBytes);
 
             // Bone Indicies
-            List<byte> boneIndiciesBytes = GenerateBoneIndiciesBlock(modelObject.WOWModelObjectData);
-            Header.BoneIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(modelObject.WOWModelObjectData.ModelVerticies.Count));
+            List<byte> boneIndiciesBytes = GenerateBoneIndiciesBlock(wowModelObject);
+            Header.BoneIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVerticies.Count));
             curOffset += boneIndiciesBytes.Count;
             nonHeaderBytes.AddRange(boneIndiciesBytes);
 
             // SubMeshes
             List<M2SkinTextureUnit> textureUnits;
-            List<byte> subMeshesBytes = GenerateSubMeshesBlock(modelObject.WOWModelObjectData, out textureUnits);
+            List<byte> subMeshesBytes = GenerateSubMeshesBlock(wowModelObject, out textureUnits);
             Header.SubMeshes.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(textureUnits.Count));     // 1 sub mesh per texture unit
             curOffset += subMeshesBytes.Count;
             nonHeaderBytes.AddRange(subMeshesBytes);

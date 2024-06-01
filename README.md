@@ -48,8 +48,7 @@ Use BLPNG Converter.  Use option BLP > Choose Folder  (select the conditioned as
 **Converting Everquest data into World of Warcraft data**
 
 Use EQWOWConverter
-- Run command "Convert Objects to M2"
-- Run command "Convert zones to WMO"
+- Run command "Convert EQ Data to WOW"
 
 **Update related DBC files**
 

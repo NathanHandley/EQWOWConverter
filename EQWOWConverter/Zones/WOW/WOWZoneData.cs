@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Objects;
 using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
@@ -26,12 +27,14 @@ namespace EQWOWConverter.Zones
 {
     internal class WOWZoneData
     {
+        private string ShortName = string.Empty;
         private bool IsLoaded = false;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
         private static UInt32 CURRENT_AREAID = Configuration.CONFIG_DBCID_AREAID_START;
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
 
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
+        public List<WOWObjectModelData> GeneratedZoneObjects = new List<WOWObjectModelData>();
         public List<Material> Materials = new List<Material>();
         public ColorARGB AmbientLight = new ColorARGB();
         public List<LightInstance> LightInstances = new List<LightInstance>();
@@ -60,6 +63,7 @@ namespace EQWOWConverter.Zones
         {
             if (IsLoaded == true)
                 return;
+            ShortName = zoneProperties.ShortName;
             Materials = eqZoneData.Materials;
             AmbientLight = new ColorARGB(eqZoneData.AmbientLight.A, eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, AmbientLight.B);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
@@ -134,7 +138,7 @@ namespace EQWOWConverter.Zones
                 }
             }
 
-            // Create world model objects by identifying connected triangles and grouping them
+            // Generate world objects
             List<Vector3> normals = eqZoneData.Normals;
             List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
 
@@ -147,6 +151,11 @@ namespace EQWOWConverter.Zones
                 WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
                 WorldObjects.Add(curWorldModelObject);
             }
+
+            // Determine which materials are animated and create objects to represent them
+            foreach(Material material in Materials)
+                if (material.IsAnimated())
+                    GenerateAndAddObjectInstanceForZoneMaterial(material, triangleFaces, verticies, normals, vertexColors, textureCoords);
 
             // If this can be generated as a single WMO, just do that
             if (triangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
@@ -298,6 +307,109 @@ namespace EQWOWConverter.Zones
                 // Generate the world model object
                 GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords);
             }
+        }
+
+        private void GenerateAndAddObjectInstanceForZoneMaterial(Material material, List<TriangleFace> allTriangleFaces, List<Vector3> allVerticies, 
+            List<Vector3> allNormals, List<ColorRGBA> allVertexColors, List<TextureCoordinates> allTextureCoordinates)
+        {
+            // Extract out copies of the geometry data specific to this material
+            List<TriangleFace> modelTriangleFaces = new List<TriangleFace>();
+            List<Vector3> modelVerticies = new List<Vector3>();
+            List<Vector3> modelNormals = new List<Vector3>();
+            List<ColorRGBA> modelVertexColors = new List<ColorRGBA>();
+            List<TextureCoordinates> modelTextureCoordinates = new List<TextureCoordinates>();
+            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
+            for (int i = 0; i < allTriangleFaces.Count; i++)
+            {
+                // Skip faces not matching the material
+                if (allTriangleFaces[i].MaterialIndex != material.Index)
+                    continue;
+
+                // Make sure to reset the material ID to 0 since these objects are single material based
+                TriangleFace curTriangleFace = new TriangleFace(allTriangleFaces[i]);
+                curTriangleFace.MaterialIndex = 0;
+
+                // Face vertex 1
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V1;
+                    int newVertIndex = modelVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V1 = newVertIndex;
+
+                    // Add objects
+                    modelVerticies.Add(allVerticies[oldVertIndex]);
+                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    modelNormals.Add(allNormals[oldVertIndex]);
+                    if (allVertexColors.Count != 0)
+                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                }
+
+                // Face vertex 2
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V2;
+                    int newVertIndex = modelVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V2 = newVertIndex;
+
+                    // Add objects
+                    modelVerticies.Add(allVerticies[oldVertIndex]);
+                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    modelNormals.Add(allNormals[oldVertIndex]);
+                    if (allVertexColors.Count != 0)
+                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                }
+
+                // Face vertex 3
+                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V3;
+                    int newVertIndex = modelVerticies.Count;
+                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V3 = newVertIndex;
+
+                    // Add objects
+                    modelVerticies.Add(allVerticies[oldVertIndex]);
+                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    modelNormals.Add(allNormals[oldVertIndex]);
+                    if (allVertexColors.Count != 0)
+                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                }
+
+                // Save this updated triangle
+                modelTriangleFaces.Add(curTriangleFace);
+            }
+
+            // Generate the object
+            string name = "ZO_" + ShortName + "_" + material.Name;
+            WOWObjectModelData newObject = new WOWObjectModelData();
+            newObject.LoadFromZoneData(name, material, modelTriangleFaces, modelVerticies, modelNormals, modelVertexColors, modelTextureCoordinates);
+            GeneratedZoneObjects.Add(newObject);
+
+            // Add as a doodad
+            WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+            doodadInstance.ObjectName = name;
+            doodadInstance.Position = new Vector3(0, 0, 0);
+            DoodadInstances.Add(doodadInstance);
         }
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,

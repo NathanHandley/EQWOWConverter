@@ -71,19 +71,17 @@ namespace EQWOWConverter.WOWFiles
 
         public M2Skin Skin;
 
-        public M2(ModelObject modelObject, string mpqObjectFolder)
+        public M2(WOWObjectModelData wowModelObject, string mpqObjectFolder)
         {
             // Populate the M2 Data objects
-            Name = new M2StringByOffset(modelObject.WOWModelObjectData.Name);
+            Name = new M2StringByOffset(wowModelObject.Name);
             Textures = new M2TextureArrayByOffset(mpqObjectFolder);
-            PopulateElements(modelObject, mpqObjectFolder);
-            Skin = new M2Skin(modelObject);
+            PopulateElements(wowModelObject, mpqObjectFolder);
+            Skin = new M2Skin(wowModelObject);
         }
 
-        private void PopulateElements(ModelObject modelObject, string mpqObjectFolder)
+        private void PopulateElements(WOWObjectModelData wowModelObject, string mpqObjectFolder)
         {
-            WOWObjectModelData wowModelObject = modelObject.WOWModelObjectData;
-
             // Global Loop Timestamps
             // None for now
 

@@ -158,7 +158,7 @@ namespace EQWOWConverter.Objects
                 }
             }
 
-            ProcessCollisionData(eqObject);
+            ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
             SortGeometry();
             CalculateBoundingBoxesAndRadii();
 
@@ -181,7 +181,92 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
-        private void ProcessCollisionData(EQModelObjectData eqObject)
+        public void LoadFromZoneData(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies, 
+            List<Vector3> normals, List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoordinates)
+        {
+            // Save name and triangles
+            Name = name;
+            foreach(TriangleFace triangleFace  in triangleFaces)
+                ModelTriangles.Add(triangleFace);
+
+            // Generate modelverticies from geometry data
+            if (verticies.Count != textureCoordinates.Count && verticies.Count != normals.Count)
+            {
+                Logger.WriteLine("Failed to load wowobject from zone data since vertex count doesn't match texture coordinate count or normal count");
+                return;
+            }
+            for (int i = 0; i < verticies.Count; i++)
+            {
+                ModelVertex newModelVertex = new ModelVertex();
+                newModelVertex.Position.X = verticies[i].X;
+                newModelVertex.Position.Y = verticies[i].Y;
+                newModelVertex.Position.Z = verticies[i].Z;
+                newModelVertex.Texture1TextureCoordinates.X = textureCoordinates[i].X;
+                newModelVertex.Texture1TextureCoordinates.Y = textureCoordinates[i].Y;
+                newModelVertex.Normal.X = normals[i].X;
+                newModelVertex.Normal.Y = normals[i].Y;
+                newModelVertex.Normal.Z = normals[i].Z;
+                ModelVerticies.Add(newModelVertex);
+            }
+
+            // Read in the textures from the material and save a material for each
+            // Note: Only doing the first now for testing
+            ModelTexture newModelTexture = new ModelTexture();
+            newModelTexture.TextureName = material.AnimationTextures[0];
+            ModelTextures.Add(newModelTexture);
+            switch (material.MaterialType)
+            {
+                case MaterialType.TransparentAdditive:
+                case MaterialType.TransparentAdditiveUnlit:
+                case MaterialType.TransparentAdditiveUnlitSkydome:
+                    {
+                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Add));
+                    }
+                    break;
+                case MaterialType.Transparent25Percent:
+                case MaterialType.Transparent75Percent:
+                case MaterialType.Transparent50Percent:
+                case MaterialType.TransparentMasked:
+                    {
+                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Alpha));
+                    }
+                    break;
+                default:
+                    {
+                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Opaque));
+                    }
+                    break;
+            }
+            ModelTextureLookups.Add(0);
+            ModelTextureMappingLookups.Add(0);
+            ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
+            ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
+
+            // Collision and bounding
+            ProcessCollisionData(verticies, triangleFaces, new List<Vector3>(), new List<TriangleFace>());
+            CalculateBoundingBoxesAndRadii();
+
+            // HARD CODED FOR STATIC --------------------------------------------------------------------
+            // Create a base bone
+            //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
+            ModelBones.Add(new ModelBone());
+            ModelBoneKeyLookups.Add(-1);
+            ModelBoneLookups.Add(0);
+            ModelTextureTransparencyWeightsLookups.Add(0);
+            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
+            ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
+            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
+            ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
+
+            // Make one animation
+            ModelAnimations.Add(new ModelAnimation());
+            ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+            ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+            //-------------------------------------------------------------------------------------------
+        }
+
+        private void ProcessCollisionData(List<Vector3> verticies, List<TriangleFace> triangleFaces,
+            List<Vector3> collisionVerticies, List<TriangleFace> collisionTriangleFaces)
         {
             // Purge prior data
             CollisionPositions.Clear();
@@ -191,15 +276,15 @@ namespace EQWOWConverter.Objects
             // If there was no collision data then the whole object is collidable otherwise use the collision data
             List<Vector3> collisionPositions = new List<Vector3>();
             List<TriangleFace> collisionTriangles = new List<TriangleFace>();
-            if (eqObject.CollisionVerticies.Count == 0)
+            if (collisionVerticies.Count == 0)
             {
-                collisionPositions = eqObject.Verticies;
-                collisionTriangles = eqObject.TriangleFaces;
+                collisionPositions = verticies;
+                collisionTriangles = triangleFaces;
             }
             else
             {
-                collisionPositions = eqObject.CollisionVerticies;
-                collisionTriangles = eqObject.CollisionTriangleFaces;
+                collisionPositions = collisionVerticies;
+                collisionTriangles = collisionTriangleFaces;
             }
 
             // Store positions, factoring for world scailing and rotation around Z axis

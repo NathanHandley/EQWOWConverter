@@ -29,8 +29,7 @@ internal class Program
             Logger.WriteLine("");
             Logger.WriteLine("Options:");
             Logger.WriteLine(" [1] - Condition Exported EQ Data");
-            Logger.WriteLine(" [4] - Convert Objects to M2");
-            Logger.WriteLine(" [5] - Convert Zones to WMO");
+            Logger.WriteLine(" [5] - Convert EQ Data to WOW");
             Logger.WriteLine(" [X] - Exit");
             Console.Write("Command (Default: X): ");
             string? enteredCommand = Console.ReadLine();
@@ -62,29 +61,17 @@ internal class Program
                             Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
                         }
                         break;
-                    case "4":
-                        {
-                            Logger.WriteLine("Converting objects from EQ to WoW...");
-                            AssetConverter converter = new AssetConverter();
-                            bool conversionResult = AssetConverter.ConvertEQObjectsToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
-                            if (conversionResult == false)
-                            {
-                                Logger.WriteLine("EQ to WoW object conversion Failed.");
-                                break;
-                            }
-                            Logger.WriteLine("Conversion of objects complete");
-                        } break;
                     case "5":
                         {
-                            Logger.WriteLine("Converting zones from EQ to WoW...");
+                            Logger.WriteLine("Converting from EQ to WoW...");
                             AssetConverter converter = new AssetConverter();
-                            bool conversionResult = AssetConverter.ConvertEQZonesToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
+                            bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
                             if (conversionResult == false)
                             {
-                                Logger.WriteLine("EQ to WoW zone conversion Failed.");
+                                Logger.WriteLine("EQ to WoW conversion Failed.");
                                 break;
                             }
-                            Logger.WriteLine("Conversion of zones complete");
+                            Logger.WriteLine("Conversion of data complete");
                         } break;
                     default:
                         {
