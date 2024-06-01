@@ -39,6 +39,7 @@ namespace EQWOWConverter.Zones
         public float SafeOrientation = 0;
         public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
         public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();
+        public List<string> NonCollisionMaterialNames = new List<string>();
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinent continent)
@@ -59,6 +60,12 @@ namespace EQWOWConverter.Zones
             FogColor.B = blue;
             FogMinClip = minClip;
             FogMaxClip = maxClip;
+        }
+
+        public void SetMaterialsAsNonCollidable(params string[] materialNames)
+        {
+            foreach(string materialName in materialNames)
+                NonCollisionMaterialNames.Add(materialName);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -872,8 +879,8 @@ namespace EQWOWConverter.Zones
 
                         // TEMP FOR TESTING
                         zoneProperties.AddLiquidVolume(-10.0f, -10.0f, -10.0f, 10.0f, 10.0f, 10.0f);
+                        zoneProperties.SetMaterialsAsNonCollidable("w1", "m0004");
                         // TEMP
-
                     }
                     break;
                 case "gfaydark": // One More Lift

@@ -53,6 +53,9 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
+            // Get zone properties
+            ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(wmoRoot.ZoneShortName);
+
             // Group name offsets in MOGN
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
@@ -101,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
             // SUB CHUNKS
             // ------------------------------------------------------------------------------------
             // MOPY (Material info for triangles) -------------------------------------------------
-            chunkBytes.AddRange(GenerateMOPYChunk(worldModelObject));
+            chunkBytes.AddRange(GenerateMOPYChunk(wmoRoot, worldModelObject, zoneProperties));
 
             // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
             chunkBytes.AddRange(GenerateMOVIChunk(worldModelObject));
@@ -146,15 +149,24 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPY (Material info for triangles)
         /// </summary>
-        private List<byte> GenerateMOPYChunk(WorldModelObject worldModelObject)
+        private List<byte> GenerateMOPYChunk(WMORoot wmoRoot, WorldModelObject worldModelObject, ZoneProperties zoneProperties)
         {
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
             foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
             {
-                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
-                chunkBytes.Add(polyMaterialFlag);
+                WMOPolyMaterialFlags polyMaterialFlags = WMOPolyMaterialFlags.Render;
+
+                // Get material name and see if it should be collidable
+                string materialName = wmoRoot.Materials[polyIndexTriangle.MaterialIndex].Name;
+                if (zoneProperties.NonCollisionMaterialNames.Contains(materialName))
+                {
+                    polyMaterialFlags |= WMOPolyMaterialFlags.DisableCollision;
+                    polyMaterialFlags |= WMOPolyMaterialFlags.NoCameraCollide;
+                }
+                
+                chunkBytes.Add(Convert.ToByte(polyMaterialFlags));
                 chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
             }
 

@@ -29,11 +29,11 @@ namespace EQWOWConverter.Common
         public List<UInt32> FaceTriangleIndicies = new List<UInt32>();
 
         // Generate on create
-        public BSPTree(BoundingBox boundingBox, List<TriangleFace> triangleFaces)
+        public BSPTree(BoundingBox boundingBox, List<UInt32> triangleFacesIndicies)
         {
             // Create a root node that is a leaf node with all of the triangles
-            for (uint i = 0; i < triangleFaces.Count; i++)
-                FaceTriangleIndicies.Add(i);
+            foreach(UInt32 faceIndex in triangleFacesIndicies)
+                FaceTriangleIndicies.Add(faceIndex);
             BSPNode rootNode = new BSPNode();
             Nodes.Add(rootNode);
 
