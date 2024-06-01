@@ -140,6 +140,14 @@ namespace EQWOWConverter.Zones
 
             WorldObjects.Clear();
 
+            // Build liquid wmos first
+            foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            {
+                // Generate and add the world model object
+                WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
+                WorldObjects.Add(curWorldModelObject);
+            }
+
             // If this can be generated as a single WMO, just do that
             if (triangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
             {
@@ -157,14 +165,6 @@ namespace EQWOWConverter.Zones
                 foreach (Material material in Materials)
                     materialNames.Add(material.Name);
                 GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
-            }
-
-            // Build liquid wmos
-            foreach(ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
-            {
-                // Generate and add the world model object
-                WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
-                WorldObjects.Add(curWorldModelObject);
             }
 
             // Save the loading screen
