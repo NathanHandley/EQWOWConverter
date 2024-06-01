@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Create the groups
             foreach(WorldModelObject curWorldModelObject in zone.WOWZoneData.WorldObjects)
-                GroupObjects.Add(new WMOGroup(RootObject,curWorldModelObject));
+                GroupObjects.Add(new WMOGroup(RootObject, curWorldModelObject));
 
             // Generate the root file name
             FullWMOFolderPath = Path.Combine(baseFolderPath,"World", "wmo", "Everquest");

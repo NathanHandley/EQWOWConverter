@@ -159,6 +159,14 @@ namespace EQWOWConverter.Zones
                 GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
 
+            // Build liquid wmos
+            foreach(ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            {
+                // Generate and add the world model object
+                WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
+                WorldObjects.Add(curWorldModelObject);
+            }
+
             // Save the loading screen
             switch (zoneProperties.Continent)
             {

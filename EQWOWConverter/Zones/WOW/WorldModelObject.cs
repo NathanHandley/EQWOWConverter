@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
+        public WorldModelObjectType WMOType = WorldModelObjectType.Rendered;
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
@@ -39,6 +40,13 @@ namespace EQWOWConverter.Zones
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree;
+
+        public WorldModelObject(BoundingBox boundingBox, WorldModelObjectType wmoType)
+        {
+            WMOType = wmoType;
+            BoundingBox = boundingBox;
+            BSPTree = new BSPTree(boundingBox, new List<TriangleFace>());
+        }
 
         public WorldModelObject(List<Vector3> verticies, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
             List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances)

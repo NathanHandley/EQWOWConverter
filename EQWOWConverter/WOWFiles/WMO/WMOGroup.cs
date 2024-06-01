@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
         public WMOGroup(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
             // MVER (Version) ---------------------------------------------------------------------
-            GroupBytes.AddRange(GenerateMVERChunk(worldModelObject));
+            GroupBytes.AddRange(GenerateMVERChunk());
 
             // MOGP (Container for all other chunks) ----------------------------------------------
             GroupBytes.AddRange(GenerateMOGPChunk(wmoRoot, worldModelObject));
@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MVER (Version)
         /// </summary>
-        private List<byte> GenerateMVERChunk(WorldModelObject worldModelObject)
+        private List<byte> GenerateMVERChunk()
         {
             UInt32 version = 17;
             return WrapInChunk("MVER", BitConverter.GetBytes(version));
@@ -62,6 +62,8 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
+            //if (worldModelObject.WMOType == WorldModelObjectType.LiquidVolume)
+            //    groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -83,7 +85,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // 4 fog IDs that are all zero, I hope...
 
             // Liquid type (zero causes whole WMO to be underwater, but 15 seems to fix that)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
+            if (worldModelObject.WMOType == WorldModelObjectType.LiquidVolume)
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+            else
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
 
             // WMOGroupID (inside WMOAreaTable)
             chunkBytes.AddRange(BitConverter.GetBytes(worldModelObject.WMOGroupID));
@@ -121,7 +126,8 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.AddRange(GenerateMODRChunk(worldModelObject));
 
             // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
-            chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
+            //if (worldModelObject.BSPTree.FaceTriangleIndicies.Count > 0)
+                chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
 
             // MOBR (Face / Triangle Incidies) ----------------------------------------------------
             chunkBytes.AddRange(GenerateMOBRChunk(worldModelObject));
