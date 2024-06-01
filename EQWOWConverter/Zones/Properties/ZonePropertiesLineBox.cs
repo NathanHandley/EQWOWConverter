@@ -36,9 +36,82 @@ namespace EQWOWConverter.Zones
         public float BoxHeight;
         public float BoxOrientation;
 
-        public ZonePropertiesLineBox()
+        public ZonePropertiesLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
+            float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
+            float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
             AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
+
+            // Scale input values
+            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxTopNorthwestZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            boxBottomSoutheastZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            // Create the box base values
+            TargetZoneShortName = targetZoneShortName;
+            TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
+            switch (targetZoneOrientation)
+            {
+                case ZoneLineOrientationType.North: TargetZoneOrientation = 0; break;
+                case ZoneLineOrientationType.South: TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
+                case ZoneLineOrientationType.West: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
+                case ZoneLineOrientationType.East: TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+            }
+
+            // Calculate the dimensions in the form needed by a wow trigger zone
+            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
+                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
+            BoxPosition = zoneLineBoxBounding.GetCenter();
+            BoxWidth = zoneLineBoxBounding.GetYDistance();
+            BoxLength = zoneLineBoxBounding.GetXDistance();
+            BoxHeight = zoneLineBoxBounding.GetZDistance();
+        }
+
+        public ZonePropertiesLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
+            ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
+            float padWidth)
+        {
+            AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
+
+            // Scale input values
+            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterXPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterYPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padBottomCenterZPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            padWidth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            // Create the box base values
+            TargetZoneShortName = targetZoneShortName;
+            TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
+            switch (targetZoneOrientation)
+            {
+                case ZoneLineOrientationType.North: TargetZoneOrientation = 0; break;
+                case ZoneLineOrientationType.South: TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
+                case ZoneLineOrientationType.West: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
+                case ZoneLineOrientationType.East: TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+            }
+
+            // Calculate the dimensions in the form needed by a wow trigger zone
+            float boxBottomSoutheastX = padBottomCenterXPosition - (padWidth / 2);
+            float boxBottomSoutheastY = padBottomCenterYPosition - (padWidth / 2);
+            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            float boxTopNorthwestX = boxBottomSoutheastX + padWidth;
+            float boxTopNorthwestY = boxBottomSoutheastY + padWidth;
+            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
+                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
+            BoxPosition = zoneLineBoxBounding.GetCenter();
+            BoxWidth = zoneLineBoxBounding.GetYDistance();
+            BoxLength = zoneLineBoxBounding.GetXDistance();
+            BoxHeight = zoneLineBoxBounding.GetZDistance();
         }
     }
 }

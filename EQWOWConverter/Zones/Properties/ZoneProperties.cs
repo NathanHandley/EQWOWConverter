@@ -66,77 +66,19 @@ namespace EQWOWConverter.Zones
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY, 
             float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
-            // Scale input values
-            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
-            // Create the box base values
-            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox();
-            zoneLineBox.TargetZoneShortName = targetZoneShortName;
-            zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
-            switch(targetZoneOrientation)
-            {
-                case ZoneLineOrientationType.North: zoneLineBox.TargetZoneOrientation = 0;  break;
-                case ZoneLineOrientationType.South: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
-                case ZoneLineOrientationType.West: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
-                case ZoneLineOrientationType.East: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
-            }
-
-            // Calculate the dimensions in the form needed by a wow trigger zone
-            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
-                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
-            zoneLineBox.BoxPosition = zoneLineBoxBounding.GetCenter();
-            zoneLineBox.BoxWidth = zoneLineBoxBounding.GetYDistance();
-            zoneLineBox.BoxLength = zoneLineBoxBounding.GetXDistance();
-            zoneLineBox.BoxHeight = zoneLineBoxBounding.GetZDistance();
+            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
+                targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX, 
+                boxBottomSoutheastY, boxBottomSoutheastZ);
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ, 
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth)
         {
-            // Scale input values
-            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterXPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterYPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterZPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padWidth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
-            // Create the box base values
-            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox();
-            zoneLineBox.TargetZoneShortName = targetZoneShortName;
-            zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
-            switch (targetZoneOrientation)
-            {
-                case ZoneLineOrientationType.North: zoneLineBox.TargetZoneOrientation = 0; break;
-                case ZoneLineOrientationType.South: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
-                case ZoneLineOrientationType.West: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
-                case ZoneLineOrientationType.East: zoneLineBox.TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
-            }
-
-            // Calculate the dimensions in the form needed by a wow trigger zone
-            float boxBottomSoutheastX = padBottomCenterXPosition - (padWidth / 2);
-            float boxBottomSoutheastY = padBottomCenterYPosition - (padWidth / 2);
-            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
-            float boxTopNorthwestX = boxBottomSoutheastX + padWidth;
-            float boxTopNorthwestY = boxBottomSoutheastY + padWidth;
-            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);            
-            BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
-                boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
-            zoneLineBox.BoxPosition = zoneLineBoxBounding.GetCenter();
-            zoneLineBox.BoxWidth = zoneLineBoxBounding.GetYDistance();
-            zoneLineBox.BoxLength = zoneLineBoxBounding.GetXDistance();
-            zoneLineBox.BoxHeight = zoneLineBoxBounding.GetZDistance();
+            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY, targetZonePositionZ,
+            targetZoneOrientation, padBottomCenterXPosition, padBottomCenterYPosition, padBottomCenterZPosition, padWidth);
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
@@ -155,32 +97,20 @@ namespace EQWOWConverter.Zones
 
         private static void PopulateZonePropertiesList()
         {
+            // Classic
             ZonePropertyListByShortName.Add("airplane", GenerateZonePropertiesForZone("airplane"));
             ZonePropertyListByShortName.Add("akanon", GenerateZonePropertiesForZone("akanon"));
             ZonePropertyListByShortName.Add("arena", GenerateZonePropertiesForZone("arena"));
             ZonePropertyListByShortName.Add("befallen", GenerateZonePropertiesForZone("befallen"));
             ZonePropertyListByShortName.Add("beholder", GenerateZonePropertiesForZone("beholder"));
             ZonePropertyListByShortName.Add("blackburrow", GenerateZonePropertiesForZone("blackburrow"));
-            ZonePropertyListByShortName.Add("burningwood", GenerateZonePropertiesForZone("burningwood"));
             ZonePropertyListByShortName.Add("butcher", GenerateZonePropertiesForZone("butcher"));
-            ZonePropertyListByShortName.Add("cabeast", GenerateZonePropertiesForZone("cabeast"));
-            ZonePropertyListByShortName.Add("cabwest", GenerateZonePropertiesForZone("cabwest"));
             ZonePropertyListByShortName.Add("cauldron", GenerateZonePropertiesForZone("cauldron"));
             ZonePropertyListByShortName.Add("cazicthule", GenerateZonePropertiesForZone("cazicthule"));
-            ZonePropertyListByShortName.Add("charasis", GenerateZonePropertiesForZone("charasis"));
-            ZonePropertyListByShortName.Add("chardok", GenerateZonePropertiesForZone("chardok"));
-            ZonePropertyListByShortName.Add("citymist", GenerateZonePropertiesForZone("citymist"));
-            ZonePropertyListByShortName.Add("cobaltscar", GenerateZonePropertiesForZone("cobaltscar"));
             ZonePropertyListByShortName.Add("commons", GenerateZonePropertiesForZone("commons"));
             ZonePropertyListByShortName.Add("crushbone", GenerateZonePropertiesForZone("crushbone"));
-            ZonePropertyListByShortName.Add("crystal", GenerateZonePropertiesForZone("crystal"));
-            ZonePropertyListByShortName.Add("dalnir", GenerateZonePropertiesForZone("dalnir"));
-            ZonePropertyListByShortName.Add("dreadlands", GenerateZonePropertiesForZone("dreadlands"));
-            ZonePropertyListByShortName.Add("droga", GenerateZonePropertiesForZone("droga"));
             ZonePropertyListByShortName.Add("eastkarana", GenerateZonePropertiesForZone("eastkarana"));
-            ZonePropertyListByShortName.Add("eastwastes", GenerateZonePropertiesForZone("eastwastes"));
             ZonePropertyListByShortName.Add("ecommons", GenerateZonePropertiesForZone("ecommons"));
-            ZonePropertyListByShortName.Add("emeraldjungle", GenerateZonePropertiesForZone("emeraldjungle"));
             ZonePropertyListByShortName.Add("erudnext", GenerateZonePropertiesForZone("erudnext"));
             ZonePropertyListByShortName.Add("erudnint", GenerateZonePropertiesForZone("erudnint"));
             ZonePropertyListByShortName.Add("erudsxing", GenerateZonePropertiesForZone("erudsxing"));
@@ -189,17 +119,11 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("feerrott", GenerateZonePropertiesForZone("feerrott"));
             ZonePropertyListByShortName.Add("felwithea", GenerateZonePropertiesForZone("felwithea"));
             ZonePropertyListByShortName.Add("felwitheb", GenerateZonePropertiesForZone("felwitheb"));
-            ZonePropertyListByShortName.Add("fieldofbone", GenerateZonePropertiesForZone("fieldofbone"));
-            ZonePropertyListByShortName.Add("firiona", GenerateZonePropertiesForZone("firiona"));
             ZonePropertyListByShortName.Add("freporte", GenerateZonePropertiesForZone("freporte"));
             ZonePropertyListByShortName.Add("freportn", GenerateZonePropertiesForZone("freportn"));
             ZonePropertyListByShortName.Add("freportw", GenerateZonePropertiesForZone("freportw"));
-            ZonePropertyListByShortName.Add("frontiermtns", GenerateZonePropertiesForZone("frontiermtns"));
-            ZonePropertyListByShortName.Add("frozenshadow", GenerateZonePropertiesForZone("frozenshadow"));
             ZonePropertyListByShortName.Add("gfaydark", GenerateZonePropertiesForZone("gfaydark"));
-            ZonePropertyListByShortName.Add("greatdivide", GenerateZonePropertiesForZone("greatdivide"));
             ZonePropertyListByShortName.Add("grobb", GenerateZonePropertiesForZone("grobb"));
-            ZonePropertyListByShortName.Add("growthplane", GenerateZonePropertiesForZone("growthplane"));
             ZonePropertyListByShortName.Add("gukbottom", GenerateZonePropertiesForZone("gukbottom"));
             ZonePropertyListByShortName.Add("guktop", GenerateZonePropertiesForZone("guktop"));
             ZonePropertyListByShortName.Add("halas", GenerateZonePropertiesForZone("halas"));
@@ -207,38 +131,28 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("highkeep", GenerateZonePropertiesForZone("highkeep"));
             ZonePropertyListByShortName.Add("highpass", GenerateZonePropertiesForZone("highpass"));
             ZonePropertyListByShortName.Add("hole", GenerateZonePropertiesForZone("hole"));
-            ZonePropertyListByShortName.Add("iceclad", GenerateZonePropertiesForZone("iceclad"));
             ZonePropertyListByShortName.Add("innothule", GenerateZonePropertiesForZone("innothule"));
-            ZonePropertyListByShortName.Add("kael", GenerateZonePropertiesForZone("kael"));
-            ZonePropertyListByShortName.Add("kaesora", GenerateZonePropertiesForZone("kaesora"));
             ZonePropertyListByShortName.Add("kaladima", GenerateZonePropertiesForZone("kaladima"));
             ZonePropertyListByShortName.Add("kaladimb", GenerateZonePropertiesForZone("kaladimb"));
-            ZonePropertyListByShortName.Add("karnor", GenerateZonePropertiesForZone("karnor"));
             ZonePropertyListByShortName.Add("kedge", GenerateZonePropertiesForZone("kedge"));
             ZonePropertyListByShortName.Add("kerraridge", GenerateZonePropertiesForZone("kerraridge"));
             ZonePropertyListByShortName.Add("kithicor", GenerateZonePropertiesForZone("kithicor"));
-            ZonePropertyListByShortName.Add("kurn", GenerateZonePropertiesForZone("kurn"));
-            ZonePropertyListByShortName.Add("lakeofillomen", GenerateZonePropertiesForZone("lakeofillomen"));
             ZonePropertyListByShortName.Add("lakerathe", GenerateZonePropertiesForZone("lakerathe"));
             ZonePropertyListByShortName.Add("lavastorm", GenerateZonePropertiesForZone("lavastorm"));
             ZonePropertyListByShortName.Add("lfaydark", GenerateZonePropertiesForZone("lfaydark"));
             ZonePropertyListByShortName.Add("load", GenerateZonePropertiesForZone("load"));
-            ZonePropertyListByShortName.Add("mischiefplane", GenerateZonePropertiesForZone("mischiefplane"));
             ZonePropertyListByShortName.Add("mistmoore", GenerateZonePropertiesForZone("mistmoore"));
             ZonePropertyListByShortName.Add("misty", GenerateZonePropertiesForZone("misty"));
             ZonePropertyListByShortName.Add("najena", GenerateZonePropertiesForZone("najena"));
-            ZonePropertyListByShortName.Add("necropolis", GenerateZonePropertiesForZone("necropolis"));
             ZonePropertyListByShortName.Add("nektulos", GenerateZonePropertiesForZone("nektulos"));
             ZonePropertyListByShortName.Add("neriaka", GenerateZonePropertiesForZone("neriaka"));
             ZonePropertyListByShortName.Add("neriakb", GenerateZonePropertiesForZone("neriakb"));
             ZonePropertyListByShortName.Add("neriakc", GenerateZonePropertiesForZone("neriakc"));
             ZonePropertyListByShortName.Add("northkarana", GenerateZonePropertiesForZone("northkarana"));
             ZonePropertyListByShortName.Add("nro", GenerateZonePropertiesForZone("nro"));
-            ZonePropertyListByShortName.Add("nurga", GenerateZonePropertiesForZone("nurga"));
             ZonePropertyListByShortName.Add("oasis", GenerateZonePropertiesForZone("oasis"));
             ZonePropertyListByShortName.Add("oggok", GenerateZonePropertiesForZone("oggok"));
             ZonePropertyListByShortName.Add("oot", GenerateZonePropertiesForZone("oot"));
-            ZonePropertyListByShortName.Add("overthere", GenerateZonePropertiesForZone("overthere"));
             ZonePropertyListByShortName.Add("paineel", GenerateZonePropertiesForZone("paineel"));
             ZonePropertyListByShortName.Add("paw", GenerateZonePropertiesForZone("paw"));
             ZonePropertyListByShortName.Add("permafrost", GenerateZonePropertiesForZone("permafrost"));
@@ -251,11 +165,6 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("rathemtn", GenerateZonePropertiesForZone("rathemtn"));
             ZonePropertyListByShortName.Add("rivervale", GenerateZonePropertiesForZone("rivervale"));
             ZonePropertyListByShortName.Add("runnyeye", GenerateZonePropertiesForZone("runnyeye"));
-            ZonePropertyListByShortName.Add("sebilis", GenerateZonePropertiesForZone("sebilis"));
-            ZonePropertyListByShortName.Add("sirens", GenerateZonePropertiesForZone("sirens"));
-            ZonePropertyListByShortName.Add("skyfire", GenerateZonePropertiesForZone("skyfire"));
-            ZonePropertyListByShortName.Add("skyshrine", GenerateZonePropertiesForZone("skyshrine"));
-            ZonePropertyListByShortName.Add("sleeper", GenerateZonePropertiesForZone("sleeper"));
             ZonePropertyListByShortName.Add("soldunga", GenerateZonePropertiesForZone("soldunga"));
             ZonePropertyListByShortName.Add("soldungb", GenerateZonePropertiesForZone("soldungb"));
             ZonePropertyListByShortName.Add("soltemple", GenerateZonePropertiesForZone("soltemple"));
@@ -263,21 +172,65 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("sro", GenerateZonePropertiesForZone("sro"));
             ZonePropertyListByShortName.Add("steamfont", GenerateZonePropertiesForZone("steamfont"));
             ZonePropertyListByShortName.Add("stonebrunt", GenerateZonePropertiesForZone("stonebrunt"));
-            ZonePropertyListByShortName.Add("swampofnohope", GenerateZonePropertiesForZone("swampofnohope"));
-            ZonePropertyListByShortName.Add("templeveeshan", GenerateZonePropertiesForZone("templeveeshan"));
-            ZonePropertyListByShortName.Add("thurgadina", GenerateZonePropertiesForZone("thurgadina"));
-            ZonePropertyListByShortName.Add("thurgadinb", GenerateZonePropertiesForZone("thurgadinb"));
-            ZonePropertyListByShortName.Add("timorous", GenerateZonePropertiesForZone("timorous"));
             ZonePropertyListByShortName.Add("tox", GenerateZonePropertiesForZone("tox"));
-            ZonePropertyListByShortName.Add("trakanon", GenerateZonePropertiesForZone("trakanon"));
             ZonePropertyListByShortName.Add("tutorial", GenerateZonePropertiesForZone("tutorial"));
             ZonePropertyListByShortName.Add("unrest", GenerateZonePropertiesForZone("unrest"));
-            ZonePropertyListByShortName.Add("veeshan", GenerateZonePropertiesForZone("veeshan"));
-            ZonePropertyListByShortName.Add("velketor", GenerateZonePropertiesForZone("velketor"));
-            ZonePropertyListByShortName.Add("wakening", GenerateZonePropertiesForZone("wakening"));
             ZonePropertyListByShortName.Add("warrens", GenerateZonePropertiesForZone("warrens"));
-            ZonePropertyListByShortName.Add("warslikswood", GenerateZonePropertiesForZone("warslikswood"));
-            ZonePropertyListByShortName.Add("westwastes", GenerateZonePropertiesForZone("westwastes"));
+
+            // Kunark
+            if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == true)
+            {
+                ZonePropertyListByShortName.Add("burningwood", GenerateZonePropertiesForZone("burningwood"));
+                ZonePropertyListByShortName.Add("cabeast", GenerateZonePropertiesForZone("cabeast"));
+                ZonePropertyListByShortName.Add("cabwest", GenerateZonePropertiesForZone("cabwest"));
+                ZonePropertyListByShortName.Add("charasis", GenerateZonePropertiesForZone("charasis"));
+                ZonePropertyListByShortName.Add("chardok", GenerateZonePropertiesForZone("chardok"));
+                ZonePropertyListByShortName.Add("citymist", GenerateZonePropertiesForZone("citymist"));
+                ZonePropertyListByShortName.Add("dalnir", GenerateZonePropertiesForZone("dalnir"));
+                ZonePropertyListByShortName.Add("dreadlands", GenerateZonePropertiesForZone("dreadlands"));
+                ZonePropertyListByShortName.Add("droga", GenerateZonePropertiesForZone("droga"));
+                ZonePropertyListByShortName.Add("emeraldjungle", GenerateZonePropertiesForZone("emeraldjungle"));
+                ZonePropertyListByShortName.Add("fieldofbone", GenerateZonePropertiesForZone("fieldofbone"));
+                ZonePropertyListByShortName.Add("firiona", GenerateZonePropertiesForZone("firiona"));
+                ZonePropertyListByShortName.Add("frontiermtns", GenerateZonePropertiesForZone("frontiermtns"));
+                ZonePropertyListByShortName.Add("kaesora", GenerateZonePropertiesForZone("kaesora"));
+                ZonePropertyListByShortName.Add("karnor", GenerateZonePropertiesForZone("karnor"));
+                ZonePropertyListByShortName.Add("kurn", GenerateZonePropertiesForZone("kurn"));
+                ZonePropertyListByShortName.Add("lakeofillomen", GenerateZonePropertiesForZone("lakeofillomen"));
+                ZonePropertyListByShortName.Add("nurga", GenerateZonePropertiesForZone("nurga"));
+                ZonePropertyListByShortName.Add("overthere", GenerateZonePropertiesForZone("overthere"));
+                ZonePropertyListByShortName.Add("sebilis", GenerateZonePropertiesForZone("sebilis"));
+                ZonePropertyListByShortName.Add("skyfire", GenerateZonePropertiesForZone("skyfire"));
+                ZonePropertyListByShortName.Add("swampofnohope", GenerateZonePropertiesForZone("swampofnohope"));
+                ZonePropertyListByShortName.Add("timorous", GenerateZonePropertiesForZone("timorous"));
+                ZonePropertyListByShortName.Add("trakanon", GenerateZonePropertiesForZone("trakanon"));
+                ZonePropertyListByShortName.Add("veeshan", GenerateZonePropertiesForZone("veeshan"));
+                ZonePropertyListByShortName.Add("wakening", GenerateZonePropertiesForZone("wakening"));
+                ZonePropertyListByShortName.Add("warslikswood", GenerateZonePropertiesForZone("warslikswood"));
+            }
+
+            // Velious
+            if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == true)
+            {
+                ZonePropertyListByShortName.Add("cobaltscar", GenerateZonePropertiesForZone("cobaltscar"));
+                ZonePropertyListByShortName.Add("crystal", GenerateZonePropertiesForZone("crystal"));
+                ZonePropertyListByShortName.Add("eastwastes", GenerateZonePropertiesForZone("eastwastes"));
+                ZonePropertyListByShortName.Add("frozenshadow", GenerateZonePropertiesForZone("frozenshadow"));
+                ZonePropertyListByShortName.Add("greatdivide", GenerateZonePropertiesForZone("greatdivide"));
+                ZonePropertyListByShortName.Add("growthplane", GenerateZonePropertiesForZone("growthplane"));
+                ZonePropertyListByShortName.Add("iceclad", GenerateZonePropertiesForZone("iceclad"));
+                ZonePropertyListByShortName.Add("kael", GenerateZonePropertiesForZone("kael"));
+                ZonePropertyListByShortName.Add("mischiefplane", GenerateZonePropertiesForZone("mischiefplane"));
+                ZonePropertyListByShortName.Add("necropolis", GenerateZonePropertiesForZone("necropolis"));
+                ZonePropertyListByShortName.Add("sirens", GenerateZonePropertiesForZone("sirens"));
+                ZonePropertyListByShortName.Add("skyshrine", GenerateZonePropertiesForZone("skyshrine"));
+                ZonePropertyListByShortName.Add("sleeper", GenerateZonePropertiesForZone("sleeper"));
+                ZonePropertyListByShortName.Add("templeveeshan", GenerateZonePropertiesForZone("templeveeshan"));
+                ZonePropertyListByShortName.Add("thurgadina", GenerateZonePropertiesForZone("thurgadina"));
+                ZonePropertyListByShortName.Add("thurgadinb", GenerateZonePropertiesForZone("thurgadinb"));
+                ZonePropertyListByShortName.Add("velketor", GenerateZonePropertiesForZone("velketor"));
+                ZonePropertyListByShortName.Add("westwastes", GenerateZonePropertiesForZone("westwastes"));
+            }
         }
 
         // Define what area should only be considered when generating the world geometry, to get rid of things like temp rooms and flying tree in lfay etc

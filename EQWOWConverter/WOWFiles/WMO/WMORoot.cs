@@ -181,8 +181,7 @@ namespace EQWOWConverter.WOWFiles
                 if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
                     hasNoTexture = true;
 
-                // Don't cull anything so that transparency textures work
-                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WMOMaterialFlags.Unculled)));
+                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 //UInt32 materialFlags = GetPackedFlags(Convert.ToUInt32(WMOMaterialFlags.ClampTextureS), Convert.ToUInt32(WMOMaterialFlags.ClampTextureT));
                 //chunkBytes.AddRange(BitConverter.GetBytes(materialFlags));
 

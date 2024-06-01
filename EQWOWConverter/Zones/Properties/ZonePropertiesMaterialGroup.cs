@@ -14,36 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects
+namespace EQWOWConverter.Zones
 {
-    internal class ModelMaterial : IByteSerializable
+    internal class ZonePropertiesMaterialGroup
     {
-        ModelMaterialFlag Flags = ModelMaterialFlag.None;
-        ModelMaterialBlendType BlendingMode;
-
-        public ModelMaterial(ModelMaterialBlendType blendType)
-        {
-            BlendingMode = blendType;
-        }
-
-        public UInt32 GetBytesSize()
-        {
-            return 4;
-        }
-
-        public List<byte> ToBytes()
-        {
-            List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(Flags)));
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(BlendingMode)));
-            return bytes;
-        }
+        public List<string> MaterialNames = new List<string>();
     }
 }

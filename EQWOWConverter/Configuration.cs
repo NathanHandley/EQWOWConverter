@@ -55,6 +55,19 @@ namespace EQWOWConverter
         // TODO: These zones crash if they have object instances-- Fix it
         public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc", "najena", "warrens" };
 
+        // If true, zones for Kunark are generated
+        public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
+        public static readonly List<string> CONFIG_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
+            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
+            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
+            "trakanon", "veeshan", "wakening", "warslikswood" };
+
+        // If true, zones for Velious are generated
+        public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
+        public static readonly List<string> CONFIG_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
+            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
+            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
+
         //=====================================================================
         // Objects
         //=====================================================================

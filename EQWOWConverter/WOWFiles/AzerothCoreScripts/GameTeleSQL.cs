@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `game_tele` WHERE `id` >= 2000 AND `id` <= 2122;");
+            stringBuilder.AppendLine("DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_GAMETELE_ROWID_START + rows.Count) + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (");
