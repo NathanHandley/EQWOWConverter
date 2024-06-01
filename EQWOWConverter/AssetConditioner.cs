@@ -90,6 +90,12 @@ namespace EQWOWConverter
                 // Get just the folder name itself for later
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
+                // Skip any disabled expansions
+                if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == false && Configuration.CONFIG_LOOKUP_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                    continue;
+                if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                    continue;
+
                 // Bring in the objects of this directory
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
 
@@ -273,7 +279,6 @@ namespace EQWOWConverter
                     curMaterial.Index = uint.Parse(blocks[0]);
                     curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
                     string[] textureBlock = blocks[1].Split(":");
-                    curMaterial.Name = textureBlock[0];
                     for (int i = 1; i < textureBlock.Length; i++)
                         curMaterial.AnimationTextures.Add(textureBlock[i]);
 
