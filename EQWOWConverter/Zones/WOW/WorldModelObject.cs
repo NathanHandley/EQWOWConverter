@@ -45,12 +45,11 @@ namespace EQWOWConverter.Zones
         {
             WMOType = wmoType;
             BoundingBox = boundingBox;
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            BSPTree = new BSPTree(boundingBox, new List<TriangleFace>());
         }
 
         public WorldModelObject(List<Vector3> verticies, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
-            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
-            ZoneProperties zoneProperties)
+            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances)
         {
             Verticies = verticies;
             TextureCoords = textureCoords;
@@ -59,15 +58,14 @@ namespace EQWOWConverter.Zones
                 VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
             TriangleFaces = triangleFaces;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(Verticies, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<UInt32> collisionTriangleIndicies;
-            GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndicies);
+            GenerateRenderBatches(materials);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
-            BSPTree = new BSPTree(BoundingBox, collisionTriangleIndicies);
+            BSPTree = new BSPTree(BoundingBox, TriangleFaces);
             CreateDoodadAssociations(zoneWideDoodadInstances);
         }
 
-        private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
+        private void GenerateRenderBatches(List<Material> materials)
         {
             // Reorder the faces and related objects
             SortRenderObjects();
@@ -112,15 +110,6 @@ namespace EQWOWConverter.Zones
                     if (curFaceMaxIndex > renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex)
                         renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = Convert.ToUInt16(curFaceMaxIndex);
                 }
-            }
-
-            // Construct the collision triangle indicies
-            collisionTriangleIncidies = new List<UInt32>();
-            for (int i = 0; i < TriangleFaces.Count; ++i)
-            {
-                Material curMaterial = materials[TriangleFaces[i].MaterialIndex];
-                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.Name) == false)
-                    collisionTriangleIncidies.Add(Convert.ToUInt32(i));
             }
 
             // Store the new render batches

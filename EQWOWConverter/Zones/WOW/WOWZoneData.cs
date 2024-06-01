@@ -146,7 +146,7 @@ namespace EQWOWConverter.Zones
                 List<string> materialNames = new List<string>();
                 foreach(Material material in Materials)
                     materialNames.Add(material.Name);
-                GenerateWorldModelObjectByMaterials(materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords, zoneProperties);
+                GenerateWorldModelObjectByMaterials(materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
             // Otherwise, break into parts
             else
@@ -156,7 +156,7 @@ namespace EQWOWConverter.Zones
                 List<string> materialNames = new List<string>();
                 foreach (Material material in Materials)
                     materialNames.Add(material.Name);
-                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords, zoneProperties);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, triangleFaces, verticies, normals, vertexColors, textureCoords);
             }
 
             // Build liquid wmos
@@ -199,7 +199,7 @@ namespace EQWOWConverter.Zones
         }
 
         private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords, ZoneProperties zoneProperties)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
             if (faces.Count > Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
@@ -234,15 +234,15 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Generate for the two sub boxes
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, verticies, normals, vertexColors, textureCoords, zoneProperties);
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, verticies, normals, vertexColors, textureCoords, zoneProperties);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, verticies, normals, vertexColors, textureCoords);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, verticies, normals, vertexColors, textureCoords);
             }
             else
-                GenerateWorldModelObjectByMaterials(materialNames, faces, verticies, normals, vertexColors, textureCoords, zoneProperties);
+                GenerateWorldModelObjectByMaterials(materialNames, faces, verticies, normals, vertexColors, textureCoords);
         }
 
          private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> triangleFaces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords, ZoneProperties zoneProperties)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             List<UInt32> materialIDs = new List<UInt32>();
             bool materialFound = false;
@@ -296,12 +296,12 @@ namespace EQWOWConverter.Zones
                     triangleFaces.RemoveAt(faceIndex);
 
                 // Generate the world model object
-                GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords, zoneProperties);
+                GenerateWorldModelObjectFromFaces(facesInGroup, verticies, normals, vertexColors, textureCoords);
             }
         }
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, List<Vector3> verticies, List<Vector3> normals,
-            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords, ZoneProperties zoneProperties)
+            List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // Since the face list is likely to not include all faces, rebuild the render object lists
             List<Vector3> condensedVerticies = new List<Vector3>();
@@ -384,15 +384,9 @@ namespace EQWOWConverter.Zones
                 remappedTriangleFaces.Add(curTriangleFace);
             }
 
-            // Generate the collision indicies based on this face list
-            List<UInt32> collisionTriangleFaceIndices = new List<UInt32>();
-            for (int i = 0; i < remappedTriangleFaces.Count; ++i)
-                if (zoneProperties.NonCollisionMaterialNames.Contains(Materials[remappedTriangleFaces[i].MaterialIndex].Name) == false)
-                    collisionTriangleFaceIndices.Add(Convert.ToUInt32(i));
-
             // Generate and add the world model object
             WorldModelObject curWorldModelObject = new WorldModelObject(condensedVerticies, condensedTextureCoords, 
-                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances, zoneProperties);
+                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances);
             WorldObjects.Add(curWorldModelObject);
         }
     }

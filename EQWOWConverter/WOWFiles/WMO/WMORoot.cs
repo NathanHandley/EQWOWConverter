@@ -32,14 +32,11 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> RootBytes = new List<byte>();
         public Dictionary<string, UInt32> TextureNameOffsets = new Dictionary<string, UInt32>();
         public Dictionary<string, UInt32> DoodadNameOffsets = new Dictionary<string, UInt32>();
-        public List<Material> Materials = new List<Material>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
-        public string ZoneShortName;
 
         public WMORoot(Zone zone, string exportObjectsFolder)
         {
-            ZoneShortName = zone.ShortName;
             PopulateDoodadNameOffsets(zone.WOWZoneData, exportObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
@@ -262,9 +259,6 @@ namespace EQWOWConverter.WOWFiles
 
                 // Add to the bigger container
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
-
-                // Keep this material for later
-                Materials.Add(material);
             }            
 
             return WrapInChunk("MOMT", chunkBytes.ToArray());
