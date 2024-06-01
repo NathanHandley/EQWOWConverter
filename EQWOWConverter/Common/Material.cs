@@ -32,7 +32,6 @@ namespace EQWOWConverter.Common
 
         public Material(string name)
         {
-            Name = name;
             if (name.Contains("_"))
             {
                 string[] parts = name.Split('_');
@@ -56,6 +55,13 @@ namespace EQWOWConverter.Common
                             MaterialType = MaterialType.Diffuse;
                         } break;
                 }
+                string[] subParts = parts[1].Split(":");
+                Name = subParts[0];
+            }
+            else
+            {
+                string[] subParts = name.Split(":");
+                Name = subParts[0];
             }
         }
     }

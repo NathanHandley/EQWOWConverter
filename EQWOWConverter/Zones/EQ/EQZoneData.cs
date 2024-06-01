@@ -246,7 +246,6 @@ namespace EQWOWConverter.Zones
 
                             // Texture block
                             string[] textureBlock = blocks[1].Split(":");
-                            newMaterial.Name = textureBlock[0];
                             for (int i = 1; i < textureBlock.Length; i++)
                             {
                                 newMaterial.AnimationTextures.Add(textureBlock[i]);
