@@ -57,16 +57,9 @@ namespace EQWOWConverter
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
-        public static readonly List<string> CONFIG_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
-            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
-            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
-            "trakanon", "veeshan", "wakening", "warslikswood" };
 
         // If true, zones for Velious are generated
         public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
-        public static readonly List<string> CONFIG_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
-            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
-            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
 
         //=====================================================================
         // Objects
@@ -110,5 +103,17 @@ namespace EQWOWConverter
         // ====================================================================
         // Start row for `game_tele` records. (~2000-2200)
         public static readonly int CONFIG_GAMETELE_ROWID_START = 2000;
+
+        // ====================================================================
+        // Lookups
+        // ====================================================================
+        public static readonly List<string> CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
+            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
+            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
+
+        public static readonly List<string> CONFIG_LOOKUP_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
+            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
+            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
+            "trakanon", "veeshan", "wakening", "warslikswood" };
     }
 }
