@@ -397,6 +397,11 @@ namespace EQWOWConverter
             {
                 string inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(objectExportPath, texture.TextureName + ".blp");
+                if (Path.Exists(inputTextureName) == false)
+                {
+                    Logger.WriteLine("- [" + modelObject.Name + "]: ERROR Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                    return;
+                }
                 File.Copy(inputTextureName, outputTextureName, true);
                 Logger.WriteLine("- [" + modelObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }
