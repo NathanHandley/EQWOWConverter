@@ -272,7 +272,7 @@ namespace EQWOWConverter
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(wmo.WMOGroupID),
                         Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
                 }
-                foreach (ZoneProperties.ZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                foreach (ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.MapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
@@ -325,7 +325,7 @@ namespace EQWOWConverter
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID));
 
                 // Zone lines
-                foreach(ZoneProperties.ZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                foreach(ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
                     if (zoneMapIDsByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
                     {

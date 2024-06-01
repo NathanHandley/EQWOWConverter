@@ -28,24 +28,6 @@ namespace EQWOWConverter.Zones
     {
         static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
 
-        public class ZoneLineBox
-        {
-            public int AreaTriggerID;
-            public string TargetZoneShortName = string.Empty;
-            public Vector3 TargetZonePosition = new Vector3();
-            public float TargetZoneOrientation = 0f;
-            public Vector3 BoxPosition = new Vector3();
-            public float BoxLength;
-            public float BoxWidth;
-            public float BoxHeight;
-            public float BoxOrientation;
-
-            public ZoneLineBox()
-            {
-                AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
-            }
-        }
-
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinent Continent;
@@ -55,7 +37,7 @@ namespace EQWOWConverter.Zones
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
-        public List<ZoneLineBox> ZoneLineBoxes = new List<ZoneLineBox>();
+        public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinent continent)
@@ -96,7 +78,7 @@ namespace EQWOWConverter.Zones
             boxBottomSoutheastZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
             // Create the box base values
-            ZoneLineBox zoneLineBox = new ZoneLineBox();
+            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox();
             zoneLineBox.TargetZoneShortName = targetZoneShortName;
             zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
             switch(targetZoneOrientation)
@@ -131,7 +113,7 @@ namespace EQWOWConverter.Zones
             padWidth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
             // Create the box base values
-            ZoneLineBox zoneLineBox = new ZoneLineBox();
+            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox();
             zoneLineBox.TargetZoneShortName = targetZoneShortName;
             zoneLineBox.TargetZonePosition = new Vector3(targetZonePositionX, targetZonePositionY, targetZonePositionZ);
             switch (targetZoneOrientation)
@@ -926,6 +908,9 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
                         zoneProperties.AddTeleportPad("freportw", 146.800308f, -681.771179f, -12.999480f, ZoneLineOrientationType.East, 97.993584f, -657.753784f, -40.968651f, 7.7f);
                         zoneProperties.AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
+                    
+                        
+                    
                     }
                     break;
                 case "gfaydark": // One More Lift
