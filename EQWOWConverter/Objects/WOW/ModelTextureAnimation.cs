@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,16 +24,10 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.ModelObjects
 {
-    internal class ModelBone
+    internal class ModelTextureAnimation
     {
-        public Int32 KeyBoneID = -1;
-        public ModelBoneFlags Flags = 0;
-        public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
-        public UInt16 SubMeshID = 0;
-        public UInt32 BoneNameCRC = 0;
         public ModelTrackSequences<Vector3> TranslationTrack = new ModelTrackSequences<Vector3>();
         public ModelTrackSequences<Quaternion> RotationTrack = new ModelTrackSequences<Quaternion>();
         public ModelTrackSequences<Vector3> ScaleTrack = new ModelTrackSequences<Vector3>();
-        public Vector3 PivotPoint = new Vector3();
     }
 }

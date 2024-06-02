@@ -34,6 +34,7 @@ namespace EQWOWConverter.Objects
         public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
         public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
+        public List<ModelTextureAnimation> ModelTextureAnimations = new List<ModelTextureAnimation>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
         public List<Int16> ModelBoneLookups = new List<Int16>();
         public List<ModelMaterial> ModelMaterials = new List<ModelMaterial>();
@@ -43,7 +44,7 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureTransparencyWeightsLookups = new List<Int16>();
         public List<ModelTrackSequences<Fixed16>> ModelTextureTransparencySequencesSet = new List<ModelTrackSequences<Fixed16>>();
-        public List<Int16> ModelTextureTransformationAnimationLookup = new List<Int16>();
+        public List<Int16> ModelTextureAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -151,7 +152,7 @@ namespace EQWOWConverter.Objects
                     }
                     ModelTextureLookups.Add(curIndex);
                     ModelTextureMappingLookups.Add(0);
-                    ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
+                    ModelTextureAnimationLookup.Add(1); // -1 is static
                     ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
                     ++curIndex;
                 }
@@ -237,7 +238,7 @@ namespace EQWOWConverter.Objects
             }
             ModelTextureLookups.Add(0);
             ModelTextureMappingLookups.Add(0);
-            ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
+            ModelTextureAnimationLookup.Add(1); // -1 is static
             ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
 
             // Build the bounding box (and no collision)

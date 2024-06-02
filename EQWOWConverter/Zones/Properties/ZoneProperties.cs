@@ -882,7 +882,6 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidVolume(-20.0f, -20.0f, -20.0f, 20.0f, 20.0f, 20.0f);
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1", "t25_m0004");
                         // TEMP
-
                     }
                     break;
                 case "gfaydark": // One More Lift

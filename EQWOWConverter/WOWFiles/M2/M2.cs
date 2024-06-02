@@ -44,14 +44,14 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
         private M2TrackSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackSequencesArrayByOffset<Fixed16>();
-        private M2GenericArrayByOffset<ModelTextureTransformAnimation> TextureTransformAnimations = new M2GenericArrayByOffset<ModelTextureTransformAnimation>();
+        private M2TextureAnimationArrayByOffset TextureAnimations = new M2TextureAnimationArrayByOffset();
         private M2GenericArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<ModelMaterial> Materials = new M2GenericArrayByOffset<ModelMaterial>();
         private M2GenericArrayByOffset<M2Int16> BoneLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Int16> TextureLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Int16> TextureMappingLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Int16> TextureTransparencyLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2GenericArrayByOffset<M2Int16> TextureTransformAnimationsLookup = new M2GenericArrayByOffset<M2Int16>();
+        private M2GenericArrayByOffset<M2Int16> TextureAnimationsLookup = new M2GenericArrayByOffset<M2Int16>();
         private BoundingBox BoundingBox = new BoundingBox();
         private float BoundingSphereRadius = 0f;
         private BoundingBox CollisionBox = new BoundingBox();
@@ -115,7 +115,7 @@ namespace EQWOWConverter.WOWFiles
             TextureTransparencySequences.AddArray(wowModelObject.ModelTextureTransparencySequencesSet);
 
             // Texture Transforms
-            // none for now
+            TextureAnimations.AddModelTextureAnimations(wowModelObject.ModelTextureAnimations);
 
             // Replaceable Texture ID Lookup
             foreach (Int16 value in wowModelObject.ModelReplaceableTextureLookups)
@@ -141,8 +141,8 @@ namespace EQWOWConverter.WOWFiles
                 TextureTransparencyLookup.Add(new M2Int16(value));
 
             // Texture Transformations Lookup
-            foreach (Int16 value in wowModelObject.ModelTextureTransformationAnimationLookup)
-                TextureTransformAnimationsLookup.Add(new M2Int16(value));
+            foreach (Int16 value in wowModelObject.ModelTextureAnimationLookup)
+                TextureAnimationsLookup.Add(new M2Int16(value));
 
             // Bounding Box
             BoundingBox = wowModelObject.BoundingBox;
@@ -276,14 +276,14 @@ namespace EQWOWConverter.WOWFiles
             Colors.AddDataBytes(ref fileBytes);
             Textures.AddDataBytes(ref fileBytes);
             TextureTransparencySequences.AddDataBytes(ref fileBytes);
-            TextureTransformAnimations.AddDataBytes(ref fileBytes);
+            TextureAnimations.AddDataBytes(ref fileBytes);
             ReplaceableTextureLookup.AddDataBytes(ref fileBytes);
             Materials.AddDataBytes(ref fileBytes);
             BoneLookup.AddDataBytes(ref fileBytes);
             TextureLookup.AddDataBytes(ref fileBytes);
             TextureMappingLookup.AddDataBytes(ref fileBytes);
             TextureTransparencyLookup.AddDataBytes(ref fileBytes);
-            TextureTransformAnimationsLookup.AddDataBytes(ref fileBytes);
+            TextureAnimationsLookup.AddDataBytes(ref fileBytes);
             CollisionTriangleIndicies.AddDataBytes(ref fileBytes);
             CollisionVerticies.AddDataBytes(ref fileBytes);
             CollisionFaceNormals.AddDataBytes(ref fileBytes);
@@ -329,14 +329,14 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(Colors.GetHeaderBytes());
             headerBytes.AddRange(Textures.GetHeaderBytes());
             headerBytes.AddRange(TextureTransparencySequences.GetHeaderBytes());
-            headerBytes.AddRange(TextureTransformAnimations.GetHeaderBytes());
+            headerBytes.AddRange(TextureAnimations.GetHeaderBytes());
             headerBytes.AddRange(ReplaceableTextureLookup.GetHeaderBytes());
             headerBytes.AddRange(Materials.GetHeaderBytes());
             headerBytes.AddRange(BoneLookup.GetHeaderBytes());
             headerBytes.AddRange(TextureLookup.GetHeaderBytes());
             headerBytes.AddRange(TextureMappingLookup.GetHeaderBytes());
             headerBytes.AddRange(TextureTransparencyLookup.GetHeaderBytes());
-            headerBytes.AddRange(TextureTransformAnimationsLookup.GetHeaderBytes());
+            headerBytes.AddRange(TextureAnimationsLookup.GetHeaderBytes());
             headerBytes.AddRange(BoundingBox.ToBytesHighRes());
             headerBytes.AddRange(BitConverter.GetBytes(BoundingSphereRadius));
             headerBytes.AddRange(CollisionBox.ToBytesHighRes());
