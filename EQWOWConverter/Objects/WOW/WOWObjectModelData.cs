@@ -260,7 +260,7 @@ namespace EQWOWConverter.Objects
                         GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
                         newAnimation.TranslationTrack.GlobalSequenceID = Convert.ToUInt16(GlobalLoopSequenceLimits.Count - 1);
                         ModelTextureAnimations.Add(newAnimation);                        
-                        ModelTextureAnimationLookup.Add(curIndex);
+                        ModelTextureAnimationLookup.Add(Convert.ToInt16(ModelTextureAnimations.Count - 1));
                     }
                     else
                     {
