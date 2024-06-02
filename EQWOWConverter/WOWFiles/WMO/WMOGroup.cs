@@ -62,8 +62,6 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            //if (worldModelObject.WMOType == WorldModelObjectType.LiquidVolume)
-            //    groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -125,9 +123,8 @@ namespace EQWOWConverter.WOWFiles
             if (worldModelObject.DoodadInstances.Count > 0)
                 chunkBytes.AddRange(GenerateMODRChunk(worldModelObject));
 
-            // MOBN (Nodes of the BSP tree, used also for collision?) -----------------------------
-            //if (worldModelObject.BSPTree.FaceTriangleIndicies.Count > 0)
-                chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
+            // MOBN (Nodes of the BSP tree) -------------------------------------------------------
+            chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
 
             // MOBR (Face / Triangle Incidies) ----------------------------------------------------
             chunkBytes.AddRange(GenerateMOBRChunk(worldModelObject));
@@ -153,8 +150,8 @@ namespace EQWOWConverter.WOWFiles
             // One for each triangle
             foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
             {
-                byte polyMaterialFlag = GetPackedFlags(Convert.ToByte(WMOPolyMaterialFlags.Render));
-                chunkBytes.Add(polyMaterialFlag);
+                WMOPolyMaterialFlags flags = 0;
+                chunkBytes.Add(Convert.ToByte(flags));
                 chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
             }
 
@@ -272,7 +269,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// MOBN (Nodes of the BSP tree, used also for collision?)
+        /// MOBN (Nodes of the BSP tree, collision)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
         private List<byte> GenerateMOBNChunk(WorldModelObject worldModelObject)

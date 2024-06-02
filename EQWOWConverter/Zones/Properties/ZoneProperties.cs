@@ -37,6 +37,7 @@ namespace EQWOWConverter.Zones
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
+        public HashSet<string> NonCollisionMaterialNames = new HashSet<string>();
         public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
         public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();
 
@@ -88,6 +89,13 @@ namespace EQWOWConverter.Zones
         {
             ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(bottomX, bottomY, bottomZ, topX, topY, topZ);
             LiquidVolumes.Add(liquidVolume);
+        }
+
+        public void AddDisabledMaterialCollisionByNames(params string[] names)
+        {
+            foreach(string name in names)
+                if (NonCollisionMaterialNames.Contains(name) == false)
+                    NonCollisionMaterialNames.Add(name);
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)
@@ -872,6 +880,7 @@ namespace EQWOWConverter.Zones
 
                         // TEMP FOR TESTING
                         zoneProperties.AddLiquidVolume(-20.0f, -20.0f, -20.0f, 20.0f, 20.0f, 20.0f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("w1", "m0004");
                         // TEMP
 
                     }

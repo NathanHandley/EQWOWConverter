@@ -31,6 +31,7 @@ namespace EQWOWConverter.Zones
 
         public UInt32 WMOGroupID;
         public WorldModelObjectType WMOType = WorldModelObjectType.Rendered;
+        public List<Material> Materials = new List<Material>();
         public List<Vector3> Verticies = new List<Vector3>();
         public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
@@ -45,27 +46,30 @@ namespace EQWOWConverter.Zones
         {
             WMOType = wmoType;
             BoundingBox = boundingBox;
-            BSPTree = new BSPTree(boundingBox, new List<TriangleFace>());
+            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
         public WorldModelObject(List<Vector3> verticies, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
-            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances)
+            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
+            ZoneProperties zoneProperties)
         {
             Verticies = verticies;
             TextureCoords = textureCoords;
+            Materials = materials;
             Normals = normals;
             foreach(var vertexColor in vertexColors)
                 VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
             TriangleFaces = triangleFaces;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(Verticies, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            GenerateRenderBatches(materials);
+            List<UInt32> collisionTriangleIndicies;
+            GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndicies);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
-            BSPTree = new BSPTree(BoundingBox, TriangleFaces);
+            BSPTree = new BSPTree(BoundingBox, collisionTriangleIndicies);
             CreateDoodadAssociations(zoneWideDoodadInstances);
         }
 
-        private void GenerateRenderBatches(List<Material> materials)
+        private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
         {
             // Reorder the faces and related objects
             SortRenderObjects();
@@ -87,6 +91,8 @@ namespace EQWOWConverter.Zones
                 if (materials[curMaterialIndex].MaterialType == MaterialType.TransparentSkydome)
                     continue;
                 if (materials[curMaterialIndex].AnimationTextures.Count == 0)
+                    continue;
+                if (materials[curMaterialIndex].IsAnimated() == true)
                     continue;
 
                 // Create a new one if this is the first instance of the material
@@ -110,6 +116,15 @@ namespace EQWOWConverter.Zones
                     if (curFaceMaxIndex > renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex)
                         renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = Convert.ToUInt16(curFaceMaxIndex);
                 }
+            }
+
+            // Construct the collision triangle indicies
+            collisionTriangleIncidies = new List<UInt32>();
+            for (int i = 0; i < TriangleFaces.Count; ++i)
+            {
+                Material curMaterial = materials[TriangleFaces[i].MaterialIndex];
+                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.Name) == false)
+                    collisionTriangleIncidies.Add(Convert.ToUInt32(i));
             }
 
             // Store the new render batches

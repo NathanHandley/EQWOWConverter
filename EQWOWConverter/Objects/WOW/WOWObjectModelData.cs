@@ -242,8 +242,7 @@ namespace EQWOWConverter.Objects
             ModelTextureTransformationAnimationLookup.Add(1); // -1 is static
             ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
 
-            // Collision and bounding
-            ProcessCollisionData(verticies, triangleFaces, new List<Vector3>(), new List<TriangleFace>());
+            // Build the bounding box (and no collision)
             CalculateBoundingBoxesAndRadii();
 
             // HARD CODED FOR STATIC --------------------------------------------------------------------
@@ -292,10 +291,10 @@ namespace EQWOWConverter.Objects
             {
                 Vector3 curVertex = new Vector3();
                 curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                curVertex.X = -curVertex.X;
                 curVertex.Y = collisionVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                curVertex.Y = -curVertex.Y;
                 curVertex.Z = collisionVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                curVertex.X = -curVertex.X;
+                curVertex.Y = -curVertex.Y;
                 CollisionPositions.Add(new Vector3(curVertex));
             }
 

@@ -45,6 +45,7 @@ namespace EQWOWConverter.Zones
         public UInt32 WMOID;
         public int MapID;
         public int LoadingScreenID;
+        public ZoneProperties ZoneProperties;
 
         public Vector3 SafePosition = new Vector3();
 
@@ -64,6 +65,7 @@ namespace EQWOWConverter.Zones
             if (IsLoaded == true)
                 return;
             ShortName = zoneProperties.ShortName;
+            ZoneProperties = zoneProperties;
             Materials = eqZoneData.Materials;
             AmbientLight = new ColorARGB(eqZoneData.AmbientLight.A, eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, AmbientLight.B);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
@@ -498,7 +500,7 @@ namespace EQWOWConverter.Zones
 
             // Generate and add the world model object
             WorldModelObject curWorldModelObject = new WorldModelObject(condensedVerticies, condensedTextureCoords, 
-                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances);
+                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances, ZoneProperties);
             WorldObjects.Add(curWorldModelObject);
         }
     }

@@ -34,9 +34,12 @@ namespace EQWOWConverter.WOWFiles
         public Dictionary<string, UInt32> DoodadNameOffsets = new Dictionary<string, UInt32>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
+        public ZoneProperties ZoneProperties;
 
         public WMORoot(Zone zone, string exportObjectsFolder)
         {
+            ZoneProperties = zone.WOWZoneData.ZoneProperties;
+
             PopulateDoodadNameOffsets(zone.WOWZoneData, exportObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
