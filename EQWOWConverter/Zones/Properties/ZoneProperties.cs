@@ -880,7 +880,7 @@ namespace EQWOWConverter.Zones
 
                         // TEMP FOR TESTING
                         zoneProperties.AddLiquidVolume(-20.0f, -20.0f, -20.0f, 20.0f, 20.0f, 20.0f);
-                        zoneProperties.AddDisabledMaterialCollisionByNames("w1", "m0004");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1", "t25_m0004");
                         // TEMP
 
                     }
