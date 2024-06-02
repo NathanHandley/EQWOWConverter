@@ -30,6 +30,7 @@ namespace EQWOWConverter.Objects
     internal class WOWObjectModelData
     {
         public string Name = string.Empty;
+        public List<UInt32> GlobalLoopSequenceLimits = new List<UInt32>();
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
         public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
         public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
@@ -121,43 +122,8 @@ namespace EQWOWConverter.Objects
                 ModelVerticies.Add(newModelVertex);
             }
 
-            // Read in the textures and save a material for each
-            Int16 curIndex = 0;
-            foreach(Material material in eqObject.Materials)
-            {
-                if (material.TextureName != string.Empty)
-                {
-                    ModelTexture newModelTexture = new ModelTexture();
-                    newModelTexture.TextureName = material.TextureName;
-                    ModelTextures.Add(newModelTexture);
-                    switch (material.MaterialType)
-                    {
-                        case MaterialType.TransparentAdditive:
-                        case MaterialType.TransparentAdditiveUnlit:
-                        case MaterialType.TransparentAdditiveUnlitSkydome:
-                            {
-                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Add));
-                            } break;
-                        case MaterialType.Transparent25Percent:
-                        case MaterialType.Transparent75Percent:
-                        case MaterialType.Transparent50Percent:
-                        case MaterialType.TransparentMasked:
-                            {
-                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Alpha));
-                            } break;
-                        default:
-                            {
-                                ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Opaque));
-                            } break;
-                    }
-                    ModelTextureLookups.Add(curIndex);
-                    ModelTextureMappingLookups.Add(0);
-                    ModelTextureAnimationLookup.Add(1); // -1 is static
-                    ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
-                    ++curIndex;
-                }
-            }
-
+            // Process the rest
+            ProcessMaterials(eqObject.Materials.ToArray());
             ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
             SortGeometry();
             CalculateBoundingBoxesAndRadii();
@@ -173,6 +139,7 @@ namespace EQWOWConverter.Objects
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
+            ModelReplaceableTextureLookups.Add(-1); // No replace lookup
 
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());
@@ -209,37 +176,8 @@ namespace EQWOWConverter.Objects
                 ModelVerticies.Add(newModelVertex);
             }
 
-            // Read in the textures from the material and save a material for each
-            ModelTexture newModelTexture = new ModelTexture();
-            newModelTexture.TextureName = material.TextureName;
-            ModelTextures.Add(newModelTexture);
-            switch (material.MaterialType)
-            {
-                case MaterialType.TransparentAdditive:
-                case MaterialType.TransparentAdditiveUnlit:
-                case MaterialType.TransparentAdditiveUnlitSkydome:
-                    {
-                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Add));
-                    }
-                    break;
-                case MaterialType.Transparent25Percent:
-                case MaterialType.Transparent75Percent:
-                case MaterialType.Transparent50Percent:
-                case MaterialType.TransparentMasked:
-                    {
-                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Alpha));
-                    }
-                    break;
-                default:
-                    {
-                        ModelMaterials.Add(new ModelMaterial(ModelMaterialBlendType.Opaque));
-                    }
-                    break;
-            }
-            ModelTextureLookups.Add(0);
-            ModelTextureMappingLookups.Add(0);
-            ModelTextureAnimationLookup.Add(1); // -1 is static
-            ModelReplaceableTextureLookups.Add(-1); // No replace lookup, revisit for animated textures (fire, water)
+            // Process material
+            ProcessMaterials(material);
 
             // Build the bounding box (and no collision)
             CalculateBoundingBoxesAndRadii();
@@ -255,12 +193,85 @@ namespace EQWOWConverter.Objects
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
+            ModelReplaceableTextureLookups.Add(-1); // No replace lookup
 
             // Make one animation
             ModelAnimations.Add(new ModelAnimation());
             ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
             ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
             //-------------------------------------------------------------------------------------------
+        }
+
+        private void ProcessMaterials(params Material[] materials)
+        {
+            // Generate a model material per material
+            Int16 curIndex = 0;
+            foreach (Material material in materials)
+            {
+                if (material.TextureName != string.Empty)
+                {
+                    ModelTexture newModelTexture = new ModelTexture();
+                    newModelTexture.TextureName = material.TextureName;
+                    ModelTextures.Add(newModelTexture);
+                    switch (material.MaterialType)
+                    {
+                        case MaterialType.TransparentAdditive:
+                        case MaterialType.TransparentAdditiveUnlit:
+                        case MaterialType.TransparentAdditiveUnlitSkydome:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Add));
+                            }
+                            break;
+                        case MaterialType.Transparent25Percent:
+                        case MaterialType.Transparent75Percent:
+                        case MaterialType.Transparent50Percent:
+                        case MaterialType.TransparentMasked:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Alpha));
+                            }
+                            break;
+                        default:
+                            {
+                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Opaque));
+                            }
+                            break;
+                    }
+
+                    // Make animation frames if this is an animated texture
+                    if (material.IsAnimated())
+                    {
+                        ModelTextureAnimation newAnimation = new ModelTextureAnimation();
+                        newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
+                        int curSequenceID = newAnimation.TranslationTrack.AddSequence();
+
+                        // Calculate the step size based on the number of animations
+                        float stepSize = 1.0f / Convert.ToSingle(material.NumOfAnimationFrames());
+
+                        // For each frame, add a frame in the animation array
+                        for(int i = 0; i < material.NumOfAnimationFrames(); ++i)
+                        {
+                            // Animatios are spanning on the u (x)
+                            uint curTimestamp = Convert.ToUInt32(i) * material.AnimationDelayMs;
+                            Vector3 curTranslation = new Vector3(stepSize * Convert.ToSingle(i), 1.0f, 0.0f);
+                            newAnimation.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, curTranslation);
+                        }
+
+                        // Save the anim and reference the texture
+                        GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
+                        newAnimation.TranslationTrack.GlobalSequenceID = Convert.ToUInt16(GlobalLoopSequenceLimits.Count - 1);
+                        ModelTextureAnimations.Add(newAnimation);                        
+                        ModelTextureAnimationLookup.Add(curIndex);
+                    }
+                    else
+                    {
+                        ModelTextureAnimationLookup.Add(-1);
+                    }
+
+                    ModelTextureLookups.Add(curIndex);
+                    ModelTextureMappingLookups.Add(curIndex);                    
+                    ++curIndex;
+                }
+            }
         }
 
         private void ProcessCollisionData(List<Vector3> verticies, List<TriangleFace> triangleFaces,

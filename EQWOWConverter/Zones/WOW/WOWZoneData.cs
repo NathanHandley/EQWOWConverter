@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
 
         public Vector3 SafePosition = new Vector3();
 
-        public WOWZoneData()
+        public WOWZoneData(ZoneProperties zoneProperties)
         {
             // Gen/Update IDs
             AreaID = CURRENT_AREAID;
@@ -58,14 +58,14 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOID++;
             MapID = CURRENT_MAPID;
             CURRENT_MAPID++;
+            ZoneProperties = zoneProperties;
         }
 
-        public void LoadFromEQZone(EQZoneData eqZoneData, ZoneProperties zoneProperties)
+        public void LoadFromEQZone(EQZoneData eqZoneData)
         {
             if (IsLoaded == true)
                 return;
-            ShortName = zoneProperties.ShortName;
-            ZoneProperties = zoneProperties;
+            ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
             AmbientLight = new ColorARGB(eqZoneData.AmbientLight.A, eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, AmbientLight.B);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
@@ -107,7 +107,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Add object instances
-            if (zoneProperties.ShortName.Length > 0 && Configuration.CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES.Contains(zoneProperties.ShortName) == false)
+            if (ZoneProperties.ShortName.Length > 0 && Configuration.CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES.Contains(ZoneProperties.ShortName) == false)
             {
                 foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
                 {
@@ -147,7 +147,7 @@ namespace EQWOWConverter.Zones
             WorldObjects.Clear();
 
             // Build liquid wmos first
-            foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            foreach (ZonePropertiesLiquidVolume liquidVolume in ZoneProperties.LiquidVolumes)
             {
                 // Generate and add the world model object
                 WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
@@ -179,7 +179,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Save the loading screen
-            switch (zoneProperties.Continent)
+            switch (ZoneProperties.Continent)
             {
                 case ZoneContinent.Antonica:
                 case ZoneContinent.Faydwer:

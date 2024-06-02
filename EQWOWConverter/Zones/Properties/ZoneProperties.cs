@@ -879,7 +879,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
 
                         // TEMP FOR TESTING
-                        zoneProperties.AddLiquidVolume(-20.0f, -20.0f, -20.0f, 20.0f, 20.0f, 20.0f);
+                        //zoneProperties.AddLiquidVolume(-20.0f, -20.0f, -20.0f, 20.0f, 20.0f, 20.0f);
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1", "t25_m0004");
                         // TEMP
                     }

@@ -30,12 +30,16 @@ namespace EQWOWConverter.Zones
         public string ShortName { get; } = string.Empty;
         public string DescriptiveNameOnlyLetters = string.Empty;
         public EQZoneData EQZoneData = new EQZoneData();
-        public WOWZoneData WOWZoneData = new WOWZoneData();
+        public WOWZoneData WOWZoneData;
 
-        public Zone(string shortName)
+        public Zone(string shortName, ZoneProperties zoneProperties)
         {
+            WOWZoneData = new WOWZoneData(zoneProperties);
             ShortName = shortName;
-            DescriptiveNameOnlyLetters = shortName;
+            if (zoneProperties.DescriptiveName != string.Empty)
+                SetDescriptiveName(zoneProperties.DescriptiveName);
+            else
+                DescriptiveNameOnlyLetters = shortName;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -44,11 +48,9 @@ namespace EQWOWConverter.Zones
             EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
         }
         
-        public void PopulateWOWZoneDataFromEQZoneData(ZoneProperties zoneProperties)
+        public void PopulateWOWZoneDataFromEQZoneData()
         {
-            if (zoneProperties.DescriptiveName != string.Empty)
-                SetDescriptiveName(zoneProperties.DescriptiveName);
-            WOWZoneData.LoadFromEQZone(EQZoneData, zoneProperties);
+            WOWZoneData.LoadFromEQZone(EQZoneData);
         }
 
         public void SetDescriptiveName(string name)

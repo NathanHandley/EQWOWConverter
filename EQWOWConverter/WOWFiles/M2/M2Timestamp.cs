@@ -23,20 +23,24 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Timestamps : IByteSerializable
+    internal class M2Timestamp : IByteSerializable
     {
-        public List<UInt32> Timestamps = new List<UInt32>();
+        public UInt32 Timestamp;
+
+        public M2Timestamp(UInt32 timestamp)
+        {
+            Timestamp = timestamp;
+        }
 
         public UInt32 GetBytesSize()
         {
-            return Convert.ToUInt32((Timestamps.Count * 4));
+            return Convert.ToUInt32(4);
         }
 
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            foreach (UInt32 timestamp in Timestamps)
-                bytes.Add(Convert.ToByte(timestamp));
+            bytes.AddRange(BitConverter.GetBytes(Timestamp));
             return bytes;
         }
     }

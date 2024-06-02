@@ -34,7 +34,7 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 Version = 264;
         private M2StringByOffset Name = new M2StringByOffset(string.Empty);
         private M2Flags Flags = 0; // UInt32
-        private M2GenericArrayByOffset<M2Timestamps> GlobalLoopTimestamps = new M2GenericArrayByOffset<M2Timestamps>();
+        private M2GenericArrayByOffset<M2Timestamp> GlobalLoopTimestamps = new M2GenericArrayByOffset<M2Timestamp>();
         private M2GenericArrayByOffset<ModelAnimation> AnimationSequences = new M2GenericArrayByOffset<ModelAnimation>();
         private M2GenericArrayByOffset<M2Int16> AnimationSequenceLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2BoneArrayByOffset Bones = new M2BoneArrayByOffset();
@@ -83,7 +83,8 @@ namespace EQWOWConverter.WOWFiles
         private void PopulateElements(WOWObjectModelData wowModelObject, string mpqObjectFolder)
         {
             // Global Loop Timestamps
-            // None for now
+            foreach (UInt32 timestamp in wowModelObject.GlobalLoopSequenceLimits)
+                GlobalLoopTimestamps.Add(new M2Timestamp(timestamp));
 
             // Animation Sequences
             AnimationSequences.AddArray(wowModelObject.ModelAnimations);

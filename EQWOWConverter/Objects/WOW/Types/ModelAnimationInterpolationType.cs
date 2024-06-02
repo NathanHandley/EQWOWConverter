@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ModelObjects.WOW
+namespace EQWOWConverter.ModelObjects
 {
     internal enum ModelAnimationInterpolationType : UInt16
     {

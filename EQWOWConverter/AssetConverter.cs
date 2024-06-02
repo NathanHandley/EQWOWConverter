@@ -157,11 +157,12 @@ namespace EQWOWConverter
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
 
-                //if (zoneDirectory.Name != "freportw")
-                //    continue;
+                if (zoneDirectory.Name != "freportw")
+                    continue;
 
                 // Load the EQ zone
-                Zone curZone = new Zone(zoneDirectory.Name);
+                ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
+                Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
                 Logger.WriteLine("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
                 string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
                 curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);
@@ -193,11 +194,8 @@ namespace EQWOWConverter
         {
             Logger.WriteLine("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
-            // Capture any zone properties
-            ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zone.ShortName);
-
             // Generate the WOW zone data first
-            zone.PopulateWOWZoneDataFromEQZoneData(zoneProperties);
+            zone.PopulateWOWZoneDataFromEQZoneData();
 
             // Create the zone WMO objects
             WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeExportObjectsFolder);

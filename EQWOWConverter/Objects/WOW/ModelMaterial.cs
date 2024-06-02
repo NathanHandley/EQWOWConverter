@@ -27,9 +27,11 @@ namespace EQWOWConverter.ModelObjects
     {
         ModelMaterialFlag Flags = ModelMaterialFlag.None;
         ModelMaterialBlendType BlendingMode;
+        Material Material;
 
-        public ModelMaterial(ModelMaterialBlendType blendType)
+        public ModelMaterial(Material material, ModelMaterialBlendType blendType)
         {
+            Material = material;
             BlendingMode = blendType;
         }
 

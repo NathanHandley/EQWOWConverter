@@ -97,6 +97,11 @@ namespace EQWOWConverter.Common
             return true;
         }
 
+        public int NumOfAnimationFrames()
+        {
+            return SourceTextureNameArray.Count();
+        }
+
         public string GetTextureSuffix()
         {
             switch (MaterialType)
