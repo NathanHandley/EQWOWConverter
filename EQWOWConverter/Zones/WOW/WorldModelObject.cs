@@ -82,15 +82,7 @@ namespace EQWOWConverter.Zones
                 int curMaterialIndex = TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
-                if (materials[curMaterialIndex].MaterialType == MaterialType.Invisible)
-                    continue;
-                if (materials[curMaterialIndex].MaterialType == MaterialType.Boundary)
-                    continue;
-                if (materials[curMaterialIndex].MaterialType == MaterialType.DiffuseSkydome)
-                    continue;
-                if (materials[curMaterialIndex].MaterialType == MaterialType.TransparentSkydome)
-                    continue;
-                if (materials[curMaterialIndex].AnimationTextures.Count == 0)
+                if (materials[curMaterialIndex].IsRenderable() == false)
                     continue;
                 if (materials[curMaterialIndex].IsAnimated() == true)
                     continue;

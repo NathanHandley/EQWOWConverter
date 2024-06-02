@@ -72,5 +72,20 @@ namespace EQWOWConverter.Common
             else
                 return false;
         }
+
+        public bool IsRenderable()
+        {
+            if (MaterialType == MaterialType.Invisible)
+                return false;
+            if (MaterialType == MaterialType.Boundary)
+                return false;
+            if (MaterialType == MaterialType.DiffuseSkydome)
+                return false;
+            if (MaterialType == MaterialType.TransparentSkydome)
+                return false;
+            if (AnimationTextures.Count == 0)
+                return false;
+            return true;
+        }
     }
 }

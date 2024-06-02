@@ -72,10 +72,8 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Number of portals
 
             // NOTE: Temp code in place. Making everything a single render batch for testing.
-            // What exactly is "transbatchcount"?
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount ("transition" blend light from ext and int)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
-            // TODO: This count should split above/below based on internal and external batch details
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // padding/unknown
 
@@ -152,7 +150,12 @@ namespace EQWOWConverter.WOWFiles
             {
                 WMOPolyMaterialFlags flags = 0;
                 chunkBytes.Add(Convert.ToByte(flags));
-                chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
+
+                // Set 0xFF for non-renderable materials
+                if (worldModelObject.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
+                    chunkBytes.Add(Convert.ToByte(0xFF));
+                else
+                    chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
             }
 
             return WrapInChunk("MOPY", chunkBytes.ToArray());
