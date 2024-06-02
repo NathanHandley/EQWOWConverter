@@ -391,9 +391,9 @@ namespace EQWOWConverter
             // Go through every texture to move and put it there
             foreach (Material material in zone.WOWZoneData.Materials)
             {
-                if (material.AnimationTextures.Count == 0)
+                if (material.TextureName == string.Empty)
                     continue;
-                string textureName = material.AnimationTextures[0];
+                string textureName = material.TextureName;
                 string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
                 string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
                 File.Copy(sourceTextureFullPath, outputTextureFullPath, true);

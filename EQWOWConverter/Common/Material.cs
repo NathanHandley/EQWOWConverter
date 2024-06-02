@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.Common
 {
@@ -27,15 +28,19 @@ namespace EQWOWConverter.Common
         public uint Index = 0;
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
-        public List<string> AnimationTextures = new List<string>();
+        public readonly List<string> SourceTextureNameArray = new List<string>();
+        public string TextureName = string.Empty;
         public uint AnimationDelayMs = 0;
 
-        public Material(string name)
+        public Material(string nameAndOriginalTexturesNameBlock)
         {
-            if (name.Contains("_"))
+            string[] parts = nameAndOriginalTexturesNameBlock.Split(':');
+
+            // First block is always the name
+            if (parts[0].Contains("_"))
             {
-                string[] parts = name.Split('_');
-                switch (parts[0])
+                string[] nameAttributeSplit = parts[0].Split('_');
+                switch (nameAttributeSplit[0])
                 {
                     case "d": MaterialType = MaterialType.Diffuse; break;
                     case "i": MaterialType = MaterialType.Invisible; break;
@@ -51,23 +56,27 @@ namespace EQWOWConverter.Common
                     case "taus": MaterialType = MaterialType.Boundary; break;
                     default:
                         {
-                            Logger.WriteLine("Error, Material had a name of " + name + " which doesn't map to a type");
+                            Logger.WriteLine("Error, Material had a name of " + parts[0] + " which doesn't map to a type");
                             MaterialType = MaterialType.Diffuse;
-                        } break;
+                        }
+                        break;
                 }
-                string[] subParts = parts[1].Split(":");
-                Name = subParts[0];
             }
-            else
-            {
-                string[] subParts = name.Split(":");
-                Name = subParts[0];
-            }
+            Name = parts[0];
+
+            // If there are more blocks, they are the textures
+            if (parts.Length > 1)
+                for (int i = 1; i < parts.Length; i++)
+                    SourceTextureNameArray.Add(parts[i]);
+
+            // Default the texture name to the first
+            if (SourceTextureNameArray.Count > 0)
+                TextureName = SourceTextureNameArray[0];
         }
 
         public bool IsAnimated()
         {
-            if (AnimationDelayMs > 0 && AnimationTextures.Count > 1)
+            if (AnimationDelayMs > 0)
                 return true;
             else
                 return false;
@@ -83,9 +92,20 @@ namespace EQWOWConverter.Common
                 return false;
             if (MaterialType == MaterialType.TransparentSkydome)
                 return false;
-            if (AnimationTextures.Count == 0)
+            if (SourceTextureNameArray.Count == 0)
                 return false;
             return true;
+        }
+
+        public string GetTextureSuffix()
+        {
+            switch (MaterialType)
+            {
+                case MaterialType.Transparent25Percent: return "a25";
+                case MaterialType.Transparent50Percent: return "a50";
+                case MaterialType.Transparent75Percent: return "a75";
+                default: return "";
+            }
         }
     }
 }

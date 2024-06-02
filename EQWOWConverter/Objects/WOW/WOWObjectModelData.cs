@@ -124,11 +124,10 @@ namespace EQWOWConverter.Objects
             Int16 curIndex = 0;
             foreach(Material material in eqObject.Materials)
             {
-                // Only grab first for now
-                if (material.AnimationTextures.Count > 0)
+                if (material.TextureName != string.Empty)
                 {
                     ModelTexture newModelTexture = new ModelTexture();
-                    newModelTexture.TextureName = material.AnimationTextures[0];
+                    newModelTexture.TextureName = material.TextureName;
                     ModelTextures.Add(newModelTexture);
                     switch (material.MaterialType)
                     {
@@ -210,9 +209,8 @@ namespace EQWOWConverter.Objects
             }
 
             // Read in the textures from the material and save a material for each
-            // Note: Only doing the first now for testing
             ModelTexture newModelTexture = new ModelTexture();
-            newModelTexture.TextureName = material.AnimationTextures[0];
+            newModelTexture.TextureName = material.TextureName;
             ModelTextures.Add(newModelTexture);
             switch (material.MaterialType)
             {

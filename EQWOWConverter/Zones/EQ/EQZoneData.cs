@@ -235,21 +235,17 @@ namespace EQWOWConverter.Zones
                         else
                         {
                             string[] blocks = curLine.Split(",");
-                            if (blocks.Length != 3)
+                            if (blocks.Length < 3 || blocks.Length > 4)
                             {
-                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material data is 3 components");
+                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material data is 3-4 components");
                                 continue;
                             }
+                            // Texture block
                             Material newMaterial = new Material(blocks[1]);
                             newMaterial.Index = uint.Parse(blocks[0]);
                             newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-
-                            // Texture block
-                            string[] textureBlock = blocks[1].Split(":");
-                            for (int i = 1; i < textureBlock.Length; i++)
-                            {
-                                newMaterial.AnimationTextures.Add(textureBlock[i]);
-                            }
+                            if (blocks.Length == 4)
+                                newMaterial.TextureName = blocks[3];
                             Materials.Add(newMaterial);
                         }
                     }

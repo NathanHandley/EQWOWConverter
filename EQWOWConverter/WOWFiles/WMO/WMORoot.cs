@@ -113,7 +113,7 @@ namespace EQWOWConverter.WOWFiles
             // Number of Textures
             UInt32 numOfTextures = 0;
             foreach (Material material in wowZoneData.Materials)
-                if (material.AnimationTextures.Count > 0)
+                if (material.TextureName != string.Empty)
                     numOfTextures++;
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
@@ -152,9 +152,9 @@ namespace EQWOWConverter.WOWFiles
             List<byte> textureBuffer = new List<byte>();
             foreach (Material material in zone.WOWZoneData.Materials)
             {
-                if (material.AnimationTextures.Count > 0)
+                if (material.TextureName != string.Empty)
                 {
-                    string textureName = material.AnimationTextures[0];
+                    string textureName = material.TextureName;
                     TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
                     string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.ShortName.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
@@ -181,7 +181,7 @@ namespace EQWOWConverter.WOWFiles
                 List<byte> curMaterialBytes = new List<byte>();
 
                 bool hasNoTexture = false;
-                if (material.AnimationTextures.Count == 0 || material.AnimationTextures[0] == String.Empty)
+                if (material.TextureName == string.Empty)
                     hasNoTexture = true;
 
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
@@ -226,7 +226,7 @@ namespace EQWOWConverter.WOWFiles
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 }
                 else
-                    curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[material.AnimationTextures[0]]));
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(TextureNameOffsets[material.TextureName]));
 
                 // Emissive color (default to blank for now)
                 ColorRGBA emissiveColor = new ColorRGBA(0, 0, 0, 255);

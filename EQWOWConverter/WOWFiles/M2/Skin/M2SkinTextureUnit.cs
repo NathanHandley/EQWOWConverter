@@ -37,7 +37,6 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 TextureMappingLookupIndex = 0;
         public UInt16 TextureTransparencyLookupIndex = 0;
         public UInt16 TextureTransformationsLookupIndex = 0;
-
         
         public M2SkinTextureUnit(UInt16 subMeshID, UInt16 materialIndex, UInt16 textureLookupIndex)
         {
