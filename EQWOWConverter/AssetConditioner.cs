@@ -216,14 +216,14 @@ namespace EQWOWConverter
                     {
                         // Get just the zone folder
                         string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-                        GenerateCombinedAndTransparentImagesByMaterials(zoneDirectoryFolderNameOnly, zoneDirectory);
                         SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);
+                        GenerateCombinedAndTransparentImagesByMaterials(zoneDirectoryFolderNameOnly, zoneDirectory);                        
                     }
                 }
                 else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
                 {
-                    GenerateCombinedAndTransparentImagesByMaterials(topDirectoryFolderNameOnly, topDirectory);
                     SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
+                    GenerateCombinedAndTransparentImagesByMaterials(topDirectoryFolderNameOnly, topDirectory);                    
                 }
                 // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }

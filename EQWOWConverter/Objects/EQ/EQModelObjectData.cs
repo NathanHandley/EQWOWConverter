@@ -217,20 +217,28 @@ namespace EQWOWConverter.Objects
                         else if (curLine.StartsWith("#"))
                             continue;
 
-                        // 3-blocks is a material instance
+                        // 3+blocks is a material instance
                         else
                         {
                             string[] blocks = curLine.Split(",");
-                            if (blocks.Length < 3 || blocks.Length > 4)
+                            if (blocks.Length < 3)
                             {
-                                Logger.WriteLine("- [" + inputObjectName + "]: Error, material data is 3-4 components");
+                                Logger.WriteLine("- [" + inputObjectName + "]: Error, material data must be 3+ components");
                                 continue;
                             }
                             Material newMaterial = new Material(blocks[1]);
                             newMaterial.Index = uint.Parse(blocks[0]);
                             newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-                            if (blocks.Length == 4)
-                                newMaterial.TextureName = blocks[3];
+                            if (blocks.Length >= 4)
+                            {
+                                // If there are more than 4, then the next two are the dimensions
+                                newMaterial.OriginalTextureWidth = int.Parse(blocks[3]);
+                                newMaterial.OriginalTextureHeight = int.Parse(blocks[4]);
+
+                                // If there's a 6th, it's the texture name
+                                if (blocks.Length > 5)
+                                    newMaterial.TextureName = blocks[5];
+                            }
                             Materials.Add(newMaterial);
                         }
                     }

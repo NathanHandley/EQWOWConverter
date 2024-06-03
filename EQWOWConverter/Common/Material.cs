@@ -31,6 +31,8 @@ namespace EQWOWConverter.Common
         public readonly List<string> SourceTextureNameArray = new List<string>();
         public string TextureName = string.Empty;
         public uint AnimationDelayMs = 0;
+        public int OriginalTextureWidth = 0;
+        public int OriginalTextureHeight = 0;
 
         public Material(string nameAndOriginalTexturesNameBlock)
         {
@@ -115,6 +117,149 @@ namespace EQWOWConverter.Common
                 case MaterialType.Transparent75Percent: return "a75";
                 default: return "";
             }
+        }
+
+        public Vector3 GetTranslationForAnimationFrame(int frameIndex)
+        {
+            // 2x2 animation texture
+            if (NumOfAnimationFrames() <= 4)
+            {
+                switch (frameIndex)
+                {
+                    case 0: return new Vector3(0.0f, 0.0f, 0.0f);
+                    case 1: return new Vector3(0.5f, 0.0f, 0.0f);
+                    case 2: return new Vector3(0.0f, 0.5f, 0.0f);
+                    case 3: return new Vector3(0.5f, 0.5f, 0.0f);
+                    default:
+                    {
+                        Logger.WriteLine("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 2x2 texture");
+                        return new Vector3(0.0f, 0.0f, 0.0f);
+                    }
+                }
+            }
+            // 4x4 animation texture
+            else if (NumOfAnimationFrames() <= 16)
+            {
+                switch (frameIndex)
+                {
+                    case 0: return new Vector3(0.0f, 0.0f, 0.0f);
+                    case 1: return new Vector3(0.25f, 0.0f, 0.0f);
+                    case 2: return new Vector3(0.5f, 0.0f, 0.0f);
+                    case 3: return new Vector3(0.75f, 0.0f, 0.0f);
+
+                    case 4: return new Vector3(0.0f, 0.25f, 0.0f);
+                    case 5: return new Vector3(0.25f, 0.25f, 0.0f);
+                    case 6: return new Vector3(0.5f, 0.25f, 0.0f);
+                    case 7: return new Vector3(0.75f, 0.25f, 0.0f);
+
+                    case 8: return new Vector3(0.0f, 0.5f, 0.0f);
+                    case 9: return new Vector3(0.25f, 0.5f, 0.0f);
+                    case 10: return new Vector3(0.5f, 0.5f, 0.0f);
+                    case 11: return new Vector3(0.75f, 0.5f, 0.0f);
+
+                    case 12: return new Vector3(0.0f, 0.75f, 0.0f);
+                    case 13: return new Vector3(0.25f, 0.75f, 0.0f);
+                    case 14: return new Vector3(0.5f, 0.75f, 0.0f);
+                    case 15: return new Vector3(0.75f, 0.75f, 0.0f);
+                    default:
+                    {
+                        Logger.WriteLine("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 4x4 texture");
+                        return new Vector3(0.0f, 0.0f, 0.0f);
+                    }
+
+                }
+            }
+            else
+            {
+                Logger.WriteLine("GetTranslationForAnimationFrame Error, unhandled for animations > 16 frames");
+                return new Vector3(0.0f, 0.0f, 0.0f);
+            }
+        }
+
+        // This returns an animation-aware and half-pixel corrected (on edge) coordinate set
+        public TextureCoordinates GetCorrectedBaseCoordinates(TextureCoordinates uncorrectedCoordinates)
+        {
+            TextureCoordinates correctedCoordinates = new TextureCoordinates();
+
+            // How much to proportion for based on the animation data
+            float proportionFactor = 1.0f;
+            if (IsAnimated())
+            {
+                // 2x2
+                if (NumOfAnimationFrames() <= 4)
+                    proportionFactor = 0.5f;
+                else if (NumOfAnimationFrames() <= 16)
+                    proportionFactor = 0.25f;
+                else
+                {
+                    Logger.WriteLine("GetCorrectedBaseCoordinates Error, unhandled for animations > 16 frames");
+                    correctedCoordinates.X = uncorrectedCoordinates.X;
+                    correctedCoordinates.Y = uncorrectedCoordinates.Y;
+                    return correctedCoordinates;
+                }
+            }
+
+            // u(x) == 0, half-pixel correct
+            if (uncorrectedCoordinates.X <= float.Epsilon && uncorrectedCoordinates.X >= float.Epsilon)
+            {
+                correctedCoordinates.X = 0.5f / Convert.ToSingle(OriginalTextureWidth);
+            }
+            // u(x) == 1, half-pixel correct and factor animation
+            else if (uncorrectedCoordinates.X <= (1.0f + float.Epsilon) && uncorrectedCoordinates.X >= (1.0f - float.Epsilon))
+            {
+                float workingXCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureWidth));
+                if (IsAnimated())
+                    workingXCoordinate *= proportionFactor;
+                correctedCoordinates.X = workingXCoordinate;
+            }
+            // u(x) == -1 half-pixel correct and factor animation
+            else if (uncorrectedCoordinates.X >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.X <= (-1.0f + float.Epsilon))
+            {
+                float workingXCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureWidth));
+                if (IsAnimated())
+                    workingXCoordinate *= proportionFactor;
+                correctedCoordinates.X = workingXCoordinate;
+            }
+            // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
+            else
+            {
+                if (IsAnimated())
+                    correctedCoordinates.X = uncorrectedCoordinates.X * proportionFactor;
+                else
+                    correctedCoordinates.X = uncorrectedCoordinates.X;
+            }
+
+            // u(y) == 0, half-pixel correct
+            if (uncorrectedCoordinates.Y <= float.Epsilon && uncorrectedCoordinates.Y >= float.Epsilon)
+            {
+                correctedCoordinates.Y = 0.5f / Convert.ToSingle(OriginalTextureHeight);
+            }
+            // u(y) == 1, half-pixel correct and factor animation
+            else if (uncorrectedCoordinates.Y <= (1.0f + float.Epsilon) && uncorrectedCoordinates.Y >= (1.0f - float.Epsilon))
+            {
+                float workingYCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureHeight));
+                if (IsAnimated())
+                    workingYCoordinate *= proportionFactor;
+                correctedCoordinates.Y = workingYCoordinate;
+            }
+            // u(y) == -1 half-pixel correct and factor animation
+            else if (uncorrectedCoordinates.Y >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.Y <= (-1.0f + float.Epsilon))
+            {
+                float workingYCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureHeight));
+                if (IsAnimated())
+                    workingYCoordinate *= proportionFactor;
+                correctedCoordinates.Y = workingYCoordinate;
+            }
+            // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
+            else
+            {
+                if (IsAnimated())
+                    correctedCoordinates.Y = uncorrectedCoordinates.Y * proportionFactor;
+                else
+                    correctedCoordinates.Y = uncorrectedCoordinates.Y;
+            }
+
+            return correctedCoordinates;
         }
     }
 }

@@ -122,27 +122,33 @@ namespace EQWOWConverter.Objects
                 ModelVerticies.Add(newModelVertex);
             }
 
-            // Update the texture coordinates for every animated material, by using the triangle faces material ID
+            // Correct any coordinates
             HashSet<int> textureCoordRemappedVertexIndicies = new HashSet<int>();
             foreach (TriangleFace triangleFace in ModelTriangles)
             {
-                if (eqObject.Materials.Count > 0 && eqObject.Materials[triangleFace.MaterialIndex].IsAnimated())
+                if (eqObject.Materials.Count > 0)
                 {
-                    // Calculate the offset reduction based on number of animations
-                    float offsetReduction = 1.0f / Convert.ToSingle(eqObject.Materials[triangleFace.MaterialIndex].NumOfAnimationFrames());
                     if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V1) == false)
-                    { 
-                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.X *= offsetReduction;
+                    {
+                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V1].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
                         textureCoordRemappedVertexIndicies.Add(triangleFace.V1);
                     }
                     if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V2) == false)
                     {
-                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.X *= offsetReduction;
+
+                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V2].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
                         textureCoordRemappedVertexIndicies.Add(triangleFace.V2);
                     }
                     if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V3) == false)
                     {
-                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.X *= offsetReduction;
+
+                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V3].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
                         textureCoordRemappedVertexIndicies.Add(triangleFace.V3);
                     }
                 }
@@ -194,18 +200,12 @@ namespace EQWOWConverter.Objects
                 newModelVertex.Position.X = verticies[i].X;
                 newModelVertex.Position.Y = verticies[i].Y;
                 newModelVertex.Position.Z = verticies[i].Z;
-                newModelVertex.Texture1TextureCoordinates.Y = textureCoordinates[i].Y;
-                if (material.IsAnimated())
-                {
-                    // Calculate the offset reduction based on number of animations
-                    float offsetReduction = 1.0f / Convert.ToSingle(material.NumOfAnimationFrames());
-                    newModelVertex.Texture1TextureCoordinates.X = textureCoordinates[i].X * offsetReduction;
-                }
-                else
-                    newModelVertex.Texture1TextureCoordinates.X = textureCoordinates[i].X;
                 newModelVertex.Normal.X = normals[i].X;
                 newModelVertex.Normal.Y = normals[i].Y;
                 newModelVertex.Normal.Z = normals[i].Z;
+                TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
+                newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
                 ModelVerticies.Add(newModelVertex);
             }
 
@@ -277,15 +277,12 @@ namespace EQWOWConverter.Objects
                         newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
                         int curSequenceID = newAnimation.TranslationTrack.AddSequence();
 
-                        // Calculate the step size based on the number of animations
-                        float stepSize = 1.0f / Convert.ToSingle(material.NumOfAnimationFrames());
-
                         // For each frame, add a frame in the animation array
                         for(int i = 0; i < material.NumOfAnimationFrames(); ++i)
                         {
-                            // Animatios are spanning on the u (x)
+                            // Animations are spanning on the u (x)
                             uint curTimestamp = Convert.ToUInt32(i) * material.AnimationDelayMs;
-                            Vector3 curTranslation = new Vector3(stepSize * Convert.ToSingle(i), 1.0f, 0.0f);
+                            Vector3 curTranslation = material.GetTranslationForAnimationFrame(i);
                             newAnimation.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, curTranslation);
                         }
 
