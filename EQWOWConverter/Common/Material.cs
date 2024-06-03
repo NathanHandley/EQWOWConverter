@@ -67,7 +67,11 @@ namespace EQWOWConverter.Common
             // If there are more blocks, they are the textures
             if (parts.Length > 1)
                 for (int i = 1; i < parts.Length; i++)
-                    SourceTextureNameArray.Add(parts[i]);
+                {
+                    // Some files have an extra section after a semicolon, so control for that
+                    string[] subparts = parts[i].Split(';');
+                    SourceTextureNameArray.Add(subparts[0]);
+                }
 
             // Default the texture name to the first
             if (SourceTextureNameArray.Count > 0)

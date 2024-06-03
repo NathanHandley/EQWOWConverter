@@ -201,7 +201,7 @@ namespace EQWOWConverter
             Directory.Delete(tempFolderRoot, true);
 
             // Perform additional material/texture adjustments in output folders
-            Logger.WriteLine("Creating combined animated textures and transparent materials...");
+            Logger.WriteLine("Creating combined animated textures and transparent materials, and save texture sizes...");
             topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
             foreach (string topDirectory in topDirectories)
             {
@@ -217,20 +217,22 @@ namespace EQWOWConverter
                         // Get just the zone folder
                         string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
                         GenerateCombinedAndTransparentImagesByMaterials(zoneDirectoryFolderNameOnly, zoneDirectory);
+                        SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);
                     }
                 }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" 
-                    || topDirectoryFolderNameOnly == "equipment")
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
                 {
                     GenerateCombinedAndTransparentImagesByMaterials(topDirectoryFolderNameOnly, topDirectory);
+                    SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
                 }
+                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
             
             Logger.WriteLine("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "', Transparent textures generated: '" + transparentTexturesGenerated + "'");
             return true;
         }
 
-        // TODO: These image operations make this a Windows only solution.  Look into alternatives later.
+        // TODO: Look for solution to image operations.  These image methods are why this project is windows only.
         private void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
         {
             // Resize the image to the passed parameters
@@ -264,25 +266,40 @@ namespace EQWOWConverter
                 return;
             }
 
-            // Determine new size and name
-            int newImageWidth = 0;
-            int imageHeight = 0;
-            int oldImageWidth = 0;
-            foreach(string textureName in inputTextureNamesNoExt)
+            // No support for over 16 frames
+            if (inputTextureNamesNoExt.Length > 16)
             {
-                string curTextureFullPath = Path.Combine(textureFolder, textureName + ".png");
-                Bitmap inputImage = new Bitmap(curTextureFullPath);
-                imageHeight = inputImage.Height;
-                newImageWidth += inputImage.Width; // Add this to stretch horizontally
-                oldImageWidth = inputImage.Width;
-                inputImage.Dispose();
+                Logger.WriteLine("GenerateCombinedTexture Error. Attempted to combine a texture with more than 16 input textures");
+                return;
+            }
+
+            // Pull data related to the first image
+            string firstTextureFullPath = Path.Combine(textureFolder, inputTextureNamesNoExt[0] + ".png");
+            Bitmap firstTextureinputImage = new Bitmap(firstTextureFullPath);
+            int oldImageHeight = firstTextureinputImage.Height;
+            int oldImageWidth = firstTextureinputImage.Width;
+            firstTextureinputImage.Dispose();
+
+            // Calculate a new image size
+            int newImageWidth = 0;
+            int newImageHeight = 0;
+            if (inputTextureNamesNoExt.Length <= 4)
+            {
+                newImageWidth = oldImageWidth * 2;
+                newImageHeight = oldImageHeight * 2;
+            }
+            else
+            {
+                newImageWidth = oldImageWidth * 4;
+                newImageHeight = oldImageHeight * 4;
             }
 
             // Create the new image
             string newOutputImagePath = Path.Combine(textureFolder, newTextureName + ".png");
-            Bitmap newOutputImage = new Bitmap(newImageWidth, imageHeight);
+            Bitmap newOutputImage = new Bitmap(newImageWidth, newImageHeight);
             newOutputImage.SetResolution(newOutputImage.HorizontalResolution, newOutputImage.VerticalResolution);
-            int curWidthOffset = 0;
+            int curImageXOffset = 0;
+            int curImageYOffset = 0;
             using (var graphics = Graphics.FromImage(newOutputImage))
             {
                 graphics.CompositingMode = CompositingMode.SourceCopy;
@@ -290,6 +307,7 @@ namespace EQWOWConverter
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
+
                 using (ImageAttributes wrapMode = new ImageAttributes())
                 {
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
@@ -298,10 +316,26 @@ namespace EQWOWConverter
                     {
                         string curTextureFullPath = Path.Combine(textureFolder, textureName + ".png");
                         Bitmap inputImage = new Bitmap(curTextureFullPath);
-                        Rectangle outputRectangle = new Rectangle(curWidthOffset, 0, oldImageWidth, imageHeight);
-                        graphics.DrawImage(inputImage, outputRectangle, 0, 0, oldImageWidth, imageHeight, GraphicsUnit.Pixel, wrapMode);
+                        Rectangle outputRectangle = new Rectangle(curImageXOffset*oldImageWidth, curImageYOffset*oldImageHeight, oldImageWidth, oldImageHeight);
+                        graphics.DrawImage(inputImage, outputRectangle, 0, 0, oldImageWidth, oldImageHeight, GraphicsUnit.Pixel, wrapMode);
                         inputImage.Dispose();
-                        curWidthOffset += oldImageWidth;
+                        curImageXOffset++;
+                        if (inputTextureNamesNoExt.Length <= 4)
+                        {
+                            if (curImageXOffset == 2)
+                            {
+                                curImageXOffset = 0;
+                                curImageYOffset++;
+                            }
+                        }
+                        else
+                        {
+                            if (curImageXOffset == 4)
+                            {
+                                curImageXOffset = 0;
+                                curImageYOffset++;
+                            }
+                        }
                     }
                 }
             }
@@ -429,6 +463,57 @@ namespace EQWOWConverter
             inputImage.Dispose();
             transparentTexturesGenerated++;
             return true;
+        }
+
+        private void SaveTextureCoordinatesInMaterialLists(string topFolderName, string workingRootFolderPath)
+        {
+            string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
+            string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
+            string[] materialListFiles = Directory.GetFiles(materialListFolder);
+            foreach (string materialListFile in materialListFiles)
+            {
+                string materialFileText = File.ReadAllText(materialListFile);
+                string[] materialFileRows = materialFileText.Split(Environment.NewLine);
+                string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                int rowIndex = -1;
+                foreach (string materialFileRow in materialFileRows)
+                {
+                    rowIndex++;
+                    // Skip blank lines and comments
+                    if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
+                        continue;
+
+                    // Grab material details
+                    string[] blocks = materialFileRow.Split(",");
+                    Material curMaterial = new Material(blocks[1]);
+                    curMaterial.Index = uint.Parse(blocks[0]);
+                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+
+                    // Use the animation texture name if it already exists
+                    if (blocks.Length >= 4)
+                        if (int.TryParse(blocks[3], out _) == false)
+                            curMaterial.TextureName = blocks[3];
+
+                    // Get texture dimensions, if there is one
+                    if (curMaterial.SourceTextureNameArray.Count > 0)
+                    {
+                        string textureFullPath = Path.Combine(textureFolder, curMaterial.TextureName + ".png");
+                        Bitmap textureinputImage = new Bitmap(textureFullPath);
+                        int imageHeight = textureinputImage.Height;
+                        int imageWidth = textureinputImage.Width;
+                        textureinputImage.Dispose();
+
+                        // Write this to the end of the row
+                        materialFileRowsForWrite[rowIndex] = materialFileRow + "," + imageWidth.ToString() + "," + imageHeight.ToString();
+                    }
+                }
+
+                // Update the material file
+                StringBuilder newMaterialListFileContents = new StringBuilder();
+                foreach (string materialFileRow in materialFileRowsForWrite)
+                    newMaterialListFileContents.AppendLine(materialFileRow);
+                File.WriteAllText(materialListFile, newMaterialListFileContents.ToString());
+            }
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
