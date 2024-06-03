@@ -283,22 +283,25 @@ namespace EQWOWConverter
             // Calculate a new image size
             int newImageWidth = 0;
             int newImageHeight = 0;
+            int imageColumns = 0;
             if (inputTextureNamesNoExt.Length <= 4)
             {
                 newImageWidth = oldImageWidth * 2;
                 newImageHeight = oldImageHeight * 2;
+                imageColumns = 2;
             }
             else
             {
                 newImageWidth = oldImageWidth * 4;
                 newImageHeight = oldImageHeight * 4;
+                imageColumns = 4;
             }
 
             // Create the new image
             string newOutputImagePath = Path.Combine(textureFolder, newTextureName + ".png");
             Bitmap newOutputImage = new Bitmap(newImageWidth, newImageHeight);
             newOutputImage.SetResolution(newOutputImage.HorizontalResolution, newOutputImage.VerticalResolution);
-            int curImageXOffset = 0;
+            int curImageXOffset = (imageColumns - 1);
             int curImageYOffset = 0;
             using (var graphics = Graphics.FromImage(newOutputImage))
             {
@@ -312,6 +315,7 @@ namespace EQWOWConverter
                 {
                     wrapMode.SetWrapMode(WrapMode.TileFlipXY);
                     // Add all of the textures to it
+                    // NOTE: Textures should be placed right->left and top->down (reverse X)
                     foreach (string textureName in inputTextureNamesNoExt)
                     {
                         string curTextureFullPath = Path.Combine(textureFolder, textureName + ".png");
@@ -319,22 +323,11 @@ namespace EQWOWConverter
                         Rectangle outputRectangle = new Rectangle(curImageXOffset*oldImageWidth, curImageYOffset*oldImageHeight, oldImageWidth, oldImageHeight);
                         graphics.DrawImage(inputImage, outputRectangle, 0, 0, oldImageWidth, oldImageHeight, GraphicsUnit.Pixel, wrapMode);
                         inputImage.Dispose();
-                        curImageXOffset++;
-                        if (inputTextureNamesNoExt.Length <= 4)
+                        curImageXOffset--;
+                        if (curImageXOffset < 0)
                         {
-                            if (curImageXOffset == 2)
-                            {
-                                curImageXOffset = 0;
-                                curImageYOffset++;
-                            }
-                        }
-                        else
-                        {
-                            if (curImageXOffset == 4)
-                            {
-                                curImageXOffset = 0;
-                                curImageYOffset++;
-                            }
+                            curImageXOffset = (imageColumns - 1);
+                            curImageYOffset++;
                         }
                     }
                 }
