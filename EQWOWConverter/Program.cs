@@ -22,20 +22,20 @@ internal class Program
     private static void Main(string[] args)
     {
         Logger.ResetLog();
-        Logger.WriteLine("###### EQ WOW Converter ######");
+        Logger.WriteInfo("###### EQ WOW Converter ######");
         bool doLoopForCommands = true;
         while (doLoopForCommands == true)
         {   
-            Logger.WriteLine("");
-            Logger.WriteLine("Options:");
-            Logger.WriteLine(" [1] - Condition Exported EQ Data");
-            Logger.WriteLine(" [5] - Convert EQ Data to WOW");
-            Logger.WriteLine(" [X] - Exit");
-            Console.Write("Command (Default: X): ");
+            Logger.WriteInfo("");
+            Logger.WriteInfo("Options:");
+            Logger.WriteInfo(" [1] - Condition Exported EQ Data");
+            Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
+            Logger.WriteInfo(" [X] - Exit");
+            Logger.WriteInfo("Command (Default: X): ", true);
             string? enteredCommand = Console.ReadLine();
             if (enteredCommand == null)
             {
-                Logger.WriteLine("Exiting.");
+                Logger.WriteInfo("Exiting.");
                 doLoopForCommands = false;
             }
             else
@@ -44,38 +44,38 @@ internal class Program
                 {
                     case "X":
                         {
-                            Logger.WriteLine("Exiting.");
+                            Logger.WriteInfo("Exiting.");
                             doLoopForCommands = false;
                         }
                         break;
                     case "1":
                         {
-                            Logger.WriteLine("Conditioning Exported EQ Data...");
+                            Logger.WriteInfo("Conditioning Exported EQ Data...");
                             AssetConditioner conditioner = new AssetConditioner();
                             bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
                             if (condenseResult == false)
                             {
-                                Logger.WriteLine("Exported EQ Data Conditioning Failed.");
+                                Logger.WriteInfo("Exported EQ Data Conditioning Failed.");
                                 break;
                             }
-                            Logger.WriteLine("Exported EQ Data Conditioning Succeeded.");
+                            Logger.WriteInfo("Exported EQ Data Conditioning Succeeded.");
                         }
                         break;
                     case "5":
                         {
-                            Logger.WriteLine("Converting from EQ to WoW...");
+                            
                             AssetConverter converter = new AssetConverter();
                             bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
                             if (conversionResult == false)
                             {
-                                Logger.WriteLine("EQ to WoW conversion Failed.");
+                                Logger.WriteInfo("EQ to WoW conversion Failed.");
                                 break;
                             }
-                            Logger.WriteLine("Conversion of data complete");
+                            
                         } break;
                     default:
                         {
-                            Logger.WriteLine("Exiting.");
+                            Logger.WriteInfo("Exiting.");
                             doLoopForCommands = false;
                         }
                         break;

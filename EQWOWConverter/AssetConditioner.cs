@@ -41,8 +41,6 @@ namespace EQWOWConverter
 
         public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
-            Logger.WriteLine("Conditioning Raw EQ Data...");
-
             // Reset counters
             objectMeshesCondensed = 0;
             objectMaterialsCondensed = 0;
@@ -52,8 +50,8 @@ namespace EQWOWConverter
             // Make sure the raw path exists
             if (Directory.Exists(eqExportsRawPath) == false)
             {
-                Logger.WriteLine("ERROR - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-                Logger.WriteLine("Conditioning Failed!");
+                Logger.WriteError("Error - Raw input path of '" + eqExportsRawPath + "' does not exist.");
+                Logger.WriteError("Conditioning Failed!");
                 return false;
             }
 
@@ -103,7 +101,7 @@ namespace EQWOWConverter
                 // If it's the character, music, equipment, or sound folder then copy it as-is
                 if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
                 {
-                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
+                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
                     string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
                     FileTool.CopyDirectoryAndContents(tempFolderRoot, outputFolder, true, true);
                     continue;
@@ -112,7 +110,7 @@ namespace EQWOWConverter
                 // If it's a bmpwad (contains misc images) then copy that into the miscimages folder
                 if (topDirectoryFolderNameOnly.StartsWith("bmpwad"))
                 {
-                    Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
+                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
                     string outputMiscImagesFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
                     FileTool.CopyDirectoryAndContents(tempFolderRoot, outputMiscImagesFolder, false, true);
 
@@ -175,21 +173,21 @@ namespace EQWOWConverter
                     // Copy files that were missing in the original folders for some reason
                     if (topDirectoryFolderNameOnly == "fearplane")
                     {
-                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
+                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
                         string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "maywall.png");
                         string outputFileName = Path.Combine(outputZoneFolder, "Textures", "maywall.png");
                         File.Copy(inputFileName, outputFileName, true);
                     }
                     else if (topDirectoryFolderNameOnly == "oasis")
                     {
-                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
+                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
                         string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "canwall1.png");
                         string outputFileName = Path.Combine(outputZoneFolder, "Textures", "canwall1.png");
                         File.Copy(inputFileName, outputFileName, true);
                     }
                     else if (topDirectoryFolderNameOnly == "swampofnohope")
                     {
-                        Logger.WriteLine("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
+                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
                         string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "kruphse3.png");
                         string outputFileName = Path.Combine(outputZoneFolder, "Textures", "kruphse3.png");
                         File.Copy(inputFileName, outputFileName, true);
@@ -201,7 +199,7 @@ namespace EQWOWConverter
             Directory.Delete(tempFolderRoot, true);
 
             // Perform additional material/texture adjustments in output folders
-            Logger.WriteLine("Creating combined animated textures and transparent materials, and save texture sizes...");
+            Logger.WriteInfo("Creating combined animated textures and transparent materials, and save texture sizes...");
             topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
             foreach (string topDirectory in topDirectories)
             {
@@ -228,7 +226,7 @@ namespace EQWOWConverter
                 // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
             
-            Logger.WriteLine("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "', Transparent textures generated: '" + transparentTexturesGenerated + "'");
+            Logger.WriteInfo("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "', Transparent textures generated: '" + transparentTexturesGenerated + "'");
             return true;
         }
 
@@ -262,14 +260,14 @@ namespace EQWOWConverter
         {
             if (inputTextureNamesNoExt.Length <= 1)
             {
-                Logger.WriteLine("GenerateCombinedTexture Error. Attempted to combine a texture with only 1 or less input texture names provided'");
+                Logger.WriteError("GenerateCombinedTexture Error. Attempted to combine a texture with only 1 or less input texture names provided'");
                 return;
             }
 
             // No support for over 16 frames
             if (inputTextureNamesNoExt.Length > 16)
             {
-                Logger.WriteLine("GenerateCombinedTexture Error. Attempted to combine a texture with more than 16 input textures");
+                Logger.WriteError("GenerateCombinedTexture Error. Attempted to combine a texture with more than 16 input textures");
                 return;
             }
 
@@ -382,7 +380,7 @@ namespace EQWOWConverter
                                 uniqueNameFound = true;
                         } while (uniqueNameFound == false);
                         GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.SourceTextureNameArray.ToArray());
-                        Logger.WriteLine("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
+                        Logger.WriteDetail("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
                         curMaterial.TextureName = newTextureName;
 
                         // Add it as a new segment in the material file
@@ -403,7 +401,7 @@ namespace EQWOWConverter
                         if (File.Exists(newTextureFullPath) == false)
                         {
                             GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
-                            Logger.WriteLine("Generated a transparent texture with full path '" + newTextureFullPath + "'");
+                            Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
                         }
 
                         // Update texture references for the material
@@ -433,7 +431,7 @@ namespace EQWOWConverter
                 case MaterialType.Transparent75Percent: newPixelAlphaMultiplier = 0.25;break;
                 default:
                     {
-                        Logger.WriteLine("GenerateTransparentImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
+                        Logger.WriteError("GenerateTransparentImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
                         return false;
                     }
             }
@@ -482,19 +480,20 @@ namespace EQWOWConverter
                     curMaterial.Index = uint.Parse(blocks[0]);
                     curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
 
-                    // Use the animation texture name if it already exists
-                    if (blocks.Length >= 4)
-                        if (int.TryParse(blocks[3], out _) == false)
-                            curMaterial.TextureName = blocks[3];
-
                     // Get texture dimensions, if there is one
                     if (curMaterial.SourceTextureNameArray.Count > 0)
                     {
-                        string textureFullPath = Path.Combine(textureFolder, curMaterial.TextureName + ".png");
+                        string textureFullPath = Path.Combine(textureFolder, curMaterial.SourceTextureNameArray[0] + ".png");
                         Bitmap textureinputImage = new Bitmap(textureFullPath);
                         int imageHeight = textureinputImage.Height;
                         int imageWidth = textureinputImage.Width;
                         textureinputImage.Dispose();
+
+                        // Throw an error if this texture isn't a power of 2
+                        if (imageHeight != 8 && imageHeight != 16 && imageHeight != 32 && imageHeight != 64 && imageHeight != 128 && imageHeight != 256 && imageHeight != 512 && imageHeight != 1024)
+                            Logger.WriteError("Texture '" + textureFullPath + "' height is invalid with value '" + imageHeight + "', it must be a power of 2 and <= 1024");
+                        if (imageWidth != 8 && imageWidth != 16 && imageWidth != 32 && imageWidth != 64 && imageWidth != 128 && imageWidth != 256 && imageWidth != 512 && imageWidth != 1024)
+                            Logger.WriteError("Texture '" + textureFullPath + "' width is invalid with value '" + imageWidth + "', it must be a power of 2 and <= 1024");
 
                         // Write this to the end of the row
                         materialFileRowsForWrite[rowIndex] = materialFileRow + "," + imageWidth.ToString() + "," + imageHeight.ToString();
@@ -538,7 +537,7 @@ namespace EQWOWConverter
                             // Update the file name
                             string newObjectTextureFileNameOnly = originalObjectTextureFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectTextureFile);
                             altIteration++;
-                            Logger.WriteLine("- [" + topDirectory + "] Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
+                            Logger.WriteDetail("- [" + topDirectory + "] Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
                             File.Move(sourceObjectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
 
                             // Update texture references in material files
@@ -550,7 +549,7 @@ namespace EQWOWConverter
                                 if (fileText.Contains(":" + objectTextureFileNameNoExtension))
                                 {
                                     string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
-                                    Logger.WriteLine("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
+                                    Logger.WriteDetail("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
                                     fileText = fileText.Replace(":" + objectTextureFileNameNoExtension, ":" + newObjectTextureFileNameNoExtension);
                                     File.WriteAllText(objectMaterialFile, fileText);
                                 }
@@ -604,7 +603,7 @@ namespace EQWOWConverter
                             // Update the file name
                             string newObjectMaterialFileNameOnly = originalObjectMaterialFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectMaterialFile);
                             altIteration++;
-                            Logger.WriteLine("- [" + topDirectory + "] Object Material Collision with name '" + objectMaterialFileNameOnly + "' but different contents so renaming to '" + newObjectMaterialFileNameOnly + "'");
+                            Logger.WriteDetail("- [" + topDirectory + "] Object Material Collision with name '" + objectMaterialFileNameOnly + "' but different contents so renaming to '" + newObjectMaterialFileNameOnly + "'");
                             File.Move(sourceObjectMaterialFile, Path.Combine(tempObjectMaterialsFolderName, newObjectMaterialFileNameOnly));
 
                             // Update material references in mesh files
@@ -616,7 +615,7 @@ namespace EQWOWConverter
                                 if (fileText.Contains("," + objectMaterialFileNameNoExtension))
                                 {
                                     string newObjectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMaterialFileNameOnly);
-                                    Logger.WriteLine("- [" + topDirectory + "] Object mesh file '" + objectMeshFile + "' contained material '" + objectMaterialFileNameNoExtension + "' which was renamed to '" + newObjectMaterialFileNameNoExtension + "'. Updating mesh file...");
+                                    Logger.WriteDetail("- [" + topDirectory + "] Object mesh file '" + objectMeshFile + "' contained material '" + objectMaterialFileNameNoExtension + "' which was renamed to '" + newObjectMaterialFileNameNoExtension + "'. Updating mesh file...");
                                     fileText = fileText.Replace("," + objectMaterialFileNameNoExtension, "," + newObjectMaterialFileNameNoExtension);
                                     File.WriteAllText(objectMeshFile, fileText);
                                 }
@@ -673,7 +672,7 @@ namespace EQWOWConverter
                             // Update the file name
                             string newObjectMeshFileNameOnly = originalObjectMeshFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectMeshFile);
                             altIteration++;
-                            Logger.WriteLine("- [" + topDirectory + "] Object Mesh Collision with name '" + objectMeshFileNameOnly + "' but different contents so renaming to '" + newObjectMeshFileNameOnly + "'");
+                            Logger.WriteDetail("- [" + topDirectory + "] Object Mesh Collision with name '" + objectMeshFileNameOnly + "' but different contents so renaming to '" + newObjectMeshFileNameOnly + "'");
                             File.Move(sourceObjectMeshFile, Path.Combine(tempObjectMeshesFolderName, newObjectMeshFileNameOnly));
 
                             // Also update the collision file, if there was one
@@ -682,7 +681,7 @@ namespace EQWOWConverter
                             if (File.Exists(collisionMeshFilePath))
                             {
                                 string newCollisionMeshFilePath = Path.Combine(tempObjectMeshesFolderName, originalObjectMeshFileNameOnlyNoExtension + "alt" + altIteration.ToString() + "_collision.txt");
-                                Logger.WriteLine("- [" + topDirectory + "] Object Mesh also had a collision mesh with name '" + collisionMeshFileName + "', so changing that as well");
+                                Logger.WriteDetail("- [" + topDirectory + "] Object Mesh also had a collision mesh with name '" + collisionMeshFileName + "', so changing that as well");
                                 File.Move(collisionMeshFilePath, newCollisionMeshFilePath);
                             }
 
@@ -690,7 +689,7 @@ namespace EQWOWConverter
                             string zoneObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
                             if (File.Exists(zoneObjectInstancesFile) == false)
                             {
-                                Logger.WriteLine("- [" + topDirectory + "] No object_instances file to update");
+                                Logger.WriteDetail("- [" + topDirectory + "] No object_instances file to update");
                             }
                             else
                             {
@@ -699,7 +698,7 @@ namespace EQWOWConverter
                                 if (fileText.Contains(objectMeshFileNameNoExtension + ","))
                                 {
                                     string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMeshFileNameOnly);
-                                    Logger.WriteLine("- [" + topDirectory + "] Zone object_instances file '" + zoneObjectInstancesFile + "' contained mesh '" + objectMeshFileNameNoExtension + "' which was renamed to '" + newObjectMeshFileNameNoExtension + "'. Updating object_instances file...");
+                                    Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + zoneObjectInstancesFile + "' contained mesh '" + objectMeshFileNameNoExtension + "' which was renamed to '" + newObjectMeshFileNameNoExtension + "'. Updating object_instances file...");
                                     fileText = fileText.Replace(objectMeshFileNameNoExtension + ",", newObjectMeshFileNameNoExtension + ",");
                                     File.WriteAllText(zoneObjectInstancesFile, fileText);
                                 }

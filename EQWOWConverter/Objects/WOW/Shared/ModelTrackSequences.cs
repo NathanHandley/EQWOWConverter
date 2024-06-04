@@ -52,7 +52,7 @@ namespace EQWOWConverter.ModelObjects
         {
             if (sequenceID >= Timestamps.Count)
             {
-                Logger.WriteLine("ERROR AddValueToSequence out of range exception!");
+                Logger.WriteError("Error AddValueToSequence out of range exception!");
                 return;
             }
             Timestamps[sequenceID].AddTimestamp(timestamp);

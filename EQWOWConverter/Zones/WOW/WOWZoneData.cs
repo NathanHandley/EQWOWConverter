@@ -200,7 +200,7 @@ namespace EQWOWConverter.Zones
                     break;                
                 default:
                     {
-                        Logger.WriteLine("Error setting loading screen, as the passed continent was not handled");
+                        Logger.WriteError("Error setting loading screen, as the passed continent was not handled");
                     } break;
             }
 
@@ -272,7 +272,7 @@ namespace EQWOWConverter.Zones
                 }
                 if (materialFound == false)
                 {
-                    Logger.WriteLine("Error generating world model object, as material named '" + materialName +"' could not be found");
+                    Logger.WriteError("Error generating world model object, as material named '" + materialName +"' could not be found");
                     return;
                 }
             }

@@ -38,6 +38,14 @@ namespace EQWOWConverter
         public static readonly string CONFIG_PATH_EXPORT_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
 
         // ====================================================================
+        // Logging
+        // ====================================================================
+        // Level of logs to write to the console and log file.
+        // 1 = Error, 2 = Info, 3 = Detail
+        public static readonly int CONFIG_LOGGING_CONSOLE_MIN_LEVEL = 2;
+        public static readonly int CONFIG_LOGGING_FILE_MIN_LEVEL = 3;
+
+        // ====================================================================
         // Generator Rules
         // ====================================================================
         // The value EQ verticies multiply by when translated into WOW verticies

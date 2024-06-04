@@ -30,10 +30,36 @@ namespace EQWOWConverter
                 File.Delete("log.txt");
         }
 
-        public static void WriteLine(string text)
+        public static void WriteInfo(string text, bool noNewLineInConsole = false)
         {
-            Console.WriteLine(text);
-            File.AppendAllText("log.txt", text + "\n");
+            string outputLine = "[ ] Info | " + text;
+            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
+            {
+                if (noNewLineInConsole)
+                    Console.Write(outputLine);
+                else
+                    Console.WriteLine(outputLine);
+            }
+            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
+                File.AppendAllText("log.txt", outputLine + "\n");
+        }
+
+        public static void WriteDetail(string text)
+        {
+            string outputLine = "[.] Detail| " + text;
+            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 3)
+                Console.WriteLine(outputLine);
+            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 3)
+                File.AppendAllText("log.txt", outputLine + "\n");
+        }
+
+        public static void WriteError(string text)
+        {
+            string outputLine = "[*] Error| " + text;
+            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 2)
+                Console.WriteLine(outputLine);
+            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 2)
+                File.AppendAllText("log.txt", outputLine + "\n");
         }
     }
 }

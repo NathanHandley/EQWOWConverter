@@ -104,7 +104,7 @@ namespace EQWOWConverter.Zones
                 PopulateZonePropertiesList();
             if (ZonePropertyListByShortName.ContainsKey(zoneShortName) == false)
             {
-                Logger.WriteLine("Error.  Tried to pull Zone Properties for zone with shortname '" + zoneShortName + "' but non existed with that name");
+                Logger.WriteError("Error.  Tried to pull Zone Properties for zone with shortname '" + zoneShortName + "' but non existed with that name");
                 return new ZoneProperties();
             }
             else
@@ -2780,7 +2780,7 @@ namespace EQWOWConverter.Zones
                     break;
                 default:
                     {
-                        Logger.WriteLine("GetZonePropertiesForZone error!  No known short name of '" + zoneShortName + "'");
+                        Logger.WriteError("GetZonePropertiesForZone error!  No known short name of '" + zoneShortName + "'");
                     }
                     break;
             }

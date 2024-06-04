@@ -58,7 +58,7 @@ namespace EQWOWConverter.Common
                     case "taus": MaterialType = MaterialType.Boundary; break;
                     default:
                         {
-                            Logger.WriteLine("Error, Material had a name of " + parts[0] + " which doesn't map to a type");
+                            Logger.WriteError("Error, Material had a name of " + parts[0] + " which doesn't map to a type");
                             MaterialType = MaterialType.Diffuse;
                         }
                         break;
@@ -132,7 +132,7 @@ namespace EQWOWConverter.Common
                     case 3: return new Vector3(0.5f, 0.5f, 0.0f);
                     default:
                     {
-                        Logger.WriteLine("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 2x2 texture");
+                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 2x2 texture");
                         return new Vector3(0.0f, 0.0f, 0.0f);
                     }
                 }
@@ -163,7 +163,7 @@ namespace EQWOWConverter.Common
                     case 15: return new Vector3(-0.75f, 0.75f, 0.0f);
                     default:
                     {
-                        Logger.WriteLine("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 4x4 texture");
+                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 4x4 texture");
                         return new Vector3(0.0f, 0.0f, 0.0f);
                     }
 
@@ -171,7 +171,7 @@ namespace EQWOWConverter.Common
             }
             else
             {
-                Logger.WriteLine("GetTranslationForAnimationFrame Error, unhandled for animations > 16 frames");
+                Logger.WriteError("GetTranslationForAnimationFrame Error, unhandled for animations > 16 frames");
                 return new Vector3(0.0f, 0.0f, 0.0f);
             }
         }
@@ -192,7 +192,7 @@ namespace EQWOWConverter.Common
                     proportionFactor = 0.25f;
                 else
                 {
-                    Logger.WriteLine("GetCorrectedBaseCoordinates Error, unhandled for animations > 16 frames");
+                    Logger.WriteError("GetCorrectedBaseCoordinates Error, unhandled for animations > 16 frames");
                     correctedCoordinates.X = uncorrectedCoordinates.X;
                     correctedCoordinates.Y = uncorrectedCoordinates.Y;
                     return correctedCoordinates;

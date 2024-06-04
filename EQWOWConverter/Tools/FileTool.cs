@@ -135,7 +135,7 @@ namespace EQWOWConverter
             foreach (string file in files)
             {
                 File.Delete(file);
-                Logger.WriteLine("Deleted file '" + file + "' in folder '" + directory + "'");
+                Logger.WriteDetail("Deleted file '" + file + "' in folder '" + directory + "'");
             }
 
             if (recursive)

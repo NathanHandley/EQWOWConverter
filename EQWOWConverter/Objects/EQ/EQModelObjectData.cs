@@ -40,7 +40,7 @@ namespace EQWOWConverter.Objects
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
-                Logger.WriteLine("- [" + inputObjectName + "]: ERROR - Could not find path at '" + inputObjectFolder + "'");
+                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
                 return;
             }
 
@@ -52,11 +52,11 @@ namespace EQWOWConverter.Objects
 
         private void LoadRenderMeshData(string inputObjectName, string inputObjectFolder)
         {
-            Logger.WriteLine("- [" + inputObjectName + "]: Reading render mesh data...");
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
             string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + ".txt");
             if (File.Exists(renderMeshFileName) == false)
             {
-                Logger.WriteLine("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
 
@@ -79,12 +79,12 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 2)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, material list name needs to be 2 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, material list name needs to be 2 components");
                         continue;
                     }
                     if (MaterialListName != string.Empty)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, a second material list was found");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, a second material list was found");
                         continue;
                     }
                     MaterialListName = blocks[1];
@@ -96,12 +96,12 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 2)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, animated head block was not 2 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, animated head block was not 2 components");
                         continue;
                     }
                     if (AnimatedVerticies.FrameDelay != 0)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, there was already a read frame delay");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, there was already a read frame delay");
                         continue;
                     }
                     AnimatedVerticies.FrameDelay = int.Parse(blocks[1]);
@@ -113,7 +113,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, animation verticies block was not 5 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, animation verticies block was not 5 components");
                         continue;
                     }
 
@@ -132,7 +132,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, vertex block was not 4 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();
@@ -148,7 +148,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 3)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, texture coordinate block was not 3 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, texture coordinate block was not 3 components");
                         continue;
                     }
                     TextureCoordinates textureUv = new TextureCoordinates();
@@ -163,7 +163,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, normals block was not 4 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, normals block was not 4 components");
                         continue;
                     }
                     Vector3 normal = new Vector3();
@@ -179,7 +179,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error,indicies block was not 5 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error,indicies block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();
@@ -192,16 +192,16 @@ namespace EQWOWConverter.Objects
 
                 else
                 {
-                    Logger.WriteLine("- [" + inputObjectName + "]: Error, unknown line '" + inputRow + "'");
+                    Logger.WriteError("- [" + inputObjectName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
         }
         private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder)
         {
-            Logger.WriteLine("- [" + inputObjectName + "]: Reading materials...");
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
             if (File.Exists(materialListFileName) == false)
-                Logger.WriteLine("- [" + inputObjectName + "]: No material data found.");
+                Logger.WriteDetail("- [" + inputObjectName + "]: No material data found.");
             else
             {
                 using (var materialListReader = new StreamReader(materialListFileName))
@@ -223,7 +223,7 @@ namespace EQWOWConverter.Objects
                             string[] blocks = curLine.Split(",");
                             if (blocks.Length < 3)
                             {
-                                Logger.WriteLine("- [" + inputObjectName + "]: Error, material data must be 3+ components");
+                                Logger.WriteError("- [" + inputObjectName + "]: Error, material data must be 3+ components");
                                 continue;
                             }
                             Material newMaterial = new Material(blocks[1]);
@@ -248,12 +248,12 @@ namespace EQWOWConverter.Objects
         private void LoadCollisionMeshData(string inputObjectName, string inputObjectFolder)
         {
             // Get the collision mesh data
-            Logger.WriteLine("- [" + inputObjectName + "]: Reading collision mesh data...");
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading collision mesh data...");
             string collisionMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + "_collision.txt");
             string collisionMeshData = string.Empty;
             if (File.Exists(collisionMeshFileName) == false)
             {
-                Logger.WriteLine("- [" + inputObjectName + "]: No collision mesh found.");
+                Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found.");
                 return;
             }
 
@@ -276,7 +276,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error, vertex block was not 4 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error, vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();
@@ -292,7 +292,7 @@ namespace EQWOWConverter.Objects
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputObjectName + "]: Error,indicies block was not 5 components");
+                        Logger.WriteError("- [" + inputObjectName + "]: Error,indicies block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();
@@ -305,7 +305,7 @@ namespace EQWOWConverter.Objects
 
                 else
                 {
-                    Logger.WriteLine("- [" + inputObjectName + "]: Error, unknown line '" + inputRow + "'");
+                    Logger.WriteError("- [" + inputObjectName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
         }

@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
                 return;
             if (Directory.Exists(inputZoneFolderFullPath) == false)
             {
-                Logger.WriteLine("- [" + inputZoneFolderName + "]: ERROR - Could not find path at '" + inputZoneFolderFullPath + "'");
+                Logger.WriteError("- [" + inputZoneFolderName + "]: ERROR - Could not find path at '" + inputZoneFolderFullPath + "'");
                 return;
             }
 
@@ -65,11 +65,11 @@ namespace EQWOWConverter.Zones
 
         private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading render mesh data...");
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading render mesh data...");
             string renderMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + ".txt");
             if (File.Exists(renderMeshFileName) == false)
             {
-                Logger.WriteLine("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                Logger.WriteError("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
 
@@ -96,12 +96,12 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 2)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material list name needs to be 2 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, material list name needs to be 2 components");
                         continue;
                     }
                     if (MaterialListName != string.Empty)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, a second material list was found");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, a second material list was found");
                         continue;
                     }
                     MaterialListName = blocks[1];
@@ -120,7 +120,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();
@@ -137,7 +137,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 3)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, texture coordinate block was not 3 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, texture coordinate block was not 3 components");
                         continue;
                     }
                     TextureCoordinates textureUv = new TextureCoordinates();
@@ -154,7 +154,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, normals block was not 4 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, normals block was not 4 components");
                         continue;
                     }
                     Vector3 normal = new Vector3();
@@ -172,7 +172,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex color block was not 5 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex color block was not 5 components");
                         continue;
                     }
                     ColorRGBA color = new ColorRGBA();
@@ -191,7 +191,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();
@@ -206,16 +206,16 @@ namespace EQWOWConverter.Zones
 
                 else
                 {
-                    Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
+                    Logger.WriteError("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
         }
         private void LoadMaterialDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading materials...");
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputZoneFolderFullPath, "MaterialLists", inputZoneFolderName + ".txt");
             if (File.Exists(materialListFileName) == false)
-                Logger.WriteLine("- [" + inputZoneFolderName + "]: No material data found.");
+                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No material data found.");
             else
             {
                 using (var materialListReader = new StreamReader(materialListFileName))
@@ -237,7 +237,7 @@ namespace EQWOWConverter.Zones
                             string[] blocks = curLine.Split(",");
                             if (blocks.Length < 3)
                             {
-                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, material data must be 3+ components");
+                                Logger.WriteError("- [" + inputZoneFolderName + "]: Error, material data must be 3+ components");
                                 continue;
                             }
                             Material newMaterial = new Material(blocks[1]);
@@ -263,12 +263,12 @@ namespace EQWOWConverter.Zones
         private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             // Get the collision mesh data
-            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
             string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
             string collisionMeshData = string.Empty;
             if (File.Exists(collisionMeshFileName) == false)
             {
-                Logger.WriteLine("- [" + inputZoneFolderName + "]: No collision mesh found.");
+                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found.");
                 return;
             }
 
@@ -291,7 +291,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();
@@ -307,7 +307,7 @@ namespace EQWOWConverter.Zones
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteLine("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
+                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();
@@ -320,17 +320,17 @@ namespace EQWOWConverter.Zones
 
                 else
                 {
-                    Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
+                    Logger.WriteError("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
                 }
             }
         }
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             // Get the ambient light
-            Logger.WriteLine("- [" + inputZoneFolderName + "]: Reading ambiant light data...");
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading ambiant light data...");
             string ambientLightFileName = Path.Combine(inputZoneFolderFullPath, "ambient_light.txt");
             if (File.Exists(ambientLightFileName) == false)
-                Logger.WriteLine("- [" + inputZoneFolderName + "]: No ambient light data found.");
+                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No ambient light data found.");
             else
             {
                 using (var ambiantlightReader = new StreamReader(ambientLightFileName))
@@ -352,7 +352,7 @@ namespace EQWOWConverter.Zones
                             string[] blocks = curLine.Split(",");
                             if (blocks.Length != 3)
                             {
-                                Logger.WriteLine("- [" + inputZoneFolderName + "]: Error, ambiant light data must be in 3 components");
+                                Logger.WriteError("- [" + inputZoneFolderName + "]: Error, ambiant light data must be in 3 components");
                                 continue;
                             }
                             AmbientLight.R = byte.Parse(blocks[0]);
@@ -367,10 +367,10 @@ namespace EQWOWConverter.Zones
         private void LoadObjectInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the object instances
-            Logger.WriteLine("- [" + inputZoneFolder + "]: Reading object instances...");
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading object instances...");
             string objectInstancesFileName = Path.Combine(inputZoneFolderFullPath, "object_instances.txt");
             if (File.Exists(objectInstancesFileName) == false)
-                Logger.WriteLine("- [" + inputZoneFolder + "]: No object instance data found.");
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No object instance data found.");
             else
             {
                 using (var objectInstancesReader = new StreamReader(objectInstancesFileName))
@@ -392,7 +392,7 @@ namespace EQWOWConverter.Zones
                             string[] blocks = curLine.Split(",");
                             if (blocks.Length != 11)
                             {
-                                Logger.WriteLine("- [" + inputZoneFolder + "]: Error, object instance data is 7 components");
+                                Logger.WriteError("- [" + inputZoneFolder + "]: Error, object instance data is 7 components");
                                 continue;
                             }
 
@@ -418,10 +418,10 @@ namespace EQWOWConverter.Zones
         private void LoadLightInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the light instances
-            Logger.WriteLine("- [" + inputZoneFolder + "]: Reading light instances...");
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading light instances...");
             string lightInstancesFileName = Path.Combine(inputZoneFolderFullPath, "light_instances.txt");
             if (File.Exists(lightInstancesFileName) == false)
-                Logger.WriteLine("- [" + inputZoneFolder + "]: No light instance data found.");
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No light instance data found.");
             else
             {
                 using (var lightInstancesReader = new StreamReader(lightInstancesFileName))
@@ -443,7 +443,7 @@ namespace EQWOWConverter.Zones
                             string[] blocks = curLine.Split(",");
                             if (blocks.Length != 7)
                             {
-                                Logger.WriteLine("- [" + inputZoneFolder + "]: Error, light instance data is 7 components");
+                                Logger.WriteError("- [" + inputZoneFolder + "]: Error, light instance data is 7 components");
                                 continue;
                             }
                             LightInstance newLightInstance = new LightInstance();

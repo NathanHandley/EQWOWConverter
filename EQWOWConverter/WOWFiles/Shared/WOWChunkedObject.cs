@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
         protected List<byte> WrapInChunk(string token, byte[] dataBlock)
         {
             if (token.Length != 4)
-                Logger.WriteLine("Error, WrapInChunk has a token that isn't a length of 4 (value = '" + token + "')");
+                Logger.WriteError("Error, WrapInChunk has a token that isn't a length of 4 (value = '" + token + "')");
             List<byte> wrappedChunk = new List<byte>();
             wrappedChunk.Add((byte)token[3]);
             wrappedChunk.Add((byte)token[2]);

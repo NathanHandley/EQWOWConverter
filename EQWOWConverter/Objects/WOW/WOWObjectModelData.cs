@@ -91,7 +91,7 @@ namespace EQWOWConverter.Objects
 
             if (eqObject.Verticies.Count != eqObject.TextureCoords.Count && eqObject.Verticies.Count != eqObject.Normals.Count)
             {
-                Logger.WriteLine("Failed to load wowobject from eqobject named '" + name + "' since vertex count doesn't match texture coordinate count or normal count");
+                Logger.WriteError("Failed to load wowobject from eqobject named '" + name + "' since vertex count doesn't match texture coordinate count or normal count");
                 return;
             }
 
@@ -191,7 +191,7 @@ namespace EQWOWConverter.Objects
             // Generate modelverticies from geometry data
             if (verticies.Count != textureCoordinates.Count && verticies.Count != normals.Count)
             {
-                Logger.WriteLine("Failed to load wowobject from zone data since vertex count doesn't match texture coordinate count or normal count");
+                Logger.WriteError("Failed to load wowobject from zone data since vertex count doesn't match texture coordinate count or normal count");
                 return;
             }
             for (int i = 0; i < verticies.Count; i++)
