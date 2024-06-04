@@ -180,7 +180,7 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
-        public void LoadFromZoneData(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies, 
+        public void LoadFromZoneAnimatedMaterial(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies, 
             List<Vector3> normals, List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoordinates)
         {
             // Save name and triangles
