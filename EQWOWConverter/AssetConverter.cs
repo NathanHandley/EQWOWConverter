@@ -58,7 +58,7 @@ namespace EQWOWConverter
         // TODO: Condense above
         public static bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
-            Logger.WriteInfo("Converting EQ objects to WOW zones...");
+            Logger.WriteInfo("Converting EQ objects to WOW objects...");
 
             // Make sure the object folder path exists
             string objectFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
