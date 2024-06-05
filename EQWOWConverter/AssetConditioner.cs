@@ -218,11 +218,10 @@ namespace EQWOWConverter
                         SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);                    
                     }
                 }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
                 {
                     SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
                 }
-                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
 
             // Generate combined textures where needed
@@ -244,11 +243,10 @@ namespace EQWOWConverter
                         GenerateCombinedImagesForTextureAnimatedMaterials(zoneDirectory);
                     }
                 }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
                 {
                     GenerateCombinedImagesForTextureAnimatedMaterials(topDirectory);
                 }
-                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
 
             // Generate any needed transparent textures
@@ -270,11 +268,10 @@ namespace EQWOWConverter
                         GenerateTransparentImagesForMaterials(zoneDirectory);
                     }
                 }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
                 {
                     GenerateTransparentImagesForMaterials(topDirectory);
                 }
-                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
 
             Logger.WriteInfo("Conditioning complete. Totals:");
@@ -316,14 +313,14 @@ namespace EQWOWConverter
         {
             if (inputTextureNamesNoExt.Length <= 1)
             {
-                Logger.WriteError("GenerateCombinedTexture Error. Attempted to combine a texture with only 1 or less input texture names provided'");
+                Logger.WriteDetail("GenerateCombinedTexture skipped. Attempted to combine a texture with only 1 or less input texture names provided'");
                 return;
             }
 
             // No support for over 16 frames
             if (inputTextureNamesNoExt.Length > 16)
             {
-                Logger.WriteError("GenerateCombinedTexture Error. Attempted to combine a texture with more than 16 input textures");
+                Logger.WriteDetail("GenerateCombinedTexture skipped. Attempted to combine a texture with more than 16 input textures");
                 return;
             }
 
@@ -406,7 +403,7 @@ namespace EQWOWConverter
                 if (eqMeshData.LoadFromDisk(meshFileFullPath) == false)
                 {
                     Logger.WriteError("Failed to load the mesh '" + meshFileFullPath + "'");
-                    return;
+                    continue;
                 }
 
                 bool doWriteOutMaterialListFile = false;
