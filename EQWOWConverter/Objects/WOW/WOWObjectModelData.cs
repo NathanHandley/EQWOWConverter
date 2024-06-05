@@ -122,40 +122,13 @@ namespace EQWOWConverter.Objects
                 ModelVerticies.Add(newModelVertex);
             }
 
+            // Process materials
+            ProcessMaterials(eqObject.Materials.ToArray());
+
             // Correct any coordinates
-            HashSet<int> textureCoordRemappedVertexIndicies = new HashSet<int>();
-            foreach (TriangleFace triangleFace in ModelTriangles)
-            {
-                if (eqObject.Materials.Count > 0)
-                {
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V1) == false)
-                    {
-                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V1].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V1);
-                    }
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V2) == false)
-                    {
-
-                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V2].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V2);
-                    }
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V3) == false)
-                    {
-
-                        TextureCoordinates correctedCoordinates = eqObject.Materials[triangleFace.MaterialIndex].GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V3].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V3);
-                    }
-                }
-            }
+            CorrectTextureCoordinates();
 
             // Process the rest
-            ProcessMaterials(eqObject.Materials.ToArray());
             ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
             SortGeometry();
             CalculateBoundingBoxesAndRadii();
@@ -178,6 +151,40 @@ namespace EQWOWConverter.Objects
             ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
             ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
             //-------------------------------------------------------------------------------------------
+        }
+
+        public void CorrectTextureCoordinates()
+        {
+            HashSet<int> textureCoordRemappedVertexIndicies = new HashSet<int>();
+            foreach (TriangleFace triangleFace in ModelTriangles)
+            {
+                if (triangleFace.MaterialIndex < ModelMaterials.Count)
+                {
+                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V1) == false)
+                    {
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V1].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndicies.Add(triangleFace.V1);
+                    }
+                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V2) == false)
+                    {
+
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V2].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndicies.Add(triangleFace.V2);
+                    }
+                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V3) == false)
+                    {
+
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V3].Texture1TextureCoordinates);
+                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndicies.Add(triangleFace.V3);
+                    }
+                }
+            }
         }
 
         public void LoadFromZoneAnimatedMaterial(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies, 
@@ -212,6 +219,9 @@ namespace EQWOWConverter.Objects
             // Process material
             ProcessMaterials(material);
 
+            // Correct coordinates
+            CorrectTextureCoordinates();
+
             // Build the bounding box (and no collision)
             CalculateBoundingBoxesAndRadii();
 
@@ -235,6 +245,27 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
+        MaterialAnimationType DetermineMaterialAnimationType(Material material)
+        {
+            if (material.IsAnimated() == false)
+                return MaterialAnimationType.None;
+
+            // If there are oversized texture coordinates, it can only be handled by a texture transpacy animation
+            for (int i = 0; i < ModelTriangles.Count; ++i)
+            {
+                // Save this triangle index if any of the texture coordinates are oversized
+                if (ModelVerticies[ModelTriangles[i].V1].HasOversizedTexture1TextureCoordinates()
+                    || ModelVerticies[ModelTriangles[i].V2].HasOversizedTexture1TextureCoordinates()
+                    || ModelVerticies[ModelTriangles[i].V3].HasOversizedTexture1TextureCoordinates())
+                {
+                    return MaterialAnimationType.TextureTransparency;
+                }
+            }
+
+            // If none are oversized, then transform is best
+            return MaterialAnimationType.TextureTransform;
+        }
+
         private void ProcessMaterials(params Material[] materials)
         {
             // Generate a model material per material
@@ -246,13 +277,15 @@ namespace EQWOWConverter.Objects
                     ModelTexture newModelTexture = new ModelTexture();
                     newModelTexture.TextureName = material.TextureName;
                     ModelTextures.Add(newModelTexture);
+                    ModelMaterial newModelMaterial;
+                    material.TextureAnimationType = DetermineMaterialAnimationType(material);
                     switch (material.MaterialType)
                     {
                         case MaterialType.TransparentAdditive:
                         case MaterialType.TransparentAdditiveUnlit:
                         case MaterialType.TransparentAdditiveUnlitSkydome:
                             {
-                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Add));
+                                newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Add);
                             }
                             break;
                         case MaterialType.Transparent25Percent:
@@ -260,18 +293,19 @@ namespace EQWOWConverter.Objects
                         case MaterialType.Transparent50Percent:
                         case MaterialType.TransparentMasked:
                             {
-                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Alpha));
+                                newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Alpha);
                             }
                             break;
                         default:
                             {
-                                ModelMaterials.Add(new ModelMaterial(material, ModelMaterialBlendType.Opaque));
+                                newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Opaque);
                             }
                             break;
                     }
+                    ModelMaterials.Add(newModelMaterial);
 
-                    // Make animation frames if this is an animated texture
-                    if (material.IsAnimated())
+                    // Make animation frames if this is an animated texture by texture transform
+                    if (material.TextureAnimationType == MaterialAnimationType.TextureTransform)
                     {
                         ModelTextureAnimation newAnimation = new ModelTextureAnimation();
                         newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
@@ -292,8 +326,14 @@ namespace EQWOWConverter.Objects
                         ModelTextureAnimations.Add(newAnimation);                        
                         ModelTextureAnimationLookup.Add(Convert.ToInt16(ModelTextureAnimations.Count - 1));
                     }
+                    // No animation setting
+                    else if (material.TextureAnimationType == MaterialAnimationType.None)
+                    {
+                        ModelTextureAnimationLookup.Add(-1);
+                    }
                     else
                     {
+                        Logger.WriteError("For object '" + Name + "' material '" + newModelMaterial.Material.Name + "' there is an unhandled texture animation type of '" + newModelMaterial.Material.TextureAnimationType .ToString() + "'");
                         ModelTextureAnimationLookup.Add(-1);
                     }
 

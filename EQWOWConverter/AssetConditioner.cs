@@ -38,6 +38,7 @@ namespace EQWOWConverter
         private static uint objectMaterialsCondensed = 0;
         private static uint objectTexturesCondensed = 0;
         private static uint transparentTexturesGenerated = 0;
+        private static uint combinedTexturesGenerated = 0;
 
         public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
@@ -198,8 +199,8 @@ namespace EQWOWConverter
             // Clean up the temp folder
             Directory.Delete(tempFolderRoot, true);
 
-            // Perform additional material/texture adjustments in output folders
-            Logger.WriteInfo("Creating combined animated textures and transparent materials, and save texture sizes...");
+            // Save the texture coordinates in the material lists
+            Logger.WriteInfo("Saving texture sizes in material lists...");
             topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
             foreach (string topDirectory in topDirectories)
             {
@@ -214,19 +215,74 @@ namespace EQWOWConverter
                     {
                         // Get just the zone folder
                         string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-                        SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);
-                        GenerateCombinedAndTransparentImagesByMaterials(zoneDirectoryFolderNameOnly, zoneDirectory);                        
+                        SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);                    
                     }
                 }
                 else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
                 {
                     SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
-                    GenerateCombinedAndTransparentImagesByMaterials(topDirectoryFolderNameOnly, topDirectory);                    
                 }
                 // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
             }
-            
-            Logger.WriteInfo("Conditioning completed for model data.  Object Meshes condensed: '" + objectMeshesCondensed + "', Object Textures condensed: '" + objectTexturesCondensed + "', Object Materials Condensed: '" + objectMaterialsCondensed + "', Transparent textures generated: '" + transparentTexturesGenerated + "'");
+
+            // Generate combined textures where needed
+            Logger.WriteInfo("Creating combined textures for texture-animated materials...");
+            topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
+            foreach (string topDirectory in topDirectories)
+            {
+                // Get just the folder name itself for later
+                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+
+                // Different logic based on type of folder
+                if (topDirectoryFolderNameOnly == "zones")
+                {
+                    string[] zoneDirectories = Directory.GetDirectories(topDirectory);
+                    foreach (string zoneDirectory in zoneDirectories)
+                    {
+                        // Get just the zone folder
+                        string zoneDirectoryFolderNameOnly = zoneDirectory.Split('\\').Last();
+                        GenerateCombinedImagesForTextureAnimatedMaterials(zoneDirectory);
+                    }
+                }
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
+                {
+                    GenerateCombinedImagesForTextureAnimatedMaterials(topDirectory);
+                }
+                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
+            }
+
+            // Generate any needed transparent textures
+            Logger.WriteInfo("Generating transparent textures...");
+            topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
+            foreach (string topDirectory in topDirectories)
+            {
+                // Get just the folder name itself for later
+                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+
+                // Different logic based on type of folder
+                if (topDirectoryFolderNameOnly == "zones")
+                {
+                    string[] zoneDirectories = Directory.GetDirectories(topDirectory);
+                    foreach (string zoneDirectory in zoneDirectories)
+                    {
+                        // Get just the zone folder
+                        string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
+                        GenerateTransparentImagesForMaterials(zoneDirectory);
+                    }
+                }
+                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects")
+                {
+                    GenerateTransparentImagesForMaterials(topDirectory);
+                }
+                // TODO: Implement "equipment".  Right now there is at least one texture with > 16 animation frames
+            }
+
+            Logger.WriteInfo("Conditioning complete. Totals:");
+            Logger.WriteInfo(" - Object Meshes condensed: " + objectMeshesCondensed);
+            Logger.WriteInfo(" - Object Textures condensed: " + objectTexturesCondensed);
+            Logger.WriteInfo(" - Object Materials condensed: " + objectMaterialsCondensed);
+            Logger.WriteInfo(" - Transparent Textures generated: " + transparentTexturesGenerated);
+            Logger.WriteInfo(" - Combined Textures Generated: " + combinedTexturesGenerated);
             return true;
         }
 
@@ -334,7 +390,85 @@ namespace EQWOWConverter
             newOutputImage.Dispose();
         }
 
-        private void GenerateCombinedAndTransparentImagesByMaterials(string topFolderName, string workingRootFolderPath)
+        private void GenerateCombinedImagesForTextureAnimatedMaterials(string workingRootFolderPath)
+        {
+            string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
+            string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
+            string meshFolder = Path.Combine(workingRootFolderPath, "Meshes");
+
+            // Process by materials
+            string[] materialListFiles = Directory.GetFiles(materialListFolder);
+            foreach (string materialListFile in materialListFiles)
+            {
+                // Get the related mesh for this material file to determine animation type
+                EQMeshData eqMeshData = new EQMeshData();
+                string meshFileFullPath = Path.Combine(meshFolder, Path.GetFileNameWithoutExtension(materialListFile) + ".txt");
+                if (eqMeshData.LoadFromDisk(meshFileFullPath) == false)
+                {
+                    Logger.WriteError("Failed to load the mesh '" + meshFileFullPath + "'");
+                    return;
+                }
+
+                bool doWriteOutMaterialListFile = false;
+                string materialFileText = File.ReadAllText(materialListFile);
+                string[] materialFileRows = materialFileText.Split(Environment.NewLine);
+                string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                int rowIndex = -1;
+                foreach (string materialFileRow in materialFileRows)
+                {
+                    rowIndex++;
+                    // Skip blank lines and comments
+                    if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
+                        continue;
+                    string workingMaterialFileRow = materialFileRow;
+
+                    // Grab material details
+                    string[] blocks = materialFileRow.Split(",");
+                    Material curMaterial = new Material(blocks[1]);
+                    curMaterial.Index = uint.Parse(blocks[0]);
+                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+
+                    // Only create the combined texture if it's animated and has no oversized texture coordinates
+                    if (curMaterial.IsAnimated() && eqMeshData.HasOversizedTextureCoordinatesForMaterial(curMaterial) == false)
+                    {
+                        // Ensure a unique name is generated
+                        string newTextureName = curMaterial.Name + "AnimTex";
+                        int curIter = 0;
+                        bool uniqueNameFound = true;
+                        do
+                        {
+                            string newTexturePath = Path.Combine(textureFolder, newTextureName + ".png");
+                            if (File.Exists(newTexturePath))
+                            {
+                                newTextureName = curMaterial.Name + "AnimTex" + curIter.ToString();
+                                curIter++;
+                                uniqueNameFound = false;
+                            }
+                            else
+                                uniqueNameFound = true;
+                        } while (uniqueNameFound == false);
+                        GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.SourceTextureNameArray.ToArray());
+                        Logger.WriteDetail("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
+                        combinedTexturesGenerated++;
+                        curMaterial.TextureName = newTextureName;
+
+                        // Add it as a new segment in the material file
+                        workingMaterialFileRow = materialFileRow + "," + curMaterial.TextureName;
+                        materialFileRowsForWrite[rowIndex] = workingMaterialFileRow;
+                        doWriteOutMaterialListFile = true;
+                    }
+                }
+                if (doWriteOutMaterialListFile == true)
+                {
+                    StringBuilder newMaterialListFileContents = new StringBuilder();
+                    foreach (string materialFileRow in materialFileRowsForWrite)
+                        newMaterialListFileContents.AppendLine(materialFileRow);
+                    File.WriteAllText(materialListFile, newMaterialListFileContents.ToString());
+                }
+            }
+        }
+
+        private void GenerateTransparentImagesForMaterials(string workingRootFolderPath)
         {
             string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
             string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
@@ -359,35 +493,6 @@ namespace EQWOWConverter
                     Material curMaterial = new Material(blocks[1]);
                     curMaterial.Index = uint.Parse(blocks[0]);
                     curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-
-                    // Combine all textures horizontally in a material if it's animated
-                    if (curMaterial.IsAnimated())
-                    {
-                        // Ensure a unique name is generated
-                        string newTextureName = curMaterial.Name + "AnimTex";
-                        int curIter = 0;
-                        bool uniqueNameFound = true;
-                        do
-                        {
-                            string newTexturePath = Path.Combine(textureFolder, newTextureName + ".png");
-                            if (File.Exists(newTexturePath))
-                            {
-                                newTextureName = curMaterial.Name + "AnimTex" + curIter.ToString();
-                                curIter++;
-                                uniqueNameFound = false;
-                            }
-                            else
-                                uniqueNameFound = true;
-                        } while (uniqueNameFound == false);
-                        GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.SourceTextureNameArray.ToArray());
-                        Logger.WriteDetail("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
-                        curMaterial.TextureName = newTextureName;
-
-                        // Add it as a new segment in the material file
-                        workingMaterialFileRow = materialFileRow + "," + curMaterial.TextureName;
-                        materialFileRowsForWrite[rowIndex] = workingMaterialFileRow;
-                        doWriteOutMaterialListFile = true;
-                    }
 
                     // Generate transparent versions as required
                     if (curMaterial.MaterialType == MaterialType.Transparent25Percent || curMaterial.MaterialType == MaterialType.Transparent50Percent || curMaterial.MaterialType == MaterialType.Transparent75Percent)

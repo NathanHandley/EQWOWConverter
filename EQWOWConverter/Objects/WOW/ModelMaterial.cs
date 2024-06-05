@@ -25,9 +25,9 @@ namespace EQWOWConverter.ModelObjects
 {
     internal class ModelMaterial : IByteSerializable
     {
-        ModelMaterialFlag Flags = ModelMaterialFlag.None;
-        ModelMaterialBlendType BlendingMode;
-        Material Material;
+        public ModelMaterialFlag Flags = ModelMaterialFlag.None;
+        public ModelMaterialBlendType BlendingMode;
+        public Material Material;
 
         public ModelMaterial(Material material, ModelMaterialBlendType blendType)
         {

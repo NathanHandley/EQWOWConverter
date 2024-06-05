@@ -29,6 +29,7 @@ namespace EQWOWConverter.Common
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
         public readonly List<string> SourceTextureNameArray = new List<string>();
+        public MaterialAnimationType TextureAnimationType = MaterialAnimationType.None;
         public string TextureName = string.Empty;
         public uint AnimationDelayMs = 0;
         public int OriginalTextureWidth = 0;

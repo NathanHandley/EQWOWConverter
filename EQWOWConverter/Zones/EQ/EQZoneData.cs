@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones
         public List<ColorRGBA> VertexColors { get; } = new List<ColorRGBA>();
         public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
         public List<Material> Materials { get; } = new List<Material>();
-        public List<MapChunk> MapChunks { get; } = new List<MapChunk>(); // Potentially delete
+        public List<MapChunk> MapChunks { get; } = new List<MapChunk>(); // TODO: Delete
 
         public ColorRGBA AmbientLight { get; } = new ColorRGBA();
         public List<LightInstance> LightInstances { get; } = new List<LightInstance>();
