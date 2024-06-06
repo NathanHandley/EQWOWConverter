@@ -21,17 +21,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter
+namespace EQWOWConverter.EQFiles
 {
-    internal class EQMeshData
+    internal class EQMesh
     {
         public List<Vector3> Verticies = new List<Vector3>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
-        public List<Material> Materials = new List<Material>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
         public AnimatedVerticies AnimatedVerticies = new AnimatedVerticies();
+        public string MaterialListFileName = string.Empty;
         // TODO: Bones
 
         public bool LoadFromDisk(string fileFullPath)
@@ -39,7 +39,7 @@ namespace EQWOWConverter
             Logger.WriteDetail(" - Reading EQ Mesh Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
-                Logger.WriteError("- Could not find render mesh file that should be at '" + fileFullPath + "'");
+                Logger.WriteError("- Could not find mesh file that should be at '" + fileFullPath + "'");
                 return false;
             }
 
@@ -58,7 +58,15 @@ namespace EQWOWConverter
 
                 // ml = Material List
                 else if (inputRow.StartsWith("ml"))
-                    continue; // Skip for now
+                {
+                    string[] blocks = inputRow.Split(",");
+                    if (blocks.Length != 2)
+                    {
+                        Logger.WriteError("- MaterialList block must be 2 components");
+                        continue;
+                    }
+                    MaterialListFileName = blocks[1];
+                }   
 
                 // b = Bones (?)
                 else if (inputRow.StartsWith("b"))
@@ -70,7 +78,7 @@ namespace EQWOWConverter
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 4)
                     {
-                        Logger.WriteError("- Error, vertex block was not 4 components");
+                        Logger.WriteError("- Vertex block was not 4 components");
                         continue;
                     }
                     Vector3 vertex = new Vector3();

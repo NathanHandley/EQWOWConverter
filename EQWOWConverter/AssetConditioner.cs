@@ -27,6 +27,8 @@ using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
+using EQWOWConverter.EQFiles;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EQWOWConverter
 {
@@ -398,7 +400,7 @@ namespace EQWOWConverter
             foreach (string materialListFile in materialListFiles)
             {
                 // Get the related mesh for this material file to determine animation type
-                EQMeshData eqMeshData = new EQMeshData();
+                EQMesh eqMeshData = new EQMesh();
                 string meshFileFullPath = Path.Combine(meshFolder, Path.GetFileNameWithoutExtension(materialListFile) + ".txt");
                 if (eqMeshData.LoadFromDisk(meshFileFullPath) == false)
                 {
@@ -410,6 +412,8 @@ namespace EQWOWConverter
                 string materialFileText = File.ReadAllText(materialListFile);
                 string[] materialFileRows = materialFileText.Split(Environment.NewLine);
                 string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                EQMaterialList materialListData = new EQMaterialList();
+                materialListData.LoadFromDisk(materialListFile);
                 int rowIndex = -1;
                 foreach (string materialFileRow in materialFileRows)
                 {
@@ -417,41 +421,31 @@ namespace EQWOWConverter
                     // Skip blank lines and comments
                     if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
                         continue;
-                    string workingMaterialFileRow = materialFileRow;
 
                     // Grab material details
                     string[] blocks = materialFileRow.Split(",");
-                    Material curMaterial = new Material(blocks[1]);
-                    curMaterial.Index = uint.Parse(blocks[0]);
-                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+                    UInt32 materialIndex = UInt32.Parse(blocks[0]);
+                    Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
 
                     // Only create the combined texture if it's animated and has no oversized texture coordinates
                     if (curMaterial.IsAnimated() && eqMeshData.HasOversizedTextureCoordinatesForMaterial(curMaterial) == false)
                     {
+                        // Only one is needed
                         // Ensure a unique name is generated
                         string newTextureName = curMaterial.Name + "AnimTex";
-                        int curIter = 0;
-                        bool uniqueNameFound = true;
-                        do
+                        string newTexturePath = Path.Combine(textureFolder, newTextureName + ".png");
+                        if (File.Exists(newTexturePath))
                         {
-                            string newTexturePath = Path.Combine(textureFolder, newTextureName + ".png");
-                            if (File.Exists(newTexturePath))
-                            {
-                                newTextureName = curMaterial.Name + "AnimTex" + curIter.ToString();
-                                curIter++;
-                                uniqueNameFound = false;
-                            }
-                            else
-                                uniqueNameFound = true;
-                        } while (uniqueNameFound == false);
-                        GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.SourceTextureNameArray.ToArray());
+                            Logger.WriteDetail("Skipping generating combined texture named '" + newTextureName + "' since one already exists");
+                            continue;
+                        }
+                        GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.TextureNameArray.ToArray());
                         Logger.WriteDetail("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
                         combinedTexturesGenerated++;
-                        curMaterial.TextureName = newTextureName;
+                        curMaterial.CombinedTransformationAnimationTextureName = newTextureName;
 
                         // Add it as a new segment in the material file
-                        workingMaterialFileRow = materialFileRow + "," + curMaterial.TextureName;
-                        materialFileRowsForWrite[rowIndex] = workingMaterialFileRow;
+                        materialFileRowsForWrite[rowIndex] = materialFileRow + "," + curMaterial.CombinedTransformationAnimationTextureName;
                         doWriteOutMaterialListFile = true;
                     }
                 }
@@ -476,6 +470,8 @@ namespace EQWOWConverter
                 string materialFileText = File.ReadAllText(materialListFile);
                 string[] materialFileRows = materialFileText.Split(Environment.NewLine);
                 string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                EQMaterialList materialListData = new EQMaterialList();
+                materialListData.LoadFromDisk(materialListFile);
                 int rowIndex = -1;
                 foreach (string materialFileRow in materialFileRows)
                 {
@@ -483,33 +479,56 @@ namespace EQWOWConverter
                     // Skip blank lines and comments
                     if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
                         continue;
-                    string workingMaterialFileRow = materialFileRow;
 
                     // Grab material details
                     string[] blocks = materialFileRow.Split(",");
-                    Material curMaterial = new Material(blocks[1]);
-                    curMaterial.Index = uint.Parse(blocks[0]);
-                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+                    UInt32 materialIndex = UInt32.Parse(blocks[0]);
+                    Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
 
                     // Generate transparent versions as required
                     if (curMaterial.MaterialType == MaterialType.Transparent25Percent || curMaterial.MaterialType == MaterialType.Transparent50Percent || curMaterial.MaterialType == MaterialType.Transparent75Percent)
                     {
-                        // Generate a new texture name
-                        string newTextureName = curMaterial.TextureName + curMaterial.GetTextureSuffix();
-
-                        // Check if texture already exists and if not, create it
-                        string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.TextureName + ".png");
-                        string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
-                        if (File.Exists(newTextureFullPath) == false)
+                        if (curMaterial.CombinedTransformationAnimationTextureName != string.Empty)
                         {
-                            GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
-                            Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
-                        }
+                            // Generate a new texture name
+                            string newTextureName = curMaterial.CombinedTransformationAnimationTextureName + curMaterial.GetTextureSuffix();
 
-                        // Update texture references for the material
-                        materialFileRowsForWrite[rowIndex] = workingMaterialFileRow.Replace(curMaterial.TextureName, newTextureName);
-                        doWriteOutMaterialListFile = true;
-                        curMaterial.TextureName = newTextureName;
+                            // Check if texture already exists and if not, create it
+                            string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.CombinedTransformationAnimationTextureName + ".png");
+                            string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
+                            if (File.Exists(newTextureFullPath) == false)
+                            {
+                                GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
+                                Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
+                            }
+
+                            // Update texture references for the material
+                            materialFileRowsForWrite[rowIndex] = materialFileRowsForWrite[rowIndex].Replace(curMaterial.CombinedTransformationAnimationTextureName, newTextureName);
+                            doWriteOutMaterialListFile = true;
+                            curMaterial.CombinedTransformationAnimationTextureName = newTextureName;
+                        }
+                        else if (curMaterial.TextureNameArray.Count > 0)
+                        {
+                            for (int i = 0; i < curMaterial.TextureNameArray.Count; ++i)
+                            {
+                                // Generate a new texture name
+                                string newTextureName = curMaterial.TextureNameArray[i] + curMaterial.GetTextureSuffix();
+
+                                // Check if texture already exists and if not, create it
+                                string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.TextureNameArray[i] + ".png");
+                                string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
+                                if (File.Exists(newTextureFullPath) == false)
+                                {
+                                    GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
+                                    Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
+                                }
+
+                                // Update texture references for the material
+                                materialFileRowsForWrite[rowIndex] = materialFileRowsForWrite[rowIndex].Replace(curMaterial.TextureNameArray[i], newTextureName);
+                                doWriteOutMaterialListFile = true;
+                                curMaterial.TextureNameArray[i] = newTextureName;
+                            }
+                        }
                     }
                 }
                 if (doWriteOutMaterialListFile == true)
@@ -568,6 +587,8 @@ namespace EQWOWConverter
                 string materialFileText = File.ReadAllText(materialListFile);
                 string[] materialFileRows = materialFileText.Split(Environment.NewLine);
                 string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
+                EQMaterialList materialListData = new EQMaterialList();
+                materialListData.LoadFromDisk(materialListFile);
                 int rowIndex = -1;
                 foreach (string materialFileRow in materialFileRows)
                 {
@@ -578,23 +599,23 @@ namespace EQWOWConverter
 
                     // Grab material details
                     string[] blocks = materialFileRow.Split(",");
-                    Material curMaterial = new Material(blocks[1]);
-                    curMaterial.Index = uint.Parse(blocks[0]);
-                    curMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
+                    UInt32 materialIndex = UInt32.Parse(blocks[0]);
+                    Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
 
                     // Get texture dimensions, if there is one
-                    if (curMaterial.SourceTextureNameArray.Count > 0)
+                    if (curMaterial.TextureNameArray.Count > 0)
                     {
-                        string textureFullPath = Path.Combine(textureFolder, curMaterial.SourceTextureNameArray[0] + ".png");
+                        string textureFullPath = Path.Combine(textureFolder, curMaterial.TextureNameArray[0] + ".png");
                         Bitmap textureinputImage = new Bitmap(textureFullPath);
                         int imageHeight = textureinputImage.Height;
                         int imageWidth = textureinputImage.Width;
                         textureinputImage.Dispose();
 
                         // Throw an error if this texture isn't a power of 2
-                        if (imageHeight != 8 && imageHeight != 16 && imageHeight != 32 && imageHeight != 64 && imageHeight != 128 && imageHeight != 256 && imageHeight != 512 && imageHeight != 1024)
+                        HashSet<int> validDimensions = new HashSet<int>() { 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024 };
+                        if (validDimensions.Contains(imageHeight) == false)
                             Logger.WriteError("Texture '" + textureFullPath + "' height is invalid with value '" + imageHeight + "', it must be a power of 2 and <= 1024");
-                        if (imageWidth != 8 && imageWidth != 16 && imageWidth != 32 && imageWidth != 64 && imageWidth != 128 && imageWidth != 256 && imageWidth != 512 && imageWidth != 1024)
+                        if (validDimensions.Contains(imageWidth) == false)
                             Logger.WriteError("Texture '" + textureFullPath + "' width is invalid with value '" + imageWidth + "', it must be a power of 2 and <= 1024");
 
                         // Write this to the end of the row
@@ -646,14 +667,26 @@ namespace EQWOWConverter
                             string[] objectMaterialFiles = Directory.GetFiles(tempMaterialsFolderName);
                             foreach (string objectMaterialFile in objectMaterialFiles)
                             {
-                                string fileText = File.ReadAllText(objectMaterialFile);
+                                EQMaterialList eqMaterialList = new EQMaterialList();
+                                eqMaterialList.LoadFromDisk(objectMaterialFile);
+                                bool materialHasTextureName = false;
                                 string objectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(objectTextureFileNameOnly);
-                                if (fileText.Contains(":" + objectTextureFileNameNoExtension))
+                                foreach (Material material in eqMaterialList.Materials)
                                 {
-                                    string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
-                                    Logger.WriteDetail("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
-                                    fileText = fileText.Replace(":" + objectTextureFileNameNoExtension, ":" + newObjectTextureFileNameNoExtension);
-                                    File.WriteAllText(objectMaterialFile, fileText);
+                                    if (material.Name == objectTextureFileNameNoExtension)
+                                        materialHasTextureName = true;
+                                    break;
+                                }
+                                if (materialHasTextureName)
+                                {
+                                    string fileText = File.ReadAllText(objectMaterialFile);
+                                    if (fileText.Contains(":" + objectTextureFileNameNoExtension))
+                                    {
+                                        string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
+                                        Logger.WriteDetail("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
+                                        fileText = fileText.Replace(":" + objectTextureFileNameNoExtension, ":" + newObjectTextureFileNameNoExtension);
+                                        File.WriteAllText(objectMaterialFile, fileText);
+                                    }
                                 }
                             }
 
@@ -712,10 +745,12 @@ namespace EQWOWConverter
                             string[] objectMeshFiles = Directory.GetFiles(tempObjectMeshesFolderName);
                             foreach (string objectMeshFile in objectMeshFiles)
                             {
-                                string fileText = File.ReadAllText(objectMeshFile);
+                                EQMesh curMesh = new EQMesh();
+                                curMesh.LoadFromDisk(objectMeshFile);
                                 string objectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMaterialFileNameOnly);
-                                if (fileText.Contains("," + objectMaterialFileNameNoExtension))
+                                if (curMesh.MaterialListFileName == objectMaterialFileNameNoExtension)
                                 {
+                                    string fileText = File.ReadAllText(objectMeshFile);
                                     string newObjectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMaterialFileNameOnly);
                                     Logger.WriteDetail("- [" + topDirectory + "] Object mesh file '" + objectMeshFile + "' contained material '" + objectMaterialFileNameNoExtension + "' which was renamed to '" + newObjectMaterialFileNameNoExtension + "'. Updating mesh file...");
                                     fileText = fileText.Replace("," + objectMaterialFileNameNoExtension, "," + newObjectMaterialFileNameNoExtension);
@@ -795,14 +830,34 @@ namespace EQWOWConverter
                             }
                             else
                             {
-                                string fileText = File.ReadAllText(zoneObjectInstancesFile);
-                                string objectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMeshFileNameOnly);
-                                if (fileText.Contains(objectMeshFileNameNoExtension + ","))
+                                EQObjectInstances eqObjectInstances = new EQObjectInstances();
+                                if (eqObjectInstances.LoadFromDisk(zoneObjectInstancesFile) == false)
+                                { 
+                                    Logger.WriteError("- [" + topDirectory + "] Issue loading object instances file '" + zoneObjectInstancesFile + "'");
+                                }
+                                else
                                 {
-                                    string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMeshFileNameOnly);
-                                    Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + zoneObjectInstancesFile + "' contained mesh '" + objectMeshFileNameNoExtension + "' which was renamed to '" + newObjectMeshFileNameNoExtension + "'. Updating object_instances file...");
-                                    fileText = fileText.Replace(objectMeshFileNameNoExtension + ",", newObjectMeshFileNameNoExtension + ",");
-                                    File.WriteAllText(zoneObjectInstancesFile, fileText);
+                                    bool meshFoundInFile = false;
+                                    string objectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMeshFileNameOnly);
+                                    foreach (ObjectInstance objectInstance in eqObjectInstances.ObjectInstances)
+                                    {
+                                        if (objectInstance.ModelName == objectMeshFileNameNoExtension)
+                                        {
+                                            meshFoundInFile = true;
+                                            break;
+                                        }
+                                    }
+                                    if (meshFoundInFile == true)
+                                    {
+                                        string fileText = File.ReadAllText(zoneObjectInstancesFile);
+                                        if (fileText.Contains(objectMeshFileNameNoExtension + ","))
+                                        {
+                                            string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMeshFileNameOnly);
+                                            Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + zoneObjectInstancesFile + "' contained mesh '" + objectMeshFileNameNoExtension + "' which was renamed to '" + newObjectMeshFileNameNoExtension + "'. Updating object_instances file...");
+                                            fileText = fileText.Replace(objectMeshFileNameNoExtension + ",", newObjectMeshFileNameNoExtension + ",");
+                                            File.WriteAllText(zoneObjectInstancesFile, fileText);
+                                        }
+                                    }
                                 }
                             }
 

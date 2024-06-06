@@ -21,25 +21,26 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using EQWOWConverter.Common;
+using EQWOWConverter.EQFiles;
 
 namespace EQWOWConverter.Zones
 {
     internal class EQZoneData
     {
         private bool IsLoaded = false;
-        public List<Vector3> Verticies { get; } = new List<Vector3>();
-        public List<TextureCoordinates> TextureCoords { get; } = new List<TextureCoordinates>();
-        public List<Vector3> Normals { get; } = new List<Vector3>();
-        public List<ColorRGBA> VertexColors { get; } = new List<ColorRGBA>();
-        public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
-        public List<Material> Materials { get; } = new List<Material>();
-        public List<MapChunk> MapChunks { get; } = new List<MapChunk>(); // TODO: Delete
+        private string MaterialListFileName = string.Empty;
+        public List<Vector3> Verticies = new List<Vector3>();
+        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
+        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
+        public List<Material> Materials = new List<Material>();
 
-        public ColorRGBA AmbientLight { get; } = new ColorRGBA();
-        public List<LightInstance> LightInstances { get; } = new List<LightInstance>();
-        public List<ObjectInstance> ObjectInstances { get; } = new List<ObjectInstance>();
-        public List<Vector3> CollisionVerticies { get; } = new List<Vector3>();
-        public List<TriangleFace> CollisionTriangleFaces { get; } = new List<TriangleFace>();
+        public ColorRGBA AmbientLight = new ColorRGBA();
+        public List<LightInstance> LightInstances = new List<LightInstance>();
+        public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
+        public List<Vector3> CollisionVerticies = new List<Vector3>();
+        public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
 
         private string MaterialListName = string.Empty;
 
@@ -67,197 +68,35 @@ namespace EQWOWConverter.Zones
         {
             Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading render mesh data...");
             string renderMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + ".txt");
-            if (File.Exists(renderMeshFileName) == false)
+            EQMesh meshData = new EQMesh();
+            if (meshData.LoadFromDisk(renderMeshFileName) == false)
             {
                 Logger.WriteError("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
-
-            // Load the core data
-            string inputData = File.ReadAllText(renderMeshFileName);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            int curMapChunkID = 0;
-            MapChunk curMapChunk = new MapChunk(curMapChunkID);
-            MapChunks.Add(curMapChunk);
-            bool lastRowVasVertex = true;
-            foreach (string inputRow in inputRows)
-            {
-                // Nothing for blank lines
-                if (inputRow.Length == 0)
-                    continue;
-
-                // # = comment
-                else if (inputRow.StartsWith("#"))
-                    continue;
-
-                // ml = Material List
-                else if (inputRow.StartsWith("ml"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 2)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, material list name needs to be 2 components");
-                        continue;
-                    }
-                    if (MaterialListName != string.Empty)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, a second material list was found");
-                        continue;
-                    }
-                    MaterialListName = blocks[1];
-                }
-
-                // v = Verticies
-                else if (inputRow.StartsWith("v"))
-                {
-                    if (lastRowVasVertex == false)
-                    {
-                        curMapChunkID++;
-                        curMapChunk = new MapChunk(curMapChunkID);
-                        MapChunks.Add(curMapChunk);
-                        lastRowVasVertex = true;
-                    }
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 4)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
-                        continue;
-                    }
-                    Vector3 vertex = new Vector3();
-                    vertex.X = float.Parse(blocks[1]);
-                    vertex.Z = float.Parse(blocks[2]);
-                    vertex.Y = float.Parse(blocks[3]);
-                    Verticies.Add(vertex);
-                    curMapChunk.Verticies.Add(vertex);
-                }
-
-                // uv = Texture Coordinates
-                else if (inputRow.StartsWith("uv"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 3)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, texture coordinate block was not 3 components");
-                        continue;
-                    }
-                    TextureCoordinates textureUv = new TextureCoordinates();
-                    textureUv.X = float.Parse(blocks[1]);
-                    textureUv.Y = float.Parse(blocks[2]);
-                    TextureCoords.Add(textureUv);
-                    curMapChunk.TextureCoords.Add(textureUv);
-                    lastRowVasVertex = false;
-                }
-
-                // n = Normal
-                else if (inputRow.StartsWith("n"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 4)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, normals block was not 4 components");
-                        continue;
-                    }
-                    Vector3 normal = new Vector3();
-                    normal.X = float.Parse(blocks[1]);
-                    normal.Y = float.Parse(blocks[2]);
-                    normal.Z = float.Parse(blocks[3]);
-                    Normals.Add(normal);
-                    curMapChunk.Normals.Add(normal);
-                    lastRowVasVertex = false;
-                }
-
-                // c = Vertex Color
-                else if (inputRow.StartsWith("c"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 5)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex color block was not 5 components");
-                        continue;
-                    }
-                    ColorRGBA color = new ColorRGBA();
-                    color.B = byte.Parse(blocks[1]);
-                    color.G = byte.Parse(blocks[2]);
-                    color.R = byte.Parse(blocks[3]);
-                    color.A = byte.Parse(blocks[4]);
-                    VertexColors.Add(color);
-                    curMapChunk.VertexColors.Add(color);
-                    lastRowVasVertex = false;
-                }
-
-                // i = Indicies
-                else if (inputRow.StartsWith("i"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 5)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
-                        continue;
-                    }
-                    TriangleFace index = new TriangleFace();
-                    index.MaterialIndex = int.Parse(blocks[1]);
-                    index.V1 = int.Parse(blocks[2]);
-                    index.V2 = int.Parse(blocks[3]);
-                    index.V3 = int.Parse(blocks[4]);
-                    TriangleFaces.Add(index);
-                    curMapChunk.TriangleFaces.Add(index);
-                    lastRowVasVertex = false;
-                }
-
-                else
-                {
-                    Logger.WriteError("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
-                }
-            }
+            Verticies = meshData.Verticies;
+            Normals = meshData.Normals;
+            TextureCoords = meshData.TextureCoordinates;
+            TriangleFaces = meshData.TriangleFaces;
+            VertexColors = meshData.VertexColors;
+            MaterialListFileName = meshData.MaterialListFileName;
         }
+
         private void LoadMaterialDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading materials...");
-            string materialListFileName = Path.Combine(inputZoneFolderFullPath, "MaterialLists", inputZoneFolderName + ".txt");
-            if (File.Exists(materialListFileName) == false)
+            if (MaterialListFileName == string.Empty)
+            {
+                Logger.WriteError("- [" + inputZoneFolderName + "]: No material file name found");
+                return;
+            }
+            string materialListFileName = Path.Combine(inputZoneFolderFullPath, "MaterialLists", MaterialListFileName + ".txt");
+            EQMaterialList materialListData = new EQMaterialList();
+            if (materialListData.LoadFromDisk(materialListFileName) == false)
                 Logger.WriteDetail("- [" + inputZoneFolderName + "]: No material data found.");
             else
             {
-                using (var materialListReader = new StreamReader(materialListFileName))
-                {
-                    string? curLine;
-                    while ((curLine = materialListReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-                        // 3+blocks is a material instance
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length < 3)
-                            {
-                                Logger.WriteError("- [" + inputZoneFolderName + "]: Error, material data must be 3+ components");
-                                continue;
-                            }
-                            Material newMaterial = new Material(blocks[1]);
-                            newMaterial.Index = uint.Parse(blocks[0]);
-                            newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-                            if (blocks.Length >= 4)
-                            {
-                                // If there are more than 4, then the next two are the dimensions
-                                newMaterial.OriginalTextureWidth = int.Parse(blocks[3]);
-                                newMaterial.OriginalTextureHeight = int.Parse(blocks[4]);
-
-                                // If there's a 6th, it's the texture name
-                                if (blocks.Length > 5)
-                                    newMaterial.TextureName = blocks[5];
-                            }
-                            Materials.Add(newMaterial);
-                        }
-
-                    }
-                }
+                Materials = materialListData.Materials;
             }
         }
         private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)

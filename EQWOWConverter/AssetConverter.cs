@@ -156,7 +156,7 @@ namespace EQWOWConverter
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
 
-                //if (zoneDirectory.Name != "freportw")
+                //if (zoneDirectory.Name != "akanon")
                 //    continue;
 
                 // Load the EQ zone
@@ -391,18 +391,18 @@ namespace EQWOWConverter
             // Go through every texture to move and put it there
             foreach (Material material in zone.WOWZoneData.Materials)
             {
-                if (material.TextureName == string.Empty)
-                    continue;
-                string textureName = material.TextureName;
-                string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
-                string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
-                if (File.Exists(sourceTextureFullPath) == false)
+                foreach (string textureName in material.RenderTextureNames)
                 {
-                    Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
-                    continue;
+                    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
+                    string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
+                    if (File.Exists(sourceTextureFullPath) == false)
+                    {
+                        Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
+                        continue;
+                    }
+                    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
+                    Logger.WriteDetail("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
                 }
-                File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
-                Logger.WriteDetail("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
             }
 
             // Also copy textures for the zone specific objects

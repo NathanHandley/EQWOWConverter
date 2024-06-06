@@ -258,7 +258,9 @@ namespace EQWOWConverter.Objects
                     || ModelVerticies[ModelTriangles[i].V2].HasOversizedTexture1TextureCoordinates()
                     || ModelVerticies[ModelTriangles[i].V3].HasOversizedTexture1TextureCoordinates())
                 {
-                    return MaterialAnimationType.TextureTransparency;
+                    // Not yet implemented, make none
+                    //return MaterialAnimationType.TextureTransparency;
+                    return MaterialAnimationType.None;
                 }
             }
 
@@ -272,10 +274,12 @@ namespace EQWOWConverter.Objects
             Int16 curIndex = 0;
             foreach (Material material in materials)
             {
-                if (material.TextureName != string.Empty)
+                // TODO: Account for more textures once texture animation is fully implemented
+                if (material.RenderTextureNames.Count > 0)
                 {
                     ModelTexture newModelTexture = new ModelTexture();
-                    newModelTexture.TextureName = material.TextureName;
+                    // TODO: Account for more textures once texture animation is fully implemented
+                    newModelTexture.TextureName = material.RenderTextureNames[0];
                     ModelTextures.Add(newModelTexture);
                     ModelMaterial newModelMaterial;
                     material.TextureAnimationType = DetermineMaterialAnimationType(material);

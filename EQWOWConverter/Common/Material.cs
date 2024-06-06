@@ -25,60 +25,40 @@ namespace EQWOWConverter.Common
 {
     internal class Material
     {
-        public uint Index = 0;
+        public UInt32 Index = 0;
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
-        public readonly List<string> SourceTextureNameArray = new List<string>();
+        public List<string> TextureNameArray = new List<string>();
         public MaterialAnimationType TextureAnimationType = MaterialAnimationType.None;
-        public string TextureName = string.Empty;
-        public uint AnimationDelayMs = 0;
+        public string CombinedTransformationAnimationTextureName = string.Empty;
+        public UInt32 AnimationDelayMs = 0;
         public int OriginalTextureWidth = 0;
         public int OriginalTextureHeight = 0;
 
-        public Material(string nameAndOriginalTexturesNameBlock)
+        public List<string> RenderTextureNames
         {
-            string[] parts = nameAndOriginalTexturesNameBlock.Split(':');
-
-            // First block is always the name
-            if (parts[0].Contains("_"))
+            get
             {
-                string[] nameAttributeSplit = parts[0].Split('_');
-                switch (nameAttributeSplit[0])
-                {
-                    case "d": MaterialType = MaterialType.Diffuse; break;
-                    case "i": MaterialType = MaterialType.Invisible; break;
-                    case "b": MaterialType = MaterialType.Boundary; break;
-                    case "t25": MaterialType = MaterialType.Transparent25Percent; break;
-                    case "t50": MaterialType = MaterialType.Transparent50Percent; break;
-                    case "t75": MaterialType = MaterialType.Transparent75Percent; break;
-                    case "ta": MaterialType = MaterialType.TransparentAdditive; break;
-                    case "tau": MaterialType = MaterialType.TransparentAdditiveUnlit; break;
-                    case "tm": MaterialType = MaterialType.TransparentMasked; break;
-                    case "ds": MaterialType = MaterialType.DiffuseSkydome; break;
-                    case "ts": MaterialType = MaterialType.TransparentSkydome; break;
-                    case "taus": MaterialType = MaterialType.Boundary; break;
-                    default:
-                        {
-                            Logger.WriteError("Error, Material had a name of " + parts[0] + " which doesn't map to a type");
-                            MaterialType = MaterialType.Diffuse;
-                        }
-                        break;
-                }
+                List<string> preparedTextureNames = new List<string>();
+                if (CombinedTransformationAnimationTextureName != string.Empty)
+                    preparedTextureNames.Add(CombinedTransformationAnimationTextureName);
+                else
+                    preparedTextureNames = TextureNameArray;
+                return preparedTextureNames;
             }
-            Name = parts[0];
+        }
 
-            // If there are more blocks, they are the textures
-            if (parts.Length > 1)
-                for (int i = 1; i < parts.Length; i++)
-                {
-                    // Some files have an extra section after a semicolon, so control for that
-                    string[] subparts = parts[i].Split(';');
-                    SourceTextureNameArray.Add(subparts[0]);
-                }
-
-            // Default the texture name to the first
-            if (SourceTextureNameArray.Count > 0)
-                TextureName = SourceTextureNameArray[0];
+        public Material(string name, UInt32 index, MaterialType materialType, List<string> sourceTextureNameArray,
+            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, string combinedTransformAnimationTextureName)
+        {
+            Name = name;
+            Index = index;
+            MaterialType = materialType;
+            TextureNameArray = sourceTextureNameArray;
+            AnimationDelayMs = animationDelayMS;
+            OriginalTextureWidth = sourceTextureWidth;
+            OriginalTextureHeight = sourceTextureHeight;
+            CombinedTransformationAnimationTextureName = combinedTransformAnimationTextureName;
         }
 
         public bool IsAnimated()
@@ -99,14 +79,14 @@ namespace EQWOWConverter.Common
                 return false;
             if (MaterialType == MaterialType.TransparentSkydome)
                 return false;
-            if (SourceTextureNameArray.Count == 0)
+            if (TextureNameArray.Count == 0)
                 return false;
             return true;
         }
 
         public int NumOfAnimationFrames()
         {
-            return SourceTextureNameArray.Count();
+            return TextureNameArray.Count();
         }
 
         public string GetTextureSuffix()
@@ -184,7 +164,7 @@ namespace EQWOWConverter.Common
 
             // How much to proportion for based on the animation data
             float proportionFactor = 1.0f;
-            if (IsAnimated())
+            if (TextureAnimationType == MaterialAnimationType.TextureTransform)
             {
                 // 2x2
                 if (NumOfAnimationFrames() <= 4)
@@ -209,7 +189,7 @@ namespace EQWOWConverter.Common
             else if (uncorrectedCoordinates.X <= (1.0f + float.Epsilon) && uncorrectedCoordinates.X >= (1.0f - float.Epsilon))
             {
                 float workingXCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureWidth));
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     workingXCoordinate *= proportionFactor;
                 correctedCoordinates.X = workingXCoordinate;
             }
@@ -217,14 +197,14 @@ namespace EQWOWConverter.Common
             else if (uncorrectedCoordinates.X >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.X <= (-1.0f + float.Epsilon))
             {
                 float workingXCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureWidth));
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     workingXCoordinate *= proportionFactor;
                 correctedCoordinates.X = workingXCoordinate;
             }
             // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
             else
             {
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     correctedCoordinates.X = uncorrectedCoordinates.X * proportionFactor;
                 else
                     correctedCoordinates.X = uncorrectedCoordinates.X;
@@ -239,7 +219,7 @@ namespace EQWOWConverter.Common
             else if (uncorrectedCoordinates.Y <= (1.0f + float.Epsilon) && uncorrectedCoordinates.Y >= (1.0f - float.Epsilon))
             {
                 float workingYCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureHeight));
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     workingYCoordinate *= proportionFactor;
                 correctedCoordinates.Y = workingYCoordinate;
             }
@@ -247,14 +227,14 @@ namespace EQWOWConverter.Common
             else if (uncorrectedCoordinates.Y >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.Y <= (-1.0f + float.Epsilon))
             {
                 float workingYCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureHeight));
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     workingYCoordinate *= proportionFactor;
                 correctedCoordinates.Y = workingYCoordinate;
             }
             // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
             else
             {
-                if (IsAnimated())
+                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
                     correctedCoordinates.Y = uncorrectedCoordinates.Y * proportionFactor;
                 else
                     correctedCoordinates.Y = uncorrectedCoordinates.Y;

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.EQFiles;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -26,14 +27,14 @@ namespace EQWOWConverter.Objects
 {
     internal class EQModelObjectData
     {
-        public AnimatedVerticies AnimatedVerticies { get; } = new AnimatedVerticies();
-        public List<Vector3> Verticies { get; } = new List<Vector3>();
-        public List<TextureCoordinates> TextureCoords { get; } = new List<TextureCoordinates>();
-        public List<Vector3> Normals { get; } = new List<Vector3>();
-        public List<TriangleFace> TriangleFaces { get; } = new List<TriangleFace>();
-        public List<Material> Materials { get; } = new List<Material>();
-        public List<Vector3> CollisionVerticies { get; } = new List<Vector3>();
-        public List<TriangleFace> CollisionTriangleFaces { get; } = new List<TriangleFace>();
+        public AnimatedVerticies AnimatedVerticies = new AnimatedVerticies();
+        public List<Vector3> Verticies = new List<Vector3>();
+        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
+        public List<Material> Materials = new List<Material>();
+        public List<Vector3> CollisionVerticies = new List<Vector3>();
+        public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
         private string MaterialListName = string.Empty;
 
         public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder)
@@ -199,50 +200,13 @@ namespace EQWOWConverter.Objects
         private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading materials...");
-            string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
-            if (File.Exists(materialListFileName) == false)
+            string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", MaterialListName + ".txt");
+            EQMaterialList materialListData = new EQMaterialList();
+            if (materialListData.LoadFromDisk(materialListFileName) == false)
                 Logger.WriteDetail("- [" + inputObjectName + "]: No material data found.");
             else
             {
-                using (var materialListReader = new StreamReader(materialListFileName))
-                {
-                    string? curLine;
-                    while ((curLine = materialListReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-                        // 3+blocks is a material instance
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length < 3)
-                            {
-                                Logger.WriteError("- [" + inputObjectName + "]: Error, material data must be 3+ components");
-                                continue;
-                            }
-                            Material newMaterial = new Material(blocks[1]);
-                            newMaterial.Index = uint.Parse(blocks[0]);
-                            newMaterial.AnimationDelayMs = uint.Parse(blocks[2]);
-                            if (blocks.Length >= 4)
-                            {
-                                // If there are more than 4, then the next two are the dimensions
-                                newMaterial.OriginalTextureWidth = int.Parse(blocks[3]);
-                                newMaterial.OriginalTextureHeight = int.Parse(blocks[4]);
-
-                                // If there's a 6th, it's the texture name
-                                if (blocks.Length > 5)
-                                    newMaterial.TextureName = blocks[5];
-                            }
-                            Materials.Add(newMaterial);
-                        }
-                    }
-                }
+                Materials = materialListData.Materials;
             }
         }
         private void LoadCollisionMeshData(string inputObjectName, string inputObjectFolder)
