@@ -59,10 +59,6 @@ namespace EQWOWConverter
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
-        // Any zones (by shortname) in this list will not have object instances spawned
-        // TODO: These zones crash if they have object instances-- Fix it
-        public static readonly List<string> CONFIG_DISABLE_OBJECT_INSTANCES_BY_ZONE_SHORTNAMES = new List<string>() { "paineel", "neriakc", "najena", "warrens", "northkarana" };
-
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
 
