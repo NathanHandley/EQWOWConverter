@@ -152,8 +152,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Determine which materials are animated and create objects to represent them
-            foreach(Material material in Materials)
-                if (material.IsAnimated())
+            foreach (Material material in Materials)
+                if (material.IsAnimated() && material.IsRenderable())
                     GenerateAndAddObjectInstanceForZoneMaterial(material, triangleFaces, verticies, normals, vertexColors, textureCoords);
 
             // If this can be generated as a single WMO, just do that

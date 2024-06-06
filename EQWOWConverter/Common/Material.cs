@@ -28,37 +28,21 @@ namespace EQWOWConverter.Common
         public UInt32 Index = 0;
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
-        public List<string> TextureNameArray = new List<string>();
-        public MaterialAnimationType TextureAnimationType = MaterialAnimationType.None;
-        public string CombinedTransformationAnimationTextureName = string.Empty;
+        public List<string> TextureNames = new List<string>();
         public UInt32 AnimationDelayMs = 0;
-        public int OriginalTextureWidth = 0;
-        public int OriginalTextureHeight = 0;
+        public int TextureWidth = 0;
+        public int TextureHeight = 0;
 
-        public List<string> RenderTextureNames
-        {
-            get
-            {
-                List<string> preparedTextureNames = new List<string>();
-                if (CombinedTransformationAnimationTextureName != string.Empty)
-                    preparedTextureNames.Add(CombinedTransformationAnimationTextureName);
-                else
-                    preparedTextureNames = TextureNameArray;
-                return preparedTextureNames;
-            }
-        }
-
-        public Material(string name, UInt32 index, MaterialType materialType, List<string> sourceTextureNameArray,
-            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight, string combinedTransformAnimationTextureName)
+        public Material(string name, UInt32 index, MaterialType materialType, List<string> textureNames,
+            UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight)
         {
             Name = name;
             Index = index;
             MaterialType = materialType;
-            TextureNameArray = sourceTextureNameArray;
+            TextureNames = textureNames;
             AnimationDelayMs = animationDelayMS;
-            OriginalTextureWidth = sourceTextureWidth;
-            OriginalTextureHeight = sourceTextureHeight;
-            CombinedTransformationAnimationTextureName = combinedTransformAnimationTextureName;
+            TextureWidth = sourceTextureWidth;
+            TextureHeight = sourceTextureHeight;
         }
 
         public bool IsAnimated()
@@ -79,14 +63,14 @@ namespace EQWOWConverter.Common
                 return false;
             if (MaterialType == MaterialType.TransparentSkydome)
                 return false;
-            if (TextureNameArray.Count == 0)
+            if (TextureNames.Count == 0)
                 return false;
             return true;
         }
 
         public int NumOfAnimationFrames()
         {
-            return TextureNameArray.Count();
+            return TextureNames.Count();
         }
 
         public string GetTextureSuffix()
@@ -162,82 +146,50 @@ namespace EQWOWConverter.Common
         {
             TextureCoordinates correctedCoordinates = new TextureCoordinates();
 
-            // How much to proportion for based on the animation data
-            float proportionFactor = 1.0f;
-            if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-            {
-                // 2x2
-                if (NumOfAnimationFrames() <= 4)
-                    proportionFactor = 0.5f;
-                else if (NumOfAnimationFrames() <= 16)
-                    proportionFactor = 0.25f;
-                else
-                {
-                    Logger.WriteError("GetCorrectedBaseCoordinates Error, unhandled for animations > 16 frames");
-                    correctedCoordinates.X = uncorrectedCoordinates.X;
-                    correctedCoordinates.Y = uncorrectedCoordinates.Y;
-                    return correctedCoordinates;
-                }
-            }
-
             // u(x) == 0, half-pixel correct
             if (uncorrectedCoordinates.X <= float.Epsilon && uncorrectedCoordinates.X >= float.Epsilon)
             {
-                correctedCoordinates.X = 0.5f / Convert.ToSingle(OriginalTextureWidth);
+                correctedCoordinates.X = 0.5f / Convert.ToSingle(TextureWidth);
             }
             // u(x) == 1, half-pixel correct and factor animation
             else if (uncorrectedCoordinates.X <= (1.0f + float.Epsilon) && uncorrectedCoordinates.X >= (1.0f - float.Epsilon))
             {
-                float workingXCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureWidth));
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    workingXCoordinate *= proportionFactor;
+                float workingXCoordinate = 1.0f - (0.5f / Convert.ToSingle(TextureWidth));
                 correctedCoordinates.X = workingXCoordinate;
             }
             // u(x) == -1 half-pixel correct and factor animation
             else if (uncorrectedCoordinates.X >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.X <= (-1.0f + float.Epsilon))
             {
-                float workingXCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureWidth));
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    workingXCoordinate *= proportionFactor;
+                float workingXCoordinate = -1.0f + (0.5f / Convert.ToSingle(TextureWidth));
                 correctedCoordinates.X = workingXCoordinate;
             }
             // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
             else
             {
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    correctedCoordinates.X = uncorrectedCoordinates.X * proportionFactor;
-                else
-                    correctedCoordinates.X = uncorrectedCoordinates.X;
+                correctedCoordinates.X = uncorrectedCoordinates.X;
             }
 
             // u(y) == 0, half-pixel correct
             if (uncorrectedCoordinates.Y <= float.Epsilon && uncorrectedCoordinates.Y >= float.Epsilon)
             {
-                correctedCoordinates.Y = 0.5f / Convert.ToSingle(OriginalTextureHeight);
+                correctedCoordinates.Y = 0.5f / Convert.ToSingle(TextureHeight);
             }
             // u(y) == 1, half-pixel correct and factor animation
             else if (uncorrectedCoordinates.Y <= (1.0f + float.Epsilon) && uncorrectedCoordinates.Y >= (1.0f - float.Epsilon))
             {
-                float workingYCoordinate = 1.0f - (0.5f / Convert.ToSingle(OriginalTextureHeight));
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    workingYCoordinate *= proportionFactor;
+                float workingYCoordinate = 1.0f - (0.5f / Convert.ToSingle(TextureHeight));
                 correctedCoordinates.Y = workingYCoordinate;
             }
             // u(y) == -1 half-pixel correct and factor animation
             else if (uncorrectedCoordinates.Y >= (-1.0f - float.Epsilon) && uncorrectedCoordinates.Y <= (-1.0f + float.Epsilon))
             {
-                float workingYCoordinate = -1.0f + (0.5f / Convert.ToSingle(OriginalTextureHeight));
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    workingYCoordinate *= proportionFactor;
+                float workingYCoordinate = -1.0f + (0.5f / Convert.ToSingle(TextureHeight));
                 correctedCoordinates.Y = workingYCoordinate;
             }
             // Other cases are just animation factor (revisit if there are 'even' 2x and 3x+ coordinate cases
             else
             {
-                if (TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    correctedCoordinates.Y = uncorrectedCoordinates.Y * proportionFactor;
-                else
-                    correctedCoordinates.Y = uncorrectedCoordinates.Y;
+                correctedCoordinates.Y = uncorrectedCoordinates.Y;
             }
 
             return correctedCoordinates;

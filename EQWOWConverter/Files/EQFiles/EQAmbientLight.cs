@@ -23,9 +23,9 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.EQFiles
 {
-    internal class EQObjectInstances
+    internal class EQAmbientLight
     {
-        public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
+        public ColorRGBA AmbientLight = new ColorRGBA();
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -49,33 +49,20 @@ namespace EQWOWConverter.EQFiles
                 else if (inputRow.StartsWith("#"))
                     continue;
 
-                // 11-blocks is an object instance
-                else
+                // 3-block is the light
+                string[] blocks = inputRow.Split(",");
+                if (blocks.Length != 3)
                 {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 11)
-                    {
-                        Logger.WriteError("- Object instance data is 11 components");
-                        continue;
-                    }
-
-                    ObjectInstance newObjectInstance = new ObjectInstance();
-                    newObjectInstance.ModelName = blocks[0];
-                    newObjectInstance.Position.X = float.Parse(blocks[1]);
-                    newObjectInstance.Position.Y = float.Parse(blocks[2]);
-                    newObjectInstance.Position.Z = float.Parse(blocks[3]);
-                    newObjectInstance.Rotation.X = float.Parse(blocks[4]);
-                    newObjectInstance.Rotation.Y = float.Parse(blocks[5]);
-                    newObjectInstance.Rotation.Z = float.Parse(blocks[6]);
-                    newObjectInstance.Scale.X = float.Parse(blocks[7]);
-                    newObjectInstance.Scale.Y = float.Parse(blocks[8]);
-                    newObjectInstance.Scale.Z = float.Parse(blocks[9]);
-                    newObjectInstance.ColorIndex = Int32.Parse(blocks[10]);
-                    ObjectInstances.Add(newObjectInstance);
+                    Logger.WriteError("- Ambient light data must be in 3 components");
+                    return false;
                 }
+                AmbientLight.R = byte.Parse(blocks[0]);
+                AmbientLight.G = byte.Parse(blocks[1]);
+                AmbientLight.B = byte.Parse(blocks[2]);
+                return true;
             }
 
-            Logger.WriteDetail(" - Done reading EQ Object Instances from '" + fileFullPath + "'");
+            Logger.WriteDetail(" - Done reading ambient light data from '" + fileFullPath + "'");
             return true;
         }
     }

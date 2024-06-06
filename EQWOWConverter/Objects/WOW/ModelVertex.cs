@@ -51,20 +51,6 @@ namespace EQWOWConverter.ModelObjects
             return size;
         }
 
-        public bool HasOversizedTexture1TextureCoordinates()
-        {
-            if (Texture1TextureCoordinates.X - float.Epsilon > 1.0f)
-                return true;
-            else if (Texture1TextureCoordinates.X + float.Epsilon < -1.0f)
-                return true;
-            else if (Texture1TextureCoordinates.Y - float.Epsilon > 1.0f)
-                return true;
-            else if (Texture1TextureCoordinates.Y + float.Epsilon < -1.0f)
-                return true;
-
-            return false;
-        }
-
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();

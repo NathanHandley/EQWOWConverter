@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -114,14 +113,9 @@ namespace EQWOWConverter.EQFiles
                     sourceTextureHeight = int.Parse(blocks[4]);
                 }
 
-                // If there's a 6th, it's the combined texture name when it's animated by texture transformation
-                string combinedTransformAnimationTextureName = string.Empty;
-                if (blocks.Length == 6)
-                    combinedTransformAnimationTextureName = blocks[5];
-
                 // Create and add it
                 Material newMaterial = new Material(name, index, materialType, sourceTextureNameArray, animationDelayInMS, 
-                    sourceTextureWidth, sourceTextureHeight, combinedTransformAnimationTextureName);
+                    sourceTextureWidth, sourceTextureHeight);
                 Materials.Add(newMaterial);
             }
 

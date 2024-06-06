@@ -245,29 +245,6 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
-        MaterialAnimationType DetermineMaterialAnimationType(Material material)
-        {
-            if (material.IsAnimated() == false)
-                return MaterialAnimationType.None;
-
-            // If there are oversized texture coordinates, it can only be handled by a texture transpacy animation
-            for (int i = 0; i < ModelTriangles.Count; ++i)
-            {
-                // Save this triangle index if any of the texture coordinates are oversized
-                if (ModelVerticies[ModelTriangles[i].V1].HasOversizedTexture1TextureCoordinates()
-                    || ModelVerticies[ModelTriangles[i].V2].HasOversizedTexture1TextureCoordinates()
-                    || ModelVerticies[ModelTriangles[i].V3].HasOversizedTexture1TextureCoordinates())
-                {
-                    // Not yet implemented, make none
-                    //return MaterialAnimationType.TextureTransparency;
-                    return MaterialAnimationType.None;
-                }
-            }
-
-            // If none are oversized, then transform is best
-            return MaterialAnimationType.TextureTransform;
-        }
-
         private void ProcessMaterials(params Material[] materials)
         {
             // Generate a model material per material
@@ -275,14 +252,13 @@ namespace EQWOWConverter.Objects
             foreach (Material material in materials)
             {
                 // TODO: Account for more textures once texture animation is fully implemented
-                if (material.RenderTextureNames.Count > 0)
+                if (material.TextureNames.Count > 0)
                 {
                     ModelTexture newModelTexture = new ModelTexture();
                     // TODO: Account for more textures once texture animation is fully implemented
-                    newModelTexture.TextureName = material.RenderTextureNames[0];
+                    newModelTexture.TextureName = material.TextureNames[0];
                     ModelTextures.Add(newModelTexture);
                     ModelMaterial newModelMaterial;
-                    material.TextureAnimationType = DetermineMaterialAnimationType(material);
                     switch (material.MaterialType)
                     {
                         case MaterialType.TransparentAdditive:
@@ -309,37 +285,37 @@ namespace EQWOWConverter.Objects
                     ModelMaterials.Add(newModelMaterial);
 
                     // Make animation frames if this is an animated texture by texture transform
-                    if (material.TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    {
-                        ModelTextureAnimation newAnimation = new ModelTextureAnimation();
-                        newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
-                        int curSequenceID = newAnimation.TranslationTrack.AddSequence();
+                    //if (material.TextureAnimationType == MaterialAnimationType.TextureTransform)
+                    //{
+                    //    ModelTextureAnimation newAnimation = new ModelTextureAnimation();
+                    //    newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
+                    //    int curSequenceID = newAnimation.TranslationTrack.AddSequence();
 
-                        // For each frame, add a frame in the animation array
-                        for(int i = 0; i < material.NumOfAnimationFrames(); ++i)
-                        {
-                            // Animations are spanning on the u (x)
-                            uint curTimestamp = Convert.ToUInt32(i) * material.AnimationDelayMs;
-                            Vector3 curTranslation = material.GetTranslationForAnimationFrame(i);
-                            newAnimation.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, curTranslation);
-                        }
+                    //    // For each frame, add a frame in the animation array
+                    //    for(int i = 0; i < material.NumOfAnimationFrames(); ++i)
+                    //    {
+                    //        // Animations are spanning on the u (x)
+                    //        uint curTimestamp = Convert.ToUInt32(i) * material.AnimationDelayMs;
+                    //        Vector3 curTranslation = material.GetTranslationForAnimationFrame(i);
+                    //        newAnimation.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, curTranslation);
+                    //    }
 
-                        // Save the anim and reference the texture
-                        GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
-                        newAnimation.TranslationTrack.GlobalSequenceID = Convert.ToUInt16(GlobalLoopSequenceLimits.Count - 1);
-                        ModelTextureAnimations.Add(newAnimation);                        
-                        ModelTextureAnimationLookup.Add(Convert.ToInt16(ModelTextureAnimations.Count - 1));
-                    }
-                    // No animation setting
-                    else if (material.TextureAnimationType == MaterialAnimationType.None)
-                    {
+                    //    // Save the anim and reference the texture
+                    //    GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
+                    //    newAnimation.TranslationTrack.GlobalSequenceID = Convert.ToUInt16(GlobalLoopSequenceLimits.Count - 1);
+                    //    ModelTextureAnimations.Add(newAnimation);                        
+                    //    ModelTextureAnimationLookup.Add(Convert.ToInt16(ModelTextureAnimations.Count - 1));
+                    //}
+                    //// No animation setting at this time
+                    //else if (material.TextureAnimationType == MaterialAnimationType.None)
+                    //{
                         ModelTextureAnimationLookup.Add(-1);
-                    }
-                    else
-                    {
-                        Logger.WriteError("For object '" + Name + "' material '" + newModelMaterial.Material.Name + "' there is an unhandled texture animation type of '" + newModelMaterial.Material.TextureAnimationType .ToString() + "'");
-                        ModelTextureAnimationLookup.Add(-1);
-                    }
+                    //}
+                    //else
+                    //{
+                    //    Logger.WriteError("For object '" + Name + "' material '" + newModelMaterial.Material.Name + "' there is an unhandled texture animation type of '" + newModelMaterial.Material.TextureAnimationType .ToString() + "'");
+                    //    ModelTextureAnimationLookup.Add(-1);
+                    //}
 
                     ModelTextureLookups.Add(curIndex);
                     ModelTextureMappingLookups.Add(curIndex);                    

@@ -198,31 +198,5 @@ namespace EQWOWConverter.EQFiles
             Logger.WriteDetail(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");
             return true;
         }
-
-        public bool HasOversizedTextureCoordinatesForMaterial(Material material)
-        {
-            for (int i = 0; i < TriangleFaces.Count; ++i)
-            {
-                if (TriangleFaces[i].MaterialIndex == material.Index)
-                {
-                    if (TextureCoordinates.Count > TriangleFaces[i].V1 &&
-                        TextureCoordinates[TriangleFaces[i].V1].HasOversizedCoordinates())
-                    {
-                        return true;
-                    }
-                    if (TextureCoordinates.Count > TriangleFaces[i].V2 &&
-                        TextureCoordinates[TriangleFaces[i].V2].HasOversizedCoordinates())
-                    {
-                        return true;
-                    }
-                    if (TextureCoordinates.Count > TriangleFaces[i].V3 &&
-                        TextureCoordinates[TriangleFaces[i].V3].HasOversizedCoordinates())
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
     }
 }

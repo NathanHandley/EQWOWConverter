@@ -99,158 +99,61 @@ namespace EQWOWConverter.Zones
                 Materials = materialListData.Materials;
             }
         }
+
         private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            // Get the collision mesh data
             Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
             string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
-            string collisionMeshData = string.Empty;
             if (File.Exists(collisionMeshFileName) == false)
             {
-                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found.");
+                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found, skipping for zone.");
                 return;
             }
-
-            // Load the collision data
-            string inputData = File.ReadAllText(collisionMeshFileName);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            foreach (string inputRow in inputRows)
+            EQMesh meshData = new EQMesh();
+            if (meshData.LoadFromDisk(collisionMeshFileName) == false)
             {
-                // Nothing for blank lines
-                if (inputRow.Length == 0)
-                    continue;
-
-                // # = comment
-                else if (inputRow.StartsWith("#"))
-                    continue;
-
-                // v = Verticies
-                else if (inputRow.StartsWith("v"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 4)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error, vertex block was not 4 components");
-                        continue;
-                    }
-                    Vector3 vertex = new Vector3();
-                    vertex.X = float.Parse(blocks[1]);
-                    vertex.Z = float.Parse(blocks[2]);
-                    vertex.Y = float.Parse(blocks[3]);
-                    CollisionVerticies.Add(vertex);
-                }
-
-                // i = Indicies
-                else if (inputRow.StartsWith("i"))
-                {
-                    string[] blocks = inputRow.Split(",");
-                    if (blocks.Length != 5)
-                    {
-                        Logger.WriteError("- [" + inputZoneFolderName + "]: Error,indicies block was not 5 components");
-                        continue;
-                    }
-                    TriangleFace index = new TriangleFace();
-                    index.MaterialIndex = int.Parse(blocks[1]);
-                    index.V1 = int.Parse(blocks[2]);
-                    index.V2 = int.Parse(blocks[3]);
-                    index.V3 = int.Parse(blocks[4]);
-                    CollisionTriangleFaces.Add(index);
-                }
-
-                else
-                {
-                    Logger.WriteError("- [" + inputZoneFolderName + "]: Error, unknown line '" + inputRow + "'");
-                }
+                Logger.WriteError("- [" + inputZoneFolderName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
+                return;
             }
+            CollisionTriangleFaces = meshData.TriangleFaces;
+            CollisionVerticies = meshData.Verticies;
         }
+
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             // Get the ambient light
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading ambiant light data...");
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading ambient light data...");
             string ambientLightFileName = Path.Combine(inputZoneFolderFullPath, "ambient_light.txt");
             if (File.Exists(ambientLightFileName) == false)
                 Logger.WriteDetail("- [" + inputZoneFolderName + "]: No ambient light data found.");
             else
             {
-                using (var ambiantlightReader = new StreamReader(ambientLightFileName))
+                EQAmbientLight ambientLight = new EQAmbientLight();
+                if (ambientLight.LoadFromDisk(ambientLightFileName) == false)
                 {
-                    string? curLine;
-                    while ((curLine = ambiantlightReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-                        // 3-block is the light
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length != 3)
-                            {
-                                Logger.WriteError("- [" + inputZoneFolderName + "]: Error, ambiant light data must be in 3 components");
-                                continue;
-                            }
-                            AmbientLight.R = byte.Parse(blocks[0]);
-                            AmbientLight.G = byte.Parse(blocks[1]);
-                            AmbientLight.B = byte.Parse(blocks[2]);
-                        }
-                    }
+                    Logger.WriteError("- [" + inputZoneFolderName + "]: Error loading ambient light at '" + ambientLightFileName + "'");
+                    return;
                 }
+                AmbientLight = ambientLight.AmbientLight;
             }
         }
 
         private void LoadObjectInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the object instances
-            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading object instances...");
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading object instances data...");
             string objectInstancesFileName = Path.Combine(inputZoneFolderFullPath, "object_instances.txt");
             if (File.Exists(objectInstancesFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolder + "]: No object instance data found.");
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No object instances data found.");
             else
             {
-                using (var objectInstancesReader = new StreamReader(objectInstancesFileName))
+                EQObjectInstances objectInstances = new EQObjectInstances();
+                if (objectInstances.LoadFromDisk(objectInstancesFileName) == false)
                 {
-                    string? curLine;
-                    while ((curLine = objectInstancesReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-                        //11-blocks is an object instance
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length != 11)
-                            {
-                                Logger.WriteError("- [" + inputZoneFolder + "]: Error, object instance data is 7 components");
-                                continue;
-                            }
-
-                            ObjectInstance newObjectInstance = new ObjectInstance();
-                            newObjectInstance.ModelName = blocks[0];
-                            newObjectInstance.Position.X = float.Parse(blocks[1]);
-                            newObjectInstance.Position.Y = float.Parse(blocks[2]);
-                            newObjectInstance.Position.Z = float.Parse(blocks[3]);
-                            newObjectInstance.Rotation.X = float.Parse(blocks[4]);
-                            newObjectInstance.Rotation.Y = float.Parse(blocks[5]);
-                            newObjectInstance.Rotation.Z = float.Parse(blocks[6]);
-                            newObjectInstance.Scale.X = float.Parse(blocks[7]);
-                            newObjectInstance.Scale.Y = float.Parse(blocks[8]);
-                            newObjectInstance.Scale.Z = float.Parse(blocks[9]);
-                            newObjectInstance.ColorIndex = Int32.Parse(blocks[10]);
-                            ObjectInstances.Add(newObjectInstance);
-                        }
-                    }
+                    Logger.WriteError("- [" + inputZoneFolder + "]: Error loading object instances at '" + objectInstancesFileName + "'");
+                    return;
                 }
+                ObjectInstances = objectInstances.ObjectInstances;
             }
         }
 
@@ -263,40 +166,13 @@ namespace EQWOWConverter.Zones
                 Logger.WriteDetail("- [" + inputZoneFolder + "]: No light instance data found.");
             else
             {
-                using (var lightInstancesReader = new StreamReader(lightInstancesFileName))
+                EQLightInstances lightInstances = new EQLightInstances();
+                if (lightInstances.LoadFromDisk(lightInstancesFileName) == false)
                 {
-                    string? curLine;
-                    while ((curLine = lightInstancesReader.ReadLine()) != null)
-                    {
-                        // Nothing for blank lines
-                        if (curLine.Length == 0)
-                            continue;
-
-                        // # = comment
-                        else if (curLine.StartsWith("#"))
-                            continue;
-
-                        // 7-blocks is a light instance
-                        else
-                        {
-                            string[] blocks = curLine.Split(",");
-                            if (blocks.Length != 7)
-                            {
-                                Logger.WriteError("- [" + inputZoneFolder + "]: Error, light instance data is 7 components");
-                                continue;
-                            }
-                            LightInstance newLightInstance = new LightInstance();
-                            newLightInstance.Position.X = float.Parse(blocks[0]);
-                            newLightInstance.Position.Y = float.Parse(blocks[1]);
-                            newLightInstance.Position.Z = float.Parse(blocks[2]);
-                            newLightInstance.Radius = float.Parse(blocks[3]);
-                            newLightInstance.Color.R = float.Parse(blocks[4]);
-                            newLightInstance.Color.G = float.Parse(blocks[5]);
-                            newLightInstance.Color.B = float.Parse(blocks[6]);
-                            LightInstances.Add(newLightInstance);
-                        }
-                    }
+                    Logger.WriteError("- [" + inputZoneFolder + "]: Error loading light instances at '" + lightInstancesFileName + "'");
+                    return;
                 }
+                LightInstances = lightInstances.LightInstances;
             }
         }
     }

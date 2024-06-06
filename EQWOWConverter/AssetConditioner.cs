@@ -40,7 +40,6 @@ namespace EQWOWConverter
         private static uint objectMaterialsCondensed = 0;
         private static uint objectTexturesCondensed = 0;
         private static uint transparentTexturesGenerated = 0;
-        private static uint combinedTexturesGenerated = 0;
 
         public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
@@ -226,31 +225,6 @@ namespace EQWOWConverter
                 }
             }
 
-            // Generate combined textures where needed
-            Logger.WriteInfo("Creating combined textures for texture-animated materials...");
-            topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
-            foreach (string topDirectory in topDirectories)
-            {
-                // Get just the folder name itself for later
-                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-
-                // Different logic based on type of folder
-                if (topDirectoryFolderNameOnly == "zones")
-                {
-                    string[] zoneDirectories = Directory.GetDirectories(topDirectory);
-                    foreach (string zoneDirectory in zoneDirectories)
-                    {
-                        // Get just the zone folder
-                        string zoneDirectoryFolderNameOnly = zoneDirectory.Split('\\').Last();
-                        GenerateCombinedImagesForTextureAnimatedMaterials(zoneDirectory);
-                    }
-                }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
-                {
-                    GenerateCombinedImagesForTextureAnimatedMaterials(topDirectory);
-                }
-            }
-
             // Generate any needed transparent textures
             Logger.WriteInfo("Generating transparent textures...");
             topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
@@ -281,7 +255,6 @@ namespace EQWOWConverter
             Logger.WriteInfo(" - Object Textures condensed: " + objectTexturesCondensed);
             Logger.WriteInfo(" - Object Materials condensed: " + objectMaterialsCondensed);
             Logger.WriteInfo(" - Transparent Textures generated: " + transparentTexturesGenerated);
-            Logger.WriteInfo(" - Combined Textures Generated: " + combinedTexturesGenerated);
             return true;
         }
 
@@ -309,154 +282,6 @@ namespace EQWOWConverter
             outputImage.Save(outputFilePath);
             outputImage.Dispose();
             inputImage.Dispose();
-        }
-
-        private void GenerateCombinedTexture(string textureFolder, string newTextureName, params string[] inputTextureNamesNoExt)
-        {
-            if (inputTextureNamesNoExt.Length <= 1)
-            {
-                Logger.WriteDetail("GenerateCombinedTexture skipped. Attempted to combine a texture with only 1 or less input texture names provided'");
-                return;
-            }
-
-            // No support for over 16 frames
-            if (inputTextureNamesNoExt.Length > 16)
-            {
-                Logger.WriteDetail("GenerateCombinedTexture skipped. Attempted to combine a texture with more than 16 input textures");
-                return;
-            }
-
-            // Pull data related to the first image
-            string firstTextureFullPath = Path.Combine(textureFolder, inputTextureNamesNoExt[0] + ".png");
-            Bitmap firstTextureinputImage = new Bitmap(firstTextureFullPath);
-            int oldImageHeight = firstTextureinputImage.Height;
-            int oldImageWidth = firstTextureinputImage.Width;
-            firstTextureinputImage.Dispose();
-
-            // Calculate a new image size
-            int newImageWidth = 0;
-            int newImageHeight = 0;
-            int imageColumns = 0;
-            if (inputTextureNamesNoExt.Length <= 4)
-            {
-                newImageWidth = oldImageWidth * 2;
-                newImageHeight = oldImageHeight * 2;
-                imageColumns = 2;
-            }
-            else
-            {
-                newImageWidth = oldImageWidth * 4;
-                newImageHeight = oldImageHeight * 4;
-                imageColumns = 4;
-            }
-
-            // Create the new image
-            string newOutputImagePath = Path.Combine(textureFolder, newTextureName + ".png");
-            Bitmap newOutputImage = new Bitmap(newImageWidth, newImageHeight);
-            newOutputImage.SetResolution(newOutputImage.HorizontalResolution, newOutputImage.VerticalResolution);
-            int curImageXOffset = (imageColumns - 1);
-            int curImageYOffset = 0;
-            using (var graphics = Graphics.FromImage(newOutputImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-
-                using (ImageAttributes wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    // Add all of the textures to it
-                    // NOTE: Textures should be placed right->left and top->down (reverse X)
-                    foreach (string textureName in inputTextureNamesNoExt)
-                    {
-                        string curTextureFullPath = Path.Combine(textureFolder, textureName + ".png");
-                        Bitmap inputImage = new Bitmap(curTextureFullPath);
-                        Rectangle outputRectangle = new Rectangle(curImageXOffset*oldImageWidth, curImageYOffset*oldImageHeight, oldImageWidth, oldImageHeight);
-                        graphics.DrawImage(inputImage, outputRectangle, 0, 0, oldImageWidth, oldImageHeight, GraphicsUnit.Pixel, wrapMode);
-                        inputImage.Dispose();
-                        curImageXOffset--;
-                        if (curImageXOffset < 0)
-                        {
-                            curImageXOffset = (imageColumns - 1);
-                            curImageYOffset++;
-                        }
-                    }
-                }
-            }
-            newOutputImage.Save(newOutputImagePath);
-            newOutputImage.Dispose();
-        }
-
-        private void GenerateCombinedImagesForTextureAnimatedMaterials(string workingRootFolderPath)
-        {
-            string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
-            string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
-            string meshFolder = Path.Combine(workingRootFolderPath, "Meshes");
-
-            // Process by materials
-            string[] materialListFiles = Directory.GetFiles(materialListFolder);
-            foreach (string materialListFile in materialListFiles)
-            {
-                // Get the related mesh for this material file to determine animation type
-                EQMesh eqMeshData = new EQMesh();
-                string meshFileFullPath = Path.Combine(meshFolder, Path.GetFileNameWithoutExtension(materialListFile) + ".txt");
-                if (eqMeshData.LoadFromDisk(meshFileFullPath) == false)
-                {
-                    Logger.WriteError("Failed to load the mesh '" + meshFileFullPath + "'");
-                    continue;
-                }
-
-                bool doWriteOutMaterialListFile = false;
-                string materialFileText = File.ReadAllText(materialListFile);
-                string[] materialFileRows = materialFileText.Split(Environment.NewLine);
-                string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
-                EQMaterialList materialListData = new EQMaterialList();
-                materialListData.LoadFromDisk(materialListFile);
-                int rowIndex = -1;
-                foreach (string materialFileRow in materialFileRows)
-                {
-                    rowIndex++;
-                    // Skip blank lines and comments
-                    if (materialFileRow.Length == 0 || materialFileRow.StartsWith("#"))
-                        continue;
-
-                    // Grab material details
-                    string[] blocks = materialFileRow.Split(",");
-                    UInt32 materialIndex = UInt32.Parse(blocks[0]);
-                    Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
-
-                    // Only create the combined texture if it's animated and has no oversized texture coordinates
-                    if (curMaterial.IsAnimated() && eqMeshData.HasOversizedTextureCoordinatesForMaterial(curMaterial) == false)
-                    {
-                        // Only one is needed
-                        // Ensure a unique name is generated
-                        string newTextureName = curMaterial.Name + "AnimTex";
-                        string newTexturePath = Path.Combine(textureFolder, newTextureName + ".png");
-                        if (File.Exists(newTexturePath))
-                        {
-                            Logger.WriteDetail("Skipping generating combined texture named '" + newTextureName + "' since one already exists");
-                            continue;
-                        }
-                        GenerateCombinedTexture(textureFolder, newTextureName, curMaterial.TextureNameArray.ToArray());
-                        Logger.WriteDetail("Generated a combined texture with name '" + newTextureName + "' in folder '" + textureFolder + "'");
-                        combinedTexturesGenerated++;
-                        curMaterial.CombinedTransformationAnimationTextureName = newTextureName;
-
-                        // Add it as a new segment in the material file
-                        materialFileRowsForWrite[rowIndex] = materialFileRow + "," + curMaterial.CombinedTransformationAnimationTextureName;
-                        doWriteOutMaterialListFile = true;
-                    }
-                }
-                if (doWriteOutMaterialListFile == true)
-                {
-                    StringBuilder newMaterialListFileContents = new StringBuilder();
-                    foreach (string materialFileRow in materialFileRowsForWrite)
-                        newMaterialListFileContents.AppendLine(materialFileRow);
-                    File.WriteAllText(materialListFile, newMaterialListFileContents.ToString());
-                }
-            }
         }
 
         private void GenerateTransparentImagesForMaterials(string workingRootFolderPath)
@@ -488,34 +313,15 @@ namespace EQWOWConverter
                     // Generate transparent versions as required
                     if (curMaterial.MaterialType == MaterialType.Transparent25Percent || curMaterial.MaterialType == MaterialType.Transparent50Percent || curMaterial.MaterialType == MaterialType.Transparent75Percent)
                     {
-                        if (curMaterial.CombinedTransformationAnimationTextureName != string.Empty)
+                        if (curMaterial.TextureNames.Count > 0)
                         {
-                            // Generate a new texture name
-                            string newTextureName = curMaterial.CombinedTransformationAnimationTextureName + curMaterial.GetTextureSuffix();
-
-                            // Check if texture already exists and if not, create it
-                            string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.CombinedTransformationAnimationTextureName + ".png");
-                            string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
-                            if (File.Exists(newTextureFullPath) == false)
-                            {
-                                GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
-                                Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
-                            }
-
-                            // Update texture references for the material
-                            materialFileRowsForWrite[rowIndex] = materialFileRowsForWrite[rowIndex].Replace(curMaterial.CombinedTransformationAnimationTextureName, newTextureName);
-                            doWriteOutMaterialListFile = true;
-                            curMaterial.CombinedTransformationAnimationTextureName = newTextureName;
-                        }
-                        else if (curMaterial.TextureNameArray.Count > 0)
-                        {
-                            for (int i = 0; i < curMaterial.TextureNameArray.Count; ++i)
+                            for (int i = 0; i < curMaterial.TextureNames.Count; ++i)
                             {
                                 // Generate a new texture name
-                                string newTextureName = curMaterial.TextureNameArray[i] + curMaterial.GetTextureSuffix();
+                                string newTextureName = curMaterial.TextureNames[i] + curMaterial.GetTextureSuffix();
 
                                 // Check if texture already exists and if not, create it
-                                string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.TextureNameArray[i] + ".png");
+                                string existingTextureFullPath = Path.Combine(textureFolder, curMaterial.TextureNames[i] + ".png");
                                 string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
                                 if (File.Exists(newTextureFullPath) == false)
                                 {
@@ -524,9 +330,9 @@ namespace EQWOWConverter
                                 }
 
                                 // Update texture references for the material
-                                materialFileRowsForWrite[rowIndex] = materialFileRowsForWrite[rowIndex].Replace(curMaterial.TextureNameArray[i], newTextureName);
+                                materialFileRowsForWrite[rowIndex] = materialFileRowsForWrite[rowIndex].Replace(curMaterial.TextureNames[i], newTextureName);
                                 doWriteOutMaterialListFile = true;
-                                curMaterial.TextureNameArray[i] = newTextureName;
+                                curMaterial.TextureNames[i] = newTextureName;
                             }
                         }
                     }
@@ -603,9 +409,9 @@ namespace EQWOWConverter
                     Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
 
                     // Get texture dimensions, if there is one
-                    if (curMaterial.TextureNameArray.Count > 0)
+                    if (curMaterial.TextureNames.Count > 0)
                     {
-                        string textureFullPath = Path.Combine(textureFolder, curMaterial.TextureNameArray[0] + ".png");
+                        string textureFullPath = Path.Combine(textureFolder, curMaterial.TextureNames[0] + ".png");
                         Bitmap textureinputImage = new Bitmap(textureFullPath);
                         int imageHeight = textureinputImage.Height;
                         int imageWidth = textureinputImage.Width;
