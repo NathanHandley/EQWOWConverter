@@ -251,6 +251,13 @@ namespace EQWOWConverter.Objects
         // Note: Only working for static for now, but more to come
         public void LoadFromEQObject(string name, EQModelObjectData eqObject)
         {
+            //if (eqObject.CollisionVerticies.Count == 0)
+            //    Load(name, eqObject.Materials, eqObject.TriangleFaces, eqObject.Verticies, eqObject.Normals, new List<ColorRGBA>(),
+            //        eqObject.TextureCoords, eqObject.Verticies, eqObject.TriangleFaces, true);
+            //else
+            //    Load(name, eqObject.Materials, eqObject.TriangleFaces, eqObject.Verticies, eqObject.Normals, new List<ColorRGBA>(),
+            //        eqObject.TextureCoords, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces, true);
+
             // Save Name
             Name = name;
 
@@ -303,7 +310,7 @@ namespace EQWOWConverter.Objects
             }
 
             // Process materials
-            foreach(Material material in eqObject.Materials)
+            foreach (Material material in eqObject.Materials)
                 ModelTextureTransparencyWeightsLookups.Add(0);
             ProcessMaterials(eqObject.Materials.ToArray());
 
@@ -311,7 +318,11 @@ namespace EQWOWConverter.Objects
             CorrectTextureCoordinates();
 
             // Process the rest
-            ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
+            if (eqObject.CollisionVerticies.Count == 0)
+                ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces);
+            else
+                ProcessCollisionData(eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
+
             SortGeometry();
             CalculateBoundingBoxesAndRadii();
 
@@ -448,7 +459,7 @@ namespace EQWOWConverter.Objects
             {
                 int swapFaceVertexIndex = eqFace.V3;
                 eqFace.V3 = eqFace.V1;
-                eqFace.V1 = eqFace.V3;
+                eqFace.V1 = swapFaceVertexIndex;
             }
             // Perform vertex world scaling and 180 Z-Axis degree rotation
             foreach (Vector3 eqVertex in verticies)
@@ -544,30 +555,15 @@ namespace EQWOWConverter.Objects
             }
         }
 
-        private void ProcessCollisionData(List<Vector3> verticies, List<TriangleFace> triangleFaces,
-            List<Vector3> collisionVerticies, List<TriangleFace> collisionTriangleFaces)
+        private void ProcessCollisionData(List<Vector3> collisionVerticies, List<TriangleFace> collisionTriangleFaces)
         {
             // Purge prior data
             CollisionPositions.Clear();
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
 
-            // If there was no collision data then the whole object is collidable otherwise use the collision data
-            List<Vector3> collisionPositions = new List<Vector3>();
-            List<TriangleFace> collisionTriangles = new List<TriangleFace>();
-            if (collisionVerticies.Count == 0)
-            {
-                collisionPositions = verticies;
-                collisionTriangles = triangleFaces;
-            }
-            else
-            {
-                collisionPositions = collisionVerticies;
-                collisionTriangles = collisionTriangleFaces;
-            }
-
             // Store positions, factoring for world scailing and rotation around Z axis
-            foreach (Vector3 collisionVertex in collisionPositions)
+            foreach (Vector3 collisionVertex in collisionVerticies)
             {
                 Vector3 curVertex = new Vector3();
                 curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -579,7 +575,7 @@ namespace EQWOWConverter.Objects
             }
 
             // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
-            foreach (TriangleFace collisionTriangle in collisionTriangles)
+            foreach (TriangleFace collisionTriangle in collisionTriangleFaces)
                 if (collisionTriangle.V1 != collisionTriangle.V2)
                     CollisionTriangles.Add(new TriangleFace(collisionTriangle));
 
