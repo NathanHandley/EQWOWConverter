@@ -24,13 +24,13 @@ namespace EQWOWConverter.Common
 {
     internal class Fixed16 : IByteSerializable
     {
-        public UInt16 Value = 0;
+        public Int16 Value = 0;
 
         public Fixed16()
         {
 
         }
-        public Fixed16(UInt16 value)
+        public Fixed16(Int16 value)
         {
             Value = value;
         }

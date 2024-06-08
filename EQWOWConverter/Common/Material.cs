@@ -33,6 +33,18 @@ namespace EQWOWConverter.Common
         public int TextureWidth = 0;
         public int TextureHeight = 0;
 
+        public Material(Material material)
+        {
+            Index = material.Index;
+            MaterialType = material.MaterialType;
+            Name = material.Name;
+            foreach (string textureName in material.TextureNames)
+                TextureNames.Add(textureName);
+            AnimationDelayMs = material.AnimationDelayMs;
+            TextureWidth = material.TextureWidth;
+            TextureHeight = material.TextureHeight;
+        }
+
         public Material(string name, UInt32 index, MaterialType materialType, List<string> textureNames,
             UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight)
         {

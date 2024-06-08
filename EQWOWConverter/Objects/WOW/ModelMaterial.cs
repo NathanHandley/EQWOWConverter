@@ -31,7 +31,7 @@ namespace EQWOWConverter.ModelObjects
 
         public ModelMaterial(Material material, ModelMaterialBlendType blendType)
         {
-            Material = material;
+            Material = new Material(material);
             BlendingMode = blendType;
         }
 
