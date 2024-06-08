@@ -324,9 +324,9 @@ namespace EQWOWConverter.Zones
                 if (allTriangleFaces[i].MaterialIndex != material.Index)
                     continue;
 
-                // Make sure to reset the material ID to 0 since these objects are single material based
+                // Make the new face, and keep the material ID
                 TriangleFace curTriangleFace = new TriangleFace(allTriangleFaces[i]);
-                curTriangleFace.MaterialIndex = 0;
+                curTriangleFace.MaterialIndex = Convert.ToInt32(material.Index);
 
                 // Face vertex 1
                 if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))

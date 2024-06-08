@@ -32,6 +32,12 @@ namespace EQWOWConverter.Common
 
         }
 
+        public TextureCoordinates(TextureCoordinates textureCoordinates)
+        {
+            X = textureCoordinates.X;
+            Y = textureCoordinates.Y;
+        }
+
         public TextureCoordinates(float x, float y)
         {
             X = x;
