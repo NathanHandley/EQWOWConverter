@@ -149,8 +149,6 @@ namespace EQWOWConverter.Objects
             ModelBoneLookups.Add(0);
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
-            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
-            ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
             ModelReplaceableTextureLookups.Add(-1); // No replace lookup
 
             // Make one animation
@@ -249,17 +247,18 @@ namespace EQWOWConverter.Objects
                 //// Create the new transparency "animation"
                 ModelTrackSequences<Fixed16> newAnimation = new ModelTrackSequences<Fixed16>();
                 newAnimation.InterpolationType = ModelAnimationInterpolationType.None;
+                newAnimation.GlobalSequenceID = 0;
                 int curSequenceId = newAnimation.AddSequence();
 
                 // Add a blank (transparent) frame to this animation for every frame that already exists, and add a blank to those others
                 for (int i = 0; i < ModelTextureTransparencySequencesSet.Count; ++i)
                 {
-                    newAnimation.AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(Int16.MaxValue));
-                    ModelTextureTransparencySequencesSet[i].AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(Int16.MaxValue));
+                    newAnimation.AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(0));
+                    ModelTextureTransparencySequencesSet[i].AddValueToSequence(0, curAnimationTimestamp, new Fixed16(0));
                 }
 
                 // Add this shown (non-transparent) frame
-                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(0));
+                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(Int16.MaxValue));
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequencesSet.Add(newAnimation);
@@ -290,10 +289,6 @@ namespace EQWOWConverter.Objects
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
-            ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
-            ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
-            ModelTextureTransparencySequencesSet[1].AddValueToSequence(ModelTextureTransparencySequencesSet[1].AddSequence(), 0, new Fixed16(32767));
             ModelReplaceableTextureLookups.Add(-1); // No replace lookup
 
             // Make one animation
