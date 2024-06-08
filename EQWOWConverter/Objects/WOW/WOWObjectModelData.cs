@@ -190,34 +190,79 @@ namespace EQWOWConverter.Objects
         public void LoadFromZoneAnimatedMaterial(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies, 
             List<Vector3> normals, List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoordinates)
         {
-            // Save name and triangles
-            Name = name;
-            foreach(TriangleFace triangleFace  in triangleFaces)
-                ModelTriangles.Add(triangleFace);
-
-            // Generate modelverticies from geometry data
+            // Control for bad objects
             if (verticies.Count != textureCoordinates.Count && verticies.Count != normals.Count)
             {
                 Logger.WriteError("Failed to load wowobject from zone data since vertex count doesn't match texture coordinate count or normal count");
                 return;
             }
-            for (int i = 0; i < verticies.Count; i++)
+            if (material.TextureNames.Count <= 1)
             {
-                ModelVertex newModelVertex = new ModelVertex();
-                newModelVertex.Position.X = verticies[i].X;
-                newModelVertex.Position.Y = verticies[i].Y;
-                newModelVertex.Position.Z = verticies[i].Z;
-                newModelVertex.Normal.X = normals[i].X;
-                newModelVertex.Normal.Y = normals[i].Y;
-                newModelVertex.Normal.Z = normals[i].Z;
-                TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
-                newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
-                ModelVerticies.Add(newModelVertex);
+                Logger.WriteError("Failed to load wowobject from zone data since there was only one texture");
+                return;
             }
 
+            // Generate geometry on a per material basis to fake the animation with duplicate transparent textures
+            List<Material> animationFrameMaterials = new List<Material>();
+            foreach (string textureName in material.TextureNames)
+            {
+                // Each texture gets a new unique material, and a copy of all the geometry
+                string curMaterialName = material.Name + "Anim_" + animationFrameMaterials.Count;
+                List<string> curMaterialTextureName = new List<string>() { textureName };
+                UInt32 materialIndex = Convert.ToUInt32(animationFrameMaterials.Count);
+                Material newAnimationMaterial = new Material(curMaterialName, materialIndex, material.MaterialType, curMaterialTextureName,
+                    0, material.TextureWidth, material.TextureHeight);
+
+                // Add this frame's triangles and verticies, accounting for the new material
+                foreach (TriangleFace triangleFace in triangleFaces)
+                {
+                    TriangleFace newTriangleFace = new TriangleFace(triangleFace);
+                    newTriangleFace.V1 += (animationFrameMaterials.Count * verticies.Count);
+                    newTriangleFace.V2 += (animationFrameMaterials.Count * verticies.Count);
+                    newTriangleFace.V3 += (animationFrameMaterials.Count * verticies.Count);
+                    newTriangleFace.MaterialIndex = Convert.ToInt32(newAnimationMaterial.Index);
+                    ModelTriangles.Add(newTriangleFace);
+                }
+                for (int i = 0; i < verticies.Count; i++)
+                {
+                    ModelVertex newModelVertex = new ModelVertex();
+                    newModelVertex.Position.X = verticies[i].X;
+                    newModelVertex.Position.Y = verticies[i].Y;
+                    newModelVertex.Position.Z = verticies[i].Z;
+                    newModelVertex.Normal.X = normals[i].X;
+                    newModelVertex.Normal.Y = normals[i].Y;
+                    newModelVertex.Normal.Z = normals[i].Z;
+                    TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
+                    newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
+                    newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                    ModelVerticies.Add(newModelVertex);
+                }
+
+                animationFrameMaterials.Add(newAnimationMaterial);
+            }
+
+            //foreach (TriangleFace triangleFace in triangleFaces)
+            //    ModelTriangles.Add(triangleFace);
+            //for (int i = 0; i < verticies.Count; i++)
+            //{
+            //    ModelVertex newModelVertex = new ModelVertex();
+            //    newModelVertex.Position.X = verticies[i].X;
+            //    newModelVertex.Position.Y = verticies[i].Y;
+            //    newModelVertex.Position.Z = verticies[i].Z;
+            //    newModelVertex.Normal.X = normals[i].X;
+            //    newModelVertex.Normal.Y = normals[i].Y;
+            //    newModelVertex.Normal.Z = normals[i].Z;
+            //    TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
+            //    newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+            //    newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
+            //    ModelVerticies.Add(newModelVertex);
+            //}
+
+            // Save name and triangles
+            Name = name;
+
             // Process material
-            ProcessMaterials(material);
+            ProcessMaterials(animationFrameMaterials.ToArray());
 
             // Correct coordinates
             CorrectTextureCoordinates();
@@ -283,40 +328,7 @@ namespace EQWOWConverter.Objects
                             break;
                     }
                     ModelMaterials.Add(newModelMaterial);
-
-                    // Make animation frames if this is an animated texture by texture transform
-                    //if (material.TextureAnimationType == MaterialAnimationType.TextureTransform)
-                    //{
-                    //    ModelTextureAnimation newAnimation = new ModelTextureAnimation();
-                    //    newAnimation.TranslationTrack.InterpolationType = ModelAnimationInterpolationType.None;
-                    //    int curSequenceID = newAnimation.TranslationTrack.AddSequence();
-
-                    //    // For each frame, add a frame in the animation array
-                    //    for(int i = 0; i < material.NumOfAnimationFrames(); ++i)
-                    //    {
-                    //        // Animations are spanning on the u (x)
-                    //        uint curTimestamp = Convert.ToUInt32(i) * material.AnimationDelayMs;
-                    //        Vector3 curTranslation = material.GetTranslationForAnimationFrame(i);
-                    //        newAnimation.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, curTranslation);
-                    //    }
-
-                    //    // Save the anim and reference the texture
-                    //    GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
-                    //    newAnimation.TranslationTrack.GlobalSequenceID = Convert.ToUInt16(GlobalLoopSequenceLimits.Count - 1);
-                    //    ModelTextureAnimations.Add(newAnimation);                        
-                    //    ModelTextureAnimationLookup.Add(Convert.ToInt16(ModelTextureAnimations.Count - 1));
-                    //}
-                    //// No animation setting at this time
-                    //else if (material.TextureAnimationType == MaterialAnimationType.None)
-                    //{
-                        ModelTextureAnimationLookup.Add(-1);
-                    //}
-                    //else
-                    //{
-                    //    Logger.WriteError("For object '" + Name + "' material '" + newModelMaterial.Material.Name + "' there is an unhandled texture animation type of '" + newModelMaterial.Material.TextureAnimationType .ToString() + "'");
-                    //    ModelTextureAnimationLookup.Add(-1);
-                    //}
-
+                    ModelTextureAnimationLookup.Add(-1);
                     ModelTextureLookups.Add(curIndex);
                     ModelTextureMappingLookups.Add(curIndex);                    
                     ++curIndex;
