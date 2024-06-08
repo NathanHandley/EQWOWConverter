@@ -43,7 +43,7 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureMappingLookups = new List<Int16>();
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
-        public List<Int16> ModelTextureTransparencyWeightsLookups = new List<Int16>();
+        public List<UInt16> ModelTextureTransparencyWeightsLookups = new List<UInt16>();
         public List<ModelTrackSequences<Fixed16>> ModelTextureTransparencySequencesSet = new List<ModelTrackSequences<Fixed16>>();
         public List<Int16> ModelTextureAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
@@ -66,6 +66,12 @@ namespace EQWOWConverter.Objects
         {
             // For now, it's a 1 to 1 match
             return Convert.ToUInt16(materialID);
+        }
+
+        public UInt16 GetTextureTransparencyLookupIndexForMaterial(int materialID)
+        {
+            // Array should match indicies
+            return ModelTextureTransparencyWeightsLookups[materialID];
         }
 
         // Note: Only working for static for now, but more to come
@@ -123,6 +129,8 @@ namespace EQWOWConverter.Objects
             }
 
             // Process materials
+            foreach(Material material in eqObject.Materials)
+                ModelTextureTransparencyWeightsLookups.Add(0);
             ProcessMaterials(eqObject.Materials.ToArray());
 
             // Correct any coordinates
@@ -139,7 +147,6 @@ namespace EQWOWConverter.Objects
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            ModelTextureTransparencyWeightsLookups.Add(0);
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
@@ -204,6 +211,7 @@ namespace EQWOWConverter.Objects
 
             // Generate geometry on a per material basis to fake the animation with duplicate transparent textures
             List<Material> animationFrameMaterials = new List<Material>();
+            UInt32 curAnimationTimestamp = 0;
             foreach (string textureName in material.TextureNames)
             {
                 // Each texture gets a new unique material, and a copy of all the geometry
@@ -238,28 +246,34 @@ namespace EQWOWConverter.Objects
                     ModelVerticies.Add(newModelVertex);
                 }
 
+                //// Create the new transparency "animation"
+                ModelTrackSequences<Fixed16> newAnimation = new ModelTrackSequences<Fixed16>();
+                newAnimation.InterpolationType = ModelAnimationInterpolationType.None;
+                int curSequenceId = newAnimation.AddSequence();
+
+                // Add a blank (transparent) frame to this animation for every frame that already exists, and add a blank to those others
+                for (int i = 0; i < ModelTextureTransparencySequencesSet.Count; ++i)
+                {
+                    newAnimation.AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(Int16.MaxValue));
+                    ModelTextureTransparencySequencesSet[i].AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(Int16.MaxValue));
+                }
+
+                // Add this shown (non-transparent) frame
+                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(0));
+
+                // Add this animation and the texture lookup, which should match current count
+                ModelTextureTransparencySequencesSet.Add(newAnimation);
+                ModelTextureTransparencyWeightsLookups.Add(Convert.ToUInt16(ModelTextureTransparencySequencesSet.Count - 1));
+                curAnimationTimestamp += material.AnimationDelayMs;
+
                 animationFrameMaterials.Add(newAnimationMaterial);
             }
 
-            //foreach (TriangleFace triangleFace in triangleFaces)
-            //    ModelTriangles.Add(triangleFace);
-            //for (int i = 0; i < verticies.Count; i++)
-            //{
-            //    ModelVertex newModelVertex = new ModelVertex();
-            //    newModelVertex.Position.X = verticies[i].X;
-            //    newModelVertex.Position.Y = verticies[i].Y;
-            //    newModelVertex.Position.Z = verticies[i].Z;
-            //    newModelVertex.Normal.X = normals[i].X;
-            //    newModelVertex.Normal.Y = normals[i].Y;
-            //    newModelVertex.Normal.Z = normals[i].Z;
-            //    TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
-            //    newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-            //    newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
-            //    ModelVerticies.Add(newModelVertex);
-            //}
-
             // Save name and triangles
             Name = name;
+
+            // Add the global loop sequence to contain this
+            GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
 
             // Process material
             ProcessMaterials(animationFrameMaterials.ToArray());
@@ -276,7 +290,6 @@ namespace EQWOWConverter.Objects
             ModelBones.Add(new ModelBone());
             ModelBoneKeyLookups.Add(-1);
             ModelBoneLookups.Add(0);
-            ModelTextureTransparencyWeightsLookups.Add(0);
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
             ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
             ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
@@ -330,7 +343,7 @@ namespace EQWOWConverter.Objects
                     ModelMaterials.Add(newModelMaterial);
                     ModelTextureAnimationLookup.Add(-1);
                     ModelTextureLookups.Add(curIndex);
-                    ModelTextureMappingLookups.Add(curIndex);                    
+                    ModelTextureMappingLookups.Add(curIndex);
                     ++curIndex;
                 }
             }

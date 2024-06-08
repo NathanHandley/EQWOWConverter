@@ -163,7 +163,8 @@ namespace EQWOWConverter.WOWFiles
 
                 // Texture Unit
                 UInt16 textureLookupID = modelObject.GetTextureLookupIndexForMaterial(curIndex);
-                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(curIndex), Convert.ToUInt16(trianglesForMaterial.Key), textureLookupID);
+                UInt16 transLookupID = modelObject.GetTextureTransparencyLookupIndexForMaterial(curIndex);
+                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(Convert.ToUInt16(curIndex), Convert.ToUInt16(trianglesForMaterial.Key), textureLookupID, transLookupID);
                 textureUnits.Add(curTextureUnit);
 
                 curIndex++;
