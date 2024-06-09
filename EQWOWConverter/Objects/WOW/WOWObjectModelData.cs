@@ -116,7 +116,7 @@ namespace EQWOWConverter.Objects
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)] = new ModelTrackSequences<Fixed16>();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddSequence();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(32767));
-                    ModelTextureTransparencyLookupsByMaterialIndex[Convert.ToInt32(material.Index)] = Convert.ToInt32(material.Index);
+                    ModelTextureTransparencyLookupsByMaterialIndex[Convert.ToInt32(material.Index)] = ModelTextureTransparencySequenceSetByMaterialIndex.Count-1;
                 }
             }
 
@@ -708,7 +708,7 @@ namespace EQWOWConverter.Objects
                 }
                 else
                 {
-                    UInt32 newMaterialIndex = Convert.ToUInt32(expandedMaterials.Count);
+                    UInt32 newMaterialIndex = GetUniqueMaterialIDFromMaterials(expandedMaterials);
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
                     Material newAnimationMaterial = new Material(curMaterialName, newMaterialIndex, initialMaterial.MaterialType, newMaterialTextureName,
                         initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight);
@@ -735,7 +735,7 @@ namespace EQWOWConverter.Objects
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequenceSetByMaterialIndex[curMaterialIndex] = newAnimation;
-                ModelTextureTransparencyLookupsByMaterialIndex[curMaterialIndex] = Convert.ToUInt16(curMaterialIndex);
+                ModelTextureTransparencyLookupsByMaterialIndex[curMaterialIndex] = ModelTextureTransparencySequenceSetByMaterialIndex.Count-1;
                 curAnimationTimestamp += initialMaterial.AnimationDelayMs;
                 curAnimationMaterials.Add(curMaterial);
             }
@@ -799,6 +799,15 @@ namespace EQWOWConverter.Objects
                     textureCoordinates.Add(new TextureCoordinates(textureCoordinates[vi]));
                 }
             }
+        }
+
+        private UInt32 GetUniqueMaterialIDFromMaterials(List<Material> materials)
+        {
+            UInt32 highestExistingID = 0;
+            foreach(Material material in materials)
+                if (material.Index > highestExistingID)
+                    highestExistingID = material.Index;
+            return highestExistingID+1;
         }
     }
 }
