@@ -139,8 +139,8 @@ namespace EQWOWConverter.WOWFiles
                 TextureMappingLookup.Add(new M2Int16(value));
 
             // Texture Transparency Lookup (Weights)
-            foreach (var transparencyValue in wowModelObject.ModelTextureTransparencyLookupsByMaterialIndex)
-                TextureTransparencyLookup.Add(new M2Int16(Convert.ToInt16(transparencyValue.Value)));
+            foreach (var transparencyValue in wowModelObject.ModelTextureTransparencyLookups)
+                TextureTransparencyLookup.Add(new M2Int16(Convert.ToInt16(transparencyValue)));
 
             // Texture Transformations Lookup
             foreach (Int16 value in wowModelObject.ModelTextureAnimationLookup)

@@ -120,12 +120,6 @@ namespace EQWOWConverter.WOWFiles
         {
             textureUnits = new List<M2SkinTextureUnit>();
 
-            if (modelObject.Name == "ZO_freportw_t25_m0004")
-            {
-                int x = 5;
-                int y = 5;
-            }
-
             // Each material gets a new sub mesh and texture unit
             // Note: It's expected that triangles and verticies are sorted by texture already
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
@@ -168,7 +162,8 @@ namespace EQWOWConverter.WOWFiles
                 subMeshes.Add(curSubMesh);
 
                 // Create a texture unit
-                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, materialIter);
+                UInt16 transparencyLookupIndex =modelObject.ModelTextureTransparencyLookups[materialIter];
+                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, transparencyLookupIndex);
                 textureUnits.Add(curTextureUnit);
                 materialIter++;
             }

@@ -43,9 +43,7 @@ namespace EQWOWConverter.Objects
         public List<Int16> ModelTextureLookups = new List<Int16>();
         public List<Int16> ModelTextureMappingLookups = new List<Int16>();
         public List<Int16> ModelReplaceableTextureLookups = new List<Int16>();
-        //public List<UInt16> ModelTextureTransparencyWeightsLookups = new List<UInt16>();
-        //public List<ModelTrackSequences<Fixed16>> ModelTextureTransparencySequencesSet = new List<ModelTrackSequences<Fixed16>>();
-        public SortedDictionary<int, int> ModelTextureTransparencyLookupsByMaterialIndex = new SortedDictionary<int, int>();
+        public List<UInt16> ModelTextureTransparencyLookups = new List<UInt16>();
         public SortedDictionary<int, ModelTrackSequences<Fixed16>> ModelTextureTransparencySequenceSetByMaterialIndex = new SortedDictionary<int, ModelTrackSequences<Fixed16>>();
         public List<Int16> ModelTextureAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
@@ -85,7 +83,11 @@ namespace EQWOWConverter.Objects
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (isFromRawEQObject == true)
+            {
                 ApplyEQToWoWGeometryTranslations(ref triangleFaces, ref verticies, ref textureCoordinates);
+                List<TextureCoordinates> discardCoordinates = new List<TextureCoordinates>();
+                ApplyEQToWoWGeometryTranslations(ref collisionTriangleFaces, ref collisionVerticies, ref discardCoordinates);
+            }
 
             // Process materials
             List<Material> expandedMaterials = new List<Material>();
@@ -116,7 +118,7 @@ namespace EQWOWConverter.Objects
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)] = new ModelTrackSequences<Fixed16>();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddSequence();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(32767));
-                    ModelTextureTransparencyLookupsByMaterialIndex[Convert.ToInt32(material.Index)] = ModelTextureTransparencySequenceSetByMaterialIndex.Count-1;
+                    ModelTextureTransparencyLookups.Add(Convert.ToUInt16(ModelTextureTransparencyLookups.Count));
                 }
             }
 
@@ -139,7 +141,7 @@ namespace EQWOWConverter.Objects
             CorrectTextureCoordinates();
 
             // Process the rest
-            //ProcessCollisionData(verticies, triangleFaces, collisionVerticies, collisionTriangleFaces);
+            ProcessCollisionData(collisionVerticies, collisionTriangleFaces);
             CalculateBoundingBoxesAndRadii();
 
             // HARD CODED FOR STATIC --------------------------------------------------------------------
@@ -155,209 +157,6 @@ namespace EQWOWConverter.Objects
             ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
             ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
             //-------------------------------------------------------------------------------------------
-        }
-
-        // Note: Only working for static for now, but more to come
-        public void LoadFromEQObject(string name, EQModelObjectData eqObject)
-        {
-            if (eqObject.CollisionVerticies.Count == 0)
-                Load(name, eqObject.Materials, eqObject.TriangleFaces, eqObject.Verticies, eqObject.Normals, new List<ColorRGBA>(),
-                    eqObject.TextureCoords, eqObject.Verticies, eqObject.TriangleFaces, true);
-            else
-                Load(name, eqObject.Materials, eqObject.TriangleFaces, eqObject.Verticies, eqObject.Normals, new List<ColorRGBA>(),
-                    eqObject.TextureCoords, eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces, true);
-
-            // Save Name
-            //Name = name;
-
-            //// Change face orientation for culling differences between EQ and WoW
-            //foreach (TriangleFace eqFace in eqObject.TriangleFaces)
-            //{
-            //    TriangleFace newFace = new TriangleFace();
-            //    newFace.MaterialIndex = eqFace.MaterialIndex;
-
-            //    // Rotate the verticies for culling differences
-            //    newFace.V1 = eqFace.V3;
-            //    newFace.V2 = eqFace.V2;
-            //    newFace.V3 = eqFace.V1;
-
-            //    // Add it
-            //    ModelTriangles.Add(newFace);
-            //}
-
-            //if (eqObject.Verticies.Count != eqObject.TextureCoords.Count && eqObject.Verticies.Count != eqObject.Normals.Count)
-            //{
-            //    Logger.WriteError("Failed to load wowobject from eqobject named '" + name + "' since vertex count doesn't match texture coordinate count or normal count");
-            //    return;
-            //}
-
-            //// Read in all the verticies
-            //for (int i = 0; i < eqObject.Verticies.Count; i++)
-            //{
-            //    ModelVertex newModelVertex = new ModelVertex();
-
-            //    // Read vertex, and account for world scale and rotate around the z axis 180 degrees
-            //    Vector3 curVertex = eqObject.Verticies[i];
-            //    newModelVertex.Position.X = curVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            //    newModelVertex.Position.X = -newModelVertex.Position.X;
-            //    newModelVertex.Position.Y = curVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            //    newModelVertex.Position.Y = -newModelVertex.Position.Y;
-            //    newModelVertex.Position.Z = curVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
-            //    // Read texture coordinates, and factor for mapping differences between EQ and WoW
-            //    TextureCoordinates curTextureCoordinates = eqObject.TextureCoords[i];
-            //    newModelVertex.Texture1TextureCoordinates.X = curTextureCoordinates.X;
-            //    newModelVertex.Texture1TextureCoordinates.Y = -1 * curTextureCoordinates.Y;
-
-            //    // Read normals
-            //    Vector3 curNormal = eqObject.Normals[i];
-            //    newModelVertex.Normal.X = curNormal.X;
-            //    newModelVertex.Normal.Y = curNormal.Y;
-            //    newModelVertex.Normal.Z = curNormal.Z;
-
-            //    ModelVerticies.Add(newModelVertex);
-            //}
-
-            //// Process materials
-            //foreach (Material material in eqObject.Materials)
-            //    ModelTextureTransparencyWeightsLookups.Add(0);
-            //BuildModelMaterialsFromMaterials(eqObject.Materials.ToArray());
-
-            //// Correct any coordinates
-            //CorrectTextureCoordinates();
-
-            //// Process the rest
-            //if (eqObject.CollisionVerticies.Count == 0)
-            //    ProcessCollisionData(eqObject.Verticies, eqObject.TriangleFaces);
-            //else
-            //    ProcessCollisionData(eqObject.CollisionVerticies, eqObject.CollisionTriangleFaces);
-
-            //SortGeometry();
-            //CalculateBoundingBoxesAndRadii();
-
-            //// HARD CODED FOR STATIC --------------------------------------------------------------------
-            //// Create a base bone
-            ////AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
-            //ModelBones.Add(new ModelBone());
-            //ModelBoneKeyLookups.Add(-1);
-            //ModelBoneLookups.Add(0);
-            //ModelTextureTransparencySequencesSet.Add(new ModelTrackSequences<Fixed16>());
-            //ModelTextureTransparencySequencesSet[0].AddValueToSequence(ModelTextureTransparencySequencesSet[0].AddSequence(), 0, new Fixed16(32767));
-            //ModelReplaceableTextureLookups.Add(-1); // No replace lookup
-
-            //// Make one animation
-            //ModelAnimations.Add(new ModelAnimation());
-            //ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-            //ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-            ////-------------------------------------------------------------------------------------------
-        }
-
-        public void LoadFromZoneAnimatedMaterial(string name, Material material, List<TriangleFace> triangleFaces, List<Vector3> verticies,
-            List<Vector3> normals, List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoordinates)
-        {
-            Load(name, new List<Material> { material }, triangleFaces, verticies, normals, vertexColors, textureCoordinates,
-                new List<Vector3>(), new List<TriangleFace>(), false);
-        //    // Control for bad objects
-        //    if (verticies.Count != textureCoordinates.Count && verticies.Count != normals.Count)
-        //    {
-        //        Logger.WriteError("Failed to load wowobject from zone data since vertex count doesn't match texture coordinate count or normal count");
-        //        return;
-        //    }
-        //    if (material.TextureNames.Count <= 1)
-        //    {
-        //        Logger.WriteError("Failed to load wowobject from zone data since there was only one texture");
-        //        return;
-        //    }
-
-        //    // Generate geometry on a per material basis to fake the animation with duplicate transparent textures
-        //    List<Material> animationFrameMaterials = new List<Material>();
-        //    UInt32 curAnimationTimestamp = 0;
-        //    foreach (string textureName in material.TextureNames)
-        //    {
-        //        // Each texture gets a new unique material, and a copy of all the geometry
-        //        string curMaterialName = material.Name + "Anim_" + animationFrameMaterials.Count;
-        //        List<string> curMaterialTextureName = new List<string>() { textureName };
-        //        UInt32 materialIndex = Convert.ToUInt32(animationFrameMaterials.Count);
-        //        Material newAnimationMaterial = new Material(curMaterialName, materialIndex, material.MaterialType, curMaterialTextureName,
-        //            0, material.TextureWidth, material.TextureHeight);
-
-        //        // Add this frame's triangles and verticies, accounting for the new material
-        //        foreach (TriangleFace triangleFace in triangleFaces)
-        //        {
-        //            TriangleFace newTriangleFace = new TriangleFace(triangleFace);
-        //            newTriangleFace.V1 += (animationFrameMaterials.Count * verticies.Count);
-        //            newTriangleFace.V2 += (animationFrameMaterials.Count * verticies.Count);
-        //            newTriangleFace.V3 += (animationFrameMaterials.Count * verticies.Count);
-        //            newTriangleFace.MaterialIndex = Convert.ToInt32(newAnimationMaterial.Index);
-        //            ModelTriangles.Add(newTriangleFace);
-        //        }
-        //        for (int i = 0; i < verticies.Count; i++)
-        //        {
-        //            ModelVertex newModelVertex = new ModelVertex();
-        //            newModelVertex.Position.X = verticies[i].X;
-        //            newModelVertex.Position.Y = verticies[i].Y;
-        //            newModelVertex.Position.Z = verticies[i].Z;
-        //            newModelVertex.Normal.X = normals[i].X;
-        //            newModelVertex.Normal.Y = normals[i].Y;
-        //            newModelVertex.Normal.Z = normals[i].Z;
-        //            TextureCoordinates correctedCoordinates = material.GetCorrectedBaseCoordinates(textureCoordinates[i]);
-        //            newModelVertex.Texture1TextureCoordinates.X = correctedCoordinates.X;
-        //            newModelVertex.Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-        //            ModelVerticies.Add(newModelVertex);
-        //        }
-
-        //        //// Create the new transparency "animation"
-        //        ModelTrackSequences<Fixed16> newAnimation = new ModelTrackSequences<Fixed16>();
-        //        newAnimation.InterpolationType = ModelAnimationInterpolationType.None;
-        //        newAnimation.GlobalSequenceID = 0;
-        //        int curSequenceId = newAnimation.AddSequence();
-
-        //        // Add a blank (transparent) frame to this animation for every frame that already exists, and add a blank to those others
-        //        for (int i = 0; i < ModelTextureTransparencySequencesSet.Count; ++i)
-        //        {
-        //            newAnimation.AddValueToSequence(0, Convert.ToUInt32(i) * material.AnimationDelayMs, new Fixed16(0));
-        //            ModelTextureTransparencySequencesSet[i].AddValueToSequence(0, curAnimationTimestamp, new Fixed16(0));
-        //        }
-
-        //        // Add this shown (non-transparent) frame
-        //        newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(Int16.MaxValue));
-
-        //        // Add this animation and the texture lookup, which should match current count
-        //        ModelTextureTransparencySequencesSet.Add(newAnimation);
-        //        ModelTextureTransparencyWeightsLookups.Add(Convert.ToUInt16(ModelTextureTransparencySequencesSet.Count - 1));
-        //        curAnimationTimestamp += material.AnimationDelayMs;
-
-        //        animationFrameMaterials.Add(newAnimationMaterial);
-        //    }
-
-        //    // Save name and triangles
-        //    Name = name;
-
-        //    // Add the global loop sequence to contain this
-        //    GlobalLoopSequenceLimits.Add(Convert.ToUInt32(material.NumOfAnimationFrames()) * material.AnimationDelayMs);
-
-        //    // Process material
-        //    ProcessMaterials(animationFrameMaterials.ToArray());
-
-        //    // Correct coordinates
-        //    CorrectTextureCoordinates();
-
-        //    // Build the bounding box (and no collision)
-        //    CalculateBoundingBoxesAndRadii();
-
-        //    // HARD CODED FOR STATIC --------------------------------------------------------------------
-        //    // Create a base bone
-        //    //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
-        //    ModelBones.Add(new ModelBone());
-        //    ModelBoneKeyLookups.Add(-1);
-        //    ModelBoneLookups.Add(0);
-        //    ModelReplaceableTextureLookups.Add(-1); // No replace lookup
-
-        //    // Make one animation
-        //    ModelAnimations.Add(new ModelAnimation());
-        //    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-        //    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-        //    //-------------------------------------------------------------------------------------------
         }
 
         public void ApplyEQToWoWGeometryTranslations(ref List<TriangleFace> triangleFaces, ref List<Vector3> verticies,
@@ -473,15 +272,7 @@ namespace EQWOWConverter.Objects
 
             // Store positions, factoring for world scailing and rotation around Z axis
             foreach (Vector3 collisionVertex in collisionVerticies)
-            {
-                Vector3 curVertex = new Vector3();
-                curVertex.X = collisionVertex.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                curVertex.Y = collisionVertex.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                curVertex.Z = collisionVertex.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                curVertex.X = -curVertex.X;
-                curVertex.Y = -curVertex.Y;
-                CollisionPositions.Add(new Vector3(curVertex));
-            }
+                CollisionPositions.Add(new Vector3(collisionVertex));
 
             // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
             foreach (TriangleFace collisionTriangle in collisionTriangleFaces)
@@ -507,7 +298,8 @@ namespace EQWOWConverter.Objects
                 System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
 
                 // Invert the normal due to winding order difference
-                Vector3 normal = new Vector3(normalizedNormalSystem.X * -1, normalizedNormalSystem.Y * -1, normalizedNormalSystem.Z * -1);
+                //Vector3 normal = new Vector3(normalizedNormalSystem.X * -1, normalizedNormalSystem.Y * -1, normalizedNormalSystem.Z * -1);
+                Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
                 CollisionFaceNormals.Add(normal);
             }
         }
@@ -685,12 +477,6 @@ namespace EQWOWConverter.Objects
         private void ExpandAnimatedMaterialAndAddAnimationProperties(Material initialMaterial, ref List<Material> expandedMaterials, 
             out List<Material> curAnimationMaterials)
         {
-            if (Name == "ZO_freportw_t25_m0004")
-            {
-                int x = 5;
-                int y = 5;
-            }
-
             // Create a unique material and animation frame for every material
             curAnimationMaterials = new List<Material>();
             UInt32 curAnimationTimestamp = 0;
@@ -735,7 +521,7 @@ namespace EQWOWConverter.Objects
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequenceSetByMaterialIndex[curMaterialIndex] = newAnimation;
-                ModelTextureTransparencyLookupsByMaterialIndex[curMaterialIndex] = ModelTextureTransparencySequenceSetByMaterialIndex.Count-1;
+                ModelTextureTransparencyLookups.Add(Convert.ToUInt16(ModelTextureTransparencyLookups.Count));
                 curAnimationTimestamp += initialMaterial.AnimationDelayMs;
                 curAnimationMaterials.Add(curMaterial);
             }

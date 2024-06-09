@@ -401,7 +401,8 @@ namespace EQWOWConverter.Zones
             // Generate the object
             string name = "ZO_" + ShortName + "_" + material.Name;
             WOWObjectModelData newObject = new WOWObjectModelData();
-            newObject.LoadFromZoneAnimatedMaterial(name, material, modelTriangleFaces, modelVerticies, modelNormals, modelVertexColors, modelTextureCoordinates);
+            newObject.Load(name, new List<Material> { material }, modelTriangleFaces, modelVerticies, modelNormals, modelVertexColors,
+                modelTextureCoordinates, new List<Vector3>(), new List<TriangleFace>(), false);
             GeneratedZoneObjects.Add(newObject);
 
             // Add as a doodad

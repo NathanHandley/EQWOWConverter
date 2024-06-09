@@ -14,12 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.Objects
 {
@@ -44,7 +46,21 @@ namespace EQWOWConverter.Objects
         public void PopulateWOWModelObjectDataFromEQModelObjectData()
         {
             WOWModelObjectData = new WOWObjectModelData();
-            WOWModelObjectData.LoadFromEQObject(Name, EQModelObjectData);
+
+            if (EQModelObjectData.CollisionVerticies.Count == 0)
+            {
+                List<TriangleFace> collisionFaces = new List<TriangleFace>();
+                foreach (TriangleFace triangleFace in EQModelObjectData.TriangleFaces)
+                    collisionFaces.Add(new TriangleFace(triangleFace));
+                List<Vector3> collisionPositions = new List<Vector3>();
+                foreach (Vector3 position in EQModelObjectData.Verticies)
+                    collisionPositions.Add(new Vector3(position));
+                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.TriangleFaces, EQModelObjectData.Verticies, EQModelObjectData.Normals,
+                    new List<ColorRGBA>(), EQModelObjectData.TextureCoords, collisionPositions, collisionFaces, true);
+            }
+            else
+                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.TriangleFaces, EQModelObjectData.Verticies, EQModelObjectData.Normals,
+                    new List<ColorRGBA>(), EQModelObjectData.TextureCoords, EQModelObjectData.CollisionVerticies, EQModelObjectData.CollisionTriangleFaces, true);
         }
     }
 }
