@@ -4,7 +4,7 @@ Converts the EverQuest assets from the original three game releases (Initial, Ru
 <img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Loading-Velious.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/WestFreeportGate.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Rivervale.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/HighKeep.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/FirionaVie.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/CrystalCaverns.png?raw=true" width="300"/>
 
 # Current State
-It is currently still in heavy development and things are changing daily.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, fire doesn't animate, etc)
+It is currently still in heavy development and things are changing daily.  Currently the maps are outputting with static objects, but there are severial issues (water is solid, no boats, lighting is wrong, etc)
 
 Current focus is on getting original/classic content polished, then Kunark and Velious will follow.  Note that Kunark and Velious static objects and maps are already exporting.
 
@@ -71,5 +71,5 @@ Run the scripts located into the exports directory subfolder \AzerothCoreSQLScri
 In no particular order...
 - Dan Wilkins/Nick Gal/(others) for Lantern Extractor (https://github.com/LanternEQ/LanternExtractor) - This saved a lot of time trying to get EQ data exported
 - The people behind https://wowdev.wiki - Navigating the WoW file formats would have been near impossible without this documentation
-- WoW Modding Community Discord - For the one-off problem questions I've run into thus far
+- WoW Modding Community Discord - For the one-off problem questions I've run into thus far (special callout to Aleist3r and Titi)
 - Jarl Gullberg and team working on libwarcraft (https://github.com/WowDevTools/libwarcraft) - Whenever confused by elements outlined in wowdev.wiki, this code worked as a reference sanity check
