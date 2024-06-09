@@ -82,9 +82,16 @@ namespace EQWOWConverter.Objects
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (isFromRawEQObject == true)
             {
-                ApplyEQToWoWGeometryTranslations(ref meshData.TriangleFaces, ref meshData.Vertices, ref meshData.TextureCoordinates);
-                List<TextureCoordinates> discardCoordinates = new List<TextureCoordinates>();
-                ApplyEQToWoWGeometryTranslations(ref collisionTriangleFaces, ref collisionVertices, ref discardCoordinates);
+                // Regular
+                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+
+                // Collision
+                MeshData collisionMeshData = new MeshData();
+                collisionMeshData.TriangleFaces = collisionTriangleFaces;
+                collisionMeshData.Vertices = collisionVertices;
+                collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+                collisionTriangleFaces = collisionMeshData.TriangleFaces;
+                collisionVertices = collisionMeshData.Vertices;
             }
 
             // Process materials
@@ -155,30 +162,6 @@ namespace EQWOWConverter.Objects
             ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
             ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
             //-------------------------------------------------------------------------------------------
-        }
-
-        public void ApplyEQToWoWGeometryTranslations(ref List<TriangleFace> triangleFaces, ref List<Vector3> vertices,
-            ref List<TextureCoordinates> textureCoordinates)
-        {
-            // Change face indices for winding over differences
-            foreach (TriangleFace eqFace in triangleFaces)
-            {
-                int swapFaceVertexIndex = eqFace.V3;
-                eqFace.V3 = eqFace.V1;
-                eqFace.V1 = swapFaceVertexIndex;
-            }
-            // Perform vertex world scaling and 180 Z-Axis degree rotation
-            foreach (Vector3 eqVertex in vertices)
-            {
-                eqVertex.X *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                eqVertex.Y *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                eqVertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            }
-            // Flip Y on the texture coordinates
-            foreach (TextureCoordinates eqTextureCoordinates in textureCoordinates)
-            {
-                eqTextureCoordinates.Y *= -1;
-            }
         }
 
         public void CorrectTextureCoordinates()

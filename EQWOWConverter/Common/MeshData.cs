@@ -30,6 +30,45 @@ namespace EQWOWConverter.Common
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
 
+        public MeshData() { }
+
+        public MeshData(MeshData meshData)
+        {
+            foreach (Vector3 vertex in meshData.Vertices)
+                Vertices.Add(new Vector3(vertex));
+            foreach(Vector3 normal in meshData.Normals)
+                Normals.Add(new Vector3(normal));
+            foreach(TextureCoordinates textureCoordinate in meshData.TextureCoordinates)
+                TextureCoordinates.Add(new TextureCoordinates(textureCoordinate));
+            foreach(TriangleFace triangleFace in meshData.TriangleFaces)
+                TriangleFaces.Add(new TriangleFace(triangleFace));
+            foreach (ColorRGBA colorRGBA in meshData.VertexColors)
+                VertexColors.Add(new ColorRGBA(colorRGBA));
+        }
+
+        public void ApplyEQToWoWGeometryTranslationsAndWorldScale()
+        {
+            // Change face indices for winding over differences
+            foreach (TriangleFace triangleFace in TriangleFaces)
+            {
+                int swapFaceVertexIndex = triangleFace.V3;
+                triangleFace.V3 = triangleFace.V1;
+                triangleFace.V1 = swapFaceVertexIndex;
+            }
+            // Perform vertex world scaling and 180 Z-Axis degree rotation
+            foreach (Vector3 vertex in Vertices)
+            {
+                vertex.X *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.Y *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            }
+            // Flip Y on the texture coordinates
+            foreach (TextureCoordinates textureCoordinate in TextureCoordinates)
+            {
+                textureCoordinate.Y *= -1;
+            }
+        }
+
         public MeshData GetMeshDataForMaterial(Material material)
         {
             // Extract out copies of the geometry data specific to this material

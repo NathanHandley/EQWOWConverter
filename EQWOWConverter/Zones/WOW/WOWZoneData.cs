@@ -70,40 +70,8 @@ namespace EQWOWConverter.Zones
             AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, AmbientLight.A);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
 
-            MeshData meshData = new MeshData();
-
-            // Change face orientation for culling differences between EQ and WoW
-            foreach (TriangleFace eqFace in eqZoneData.MeshData.TriangleFaces)
-            {
-                TriangleFace newFace = new TriangleFace();
-                newFace.MaterialIndex = eqFace.MaterialIndex;
-
-                // Rotate the vertices for culling differences
-                newFace.V1 = eqFace.V3;
-                newFace.V2 = eqFace.V2;
-                newFace.V3 = eqFace.V1;
-
-                // Add it
-                meshData.TriangleFaces.Add(newFace);
-            }
-
-            // Change texture mapping differences between EQ and WoW
-            foreach (TextureCoordinates uv in eqZoneData.MeshData.TextureCoordinates)
-            {
-                TextureCoordinates curTextureCoords = new TextureCoordinates(uv.X, uv.Y * -1);
-                meshData.TextureCoordinates.Add(curTextureCoords);
-            }
-
-            // Adjust vertices for world scale and rotate around the Z axis 180 degrees
-            foreach (Vector3 vertex in eqZoneData.MeshData.Vertices)
-            {
-                vertex.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                vertex.X = -vertex.X;
-                vertex.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                vertex.Y = -vertex.Y;
-                vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                meshData.Vertices.Add(vertex);
-            }
+            MeshData meshData = new MeshData(eqZoneData.MeshData);
+            meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
 
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
