@@ -39,7 +39,7 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 NumOfBonesInfluencing = 1; // Max number of bones needed at one time?  How does this differ from Bone Count?
         public UInt16 centerBoneIndex = 0;  // This will likely need to change later
         public Vector3 AverageVertexCenterPosition = new Vector3(); // Average position between all verts
-        public Vector3 BoundingBoxCenterPosition = new Vector3(); // Center point from a bounding box wrapped around the verticies
+        public Vector3 BoundingBoxCenterPosition = new Vector3(); // Center point from a bounding box wrapped around the vertices
         public float BoundingBoxFurthestVertexDistanceFromCenter = 0;   // Probably too long of a name, but I'll forget it otherwise
 
         public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount)
@@ -50,28 +50,28 @@ namespace EQWOWConverter.WOWFiles
             TriangleIndexCount = triangleIndexCount;
         }
 
-        public void CalculatePositionAndBoundingData(List<ModelVertex> modelVerticies)
+        public void CalculatePositionAndBoundingData(List<ModelVertex> modelVertices)
         {
             // Do nothing if empty
-            if (modelVerticies.Count == 0)
+            if (modelVertices.Count == 0)
                 return;
 
             // Build a bounding box
-            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(modelVerticies);
+            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(modelVertices);
 
             // Calculate the average vertex center position
             float totalX = 0;
             float totalY = 0;
             float totalZ = 0;
-            foreach (ModelVertex vertex in modelVerticies)
+            foreach (ModelVertex vertex in modelVertices)
             {
                 totalX += vertex.Position.X;
                 totalY += vertex.Position.Y;
                 totalZ += vertex.Position.Z;
             }
-            AverageVertexCenterPosition.X = totalX / modelVerticies.Count;
-            AverageVertexCenterPosition.Y = totalY / modelVerticies.Count;
-            AverageVertexCenterPosition.Z = totalZ / modelVerticies.Count;
+            AverageVertexCenterPosition.X = totalX / modelVertices.Count;
+            AverageVertexCenterPosition.Y = totalY / modelVertices.Count;
+            AverageVertexCenterPosition.Z = totalZ / modelVertices.Count;
 
             // Bounding box
             BoundingBoxCenterPosition = boundingBox.GetCenter();

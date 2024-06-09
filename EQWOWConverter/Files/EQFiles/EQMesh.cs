@@ -25,12 +25,12 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQMesh
     {
-        public List<Vector3> Verticies = new List<Vector3>();
+        public List<Vector3> Vertices = new List<Vector3>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
-        public AnimatedVerticies AnimatedVerticies = new AnimatedVerticies();
+        public AnimatedVertices AnimatedVertices = new AnimatedVertices();
         public string MaterialListFileName = string.Empty;
         // TODO: Bones
 
@@ -72,7 +72,7 @@ namespace EQWOWConverter.EQFiles
                 else if (inputRow.StartsWith("b"))
                     continue; // Skip for now
 
-                // v = Verticies
+                // v = Vertices
                 else if (inputRow.StartsWith("v"))
                 {
                     string[] blocks = inputRow.Split(",");
@@ -85,7 +85,7 @@ namespace EQWOWConverter.EQFiles
                     vertex.X = float.Parse(blocks[1]);
                     vertex.Z = float.Parse(blocks[2]);
                     vertex.Y = float.Parse(blocks[3]);
-                    Verticies.Add(vertex);
+                    Vertices.Add(vertex);
                 }
 
                 // ad = Animation head
@@ -97,31 +97,31 @@ namespace EQWOWConverter.EQFiles
                         Logger.WriteError("- Animated head block was not 2 components");
                         continue;
                     }
-                    if (AnimatedVerticies.FrameDelay != 0)
+                    if (AnimatedVertices.FrameDelay != 0)
                     {
                         Logger.WriteError("- There was already a read frame delay");
                         continue;
                     }
-                    AnimatedVerticies.FrameDelay = int.Parse(blocks[1]);
+                    AnimatedVertices.FrameDelay = int.Parse(blocks[1]);
                 }
 
-                // av = Animation verticies
+                // av = Animation vertices
                 else if (inputRow.StartsWith("av"))
                 {
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteError("- Animation verticies block was not 5 components");
+                        Logger.WriteError("- Animation vertices block was not 5 components");
                         continue;
                     }
 
                     int frameIndex = int.Parse(blocks[1]);
-                    if (frameIndex >= AnimatedVerticies.GetFrameCount())
-                        AnimatedVerticies.Frames.Add(new List<Vector3>());
+                    if (frameIndex >= AnimatedVertices.GetFrameCount())
+                        AnimatedVertices.Frames.Add(new List<Vector3>());
                     float xPos = float.Parse(blocks[2]);
                     float zPos = float.Parse(blocks[3]);
                     float yPos = float.Parse(blocks[4]);
-                    AnimatedVerticies.Frames[frameIndex].Add(new Vector3(xPos, yPos, zPos));
+                    AnimatedVertices.Frames[frameIndex].Add(new Vector3(xPos, yPos, zPos));
                 }
 
                 // uv = Texture Coordinates
@@ -172,13 +172,13 @@ namespace EQWOWConverter.EQFiles
                     VertexColors.Add(color);
                 }
 
-                // i = Indicies
+                // i = Indices
                 else if (inputRow.StartsWith("i"))
                 {
                     string[] blocks = inputRow.Split(",");
                     if (blocks.Length != 5)
                     {
-                        Logger.WriteError("- Indicies block was not 5 components");
+                        Logger.WriteError("- Indices block was not 5 components");
                         continue;
                     }
                     TriangleFace index = new TriangleFace();

@@ -121,7 +121,7 @@ namespace EQWOWConverter.Common
 
         public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
         {
-            // Verticies contained in the box are given collisions, and should be checked first
+            // Vertices contained in the box are given collisions, and should be checked first
             if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
                 return true;
 
@@ -143,10 +143,10 @@ namespace EQWOWConverter.Common
                    point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
         }
 
-        public static BoundingBox GenerateBoxFromVectors(List<Vector3> verticies, float addedBoundary)
+        public static BoundingBox GenerateBoxFromVectors(List<Vector3> vertices, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();
-            foreach (Vector3 renderVert in verticies)
+            foreach (Vector3 renderVert in vertices)
             {
                 if (renderVert.X < boundingBox.BottomCorner.X)
                     boundingBox.BottomCorner.X = renderVert.X;
@@ -171,10 +171,10 @@ namespace EQWOWConverter.Common
             return boundingBox;
         }
 
-        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> verticies, float minSize = 0)
+        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> vertices, float minSize = 0)
         {
             BoundingBox boundingBox = new BoundingBox();
-            foreach (ModelVertex renderVert in verticies)
+            foreach (ModelVertex renderVert in vertices)
             {
                 if (renderVert.Position.X < boundingBox.BottomCorner.X)
                     boundingBox.BottomCorner.X = renderVert.Position.X;

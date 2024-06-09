@@ -62,7 +62,7 @@ namespace EQWOWConverter.Common
 
         public UInt32 GetBytesSize()
         {
-            return 6; // 2 bytes per index, 3 indicies
+            return 6; // 2 bytes per index, 3 indices
         }
 
         public List<byte> ToBytes()

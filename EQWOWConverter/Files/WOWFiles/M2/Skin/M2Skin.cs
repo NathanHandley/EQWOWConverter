@@ -42,23 +42,23 @@ namespace EQWOWConverter.WOWFiles
             List<byte> nonHeaderBytes = new List<byte>();
             int curOffset = Header.GetSize();
 
-            // Indicies
-            List<byte> indiciesBytes = GenerateIndiciesBlock(wowModelObject);
-            Header.Indicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVerticies.Count));
-            curOffset += indiciesBytes.Count;
-            nonHeaderBytes.AddRange(indiciesBytes);
+            // Indices
+            List<byte> indicesBytes = GenerateIndicesBlock(wowModelObject);
+            Header.Indices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVertices.Count));
+            curOffset += indicesBytes.Count;
+            nonHeaderBytes.AddRange(indicesBytes);
 
             // Triangles
             List<byte> triangleBytes = GenerateTrianglesBlock(wowModelObject);
-            Header.TriangleIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelTriangles.Count * 3));
+            Header.TriangleIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelTriangles.Count * 3));
             curOffset += triangleBytes.Count;
             nonHeaderBytes.AddRange(triangleBytes);
 
-            // Bone Indicies
-            List<byte> boneIndiciesBytes = GenerateBoneIndiciesBlock(wowModelObject);
-            Header.BoneIndicies.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVerticies.Count));
-            curOffset += boneIndiciesBytes.Count;
-            nonHeaderBytes.AddRange(boneIndiciesBytes);
+            // Bone Indices
+            List<byte> boneIndicesBytes = GenerateBoneIndicesBlock(wowModelObject);
+            Header.BoneIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVertices.Count));
+            curOffset += boneIndicesBytes.Count;
+            nonHeaderBytes.AddRange(boneIndicesBytes);
 
             // SubMeshes
             List<M2SkinTextureUnit> textureUnits;
@@ -78,12 +78,12 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// Indicies
+        /// Indices
         /// </summary>
-        private List<byte> GenerateIndiciesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateIndicesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            for (UInt16 i = 0; i < modelObject.ModelVerticies.Count; ++i)
+            for (UInt16 i = 0; i < modelObject.ModelVertices.Count; ++i)
                 blockBytes.AddRange(BitConverter.GetBytes(i));
             return blockBytes;
         }
@@ -100,15 +100,15 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// Bone Indicies
+        /// Bone Indices
         /// </summary>
-        private List<byte> GenerateBoneIndiciesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateBoneIndicesBlock(WOWObjectModelData modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelVertex modelVertex in modelObject.ModelVerticies)
+            foreach(ModelVertex modelVertex in modelObject.ModelVertices)
             {
-                M2SkinBoneIndicies curIndicies = new M2SkinBoneIndicies(modelVertex.BoneIndicies);
-                blockBytes.AddRange(curIndicies.ToBytes());
+                M2SkinBoneIndices curIndices = new M2SkinBoneIndices(modelVertex.BoneIndices);
+                blockBytes.AddRange(curIndices.ToBytes());
             }
             return blockBytes;
         }
@@ -121,7 +121,7 @@ namespace EQWOWConverter.WOWFiles
             textureUnits = new List<M2SkinTextureUnit>();
 
             // Each material gets a new sub mesh and texture unit
-            // Note: It's expected that triangles and verticies are sorted by texture already
+            // Note: It's expected that triangles and vertices are sorted by texture already
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
             UInt16 materialIter = 0;
             foreach (ModelMaterial material in modelObject.ModelMaterials)
@@ -130,7 +130,7 @@ namespace EQWOWConverter.WOWFiles
                 int startTriangleIndex = -1;
                 int numberOfTrianges = 0;
                 int startVertexIndex = -1;
-                HashSet<int> countedVertexIndicies = new HashSet<int>();
+                HashSet<int> countedVertexIndices = new HashSet<int>();
                 for (int i = 0; i < modelObject.ModelTriangles.Count; i++)
                 {
                     if (modelObject.ModelTriangles[i].MaterialIndex == material.Material.Index)
@@ -140,25 +140,25 @@ namespace EQWOWConverter.WOWFiles
                         numberOfTrianges++;
                         if (startVertexIndex == -1)
                             startVertexIndex = modelObject.ModelTriangles[i].GetSmallestIndex();
-                        if (countedVertexIndicies.Contains(modelObject.ModelTriangles[i].V1) == false)
-                            countedVertexIndicies.Add(modelObject.ModelTriangles[i].V1);
-                        if (countedVertexIndicies.Contains(modelObject.ModelTriangles[i].V2) == false)
-                            countedVertexIndicies.Add(modelObject.ModelTriangles[i].V2);
-                        if (countedVertexIndicies.Contains(modelObject.ModelTriangles[i].V3) == false)
-                            countedVertexIndicies.Add(modelObject.ModelTriangles[i].V3);
+                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V1) == false)
+                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V1);
+                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V2) == false)
+                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V2);
+                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V3) == false)
+                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V3);
                     }
                 }
                 if (startTriangleIndex == -1)
                     continue;
-                int numberOfVerticies = countedVertexIndicies.Count;
+                int numberOfVertices = countedVertexIndices.Count;
 
                 // Build the sub mesh
-                M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVerticies), 
+                M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
                     Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3));
-                List<ModelVertex> subMeshVerticies = new List<ModelVertex>();
-                foreach (int vertexIndex in countedVertexIndicies)
-                    subMeshVerticies.Add(modelObject.ModelVerticies[vertexIndex]);
-                curSubMesh.CalculatePositionAndBoundingData(subMeshVerticies);
+                List<ModelVertex> subMeshVertices = new List<ModelVertex>();
+                foreach (int vertexIndex in countedVertexIndices)
+                    subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
+                curSubMesh.CalculatePositionAndBoundingData(subMeshVertices);
                 subMeshes.Add(curSubMesh);
 
                 // Create a texture unit

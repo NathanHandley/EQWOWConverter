@@ -28,7 +28,7 @@ namespace EQWOWConverter.ModelObjects
     {
         public Vector3 Position = new Vector3();
         public List<byte> BoneWeights = new List<byte>(new byte[4]);    // Any more than 4 elements will be ignored
-        public List<byte> BoneIndicies = new List<byte>(new byte[4]);   // Any more than 4 elements will be ignored
+        public List<byte> BoneIndices = new List<byte>(new byte[4]);   // Any more than 4 elements will be ignored
         public Vector3 Normal = new Vector3();
         public TextureCoordinates Texture1TextureCoordinates = new TextureCoordinates();
         public TextureCoordinates Texture2TextureCoordinates = new TextureCoordinates();
@@ -44,7 +44,7 @@ namespace EQWOWConverter.ModelObjects
             UInt32 size = 0;
             size += 12;// Position
             size += 4; // BoneWeights
-            size += 4; // BoneIndicies
+            size += 4; // BoneIndices
             size += 12;// Normal
             size += 8; // Texture1TextureCoordinates
             size += 8; // Texture2TextureCoordinates
@@ -56,7 +56,7 @@ namespace EQWOWConverter.ModelObjects
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Position.ToBytes());
             bytes.AddRange(BoneWeights.ToArray());
-            bytes.AddRange(BoneIndicies.ToArray());
+            bytes.AddRange(BoneIndices.ToArray());
             bytes.AddRange(Normal.ToBytes());
             bytes.AddRange(Texture1TextureCoordinates.ToBytes());
             bytes.AddRange(Texture2TextureCoordinates.ToBytes());

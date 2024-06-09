@@ -99,10 +99,10 @@ namespace EQWOWConverter.WOWFiles
             // MOPY (Material info for triangles) -------------------------------------------------
             chunkBytes.AddRange(GenerateMOPYChunk(worldModelObject));
 
-            // MOVI (MapObject Vertex Indicies) ---------------------------------------------------
+            // MOVI (MapObject Vertex Indices) ---------------------------------------------------
             chunkBytes.AddRange(GenerateMOVIChunk(worldModelObject));
 
-            // MOVT (Verticies) -------------------------------------------------------------------
+            // MOVT (Vertices) -------------------------------------------------------------------
             chunkBytes.AddRange(GenerateMOVTChunk(worldModelObject));
 
             // MONR (Normals) ---------------------------------------------------------------------
@@ -162,7 +162,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// MOVI (MapObject Vertex Indicies)
+        /// MOVI (MapObject Vertex Indices)
         /// </summary>
         private List<byte> GenerateMOVIChunk(WorldModelObject worldModelObject)
         {
@@ -175,13 +175,13 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// MOVT (Verticies)
+        /// MOVT (Vertices)
         /// </summary>
         private List<byte> GenerateMOVTChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 vertex in worldModelObject.Verticies)
+            foreach (Vector3 vertex in worldModelObject.Vertices)
                 chunkBytes.AddRange(vertex.ToBytes());
 
             return WrapInChunk("MOVT", chunkBytes.ToArray());
@@ -228,7 +228,7 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.FirstTriangleFaceIndex));
 
                 // Number of poly indexes
-                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.NumOfFaceIndicies));
+                chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.NumOfFaceIndices));
 
                 // Vertex Start Index
                 chunkBytes.AddRange(BitConverter.GetBytes(renderBatch.FirstVertexIndex));
@@ -293,7 +293,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(UInt32 faceIndex in worldModelObject.BSPTree.FaceTriangleIndicies)
+            foreach(UInt32 faceIndex in worldModelObject.BSPTree.FaceTriangleIndices)
                 chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(faceIndex)));
 
             return WrapInChunk("MOBR", chunkBytes.ToArray());

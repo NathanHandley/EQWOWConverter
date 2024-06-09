@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones
     {
         private bool IsLoaded = false;
         private string MaterialListFileName = string.Empty;
-        public List<Vector3> Verticies = new List<Vector3>();
+        public List<Vector3> Vertices = new List<Vector3>();
         public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
         public List<Vector3> Normals = new List<Vector3>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
@@ -39,7 +39,7 @@ namespace EQWOWConverter.Zones
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
-        public List<Vector3> CollisionVerticies = new List<Vector3>();
+        public List<Vector3> CollisionVertices = new List<Vector3>();
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
 
         private string MaterialListName = string.Empty;
@@ -74,7 +74,7 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
-            Verticies = meshData.Verticies;
+            Vertices = meshData.Vertices;
             Normals = meshData.Normals;
             TextureCoords = meshData.TextureCoordinates;
             TriangleFaces = meshData.TriangleFaces;
@@ -116,7 +116,7 @@ namespace EQWOWConverter.Zones
                 return;
             }
             CollisionTriangleFaces = meshData.TriangleFaces;
-            CollisionVerticies = meshData.Verticies;
+            CollisionVertices = meshData.Vertices;
         }
 
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)

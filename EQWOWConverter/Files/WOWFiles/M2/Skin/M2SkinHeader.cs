@@ -25,9 +25,9 @@ namespace EQWOWConverter.WOWFiles
     internal class M2SkinHeader
     {
         private string TokenMagic = "SKIN";
-        public M2SkinHeaderElement Indicies = new M2SkinHeaderElement();
-        public M2SkinHeaderElement TriangleIndicies = new M2SkinHeaderElement(); // This will be 3x the number of triangle records
-        public M2SkinHeaderElement BoneIndicies = new M2SkinHeaderElement(); // I've also seen this as 'properties' for some reason.  Relates to Verticies
+        public M2SkinHeaderElement Indices = new M2SkinHeaderElement();
+        public M2SkinHeaderElement TriangleIndices = new M2SkinHeaderElement(); // This will be 3x the number of triangle records
+        public M2SkinHeaderElement BoneIndices = new M2SkinHeaderElement(); // I've also seen this as 'properties' for some reason.  Relates to Vertices
         public M2SkinHeaderElement SubMeshes = new M2SkinHeaderElement();
         public M2SkinHeaderElement TextureUnits = new M2SkinHeaderElement(); // "Batches"?
         private UInt32 BoneCountMax = 21;   // Values seem to be 21, 53, 64, 256
@@ -36,9 +36,9 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Encoding.ASCII.GetBytes(TokenMagic));
-            bytes.AddRange(Indicies.ToBytes());
-            bytes.AddRange(TriangleIndicies.ToBytes());
-            bytes.AddRange(BoneIndicies.ToBytes());
+            bytes.AddRange(Indices.ToBytes());
+            bytes.AddRange(TriangleIndices.ToBytes());
+            bytes.AddRange(BoneIndices.ToBytes());
             bytes.AddRange(SubMeshes.ToBytes());
             bytes.AddRange(TextureUnits.ToBytes());
             bytes.AddRange(BitConverter.GetBytes(BoneCountMax));
@@ -49,9 +49,9 @@ namespace EQWOWConverter.WOWFiles
         {
             int size = 0;
             size += 4;  // TokenMagic
-            size += 8;  // Indicies
+            size += 8;  // Indices
             size += 8;  // Triangles
-            size += 8;  // BoneIndicies
+            size += 8;  // BoneIndices
             size += 8;  // SubMeshes
             size += 8;  // TextureUnits
             size += 4;  // BoneCountMax

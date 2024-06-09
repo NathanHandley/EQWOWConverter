@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class AnimatedVerticies
+    internal class AnimatedVertices
     {
         public List<List<Vector3>> Frames = new List<List<Vector3>>();
         public int FrameDelay = 0;
@@ -32,7 +32,7 @@ namespace EQWOWConverter.Common
             return Frames.Count;
         }
 
-        public List<Vector3> GetVerticiesAtFrame(int frame)
+        public List<Vector3> GetVerticesAtFrame(int frame)
         {
             if (frame >= Frames.Count)
                 return new List<Vector3>();

@@ -22,21 +22,21 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2SkinBoneIndicies
+    internal class M2SkinBoneIndices
     {
-        public List<byte> BoneIndicies = new List<byte>(new byte[4]);   // Any more than 4 elements will be ignored
+        public List<byte> BoneIndices = new List<byte>(new byte[4]);   // Any more than 4 elements will be ignored
 
-        public M2SkinBoneIndicies(List<byte> boneIndicies)
+        public M2SkinBoneIndices(List<byte> boneIndices)
         {
-            if (boneIndicies.Count == 4)
-                for (int i = 0; i < boneIndicies.Count; i++)
-                    BoneIndicies[i] = boneIndicies[i];
+            if (boneIndices.Count == 4)
+                for (int i = 0; i < boneIndices.Count; i++)
+                    BoneIndices[i] = boneIndices[i];
         }
 
         public List<byte> ToBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BoneIndicies.ToArray());
+            bytes.AddRange(BoneIndices.ToArray());
             return bytes;
         }
     }

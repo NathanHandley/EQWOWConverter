@@ -56,15 +56,15 @@ namespace EQWOWConverter.WOWFiles
         private float BoundingSphereRadius = 0f;
         private BoundingBox CollisionBox = new BoundingBox();
         private float CollisionSphereRadius = 0f;
-        private M2GenericArrayByOffset<TriangleFace> CollisionTriangleIndicies = new M2GenericArrayByOffset<TriangleFace>();
-        private M2GenericArrayByOffset<Vector3> CollisionVerticies = new M2GenericArrayByOffset<Vector3>();
+        private M2GenericArrayByOffset<TriangleFace> CollisionTriangleIndices = new M2GenericArrayByOffset<TriangleFace>();
+        private M2GenericArrayByOffset<Vector3> CollisionVertices = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<Vector3> CollisionFaceNormals = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<M2Attachment> Attachments = new M2GenericArrayByOffset<M2Attachment>();
-        private M2GenericArrayByOffset<M2Int16> AttachmentIndiciesLookup = new M2GenericArrayByOffset<M2Int16>();
+        private M2GenericArrayByOffset<M2Int16> AttachmentIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Dummy> Events = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> Lights = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> Cameras = new M2GenericArrayByOffset<M2Dummy>();
-        private M2GenericArrayByOffset<M2Int16> CamerasIndiciesLookup = new M2GenericArrayByOffset<M2Int16>();
+        private M2GenericArrayByOffset<M2Int16> CamerasIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Dummy> RibbonEmitters = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> ParticleEmitters = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> SecondTextureMaterialOverrides = new M2GenericArrayByOffset<M2Dummy>(); // Multitexturing will use second material from here for blending with first
@@ -100,8 +100,8 @@ namespace EQWOWConverter.WOWFiles
             foreach (Int16 value in wowModelObject.ModelBoneKeyLookups)
                 BoneKeyLookup.Add(new M2Int16(value));
 
-            // Verticies
-            Vertices.AddArray(wowModelObject.ModelVerticies);
+            // Vertices
+            Vertices.AddArray(wowModelObject.ModelVertices);
 
             // Number of Skin Profiles
             SkinProfileCount = 1;  // Fix to 1 for now
@@ -159,10 +159,10 @@ namespace EQWOWConverter.WOWFiles
             CollisionSphereRadius = wowModelObject.CollisionSphereRaidus;
 
             // Collision Triangle Incidies
-            CollisionTriangleIndicies.AddArray(wowModelObject.CollisionTriangles);
+            CollisionTriangleIndices.AddArray(wowModelObject.CollisionTriangles);
 
-            // Collision Verticies
-            CollisionVerticies.AddArray(wowModelObject.CollisionPositions);
+            // Collision Vertices
+            CollisionVertices.AddArray(wowModelObject.CollisionPositions);
 
             // Collision Face Normals
             CollisionFaceNormals.AddArray(wowModelObject.CollisionFaceNormals);
@@ -227,15 +227,15 @@ namespace EQWOWConverter.WOWFiles
             headerSize += 4;  // BoundingSphereRadius
             headerSize += 24; // CollisionBox
             headerSize += 4;  // CollisionSphereRadius
-            headerSize += 8;  // CollisionTriangleIndicies
-            headerSize += 8;  // CollisionVerticies
+            headerSize += 8;  // CollisionTriangleIndices
+            headerSize += 8;  // CollisionVertices
             headerSize += 8;  // CollisionFaceNormals
             headerSize += 8;  // Attachments
-            headerSize += 8;  // AttachmentIndiciesLookup
+            headerSize += 8;  // AttachmentIndicesLookup
             headerSize += 8;  // Events
             headerSize += 8;  // Lights
             headerSize += 8;  // Cameras
-            headerSize += 8;  // CamerasIndiciesLookup
+            headerSize += 8;  // CamerasIndicesLookup
             headerSize += 8;  // RibbonEmitters
             headerSize += 8;  // ParticleEmitters
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))
@@ -286,15 +286,15 @@ namespace EQWOWConverter.WOWFiles
             TextureMappingLookup.AddDataBytes(ref fileBytes);
             TextureTransparencyLookup.AddDataBytes(ref fileBytes);
             TextureAnimationsLookup.AddDataBytes(ref fileBytes);
-            CollisionTriangleIndicies.AddDataBytes(ref fileBytes);
-            CollisionVerticies.AddDataBytes(ref fileBytes);
+            CollisionTriangleIndices.AddDataBytes(ref fileBytes);
+            CollisionVertices.AddDataBytes(ref fileBytes);
             CollisionFaceNormals.AddDataBytes(ref fileBytes);
             Attachments.AddDataBytes(ref fileBytes);
-            AttachmentIndiciesLookup.AddDataBytes(ref fileBytes);
+            AttachmentIndicesLookup.AddDataBytes(ref fileBytes);
             Events.AddDataBytes(ref fileBytes);
             Lights.AddDataBytes(ref fileBytes);
             Cameras.AddDataBytes(ref fileBytes);
-            CamerasIndiciesLookup.AddDataBytes(ref fileBytes);
+            CamerasIndicesLookup.AddDataBytes(ref fileBytes);
             RibbonEmitters.AddDataBytes(ref fileBytes);
             ParticleEmitters.AddDataBytes(ref fileBytes);
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))
@@ -343,15 +343,15 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(BitConverter.GetBytes(BoundingSphereRadius));
             headerBytes.AddRange(CollisionBox.ToBytesHighRes());
             headerBytes.AddRange(BitConverter.GetBytes(CollisionSphereRadius));
-            headerBytes.AddRange(CollisionTriangleIndicies.GetHeaderBytes());
-            headerBytes.AddRange(CollisionVerticies.GetHeaderBytes());
+            headerBytes.AddRange(CollisionTriangleIndices.GetHeaderBytes());
+            headerBytes.AddRange(CollisionVertices.GetHeaderBytes());
             headerBytes.AddRange(CollisionFaceNormals.GetHeaderBytes());
             headerBytes.AddRange(Attachments.GetHeaderBytes());
-            headerBytes.AddRange(AttachmentIndiciesLookup.GetHeaderBytes());
+            headerBytes.AddRange(AttachmentIndicesLookup.GetHeaderBytes());
             headerBytes.AddRange(Events.GetHeaderBytes());
             headerBytes.AddRange(Lights.GetHeaderBytes());
             headerBytes.AddRange(Cameras.GetHeaderBytes());
-            headerBytes.AddRange(CamerasIndiciesLookup.GetHeaderBytes());
+            headerBytes.AddRange(CamerasIndicesLookup.GetHeaderBytes());
             headerBytes.AddRange(RibbonEmitters.GetHeaderBytes());
             headerBytes.AddRange(ParticleEmitters.GetHeaderBytes());
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))

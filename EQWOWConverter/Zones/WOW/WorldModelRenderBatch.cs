@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public byte MaterialIndex = 0;
         public UInt32 FirstTriangleFaceIndex = 0;
-        public UInt16 NumOfFaceIndicies = 0;
+        public UInt16 NumOfFaceIndices = 0;
         public UInt16 FirstVertexIndex = 0;
         public UInt16 LastVertexIndex = 0;
 

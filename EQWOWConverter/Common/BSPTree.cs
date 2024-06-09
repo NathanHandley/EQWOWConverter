@@ -26,19 +26,19 @@ namespace EQWOWConverter.Common
     internal class BSPTree
     {
         public List<BSPNode> Nodes = new List<BSPNode>();
-        public List<UInt32> FaceTriangleIndicies = new List<UInt32>();
+        public List<UInt32> FaceTriangleIndices = new List<UInt32>();
 
         // Generate on create
-        public BSPTree(BoundingBox boundingBox, List<UInt32> triangleFacesIndicies)
+        public BSPTree(BoundingBox boundingBox, List<UInt32> triangleFacesIndices)
         {
             // Create a root node that is a leaf node with all of the triangles
-            foreach (UInt32 faceIndex in triangleFacesIndicies)
-                FaceTriangleIndicies.Add(faceIndex);
+            foreach (UInt32 faceIndex in triangleFacesIndices)
+                FaceTriangleIndices.Add(faceIndex);
             BSPNode rootNode = new BSPNode();
             Nodes.Add(rootNode);
 
             // Update leaf value
-            Nodes[0].SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(FaceTriangleIndicies.Count), 0, 0.0f);
+            Nodes[0].SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(FaceTriangleIndices.Count), 0, 0.0f);
         }   
     }
 }

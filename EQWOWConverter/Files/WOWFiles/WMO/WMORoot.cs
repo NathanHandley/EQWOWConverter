@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             // MOSB (Skybox, optional) ------------------------------------------------------------
             RootBytes.AddRange(GenerateMOSBChunk());
 
-            // MOPV (Portal Verticies) ------------------------------------------------------------
+            // MOPV (Portal Vertices) ------------------------------------------------------------
             RootBytes.AddRange(GenerateMOPVChunk());
 
             // MOPT (Portal Information) ----------------------------------------------------------
@@ -72,7 +72,7 @@ namespace EQWOWConverter.WOWFiles
             // MOPR (Map Object Portal References) ------------------------------------------------
             RootBytes.AddRange(GenerateMOPRChunk());
 
-            // MOVV (Visible Block Verticies) -----------------------------------------------------
+            // MOVV (Visible Block Vertices) -----------------------------------------------------
             RootBytes.AddRange(GenerateMOVVChunk());
 
             // MOVB (Visible Block List) ----------------------------------------------------------
@@ -339,7 +339,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// MOPV (Portal Verticies)
+        /// MOPV (Portal Vertices)
         /// </summary>
         private List<byte> GenerateMOPVChunk()
         {
@@ -375,7 +375,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         /// <summary>
-        /// MOVV (Visible Block Verticies)
+        /// MOVV (Visible Block Vertices)
         /// </summary>
         private List<byte> GenerateMOVVChunk()
         {

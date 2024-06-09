@@ -48,7 +48,7 @@ namespace EQWOWConverter
         // ====================================================================
         // Generator Rules
         // ====================================================================
-        // The value EQ verticies multiply by when translated into WOW verticies
+        // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
         public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;
 

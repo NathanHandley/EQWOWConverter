@@ -33,7 +33,7 @@ namespace EQWOWConverter.Objects
         public List<UInt32> GlobalLoopSequenceLimits = new List<UInt32>();
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
         public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
-        public List<ModelVertex> ModelVerticies = new List<ModelVertex>();
+        public List<ModelVertex> ModelVertices = new List<ModelVertex>();
         public List<ModelBone> ModelBones = new List<ModelBone>();
         public List<ModelTextureAnimation> ModelTextureAnimations = new List<ModelTextureAnimation>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
@@ -63,15 +63,15 @@ namespace EQWOWConverter.Objects
         }
 
         // TODO: Vertex Colors
-        public void Load(string name, List<Material> initialMaterials, List<TriangleFace> triangleFaces, List<Vector3> verticies,
+        public void Load(string name, List<Material> initialMaterials, List<TriangleFace> triangleFaces, List<Vector3> vertices,
             List<Vector3> normals, List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoordinates,
-            List<Vector3> collisionVerticies, List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
+            List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
         {
             // Save Name
             Name = name;
 
             // Control for bad objects
-            if (verticies.Count != textureCoordinates.Count && verticies.Count != normals.Count)
+            if (vertices.Count != textureCoordinates.Count && vertices.Count != normals.Count)
             {
                 Logger.WriteError("Failed to load wowobject named '" + Name + "' since vertex count doesn't match texture coordinate count or normal count");
                 return;
@@ -79,14 +79,14 @@ namespace EQWOWConverter.Objects
 
             // Sort the geometry
             // TODO: Vertex Colors
-            SortGeometry(ref triangleFaces, ref verticies, ref normals, ref textureCoordinates);
+            SortGeometry(ref triangleFaces, ref vertices, ref normals, ref textureCoordinates);
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (isFromRawEQObject == true)
             {
-                ApplyEQToWoWGeometryTranslations(ref triangleFaces, ref verticies, ref textureCoordinates);
+                ApplyEQToWoWGeometryTranslations(ref triangleFaces, ref vertices, ref textureCoordinates);
                 List<TextureCoordinates> discardCoordinates = new List<TextureCoordinates>();
-                ApplyEQToWoWGeometryTranslations(ref collisionTriangleFaces, ref collisionVerticies, ref discardCoordinates);
+                ApplyEQToWoWGeometryTranslations(ref collisionTriangleFaces, ref collisionVertices, ref discardCoordinates);
             }
 
             // Process materials
@@ -109,7 +109,7 @@ namespace EQWOWConverter.Objects
                     ExpandAnimatedMaterialAndAddAnimationProperties(material, ref expandedMaterials, out curAnimationMaterials);
 
                     // Add the additional geometry for the new frames
-                    AddGeometryForExpandedMaterialFrames(curAnimationMaterials, ref triangleFaces, ref verticies, ref normals, ref textureCoordinates);
+                    AddGeometryForExpandedMaterialFrames(curAnimationMaterials, ref triangleFaces, ref vertices, ref normals, ref textureCoordinates);
                 }
                 // If static, build single-frame animation properties
                 else
@@ -125,13 +125,13 @@ namespace EQWOWConverter.Objects
             // Save the geometry data
             foreach (TriangleFace face in triangleFaces)
                 ModelTriangles.Add(new TriangleFace(face));
-            for (int i = 0; i < verticies.Count; i++)
+            for (int i = 0; i < vertices.Count; i++)
             {
                 ModelVertex newModelVertex = new ModelVertex();
-                newModelVertex.Position = new Vector3(verticies[i]);
+                newModelVertex.Position = new Vector3(vertices[i]);
                 newModelVertex.Normal = new Vector3(normals[i]);
                 newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(textureCoordinates[i]);
-                ModelVerticies.Add(newModelVertex);
+                ModelVertices.Add(newModelVertex);
             }
 
             // Process materials
@@ -141,7 +141,7 @@ namespace EQWOWConverter.Objects
             CorrectTextureCoordinates();
 
             // Process the rest
-            ProcessCollisionData(collisionVerticies, collisionTriangleFaces);
+            ProcessCollisionData(collisionVertices, collisionTriangleFaces);
             CalculateBoundingBoxesAndRadii();
 
             // HARD CODED FOR STATIC --------------------------------------------------------------------
@@ -159,7 +159,7 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
-        public void ApplyEQToWoWGeometryTranslations(ref List<TriangleFace> triangleFaces, ref List<Vector3> verticies,
+        public void ApplyEQToWoWGeometryTranslations(ref List<TriangleFace> triangleFaces, ref List<Vector3> vertices,
             ref List<TextureCoordinates> textureCoordinates)
         {
             // Change face indices for winding over differences
@@ -170,7 +170,7 @@ namespace EQWOWConverter.Objects
                 eqFace.V1 = swapFaceVertexIndex;
             }
             // Perform vertex world scaling and 180 Z-Axis degree rotation
-            foreach (Vector3 eqVertex in verticies)
+            foreach (Vector3 eqVertex in vertices)
             {
                 eqVertex.X *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 eqVertex.Y *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -185,33 +185,33 @@ namespace EQWOWConverter.Objects
 
         public void CorrectTextureCoordinates()
         {
-            HashSet<int> textureCoordRemappedVertexIndicies = new HashSet<int>();
+            HashSet<int> textureCoordRemappedVertexIndices = new HashSet<int>();
             foreach (TriangleFace triangleFace in ModelTriangles)
             {
                 if (triangleFace.MaterialIndex < ModelMaterials.Count)
                 {
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V1) == false)
+                    if (textureCoordRemappedVertexIndices.Contains(triangleFace.V1) == false)
                     {
-                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V1].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V1].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V1);
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVertices[triangleFace.V1].Texture1TextureCoordinates);
+                        ModelVertices[triangleFace.V1].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVertices[triangleFace.V1].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndices.Add(triangleFace.V1);
                     }
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V2) == false)
+                    if (textureCoordRemappedVertexIndices.Contains(triangleFace.V2) == false)
                     {
 
-                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V2].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V2].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V2);
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVertices[triangleFace.V2].Texture1TextureCoordinates);
+                        ModelVertices[triangleFace.V2].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVertices[triangleFace.V2].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndices.Add(triangleFace.V2);
                     }
-                    if (textureCoordRemappedVertexIndicies.Contains(triangleFace.V3) == false)
+                    if (textureCoordRemappedVertexIndices.Contains(triangleFace.V3) == false)
                     {
 
-                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVerticies[triangleFace.V3].Texture1TextureCoordinates);
-                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.X = correctedCoordinates.X;
-                        ModelVerticies[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
-                        textureCoordRemappedVertexIndicies.Add(triangleFace.V3);
+                        TextureCoordinates correctedCoordinates = ModelMaterials[triangleFace.MaterialIndex].Material.GetCorrectedBaseCoordinates(ModelVertices[triangleFace.V3].Texture1TextureCoordinates);
+                        ModelVertices[triangleFace.V3].Texture1TextureCoordinates.X = correctedCoordinates.X;
+                        ModelVertices[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
+                        textureCoordRemappedVertexIndices.Add(triangleFace.V3);
                     }
                 }
             }
@@ -263,7 +263,7 @@ namespace EQWOWConverter.Objects
             }
         }
 
-        private void ProcessCollisionData(List<Vector3> collisionVerticies, List<TriangleFace> collisionTriangleFaces)
+        private void ProcessCollisionData(List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Purge prior data
             CollisionPositions.Clear();
@@ -271,10 +271,10 @@ namespace EQWOWConverter.Objects
             CollisionTriangles.Clear();
 
             // Store positions, factoring for world scailing and rotation around Z axis
-            foreach (Vector3 collisionVertex in collisionVerticies)
+            foreach (Vector3 collisionVertex in collisionVertices)
                 CollisionPositions.Add(new Vector3(collisionVertex));
 
-            // Store triangle indicies, ignoring 'blank' ones that have the same value 3x
+            // Store triangle indices, ignoring 'blank' ones that have the same value 3x
             foreach (TriangleFace collisionTriangle in collisionTriangleFaces)
                 if (collisionTriangle.V1 != collisionTriangle.V2)
                     CollisionTriangles.Add(new TriangleFace(collisionTriangle));
@@ -282,7 +282,7 @@ namespace EQWOWConverter.Objects
             // Calculate normals using the triangles provided
             foreach (TriangleFace collisionTriangle in CollisionTriangles)
             {
-                // Grab related verticies
+                // Grab related vertices
                 Vector3 vertex1 = CollisionPositions[collisionTriangle.V1];
                 Vector3 vertex2 = CollisionPositions[collisionTriangle.V2];
                 Vector3 vertex3 = CollisionPositions[collisionTriangle.V3];
@@ -304,153 +304,78 @@ namespace EQWOWConverter.Objects
             }
         }
 
-        private void SortGeometry()
-        {
-            ModelTriangles.Sort();
-
-            // Reorder the verticies / texcoords / normals / vertcolors to match the sorted triangle faces
-            List<ModelVertex> sortedVerticies = new List<ModelVertex>();
-            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
-            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
-            for (int i = 0; i < ModelTriangles.Count; i++)
-            {
-                TriangleFace curTriangleFace = ModelTriangles[i];
-
-                // Face vertex 1
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V1 = newVertIndex;
-
-                    // Add verticies
-                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
-                }
-
-                // Face vertex 2
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V2 = newVertIndex;
-
-                    // Add verticies
-                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
-                }
-
-                // Face vertex 3
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V3 = newVertIndex;
-
-                    // Add verticies
-                    sortedVerticies.Add(ModelVerticies[oldVertIndex]);
-                }
-
-                // Save this updated triangle
-                sortedTriangleFaces.Add(curTriangleFace);
-            }
-
-            // Save the sorted values
-            ModelVerticies = sortedVerticies;
-            ModelTriangles = sortedTriangleFaces;
-        }
-
-        private void SortGeometry(ref List<TriangleFace> triangleFaces, ref List<Vector3> verticies,
+        private void SortGeometry(ref List<TriangleFace> triangleFaces, ref List<Vector3> vertices,
             ref List<Vector3> normals, ref List<TextureCoordinates> textureCoordinates)
         {
             // Sort triangles first
             triangleFaces.Sort();
 
-            // Reorder the verticies / texcoords / normals / to match the sorted triangle faces
-            List<Vector3> sortedVerticies = new List<Vector3>();
+            // Reorder the vertices / texcoords / normals / to match the sorted triangle faces
+            List<Vector3> sortedVertices = new List<Vector3>();
             List<Vector3> sortedNormals = new List<Vector3>();
             List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
             List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
-            Dictionary<int, int> oldNewVertexIndicies = new Dictionary<int, int>();
+            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
             for (int i = 0; i < triangleFaces.Count; i++)
             {
                 TriangleFace curTriangleFace = triangleFaces[i];
 
                 // Face vertex 1
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V1))
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
                 {
                     // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndicies[curTriangleFace.V1];
+                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
                 }
                 else
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V1 = newVertIndex;
 
-                    // Add verticies
-                    sortedVerticies.Add(verticies[oldVertIndex]);
+                    // Add vertices
+                    sortedVertices.Add(vertices[oldVertIndex]);
                     sortedNormals.Add(normals[oldVertIndex]);
                     sortedTextureCoordinates.Add(textureCoordinates[oldVertIndex]);
                 }
 
                 // Face vertex 2
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V2))
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
                 {
                     // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndicies[curTriangleFace.V2];
+                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
                 }
                 else
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V2 = newVertIndex;
 
-                    // Add verticies
-                    sortedVerticies.Add(verticies[oldVertIndex]);
+                    // Add vertices
+                    sortedVertices.Add(vertices[oldVertIndex]);
                     sortedNormals.Add(normals[oldVertIndex]);
                     sortedTextureCoordinates.Add(textureCoordinates[oldVertIndex]);
                 }
 
                 // Face vertex 3
-                if (oldNewVertexIndicies.ContainsKey(curTriangleFace.V3))
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
                 {
                     // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndicies[curTriangleFace.V3];
+                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
                 }
                 else
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = sortedVerticies.Count;
-                    oldNewVertexIndicies.Add(oldVertIndex, newVertIndex);
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V3 = newVertIndex;
 
-                    // Add verticies
-                    sortedVerticies.Add(verticies[oldVertIndex]);
+                    // Add vertices
+                    sortedVertices.Add(vertices[oldVertIndex]);
                     sortedNormals.Add(normals[oldVertIndex]);
                     sortedTextureCoordinates.Add(textureCoordinates[oldVertIndex]);
                 }
@@ -461,14 +386,14 @@ namespace EQWOWConverter.Objects
 
             // Save the sorted values
             triangleFaces = sortedTriangleFaces;
-            verticies = sortedVerticies;
+            vertices = sortedVertices;
             normals = sortedNormals;
             textureCoordinates = sortedTextureCoordinates;
         }
 
         private void CalculateBoundingBoxesAndRadii()
         {
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVerticies, Configuration.CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
             CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
@@ -534,14 +459,14 @@ namespace EQWOWConverter.Objects
         }
 
         private void AddGeometryForExpandedMaterialFrames(List<Material> frameMaterials, ref List<TriangleFace> triangleFaces,
-            ref List<Vector3> verticies, ref List<Vector3> normals, ref List<TextureCoordinates> textureCoordinates)
+            ref List<Vector3> vertices, ref List<Vector3> normals, ref List<TextureCoordinates> textureCoordinates)
         {
             for (int i = 1; i < frameMaterials.Count; i++)
             {
                 // Create new triangles
                 List<TriangleFace> newTriangleFaces = new List<TriangleFace>();
 
-                // Determine what the min vertex index is for the triangles, as well as capture the reference indicies for vertex copies
+                // Determine what the min vertex index is for the triangles, as well as capture the reference indices for vertex copies
                 int minSourceTriangleVertexIndex = -1;
                 int maxSourceTriangleVertexIndex = -1;
                 foreach (TriangleFace triangleFace in triangleFaces)
@@ -557,12 +482,12 @@ namespace EQWOWConverter.Objects
                 }
                 if (minSourceTriangleVertexIndex == -1)
                 {
-                    Logger.WriteError("Could not find any triangle face verticies for material '" + frameMaterials[0].Name + "' in object '" + Name + "'");
+                    Logger.WriteError("Could not find any triangle face vertices for material '" + frameMaterials[0].Name + "' in object '" + Name + "'");
                     return;
                 }
 
                 // Create new triangles using the min identified earlier
-                int newVertexIndexStartOffsetAdd = verticies.Count - minSourceTriangleVertexIndex;
+                int newVertexIndexStartOffsetAdd = vertices.Count - minSourceTriangleVertexIndex;
                 foreach (TriangleFace triangleFace in triangleFaces)
                 {
                     if (triangleFace.MaterialIndex != frameMaterials[0].Index)
@@ -580,7 +505,7 @@ namespace EQWOWConverter.Objects
                 // Create new geometry data                        
                 for (int vi = minSourceTriangleVertexIndex; vi <= maxSourceTriangleVertexIndex; ++vi)
                 {
-                    verticies.Add(new Vector3(verticies[vi]));
+                    vertices.Add(new Vector3(vertices[vi]));
                     normals.Add(new Vector3(normals[vi]));
                     textureCoordinates.Add(new TextureCoordinates(textureCoordinates[vi]));
                 }
