@@ -113,7 +113,8 @@ namespace EQWOWConverter.WOWFiles
             Textures.AddModelTextures(wowModelObject.ModelTextures);
 
             // Texture Transparency Sequences
-            TextureTransparencySequences.AddArray(wowModelObject.ModelTextureTransparencySequencesSet);
+            foreach(var transparencySequenceSet in wowModelObject.ModelTextureTransparencySequenceSetByMaterialIndex)
+                TextureTransparencySequences.Add(transparencySequenceSet.Value);
 
             // Texture Transforms
             TextureAnimations.AddModelTextureAnimations(wowModelObject.ModelTextureAnimations);
@@ -138,8 +139,8 @@ namespace EQWOWConverter.WOWFiles
                 TextureMappingLookup.Add(new M2Int16(value));
 
             // Texture Transparency Lookup (Weights)
-            foreach (Int16 value in wowModelObject.ModelTextureTransparencyWeightsLookups)
-                TextureTransparencyLookup.Add(new M2Int16(value));
+            foreach (var transparencyValue in wowModelObject.ModelTextureTransparencyLookupsByMaterialIndex)
+                TextureTransparencyLookup.Add(new M2Int16(Convert.ToInt16(transparencyValue.Value)));
 
             // Texture Transformations Lookup
             foreach (Int16 value in wowModelObject.ModelTextureAnimationLookup)
