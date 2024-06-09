@@ -290,17 +290,8 @@ namespace EQWOWConverter.Zones
             BoundingBox curMeshBoundingBox = BoundingBox.GenerateBoxFromVectors(curMaterialMeshData.Vertices, 0.0f);
 
             // Split the zone into chunks if it passes a threashold
-            if (curMeshBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_MIN_XY_TO_EDGE_BEFORE_SPLIT
-                || curMeshBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_MIN_XY_TO_EDGE_BEFORE_SPLIT)
-            {
-                // Make all the chunks
-                curMaterialMeshData.SplitIntoChunks(curMaterialMeshData, curMeshBoundingBox, curMaterialMeshData.TriangleFaces, ref meshPositions, ref meshDatas);
-            }
-            else
-            {
-                meshPositions.Add(new Vector3(0, 0, 0));
-                meshDatas.Add(curMaterialMeshData.GetMeshDataForMaterial(material));
-            }
+            curMaterialMeshData.SplitIntoChunks(curMaterialMeshData, curMeshBoundingBox, curMaterialMeshData.TriangleFaces, 
+                material, ref meshPositions, ref meshDatas);
 
             // Create the objects
             for (int i = 0; i < meshDatas.Count; i++)

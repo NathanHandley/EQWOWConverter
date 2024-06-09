@@ -331,11 +331,15 @@ namespace EQWOWConverter.Common
             VertexColors = sortedVertexColors;
         }
 
-        public void SplitIntoChunks(MeshData allMeshData, BoundingBox curBoundingBox, List<TriangleFace> curTriangleFaces, ref List<Vector3> chunkPositions, ref List<MeshData> chunkMeshDatas)
+        public void SplitIntoChunks(MeshData allMeshData, BoundingBox curBoundingBox, List<TriangleFace> curTriangleFaces, Material curMaterial, ref List<Vector3> chunkPositions, ref List<MeshData> chunkMeshDatas)
         {
+            // Calculate the true number of triangles that will be made
+            int finalTriangleCount = curTriangleFaces.Count * curMaterial.NumOfAnimationFrames();
+
             // If the box is too big, cut it up
-            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_SUBOBJECT_XY_DISTANCE
-                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_SUBOBJECT_XY_DISTANCE)
+            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || finalTriangleCount >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT)
             {
                 // Create two new bounding boxes based on the longest edge
                 SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(curBoundingBox);
@@ -367,16 +371,28 @@ namespace EQWOWConverter.Common
                 }
 
                 // Generate for the two sub boxes
-                SplitIntoChunks(allMeshData, splitBox.BoxA, aBoxTriangles, ref chunkPositions, ref chunkMeshDatas);
-                SplitIntoChunks(allMeshData, splitBox.BoxB, bBoxTriangles, ref chunkPositions, ref chunkMeshDatas);
+                SplitIntoChunks(allMeshData, splitBox.BoxA, aBoxTriangles, curMaterial, ref chunkPositions, ref chunkMeshDatas);
+                SplitIntoChunks(allMeshData, splitBox.BoxB, bBoxTriangles, curMaterial, ref chunkPositions, ref chunkMeshDatas);
             }
-            else
+            else if (curTriangleFaces.Count > 0)
             {
                 // If no more splits, create a complete chunk mesh
-                MeshData newMeshData = allMeshData.GetMeshDataForFaces(curTriangleFaces);
-                chunkMeshDatas.Add(new MeshData(newMeshData));
-                Vector3 newMeshPosition = new Vector3();
+                MeshData newMeshData = new MeshData(allMeshData.GetMeshDataForFaces(curTriangleFaces));
+
+                // Use the bounding box as the center position
+                Vector3 newMeshPosition = new Vector3(curBoundingBox.GetCenter());
                 chunkPositions.Add(newMeshPosition);
+
+                // Subtract the center from the position data so it aligns propertly
+                foreach (Vector3 vertex in newMeshData.Vertices)
+                {
+                    vertex.X -= newMeshPosition.X;
+                    vertex.Y -= newMeshPosition.Y;
+                    vertex.Z -= newMeshPosition.Z;
+                }
+
+                // Save the mesh
+                chunkMeshDatas.Add(newMeshData);
             }
         }
     }

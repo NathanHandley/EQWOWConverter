@@ -59,11 +59,11 @@ namespace EQWOWConverter
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
-        // Max zone x or y distance to edge before any generated zone-material-to-object creations need to be split
-        public static readonly float CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_MIN_XY_TO_EDGE_BEFORE_SPLIT = 650.0f;
+        // Maximum size of any zone-to-material-object creation along the X and Y axis
+        public static readonly float CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
 
-        // Size of any split zone-to-object creations if a split occured
-        public static readonly float CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_SUBOBJECT_XY_DISTANCE = 400.0f;
+        // Maxinum number of triangle faces that can be in any zone-to-material-object
+        public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
