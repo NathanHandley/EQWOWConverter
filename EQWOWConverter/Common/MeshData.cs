@@ -330,5 +330,54 @@ namespace EQWOWConverter.Common
             TextureCoordinates = sortedTextureCoordinates;
             VertexColors = sortedVertexColors;
         }
+
+        public void SplitIntoChunks(MeshData allMeshData, BoundingBox curBoundingBox, List<TriangleFace> curTriangleFaces, ref List<Vector3> chunkPositions, ref List<MeshData> chunkMeshDatas)
+        {
+            // If the box is too big, cut it up
+            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_SUBOBJECT_XY_DISTANCE
+                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_SUBOBJECT_XY_DISTANCE)
+            {
+                // Create two new bounding boxes based on the longest edge
+                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(curBoundingBox);
+
+                // Calculate what triangles fit into these boxes
+                List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
+                List<TriangleFace> bBoxTriangles = new List<TriangleFace>();
+
+                foreach (TriangleFace triangle in curTriangleFaces)
+                {
+                    // Get center point
+                    Vector3 v1 = allMeshData.Vertices[triangle.V1];
+                    Vector3 v2 = allMeshData.Vertices[triangle.V2];
+                    Vector3 v3 = allMeshData.Vertices[triangle.V3];
+                    Vector3 center = new Vector3((v1.X + v2.X + v3.X) / 3, (v1.Y + v2.Y + v3.Y) / 3, (v1.Z + v2.Z + v3.Z) / 3);
+
+                    // Align to the first box if it is inside it (only based on xy), otherwise put in the other box
+                    // and don't do if/else since there is intentional overlap
+                    if (center.X >= splitBox.BoxA.BottomCorner.X && center.X <= splitBox.BoxA.TopCorner.X &&
+                        center.Y >= splitBox.BoxA.BottomCorner.Y && center.Y <= splitBox.BoxA.TopCorner.Y)
+                    {
+                        aBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                    if (center.X >= splitBox.BoxB.BottomCorner.X && center.X <= splitBox.BoxB.TopCorner.X &&
+                        center.Y >= splitBox.BoxB.BottomCorner.Y && center.Y <= splitBox.BoxB.TopCorner.Y)
+                    {
+                        bBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                }
+
+                // Generate for the two sub boxes
+                SplitIntoChunks(allMeshData, splitBox.BoxA, aBoxTriangles, ref chunkPositions, ref chunkMeshDatas);
+                SplitIntoChunks(allMeshData, splitBox.BoxB, bBoxTriangles, ref chunkPositions, ref chunkMeshDatas);
+            }
+            else
+            {
+                // If no more splits, create a complete chunk mesh
+                MeshData newMeshData = allMeshData.GetMeshDataForFaces(curTriangleFaces);
+                chunkMeshDatas.Add(new MeshData(newMeshData));
+                Vector3 newMeshPosition = new Vector3();
+                chunkPositions.Add(newMeshPosition);
+            }
+        }
     }
 }

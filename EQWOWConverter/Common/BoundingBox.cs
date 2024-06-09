@@ -119,6 +119,22 @@ namespace EQWOWConverter.Common
             return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
         }
 
+        public float FurthestPointDistanceFromCenterXOnly()
+        {
+            System.Numerics.Vector3 cornerSystem = new System.Numerics.Vector3(TopCorner.X, 0, 0);
+            Vector3 center = GetCenter();
+            System.Numerics.Vector3 centerSystem = new System.Numerics.Vector3(center.X, 0, 0);
+            return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
+        }
+
+        public float FurthestPointDistanceFromCenterYOnly()
+        {
+            System.Numerics.Vector3 cornerSystem = new System.Numerics.Vector3(0, TopCorner.Y, 0);
+            Vector3 center = GetCenter();
+            System.Numerics.Vector3 centerSystem = new System.Numerics.Vector3(0, center.Y, 0);
+            return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
+        }
+
         public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
         {
             // Vertices contained in the box are given collisions, and should be checked first

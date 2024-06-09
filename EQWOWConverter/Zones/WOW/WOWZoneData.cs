@@ -280,19 +280,46 @@ namespace EQWOWConverter.Zones
 
         private void GenerateAndAddObjectInstancesForZoneMaterial(Material material, MeshData allMeshData)
         {
-            MeshData extractedMeshData = allMeshData.GetMeshDataForMaterial(material);
+            List<Vector3> meshPositions = new List<Vector3>();
+            List<MeshData> meshDatas = new List<MeshData>();
 
-            // Generate the object
-            string name = "ZO_" + ShortName + "_" + material.Name;
-            WOWObjectModelData newObject = new WOWObjectModelData();
-            newObject.Load(name, new List<Material> { material }, extractedMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
-            GeneratedZoneObjects.Add(newObject);
+            // Grab only this material
+            MeshData curMaterialMeshData = allMeshData.GetMeshDataForMaterial(material);
 
-            // Add as a doodad
-            WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
-            doodadInstance.ObjectName = name;
-            doodadInstance.Position = new Vector3(0, 0, 0);
-            DoodadInstances.Add(doodadInstance);
+            // Generate a bounding box for the mesh data
+            BoundingBox curMeshBoundingBox = BoundingBox.GenerateBoxFromVectors(curMaterialMeshData.Vertices, 0.0f);
+
+            // Split the zone into chunks if it passes a threashold
+            if (curMeshBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_MIN_XY_TO_EDGE_BEFORE_SPLIT
+                || curMeshBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_MIN_XY_TO_EDGE_BEFORE_SPLIT)
+            {
+                // Make all the chunks
+                curMaterialMeshData.SplitIntoChunks(curMaterialMeshData, curMeshBoundingBox, curMaterialMeshData.TriangleFaces, ref meshPositions, ref meshDatas);
+            }
+            else
+            {
+                meshPositions.Add(new Vector3(0, 0, 0));
+                meshDatas.Add(curMaterialMeshData.GetMeshDataForMaterial(material));
+            }
+
+            // Create the objects
+            for (int i = 0; i < meshDatas.Count; i++)
+            {
+                Vector3 curPosition = meshPositions[i];
+                MeshData curMeshData = meshDatas[i];
+
+                // Generate the object
+                string name = "ZO_" + ShortName + "_" + material.Name + "_" + i.ToString();
+                WOWObjectModelData newObject = new WOWObjectModelData();
+                newObject.Load(name, new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
+                GeneratedZoneObjects.Add(newObject);
+
+                // Add as a doodad
+                WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+                doodadInstance.ObjectName = name;
+                doodadInstance.Position = curPosition;
+                DoodadInstances.Add(doodadInstance);
+            }
         }
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, MeshData meshData)
