@@ -27,11 +27,8 @@ namespace EQWOWConverter.Objects
 {
     internal class EQModelObjectData
     {
+        public MeshData MeshData = new MeshData();
         public AnimatedVertices AnimatedVertices = new AnimatedVertices();
-        public List<Vector3> Vertices = new List<Vector3>();
-        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
@@ -61,10 +58,7 @@ namespace EQWOWConverter.Objects
                 Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
-            Vertices = meshData.Vertices;
-            Normals = meshData.Normals;
-            TextureCoords = meshData.TextureCoordinates;
-            TriangleFaces = meshData.TriangleFaces;
+            MeshData = meshData.Meshdata;
             MaterialListFileName = meshData.MaterialListFileName;
         }
 
@@ -95,8 +89,8 @@ namespace EQWOWConverter.Objects
                 Logger.WriteError("- [" + inputObjectName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
                 return;
             }
-            CollisionTriangleFaces = meshData.TriangleFaces;
-            CollisionVertices = meshData.Vertices;
+            CollisionTriangleFaces = meshData.Meshdata.TriangleFaces;
+            CollisionVertices = meshData.Meshdata.Vertices;
         }
     }
 }

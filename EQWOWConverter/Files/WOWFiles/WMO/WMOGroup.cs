@@ -146,7 +146,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // One for each triangle
-            foreach (TriangleFace polyIndexTriangle in worldModelObject.TriangleFaces)
+            foreach (TriangleFace polyIndexTriangle in worldModelObject.MeshData.TriangleFaces)
             {
                 WMOPolyMaterialFlags flags = 0;
                 chunkBytes.Add(Convert.ToByte(flags));
@@ -168,7 +168,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(TriangleFace polyIndex in worldModelObject.TriangleFaces)
+            foreach(TriangleFace polyIndex in worldModelObject.MeshData.TriangleFaces)
                 chunkBytes.AddRange(polyIndex.ToBytes());
 
             return WrapInChunk("MOVI", chunkBytes.ToArray());
@@ -181,7 +181,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 vertex in worldModelObject.Vertices)
+            foreach (Vector3 vertex in worldModelObject.MeshData.Vertices)
                 chunkBytes.AddRange(vertex.ToBytes());
 
             return WrapInChunk("MOVT", chunkBytes.ToArray());
@@ -194,7 +194,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (Vector3 normal in worldModelObject.Normals)
+            foreach (Vector3 normal in worldModelObject.MeshData.Normals)
               chunkBytes.AddRange(normal.ToBytes());
 
             return WrapInChunk("MONR", chunkBytes.ToArray());
@@ -207,7 +207,7 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (TextureCoordinates textureCoords in worldModelObject.TextureCoords)
+            foreach (TextureCoordinates textureCoords in worldModelObject.MeshData.TextureCoordinates)
                 chunkBytes.AddRange(textureCoords.ToBytes());
 
             return WrapInChunk("MOTV", chunkBytes.ToArray());

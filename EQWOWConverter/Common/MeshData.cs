@@ -22,34 +22,12 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class ColorBGRA
+    internal class MeshData
     {
-        public byte B = 0;
-        public byte G = 0;
-        public byte R = 0;
-        public byte A = 255;
-
-        public ColorBGRA()
-        {
-
-        }
-
-        public ColorBGRA(byte b, byte g, byte r, byte a)
-        {
-            B = b;
-            G = g;
-            R = r;
-            A = a;
-        }
-
-        public List<byte> ToBytes()
-        {
-            List<byte> returnBytes = new List<byte>();
-            returnBytes.Add(B);
-            returnBytes.Add(G);
-            returnBytes.Add(R);
-            returnBytes.Add(A);
-            return returnBytes;
-        }
+        public List<Vector3> Vertices = new List<Vector3>();
+        public List<Vector3> Normals = new List<Vector3>();
+        public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
+        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
+        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
     }
 }

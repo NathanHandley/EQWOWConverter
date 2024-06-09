@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinent Continent;
-        public ColorRGB FogColor = new ColorRGB();
+        public ColorRGBA FogColor = new ColorRGBA();
         public int FogMinClip = -1;
         public int FogMaxClip = -1;
         public bool DoShowSky = true;
@@ -53,7 +53,7 @@ namespace EQWOWConverter.Zones
             SafeOrientation = safeOrientation;
         }
 
-        public void SetFogProperties(int red, int green, int blue, int minClip, int maxClip)
+        public void SetFogProperties(byte red, byte green, byte blue, int minClip, int maxClip)
         {
             FogColor.R = red;
             FogColor.G = green;

@@ -47,9 +47,9 @@ namespace EQWOWConverter.EQFiles
                     newLightInstance.Position.Y = float.Parse(blocks[1]);
                     newLightInstance.Position.Z = float.Parse(blocks[2]);
                     newLightInstance.Radius = float.Parse(blocks[3]);
-                    newLightInstance.Color.R = float.Parse(blocks[4]);
-                    newLightInstance.Color.G = float.Parse(blocks[5]);
-                    newLightInstance.Color.B = float.Parse(blocks[6]);
+                    newLightInstance.ColorRed = float.Parse(blocks[4]);
+                    newLightInstance.ColorGreen = float.Parse(blocks[5]);
+                    newLightInstance.ColorBlue = float.Parse(blocks[6]);
                     LightInstances.Add(newLightInstance);
                 }
             }

@@ -50,17 +50,15 @@ namespace EQWOWConverter.Objects
             if (EQModelObjectData.CollisionVertices.Count == 0)
             {
                 List<TriangleFace> collisionFaces = new List<TriangleFace>();
-                foreach (TriangleFace triangleFace in EQModelObjectData.TriangleFaces)
+                foreach (TriangleFace triangleFace in EQModelObjectData.MeshData.TriangleFaces)
                     collisionFaces.Add(new TriangleFace(triangleFace));
                 List<Vector3> collisionPositions = new List<Vector3>();
-                foreach (Vector3 position in EQModelObjectData.Vertices)
+                foreach (Vector3 position in EQModelObjectData.MeshData.Vertices)
                     collisionPositions.Add(new Vector3(position));
-                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.TriangleFaces, EQModelObjectData.Vertices, EQModelObjectData.Normals,
-                    new List<ColorRGBA>(), EQModelObjectData.TextureCoords, collisionPositions, collisionFaces, true);
+                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.MeshData, collisionPositions, collisionFaces, true);
             }
             else
-                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.TriangleFaces, EQModelObjectData.Vertices, EQModelObjectData.Normals,
-                    new List<ColorRGBA>(), EQModelObjectData.TextureCoords, EQModelObjectData.CollisionVertices, EQModelObjectData.CollisionTriangleFaces, true);
+                WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.MeshData, EQModelObjectData.CollisionVertices, EQModelObjectData.CollisionTriangleFaces, true);
         }
     }
 }

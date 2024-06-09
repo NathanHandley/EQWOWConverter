@@ -30,10 +30,10 @@ namespace EQWOWConverter.Common
         public float FarRadius = 0;
         public float NormalStartScalar = 0.25f;         // Default is 0.25f
         public float NormalEnd = 444.4445f;             // Default is 444.4445f
-        public ColorBGRA NormalColor = new ColorBGRA(255, 255, 255, 255);
+        public ColorRGBA NormalColor = new ColorRGBA(255, 255, 255, 255);
         public float UnderwaterStartScalar = -0.5f;
         public float UnderwaterEnd = 222.2222f;
-        public ColorBGRA UnderwaterColor = new ColorBGRA(255, 255, 255, 255);
+        public ColorRGBA UnderwaterColor = new ColorRGBA(255, 255, 255, 255);
 
         public List<byte> ToBytes()
         {
@@ -44,10 +44,10 @@ namespace EQWOWConverter.Common
             returnBytes.AddRange(BitConverter.GetBytes(FarRadius));
             returnBytes.AddRange(BitConverter.GetBytes(NormalEnd));
             returnBytes.AddRange(BitConverter.GetBytes(NormalStartScalar));
-            returnBytes.AddRange(NormalColor.ToBytes());
+            returnBytes.AddRange(NormalColor.ToBytesBGRA());
             returnBytes.AddRange(BitConverter.GetBytes(UnderwaterEnd));
             returnBytes.AddRange(BitConverter.GetBytes(UnderwaterStartScalar));
-            returnBytes.AddRange(UnderwaterColor.ToBytes());
+            returnBytes.AddRange(UnderwaterColor.ToBytesBGRA());
             return returnBytes;
         }
     }

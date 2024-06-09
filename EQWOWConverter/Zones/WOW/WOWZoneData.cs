@@ -36,7 +36,7 @@ namespace EQWOWConverter.Zones
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<WOWObjectModelData> GeneratedZoneObjects = new List<WOWObjectModelData>();
         public List<Material> Materials = new List<Material>();
-        public ColorARGB AmbientLight = new ColorARGB();
+        public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<WorldModelObjectDoodadInstance> DoodadInstances = new List<WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -67,12 +67,12 @@ namespace EQWOWConverter.Zones
                 return;
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
-            AmbientLight = new ColorARGB(eqZoneData.AmbientLight.A, eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, AmbientLight.B);
+            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, AmbientLight.A);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
 
             // Change face orientation for culling differences between EQ and WoW
             List<TriangleFace> triangleFaces = new List<TriangleFace>();
-            foreach (TriangleFace eqFace in eqZoneData.TriangleFaces)
+            foreach (TriangleFace eqFace in eqZoneData.MeshData.TriangleFaces)
             {
                 TriangleFace newFace = new TriangleFace();
                 newFace.MaterialIndex = eqFace.MaterialIndex;
@@ -88,7 +88,7 @@ namespace EQWOWConverter.Zones
 
             // Change texture mapping differences between EQ and WoW
             List<TextureCoordinates> textureCoords = new List<TextureCoordinates>();
-            foreach (TextureCoordinates uv in eqZoneData.TextureCoords)
+            foreach (TextureCoordinates uv in eqZoneData.MeshData.TextureCoordinates)
             {
                 TextureCoordinates curTextureCoords = new TextureCoordinates(uv.X, uv.Y * -1);
                 textureCoords.Add(curTextureCoords);
@@ -96,7 +96,7 @@ namespace EQWOWConverter.Zones
 
             // Adjust vertices for world scale and rotate around the Z axis 180 degrees
             List<Vector3> vertices = new List<Vector3>();
-            foreach (Vector3 vertex in eqZoneData.Vertices)
+            foreach (Vector3 vertex in eqZoneData.MeshData.Vertices)
             {
                 vertex.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 vertex.X = -vertex.X;
@@ -138,8 +138,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate world objects
-            List<Vector3> normals = eqZoneData.Normals;
-            List<ColorRGBA> vertexColors = eqZoneData.VertexColors;
+            List<Vector3> normals = eqZoneData.MeshData.Normals;
+            List<ColorRGBA> vertexColors = eqZoneData.MeshData.VertexColors;
 
             WorldObjects.Clear();
 
@@ -154,7 +154,7 @@ namespace EQWOWConverter.Zones
             // Determine which materials are animated and create objects to represent them
             foreach (Material material in Materials)
                 if (material.IsAnimated() && material.IsRenderable())
-                    GenerateAndAddObjectInstanceForZoneMaterial(material, triangleFaces, vertices, normals, vertexColors, textureCoords);
+                    GenerateAndAddObjectInstancesForZoneMaterial(material, triangleFaces, vertices, normals, vertexColors, textureCoords);
 
             // If this can be generated as a single WMO, just do that
             if (triangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
@@ -308,15 +308,103 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateAndAddObjectInstanceForZoneMaterial(Material material, List<TriangleFace> allTriangleFaces, List<Vector3> allVertices, 
+        //private void ExtractGeometryForMaterial(Material material, out List<TriangleFace> extractedTriangleFaces, 
+        //    out List<Vector3> extractedVertices, out List<Vector3> extractedNormals, out List<ColorRGBA> extractedVertexColors, 
+        //    out List<TextureCoordinates> extractedTextureCoordinates)
+        //{
+        //    // Extract out copies of the geometry data specific to this material
+        //    extractedTriangleFaces = new List<TriangleFace>();
+        //    extractedVertices = new List<Vector3>();
+        //    extractedNormals = new List<Vector3>();
+        //    extractedVertexColors = new List<ColorRGBA>();
+        //    extractedTextureCoordinates = new List<TextureCoordinates>();
+        //    Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+        //    for (int i = 0; i < allTriangleFaces.Count; i++)
+        //    {
+        //        // Skip faces not matching the material
+        //        if (allTriangleFaces[i].MaterialIndex != material.Index)
+        //            continue;
+
+        //        // Make the new face, and keep the material ID
+        //        TriangleFace curTriangleFace = new TriangleFace(allTriangleFaces[i]);
+        //        curTriangleFace.MaterialIndex = Convert.ToInt32(material.Index);
+
+        //        // Face vertex 1
+        //        if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
+        //        {
+        //            // This index was aready remapped
+        //            curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
+        //        }
+        //        else
+        //        {
+        //            // Store new mapping
+        //            int oldVertIndex = curTriangleFace.V1;
+        //            int newVertIndex = extractedVertices.Count;
+        //            oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+        //            curTriangleFace.V1 = newVertIndex;
+
+        //            // Add objects
+        //            extractedVertices.Add(allVertices[oldVertIndex]);
+        //            extractedTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+        //            extractedNormals.Add(allNormals[oldVertIndex]);
+        //            if (allVertexColors.Count != 0)
+        //                extractedVertexColors.Add(allVertexColors[oldVertIndex]);
+        //        }
+
+        //        // Face vertex 2
+        //        if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
+        //        {
+        //            // This index was aready remapped
+        //            curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
+        //        }
+        //        else
+        //        {
+        //            // Store new mapping
+        //            int oldVertIndex = curTriangleFace.V2;
+        //            int newVertIndex = extractedVertices.Count;
+        //            oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+        //            curTriangleFace.V2 = newVertIndex;
+
+        //            // Add objects
+        //            extractedVertices.Add(allVertices[oldVertIndex]);
+        //            extractedTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+        //            extractedNormals.Add(allNormals[oldVertIndex]);
+        //            if (allVertexColors.Count != 0)
+        //                extractedVertexColors.Add(allVertexColors[oldVertIndex]);
+        //        }
+
+        //        // Face vertex 3
+        //        if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
+        //        {
+        //            // This index was aready remapped
+        //            curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
+        //        }
+        //        else
+        //        {
+        //            // Store new mapping
+        //            int oldVertIndex = curTriangleFace.V3;
+        //            int newVertIndex = extractedVertices.Count;
+        //            oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+        //            curTriangleFace.V3 = newVertIndex;
+
+        //            // Add objects
+        //            extractedVertices.Add(allVertices[oldVertIndex]);
+        //            extractedTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+        //            extractedNormals.Add(allNormals[oldVertIndex]);
+        //            if (allVertexColors.Count != 0)
+        //                extractedVertexColors.Add(allVertexColors[oldVertIndex]);
+        //        }
+
+        //        // Save this updated triangle
+        //        extractedTriangleFaces.Add(curTriangleFace);
+        //    }
+        //}
+
+        private void GenerateAndAddObjectInstancesForZoneMaterial(Material material, List<TriangleFace> allTriangleFaces, List<Vector3> allVertices, 
             List<Vector3> allNormals, List<ColorRGBA> allVertexColors, List<TextureCoordinates> allTextureCoordinates)
         {
             // Extract out copies of the geometry data specific to this material
-            List<TriangleFace> modelTriangleFaces = new List<TriangleFace>();
-            List<Vector3> modelVertices = new List<Vector3>();
-            List<Vector3> modelNormals = new List<Vector3>();
-            List<ColorRGBA> modelVertexColors = new List<ColorRGBA>();
-            List<TextureCoordinates> modelTextureCoordinates = new List<TextureCoordinates>();
+            MeshData extractedMeshData = new MeshData();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
             for (int i = 0; i < allTriangleFaces.Count; i++)
             {
@@ -338,16 +426,16 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = modelVertices.Count;
+                    int newVertIndex = extractedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V1 = newVertIndex;
 
                     // Add objects
-                    modelVertices.Add(allVertices[oldVertIndex]);
-                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
-                    modelNormals.Add(allNormals[oldVertIndex]);
+                    extractedMeshData.Vertices.Add(allVertices[oldVertIndex]);
+                    extractedMeshData.TextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    extractedMeshData.Normals.Add(allNormals[oldVertIndex]);
                     if (allVertexColors.Count != 0)
-                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                        extractedMeshData.VertexColors.Add(allVertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -360,16 +448,16 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = modelVertices.Count;
+                    int newVertIndex = extractedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V2 = newVertIndex;
 
                     // Add objects
-                    modelVertices.Add(allVertices[oldVertIndex]);
-                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
-                    modelNormals.Add(allNormals[oldVertIndex]);
+                    extractedMeshData.Vertices.Add(allVertices[oldVertIndex]);
+                    extractedMeshData.TextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    extractedMeshData.Normals.Add(allNormals[oldVertIndex]);
                     if (allVertexColors.Count != 0)
-                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                        extractedMeshData.VertexColors.Add(allVertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -382,27 +470,26 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = modelVertices.Count;
+                    int newVertIndex = extractedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V3 = newVertIndex;
 
                     // Add objects
-                    modelVertices.Add(allVertices[oldVertIndex]);
-                    modelTextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
-                    modelNormals.Add(allNormals[oldVertIndex]);
+                    extractedMeshData.Vertices.Add(allVertices[oldVertIndex]);
+                    extractedMeshData.TextureCoordinates.Add(allTextureCoordinates[oldVertIndex]);
+                    extractedMeshData.Normals.Add(allNormals[oldVertIndex]);
                     if (allVertexColors.Count != 0)
-                        modelVertexColors.Add(allVertexColors[oldVertIndex]);
+                        extractedMeshData.VertexColors.Add(allVertexColors[oldVertIndex]);
                 }
 
                 // Save this updated triangle
-                modelTriangleFaces.Add(curTriangleFace);
+                extractedMeshData.TriangleFaces.Add(curTriangleFace);
             }
 
             // Generate the object
             string name = "ZO_" + ShortName + "_" + material.Name;
             WOWObjectModelData newObject = new WOWObjectModelData();
-            newObject.Load(name, new List<Material> { material }, modelTriangleFaces, modelVertices, modelNormals, modelVertexColors,
-                modelTextureCoordinates, new List<Vector3>(), new List<TriangleFace>(), false);
+            newObject.Load(name, new List<Material> { material }, extractedMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
             GeneratedZoneObjects.Add(newObject);
 
             // Add as a doodad
@@ -416,11 +503,7 @@ namespace EQWOWConverter.Zones
             List<ColorRGBA> vertexColors, List<TextureCoordinates> textureCoords)
         {
             // Since the face list is likely to not include all faces, rebuild the render object lists
-            List<Vector3> condensedVertices = new List<Vector3>();
-            List<Vector3> condensedNormals = new List<Vector3>();
-            List<ColorRGBA> condensedVertexColors = new List<ColorRGBA>();
-            List<TextureCoordinates> condensedTextureCoords = new List<TextureCoordinates>();
-            List<TriangleFace> remappedTriangleFaces = new List<TriangleFace>();
+            MeshData condensedMeshData = new MeshData();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
             for (int i = 0; i < faces.Count; i++)
             {
@@ -436,16 +519,16 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = condensedVertices.Count;
+                    int newVertIndex = condensedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V1 = newVertIndex;
 
                     // Add objects
-                    condensedVertices.Add(vertices[oldVertIndex]);
-                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
-                    condensedNormals.Add(normals[oldVertIndex]);
+                    condensedMeshData.Vertices.Add(vertices[oldVertIndex]);
+                    condensedMeshData.TextureCoordinates.Add(textureCoords[oldVertIndex]);
+                    condensedMeshData.Normals.Add(normals[oldVertIndex]);
                     if (vertexColors.Count != 0)
-                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                        condensedMeshData.VertexColors.Add(vertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -458,16 +541,16 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = condensedVertices.Count;
+                    int newVertIndex = condensedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V2 = newVertIndex;
 
                     // Add objects
-                    condensedVertices.Add(vertices[oldVertIndex]);
-                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
-                    condensedNormals.Add(normals[oldVertIndex]);
+                    condensedMeshData.Vertices.Add(vertices[oldVertIndex]);
+                    condensedMeshData.TextureCoordinates.Add(textureCoords[oldVertIndex]);
+                    condensedMeshData.Normals.Add(normals[oldVertIndex]);
                     if (vertexColors.Count != 0)
-                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                        condensedMeshData.VertexColors.Add(vertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -480,25 +563,24 @@ namespace EQWOWConverter.Zones
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = condensedVertices.Count;
+                    int newVertIndex = condensedMeshData.Vertices.Count;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V3 = newVertIndex;
 
                     // Add objects
-                    condensedVertices.Add(vertices[oldVertIndex]);
-                    condensedTextureCoords.Add(textureCoords[oldVertIndex]);
-                    condensedNormals.Add(normals[oldVertIndex]);
+                    condensedMeshData.Vertices.Add(vertices[oldVertIndex]);
+                    condensedMeshData.TextureCoordinates.Add(textureCoords[oldVertIndex]);
+                    condensedMeshData.Normals.Add(normals[oldVertIndex]);
                     if (vertexColors.Count != 0)
-                        condensedVertexColors.Add(vertexColors[oldVertIndex]);
+                        condensedMeshData.VertexColors.Add(vertexColors[oldVertIndex]);
                 }
 
                 // Save this updated triangle
-                remappedTriangleFaces.Add(curTriangleFace);
+                condensedMeshData.TriangleFaces.Add(curTriangleFace);
             }
 
             // Generate and add the world model object
-            WorldModelObject curWorldModelObject = new WorldModelObject(condensedVertices, condensedTextureCoords, 
-                condensedNormals, condensedVertexColors, remappedTriangleFaces, Materials, DoodadInstances, ZoneProperties);
+            WorldModelObject curWorldModelObject = new WorldModelObject(condensedMeshData, Materials, DoodadInstances, ZoneProperties);
             WorldObjects.Add(curWorldModelObject);
         }
     }

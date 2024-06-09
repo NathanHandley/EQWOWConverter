@@ -32,11 +32,7 @@ namespace EQWOWConverter.Zones
         public UInt32 WMOGroupID;
         public WorldModelObjectType WMOType = WorldModelObjectType.Rendered;
         public List<Material> Materials = new List<Material>();
-        public List<Vector3> Vertices = new List<Vector3>();
-        public List<TextureCoordinates> TextureCoords = new List<TextureCoordinates>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<ColorBGRA> VertexColors = new List<ColorBGRA>();
-        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
+        public MeshData MeshData = new MeshData();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -49,18 +45,12 @@ namespace EQWOWConverter.Zones
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
-        public WorldModelObject(List<Vector3> vertices, List<TextureCoordinates> textureCoords, List<Vector3> normals, List<ColorRGBA> vertexColors, 
-            List<TriangleFace> triangleFaces, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
+        public WorldModelObject(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
             ZoneProperties zoneProperties)
         {
-            Vertices = vertices;
-            TextureCoords = textureCoords;
+            MeshData = meshData;
             Materials = materials;
-            Normals = normals;
-            foreach(var vertexColor in vertexColors)
-                VertexColors.Add(new ColorBGRA(vertexColor.B, vertexColor.G, vertexColor.R, vertexColor.A));
-            TriangleFaces = triangleFaces;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
             WMOGroupID = CURRENT_WMOGROUPID;
@@ -76,10 +66,10 @@ namespace EQWOWConverter.Zones
 
             // Build a render batch per material
             Dictionary<int, WorldModelRenderBatch> renderBatchesByMaterialID = new Dictionary<int, WorldModelRenderBatch>();
-            for (int i = 0; i < TriangleFaces.Count; i++)
+            for (int i = 0; i < MeshData.TriangleFaces.Count; i++)
             {
                 // Work off material index
-                int curMaterialIndex = TriangleFaces[i].MaterialIndex;
+                int curMaterialIndex = MeshData.TriangleFaces[i].MaterialIndex;
 
                 // Skip materials that shouldn't be rendered
                 if (materials[curMaterialIndex].IsRenderable() == false)
@@ -94,17 +84,17 @@ namespace EQWOWConverter.Zones
                     renderBatchesByMaterialID[curMaterialIndex].MaterialIndex = Convert.ToByte(curMaterialIndex);
                     renderBatchesByMaterialID[curMaterialIndex].FirstTriangleFaceIndex = Convert.ToUInt32(i * 3);
                     renderBatchesByMaterialID[curMaterialIndex].NumOfFaceIndices = 3;
-                    renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex = TriangleFaces[i].GetSmallestIndex();
-                    renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = TriangleFaces[i].GetLargestIndex();
+                    renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex = MeshData.TriangleFaces[i].GetSmallestIndex();
+                    renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = MeshData.TriangleFaces[i].GetLargestIndex();
                 }
                 // Otherwise add to an existing
                 else
                 {
                     renderBatchesByMaterialID[curMaterialIndex].NumOfFaceIndices += 3;
-                    int curFaceMinIndex = TriangleFaces[i].GetSmallestIndex();
+                    int curFaceMinIndex = MeshData.TriangleFaces[i].GetSmallestIndex();
                     if (curFaceMinIndex < renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex)
                         renderBatchesByMaterialID[curMaterialIndex].FirstVertexIndex = Convert.ToUInt16(curFaceMinIndex);
-                    int curFaceMaxIndex = TriangleFaces[i].GetLargestIndex();
+                    int curFaceMaxIndex = MeshData.TriangleFaces[i].GetLargestIndex();
                     if (curFaceMaxIndex > renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex)
                         renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = Convert.ToUInt16(curFaceMaxIndex);
                 }
@@ -112,9 +102,9 @@ namespace EQWOWConverter.Zones
 
             // Construct the collision triangle indices
             collisionTriangleIncidies = new List<UInt32>();
-            for (int i = 0; i < TriangleFaces.Count; ++i)
+            for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
             {
-                Material curMaterial = materials[TriangleFaces[i].MaterialIndex];
+                Material curMaterial = materials[MeshData.TriangleFaces[i].MaterialIndex];
                 if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.Name) == false)
                     collisionTriangleIncidies.Add(Convert.ToUInt32(i));
             }
@@ -141,18 +131,18 @@ namespace EQWOWConverter.Zones
 
         private void SortRenderObjects()
         {
-            TriangleFaces.Sort();
+            MeshData.TriangleFaces.Sort();
 
             // Reorder the vertices / texcoords / normals / vertcolors to match the sorted triangle faces
             List<Vector3> sortedVertices = new List<Vector3>();
             List<TextureCoordinates> sortedTextureCoords = new List<TextureCoordinates>();
             List<Vector3> sortedNormals = new List<Vector3>();
-            List<ColorBGRA> sortedVertexColors = new List<ColorBGRA>();
+            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
             List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-            for (int i = 0; i < TriangleFaces.Count; i++)
+            for (int i = 0; i < MeshData.TriangleFaces.Count; i++)
             {
-                TriangleFace curTriangleFace = TriangleFaces[i];
+                TriangleFace curTriangleFace = MeshData.TriangleFaces[i];
 
                 // Face vertex 1
                 if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
@@ -169,11 +159,11 @@ namespace EQWOWConverter.Zones
                     curTriangleFace.V1 = newVertIndex;
 
                     // Add objects
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    sortedVertices.Add(MeshData.Vertices[oldVertIndex]);
+                    sortedTextureCoords.Add(MeshData.TextureCoordinates[oldVertIndex]);
+                    sortedNormals.Add(MeshData.Normals[oldVertIndex]);
+                    if (MeshData.VertexColors.Count != 0)
+                        sortedVertexColors.Add(MeshData.VertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -191,11 +181,11 @@ namespace EQWOWConverter.Zones
                     curTriangleFace.V2 = newVertIndex;
 
                     // Add objects
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    sortedVertices.Add(MeshData.Vertices[oldVertIndex]);
+                    sortedTextureCoords.Add(MeshData.TextureCoordinates[oldVertIndex]);
+                    sortedNormals.Add(MeshData.Normals[oldVertIndex]);
+                    if (MeshData.VertexColors.Count != 0)
+                        sortedVertexColors.Add(MeshData.VertexColors[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -213,11 +203,11 @@ namespace EQWOWConverter.Zones
                     curTriangleFace.V3 = newVertIndex;
 
                     // Add objects
-                    sortedVertices.Add(Vertices[oldVertIndex]);
-                    sortedTextureCoords.Add(TextureCoords[oldVertIndex]);
-                    sortedNormals.Add(Normals[oldVertIndex]);
-                    if (VertexColors.Count != 0)
-                        sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    sortedVertices.Add(MeshData.Vertices[oldVertIndex]);
+                    sortedTextureCoords.Add(MeshData.TextureCoordinates[oldVertIndex]);
+                    sortedNormals.Add(MeshData.Normals[oldVertIndex]);
+                    if (MeshData.VertexColors.Count != 0)
+                        sortedVertexColors.Add(MeshData.VertexColors[oldVertIndex]);
                 }
 
                 // Save this updated triangle
@@ -225,11 +215,11 @@ namespace EQWOWConverter.Zones
             }
 
             // Save the sorted values
-            Vertices = sortedVertices;
-            TextureCoords = sortedTextureCoords;
-            Normals = sortedNormals;
-            VertexColors = sortedVertexColors;
-            TriangleFaces = sortedTriangleFaces;
+            MeshData.Vertices = sortedVertices;
+            MeshData.TextureCoordinates = sortedTextureCoords;
+            MeshData.Normals = sortedNormals;
+            MeshData.VertexColors = sortedVertexColors;
+            MeshData.TriangleFaces = sortedTriangleFaces;
         }
     }
 }

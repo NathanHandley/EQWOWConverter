@@ -25,11 +25,7 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQMesh
     {
-        public List<Vector3> Vertices = new List<Vector3>();
-        public List<Vector3> Normals = new List<Vector3>();
-        public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
-        public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
-        public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
+        public MeshData Meshdata = new MeshData();
         public AnimatedVertices AnimatedVertices = new AnimatedVertices();
         public string MaterialListFileName = string.Empty;
         // TODO: Bones
@@ -85,7 +81,7 @@ namespace EQWOWConverter.EQFiles
                     vertex.X = float.Parse(blocks[1]);
                     vertex.Z = float.Parse(blocks[2]);
                     vertex.Y = float.Parse(blocks[3]);
-                    Vertices.Add(vertex);
+                    Meshdata.Vertices.Add(vertex);
                 }
 
                 // ad = Animation head
@@ -136,7 +132,7 @@ namespace EQWOWConverter.EQFiles
                     TextureCoordinates textureUv = new TextureCoordinates();
                     textureUv.X = float.Parse(blocks[1]);
                     textureUv.Y = float.Parse(blocks[2]);
-                    TextureCoordinates.Add(textureUv);
+                    Meshdata.TextureCoordinates.Add(textureUv);
                 }
 
                 // n = Normal
@@ -152,7 +148,7 @@ namespace EQWOWConverter.EQFiles
                     normal.X = float.Parse(blocks[1]);
                     normal.Y = float.Parse(blocks[2]);
                     normal.Z = float.Parse(blocks[3]);
-                    Normals.Add(normal);
+                    Meshdata.Normals.Add(normal);
                 }
 
                 // c = Vertex Color
@@ -169,7 +165,7 @@ namespace EQWOWConverter.EQFiles
                     color.G = byte.Parse(blocks[2]);
                     color.R = byte.Parse(blocks[3]);
                     color.A = byte.Parse(blocks[4]);
-                    VertexColors.Add(color);
+                    Meshdata.VertexColors.Add(color);
                 }
 
                 // i = Indices
@@ -186,7 +182,7 @@ namespace EQWOWConverter.EQFiles
                     index.V1 = int.Parse(blocks[2]);
                     index.V2 = int.Parse(blocks[3]);
                     index.V3 = int.Parse(blocks[4]);
-                    TriangleFaces.Add(index);
+                    Meshdata.TriangleFaces.Add(index);
                 }
 
                 else

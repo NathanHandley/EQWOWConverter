@@ -131,7 +131,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.DoodadInstances.Count())));
 
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));    // Number of Doodad Sets (first is the global)
-            chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytes());            // Ambiant Light
+            chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytesARGB());            // Ambiant Light
             chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));      // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      // Axis aligned bounding box for the zone mesh(es)
 
@@ -233,7 +233,7 @@ namespace EQWOWConverter.WOWFiles
 
                 // Emissive color (default to blank for now)
                 ColorRGBA emissiveColor = new ColorRGBA(0, 0, 0, 255);
-                curMaterialBytes.AddRange(emissiveColor.ToBytes());
+                curMaterialBytes.AddRange(emissiveColor.ToBytesRGBA());
 
                 // Not sure what this is.  wowdev has this as sidnColor and 010 template shows flags_1.  Setting to zero for now.
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
@@ -243,7 +243,7 @@ namespace EQWOWConverter.WOWFiles
 
                 // Diffuse color (seems to default to 149 in looking at Darnassus files... why?)  Mess with this later.
                 ColorRGBA diffuseColor = new ColorRGBA(149, 149, 149, 255);
-                curMaterialBytes.AddRange(diffuseColor.ToBytes());
+                curMaterialBytes.AddRange(diffuseColor.ToBytesRGBA());
 
                 // TerrainType ID (from the DBC). TODO: Find a way to map this to be useful for EQ.  Setting to 6 for grass for now.
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(6)));

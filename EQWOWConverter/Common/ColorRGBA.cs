@@ -42,12 +42,32 @@ namespace EQWOWConverter.Common
             A = a;
         }
 
-        public List<byte> ToBytes()
+        public List<byte> ToBytesRGBA()
         {
             List<byte> returnBytes = new List<byte>();
             returnBytes.Add(R);
             returnBytes.Add(G);
             returnBytes.Add(B);
+            returnBytes.Add(A);
+            return returnBytes;
+        }
+
+        public List<byte> ToBytesARGB()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.Add(A);
+            returnBytes.Add(R);
+            returnBytes.Add(G);
+            returnBytes.Add(B);
+            return returnBytes;
+        }
+
+        public List<byte> ToBytesBGRA()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.Add(B);
+            returnBytes.Add(G);
+            returnBytes.Add(R);
             returnBytes.Add(A);
             return returnBytes;
         }

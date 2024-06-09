@@ -156,7 +156,7 @@ namespace EQWOWConverter
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
 
-                if (zoneDirectory.Name != "freportw")
+                if (zoneDirectory.Name != "qcat")
                     continue;
 
                 // Load the EQ zone

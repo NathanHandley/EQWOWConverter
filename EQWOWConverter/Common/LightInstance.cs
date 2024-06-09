@@ -26,6 +26,8 @@ namespace EQWOWConverter.Common
     {
         public Vector3 Position = new Vector3();
         public float Radius;
-        public ColorRGBf Color = new ColorRGBf();
+        public float ColorRed = 0.0f;
+        public float ColorGreen = 0.0f;
+        public float ColorBlue = 0.0f;
     }
 }

@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.WOW
         public Vector3 Position = new Vector3();
         public Quaternion Orientation = new Quaternion();
         public float Scale = 1.0f;
-        public ColorBGRA Color = new ColorBGRA();
+        public ColorRGBA Color = new ColorRGBA();
 
         public List<byte> ToBytes()
         {
@@ -44,7 +44,7 @@ namespace EQWOWConverter.Zones.WOW
             returnBytes.AddRange(Position.ToBytes());
             returnBytes.AddRange(Orientation.ToBytes());
             returnBytes.AddRange(BitConverter.GetBytes(Scale));
-            returnBytes.AddRange(Color.ToBytes());
+            returnBytes.AddRange(Color.ToBytesBGRA());
             return returnBytes;
         }
     }
