@@ -310,96 +310,9 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void ExtractMeshDataForMaterial(Material material, MeshData sourceMeshData, out MeshData extractedMeshData)
-        {
-            // Extract out copies of the geometry data specific to this material
-            extractedMeshData = new MeshData();
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-            for (int i = 0; i < sourceMeshData.TriangleFaces.Count; i++)
-            {
-                // Skip faces not matching the material
-                if (sourceMeshData.TriangleFaces[i].MaterialIndex != material.Index)
-                    continue;
-
-                // Make the new face, and keep the material ID
-                TriangleFace curTriangleFace = new TriangleFace(sourceMeshData.TriangleFaces[i]);
-                curTriangleFace.MaterialIndex = Convert.ToInt32(material.Index);
-
-                // Face vertex 1
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V1 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(sourceMeshData.Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(sourceMeshData.TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(sourceMeshData.Normals[oldVertIndex]);
-                    if (sourceMeshData.VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(sourceMeshData.VertexColors[oldVertIndex]);
-                }
-
-                // Face vertex 2
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V2 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(sourceMeshData.Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(sourceMeshData.TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(sourceMeshData.Normals[oldVertIndex]);
-                    if (sourceMeshData.VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(sourceMeshData.VertexColors[oldVertIndex]);
-                }
-
-                // Face vertex 3
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = extractedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V3 = newVertIndex;
-
-                    // Add objects
-                    extractedMeshData.Vertices.Add(sourceMeshData.Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(sourceMeshData.TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(sourceMeshData.Normals[oldVertIndex]);
-                    if (sourceMeshData.VertexColors.Count != 0)
-                        extractedMeshData.VertexColors.Add(sourceMeshData.VertexColors[oldVertIndex]);
-                }
-
-                // Save this updated triangle
-                extractedMeshData.TriangleFaces.Add(curTriangleFace);
-            }
-        }
-
         private void GenerateAndAddObjectInstancesForZoneMaterial(Material material, MeshData allMeshData)
         {
-            MeshData extractedMeshData;
-            ExtractMeshDataForMaterial(material, allMeshData, out extractedMeshData);
+            MeshData extractedMeshData = allMeshData.GetMeshDataForMaterial(material);
 
             // Generate the object
             string name = "ZO_" + ShortName + "_" + material.Name;
@@ -416,85 +329,9 @@ namespace EQWOWConverter.Zones
 
         private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, MeshData meshData)
         {
-            // Since the face list is likely to not include all faces, rebuild the render object lists
-            MeshData condensedMeshData = new MeshData();
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
-            for (int i = 0; i < faces.Count; i++)
-            {
-                TriangleFace curTriangleFace = faces[i];
-
-                // Face vertex 1
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = condensedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V1 = newVertIndex;
-
-                    // Add objects
-                    condensedMeshData.Vertices.Add(meshData.Vertices[oldVertIndex]);
-                    condensedMeshData.TextureCoordinates.Add(meshData.TextureCoordinates[oldVertIndex]);
-                    condensedMeshData.Normals.Add(meshData.Normals[oldVertIndex]);
-                    if (meshData.VertexColors.Count != 0)
-                        condensedMeshData.VertexColors.Add(meshData.VertexColors[oldVertIndex]);
-                }
-
-                // Face vertex 2
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = condensedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V2 = newVertIndex;
-
-                    // Add objects
-                    condensedMeshData.Vertices.Add(meshData.Vertices[oldVertIndex]);
-                    condensedMeshData.TextureCoordinates.Add(meshData.TextureCoordinates[oldVertIndex]);
-                    condensedMeshData.Normals.Add(meshData.Normals[oldVertIndex]);
-                    if (meshData.VertexColors.Count != 0)
-                        condensedMeshData.VertexColors.Add(meshData.VertexColors[oldVertIndex]);
-                }
-
-                // Face vertex 3
-                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
-                {
-                    // This index was aready remapped
-                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
-                }
-                else
-                {
-                    // Store new mapping
-                    int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = condensedMeshData.Vertices.Count;
-                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
-                    curTriangleFace.V3 = newVertIndex;
-
-                    // Add objects
-                    condensedMeshData.Vertices.Add(meshData.Vertices[oldVertIndex]);
-                    condensedMeshData.TextureCoordinates.Add(meshData.TextureCoordinates[oldVertIndex]);
-                    condensedMeshData.Normals.Add(meshData.Normals[oldVertIndex]);
-                    if (meshData.VertexColors.Count != 0)
-                        condensedMeshData.VertexColors.Add(meshData.VertexColors[oldVertIndex]);
-                }
-
-                // Save this updated triangle
-                condensedMeshData.TriangleFaces.Add(curTriangleFace);
-            }
-
             // Generate and add the world model object
-            WorldModelObject curWorldModelObject = new WorldModelObject(condensedMeshData, Materials, DoodadInstances, ZoneProperties);
+            MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
+            WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
             WorldObjects.Add(curWorldModelObject);
         }
     }
