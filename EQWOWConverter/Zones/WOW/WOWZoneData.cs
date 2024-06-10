@@ -275,8 +275,11 @@ namespace EQWOWConverter.Zones
 
                 // Generate the world model object
                 MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
-                WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
-                WorldObjects.Add(curWorldModelObject);
+                if (extractedMeshData.Vertices.Count > 0)
+                {
+                    WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
+                    WorldObjects.Add(curWorldModelObject);
+                }
             }
         }
 
