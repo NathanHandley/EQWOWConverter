@@ -274,7 +274,9 @@ namespace EQWOWConverter.Zones
                     faceToProcess.RemoveAt(faceIndex);
 
                 // Generate the world model object
-                GenerateWorldModelObjectFromFaces(facesInGroup, meshData);
+                MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
+                WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
+                WorldObjects.Add(curWorldModelObject);
             }
         }
 
@@ -311,14 +313,6 @@ namespace EQWOWConverter.Zones
                 doodadInstance.Position = curPosition;
                 DoodadInstances.Add(doodadInstance);
             }
-        }
-
-        private void GenerateWorldModelObjectFromFaces(List<TriangleFace> faces, MeshData meshData)
-        {
-            // Generate and add the world model object
-            MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
-            WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
-            WorldObjects.Add(curWorldModelObject);
         }
     }
 }
