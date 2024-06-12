@@ -273,7 +273,7 @@ namespace EQWOWConverter.Zones
                 foreach (int faceIndex in faceIndexesToDelete.Reverse())
                     faceToProcess.RemoveAt(faceIndex);
 
-                // Generate the world model object
+                // Generate a world model object if there are any verticies
                 MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
                 if (extractedMeshData.Vertices.Count > 0)
                 {

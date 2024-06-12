@@ -37,6 +37,8 @@ namespace EQWOWConverter.Zones
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree;
+        public MeshData LiquidMeshData = new MeshData();
+        public LiquidType LiquidType = LiquidType.None;
 
         public WorldModelObject(BoundingBox boundingBox, WorldModelObjectType wmoType)
         {

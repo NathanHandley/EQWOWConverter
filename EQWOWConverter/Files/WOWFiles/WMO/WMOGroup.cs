@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Files.WOWFiles;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace EQWOWConverter.WOWFiles
     internal class WMOGroup : WOWChunkedObject
     {
         public List<byte> GroupBytes = new List<byte>();
+
+        private static bool TestingWaterFlag = true;
 
         public WMOGroup(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
@@ -62,6 +65,8 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
+            if (TestingWaterFlag == true)
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -132,6 +137,8 @@ namespace EQWOWConverter.WOWFiles
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // - If HasWater flag
+            if (TestingWaterFlag == true)
+                chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
 
@@ -320,7 +327,44 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // Intentionally blank for now
+            // Get the mesh data for the liquid
+            MeshData liquidMeshData = worldModelObject.LiquidMeshData;
+            if (/*worldModelObject.LiquidType == LiquidType.None || liquidMeshData.Vertices.Count == 0 ||*/ TestingWaterFlag == false)
+                return WrapInChunk("MLIQ", chunkBytes.ToArray());
+
+            // Create the header and calculate the verts and tiles
+            //BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices);
+
+            // Calculate the tiles for it
+            //xTiles = (xDistance) / 4.1666625;
+            //yTiles = (yDistance) / 4.1666625;
+
+
+
+            // Generate it
+
+
+            // TESTING!!!!
+            WMOLiquid liquid = new WMOLiquid();
+            liquid.XTileCount = 2;
+            liquid.YTileCount = 1;
+            liquid.XVertexCount = 3;
+            liquid.YVertexCount = 2;
+            liquid.CornerPosition = new Vector3(0, 0, 0);
+            liquid.MaterialID = 0;
+            liquid.TileFlags.Add(WMOLiquidFlags.LegacyLiquidType);
+            liquid.TileFlags.Add(WMOLiquidFlags.None);
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            chunkBytes.AddRange(liquid.ToBytes());
+            TestingWaterFlag = false;
+
+
+            // TESTING!!!!
 
             return WrapInChunk("MLIQ", chunkBytes.ToArray());
         }
