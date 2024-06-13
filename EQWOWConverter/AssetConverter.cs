@@ -156,8 +156,12 @@ namespace EQWOWConverter
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
 
-                if (zoneDirectory.Name != "freportw")
+                // Restrict zones being generated based on the config
+                if (Configuration.CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION.Count != 0 && 
+                    Configuration.CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION.Contains(zoneDirectory.Name) == false)
+                {
                     continue;
+                }
 
                 // Load the EQ zone
                 ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
