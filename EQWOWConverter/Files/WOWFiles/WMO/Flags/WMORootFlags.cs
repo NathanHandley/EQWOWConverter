@@ -24,6 +24,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal enum WMORootFlags : UInt32
     {
+        None = 0x00,
         DoNotAttenuateVerticesBasedOnDistanceToPortal = 0x01,
         UseUnifiedRenderingPath = 0x02,
         UseLiquidTypeDBCID = 0x04,

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZonePropertiesLiquidProperties
     {
-        public LiquidType LiquidType = LiquidType.Water;
+        public LiquidType LiquidType = LiquidType.None;
         public List<string> MaterialNames = new List<string>();
 
         public ZonePropertiesLiquidProperties() { }

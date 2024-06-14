@@ -25,10 +25,12 @@ namespace EQWOWConverter.Zones
 {
     internal class ZonePropertiesLiquidVolume
     {
+        public LiquidType LiquidType { get; set; }
         public BoundingBox VolumeBox;
 
-        public ZonePropertiesLiquidVolume(float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
+        public ZonePropertiesLiquidVolume(LiquidType liquidType, float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
         {
+            LiquidType = liquidType;
             VolumeBox = new BoundingBox(bottomX, bottomY, bottomZ, topX, topY, topZ);
         }
     }

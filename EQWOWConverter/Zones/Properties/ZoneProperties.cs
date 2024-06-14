@@ -86,9 +86,9 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddLiquidVolume(float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
+        public void AddLiquidVolume(LiquidType liquidType, float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
         {
-            ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(bottomX, bottomY, bottomZ, topX, topY, topZ);
+            ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(liquidType, bottomX, bottomY, bottomZ, topX, topY, topZ);
             LiquidVolumes.Add(liquidVolume);
         }
 

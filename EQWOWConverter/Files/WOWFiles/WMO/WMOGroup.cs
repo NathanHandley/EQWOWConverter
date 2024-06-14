@@ -29,8 +29,6 @@ namespace EQWOWConverter.WOWFiles
     {
         public List<byte> GroupBytes = new List<byte>();
 
-        private bool TestingWaterFlag = false;
-
         public WMOGroup(WMORoot wmoRoot, WorldModelObject worldModelObject)
         {
             // MVER (Version) ---------------------------------------------------------------------
@@ -60,16 +58,12 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameOffset));
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
-            bool renderWaterTest = false;
-            if (worldModelObject.BoundingBox.IsPointInside(new Vector3(0, 0, 0)) && TestingWaterFlag)
-                renderWaterTest = true;
-
             // Flags
             UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (renderWaterTest == true)
+            if (worldModelObject.LiquidType != LiquidType.None)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
@@ -90,9 +84,9 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // 4 fog IDs that are all zero, I hope...
 
             // Liquid type (zero causes whole WMO to be underwater, but 15 seems to fix that)
-//            if (worldModelObject.WMOType == WorldModelObjectType.LiquidVolume || renderWaterTest == true)
-//                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(LiquidType.Slime)));
-//            else
+            if (worldModelObject.LiquidType != LiquidType.None)
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(worldModelObject.LiquidType)));
+            else
                 chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
 
             // WMOGroupID (inside WMOAreaTable)
@@ -140,8 +134,8 @@ namespace EQWOWConverter.WOWFiles
             //chunkBytes.AddRange(GenerateMOCVChunk(zone));
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
-            // - If HasWater flag
-            if (TestingWaterFlag == true)
+            // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
+            if (worldModelObject.LiquidType != LiquidType.None && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
                 chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
@@ -331,16 +325,8 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-
-            bool renderWaterTest = false;
-            if (worldModelObject.BoundingBox.IsPointInside(new Vector3(0, 0, 0)) && TestingWaterFlag)
-                renderWaterTest = true;
-
-
             // Get the mesh data for the liquid
             MeshData liquidMeshData = worldModelObject.LiquidMeshData;
-            if (/*worldModelObject.LiquidType == LiquidType.None || liquidMeshData.Vertices.Count == 0 ||*/ TestingWaterFlag == false)
-                return WrapInChunk("MLIQ", chunkBytes.ToArray());
 
             // Create the header and calculate the verts and tiles
             //BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices);
@@ -366,7 +352,6 @@ namespace EQWOWConverter.WOWFiles
             liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
             liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
             chunkBytes.AddRange(liquid.ToBytes());
-            TestingWaterFlag = false;
 
 
             // TESTING!!!!

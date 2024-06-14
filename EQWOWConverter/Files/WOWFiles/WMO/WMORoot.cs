@@ -135,11 +135,9 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));      // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      // Axis aligned bounding box for the zone mesh(es)
 
-            // For now, get rid of these 
-            //UInt32 rootFlags = GetPackedFlags(Convert.ToUInt32(WMORootFlags.DoNotAttenuateVerticesBasedOnDistanceToPortal),
-            //                                  Convert.ToUInt32(WMORootFlags.UseUnifiedRenderingPath));
-            //chunkBytes.AddRange(BitConverter.GetBytes(rootFlags)); // Flags
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0))); // Flags (temp, empty)
+            // Set any flags
+            WMORootFlags rootFlags = WMORootFlags.None;
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(rootFlags)));
             return WrapInChunk("MOHD", chunkBytes.ToArray());
         }
 

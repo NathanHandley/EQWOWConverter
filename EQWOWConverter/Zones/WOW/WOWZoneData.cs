@@ -104,17 +104,13 @@ namespace EQWOWConverter.Zones
                 DoodadInstances.Add(doodadInstance);
             }
 
-            // Generate world objects
-            meshData.Normals = eqZoneData.MeshData.Normals;
-            meshData.VertexColors = eqZoneData.MeshData.VertexColors;
-
             WorldObjects.Clear();
 
             // Build liquid wmos first
             foreach (ZonePropertiesLiquidVolume liquidVolume in ZoneProperties.LiquidVolumes)
             {
                 // Generate and add the world model object
-                WorldModelObject curWorldModelObject = new WorldModelObject(liquidVolume.VolumeBox, WorldModelObjectType.LiquidVolume);
+                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidVolume, liquidVolume.LiquidType, liquidVolume.VolumeBox);
                 WorldObjects.Add(curWorldModelObject);
             }
 
@@ -289,7 +285,7 @@ namespace EQWOWConverter.Zones
             List<MeshData> meshDatas = new List<MeshData>();
 
             // Grab only this material
-            MeshData curMaterialMeshData = allMeshData.GetMeshDataForMaterial(material);
+            MeshData curMaterialMeshData = allMeshData.GetMeshDataForMaterials(material);
 
             // Generate a bounding box for the mesh data
             BoundingBox curMeshBoundingBox = BoundingBox.GenerateBoxFromVectors(curMaterialMeshData.Vertices, 0.0f);

@@ -37,13 +37,15 @@ namespace EQWOWConverter.Zones
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree;
-        public MeshData LiquidMeshData = new MeshData();
-        public LiquidType LiquidType = LiquidType.None;
 
-        public WorldModelObject(BoundingBox boundingBox, WorldModelObjectType wmoType)
+        public LiquidType LiquidType = LiquidType.None;
+        public MeshData LiquidMeshData = new MeshData();
+
+        public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, BoundingBox boundingBox)
         {
             WMOType = wmoType;
             BoundingBox = boundingBox;
+            LiquidType = liquidType;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
@@ -55,10 +57,29 @@ namespace EQWOWConverter.Zones
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
+            GenerateLiquidArea(zoneProperties);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             CreateDoodadAssociations(zoneWideDoodadInstances);
+        }
+
+        private void GenerateLiquidArea(ZoneProperties zoneProperties)
+        {
+            // Build the Liquid Mesh, if needed
+            if (zoneProperties.LiquidProperties.LiquidType != LiquidType.None)
+            {
+                List<Material> liquidMaterials = new List<Material>();
+                foreach (string materialName in zoneProperties.LiquidProperties.MaterialNames)
+                    foreach (Material material in Materials)
+                        if (material.Name == materialName)
+                            liquidMaterials.Add(material);
+                LiquidMeshData = MeshData.GetMeshDataForMaterials(liquidMaterials.ToArray());
+
+                // Only set liquid type if any mesh data was found
+                if (LiquidMeshData.Vertices.Count > 0)
+                    LiquidType = zoneProperties.LiquidProperties.LiquidType;
+            }
         }
 
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)

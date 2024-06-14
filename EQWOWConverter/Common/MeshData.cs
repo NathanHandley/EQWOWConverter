@@ -69,20 +69,24 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public MeshData GetMeshDataForMaterial(Material material)
+        public MeshData GetMeshDataForMaterials(params Material[] materials)
         {
-            // Extract out copies of the geometry data specific to this material
+            // Extract out copies of the geometry data specific to these materials
             MeshData extractedMeshData = new MeshData();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+            HashSet<int> materialIDs = new HashSet<int>();
+            foreach (Material material in materials)
+                materialIDs.Add(Convert.ToInt32(material.Index));
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
-                // Skip faces not matching the material
-                if (TriangleFaces[i].MaterialIndex != material.Index)
+                // Skip faces not matching a material in the set
+                if (materialIDs.Contains(TriangleFaces[i].MaterialIndex) == false)
                     continue;
+                int curMaterialID = TriangleFaces[i].MaterialIndex;
 
                 // Make the new face, and keep the material ID
                 TriangleFace curTriangleFace = new TriangleFace(TriangleFaces[i]);
-                curTriangleFace.MaterialIndex = Convert.ToInt32(material.Index);
+                curTriangleFace.MaterialIndex = Convert.ToInt32(curMaterialID);
 
                 // Face vertex 1
                 if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
