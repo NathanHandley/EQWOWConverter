@@ -9,8 +9,7 @@ namespace EQWOWConverter.Files.WOWFiles
     internal enum WMOLiquidFlags : byte
     {
         None = 0,
-        LegacyLiquidType = 0x04,
-        DisableRender = 0x08,   // Don't render it
+        DisableRender = 0x08,   // Don't render it, but doesn't work?
         Unknown1 = 0x10,        // ?
         Unknown2 = 0x20,        // ?
         IsFishable = 0x40,      // Can fish

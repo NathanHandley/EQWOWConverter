@@ -24,9 +24,10 @@ namespace EQWOWConverter.Common
 {
     internal enum LiquidType : byte
     {
-        None = 15,  // Confirm if this is the case
-        Water = 0,  // LiquidType = 13 (WMO Water)
-        Magma = 2,  // LiquidType = 19 (WMO Magma)
-        Slime = 3   // LiquidType = 20 (WMO Slime)
+        None = 0,
+        Water = 13,
+        Ocean = 14,
+        Magma = 19,
+        Slime = 20
     }
 }

@@ -37,7 +37,6 @@ namespace EQWOWConverter.Files.WOWFiles
         // Data
         public List<WMOWaterVert> WaterVerts = new List<WMOWaterVert>();
         public List<WMOMagmaVert> MagmaVerts = new List<WMOMagmaVert>();
-        //public List<WMOLiquidTile> Tiles = new List<WMOLiquidTile>();
         public List<WMOLiquidFlags> TileFlags = new List<WMOLiquidFlags>();
 
         public List<byte> ToBytes()
@@ -57,8 +56,13 @@ namespace EQWOWConverter.Files.WOWFiles
                 returnBytes.AddRange(vert.ToBytes());
             foreach (WMOMagmaVert vert in MagmaVerts)
                 returnBytes.AddRange(vert.ToBytes());
-            foreach (WMOLiquidFlags tileFlags in TileFlags)
-                returnBytes.Add(Convert.ToByte(tileFlags));
+            WMOLiquidFlags flags = 0;
+            foreach (WMOLiquidFlags tileFlag in TileFlags)
+                flags |= tileFlag;
+            // Shifting data to a high nibble because the 4 low bits are a legacy water type not in use
+            var shiftedFlags = (Convert.ToByte(flags) & 0xF0) >> 4;
+            for (int i = 0; i < XTileCount * YTileCount; ++i)
+                returnBytes.Add(Convert.ToByte(flags));
             return returnBytes;
         }
     }
