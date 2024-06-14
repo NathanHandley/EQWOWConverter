@@ -131,7 +131,7 @@ namespace EQWOWConverter.Zones
             {
                 List<string> materialNames = new List<string>();
                 foreach(Material material in Materials)
-                    materialNames.Add(material.Name);
+                    materialNames.Add(material.UniqueName);
                 GenerateWorldModelObjectByMaterials(materialNames, meshData.TriangleFaces, meshData);
             }
             // Otherwise, break into parts
@@ -141,7 +141,7 @@ namespace EQWOWConverter.Zones
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
                 List<string> materialNames = new List<string>();
                 foreach (Material material in Materials)
-                    materialNames.Add(material.Name);
+                    materialNames.Add(material.UniqueName);
                 GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, meshData.TriangleFaces, meshData);
             }
 
@@ -230,7 +230,7 @@ namespace EQWOWConverter.Zones
             {
                 foreach (Material material in Materials)
                 {
-                    if (material.Name == materialName)
+                    if (material.UniqueName == materialName)
                     {
                         materialIDs.Add(material.Index);
                         materialFound = true;
@@ -304,8 +304,10 @@ namespace EQWOWConverter.Zones
                 Vector3 curPosition = meshPositions[i];
                 MeshData curMeshData = meshDatas[i];
 
+                List<Vector3> collisionVerticies = new List<Vector3>();
+
                 // Generate the object
-                string name = "ZO_" + ShortName + "_" + material.Name + "_" + i.ToString();
+                string name = "ZO_" + ShortName + "_" + material.UniqueName + "_" + i.ToString();
                 WOWObjectModelData newObject = new WOWObjectModelData();
                 newObject.Load(name, new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
                 GeneratedZoneObjects.Add(newObject);

@@ -107,8 +107,11 @@ namespace EQWOWConverter.Zones
             for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
             {
                 Material curMaterial = materials[MeshData.TriangleFaces[i].MaterialIndex];
-                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.Name) == false)
+                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.UniqueName) == false &&
+                    zoneProperties.LiquidProperties.MaterialNames.Contains(curMaterial.UniqueName) == false)
+                {
                     collisionTriangleIncidies.Add(Convert.ToUInt32(i));
+                }
             }
 
             // Store the new render batches

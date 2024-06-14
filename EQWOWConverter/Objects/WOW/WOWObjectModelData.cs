@@ -105,7 +105,7 @@ namespace EQWOWConverter.Objects
                 {
                     if (material.TextureNames.Count <= 1)
                     {
-                        Logger.WriteError("Material '" + material.Name + "' in object '" + Name + "' was marked as animated, but had only one texture.");
+                        Logger.WriteError("Material '" + material.UniqueName + "' in object '" + Name + "' was marked as animated, but had only one texture.");
                         return;
                     }
 
@@ -302,12 +302,12 @@ namespace EQWOWConverter.Objects
             for (int textureIter = 0; textureIter < initialMaterial.TextureNames.Count; ++textureIter)
             {
                 // Update the material values if it's the first in the chain, otherwise create a new one
-                string curMaterialName = initialMaterial.Name + "Anim_" + textureIter;
+                string curMaterialName = initialMaterial.UniqueName + "Anim_" + textureIter;
                 Material curMaterial;
                 int curMaterialIndex;
                 if (textureIter == 0)
                 {
-                    initialMaterial.Name = curMaterialName;
+                    initialMaterial.UniqueName = curMaterialName;
                     curMaterial = initialMaterial;
                     curMaterialIndex = Convert.ToInt32(initialMaterial.Index);
                 }
@@ -315,8 +315,8 @@ namespace EQWOWConverter.Objects
                 {
                     UInt32 newMaterialIndex = GetUniqueMaterialIDFromMaterials(expandedMaterials);
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
-                    Material newAnimationMaterial = new Material(curMaterialName, newMaterialIndex, initialMaterial.MaterialType, newMaterialTextureName,
-                        initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight);
+                    Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, initialMaterial.MaterialType, 
+                        newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight);
                     curMaterial = newAnimationMaterial;
                     expandedMaterials.Add(curMaterial);
                     curMaterialIndex = Convert.ToInt32(newMaterialIndex);
@@ -375,7 +375,7 @@ namespace EQWOWConverter.Objects
                 }
                 if (minSourceTriangleVertexIndex == -1)
                 {
-                    Logger.WriteError("Could not find any triangle face vertices for material '" + frameMaterials[0].Name + "' in object '" + Name + "'");
+                    Logger.WriteError("Could not find any triangle face vertices for material '" + frameMaterials[0].UniqueName + "' in object '" + Name + "'");
                     return;
                 }
 

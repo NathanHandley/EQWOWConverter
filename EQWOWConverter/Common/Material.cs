@@ -31,6 +31,7 @@ namespace EQWOWConverter.Common
         public UInt32 Index = 0;
         public MaterialType MaterialType = MaterialType.Diffuse;
         public string Name = string.Empty;
+        public string UniqueName = string.Empty;
         public List<string> TextureNames = new List<string>();
         public UInt32 AnimationDelayMs = 0;
         public int TextureWidth = 0;
@@ -41,6 +42,7 @@ namespace EQWOWConverter.Common
             Index = material.Index;
             MaterialType = material.MaterialType;
             Name = material.Name;
+            UniqueName = material.UniqueName;
             foreach (string textureName in material.TextureNames)
                 TextureNames.Add(textureName);
             AnimationDelayMs = material.AnimationDelayMs;
@@ -48,10 +50,11 @@ namespace EQWOWConverter.Common
             TextureHeight = material.TextureHeight;
         }
 
-        public Material(string name, UInt32 index, MaterialType materialType, List<string> textureNames,
+        public Material(string name, string originalName, UInt32 index, MaterialType materialType, List<string> textureNames,
             UInt32 animationDelayMS, int sourceTextureWidth, int sourceTextureHeight)
         {
-            Name = name;
+            UniqueName = name;
+            Name = originalName;
             Index = index;
             MaterialType = materialType;
             TextureNames = textureNames;
@@ -112,7 +115,7 @@ namespace EQWOWConverter.Common
                     case 3: return new Vector3(0.5f, 0.5f, 0.0f);
                     default:
                     {
-                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 2x2 texture");
+                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + UniqueName + "' was '" + frameIndex + "' when it was a 2x2 texture");
                         return new Vector3(0.0f, 0.0f, 0.0f);
                     }
                 }
@@ -143,7 +146,7 @@ namespace EQWOWConverter.Common
                     case 15: return new Vector3(-0.75f, 0.75f, 0.0f);
                     default:
                     {
-                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + Name + "' was '" + frameIndex + "' when it was a 4x4 texture");
+                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + UniqueName + "' was '" + frameIndex + "' when it was a 4x4 texture");
                         return new Vector3(0.0f, 0.0f, 0.0f);
                     }
 

@@ -479,7 +479,7 @@ namespace EQWOWConverter
                                 string objectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(objectTextureFileNameOnly);
                                 foreach (Material material in eqMaterialList.Materials)
                                 {
-                                    if (material.Name == objectTextureFileNameNoExtension)
+                                    if (material.UniqueName == objectTextureFileNameNoExtension)
                                         materialHasTextureName = true;
                                     break;
                                 }
