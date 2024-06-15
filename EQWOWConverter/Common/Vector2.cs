@@ -14,27 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.Common
 {
-    internal class ZonePropertiesLiquidProperties
+    internal class Vector2
     {
-        public LiquidType LiquidType = LiquidType.None;
-        public List<string> MaterialNames = new List<string>();
+        public float X;
+        public float Y;
 
-        public ZonePropertiesLiquidProperties() { }
-
-        public ZonePropertiesLiquidProperties(LiquidType type, params string[] materialNames)
+        public Vector2()
         {
-            LiquidType = type;
-            foreach (string name in materialNames)
-                MaterialNames.Add(name);
+
+        }
+
+        public Vector2(float x, float y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public Vector2(Vector2 v)
+        {
+            X = v.X;
+            Y = v.Y;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;
+        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;//1.0f;//0.3f;
 
         // Maximum number of faces that fit into a WMO group before it subdivides
         // max value can only ever be 21,840, but >2100 not advised due to btree size

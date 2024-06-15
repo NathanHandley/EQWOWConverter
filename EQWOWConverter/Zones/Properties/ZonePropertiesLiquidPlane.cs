@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,10 +23,18 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal enum WorldModelObjectType
+    internal class ZonePropertiesLiquidPlane
     {
-        Rendered,
-        LiquidVolume,
-        LiquidPlane
+        public LiquidType LiquidType = LiquidType.None;
+        public string MaterialName = string.Empty;
+        public PlaneAxisAlignedXY PlaneAxisAlignedXY;
+
+        public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float northHeight, float southHeight, float westHeight, float eastHeight)
+        {
+            LiquidType = liquidType;
+            MaterialName = materialName;
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, northHeight, southHeight, westHeight, eastHeight);
+        }
     }
 }

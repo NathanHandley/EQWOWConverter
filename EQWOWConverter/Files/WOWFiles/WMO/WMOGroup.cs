@@ -326,6 +326,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Get the mesh data for the liquid
+            /*
             MeshData liquidMeshData = worldModelObject.LiquidMeshData;
             BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, 0);
 
@@ -376,7 +377,7 @@ namespace EQWOWConverter.WOWFiles
                 }
             }
             chunkBytes.AddRange(liquid.ToBytes());
-
+            */
             // Fill in the tile liquid data
 
 

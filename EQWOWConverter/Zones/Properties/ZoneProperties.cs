@@ -39,8 +39,8 @@ namespace EQWOWConverter.Zones
         public float SafeOrientation = 0;
         public HashSet<string> NonCollisionMaterialNames = new HashSet<string>();
         public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
-        public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();
-        public ZonePropertiesLiquidProperties LiquidProperties = new ZonePropertiesLiquidProperties();            
+        public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();       
+        public List<ZonePropertiesLiquidPlane> LiquidPlanes = new List<ZonePropertiesLiquidPlane>();
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinent continent)
@@ -92,16 +92,20 @@ namespace EQWOWConverter.Zones
             LiquidVolumes.Add(liquidVolume);
         }
 
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float northHeight, float southHeight, float westHeight, float eastHeight)
+        {
+            ZonePropertiesLiquidPlane liquidPlane = new ZonePropertiesLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, 
+                seCornerY, northHeight, southHeight, westHeight, eastHeight);
+            LiquidPlanes.Add(liquidPlane);
+        }
+
         public void AddDisabledMaterialCollisionByNames(params string[] names)
         {
             foreach(string name in names)
                 if (NonCollisionMaterialNames.Contains(name) == false)
                     NonCollisionMaterialNames.Add(name);
-        }
-
-        public void SetLiquidProperties(LiquidType liquidType, params string[] materialNames)
-        {
-            LiquidProperties = new ZonePropertiesLiquidProperties(liquidType, materialNames);
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)
@@ -457,7 +461,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("ecommons", -1081.222046f, 5081.237793f, 6.107420f, ZoneLineOrientationType.East, -1071.429565f, -1616.641235f, 200.000000f, -1091.429565f, -1646.641235f, -100.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -1101.222046f, 5081.237793f, 13.762880f, ZoneLineOrientationType.East, -1091.429565f, -1616.641235f, 200.000000f, -1111.429565f, -1646.641235f, -100.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -1121.222046f, 5081.237793f, 21.418200f, ZoneLineOrientationType.East, -1111.429565f, -1616.641235f, 200.000000f, -1151.429565f, -1646.641235f, -100.000000f);
-                        zoneProperties.SetLiquidProperties(LiquidType.Water, "d_w1");
+                        //zoneProperties.SetLiquidProperties(LiquidType.Water, "d_w1");
                     }
                     break;
                 case "crushbone":
@@ -884,7 +888,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
                         zoneProperties.AddTeleportPad("freportw", 146.800308f, -681.771179f, -12.999480f, ZoneLineOrientationType.East, 97.993584f, -657.753784f, -40.968651f, 7.7f);
                         zoneProperties.AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
-                        zoneProperties.SetLiquidProperties(LiquidType.Water, "t50_w1a50", "t25_m0004");
+                        //zoneProperties.SetLiquidProperties(LiquidType.Water, "t50_w1a50", "t25_m0004");
                     }
                     break;
                 case "gfaydark": // One More Lift

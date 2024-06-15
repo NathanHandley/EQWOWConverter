@@ -20,12 +20,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.Common
 {
-    internal enum WorldModelObjectType
+    internal class PlaneAxisAlignedXY
     {
-        Rendered,
-        LiquidVolume,
-        LiquidPlane
+        public float NorthHeight;
+        public float SouthHeight;
+        public float WestHeight;
+        public float EastHeight;
+        public Vector2 NWCornerXY = new Vector2();
+        public Vector2 SECornerXY = new Vector2();
+
+        public PlaneAxisAlignedXY() { }
+
+        public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float northHeight, float southHeight, float westHeight, float eastHeight)
+        {
+            NWCornerXY.X = nwCornerX;
+            NWCornerXY.Y = nwCornerY;
+            SECornerXY.X = seCornerX;
+            SECornerXY.Y = seCornerY;
+            NorthHeight = northHeight;
+            SouthHeight = southHeight;
+            WestHeight = westHeight;
+            EastHeight = eastHeight;
+        }
     }
 }

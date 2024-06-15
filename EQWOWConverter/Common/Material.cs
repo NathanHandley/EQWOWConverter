@@ -37,6 +37,8 @@ namespace EQWOWConverter.Common
         public int TextureWidth = 0;
         public int TextureHeight = 0;
 
+        public Material() { }
+
         public Material(Material material)
         {
             Index = material.Index;

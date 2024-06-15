@@ -39,9 +39,10 @@ namespace EQWOWConverter.Zones
         public BSPTree BSPTree;
 
         public LiquidType LiquidType = LiquidType.None;
-        public MeshData LiquidMeshData = new MeshData();
-        public Material LiquidMaterial;
+        public Material LiquidMaterial = new Material();
+        public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
 
+        // Constructor for Liquid Volume
         public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, BoundingBox boundingBox)
         {
             WMOType = wmoType;
@@ -50,6 +51,18 @@ namespace EQWOWConverter.Zones
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
+        // Constructor for Liquid Plane
+        public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox)
+        {
+            WMOType = wmoType;
+            BoundingBox = boundingBox;
+            LiquidType = liquidType;
+            LiquidMaterial = liquidMaterial;
+            LiquidPlane = liquidPlane;
+            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+        }
+
+        // Standard constructor
         public WorldModelObject(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
             ZoneProperties zoneProperties)
         {
@@ -58,33 +71,10 @@ namespace EQWOWConverter.Zones
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
-            GenerateLiquidArea(zoneProperties);
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             CreateDoodadAssociations(zoneWideDoodadInstances);
-        }
-
-        private void GenerateLiquidArea(ZoneProperties zoneProperties)
-        {
-            // Build the Liquid Mesh, if needed
-            if (zoneProperties.LiquidProperties.LiquidType != LiquidType.None)
-            {
-                List<Material> liquidMaterials = new List<Material>();
-                foreach (string materialName in zoneProperties.LiquidProperties.MaterialNames)
-                    foreach (Material material in Materials)
-                        if (material.Name == materialName)
-                            liquidMaterials.Add(material);
-                LiquidMeshData = MeshData.GetMeshDataForMaterials(liquidMaterials.ToArray());
-
-                // Set liquid material to the first one only for now
-                if (liquidMaterials.Count > 0)
-                    LiquidMaterial = liquidMaterials[0];
-
-                // Only set liquid type if any mesh data was found
-                if (LiquidMeshData.Vertices.Count > 0)
-                    LiquidType = zoneProperties.LiquidProperties.LiquidType;
-            }
         }
 
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
@@ -133,8 +123,7 @@ namespace EQWOWConverter.Zones
             for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
             {
                 Material curMaterial = materials[MeshData.TriangleFaces[i].MaterialIndex];
-                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.UniqueName) == false &&
-                    zoneProperties.LiquidProperties.MaterialNames.Contains(curMaterial.UniqueName) == false)
+                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.UniqueName) == false)
                 {
                     collisionTriangleIncidies.Add(Convert.ToUInt32(i));
                 }
