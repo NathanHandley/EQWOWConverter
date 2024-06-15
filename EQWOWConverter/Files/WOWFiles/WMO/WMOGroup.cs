@@ -327,31 +327,75 @@ namespace EQWOWConverter.WOWFiles
 
             // Get the mesh data for the liquid
             MeshData liquidMeshData = worldModelObject.LiquidMeshData;
+            BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, 0);
 
-            // Create the header and calculate the verts and tiles
-            //BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices);
+            // Build the liquid object head
+            WMOLiquid liquid = new WMOLiquid();
+            liquid.MaterialID = Convert.ToUInt16(worldModelObject.LiquidMaterial.Index);
+            liquid.CornerPosition = new Vector3(meshBox.BottomCorner);
+            liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
 
-            // Calculate the tiles for it
-            //xTiles = (xDistance) / 4.1666625;
-            //yTiles = (yDistance) / 4.1666625;
+            // Calculate tiles
+            float xDistance = meshBox.GetXDistance();
+            float yDistance = meshBox.GetYDistance();
+            liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero));
+            liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero));
+            liquid.XVertexCount = liquid.XTileCount + 1;
+            liquid.YVertexCount = liquid.YTileCount + 1;
+
+            // Build the height map based on the 4 corners of the tiles
+            float[,] heightMap = new float[liquid.XTileCount+1, liquid.YTileCount+1];
+            for (int y = 0; y <= liquid.YTileCount; y++)
+            {
+                for (int x = 0; x <= liquid.XTileCount; x++)
+                {
+                    float highestZ;
+                    liquidMeshData.GetHighestZAtXYPosition(0, 0, out highestZ);
+                    heightMap[x,y] = highestZ;
+
+                    // Putting vert assignment here for now
+                    switch (worldModelObject.LiquidType)
+                    {
+                        case LiquidType.Ocean:
+                        case LiquidType.Water:
+                        case LiquidType.Slime:
+                            {
+                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, highestZ));
+                            } break;
+                        case LiquidType.Magma:
+                            {
+                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, highestZ));
+                            } break;
+                    
+                    }
+                }
+            }
+            chunkBytes.AddRange(liquid.ToBytes());
+
+            // Fill in the tile liquid data
+
+
+            int h = 5;
+            //HERE!
+
 
             // Generate it
             // TESTING!!!!
-            WMOLiquid liquid = new WMOLiquid();
-            liquid.XTileCount = 2;
-            liquid.YTileCount = 1;
-            liquid.XVertexCount = 3;
-            liquid.YVertexCount = 2;
-            liquid.CornerPosition = new Vector3(0, 0, 0);
-            liquid.MaterialID = 0;
-            liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            chunkBytes.AddRange(liquid.ToBytes());
+            //WMOLiquid liquid = new WMOLiquid();
+            //liquid.XTileCount = 2;
+            //liquid.YTileCount = 1;
+            //liquid.XVertexCount = 3;
+            //liquid.YVertexCount = 2;
+            //liquid.CornerPosition = new Vector3(0, 0, 0);
+            //liquid.MaterialID = 0;
+            //liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
+            //
 
 
             // TESTING!!!!

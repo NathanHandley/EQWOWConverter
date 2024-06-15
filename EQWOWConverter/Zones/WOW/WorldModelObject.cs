@@ -40,6 +40,7 @@ namespace EQWOWConverter.Zones
 
         public LiquidType LiquidType = LiquidType.None;
         public MeshData LiquidMeshData = new MeshData();
+        public Material LiquidMaterial;
 
         public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, BoundingBox boundingBox)
         {
@@ -75,6 +76,10 @@ namespace EQWOWConverter.Zones
                         if (material.Name == materialName)
                             liquidMaterials.Add(material);
                 LiquidMeshData = MeshData.GetMeshDataForMaterials(liquidMaterials.ToArray());
+
+                // Set liquid material to the first one only for now
+                if (liquidMaterials.Count > 0)
+                    LiquidMaterial = liquidMaterials[0];
 
                 // Only set liquid type if any mesh data was found
                 if (LiquidMeshData.Vertices.Count > 0)

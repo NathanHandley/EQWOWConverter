@@ -162,21 +162,31 @@ namespace EQWOWConverter.Common
         public static BoundingBox GenerateBoxFromVectors(List<Vector3> vertices, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();
+            bool isFirstVector = true;
             foreach (Vector3 renderVert in vertices)
             {
-                if (renderVert.X < boundingBox.BottomCorner.X)
-                    boundingBox.BottomCorner.X = renderVert.X;
-                if (renderVert.Y < boundingBox.BottomCorner.Y)
-                    boundingBox.BottomCorner.Y = renderVert.Y;
-                if (renderVert.Z < boundingBox.BottomCorner.Z)
-                    boundingBox.BottomCorner.Z = renderVert.Z;
+                if (isFirstVector)
+                {
+                    boundingBox.BottomCorner = new Vector3(renderVert);
+                    boundingBox.TopCorner = new Vector3(renderVert);
+                    isFirstVector = false;
+                }
+                else
+                {
+                    if (renderVert.X < boundingBox.BottomCorner.X)
+                        boundingBox.BottomCorner.X = renderVert.X;
+                    if (renderVert.Y < boundingBox.BottomCorner.Y)
+                        boundingBox.BottomCorner.Y = renderVert.Y;
+                    if (renderVert.Z < boundingBox.BottomCorner.Z)
+                        boundingBox.BottomCorner.Z = renderVert.Z;
 
-                if (renderVert.X > boundingBox.TopCorner.X)
-                    boundingBox.TopCorner.X = renderVert.X;
-                if (renderVert.Y > boundingBox.TopCorner.Y)
-                    boundingBox.TopCorner.Y = renderVert.Y;
-                if (renderVert.Z > boundingBox.TopCorner.Z)
-                    boundingBox.TopCorner.Z = renderVert.Z;
+                    if (renderVert.X > boundingBox.TopCorner.X)
+                        boundingBox.TopCorner.X = renderVert.X;
+                    if (renderVert.Y > boundingBox.TopCorner.Y)
+                        boundingBox.TopCorner.Y = renderVert.Y;
+                    if (renderVert.Z > boundingBox.TopCorner.Z)
+                        boundingBox.TopCorner.Z = renderVert.Z;
+                }
             }
             boundingBox.BottomCorner.X -= addedBoundary;
             boundingBox.BottomCorner.Y -= addedBoundary;
@@ -190,21 +200,31 @@ namespace EQWOWConverter.Common
         public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> vertices, float minSize = 0)
         {
             BoundingBox boundingBox = new BoundingBox();
+            bool isFirstVector = true;
             foreach (ModelVertex renderVert in vertices)
             {
-                if (renderVert.Position.X < boundingBox.BottomCorner.X)
-                    boundingBox.BottomCorner.X = renderVert.Position.X;
-                if (renderVert.Position.Y < boundingBox.BottomCorner.Y)
-                    boundingBox.BottomCorner.Y = renderVert.Position.Y;
-                if (renderVert.Position.Z < boundingBox.BottomCorner.Z)
-                    boundingBox.BottomCorner.Z = renderVert.Position.Z;
+                if (isFirstVector)
+                {
+                    boundingBox.BottomCorner = new Vector3(renderVert.Position);
+                    boundingBox.TopCorner = new Vector3(renderVert.Position);
+                    isFirstVector = false;
+                }
+                else
+                {
+                    if (renderVert.Position.X < boundingBox.BottomCorner.X)
+                        boundingBox.BottomCorner.X = renderVert.Position.X;
+                    if (renderVert.Position.Y < boundingBox.BottomCorner.Y)
+                        boundingBox.BottomCorner.Y = renderVert.Position.Y;
+                    if (renderVert.Position.Z < boundingBox.BottomCorner.Z)
+                        boundingBox.BottomCorner.Z = renderVert.Position.Z;
 
-                if (renderVert.Position.X > boundingBox.TopCorner.X)
-                    boundingBox.TopCorner.X = renderVert.Position.X;
-                if (renderVert.Position.Y > boundingBox.TopCorner.Y)
-                    boundingBox.TopCorner.Y = renderVert.Position.Y;
-                if (renderVert.Position.Z > boundingBox.TopCorner.Z)
-                    boundingBox.TopCorner.Z = renderVert.Position.Z;
+                    if (renderVert.Position.X > boundingBox.TopCorner.X)
+                        boundingBox.TopCorner.X = renderVert.Position.X;
+                    if (renderVert.Position.Y > boundingBox.TopCorner.Y)
+                        boundingBox.TopCorner.Y = renderVert.Position.Y;
+                    if (renderVert.Position.Z > boundingBox.TopCorner.Z)
+                        boundingBox.TopCorner.Z = renderVert.Position.Z;
+                }
             }
 
             // Enforce a min size if needed

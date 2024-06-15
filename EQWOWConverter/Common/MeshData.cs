@@ -17,6 +17,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -398,6 +400,48 @@ namespace EQWOWConverter.Common
                 // Save the mesh
                 chunkMeshDatas.Add(newMeshData);
             }
+        }
+    
+        public bool GetHighestZAtXYPosition(float xPosition, float yPosition, out float highestZ)
+        {
+            // Test against every triangle to see if the point is inside when cast to a 2D vector
+            // Going to use the .Net Vector2 instead of writing my own since this is the only set of use cases
+            highestZ = -2000.0f; // This is the minimum in the map
+            System.Numerics.Vector2 testPosition = new System.Numerics.Vector2(xPosition, yPosition);
+            foreach (TriangleFace triangle in TriangleFaces)
+            {
+                // Test if it's in this triangle
+                System.Numerics.Vector2 v1 = new System.Numerics.Vector2(Vertices[triangle.V1].X, Vertices[triangle.V1].Y);
+                System.Numerics.Vector2 v2 = new System.Numerics.Vector2(Vertices[triangle.V2].X, Vertices[triangle.V2].Y);
+                System.Numerics.Vector2 v3 = new System.Numerics.Vector2(Vertices[triangle.V3].X, Vertices[triangle.V3].Y);
+                bool side1Test = ((testPosition.X - v2.X) * (v1.Y - v2.Y) - (v1.X - v2.X) * (testPosition.X - v2.Y)) < 0.0f;
+                bool side2Test = ((testPosition.X - v3.X) * (v2.Y - v3.Y) - (v2.X - v3.X) * (testPosition.Y - v3.Y)) < 0.0f;
+                bool side3Test = ((testPosition.X - v1.X) * (v3.Y - v1.Y) - (v3.X - v1.X) * (testPosition.Y - v1.X)) < 0.0f;
+                if ((side1Test == side2Test == side3Test))
+                {
+                    // It's in the triangle.  Get the barycentric coordinates to find where it intersected
+                    Vector2 v0 = v2 - v1;
+                    Vector2 v1v = v3 - v1;
+                    Vector2 v2v = testPosition - v1;
+                    float d00 = Vector2.Dot(v0, v0);
+                    float d01 = Vector2.Dot(v0, v1v);
+                    float d11 = Vector2.Dot(v1v, v1v);
+                    float d20 = Vector2.Dot(v2v, v0);
+                    float d21 = Vector2.Dot(v2v, v1v);
+                    float denom = d00 * d11 - d01 * d01;
+                    float v = (d11 * d20 - d01 * d21) / denom;
+                    float w = (d00 * d21 - d01 * d20) / denom;
+                    float u = 1.0f - v - w;
+                    float zValue = u * Vertices[triangle.V1].Z + v * Vertices[triangle.V2].Z + w * Vertices[triangle.V3].Z;
+                    if (zValue > highestZ)
+                        highestZ = zValue;
+                }
+            }
+
+            if (highestZ > -1999f)
+                return true;
+            else
+                return false;
         }
     }
 }
