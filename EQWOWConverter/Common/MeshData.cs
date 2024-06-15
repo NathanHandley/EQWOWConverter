@@ -17,10 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace EQWOWConverter.Common
 {
@@ -402,10 +402,67 @@ namespace EQWOWConverter.Common
             }
         }
     
+        private bool IsPointInTriangle(System.Numerics.Vector2 point, System.Numerics.Vector2 v1, System.Numerics.Vector2 v2, System.Numerics.Vector2 v3)
+        {
+            double a = ((v2.Y - v3.Y) * (point.X - v3.X) + (v3.X - v2.X) * (point.Y - v3.Y)) / ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+            double b = ((v3.Y - v1.Y) * (point.X - v3.X) + (v1.X - v3.X) * (point.Y - v3.Y)) / ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
+            double c = 1 - a - b;
+
+            if (a == 0 || b == 0 || c == 0)
+                return true;
+            else if (a >= 0 && a <= 1 && b >= 0 && b <= 1 && c >= 0 && c <= 1)
+                return true;
+            else
+                return false;
+
+            //float dX = point.X - v3.X;
+            //float dY = point.Y - v3.Y;
+            //float dX21 = v3.X - v2.X;
+            //float dY12 = v2.Y - v3.Y;
+            //float D = dY12 * (v1.X - v3.X) + dX21 * (v1.Y - v3.Y);
+            //float s = dY12 * dX + dX21 * dY;
+            //float t = (v3.Y - v1.Y) * dX + (v1.X - v3.X) * dY;
+
+            //if (D < 0) return s <= 0 && t <= 0 && s + t >= D;
+            //return s >= 0 && t >= 0 && s + t <= D;
+        }
+
         public bool GetHighestZAtXYPosition(float xPosition, float yPosition, out float highestZ)
         {
+            //// Test against every triangle to see if the point is inside when cast to a 2D vector
+            //// Going to use the .Net Vector methods instead of writing my own since this is the only set of use cases
+            //highestZ = -2000.0f; // This is the minimum in the map
+            //System.Numerics.Vector2 rayPoint = new System.Numerics.Vector2(xPosition, yPosition);
+            //foreach(TriangleFace triangle in TriangleFaces)
+            //{
+            //    // Test if it's in this triangle
+            //    System.Numerics.Vector2 v1_2D = new System.Numerics.Vector2(Vertices[triangle.V1].X, Vertices[triangle.V1].Y);
+            //    System.Numerics.Vector2 v2_2D = new System.Numerics.Vector2(Vertices[triangle.V2].X, Vertices[triangle.V2].Y);
+            //    System.Numerics.Vector2 v3_2D = new System.Numerics.Vector2(Vertices[triangle.V3].X, Vertices[triangle.V3].Y);
+            //    if (IsPointInTriangle(rayPoint, v1_2D, v2_2D, v3_2D))
+            //    {
+            //        // Calculate the intersection
+            //        System.Numerics.Vector3 v1_3D = new System.Numerics.Vector3(Vertices[triangle.V1].X, Vertices[triangle.V1].Y, Vertices[triangle.V1].Z);
+            //        System.Numerics.Vector3 v2_3D = new System.Numerics.Vector3(Vertices[triangle.V2].X, Vertices[triangle.V2].Y, Vertices[triangle.V2].Z);
+            //        System.Numerics.Vector3 v3_3D = new System.Numerics.Vector3(Vertices[triangle.V3].X, Vertices[triangle.V3].Y, Vertices[triangle.V3].Z);
+            //        System.Numerics.Vector3 normal = System.Numerics.Vector3.Cross(v2_3D - v1_3D, v3_3D - v1_3D);
+            //        float A = normal.X;
+            //        float B = normal.Y;
+            //        float C = normal.Z;
+            //        float D = -System.Numerics.Vector3.Dot(normal, v1_3D);
+            //        float z_intersect = -(A * xPosition + B * yPosition + D) / C;
+            //        if (z_intersect > highestZ)
+            //            highestZ = z_intersect;
+            //    }
+            //}
+
+            //if (highestZ > -1999f)
+            //    return true;
+            //else
+            //    return false;
+
             // Test against every triangle to see if the point is inside when cast to a 2D vector
-            // Going to use the .Net Vector2 instead of writing my own since this is the only set of use cases
+            // Going to use the .Net Vector methods instead of writing my own since this is the only set of use cases
             highestZ = -2000.0f; // This is the minimum in the map
             System.Numerics.Vector2 testPosition = new System.Numerics.Vector2(xPosition, yPosition);
             foreach (TriangleFace triangle in TriangleFaces)
@@ -420,14 +477,14 @@ namespace EQWOWConverter.Common
                 if ((side1Test == side2Test == side3Test))
                 {
                     // It's in the triangle.  Get the barycentric coordinates to find where it intersected
-                    Vector2 v0 = v2 - v1;
-                    Vector2 v1v = v3 - v1;
-                    Vector2 v2v = testPosition - v1;
-                    float d00 = Vector2.Dot(v0, v0);
-                    float d01 = Vector2.Dot(v0, v1v);
-                    float d11 = Vector2.Dot(v1v, v1v);
-                    float d20 = Vector2.Dot(v2v, v0);
-                    float d21 = Vector2.Dot(v2v, v1v);
+                    System.Numerics.Vector2 v0 = v2 - v1;
+                    System.Numerics.Vector2 v1v = v3 - v1;
+                    System.Numerics.Vector2 v2v = testPosition - v1;
+                    float d00 = System.Numerics.Vector2.Dot(v0, v0);
+                    float d01 = System.Numerics.Vector2.Dot(v0, v1v);
+                    float d11 = System.Numerics.Vector2.Dot(v1v, v1v);
+                    float d20 = System.Numerics.Vector2.Dot(v2v, v0);
+                    float d21 = System.Numerics.Vector2.Dot(v2v, v1v);
                     float denom = d00 * d11 - d01 * d01;
                     float v = (d11 * d20 - d01 * d21) / denom;
                     float w = (d00 * d21 - d01 * d20) / denom;
@@ -437,7 +494,6 @@ namespace EQWOWConverter.Common
                         highestZ = zValue;
                 }
             }
-
             if (highestZ > -1999f)
                 return true;
             else

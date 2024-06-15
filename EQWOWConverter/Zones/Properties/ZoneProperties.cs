@@ -884,7 +884,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
                         zoneProperties.AddTeleportPad("freportw", 146.800308f, -681.771179f, -12.999480f, ZoneLineOrientationType.East, 97.993584f, -657.753784f, -40.968651f, 7.7f);
                         zoneProperties.AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1", "t25_m0004");
+                        zoneProperties.SetLiquidProperties(LiquidType.Water, "t50_w1a50", "t25_m0004");
                     }
                     break;
                 case "gfaydark": // One More Lift

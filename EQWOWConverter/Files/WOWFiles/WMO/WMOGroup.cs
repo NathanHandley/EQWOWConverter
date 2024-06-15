@@ -332,25 +332,30 @@ namespace EQWOWConverter.WOWFiles
             // Build the liquid object head
             WMOLiquid liquid = new WMOLiquid();
             liquid.MaterialID = Convert.ToUInt16(worldModelObject.LiquidMaterial.Index);
-            liquid.CornerPosition = new Vector3(meshBox.BottomCorner);
             liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
+
+            // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
+            liquid.CornerPosition = new Vector3(meshBox.BottomCorner);
+            liquid.CornerPosition.Z = 0.0f;
 
             // Calculate tiles
             float xDistance = meshBox.GetXDistance();
             float yDistance = meshBox.GetYDistance();
-            liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero));
-            liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero));
+            liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+            liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
             liquid.XVertexCount = liquid.XTileCount + 1;
             liquid.YVertexCount = liquid.YTileCount + 1;
 
-            // Build the height map based on the 4 corners of the tiles
-            float[,] heightMap = new float[liquid.XTileCount+1, liquid.YTileCount+1];
-            for (int y = 0; y <= liquid.YTileCount; y++)
+            // Build the height map based on the 4 corners of the tiles, factoring for coordinate system difference
+            float[,] heightMap = new float[liquid.XVertexCount, liquid.YVertexCount];
+            for (int y = 0; y < liquid.YVertexCount; y++)
             {
-                for (int x = 0; x <= liquid.XTileCount; x++)
+                float ySamplePosition = (liquid.YVertexCount - (y+1)) * 4.1666625f;
+                for (int x = 0; x < liquid.XVertexCount; x++)
                 {
+                    float xSamplePosition = (liquid.XVertexCount - (x+1)) * 4.1666625f;
                     float highestZ;
-                    liquidMeshData.GetHighestZAtXYPosition(0, 0, out highestZ);
+                    liquidMeshData.GetHighestZAtXYPosition(xSamplePosition, ySamplePosition, out highestZ);
                     heightMap[x,y] = highestZ;
 
                     // Putting vert assignment here for now

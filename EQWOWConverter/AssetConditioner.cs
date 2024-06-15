@@ -515,6 +515,8 @@ namespace EQWOWConverter
             }
         }
 
+        // Bug: This is over-naming material names.  See \MaterialLists\freportw material "t50_wla50".  Liquid is using this wrong name, so
+        // review liquidproperties if/when this bug is fixed.
         private void ProcessAndCopyObjectMaterials(string topDirectory, string tempObjectsFolder, string outputObjectsMaterialsFolderRoot)
         {
             // Look for material collisions for different material files
