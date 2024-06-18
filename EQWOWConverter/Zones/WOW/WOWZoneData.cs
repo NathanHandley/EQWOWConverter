@@ -107,12 +107,7 @@ namespace EQWOWConverter.Zones
             WorldObjects.Clear();
 
             // Build liquid wmos first
-            foreach (ZonePropertiesLiquidVolume liquidVolume in ZoneProperties.LiquidVolumes)
-            {
-                // Generate and add the world model object
-                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidVolume, liquidVolume.LiquidType, liquidVolume.VolumeBox);
-                WorldObjects.Add(curWorldModelObject);
-            }
+            GenerateLiquidWorldModelObjects(ZoneProperties);
 
             // Determine which materials are animated and create objects to represent them
             foreach (Material material in Materials)
@@ -170,6 +165,42 @@ namespace EQWOWConverter.Zones
             // Rebuild the bounding box
             BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             IsLoaded = true;
+        }
+
+        public void GenerateLiquidWorldModelObjects(ZoneProperties zoneProperties)
+        {
+            // Volumes
+            foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            {
+                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidVolume, liquidVolume.LiquidType, liquidVolume.VolumeBox);
+                WorldObjects.Add(curWorldModelObject);
+            }
+
+            // Planes
+            foreach (ZonePropertiesLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
+            {
+                Material planeMaterial = new Material();
+                bool materialFound = false;
+                foreach (Material material in Materials)
+                {
+                    if (liquidPlane.MaterialName == material.Name)
+                    {
+                        planeMaterial = material;
+                        materialFound = true;
+                        break;
+                    }
+                }
+                if (materialFound == false)
+                {
+                    Logger.WriteError("In generating liquidplane for wmo '" + ShortName + "', unable to find material named '" + liquidPlane.MaterialName + "'");
+                    if (Materials.Count > 0)
+                        planeMaterial = new Material(Materials[0]);
+                }
+
+                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidPlane, liquidPlane.LiquidType,
+                    liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox);
+                WorldObjects.Add(curWorldModelObject);
+            }
         }
 
         private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, MeshData meshData)

@@ -325,23 +325,22 @@ namespace EQWOWConverter.WOWFiles
         {
             List<byte> chunkBytes = new List<byte>();
 
-            // Get the mesh data for the liquid
-            /*
-            MeshData liquidMeshData = worldModelObject.LiquidMeshData;
-            BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, 0);
-
             // Build the liquid object head
             WMOLiquid liquid = new WMOLiquid();
             liquid.MaterialID = Convert.ToUInt16(worldModelObject.LiquidMaterial.Index);
-            liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
+            if (worldModelObject.LiquidType != LiquidType.Magma && worldModelObject.LiquidType != LiquidType.Slime)
+                liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
+            PlaneAxisAlignedXY liquidPlane = worldModelObject.LiquidPlane;
 
             // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
-            liquid.CornerPosition = new Vector3(meshBox.BottomCorner);
+            liquid.CornerPosition = new Vector3();
+            liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
+            liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
             liquid.CornerPosition.Z = 0.0f;
 
             // Calculate tiles
-            float xDistance = meshBox.GetXDistance();
-            float yDistance = meshBox.GetYDistance();
+            float xDistance = worldModelObject.BoundingBox.GetXDistance();
+            float yDistance = worldModelObject.BoundingBox.GetYDistance();
             liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
             liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
             liquid.XVertexCount = liquid.XTileCount + 1;
@@ -349,63 +348,38 @@ namespace EQWOWConverter.WOWFiles
 
             // Build the height map based on the 4 corners of the tiles, factoring for coordinate system difference
             float[,] heightMap = new float[liquid.XVertexCount, liquid.YVertexCount];
-            for (int y = 0; y < liquid.YVertexCount; y++)
+            for (int y = liquid.YVertexCount-1; y >= 0; y++)
             {
-                float ySamplePosition = (liquid.YVertexCount - (y+1)) * 4.1666625f;
-                for (int x = 0; x < liquid.XVertexCount; x++)
+                for (int x = liquid.XVertexCount-1; x >= 0; x++)
                 {
-                    float xSamplePosition = (liquid.XVertexCount - (x+1)) * 4.1666625f;
-                    float highestZ;
-                    liquidMeshData.GetHighestZAtXYPosition(xSamplePosition, ySamplePosition, out highestZ);
-                    heightMap[x,y] = highestZ;
-
-                    // Putting vert assignment here for now
+                    // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
+                    float xWeight = x / (liquid.XVertexCount - 1);
+                    float yWeight = y / (liquid.YVertexCount - 1);
+                    float seWeight = (xWeight * yWeight) * 0.5f;
+                    float swWeight = ((1f - xWeight) * yWeight) * 0.5f;
+                    float neWeight = (xWeight * (1f - yWeight)) * 0.5f;
+                    float nwWeight = ((1f - xWeight) * (1f - yWeight)) * 0.5f;
+                    float vertHeight = (seWeight * liquidPlane.SECornerZ) + (swWeight * liquidPlane.SWCornerZ) +
+                        (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
+                    heightMap[x, y] = vertHeight;
                     switch (worldModelObject.LiquidType)
                     {
                         case LiquidType.Ocean:
                         case LiquidType.Water:
                         case LiquidType.Slime:
                             {
-                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, highestZ));
-                            } break;
+                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, vertHeight));
+                            }
+                            break;
                         case LiquidType.Magma:
                             {
-                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, highestZ));
-                            } break;
-                    
+                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, vertHeight));
+                            }
+                            break;
                     }
                 }
             }
             chunkBytes.AddRange(liquid.ToBytes());
-            */
-            // Fill in the tile liquid data
-
-
-            int h = 5;
-            //HERE!
-
-
-            // Generate it
-            // TESTING!!!!
-            //WMOLiquid liquid = new WMOLiquid();
-            //liquid.XTileCount = 2;
-            //liquid.YTileCount = 1;
-            //liquid.XVertexCount = 3;
-            //liquid.YVertexCount = 2;
-            //liquid.CornerPosition = new Vector3(0, 0, 0);
-            //liquid.MaterialID = 0;
-            //liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 2.0f));
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            //liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, 1.0f));
-            //
-
-
-            // TESTING!!!!
-
             return WrapInChunk("MLIQ", chunkBytes.ToArray());
         }
     }

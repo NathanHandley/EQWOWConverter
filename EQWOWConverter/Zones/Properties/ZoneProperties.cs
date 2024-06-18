@@ -94,10 +94,11 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void AddLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float northHeight, float southHeight, float westHeight, float eastHeight)
+            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
         {
+            Logger.WriteError("TEMP: FACTOR FOR WORLD SCALE");
             ZonePropertiesLiquidPlane liquidPlane = new ZonePropertiesLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, 
-                seCornerY, northHeight, southHeight, westHeight, eastHeight);
+                seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
             LiquidPlanes.Add(liquidPlane);
         }
 
@@ -462,6 +463,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("ecommons", -1101.222046f, 5081.237793f, 13.762880f, ZoneLineOrientationType.East, -1091.429565f, -1616.641235f, 200.000000f, -1111.429565f, -1646.641235f, -100.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -1121.222046f, 5081.237793f, 21.418200f, ZoneLineOrientationType.East, -1111.429565f, -1616.641235f, 200.000000f, -1151.429565f, -1646.641235f, -100.000000f);
                         //zoneProperties.SetLiquidProperties(LiquidType.Water, "d_w1");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
                 case "crushbone":
