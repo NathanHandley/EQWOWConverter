@@ -30,11 +30,11 @@ namespace EQWOWConverter.Zones
         public PlaneAxisAlignedXY PlaneAxisAlignedXY;
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float northHeight, float southHeight, float westHeight, float eastHeight)
+            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, northHeight, southHeight, westHeight, eastHeight);
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
         }
     }
 }

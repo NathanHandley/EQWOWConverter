@@ -24,26 +24,26 @@ namespace EQWOWConverter.Common
 {
     internal class PlaneAxisAlignedXY
     {
-        public float NorthHeight;
-        public float SouthHeight;
-        public float WestHeight;
-        public float EastHeight;
+        public float NWCornerZ;
+        public float NECornerZ;
+        public float SECornerZ;
+        public float SWCornerZ;
         public Vector2 NWCornerXY = new Vector2();
         public Vector2 SECornerXY = new Vector2();
 
         public PlaneAxisAlignedXY() { }
 
         public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float northHeight, float southHeight, float westHeight, float eastHeight)
+            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
         {
             NWCornerXY.X = nwCornerX;
             NWCornerXY.Y = nwCornerY;
             SECornerXY.X = seCornerX;
             SECornerXY.Y = seCornerY;
-            NorthHeight = northHeight;
-            SouthHeight = southHeight;
-            WestHeight = westHeight;
-            EastHeight = eastHeight;
+            NWCornerZ = nwCornerZ;
+            NECornerZ = neCornerZ;
+            SECornerZ = seCornerZ;
+            SWCornerZ = swCornerZ;            
         }
     }
 }
