@@ -31,16 +31,17 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox;
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
+            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ, float minDepth)
         {
             LiquidType = liquidType;
             MaterialName = materialName;
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
 
             // Generate bounding box
-            float minZ = MathF.Min(MathF.Min(MathF.Min(nwCornerZ, neCornerZ), seCornerZ), swCornerZ);
+            float minZ = MathF.Min(MathF.Min(MathF.Min(nwCornerZ, neCornerZ), seCornerZ), swCornerZ) - minDepth;
             float maxZ = MathF.Max(MathF.Max(MathF.Max(nwCornerZ, neCornerZ), seCornerZ), swCornerZ);
             BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
+            //BoundingBox = new BoundingBox(-1000, -1000, -1000, 5000, 5000, 5000);
         }
     }
 }

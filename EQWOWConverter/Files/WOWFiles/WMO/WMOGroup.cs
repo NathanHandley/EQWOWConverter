@@ -334,23 +334,28 @@ namespace EQWOWConverter.WOWFiles
 
             // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
             liquid.CornerPosition = new Vector3();
-            liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
-            liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
-            liquid.CornerPosition.Z = 0.0f;
+            //liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
+            //liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
+            //liquid.CornerPosition.Z = liquidPlane.SECornerZ;
 
             // Calculate tiles
             float xDistance = worldModelObject.BoundingBox.GetXDistance();
             float yDistance = worldModelObject.BoundingBox.GetYDistance();
             liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
             liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+
+
+            liquid.XTileCount = 3;
+            liquid.YTileCount = 3;
+            
             liquid.XVertexCount = liquid.XTileCount + 1;
             liquid.YVertexCount = liquid.YTileCount + 1;
 
             // Build the height map based on the 4 corners of the tiles, factoring for coordinate system difference
             float[,] heightMap = new float[liquid.XVertexCount, liquid.YVertexCount];
-            for (int y = liquid.YVertexCount-1; y >= 0; y++)
+            for (int y = liquid.YVertexCount-1; y >= 0; y--)
             {
-                for (int x = liquid.XVertexCount-1; x >= 0; x++)
+                for (int x = liquid.XVertexCount-1; x >= 0; x--)
                 {
                     // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
                     float xWeight = x / (liquid.XVertexCount - 1);

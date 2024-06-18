@@ -33,6 +33,16 @@ namespace EQWOWConverter.Common
 
         public PlaneAxisAlignedXY() { }
 
+        public PlaneAxisAlignedXY(PlaneAxisAlignedXY other)
+        {
+            NWCornerZ = other.NWCornerZ;
+            NECornerZ = other.NECornerZ;
+            SECornerZ = other.SECornerZ;
+            SWCornerZ = other.SWCornerZ;
+            NWCornerXY = new Vector2(other.NWCornerXY);
+            SECornerXY = new Vector2(other.SECornerXY);
+        }
+
         public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
         {
