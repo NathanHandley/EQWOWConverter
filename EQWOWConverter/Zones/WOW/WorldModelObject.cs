@@ -74,7 +74,7 @@ namespace EQWOWConverter.Zones
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
-            CreateDoodadAssociations(zoneWideDoodadInstances);
+            CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
         }
 
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
@@ -138,14 +138,13 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void CreateDoodadAssociations(List<WorldModelObjectDoodadInstance> zoneWidedoodadInstances)
+        private void CreateZoneWideDoodadAssociations(List<WorldModelObjectDoodadInstance> zoneWidedoodadInstances)
         {
-            // Associate any doodads that have a position inside of this wmo bounding box
+            // All zonewide doodads should be associated with all WMOs
             for (int i = 0; i < zoneWidedoodadInstances.Count; i++)
             {
                 WorldModelObjectDoodadInstance doodadInstance = zoneWidedoodadInstances[i];
-                if (BoundingBox.IsPointInside(doodadInstance.Position))
-                    DoodadInstances.Add(i, doodadInstance);
+                DoodadInstances.Add(i, doodadInstance);
             }
         }
     }
