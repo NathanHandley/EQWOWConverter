@@ -71,6 +71,7 @@ namespace EQWOWConverter
             string outputEquipmentFolderRoot = Path.Combine(eqExportsCondensedPath, "equipment");
             string outputMiscImagesFolderRoot = Path.Combine(eqExportsCondensedPath, "miscimages");
             string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
+            string outputLiquidSurfacesFolderRoot = Path.Combine(eqExportsCondensedPath, "liquidsurfaces");
             string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
             FileTool.CreateBlankDirectory(outputObjectsFolderRoot, false);
             FileTool.CreateBlankDirectory(outputObjectsTexturesFolderRoot, false);
@@ -82,6 +83,7 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(outputEquipmentFolderRoot, false);
             FileTool.CreateBlankDirectory(outputMiscImagesFolderRoot, false);
             FileTool.CreateBlankDirectory(outputZoneFolderRoot, false);
+            FileTool.CreateBlankDirectory(outputLiquidSurfacesFolderRoot, false);
             FileTool.CreateBlankDirectory(tempFolderRoot, false);
 
             // Iterate through each exported directory and process objects and zones
@@ -250,6 +252,14 @@ namespace EQWOWConverter
                 }
             }
 
+            // Generate the liquid surfaces
+            Logger.WriteInfo("Generating liquid surface materials...");
+            for (int i = 1; i <= 30; i++)
+            {
+                string curFileName = "eqclear" + i + ".png";
+                GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
+            }
+
             Logger.WriteInfo("Conditioning complete. Totals:");
             Logger.WriteInfo(" - Object Meshes condensed: " + objectMeshesCondensed);
             Logger.WriteInfo(" - Object Textures condensed: " + objectTexturesCondensed);
@@ -325,7 +335,7 @@ namespace EQWOWConverter
                                 string newTextureFullPath = Path.Combine(textureFolder, newTextureName + ".png");
                                 if (File.Exists(newTextureFullPath) == false)
                                 {
-                                    GenerateTransparentImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
+                                    GenerateTransparentImageFromSourceImage(existingTextureFullPath, newTextureFullPath, curMaterial.MaterialType);
                                     Logger.WriteDetail("Generated a transparent texture with full path '" + newTextureFullPath + "'");
                                 }
 
@@ -347,7 +357,7 @@ namespace EQWOWConverter
             }
         }
 
-        private bool GenerateTransparentImage(string inputFilePath, string outputFilePath, MaterialType materialType)
+        private bool GenerateTransparentImageFromSourceImage(string inputFilePath, string outputFilePath, MaterialType materialType)
         {
             // Calculate the new alpha value
             double newPixelAlphaMultiplier;
@@ -358,7 +368,7 @@ namespace EQWOWConverter
                 case MaterialType.Transparent75Percent: newPixelAlphaMultiplier = 0.25;break;
                 default:
                     {
-                        Logger.WriteError("GenerateTransparentImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
+                        Logger.WriteError("GenerateTransparentImageFromSourceImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
                         return false;
                     }
             }
@@ -380,6 +390,25 @@ namespace EQWOWConverter
             inputImage.Save(outputFilePath);
             inputImage.Dispose();
             transparentTexturesGenerated++;
+            return true;
+        }
+
+        private bool GenerateNewTransparentImage(string outputFilePath, int width, int height)
+        {
+            // Resize the image to the passed parameters
+            Bitmap outputImage = new Bitmap(width, height);
+            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
+            using (var graphics = Graphics.FromImage(outputImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+            }
+            outputImage.Save(outputFilePath);
+            outputImage.Dispose();
+
             return true;
         }
 
