@@ -183,6 +183,9 @@ namespace EQWOWConverter
             // Copy the loading screens
             CreateLoadingScreens(eqExportsConditionedPath, exportMPQRootFolder);
 
+            // Copy the liquid material textures
+            CreateLiquidMaterials(eqExportsConditionedPath, exportMPQRootFolder);
+
             // Create the DBC update scripts
             CreateDBCUpdateScripts(zones, wowExportPath);
 
@@ -273,6 +276,16 @@ namespace EQWOWConverter
                 File.Copy(veliousInputFile, veliousOutputFile);
         }
 
+        public static void CreateLiquidMaterials(string eqExportsConditionedPath, string exportMPQRootFolder)
+        {
+            Logger.WriteInfo("Copying liquid material textures");
+
+            string sourceTextureFolder = Path.Combine(eqExportsConditionedPath, "liquidsurfaces");
+            string targetTextureFolder = Path.Combine(exportMPQRootFolder, "XTEXTURES", "everquest");
+            Directory.CreateDirectory(targetTextureFolder);
+            FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true);
+        }
+
         public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteInfo("Creating DBC Update Scripts...");
@@ -291,6 +304,7 @@ namespace EQWOWConverter
             MapDifficultyDBC difficultyDBC = new MapDifficultyDBC();
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
+            LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
             foreach (Zone zone in zones)
             {
                 areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
@@ -315,6 +329,7 @@ namespace EQWOWConverter
             wmoAreaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
             loadingScreensDBC.WriteToDisk(dbcUpdateScriptFolder);
             areaTriggerDBC.WriteToDisk(dbcUpdateScriptFolder);
+            liquidTypeDBC.WriteToDisk(dbcUpdateScriptFolder);
         }
 
         public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)

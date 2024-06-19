@@ -85,7 +85,22 @@ namespace EQWOWConverter.WOWFiles
 
             // Liquid type (zero causes whole WMO to be underwater, but 15 seems to fix that)
             if (worldModelObject.LiquidType != LiquidType.None)
-                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(worldModelObject.LiquidType)));
+            {
+                if (Configuration.CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE == true)
+                {
+                    // If set, show the 'actual' water surface
+                    switch (worldModelObject.LiquidType)
+                    {
+                        case LiquidType.Water:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case LiquidType.Ocean:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(14))); break;
+                        case LiquidType.Magma:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
+                        case LiquidType.Slime:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
+                        default:                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                    }
+                }
+                else
+                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(worldModelObject.LiquidType)));
+            }
             else
                 chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(15)));
 
