@@ -363,9 +363,9 @@ namespace EQWOWConverter
             double newPixelAlphaMultiplier;
             switch (materialType)
             {
-                case MaterialType.Transparent25Percent: newPixelAlphaMultiplier = 0.75; break;
+                case MaterialType.Transparent25Percent: newPixelAlphaMultiplier = 0.25; break;
                 case MaterialType.Transparent50Percent: newPixelAlphaMultiplier = 0.50;break;
-                case MaterialType.Transparent75Percent: newPixelAlphaMultiplier = 0.25;break;
+                case MaterialType.Transparent75Percent: newPixelAlphaMultiplier = 0.75;break;
                 default:
                     {
                         Logger.WriteError("GenerateTransparentImageFromSourceImage Error.  Passed image of '" + inputFilePath + "' has material type of '" + materialType.ToString() + "'");
