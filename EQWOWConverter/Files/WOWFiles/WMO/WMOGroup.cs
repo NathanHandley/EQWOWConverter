@@ -135,7 +135,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
-            if (worldModelObject.LiquidType != LiquidType.None && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
+            if (worldModelObject.WMOType == WorldModelObjectType.LiquidPlane || worldModelObject.WMOType != WorldModelObjectType.LiquidMaterialContour)
                 chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that

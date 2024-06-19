@@ -19,6 +19,7 @@ using EQWOWConverter.Zones;
 using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,46 +31,59 @@ namespace EQWOWConverter.Zones
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
+        public bool IsLoaded = false;
         public WorldModelObjectType WMOType = WorldModelObjectType.Rendered;
         public List<Material> Materials = new List<Material>();
         public MeshData MeshData = new MeshData();
         public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
-        public BSPTree BSPTree;
+        public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
 
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
 
-        // Constructor for Liquid Volume
-        public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, BoundingBox boundingBox)
+        public WorldModelObject()
         {
-            WMOType = wmoType;
-            BoundingBox = boundingBox;
-            LiquidType = liquidType;
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
-        // Constructor for Liquid Plane
-        public WorldModelObject(WorldModelObjectType wmoType, LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox)
+        public void LoadAsLiquidVolume(LiquidType liquidType, BoundingBox boundingBox)
         {
-            WMOType = wmoType;
+            WMOType = WorldModelObjectType.LiquidVolume;
+            BoundingBox = boundingBox;
+            LiquidType = liquidType;
+            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsLoaded = true;
+        }
+
+        public void LoadAsLiquidPlane(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox)
+        {
+            WMOType = WorldModelObjectType.LiquidPlane;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
             LiquidPlane = liquidPlane;
-            WMOGroupID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsLoaded = true;
         }
 
-        // Standard constructor
-        public WorldModelObject(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
+        public void LoadAsLiquidMaterialContour(LiquidType liquidType, Material liquidMaterial, BoundingBox boundingBox)
+        {
+            WMOType = WorldModelObjectType.LiquidMaterialContour;
+            BoundingBox = boundingBox;
+            LiquidType = liquidType;
+            LiquidMaterial = liquidMaterial;
+            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsLoaded = true;
+        }
+
+        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
             ZoneProperties zoneProperties)
         {
+            WMOType = WorldModelObjectType.Rendered;
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
@@ -79,6 +93,7 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
+            IsLoaded = true;
         }
 
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)

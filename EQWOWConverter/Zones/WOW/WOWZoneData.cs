@@ -172,8 +172,16 @@ namespace EQWOWConverter.Zones
             // Volumes
             foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
-                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidVolume, liquidVolume.LiquidType, liquidVolume.VolumeBox);
+                WorldModelObject curWorldModelObject = new WorldModelObject();
+                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.VolumeBox);
                 WorldObjects.Add(curWorldModelObject);
+            }
+
+            // Material Contours
+            foreach (ZonePropertiesLiquidMaterialContour liquidMaterialContour in zoneProperties.LiquidMaterialContours)
+            {
+
+
             }
 
             // Planes
@@ -218,8 +226,8 @@ namespace EQWOWConverter.Zones
                 //scaledBoundingBox.TopCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
                 // Create the object
-                WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidPlane, liquidPlane.LiquidType,
-                    scaledLiquidPlane, planeMaterial, scaledBoundingBox);
+                WorldModelObject curWorldModelObject = new WorldModelObject();
+                curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, scaledLiquidPlane, planeMaterial, scaledBoundingBox);
                 WorldObjects.Add(curWorldModelObject);
             }
         }
@@ -325,7 +333,8 @@ namespace EQWOWConverter.Zones
                 MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
                 if (extractedMeshData.Vertices.Count > 0)
                 {
-                    WorldModelObject curWorldModelObject = new WorldModelObject(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
+                    WorldModelObject curWorldModelObject = new WorldModelObject();
+                    curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
                     WorldObjects.Add(curWorldModelObject);
                 }
             }
