@@ -205,12 +205,21 @@ namespace EQWOWConverter.Zones
                 scaledLiquidPlane.SECornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 scaledLiquidPlane.NWCornerXY.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 scaledLiquidPlane.NWCornerXY.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.SECornerXY.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.SECornerXY.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledLiquidPlane.SECornerXY.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledLiquidPlane.SECornerXY.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                scaledLiquidPlane.SECornerXY.X = -113f;
+                scaledLiquidPlane.SECornerXY.Y = -966f;
+                BoundingBox scaledBoundingBox = new BoundingBox(liquidPlane.BoundingBox);
+                //scaledBoundingBox.BottomCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledBoundingBox.BottomCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledBoundingBox.BottomCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledBoundingBox.TopCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledBoundingBox.TopCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                //scaledBoundingBox.TopCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
                 // Create the object
                 WorldModelObject curWorldModelObject = new WorldModelObject(WorldModelObjectType.LiquidPlane, liquidPlane.LiquidType,
-                    scaledLiquidPlane, planeMaterial, liquidPlane.BoundingBox);
+                    scaledLiquidPlane, planeMaterial, scaledBoundingBox);
                 WorldObjects.Add(curWorldModelObject);
             }
         }

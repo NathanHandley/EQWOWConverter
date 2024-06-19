@@ -39,6 +39,18 @@ namespace EQWOWConverter.Common
             TopCorner = new Vector3(topX, topY, topZ);
         }
 
+        public BoundingBox(float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ, float addedBoundary)
+        {
+            bottomX -= addedBoundary;
+            bottomY -= addedBoundary;
+            bottomZ -= addedBoundary;
+            topX += addedBoundary;
+            topY += addedBoundary;
+            topZ += addedBoundary;
+            BottomCorner = new Vector3(bottomX, bottomY, bottomZ);
+            TopCorner = new Vector3(topX, topY, topZ);
+        }
+
         public BoundingBox(BoundingBox box)
         {
             TopCorner = new Vector3(box.TopCorner);

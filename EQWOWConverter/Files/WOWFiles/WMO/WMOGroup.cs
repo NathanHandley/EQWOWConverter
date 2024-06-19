@@ -334,25 +334,19 @@ namespace EQWOWConverter.WOWFiles
 
             // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
             liquid.CornerPosition = new Vector3();
-            //liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
-            //liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
-            //liquid.CornerPosition.Z = liquidPlane.SECornerZ;
+            liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
+            liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
+            liquid.CornerPosition.Z = 0f;
 
             // Calculate tiles
             float xDistance = worldModelObject.BoundingBox.GetXDistance();
             float yDistance = worldModelObject.BoundingBox.GetYDistance();
             liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
             liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-
-
-            liquid.XTileCount = 3;
-            liquid.YTileCount = 3;
-            
             liquid.XVertexCount = liquid.XTileCount + 1;
             liquid.YVertexCount = liquid.YTileCount + 1;
 
-            // Build the height map based on the 4 corners of the tiles, factoring for coordinate system difference
-            float[,] heightMap = new float[liquid.XVertexCount, liquid.YVertexCount];
+            // Build the tile data
             for (int y = liquid.YVertexCount-1; y >= 0; y--)
             {
                 for (int x = liquid.XVertexCount-1; x >= 0; x--)
@@ -360,13 +354,12 @@ namespace EQWOWConverter.WOWFiles
                     // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
                     float xWeight = x / (liquid.XVertexCount - 1);
                     float yWeight = y / (liquid.YVertexCount - 1);
-                    float seWeight = (xWeight * yWeight) * 0.5f;
-                    float swWeight = ((1f - xWeight) * yWeight) * 0.5f;
-                    float neWeight = (xWeight * (1f - yWeight)) * 0.5f;
-                    float nwWeight = ((1f - xWeight) * (1f - yWeight)) * 0.5f;
+                    float seWeight = (xWeight * yWeight);
+                    float swWeight = ((1f - xWeight) * yWeight);
+                    float neWeight = (xWeight * (1f - yWeight));
+                    float nwWeight = ((1f - xWeight) * (1f - yWeight));
                     float vertHeight = (seWeight * liquidPlane.SECornerZ) + (swWeight * liquidPlane.SWCornerZ) +
                         (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
-                    heightMap[x, y] = vertHeight;
                     switch (worldModelObject.LiquidType)
                     {
                         case LiquidType.Ocean:

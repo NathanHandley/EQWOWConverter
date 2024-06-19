@@ -48,6 +48,8 @@ namespace EQWOWConverter.Zones
             WMOType = wmoType;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
+            WMOGroupID = CURRENT_WMOGROUPID;
+            CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
@@ -59,6 +61,8 @@ namespace EQWOWConverter.Zones
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
             LiquidPlane = liquidPlane;
+            WMOGroupID = CURRENT_WMOGROUPID;
+            CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
         }
 
