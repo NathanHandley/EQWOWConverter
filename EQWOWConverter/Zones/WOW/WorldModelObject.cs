@@ -42,6 +42,7 @@ namespace EQWOWConverter.Zones
 
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
+        public MeshData LiquidMeshData = new MeshData();
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
 
         public WorldModelObject()
@@ -70,13 +71,17 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsLiquidMaterialContour(LiquidType liquidType, Material liquidMaterial, BoundingBox boundingBox)
+        public void LoadAsLiquidMaterialContour(LiquidType liquidType, Material liquidMaterial, MeshData liquidMeshData, float minimumDepth, ZoneProperties zoneProperties)
         {
             WMOType = WorldModelObjectType.LiquidMaterialContour;
-            BoundingBox = boundingBox;
-            LiquidType = liquidType;
+            Materials.Add(liquidMaterial);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            if (minimumDepth > 0)
+                BoundingBox.BottomCorner.Z -= (minimumDepth * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            LiquidMeshData = liquidMeshData;
             LiquidMaterial = liquidMaterial;
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            LiquidType = liquidType;
+            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             IsLoaded = true;
         }
 
@@ -89,8 +94,6 @@ namespace EQWOWConverter.Zones
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
-            WMOGroupID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID++;
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             IsLoaded = true;

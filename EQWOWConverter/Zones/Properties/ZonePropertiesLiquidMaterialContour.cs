@@ -27,11 +27,13 @@ namespace EQWOWConverter.Zones
     {
         public LiquidType LiquidType = LiquidType.None;
         public string MaterialName = string.Empty;
+        public float MinimumDepth = 0f;
 
-        public ZonePropertiesLiquidMaterialContour(LiquidType type, string materialName)
+        public ZonePropertiesLiquidMaterialContour(LiquidType type, string materialName, float minimumDepth)
         {
             LiquidType = type;
             MaterialName = materialName;
+            MinimumDepth = minimumDepth;
         }
     }
 }

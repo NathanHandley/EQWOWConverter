@@ -107,7 +107,7 @@ namespace EQWOWConverter.Zones
             WorldObjects.Clear();
 
             // Build liquid wmos first
-            GenerateLiquidWorldModelObjects(ZoneProperties);
+            GenerateLiquidWorldModelObjects(meshData, ZoneProperties);
 
             // Determine which materials are animated and create objects to represent them
             foreach (Material material in Materials)
@@ -167,7 +167,7 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void GenerateLiquidWorldModelObjects(ZoneProperties zoneProperties)
+        public void GenerateLiquidWorldModelObjects(MeshData meshData, ZoneProperties zoneProperties)
         {
             // Volumes
             foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
@@ -180,8 +180,27 @@ namespace EQWOWConverter.Zones
             // Material Contours
             foreach (ZonePropertiesLiquidMaterialContour liquidMaterialContour in zoneProperties.LiquidMaterialContours)
             {
+                // Grab the material
+                Material liquidMaterial = new Material();
+                bool materialFound = false;
+                foreach (Material material in Materials)
+                    if (material.Name == liquidMaterialContour.MaterialName)
+                    {
+                        liquidMaterial = material;
+                        materialFound = true;
+                        break;
+                    }
+                if (materialFound == false)
+                {
+                    Logger.WriteError("Failed to find material named '" + liquidMaterialContour.MaterialName + "' for liquidcontour in world model object named '" + ShortName + "'");
+                    continue;
+                }
 
-
+                // Create the WMO
+                MeshData liquidMeshData = meshData.GetMeshDataForMaterials(liquidMaterial);
+                WorldModelObject curWorldModelObject = new WorldModelObject();
+                curWorldModelObject.LoadAsLiquidMaterialContour(liquidMaterialContour.LiquidType, liquidMaterial, liquidMeshData, liquidMaterialContour.MinimumDepth, zoneProperties);
+                WorldObjects.Add(curWorldModelObject);
             }
 
             // Planes
