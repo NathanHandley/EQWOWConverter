@@ -256,7 +256,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Generating liquid surface materials...");
             for (int i = 1; i <= 30; i++)
             {
-                string curFileName = "eqclear" + i + ".png";
+                string curFileName = "eqclear." + i + ".png";
                 GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
             }
 
