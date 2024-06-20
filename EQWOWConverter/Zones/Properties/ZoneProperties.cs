@@ -32,6 +32,8 @@ namespace EQWOWConverter.Zones
         public string DescriptiveName = string.Empty;
         public ZoneContinent Continent;
         public ColorRGBA FogColor = new ColorRGBA();
+        public bool IsCompletelyInLiquid = false;
+        public LiquidType CompletelyInLiquidType = LiquidType.None;
         public int FogMinClip = -1;
         public int FogMaxClip = -1;
         public bool DoShowSky = true;
@@ -62,6 +64,12 @@ namespace EQWOWConverter.Zones
             FogColor.B = blue;
             FogMinClip = minClip;
             FogMaxClip = maxClip;
+        }
+
+        public void SetIsCompletelyUnderLiquid(LiquidType liquidType)
+        {
+            IsCompletelyInLiquid = true;
+            CompletelyInLiquidType = liquidType;
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -325,7 +333,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", 3432.621094f, -1142.645020f, 0.000010f, ZoneLineOrientationType.East, -154.74507f, 20.123898f, 10.469f, -174.6326f, 10.831751f, -0.49996006f);
                     }
                     break;
-                case "butcher": // Liquid - TODO, simple, ocean
+                case "butcher": // Liquid - Implemented, Tested, doesn't quite come up to the shoreline properly.  Can swim, but can't see the water waves.  Proper height.
                     {
                         // Note: There should be a boat to Firiona Vie [Timorous Deep] (NYI) and a boat to Freeport [Ocean of Tears] (NYI)
                         zoneProperties.SetBaseZoneProperties("butcher", "Butcherblock Mountains", -700f, 2550f, 2.9f, 0, ZoneContinent.Faydwer);
@@ -333,15 +341,17 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("kaladima", -60.207775f, 41.798244f, 0.0010997541f, ZoneLineOrientationType.North, 3145.1406f, -173.6824f, 14.468006f, 3128.918f, -186.06715f, -0.4991133f);
                         zoneProperties.AddZoneLineBox("gfaydark", -1563.382568f, 2626.150391f, -0.126430f, ZoneLineOrientationType.North, -1180.5581f, -3073.2896f, 67.52528f, -1218.3838f, -3150f, -0.4993223f);
                         zoneProperties.AddZoneLineBox("cauldron", 2853.7092f, 264.44955f, 469.3444f, ZoneLineOrientationType.South, -2937.8154f, -317.8051f, 45.09004f, -2957.5332f, -351.47528f, -0.49968797f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;                
-                case "cauldron": // Liquid - TODO, simple, water
+                case "cauldron": // Liquid - Tested, looks good
                     {                        
                         zoneProperties.SetBaseZoneProperties("cauldron", "Dagnor's Cauldron", 320f, 2815f, 473f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(100, 100, 140, 10, 1000);
                         zoneProperties.AddZoneLineBox("butcher", -2921.925537f, -335.659668f, 0.000200f, ZoneLineOrientationType.North, 2872.3113f, 280.6821f, 496.7702f, 2863.3867f, 247.66762f, 468.8444f);
                         zoneProperties.AddZoneLineBox("kedge", 129.834778f, 19.404051f, 320.322083f, ZoneLineOrientationType.West, -1160.462646f, -1000.650696f, -287.718506f, -1180.848267f, -1024.053711f, -334.875000f);
                         zoneProperties.AddZoneLineBox("unrest", 60.597672f, 329.112183f, 0.000000f, ZoneLineOrientationType.South, -2022.738403f, -616.401611f, 108.469002f, -2054.549072f, -636.787415f, 89.500183f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "cazicthule": // Liquid - TODO, Complicated
@@ -482,13 +492,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("gfaydark", 2561.247803f, -52.142502f, 15.843880f, ZoneLineOrientationType.South, -640.919861f, 187.129715f, 39.221329f, -732.241028f, 141.981308f, -0.500000f);
                     }
                     break;                
-                case "eastkarana": // Liquid - TODO, Ocean and MAY be simple, check lower
+                case "eastkarana": // Liquid - Implemented (disabled) but not tested.  Check that lowlands don't show water
                     {
                         zoneProperties.SetBaseZoneProperties("eastkarana", "Eastern Plains of Karana", 0f, 0f, 3.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("beholder", -1385.247f, -659.5757f, 60.639446f, ZoneLineOrientationType.North, 3388.710449f, -2134.555420f, 322.495361f, 3160.392090f, -2401.121826f, -100);
                         zoneProperties.AddZoneLineBox("northkarana", 10.664860f, -3093.490234f, -37.343510f, ZoneLineOrientationType.West, 38.202431f, 1198.431396f, 32.241810f, -13.265930f, 1182.535156f, -37.843681f);
                         zoneProperties.AddZoneLineBox("highpass", -1014.530701f, 112.901894f, -0.000030f, ZoneLineOrientationType.East, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;               
                 case "ecommons":
@@ -694,14 +705,15 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, 711.744934f, 806.283813f, 5.000060f, 12.0f);
                     }
                     break;
-                case "erudsxing": // Liquid - TODO, Simple ocean
+                case "erudsxing": // Liquid - Implemented (disabled), not tested.
                     {
                         // TODO: There's a boat that connects to erudnext and qeynos (south)
                         zoneProperties.SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinent.Odus);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
-                case "everfrost": // Liquid - TODO, may be complicted or simple, water
+                case "everfrost": // Liquid - TODO, complicated.  Lots 'under the ice' with no surface.  Water
                     {
                         zoneProperties.SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 230, 255, 10, 500);
@@ -736,7 +748,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West, 56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f);
                     }
                     break;
-                case "felwitheb": // Liquid - TODO, simple water
+                case "felwitheb": // Liquid - Implemented.  Test for low spots.
                     {
                         // Bug: Hole in the doorway into the teleport room (bottom).  Might be scale related
                         zoneProperties.SetBaseZoneProperties("felwitheb", "Southern Felwithe", -790f, 320f, -10.25f, 0, ZoneContinent.Faydwer);
@@ -748,6 +760,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 745.727112f, -532.876404f, 4.000100f, 6.0f);
                         zoneProperties.AddTeleportPad("felwitheb", 552.740112f, -743.948242f, 0.000020f, ZoneLineOrientationType.East, 435.665283f, -618.718323f, 31.000561f, 6.0f);
                         zoneProperties.AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 553.732544f, -919.604370f, 4.000090f, 6.0f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "t25_agua1a25", 500f, true);
                     }
                     break;
                 case "freporte": // Liquid - TODO, complicated due to the square-off overlapping dry space.  Only one water body (ocean)
@@ -995,7 +1008,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
                     }
                     break;                
-                case "innothule": // Liquid TODO - Simple water (swamp)
+                case "innothule": // Liquid Implemented, needs testing.  Also needs 'green' water to show up properly
                     {
                         zoneProperties.SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(170, 160, 90, 10, 500);
@@ -1003,6 +1016,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West, -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);
                         zoneProperties.AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East, 150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f);
                         zoneProperties.AddZoneLineBox("sro", -3168.635742f, 1032.933105f, -26.814310f, ZoneLineOrientationType.North, 2800f, 1250f, 19.084551f, 2554.791748f, 1120f, -35f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.GreenWater, "t75_sw1a75", 500f, true);
                     }
                     break;
                 case "kaladima": // Liquid TODO - complicated, multiple water pools
@@ -1022,11 +1036,12 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
                     }
                     break;
-                case "kedge": // Liquid TODO - Easy, make everything underwater
+                case "kedge": // Liquid Implemented, Tested but crashes!  Disabled
                     {
                         zoneProperties.SetBaseZoneProperties("kedge", "Kedge Keep", 99.96f, 14.02f, 31.75f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(10, 10, 10, 25, 25);
                         zoneProperties.AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
+                        zoneProperties.SetIsCompletelyUnderLiquid(LiquidType.Water);
                     }
                     break;
                 case "kerraridge": // Liquid TODO - Complicated, water, spreads across the zone and there is a deeper dry part in the middle of lots of water
@@ -1036,16 +1051,17 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("tox", -510.562134f, 2635.008545f, -38.249962f, ZoneLineOrientationType.East, 430.005493f, -948.882141f, 38.436760f, 399.657959f, -979.802734f, 19.500050f);
                     }
                     break;
-                case "kithicor": // Liquid TODO - Easy, water
+                case "kithicor": // Liquid Implemented, not tested
                     {
                         zoneProperties.SetBaseZoneProperties("kithicor", "Kithicor Forest", 3828f, 1889f, 459f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(120, 140, 100, 10, 200);
                         zoneProperties.AddZoneLineBox("commons", 1032.412720f, 4154.744629f, -52.093071f, ZoneLineOrientationType.North, 1408.693237f, -1098.195190f, 55.470139f, 1378.633545f, -1153.891724f, -52.593639f);
                         zoneProperties.AddZoneLineBox("highpass", -980.394165f, 90.663696f, -0.000010f, ZoneLineOrientationType.North, 569.884521f, 4903.054199f, 742.436829f, 558.181274f, 4885.024414f, 689.404907f);
                         zoneProperties.AddZoneLineBox("rivervale", -371.955841f, -282.273224f, 0.000020f, ZoneLineOrientationType.North, 2028.557495f, 3831.161621f, 472.718994f, 2020.498779f, 3818.663086f, 461.750427f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;                
-                case "lakerathe": // Liquid TODO - Easy, water
+                case "lakerathe": // Liquid TODO - Medium, water.  Also needs a volume to cover the underwater areas
                     {
                         zoneProperties.SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -1054,7 +1070,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("rathemtn", 3533.836426f, 2945.927734f, -3.874240f, ZoneLineOrientationType.North, 2647.961426f, -2217.051025f, 62.953671f, 2538.218994f, -2290.238770f, 1.250070f);      
                     }
                     break;
-                case "lavastorm": // Liquid TODO - Easy, lava
+                case "lavastorm": // Liquid Implemented, not tested
                     {
                         zoneProperties.SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(255, 50, 10, 10, 800);
@@ -1063,6 +1079,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("soldungb", -419.581055f, -264.690491f, -111.967888f, ZoneLineOrientationType.South, 901.472107f, 489.983673f, 62.156502f, 880.400269f, 479.244751f, 51.187592f);
                         zoneProperties.AddZoneLineBox("najena", -16.450621f, 870.293030f, 0.000150f, ZoneLineOrientationType.East, -921.776184f, -1060.107300f, 61.094002f, -961.185852f, -1075.276733f, 12.125720f);
                         zoneProperties.AddZoneLineBox("nektulos", 3052.935791f, 312.635284f, -19.294090f, ZoneLineOrientationType.South, -2100.800537f, -115.948547f, 129.457657f, -2171.145996f, -253.399704f, -20.001289f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Magma, "d_lava001", 500f, true);
                     }
                     break;
                 case "lfaydark":
@@ -1096,13 +1113,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
                     }
                     break;                
-                case "nektulos": // Liquid TODO - Easy, water
+                case "nektulos": // Liquid Implemented, not tested
                     {
                         zoneProperties.SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(80, 90, 70, 10, 400);
                         zoneProperties.AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East, -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f);
                         zoneProperties.AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North, 3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f);
                         zoneProperties.AddZoneLineBox("neriaka", -0.739280f, 113.977829f, 28.000000f, ZoneLineOrientationType.South, 2270.015381f, -1092.749023f, 12.469000f, 2210.318115f, -1149.777344f, -0.499900f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "neriaka": // Liquid TODO - Complicated, more than one fountain
@@ -1130,7 +1148,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
                     }
                     break;
-                case "northkarana": // Liquid TODO - Probably simple, ocean
+                case "northkarana": // Liquid Implemented (disabled), not tested
                     {
                         zoneProperties.SetBaseZoneProperties("northkarana", "Northern Plains of Karana", -382f, -284f, -7f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -1426,9 +1444,10 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qey2hh1", 1310.998047f, -15935.786133f, 76.923477f, ZoneLineOrientationType.West, 1322.016113f, 3744.417480f, 300.000000f, 1302.016113f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", 1330.998047f, -15935.786133f, 83.973763f, ZoneLineOrientationType.West, 1342.016113f, 3744.417480f, 300.000000f, 1322.016113f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", 1350.998047f, -15935.786133f, 91.028137f, ZoneLineOrientationType.West, 1500.016113f, 3744.417480f, 300.000000f, 1342.016113f, 3714.417480f, -100.000000f);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
-                case "nro": // Liquid TODO - Simple, ocean
+                case "nro": // Liquid Implemented, not tested
                     {
                         zoneProperties.SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
@@ -1597,6 +1616,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, -840.747498f, -6.406000f, ZoneLineOrientationType.South, -1878f, -828.770020f, 300.000000f, -1900f, -848.770020f, -200.000000f);
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, -860.747498f, -6.406110f, ZoneLineOrientationType.South, -1878f, -848.770020f, 300.000000f, -1900f, -1200.770020f, -200.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -3023.223633f, -1147.192261f, 0.000050f, ZoneLineOrientationType.West, 2077.083984f, 1928.101074f, 28.065140f, 2007.522705f, 1900.196045f, -0.499880f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "oasis": // Liquid TODO - Semi-complicated. 2 bodies of water that if connected will fill in pits between them
@@ -1719,11 +1739,12 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("feerrott", 1652.742065f, 811.823181f, 57.281330f, ZoneLineOrientationType.South, -399.834625f, -77.776642f, 56.437752f, -462.005951f, -120.130768f, -0.500000f);
                     }
                     break;
-                case "oot": // Liquid TODO - Simple
+                case "oot": // Liquid Implemented (disabled), Tested and Broken - Water level is too high, and 'real' visable part is off the map
                     {
                         // TODO: Boat connecting east freeport and butcherblock
                         zoneProperties.SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;                
                 case "paineel": // Liquid TODO - Complicated.  Ponds and the hole
@@ -1766,7 +1787,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1", "d_m0001", "t75_m0007", "t75_m0008");
                     }
                     break;
-                case "qey2hh1": // Liquid TODO - Simple, water
+                case "qey2hh1": // Liquid Implemented (disabled), not tested
                     {
                         zoneProperties.SetBaseZoneProperties("qey2hh1", "Western Plains of Karana", -638f, 12f, -4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -2061,6 +2082,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("northkarana", 1312.016113f, 3694.417480f, 80.340080f, ZoneLineOrientationType.East, 1320.998047f, -15945, 300.000000f, 1300.998047f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", 1332.016113f, 3694.417480f, 87.391762f, ZoneLineOrientationType.East, 1340.998047f, -15945, 300.000000f, 1320.998047f, -15975, -100.000000f);
                         zoneProperties.AddZoneLineBox("northkarana", 1352.016113f, 3694.417480f, 94.442497f, ZoneLineOrientationType.East, 1650.998047f, -15945, 300.000000f, 1340.998047f, -15975, -100.000000f);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "qeynos": // Liquid TODO: Complicated. Wells and ocean line
@@ -2199,7 +2221,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);                   
                     }
                     break;
-                case "qeytoqrg": // Liquid, simple
+                case "qeytoqrg": // Liquid Implemented, not tested
                     {
                         zoneProperties.SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
@@ -2317,6 +2339,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1080.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1070.407104f, 200.000000f, -360.758850f, -1090.407104f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1099f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1090.407104f, 200.000000f, -360.758850f, -1150f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East, 5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f);
+                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "qrg": // Liquid TODO - Complicated.  Lots of water sections.
@@ -2379,13 +2402,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("lavastorm", 1346.515381f, 330.955505f, 146.188034f, ZoneLineOrientationType.South, 244.129364f, 62.161572f, 9.468010f, 219.713821f, 44.408550f, -1.500000f);
                     }
                     break;
-                case "southkarana": // Liquid TODO - Simple, water
+                case "southkarana": // Liquid Implemented (disabled), not tested
                     {
                         zoneProperties.SetBaseZoneProperties("southkarana", "Southern Plains of Karana", 1293.66f, 2346.69f, -5.77f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("lakerathe", 4352.154297f, 1158.142578f, -0.000990f, ZoneLineOrientationType.South, -8555.652344f, 1180.041138f, 43.965542f, -8569.452148f, 1132.577637f, -0.499510f);
                         zoneProperties.AddZoneLineBox("northkarana", -4472.277344f, 1208.014893f, -34.406212f, ZoneLineOrientationType.North, 2900.742432f, 943.823730f, 17.628691f, 2821.058350f, 862.661682f, -36.353588f);
                         zoneProperties.AddZoneLineBox("paw", -103.683167f, 16.824860f, 0.000050f, ZoneLineOrientationType.East, -3110.107910f, 895.748901f, 2.515520f, -3126.174805f, 861.375854f, -12.438860f);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
                     }
                     break;
                 case "sro":

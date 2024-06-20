@@ -26,7 +26,9 @@ namespace EQWOWConverter.Common
     {
         None = 0,
         Water = 200,
-        Ocean = 201,
+        Blood = 200, // TODO: Add this as a type
+        GreenWater = 200, // TODO: Add this as a type
+        //Ocean = 201,
         Magma = 202,
         Slime = 203
     }

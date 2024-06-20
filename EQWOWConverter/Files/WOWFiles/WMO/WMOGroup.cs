@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (worldModelObject.LiquidType != LiquidType.None)
+            if (worldModelObject.LiquidType != LiquidType.None && worldModelObject.IsCompletelyInLiquid == false)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
@@ -92,7 +92,9 @@ namespace EQWOWConverter.WOWFiles
                     switch (worldModelObject.LiquidType)
                     {
                         case LiquidType.Water:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        case LiquidType.Ocean:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(14))); break;
+                        //case LiquidType.Blood: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        //case LiquidType.GreenWater: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        //case LiquidType.Ocean:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(14))); break;
                         case LiquidType.Magma:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
                         case LiquidType.Slime:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
                         default:                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
@@ -383,8 +385,10 @@ namespace EQWOWConverter.WOWFiles
                                     (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
                                 switch (worldModelObject.LiquidType)
                                 {
-                                    case LiquidType.Ocean:
+                                    //case LiquidType.Ocean:
                                     case LiquidType.Water:
+                                    //case LiquidType.Blood:
+                                    //case LiquidType.GreenWater:
                                     case LiquidType.Slime:
                                         {
                                             liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, vertHeight));
@@ -432,8 +436,10 @@ namespace EQWOWConverter.WOWFiles
                                 // Putting vert assignment here for now
                                 switch (worldModelObject.LiquidType)
                                 {
-                                    case LiquidType.Ocean:
+                                    //case LiquidType.Ocean:
                                     case LiquidType.Water:
+                                    //case LiquidType.Blood:
+                                    //case LiquidType.GreenWater:
                                     case LiquidType.Slime:
                                         {
                                             liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, highestZ));

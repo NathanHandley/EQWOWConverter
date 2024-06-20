@@ -64,7 +64,7 @@ namespace EQWOWConverter
 
         // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
         // for debugging as it very visually unpleasant
-        public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = false;
+        public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = true;
 
         // Maxinum number of triangle faces that can be in any zone-to-material-object
         public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;

@@ -40,6 +40,7 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
 
+        public bool IsCompletelyInLiquid = false;
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
         public MeshData LiquidMeshData = new MeshData();
@@ -96,6 +97,11 @@ namespace EQWOWConverter.Zones
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
+            if (zoneProperties.IsCompletelyInLiquid)
+            {
+                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
+                LiquidType = zoneProperties.CompletelyInLiquidType;
+            }
             IsLoaded = true;
         }
 
