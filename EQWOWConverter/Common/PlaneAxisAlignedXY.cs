@@ -30,7 +30,7 @@ namespace EQWOWConverter.Common
         public float SWCornerZ;
         public Vector2 NWCornerXY = new Vector2();
         public Vector2 SECornerXY = new Vector2();
-        bool IsZAxisAligned = false;
+        public bool IsZAxisAligned = false;
 
         public PlaneAxisAlignedXY() { }
 

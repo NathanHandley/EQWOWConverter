@@ -368,36 +368,64 @@ namespace EQWOWConverter.WOWFiles
                         liquid.XVertexCount = liquid.XTileCount + 1;
                         liquid.YVertexCount = liquid.YTileCount + 1;
 
-                        // Build the tile data
-                        for (int y = liquid.YVertexCount - 1; y >= 0; y--)
+                        // Build the tile data.  Z-Axis aligned can build it quicker
+                        if (liquidPlane.IsZAxisAligned)
                         {
-                            for (int x = liquid.XVertexCount - 1; x >= 0; x--)
+                            float zHeight = liquidPlane.NWCornerZ;
+                            for (int y = 0; y < liquid.YVertexCount; y++)
                             {
-                                // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
-                                float xWeight = x / (liquid.XVertexCount - 1);
-                                float yWeight = y / (liquid.YVertexCount - 1);
-                                float seWeight = (xWeight * yWeight);
-                                float swWeight = ((1f - xWeight) * yWeight);
-                                float neWeight = (xWeight * (1f - yWeight));
-                                float nwWeight = ((1f - xWeight) * (1f - yWeight));
-                                float vertHeight = (seWeight * liquidPlane.SECornerZ) + (swWeight * liquidPlane.SWCornerZ) +
-                                    (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
-                                switch (worldModelObject.LiquidType)
+                                for (int x = 0; x < liquid.XVertexCount; x++)
+                                { 
+                                    switch (worldModelObject.LiquidType)
+                                    {
+                                        case LiquidType.Water:
+                                        case LiquidType.Blood:
+                                        case LiquidType.GreenWater:
+                                        case LiquidType.Slime:
+                                            {
+                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
+                                            }
+                                            break;
+                                        case LiquidType.Magma:
+                                            {
+                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int y = liquid.YVertexCount - 1; y >= 0; y--)
+                            {
+                                for (int x = liquid.XVertexCount - 1; x >= 0; x--)
                                 {
-                                    //case LiquidType.Ocean:
-                                    case LiquidType.Water:
-                                    //case LiquidType.Blood:
-                                    //case LiquidType.GreenWater:
-                                    case LiquidType.Slime:
-                                        {
-                                            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, vertHeight));
-                                        }
-                                        break;
-                                    case LiquidType.Magma:
-                                        {
-                                            liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, vertHeight));
-                                        }
-                                        break;
+                                    // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
+                                    float xWeight = x / (liquid.XVertexCount - 1);
+                                    float yWeight = y / (liquid.YVertexCount - 1);
+                                    float seWeight = (xWeight * yWeight);
+                                    float swWeight = ((1f - xWeight) * yWeight);
+                                    float neWeight = (xWeight * (1f - yWeight));
+                                    float nwWeight = ((1f - xWeight) * (1f - yWeight));
+                                    float vertHeight = (seWeight * liquidPlane.SECornerZ) + (swWeight * liquidPlane.SWCornerZ) +
+                                        (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
+                                    switch (worldModelObject.LiquidType)
+                                    {
+                                        case LiquidType.Water:
+                                        case LiquidType.Blood:
+                                        case LiquidType.GreenWater:
+                                        case LiquidType.Slime:
+                                            {
+                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, vertHeight));
+                                            }
+                                            break;
+                                        case LiquidType.Magma:
+                                            {
+                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, vertHeight));
+                                            }
+                                            break;
+                                    }
                                 }
                             }
                         }

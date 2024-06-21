@@ -491,8 +491,9 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("ecommons", -1081.222046f, 5081.237793f, 6.107420f, ZoneLineOrientationType.East, -1071.429565f, -1616.641235f, 200.000000f, -1091.429565f, -1646.641235f, -100.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -1101.222046f, 5081.237793f, 13.762880f, ZoneLineOrientationType.East, -1091.429565f, -1616.641235f, 200.000000f, -1111.429565f, -1646.641235f, -100.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -1121.222046f, 5081.237793f, 21.418200f, ZoneLineOrientationType.East, -1111.429565f, -1616.641235f, 200.000000f, -1151.429565f, -1646.641235f, -100.000000f);
-                        zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
-                        //zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 377.188812f, 3223.834473f, -460.310211f, 2200.130127f, -66.088470f, 500f);
+                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 377.188812f, 3223.834473f, -460.310211f, 2200.130127f, -66.088470f, 500f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
                 case "crushbone": // Liquid - TODO, Complicated
@@ -1754,7 +1755,8 @@ namespace EQWOWConverter.Zones
                         // TODO: Boat connecting east freeport and butcherblock
                         zoneProperties.SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 3854.056396f, 11660.213867f, -5955.389648f, -11718.996094f, -20.063040f, -300f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;                
                 case "paineel": // Liquid TODO - Complicated.  Ponds and the hole
