@@ -224,29 +224,9 @@ namespace EQWOWConverter.Zones
                         planeMaterial = new Material(Materials[0]);
                 }
 
-                // Perform the scaling to the plane
-                PlaneAxisAlignedXY scaledLiquidPlane = new PlaneAxisAlignedXY(liquidPlane.PlaneAxisAlignedXY);
-                scaledLiquidPlane.NWCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.NECornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.SWCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.SECornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.NWCornerXY.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.NWCornerXY.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledLiquidPlane.SECornerXY.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledLiquidPlane.SECornerXY.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                scaledLiquidPlane.SECornerXY.X = -113f;
-                scaledLiquidPlane.SECornerXY.Y = -966f;
-                BoundingBox scaledBoundingBox = new BoundingBox(liquidPlane.BoundingBox);
-                //scaledBoundingBox.BottomCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledBoundingBox.BottomCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledBoundingBox.BottomCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledBoundingBox.TopCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledBoundingBox.TopCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                //scaledBoundingBox.TopCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
                 // Create the object
                 WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, scaledLiquidPlane, planeMaterial, scaledBoundingBox);
+                curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox);
                 WorldObjects.Add(curWorldModelObject);
             }
         }

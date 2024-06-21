@@ -355,10 +355,9 @@ namespace EQWOWConverter.WOWFiles
                     {
                         PlaneAxisAlignedXY liquidPlane = worldModelObject.LiquidPlane;
 
-                        // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
                         liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
-                        liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
+                        liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;
+                        liquid.CornerPosition.Y = liquidPlane.NWCornerXY.Y;
                         liquid.CornerPosition.Z = 0f;
 
                         // Calculate tiles

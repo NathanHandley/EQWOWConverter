@@ -35,12 +35,25 @@ namespace EQWOWConverter.Zones
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
 
             // Generate bounding box
             float minZ = MathF.Min(MathF.Min(MathF.Min(nwCornerZ, neCornerZ), seCornerZ), swCornerZ) - minDepth;
             float maxZ = MathF.Max(MathF.Max(MathF.Max(nwCornerZ, neCornerZ), seCornerZ), swCornerZ);
             BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
+            BoundingBox.ApplyModelToWorldCoordinatesTranslation();
+            BoundingBox.ApplyWorldScale();
+
+            // Scale and save the coordinates, rotated
+            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            neCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            swCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
         }
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
@@ -48,12 +61,21 @@ namespace EQWOWConverter.Zones
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, allCornersZ);
 
             // Generate bounding box
             float minZ = allCornersZ - minDepth;
             float maxZ = allCornersZ;
             BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
+            BoundingBox.ApplyModelToWorldCoordinatesTranslation();
+            BoundingBox.ApplyWorldScale();
+
+            // Scale and save the coordinates, rotated
+            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            allCornersZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, allCornersZ);
         }
     }
 }
