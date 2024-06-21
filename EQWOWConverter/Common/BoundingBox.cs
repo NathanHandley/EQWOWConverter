@@ -147,30 +147,6 @@ namespace EQWOWConverter.Common
             return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
         }
 
-        public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
-        {
-            // Vertices contained in the box are given collisions, and should be checked first
-            if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
-                return true;
-
-            // Test each line of the triangle for collision
-            if (DoesLineCollide(point1, point2))
-                return true;
-            if (DoesLineCollide(point1, point3))
-                return true;
-            if (DoesLineCollide(point2, point3))
-                return true;
-
-            return false;
-        }
-
-        public bool IsPointInside(Vector3 point)
-        {
-            return point.X >= BottomCorner.X && point.X <= TopCorner.X &&
-                   point.Y >= BottomCorner.Y && point.Y <= TopCorner.Y &&
-                   point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
-        }
-
         public static BoundingBox GenerateBoxFromVectors(List<Vector3> vertices, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();
@@ -254,42 +230,6 @@ namespace EQWOWConverter.Common
             }
 
             return boundingBox;
-        }
-
-        // The following three methods were adapted from an answer found here: https://stackoverflow.com/questions/3235385/given-a-bounding-box-and-a-line-two-points-determine-if-the-line-intersects-t
-        private bool DoesLineCollide(Vector3 point1, Vector3 point2)
-        {
-            Vector3 collidePoint = new Vector3();
-            if (GetIntersection(point1.X - TopCorner.X, point2.X - TopCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
-                return true;
-            if (GetIntersection(point1.Y - TopCorner.Y, point2.Y - TopCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
-                return true;
-            if (GetIntersection(point1.Z - TopCorner.Z, point2.Z - TopCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
-                return true;
-            if (GetIntersection(point1.X - BottomCorner.X, point2.X - BottomCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
-                return true;
-            if (GetIntersection(point1.Y - BottomCorner.Y, point2.Y - BottomCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
-                return true;
-            if (GetIntersection(point1.Z - BottomCorner.Z, point2.Z - BottomCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
-                return true;
-            return false;
-        }
-        bool InBox(Vector3 collidePoint, int testAxis)
-        {
-            if (testAxis == 1 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
-                return true;
-            else if (testAxis == 2 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X)
-                return true;
-            else if (testAxis == 3 && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
-                return true;
-            return false;
-        }
-        bool GetIntersection(float distance1, float distance2, Vector3 point1, Vector3 point2, ref Vector3 collidePoint)
-        {
-            if ((distance1 * distance2) >= 0.0f) return false;
-            if (distance1 == distance2) return false;
-            collidePoint = point1 + (point2 - point1) * (-distance1 / (distance2 - distance1));
-            return true;
         }
     }
 }
