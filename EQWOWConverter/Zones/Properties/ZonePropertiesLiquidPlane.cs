@@ -38,16 +38,22 @@ namespace EQWOWConverter.Zones
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
 
             // Generate bounding box
-
             float minZ = MathF.Min(MathF.Min(MathF.Min(nwCornerZ, neCornerZ), seCornerZ), swCornerZ) - minDepth;
             float maxZ = MathF.Max(MathF.Max(MathF.Max(nwCornerZ, neCornerZ), seCornerZ), swCornerZ);
+            BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
+        }
 
+        public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float allCornersZ, float minDepth)
+        {
+            LiquidType = liquidType;
+            MaterialName = materialName;
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, allCornersZ);
 
-            BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);// <- Breaks water
-
-
-            //BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            BoundingBox secondBox = new BoundingBox(-377, -1300, -87, -5, -787, 150);
+            // Generate bounding box
+            float minZ = allCornersZ - minDepth;
+            float maxZ = allCornersZ;
+            BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
         }
     }
 }

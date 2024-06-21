@@ -30,6 +30,7 @@ namespace EQWOWConverter.Common
         public float SWCornerZ;
         public Vector2 NWCornerXY = new Vector2();
         public Vector2 SECornerXY = new Vector2();
+        bool IsZAxisAligned = false;
 
         public PlaneAxisAlignedXY() { }
 
@@ -54,6 +55,20 @@ namespace EQWOWConverter.Common
             NECornerZ = neCornerZ;
             SECornerZ = seCornerZ;
             SWCornerZ = swCornerZ;            
+        }
+
+        public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float allCornersZ)
+        {
+            NWCornerXY.X = nwCornerX;
+            NWCornerXY.Y = nwCornerY;
+            SECornerXY.X = seCornerX;
+            SECornerXY.Y = seCornerY;
+            NWCornerZ = allCornersZ;
+            NECornerZ = allCornersZ;
+            SECornerZ = allCornersZ;
+            SWCornerZ = allCornersZ;
+            IsZAxisAligned = true;
         }
     }
 }
