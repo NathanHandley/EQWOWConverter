@@ -28,20 +28,15 @@ namespace EQWOWConverter.Zones
         public LiquidType LiquidType = LiquidType.None;
         public string MaterialName = string.Empty;
         public PlaneAxisAlignedXY PlaneAxisAlignedXY;
-        public BoundingBox BoundingBox;
+        public BoundingBox BoundingBox = new BoundingBox();
+        public float MinDepth;
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ, float minDepth)
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-
-            // Generate bounding box
-            float minZ = MathF.Min(MathF.Min(MathF.Min(nwCornerZ, neCornerZ), seCornerZ), swCornerZ) - minDepth;
-            float maxZ = MathF.Max(MathF.Max(MathF.Max(nwCornerZ, neCornerZ), seCornerZ), swCornerZ);
-            BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
-            BoundingBox.ApplyModelToWorldCoordinatesTranslation();
-            BoundingBox.ApplyWorldScale();
+            MinDepth = minDepth;
 
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -53,7 +48,11 @@ namespace EQWOWConverter.Zones
             seCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             swCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
+            // Note that the rotated coordinates will end with SE and NW flipping
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
+
+            // Generate bounding box
+            RegenerateBoundingBox();
         }
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
@@ -61,13 +60,7 @@ namespace EQWOWConverter.Zones
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-
-            // Generate bounding box
-            float minZ = allCornersZ - minDepth;
-            float maxZ = allCornersZ;
-            BoundingBox = new BoundingBox(seCornerX, seCornerY, minZ, nwCornerX, nwCornerY, maxZ);
-            BoundingBox.ApplyModelToWorldCoordinatesTranslation();
-            BoundingBox.ApplyWorldScale();
+            MinDepth = minDepth;
 
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -75,7 +68,24 @@ namespace EQWOWConverter.Zones
             seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             allCornersZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(nwCornerX, nwCornerY, seCornerX, seCornerY, allCornersZ);
+            // Note that the rotated coordinates will end with SE and NW flipping
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, allCornersZ);
+
+            // Generate bounding box
+            RegenerateBoundingBox();
+        }
+
+        public void RegenerateBoundingBox()
+        {
+            float minZ;
+            float maxZ;
+            if (PlaneAxisAlignedXY.IsZAxisAligned == true)
+                maxZ = PlaneAxisAlignedXY.NWCornerZ;
+            else
+                maxZ = MathF.Max(MathF.Max(MathF.Max(PlaneAxisAlignedXY.NWCornerZ, PlaneAxisAlignedXY.NECornerZ), PlaneAxisAlignedXY.SECornerZ), PlaneAxisAlignedXY.SWCornerZ);
+            minZ = maxZ - MinDepth;
+            BoundingBox = new BoundingBox(PlaneAxisAlignedXY.SECornerXY.X, PlaneAxisAlignedXY.SECornerXY.Y, minZ, PlaneAxisAlignedXY.NWCornerXY.X, PlaneAxisAlignedXY.NWCornerXY.Y, maxZ);
+            //BoundingBox.ApplyModelToWorldCoordinatesTranslation();
         }
     }
 }

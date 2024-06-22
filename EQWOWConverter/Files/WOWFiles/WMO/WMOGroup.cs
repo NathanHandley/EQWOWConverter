@@ -355,9 +355,10 @@ namespace EQWOWConverter.WOWFiles
                     {
                         PlaneAxisAlignedXY liquidPlane = worldModelObject.LiquidPlane;
 
+                        // The corner position of a liquid is the SE corner due to it being in world coordinate space, not model space
                         liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;
-                        liquid.CornerPosition.Y = liquidPlane.NWCornerXY.Y;
+                        liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
+                        liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
                         liquid.CornerPosition.Z = 0f;
 
                         // Calculate tiles
