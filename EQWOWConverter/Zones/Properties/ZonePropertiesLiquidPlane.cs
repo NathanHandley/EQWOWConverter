@@ -47,6 +47,12 @@ namespace EQWOWConverter.Zones
             MaterialName = materialName;
             MinDepth = minDepth;
 
+            // Add additional height for ripple rendering
+            nwCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            neCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            seCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            swCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
@@ -72,6 +78,9 @@ namespace EQWOWConverter.Zones
             MaterialName = materialName;
             MinDepth = minDepth;
 
+            // Add additional height for ripple rendering
+            allCornersZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
