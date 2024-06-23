@@ -31,6 +31,15 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public float MinDepth;
 
+        public ZonePropertiesLiquidPlane(ZonePropertiesLiquidPlane other)
+        {
+            LiquidType = other.LiquidType;
+            MaterialName = other.MaterialName;
+            MinDepth = other.MinDepth;
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(other.PlaneAxisAlignedXY);
+            BoundingBox = new BoundingBox(other.BoundingBox);
+        }
+
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ, float minDepth)
         {
@@ -48,6 +57,7 @@ namespace EQWOWConverter.Zones
             seCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             swCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
             // Note that the rotated coordinates will end with SE and NW flipping
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
 
@@ -68,6 +78,7 @@ namespace EQWOWConverter.Zones
             seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             allCornersZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
             // Note that the rotated coordinates will end with SE and NW flipping
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, allCornersZ);
 
@@ -85,7 +96,56 @@ namespace EQWOWConverter.Zones
                 maxZ = MathF.Max(MathF.Max(MathF.Max(PlaneAxisAlignedXY.NWCornerZ, PlaneAxisAlignedXY.NECornerZ), PlaneAxisAlignedXY.SECornerZ), PlaneAxisAlignedXY.SWCornerZ);
             minZ = maxZ - MinDepth;
             BoundingBox = new BoundingBox(PlaneAxisAlignedXY.SECornerXY.X, PlaneAxisAlignedXY.SECornerXY.Y, minZ, PlaneAxisAlignedXY.NWCornerXY.X, PlaneAxisAlignedXY.NWCornerXY.Y, maxZ);
-            //BoundingBox.ApplyModelToWorldCoordinatesTranslation();
+        }
+
+        public List<ZonePropertiesLiquidPlane> SplitIntoSizeRestictedChunks(int maximumXYSizePerChunk)
+        {
+            List<ZonePropertiesLiquidPlane> dividedPlanes = new List<ZonePropertiesLiquidPlane> { new ZonePropertiesLiquidPlane(this) };
+
+            if (maximumXYSizePerChunk <= 0)
+            {
+                dividedPlanes.Add(this);
+                Logger.WriteError("ZonePropertiesLiquidPlane maximumXYSizePerChunk is less than or zero.");
+                return dividedPlanes;
+            }
+            if (PlaneAxisAlignedXY.IsZAxisAligned == false)
+            {
+                Logger.WriteError("ZonePropertiesLiquidPlane is not z axis aligned but is being split.  There will be issues.");
+            }
+
+            bool doSplitFurther = true;
+            while (doSplitFurther)
+            {
+                doSplitFurther = false;
+                List<ZonePropertiesLiquidPlane> newPlanes = new List<ZonePropertiesLiquidPlane>();
+                foreach (ZonePropertiesLiquidPlane curPlane in dividedPlanes)
+                {
+                    if (curPlane.PlaneAxisAlignedXY.GetXDistance() >= maximumXYSizePerChunk || curPlane.PlaneAxisAlignedXY.GetYDistance() >= maximumXYSizePerChunk)
+                    {
+                        ZonePropertiesLiquidPlane newPlane = new ZonePropertiesLiquidPlane(curPlane);
+                        if (curPlane.PlaneAxisAlignedXY.GetXDistance() > curPlane.PlaneAxisAlignedXY.GetYDistance())
+                        {
+                            float planeSplitDistance = (curPlane.PlaneAxisAlignedXY.NWCornerXY.X + curPlane.PlaneAxisAlignedXY.SECornerXY.X) * 0.5f;
+                            curPlane.PlaneAxisAlignedXY.NWCornerXY.X = planeSplitDistance;
+                            newPlane.PlaneAxisAlignedXY.SECornerXY.X = planeSplitDistance;
+                        }
+                        else
+                        {
+                            float planeSplitDistance = (curPlane.PlaneAxisAlignedXY.NWCornerXY.Y + curPlane.PlaneAxisAlignedXY.SECornerXY.Y) * 0.5f;
+                            curPlane.PlaneAxisAlignedXY.NWCornerXY.Y = planeSplitDistance;
+                            newPlane.PlaneAxisAlignedXY.SECornerXY.Y = planeSplitDistance;
+                        }
+                        doSplitFurther = true;
+                        curPlane.RegenerateBoundingBox();
+                        newPlane.RegenerateBoundingBox();
+                        newPlanes.Add(newPlane);
+                    }
+                }
+                foreach (ZonePropertiesLiquidPlane newPlane in newPlanes)
+                    dividedPlanes.Add(newPlane);
+            }
+
+            return dividedPlanes;
         }
     }
 }

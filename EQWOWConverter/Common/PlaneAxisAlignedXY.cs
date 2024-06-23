@@ -42,6 +42,7 @@ namespace EQWOWConverter.Common
             SWCornerZ = other.SWCornerZ;
             NWCornerXY = new Vector2(other.NWCornerXY);
             SECornerXY = new Vector2(other.SECornerXY);
+            IsZAxisAligned = other.IsZAxisAligned;
         }
 
         public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
@@ -69,6 +70,22 @@ namespace EQWOWConverter.Common
             SECornerZ = allCornersZ;
             SWCornerZ = allCornersZ;
             IsZAxisAligned = true;
+        }
+
+        public float GetXDistance()
+        {
+            if (NWCornerXY.X > SECornerXY.X)
+                return MathF.Abs(NWCornerXY.X - SECornerXY.X);
+            else
+                return MathF.Abs(SECornerXY.X - NWCornerXY.X);
+        }
+
+        public float GetYDistance()
+        {
+            if (NWCornerXY.Y > SECornerXY.Y)
+                return MathF.Abs(NWCornerXY.Y - SECornerXY.Y);
+            else
+                return MathF.Abs(SECornerXY.Y - NWCornerXY.Y);
         }
     }
 }

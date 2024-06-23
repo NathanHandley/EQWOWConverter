@@ -231,29 +231,5 @@ namespace EQWOWConverter.Common
 
             return boundingBox;
         }
-
-        public void ApplyModelToWorldCoordinatesTranslation()
-        {
-            TopCorner.X *= -1f;
-            TopCorner.Y *= -1f;
-            BottomCorner.X *= -1f;
-            BottomCorner.Y *= -1f;
-            float swapTopX = TopCorner.X;
-            float swapTopY = TopCorner.Y;
-            TopCorner.X = BottomCorner.X;
-            TopCorner.Y = BottomCorner.Y;
-            BottomCorner.X = swapTopX;
-            BottomCorner.Y = swapTopY;
-        }
-
-        public void ApplyWorldScale()
-        {
-            TopCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            TopCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            TopCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;            
-            BottomCorner.X *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BottomCorner.Y *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BottomCorner.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-        }
     }
 }

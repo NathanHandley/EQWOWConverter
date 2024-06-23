@@ -224,10 +224,24 @@ namespace EQWOWConverter.Zones
                         planeMaterial = new Material(Materials[0]);
                 }
 
-                // Create the object
-                WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox);
-                WorldObjects.Add(curWorldModelObject);
+                // Create the object, constraining to max size if needed
+                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION ||
+                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION)
+                {
+                    List<ZonePropertiesLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                    foreach (ZonePropertiesLiquidPlane curLiquidPlane in liquidPlaneChunks)
+                    {
+                        WorldModelObject curWorldModelObject = new WorldModelObject();
+                        curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane.PlaneAxisAlignedXY, planeMaterial, curLiquidPlane.BoundingBox);
+                        WorldObjects.Add(curWorldModelObject);
+                    }
+                }
+                else
+                {
+                    WorldModelObject curWorldModelObject = new WorldModelObject();
+                    curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox);
+                    WorldObjects.Add(curWorldModelObject);
+                }
             }
         }
 
