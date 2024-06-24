@@ -50,7 +50,7 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 1.0f;
+        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;//1.0f;
 
         // Maximum number of faces that fit into a WMO group before it subdivides
         // max value can only ever be 21,840, but >2100 not advised due to btree size
@@ -64,7 +64,7 @@ namespace EQWOWConverter
 
         // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
         // for debugging as it very visually unpleasant
-        public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = true;
+        public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = false;//true;
 
         // Any surface liquid that has an x or y dimension larger than this will be cut down in size
         public static readonly int CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION = 1500;
