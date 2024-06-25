@@ -46,8 +46,15 @@ namespace EQWOWConverter
             }
 
             // Convert the data
-            if (ConvertEQObjectsToWOW(eqExportsConditionedPath, wowExportPath) == false)
-                return false;
+            if (Configuration.CONFIG_GENERATE_OBJECTS == true)
+            {
+                if (ConvertEQObjectsToWOW(eqExportsConditionedPath, wowExportPath) == false)
+                    return false;
+            }
+            else
+            {
+                Logger.WriteInfo("Note: Object generation is set to false in the Configuration");
+            }
             if (ConvertEQZonesToWOW(eqExportsConditionedPath, wowExportPath) == false)
                 return false;
 
