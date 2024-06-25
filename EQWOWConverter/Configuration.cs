@@ -67,7 +67,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = false;//true;
 
         // Any surface liquid that has an x or y dimension larger than this will be cut down in size
-        public static readonly int CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION = 1500;
+        public static readonly int CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION = 1200;
 
         // How much 'height' to add to liquid surface, helps with rendering the waves
         public static readonly float CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT = 0.001f;
