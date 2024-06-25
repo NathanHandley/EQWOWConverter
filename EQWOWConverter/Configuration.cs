@@ -79,7 +79,7 @@ namespace EQWOWConverter
         public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { "blackburrow" };
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
