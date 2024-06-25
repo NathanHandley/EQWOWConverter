@@ -305,7 +305,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("freporte", -363.75037f, -1778.4629f, 100f, ZoneLineOrientationType.West, 3000f, 3000f, -1000f, -3000f, -3000f, -1200f);
                     }
                     break;
-                case "akanon": // Liquid - TODO, Complicated
+                case "akanon": // Liquid - TODO, Complicated (Slopes and off-angles)
                     {
                         zoneProperties.SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(30, 60, 30, 10, 600);
@@ -334,8 +334,9 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("eastkarana", 3094.991f, -2315.8328f, 23.849806f, ZoneLineOrientationType.South,-1443.1708f, -542.2266f, 423.58218f, -1665.6155f, -747.2683f, 13f);
                     }
                     break;
-                case "blackburrow": // Liquid - TODO, Complicated
+                case "blackburrow": // Liquid - TODO, Complicated (slopes)
                     {
+                        // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 100, 90, 10, 700);
                         zoneProperties.AddZoneLineBox("everfrost", -3027.1943f, -532.2794f, -113.18725f, ZoneLineOrientationType.North, 106.64458f, -329.8163f, 13.469f, 80.88026f, -358.2026f, -0.49926078f);
@@ -365,7 +366,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "cazicthule": // Liquid - TODO, Complicated
+                case "cazicthule": // Liquid - TODO, Complicated (volumes)
                     {                        
                         zoneProperties.SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 80, 20, 10, 450);
@@ -497,11 +498,47 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "crushbone": // Liquid - TODO, Complicated
+                case "crushbone": // Liquid - Tested
                     {
+                        // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("crushbone", "Crushbone", 158f, -644f, 4f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(90, 90, 190, 10, 400);
                         zoneProperties.AddZoneLineBox("gfaydark", 2561.247803f, -52.142502f, 15.843880f, ZoneLineOrientationType.South, -640.919861f, 187.129715f, 39.221329f, -732.241028f, 141.981308f, -0.500000f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 257.281067f, 826.939575f, -280.881683f, 567.900513f, -34.999939f, 150f); // NW water plane
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", -252.334946f, 658.722595f, -608.327148f, 420.405396f, -11.999990f, 50f); // SW water plane (higher up)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", -252.334946f, 658.722595f, -608.327148f, 420.405396f, -11.999990f, 50f); // Upper river towards keep circle (southmore)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", -71.529442f, 479f, -258.593109f, 392.106171f, -11.999990f, 50f); // Upper river towards keep circle
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", -53.215691f, 430.083923f, -73.401512f, 319.778778f, -11.999990f, 50f); // Upper river towards keep circle, side part 1
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 4.901690f, 343.037506f, -60.139000f, 290.808258f, -11.999990f, 50f); // Upper river towards keep circle, side part 2
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 325.689392f, 292.879547f, -56.076481f, 87.385933f, -11.999990f, 50f); // West river area around keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 301.031555f, 90.831619f, 223.354294f, 27.758240f, -11.999990f, 50f); // Northwest river area around keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 270.780273f, 28.266529f, 212.974243f, -8.258000f, -11.999990f, 50f); // North east river area around keep 1
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 252.122513f, -7.610770f, 192.806335f, -42.189678f, -11.999990f, 50f); // North east river area around keep 2
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 234.143616f, -41.506008f, 145.427017f, -68.262947f, -11.999990f, 50f); // North east river area around keep 3
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 213.689957f, -67.187302f, 126.517197f, -96.146927f, -11.999990f, 50f); // North east river area around keep 4
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 171.805862f, -95.562683f, 128.086807f, -144.639587f, -11.999990f, 50f); // North east river area around keep 5
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 146.060959f, -59.722210f, -8.454320f, -174.799026f, -11.999990f, 50f); // East river area around keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0002", 26.958090f, 94.326317f, -61.008018f, -107.154488f, -11.999990f, 50f); // South river area around keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 84.625970f, 0.410270f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 84.321714f, 1.77798f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 84.017458f, 3.145690f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 83.61664f, 4.93148f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 83.215822f, 6.717270f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 82.831182f, 8.457405f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 82.446542f, 10.197540f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 82.0374695f, 12.029025f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 81.628397f, 13.860510f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 81.343359f, 15.144805f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 81.058321f, 16.429100f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 80.760172f, 17.803990f, 72.905113f, -13.311320f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 84.415932f, -13.300000f, 72.905113f, -16.12f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 83.292168f, -16.110729f, 72.905113f, -18.55f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 82.313110f, -18.549540f, 72.905113f, -21.76f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t50_m0003", 81.036003f, -21.751711f, 72.905113f, -24.25f, 15.000010f, 150f); // Blood in south keep
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t25_river1a25"); // Rivers
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0002"); // Rivers
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0003"); // Blood
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_m0000"); // Blood under-surface
                     }
                     break;                
                 case "eastkarana": // Liquid - Tested
@@ -764,7 +801,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "everfrost": // Liquid - TODO, complicated.  Lots 'under the ice' with no surface.  Water
+                case "everfrost": // Liquid - TODO, complicated.  Lots 'under the ice' with no surface.  Water (volumes)
                     {
                         zoneProperties.SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 230, 255, 10, 500);
@@ -928,7 +965,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50");
                     }
                     break;
-                case "freportw": // Liquid TODO - Complicated water
+                case "freportw": // Liquid TODO - Complicated water (slopes)
                     {
                         zoneProperties.SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(230, 200, 200, 10, 450);
@@ -1004,7 +1041,7 @@ namespace EQWOWConverter.Zones
                     break;
                 case "gfaydark":
                     {
-                        // TODO: Lifts for Kelethin
+                        // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
                         zoneProperties.SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(0, 128, 64, 10, 300);
                         zoneProperties.AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);
@@ -1019,14 +1056,28 @@ namespace EQWOWConverter.Zones
                         ///
                     }
                     break;               
-                case "grobb": // Liquid - TODO Complicated.  There is water and blood (need new).  May not be hard to make geometry for
+                case "grobb": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("grobb", "Grobb", 0f, -100f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
                         zoneProperties.AddZoneLineBox("innothule", -2795.355469f, -654.658081f, -34.562538f, ZoneLineOrientationType.East, -169.745117f, 26.887341f, 28.469000f, -192.243027f, 9.193430f, -0.499990f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 152.433304f, 36.971439f, 94.668137f, -120.081017f, -1.999990f, 20f); // South river, near ent
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 346.868958f, -111.392517f, 177.726746f, -316.939789f, -1.999990f, 20f); // River in first section after south
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 749.410645f, -317.407654f, 617.161682f, -386.517914f, -17.999981f, 100f); // North pond with dock
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 137.184448f, - 415.296997f, 63.208019f, -511.666992f, 38.000061f, 100f); // Inside pool next to south blood 2, east part
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 111.996399f, -410.413666f, 65.629272f, -415.726196f, 38.000061f, 100f); // Inside pool next to south blood 1, west part
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_m0006", 587.856934f, -837.093262f, 431.030212f, -970.739502f, 0.000010f, 100f); // East blood pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_m0006", 50.250309f, -430.840881f, -3.798120f, -485.456055f, 48.968781f, 100f); // South blood pool
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_gwater1a50");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_underwater1a75");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0003");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0006");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0007");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_b1");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_m0005");
                     }
                     break;                
-                case "gukbottom": // Liquid - TODO Complicated
+                case "gukbottom": // Liquid - TODO Complicated (slopes, volumes)
                     {
                         // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinent.Antonica);
@@ -1038,7 +1089,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("guktop", 1196.247681f, -197.502167f, -83.967888f, ZoneLineOrientationType.West, 1203.723999f, -181.743942f, -71.499748f, 1189.337769f, -204.274963f, -84.468781f);
                     }
                     break;
-                case "guktop": // Liquid - TODO Complicated
+                case "guktop": // Liquid - TODO Complicated (slopes, volumes)
                     {
                         // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("guktop", "Guk", 7f, -36f, 4f, 0, ZoneContinent.Antonica);
