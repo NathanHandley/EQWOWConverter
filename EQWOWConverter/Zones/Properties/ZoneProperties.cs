@@ -759,9 +759,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -121.552803f, 8.839670f, -123.378937f, -24.332081f, 38.000011f, 10f); // Inside towards dock, small pool pt 4
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -123.378937f, 7.186920f, -125.058151f, -22.762091f, 38.000011f, 10f); // Inside towards dock, small pool pt 5
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -125.058151f, 5.446620f, -126.930794f, -20.884710f, 38.000011f, 10f); // Inside towards dock, small pool pt 6
-                        zoneProperties.AddDisabledMaterialCollisionByNames("d_ow1");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_falls1a50");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_ow1", "t50_w1a50", "t50_falls1a50");
                     }
                     break;
                 case "erudnint":  // Liquid - Tested
@@ -788,8 +786,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_eruw1a50", 729.625732f, 725.127869f, 693.982971f, 681.921570f, -15.999990f, 5f); // Bottom Pool 2
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_eruw1a50", 725.435303f, 729.403625f, 698.276855f, 677.747437f, -15.999990f, 5f); // Bottom Pool 3
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_eruw1a50", 721.138245f, 733.511414f, 702.827820f, 674.229980f, -15.999990f, 5f); // Bottom Pool 4
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_eruw1a50");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0001");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_eruw1a50", "t50_m0001");
                     }
                     break;
                 case "erudsxing": // Liquid - Tested
@@ -941,8 +938,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_ow1", 391.193787f, -828.030029f, -177.646881f, -1195.420410f, -69.966743f, 300f);
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_ow1", -212.893402f, -1035.786987f, -483.346436f, -1188.991699f, -69.966743f, 300f);
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_ow1", -176.359528f, -962.933838f, -213.906982f, -1189.269043f, -69.966743f, 300f);
-                        zoneProperties.AddDisabledMaterialCollisionByNames("d_ow1");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("d_m0007");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_ow1", "d_m0007");
                     }
                     break;
                 case "freportn": // Liquid - Tested
@@ -1068,13 +1064,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_gwater1a50", 111.996399f, -410.413666f, 65.629272f, -415.726196f, 38.000061f, 100f); // Inside pool next to south blood 1, west part
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_m0006", 587.856934f, -837.093262f, 431.030212f, -970.739502f, 0.000010f, 100f); // East blood pool
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_m0006", 50.250309f, -430.840881f, -3.798120f, -485.456055f, 48.968781f, 100f); // South blood pool
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_gwater1a50");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_underwater1a75");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0003");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0006");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0007");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("d_b1");
-                        zoneProperties.AddDisabledMaterialCollisionByNames("d_m0005");
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_gwater1a50", "t75_underwater1a75", "t50_m0003", "t75_m0006", "t75_m0007", "d_b1", "d_m0005");
                     }
                     break;                
                 case "gukbottom": // Liquid - TODO Complicated (slopes, volumes)
@@ -1101,12 +1091,15 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("innothule", 144.032776f, -821.548645f, -11.500000f, ZoneLineOrientationType.West, -53.083141f, 56.776360f, 12.469000f, -70.161201f, 49.388599f, -0.499990f);
                     }
                     break;
-                case "halas": // Liquid - TODO Complicated.  There's a well with more water than front
+                case "halas": // Liquid - Tested
                     {
                         // TODO: Boat that goes back and forth
                         zoneProperties.SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 230, 255, 10, 300);
                         zoneProperties.AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_agua1a75", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_agua1a75", 199.293900f, -199.563965f, 177.719742f, -224.856445f, - 0.999970f, 250f); // Well
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_agua1a75");
                     }
                     break;
                 case "hateplane":
@@ -1124,7 +1117,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("highpass", -90.567039f, -112.659950f, -0.000010f, ZoneLineOrientationType.West, -82.355392f, 112.775299f, 12.469000f, -98.161209f, 104.758774f, -0.500000f);
                     }
                     break;
-                case "highpass": // Liquid TODO - Complicated water.  Can probably material map some, but also need water volumes for swimming areas with no surface
+                case "highpass": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("highpass", "Highpass Hold", -104f, -14f, 4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 200, 10, 400);
@@ -1132,6 +1125,8 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("highkeep", -90.607208f, 98.531219f, 0.000000f, ZoneLineOrientationType.East, -83.776314f, -118.791763f, 12.469000f, -98.162193f, -140.129593f, -0.500000f);
                         zoneProperties.AddZoneLineBox("highkeep", 62.486179f, 97.604347f, 0.000030f, ZoneLineOrientationType.East, 70.161171f, -118.140022f, 12.469000f, 53.453629f, -126.744057f, -0.500010f);
                         zoneProperties.AddZoneLineBox("kithicor", 552.036682f, 4892.523438f, 689.904907f, ZoneLineOrientationType.South, -986.189697f, 98.161331f, 38.800350f, -1007.820984f, 83.809853f, -0.499890f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -52.058632f, 488.075775f, -396.379669f, 248.035797f, -0.999960f, 100f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50");                    
                     }
                     break;
                 case "hole": // Liquid TODO - Complicated, many water
@@ -1144,6 +1139,20 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("neriakc", 480.001648f, -809.905090f, -55.968712f, ZoneLineOrientationType.North, 75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
                         zoneProperties.AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
                         zoneProperties.AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
+
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 531.560303f, 436.702850f, 320.959839f, 82.405937f, -349.875000f, 50f); // Top water pond in the large pit
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 711.456055f, -908.072327f, 558.995667f, -1057.308350f, -83.968697f, 25f); // Entry (very top)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 462.969482f, -474.541412f, 377.558228f, -565.965576f, -195.916235f, 5f); // Shallow pool in big chaimber after entry
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 509.425354f, -165.892136f, 483.220215f, -179.785797f, -196.906174f, 100f); // Uppermost area 'funnel' water passage to lower area, top part
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 505.832306f, -175.224014f, 485.240601f, -206.390945f, -223.906174f, 75f); // Uppermost area 'funnel' water passage to lower area, bottom part
+
+
+
+
+                        //zoneProperties.AddDisabledMaterialCollisionByNames("d_m0007", "t50_w1a50", "t50_wve1a50");
+                    
+                    
+                    
                     }
                     break;                
                 case "innothule": // Liquid Simple, not yet implemented
