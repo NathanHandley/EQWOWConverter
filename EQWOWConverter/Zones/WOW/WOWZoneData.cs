@@ -109,9 +109,9 @@ namespace EQWOWConverter.Zones
             // Build liquid wmos first
             GenerateLiquidWorldModelObjects(meshData, ZoneProperties);
 
-            // Determine which materials are animated and create objects to represent them
+            // Determine which materials are animated or transparent and create objects to represent them
             foreach (Material material in Materials)
-                if (material.IsAnimated() && material.IsRenderable())
+                if ((material.IsAnimated() || material.IsTransparent()) && material.IsRenderable())
                 {
                     MeshData allMeshData = new MeshData();
                     GenerateAndAddObjectInstancesForZoneMaterial(material, meshData);

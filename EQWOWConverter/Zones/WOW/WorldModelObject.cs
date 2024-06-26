@@ -122,6 +122,8 @@ namespace EQWOWConverter.Zones
                     continue;
                 if (materials[curMaterialIndex].IsAnimated() == true)
                     continue;
+                if (materials[curMaterialIndex].IsTransparent() == true)
+                    continue;
 
                 // Create a new one if this is the first instance of the material
                 if (renderBatchesByMaterialID.ContainsKey(curMaterialIndex) == false)

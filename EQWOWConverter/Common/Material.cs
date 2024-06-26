@@ -73,6 +73,25 @@ namespace EQWOWConverter.Common
                 return false;
         }
 
+        public bool IsTransparent()
+        {
+            if (MaterialType == MaterialType.Invisible ||
+                MaterialType == MaterialType.Boundary ||
+                MaterialType == MaterialType.Transparent25Percent ||
+                MaterialType == MaterialType.Transparent50Percent ||
+                MaterialType == MaterialType.Transparent75Percent ||
+                MaterialType == MaterialType.TransparentAdditive ||
+                MaterialType == MaterialType.TransparentAdditiveUnlit ||
+                MaterialType == MaterialType.TransparentMasked ||
+                MaterialType == MaterialType.TransparentSkydome ||
+                MaterialType == MaterialType.TransparentAdditiveUnlitSkydome)
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+
         public bool IsRenderable()
         {
             if (MaterialType == MaterialType.Invisible)
