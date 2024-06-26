@@ -1139,20 +1139,17 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("neriakc", 480.001648f, -809.905090f, -55.968712f, ZoneLineOrientationType.North, 75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
                         zoneProperties.AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
                         zoneProperties.AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 52.396881f, 326.834320f, -375.374756f, 37.806911f, 318.680603f, -386.343323f);
-
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 531.560303f, 436.702850f, 320.959839f, 82.405937f, -349.875000f, 50f); // Top water pond in the large pit
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 711.456055f, -908.072327f, 558.995667f, -1057.308350f, -83.968697f, 25f); // Entry (very top)
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 462.969482f, -474.541412f, 377.558228f, -565.965576f, -195.916235f, 5f); // Shallow pool in big chaimber after entry
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 509.425354f, -165.892136f, 483.220215f, -179.785797f, -196.906174f, 100f); // Uppermost area 'funnel' water passage to lower area, top part
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 505.832306f, -175.224014f, 485.240601f, -206.390945f, -223.906174f, 75f); // Uppermost area 'funnel' water passage to lower area, bottom part
-
-
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 209.731720f, -138.017502f, 163.095779f, -212.544235f, -251.906219f, 25f); // Pool in path between first and second big areas                        
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 1.113530f, -202.140320f, -14.945060f, -232.141266f, -279.874908f, 15f); // Square Pool in second big area courtyard
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -25.828911f, -25.686939f, -84.617897f, -56.631119f, -349.885000f, 10f); // Sqare pool that spills out in front of "The Slab"
 
 
                         //zoneProperties.AddDisabledMaterialCollisionByNames("d_m0007", "t50_w1a50", "t50_wve1a50");
-                    
-                    
-                    
                     }
                     break;                
                 case "innothule": // Liquid Simple, not yet implemented
