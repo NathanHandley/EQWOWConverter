@@ -73,7 +73,7 @@ namespace EQWOWConverter.Common
                 return false;
         }
 
-        public bool IsTransparent()
+        public bool HasTransparency()
         {
             if (MaterialType == MaterialType.Invisible ||
                 MaterialType == MaterialType.Boundary ||

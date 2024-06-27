@@ -85,14 +85,20 @@ namespace EQWOWConverter.Objects
                 // Regular
                 meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
 
-                // Collision
-                MeshData collisionMeshData = new MeshData();
-                collisionMeshData.TriangleFaces = collisionTriangleFaces;
-                collisionMeshData.Vertices = collisionVertices;
-                collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
-                collisionTriangleFaces = collisionMeshData.TriangleFaces;
-                collisionVertices = collisionMeshData.Vertices;
+                // If there is any collision data, also translate that too
+                if (collisionVertices.Count > 0)
+                {
+                    MeshData collisionMeshData = new MeshData();
+                    collisionMeshData.TriangleFaces = collisionTriangleFaces;
+                    collisionMeshData.Vertices = collisionVertices;
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+                    collisionTriangleFaces = collisionMeshData.TriangleFaces;
+                    collisionVertices = collisionMeshData.Vertices;
+                }
             }
+
+            // Collision data
+            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces, isFromRawEQObject);
 
             // Process materials
             List<Material> expandedMaterials = new List<Material>();
@@ -146,7 +152,6 @@ namespace EQWOWConverter.Objects
             CorrectTextureCoordinates();
 
             // Process the rest
-            ProcessCollisionData(collisionVertices, collisionTriangleFaces);
             CalculateBoundingBoxesAndRadii();
 
             // HARD CODED FOR STATIC --------------------------------------------------------------------
@@ -244,8 +249,49 @@ namespace EQWOWConverter.Objects
             }
         }
 
-        private void ProcessCollisionData(List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
+        private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
         {
+            // Generate collision data if there is none and it's from an EQ object
+            if (collisionVertices.Count == 0 && isFromRawEQObject == true)
+            {
+                // Take any non-transparent material geometry and use that to build a mesh
+                Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();
+                foreach(TriangleFace face in meshData.TriangleFaces)
+                {
+                    Material curMaterial = new Material();
+                    bool materialFound = false;
+                    foreach(Material material in materials)
+                    {
+                        if (face.MaterialIndex == material.Index)
+                        {
+                            curMaterial = material;
+                            materialFound = true;
+                            break;
+                        }
+                    }
+                    if (materialFound == false)
+                    {
+                        Logger.WriteError("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
+                        continue;
+                    }
+                    if (curMaterial.HasTransparency() == true)
+                        continue;
+                    if (foundMaterials.ContainsKey(curMaterial.Index) == true)
+                        continue;
+                    foundMaterials.Add(curMaterial.Index, curMaterial);
+                }
+
+                // Build the collision data
+                if (foundMaterials.Count > 0)
+                {
+                    MeshData collisionMesh = meshData.GetMeshDataForMaterials(foundMaterials.Values.ToList().ToArray());
+                    foreach(TriangleFace face in collisionMesh.TriangleFaces)
+                        collisionTriangleFaces.Add(new TriangleFace(face));
+                    foreach(Vector3 position in collisionMesh.Vertices)
+                        collisionVertices.Add(new Vector3(position));
+                }
+            }
+
             // Purge prior data
             CollisionPositions.Clear();
             CollisionFaceNormals.Clear();
