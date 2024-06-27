@@ -72,20 +72,6 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsLiquidMaterialContour(LiquidType liquidType, Material liquidMaterial, MeshData liquidMeshData, float minimumDepth, ZoneProperties zoneProperties)
-        {
-            WMOType = WorldModelObjectType.LiquidMaterialContour;
-            Materials.Add(liquidMaterial);
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            if (minimumDepth > 0)
-                BoundingBox.BottomCorner.Z -= (minimumDepth * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
-            LiquidMeshData = liquidMeshData;
-            LiquidMaterial = liquidMaterial;
-            LiquidType = liquidType;
-            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
-            IsLoaded = true;
-        }
-
         public void LoadAsRendered(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
             ZoneProperties zoneProperties)
         {

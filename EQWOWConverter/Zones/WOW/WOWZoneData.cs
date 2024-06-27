@@ -177,32 +177,6 @@ namespace EQWOWConverter.Zones
                 WorldObjects.Add(curWorldModelObject);
             }
 
-            // Material Contours
-            foreach (ZonePropertiesLiquidMaterialContour liquidMaterialContour in zoneProperties.LiquidMaterialContours)
-            {
-                // Grab the material
-                Material liquidMaterial = new Material();
-                bool materialFound = false;
-                foreach (Material material in Materials)
-                    if (material.Name == liquidMaterialContour.MaterialName)
-                    {
-                        liquidMaterial = material;
-                        materialFound = true;
-                        break;
-                    }
-                if (materialFound == false)
-                {
-                    Logger.WriteError("Failed to find material named '" + liquidMaterialContour.MaterialName + "' for liquidcontour in world model object named '" + ShortName + "'");
-                    continue;
-                }
-
-                // Create the WMO
-                MeshData liquidMeshData = meshData.GetMeshDataForMaterials(liquidMaterial);
-                WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsLiquidMaterialContour(liquidMaterialContour.LiquidType, liquidMaterial, liquidMeshData, liquidMaterialContour.MinimumDepth, zoneProperties);
-                WorldObjects.Add(curWorldModelObject);
-            }
-
             // Planes
             foreach (ZonePropertiesLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
             {
