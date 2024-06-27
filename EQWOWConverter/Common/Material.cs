@@ -123,63 +123,6 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public Vector3 GetTranslationForAnimationFrame(int frameIndex)
-        {
-            // 2x2 animation texture
-            if (NumOfAnimationFrames() <= 4)
-            {
-                switch (frameIndex)
-                {
-                    case 0: return new Vector3(0.0f, 0.0f, 0.0f);
-                    case 1: return new Vector3(0.5f, 0.0f, 0.0f);
-                    case 2: return new Vector3(0.0f, 0.5f, 0.0f);
-                    case 3: return new Vector3(0.5f, 0.5f, 0.0f);
-                    default:
-                    {
-                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + UniqueName + "' was '" + frameIndex + "' when it was a 2x2 texture");
-                        return new Vector3(0.0f, 0.0f, 0.0f);
-                    }
-                }
-            }
-            // 4x4 animation texture
-            else if (NumOfAnimationFrames() <= 16)
-            {
-                switch (frameIndex)
-                {
-                    case 0: return new Vector3(0.0f, 0.0f, 0.0f);
-                    case 1: return new Vector3(-0.25f, 0.0f, 0.0f);
-                    case 2: return new Vector3(-0.5f, 0.0f, 0.0f);
-                    case 3: return new Vector3(-0.75f, 0.0f, 0.0f);
-
-                    case 4: return new Vector3(0.0f, 0.25f, 0.0f);
-                    case 5: return new Vector3(-0.25f, 0.25f, 0.0f);
-                    case 6: return new Vector3(-0.5f, 0.25f, 0.0f);
-                    case 7: return new Vector3(-0.75f, 0.25f, 0.0f);
-
-                    case 8: return new Vector3(0.0f, 0.5f, 0.0f);
-                    case 9: return new Vector3(-0.25f, 0.5f, 0.0f);
-                    case 10: return new Vector3(-0.5f, 0.5f, 0.0f);
-                    case 11: return new Vector3(-0.75f, 0.5f, 0.0f);
-
-                    case 12: return new Vector3(0.0f, 0.75f, 0.0f);
-                    case 13: return new Vector3(-0.25f, 0.75f, 0.0f);
-                    case 14: return new Vector3(-0.5f, 0.75f, 0.0f);
-                    case 15: return new Vector3(-0.75f, 0.75f, 0.0f);
-                    default:
-                    {
-                        Logger.WriteError("GetTranslationForAnimationFrame Error, frame index for material '" + UniqueName + "' was '" + frameIndex + "' when it was a 4x4 texture");
-                        return new Vector3(0.0f, 0.0f, 0.0f);
-                    }
-
-                }
-            }
-            else
-            {
-                Logger.WriteError("GetTranslationForAnimationFrame Error, unhandled for animations > 16 frames");
-                return new Vector3(0.0f, 0.0f, 0.0f);
-            }
-        }
-
         // This returns an animation-aware and half-pixel corrected (on edge) coordinate set
         public TextureCoordinates GetCorrectedBaseCoordinates(TextureCoordinates uncorrectedCoordinates)
         {
