@@ -136,7 +136,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      // Axis aligned bounding box for the zone mesh(es)
 
             // Set any flags
-            WMORootFlags rootFlags = WMORootFlags.None;
+            WMORootFlags rootFlags = WMORootFlags.UseLiquidTypeDBCID;
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(rootFlags)));
             return WrapInChunk("MOHD", chunkBytes.ToArray());
         }

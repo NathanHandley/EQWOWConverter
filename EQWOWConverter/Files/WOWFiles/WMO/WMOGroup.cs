@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (worldModelObject.LiquidType != LiquidType.None && worldModelObject.IsCompletelyInLiquid == false)
+            if (worldModelObject.IsCompletelyInLiquid == false)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
@@ -91,13 +91,12 @@ namespace EQWOWConverter.WOWFiles
                     // If set, show the 'actual' water surface
                     switch (worldModelObject.LiquidType)
                     {
-                        case LiquidType.Water:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        //case LiquidType.Blood: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        //case LiquidType.GreenWater: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        //case LiquidType.Ocean:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(14))); break;
-                        case LiquidType.Magma:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
-                        case LiquidType.Slime:  chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
-                        default:                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case LiquidType.Water:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case LiquidType.Blood:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case LiquidType.GreenWater: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case LiquidType.Magma:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
+                        case LiquidType.Slime:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
+                        default:                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
                     }
                 }
                 else
@@ -152,7 +151,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
-            if (worldModelObject.WMOType == WorldModelObjectType.LiquidPlane || worldModelObject.WMOType == WorldModelObjectType.LiquidMaterialContour)
+            if (worldModelObject.IsCompletelyInLiquid == false)
                 chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
@@ -431,60 +430,21 @@ namespace EQWOWConverter.WOWFiles
                             }
                         }
                     } break;
-                case WorldModelObjectType.LiquidMaterialContour:
-                    {
-                        // Get the mesh data for the liquid
-                        MeshData liquidMeshData = worldModelObject.LiquidMeshData;
-                        BoundingBox meshBox = BoundingBox.GenerateBoxFromVectors(liquidMeshData.Vertices, 0);
-
-                        // Coordinate system used for Terrain is opposite on X and Y vs WMOs, so use bottom corner
-                        liquid.CornerPosition = new Vector3(meshBox.BottomCorner);
-                        liquid.CornerPosition.Z = 0.0f;
-
-                        // Calculate tiles
-                        float xDistance = meshBox.GetXDistance();
-                        float yDistance = meshBox.GetYDistance();
-                        liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.XVertexCount = liquid.XTileCount + 1;
-                        liquid.YVertexCount = liquid.YTileCount + 1;
-
-                        // Build the height map based on the 4 corners of the tiles, factoring for coordinate system difference
-                        float[,] heightMap = new float[liquid.XVertexCount, liquid.YVertexCount];
-                        for (int y = 0; y < liquid.YVertexCount; y++)
-                        {
-                            float ySamplePosition = (liquid.YVertexCount - (y + 1)) * 4.1666625f;
-                            for (int x = 0; x < liquid.XVertexCount; x++)
-                            {
-                                float xSamplePosition = (liquid.XVertexCount - (x + 1)) * 4.1666625f;
-                                float highestZ;
-                                liquidMeshData.GetHighestZAtXYPosition(xSamplePosition, ySamplePosition, out highestZ);
-                                heightMap[x, y] = highestZ;
-
-                                // Putting vert assignment here for now
-                                switch (worldModelObject.LiquidType)
-                                {
-                                    //case LiquidType.Ocean:
-                                    case LiquidType.Water:
-                                    //case LiquidType.Blood:
-                                    //case LiquidType.GreenWater:
-                                    case LiquidType.Slime:
-                                        {
-                                            liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, highestZ));
-                                        }
-                                        break;
-                                    case LiquidType.Magma:
-                                        {
-                                            liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, highestZ));
-                                        }
-                                        break;
-                                }
-                            }
-                        }
-                    } break;
                 default:
                     {
-                        Logger.WriteError("in MLIQChunk generation, unhandled WMO type of '" + worldModelObject.WMOType + "'");
+                        // Create just a single water block and put in the middle of nowhere
+                        liquid.CornerPosition = new Vector3();
+                        liquid.CornerPosition.X = 100000f;
+                        liquid.CornerPosition.Y = 100000f;
+                        liquid.CornerPosition.Z = 0f;
+                        liquid.XTileCount = 1;
+                        liquid.YTileCount = 1;
+                        liquid.XVertexCount = 2;
+                        liquid.YVertexCount = 2;
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
                     } break;
             }
             chunkBytes.AddRange(liquid.ToBytes());
