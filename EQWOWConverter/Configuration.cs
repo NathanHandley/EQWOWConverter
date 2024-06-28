@@ -72,6 +72,12 @@ namespace EQWOWConverter
         // How much 'height' to add to liquid surface, helps with rendering the waves
         public static readonly float CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT = 0.001f;
 
+        // How much to 'walk' the x value when generating an irregular quad of liquid for each plane
+        public static readonly float CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE = 0.2f;
+
+        // How much to overlap the planes when generating an irregular quad of liquid
+        public static readonly float CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE = 0.0001f; 
+
         // Maxinum number of triangle faces that can be in any zone-to-material-object
         public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 

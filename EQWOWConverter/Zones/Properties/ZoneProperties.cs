@@ -118,6 +118,74 @@ namespace EQWOWConverter.Zones
             LiquidPlanes.Add(liquidPlane);
         }
 
+        private float GetYOnLineAtX(float point1X, float point1Y, float point2X, float point2Y, float testX)
+        {
+            // Handle horizontal y (flat line)
+            if (MathF.Abs(point1X - point2X) < float.Epsilon)
+            {
+                Logger.WriteError("Unable to determine y on line at x becasue point 1 x and point 2 x were the same (straight line)");
+                return 0f;
+            }
+
+            // Calculate and return the y
+            float m = (point2Y - point1Y) / (point2X - point1X);
+            float c = point1Y - m * point1X;
+            return m * testX + c;
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+            float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
+        {
+            // Boundary Control (very limited)
+            if (northMostX < southMostX)
+            {
+                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as north x < south x");
+                return;
+            }
+            if (westMostY < eastMostY)
+            {
+                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
+                return;
+            }
+            
+            // Start at the north X and walk down to the south X
+            float curXTop = northMostX;
+            bool moreXToWalk = true;
+            while (moreXToWalk == true)
+            {
+                // Calculate the bottom edge, and align bottom edge if extends
+                float curXBottom = curXTop - Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE;
+                if (curXBottom < southMostX)
+                {
+                    curXBottom = southMostX;
+                    moreXToWalk = false;
+                }
+
+                // Determine NW position
+                float nwX = curXTop;
+                float nwY = 0;
+                if (curXTop > westMostX)
+                    nwY = GetYOnLineAtX(northMostX, northMostY, westMostX, westMostY, curXTop);
+                else
+                    nwY = GetYOnLineAtX(westMostX, westMostY, southMostX, southMostY, curXTop);
+
+                // Determine SE position
+                float seX = curXBottom;
+                float seY = 0;
+                if (curXBottom > eastMostX)
+                    seY = GetYOnLineAtX(northMostX, northMostY, eastMostX, eastMostY, curXBottom);
+                else
+                    seY = GetYOnLineAtX(eastMostX, eastMostY, southMostX, southMostY, curXBottom);
+
+                // Add the plane
+                AddLiquidPlaneZAxisAligned(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
+
+                // Set new top factoring for overlap
+                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+            }
+        }
+
         public void AddDisabledMaterialCollisionByNames(params string[] names)
         {
             foreach(string name in names)
@@ -1313,32 +1381,66 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1a75", "t75_b1a75");
                     }
                     break;                
-                case "nektulos": // Liquid Simple, not yet implemented
+                case "nektulos": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(80, 90, 70, 10, 400);
                         zoneProperties.AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East, -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f);
                         zoneProperties.AddZoneLineBox("lavastorm", -2075.322998f, -189.802826f, -19.598631f, ZoneLineOrientationType.North, 3164.449707f, 385.575653f, 151.052231f, 3094.654785f, 237.925507f, -19.999571f);
                         zoneProperties.AddZoneLineBox("neriaka", -0.739280f, 113.977829f, 28.000000f, ZoneLineOrientationType.South, 2270.015381f, -1092.749023f, 12.469000f, 2210.318115f, -1149.777344f, -0.499900f);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -229.968414f, 2123.114746f, -848.817383f, 945.974426f, -30.156151f, 200f); // West most part of river
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -545.284668f, 946.974426f, -1134.071777f, -186.474213f, -30.156151f, 200f); // Middle part of river
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -853.824585f, -185.474213f, -1614.697388f, -1905.550659f, -30.156151f, 200f); // East part of river
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "neriaka": // Liquid TODO - Complicated, more than one fountain
+                case "neriaka": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("nektulos", 2294.104980f, -1105.768066f, 0.000190f, ZoneLineOrientationType.North, 27.909149f, 168.129883f, 40.197109f, -14.193390f, 134.459396f, 27.500010f);
                         zoneProperties.AddZoneLineBox("neriakb", 83.471588f, -404.715454f, -14.000000f, ZoneLineOrientationType.East, 98.162216f, -339.024811f, 12.469000f, 64.296402f, -406.345734f, -14.499970f);
                         zoneProperties.AddZoneLineBox("neriakb", -237.565536f, -455.336853f, 14.000020f, ZoneLineOrientationType.North, -223.713684f, -447.620209f, 26.468010f, -238.099426f, -489.933807f, 13.500010f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -323.945435f, -145.418015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -322.545435f, -146.818015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -321.145435f, -148.218015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -319.745435f, -149.618015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -318.345435f, -151.018015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -316.945435f, -152.418015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -315.545435f, -153.818015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -314.145435f, -155.218015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -312.745435f, -156.618015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -311.345435f, -158.018015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -309.945435f, -159.418015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -308.545435f, -160.818015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -307.145435f, -162.218015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_m0000", -305.656586f, -143.895905f, -305.745435f, -163.618015f, 3.000080f, 10f); // West pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 108.254227f, -139.586319f, 89.659752f, -142.491455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 107.154227f, -138.486319f, 90.759752f, -143.591455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 106.054227f, -137.386319f, 91.859752f, -144.691455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 104.954227f, -136.286319f, 92.959752f, -145.791455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 103.854227f, -135.186319f, 94.059752f, -146.891455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 102.754227f, -134.086319f, 95.159752f, -147.991455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 101.654227f, -132.986319f, 96.259752f, -149.091455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 100.554227f, -131.886319f, 97.359752f, -150.191455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 99.454227f, -130.786319f, 98.459752f, -151.291455f, 2.000000f, 10f); // Center fountain
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0000", "t25_m0001");
                     }
                     break;
-                case "neriakb": // Liquid TODO - Semi-Complicated, water route will overlap some underground area
+                case "neriakb": // Liquid TODO - Large pool, fountain x2
                     {
                         zoneProperties.SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("neriaka", 83.959953f, -322.479065f, -14.000000f, ZoneLineOrientationType.West, 98.161079f, -305.681519f, 12.467630f, 69.775436f, -384.671295f, -14.500000f);
                         zoneProperties.AddZoneLineBox("neriaka", -252.560760f, -455.675934f, 14.000010f, ZoneLineOrientationType.South, -252.075302f, -447.619110f, 26.454840f, -267.196991f, -490.619293f, 13.499990f);
                         zoneProperties.AddZoneLineBox("neriakc", 209.334473f, -853.563110f, -41.968079f, ZoneLineOrientationType.North, 210.713379f, -844.618347f, -31.532860f, 203.079483f, -860.849731f, -42.468700f);
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -69.974701f, -461.815002f, -77.969276f, -452.868011f,
+                            -88.878128f, -465.822113f, -83.919678f, -475.731415f, 7f, 250f);
+                        //zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t25_m0001", 99.454227f, -130.786319f, 98.459752f, -151.291455f, 2.000000f, 10f); // NW Waterfall
+
+
+
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0001", "t50_m0003", "t50_m0007"); // Falls, water, water
                     }
                     break;
                 case "neriakc": // Liquid TODO - Complicated, water everywhere
