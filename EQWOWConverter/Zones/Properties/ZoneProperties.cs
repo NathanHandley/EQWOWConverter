@@ -1255,7 +1255,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "lavastorm": // Liquid Simple, not yet implemented
+                case "lavastorm": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(255, 50, 10, 10, 800);
@@ -1277,11 +1277,20 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East, 940.560425f, -2182.093262f, 77.329933f, 889.527710f, -2186.912109f, -5.281170f);
                     }
                     break;
-                case "mistmoore": // Liquid TODO - Slightly complicated.  Two pools of water
+                case "mistmoore": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(60, 30, 90, 10, 250);
                         zoneProperties.AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East, -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -207.922714f, 518.252563f, -409.548492f, 418.513092f, -237.916143f, 100f); // Entry pool, big
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 2.439530f, 95.290939f, -14.319680f, 84.488243f, -194.937485f, 5f); // Courtyard Pool Base 1
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 0.899840f, 96.857147f, -12.823690f, 83.049080f, -194.937485f, 5f); // Courtyard Pool Base 2
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -0.571870f, 98.305656f, -11.297530f, 81.506592f, -194.937485f, 5f); // Courtyard Pool Base 3
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -2.049700f, 90.969017f, -9.905360f, 89.007263f, -189.882553f, 10f); // Courtyard Pool Fountain N and S
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -5.059470f, 93.924767f, -6.917720f, 86.123688f, -189.882553f, 10f); // Courtyard Pool Fountain W and E
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -314.182220f, 77.662148f, -329.567352f, 14.306520f, -191.936478f, 10f); // Coffin room
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -170.154343f, 95.783401f, -181.624146f, 84.045723f, -161.937485f, 5f); // small pool with steps
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50", "t50_falls1a50");
                     }
                     break;
                 case "misty":
@@ -1292,11 +1301,16 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("rivervale", -83.344131f, 97.216301f, -0.000000f, ZoneLineOrientationType.East, 418.880157f, -2588.360596f, 11.531500f, 394.495270f, -2613.019531f, -11.249990f);
                     }
                     break;
-                case "najena": // Liquid TODO - Slightly complicated.  Two near pools and an underwater tunnel
+                case "najena": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(30, 0, 40, 10, 110);
                         zoneProperties.AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_b1a75", 352.940308f, 213.064240f, 308.154907f, 178.544678f, -28.999861f, 5f); // Blood pool under bridge
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_b1a75", 126.516800f, -139.600418f, 110.629539f, -155.153397f, 0.000040f, 10f); // Blood pool with spikes
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1a75", "t75_b1a75");
                     }
                     break;                
                 case "nektulos": // Liquid Simple, not yet implemented
@@ -3008,6 +3022,7 @@ namespace EQWOWConverter.Zones
                     break;
                 case "tutorial":
                     {
+                        // Two water in here, one is inside
                         zoneProperties.SetBaseZoneProperties("tutorial", "Tutorial", 0f, 0f, 0f, 0, ZoneContinent.Development);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
                     }
