@@ -45,8 +45,8 @@ namespace EQWOWConverter.WOWFiles
                 GroupObjects.Add(new WMOGroup(RootObject, curWorldModelObject));
 
             // Generate the root file name
-            FullWMOFolderPath = Path.Combine(baseFolderPath,"World", "wmo", "Everquest");
-            RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName + ".wmo");
+            FullWMOFolderPath = Path.Combine(baseFolderPath, "World", "wmo", "Everquest", BaseFileName);
+            RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName, BaseFileName + ".wmo");
         }
 
         public void WriteToDisk(string baseFolderPath)
