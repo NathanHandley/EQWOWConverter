@@ -93,6 +93,13 @@ namespace EQWOWConverter.Zones
 
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
         {
+            // Don't make a render batch if static rendering is disabled
+            if (Configuration.CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY == false)
+            {
+                collisionTriangleIncidies = new List<UInt32>();
+                return;
+            }
+
             // Reorder the faces and related objects
             MeshData.SortDataByMaterial();
 
