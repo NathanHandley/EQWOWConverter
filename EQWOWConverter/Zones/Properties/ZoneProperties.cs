@@ -135,7 +135,8 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
-            float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
+            float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth, float northXLimit, float westYLimit,
+            float southXLimit, float eastYLimit, float stepSize)
         {
             // Boundary Control (very limited)
             if (northMostX < southMostX)
@@ -148,14 +149,14 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
                 return;
             }
-            
+
             // Start at the north X and walk down to the south X
             float curXTop = northMostX;
             bool moreXToWalk = true;
             while (moreXToWalk == true)
             {
                 // Calculate the bottom edge, and align bottom edge if extends
-                float curXBottom = curXTop - Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE;
+                float curXBottom = curXTop - stepSize;
                 if (curXBottom < southMostX)
                 {
                     curXBottom = southMostX;
@@ -178,8 +179,99 @@ namespace EQWOWConverter.Zones
                 else
                     seY = GetYOnLineAtX(eastMostX, eastMostY, southMostX, southMostY, curXBottom);
 
-                // Add the plane
-                AddLiquidPlaneZAxisAligned(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
+                // Constrain in bounds
+                nwX = MathF.Min(nwX, northXLimit);
+                nwY = MathF.Min(nwY, westYLimit);
+                seX = MathF.Max(seX, southXLimit);
+                seY = MathF.Max(seY, eastYLimit);
+
+                // Add the plane if the bounds are good
+                if (nwX > seX && nwY > seY)
+                    AddLiquidPlaneZAxisAligned(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
+
+                // Set new top factoring for overlap
+                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+            }
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+            float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
+        {
+            AddQuadrilateralLiquidShape(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
+                eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddOctagonLiquidShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+            float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth)
+        {
+            AddOctagonLiquidShape(liquidType, materialName, northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX,
+                westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddOctagonLiquidShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+            float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth, float stepSize)
+        {
+            // Boundary Control (very limited)
+            if (northEdgeX < southEdgeX)
+            {
+                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as north x < south x");
+                return;
+            }
+            if (westEdgeY < eastEdgeY)
+            {
+                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
+                return;
+            }
+
+            // Start at the north X and walk down to the south X
+            float curXTop = northEdgeX;
+            bool moreXToWalk = true;
+            while (moreXToWalk == true)
+            {
+                // If in the middle block, fill it in
+                if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
+                {
+                    float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
+                    AddLiquidPlaneZAxisAligned(liquidType, materialName, curXTop, westEdgeY, highestSouthEastX, eastEdgeY, allCornersZ, minDepth);
+                    curXTop = highestSouthEastX;
+                }
+
+                // Calculate the bottom edge, and align bottom edge if extends
+                float curXBottom = curXTop - stepSize;
+                if (curXBottom < southEdgeX)
+                {
+                    curXBottom = southEdgeX;
+                    moreXToWalk = false;
+                }                
+
+                // Determine NW position
+                float nwX = curXTop;
+                float nwY = 0;
+                if (curXTop > westNorthX)
+                    nwY = GetYOnLineAtX(northEdgeX, northWestY, westNorthX, westEdgeY, curXTop);
+                else
+                    nwY = GetYOnLineAtX(southEdgeX, southWestY, westSouthX, westEdgeY, curXTop);
+
+                // Determine SE position
+                float seX = curXBottom;
+                float seY = 0;
+                if (curXBottom > eastNorthX)
+                    seY = GetYOnLineAtX(northEdgeX, northEastY, eastNorthX, eastEdgeY, curXBottom);
+                else
+                    seY = GetYOnLineAtX(southEdgeX, southEastY, eastSouthX, eastEdgeY, curXBottom);
+
+                // Constrain in bounds
+                nwX = MathF.Min(nwX, northEdgeX);
+                nwY = MathF.Min(nwY, westEdgeY);
+                seX = MathF.Max(seX, southEdgeX);
+                seY = MathF.Max(seY, eastEdgeY);
+
+                // Add the plane if the bounds are good
+                if (nwX > seX && nwY > seY)
+                    AddLiquidPlaneZAxisAligned(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -1375,8 +1467,8 @@ namespace EQWOWConverter.Zones
                         zoneProperties.SetFogProperties(30, 0, 40, 10, 110);
                         zoneProperties.AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_b1a75", 352.940308f, 213.064240f, 308.154907f, 178.544678f, -28.999861f, 5f); // Blood pool under bridge
-                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
-                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_b1a75", 126.516800f, -139.600418f, 110.629539f, -155.153397f, 0.000040f, 10f); // Blood pool with spikes
                         zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1a75", "t75_b1a75");
                     }
@@ -1427,10 +1519,10 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t75_m0000", "t25_m0001");
                     }
                     break;
-                case "neriakb": // Liquid TODO - Large pool, fountain x2
+                case "neriakb": // Liquid - Tested
                     {
                         //TODO: Can go in from glass (water side) into building(bug).  May not fix.
-                        //TODO: Base of the waterfall has collision when it should, and shares material with walls so can't change that way
+                        //TODO: Base of the waterfall has collision when it shouldn't, and shares material with walls so can't change that way
                         zoneProperties.SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("neriaka", 83.959953f, -322.479065f, -14.000000f, ZoneLineOrientationType.West, 98.161079f, -305.681519f, 12.467630f, 69.775436f, -384.671295f, -14.500000f);
@@ -1453,14 +1545,56 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -94.696983f, -706.349182f, -126.859512f, -747.437988f, -42.968342f, 19.949695f); // Small section in SW big lake, around protrusion over underground
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -118.663292f, -706.492859f, -125.724388f, -711.350220f, -42.968342f, 25.416886f); // Tiny deep spot in south pool area
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -125.828957f, -686.784729f, -170.818741f, -748.498291f, -42.968342f, 35f); // Small section in SW big lake
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", 130.234726f, -797.568542f, 119.068558f, -786.073120f,
+                            107.652733f, -797.633850f, 119.055656f, -809.229187f, -39.968719f, 10f); // North fountain base
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", 122.595047f, -794.080505f, 115.300949f, -801.353149f, -34.999920f, 10f); // North fountain mid
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", 120.801430f, -795.769287f, 117.165176f, -799.421387f, -28.499960f, 30f); // North fountain top
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -133.632080f, -951.659546f, -139.871582f, -945.725891f, -140.807343f, -951.617493f,
+                            -140.026337f, -957.608337f, -39.968609f, 10f, -135.480804f, -945.725891f, -140.807343f, -957.608337f, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE); // East Fountain - Base segment north
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -139.455841f, -946.005310f, -145.963593f, -950.630981f, -39.968609f, 10f); // East Fountain - Base segment center NW
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -147.934845f, -946.005310f, -154.267471f, -950.621704f, -39.968609f, 10f); // East Fountain - Base segment center SW
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -147.917404f, -952.609619f, -154.267471f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center SE 
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -139.455841f, -952.609619f, -145.963593f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center NE
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -151.865845f, -951.571350f, -153.772766f, -945.736450f, -160.001923f, -951.656799f,
+                            -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE); // East Fountain - Base segment south
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -142.004700f, -950.647949f, -151.977570f, -952.587585f, -23.599950f, 30f); // East Fountain - Top Part NS
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -145.975998f, -946.709351f, -147.923950f, -956.632507f, -23.599950f, 30f); // East Fountain - Top Part EW
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0001", "t50_m0003", "t50_m0007"); // Falls, water, water
                     }
                     break;
-                case "neriakc": // Liquid TODO - Complicated, water everywhere
+                case "neriakc": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 564.595459f, -695.657227f, 331.376404f, -930.340698f, -69.968529f, 30f); // South area, water moat (bottom)
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1a50", 515.853943f, -757.694885f, 501.844330f, -743.636108f,
+                            489.708313f, -755.678589f, 503.854492f, -769.786743f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (northwest)
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1a50", 516.064209f, -865.767456f, 503.501434f, -853.133545f,
+                            489.493195f, -867.663330f, 501.900360f, -879.862610f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (northeast)                        
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1a50", 405.875366f, -867.682312f, 391.754523f, -853.294373f,
+                            379.614746f, -865.668030f, 393.802002f, -879.829529f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (southeast)
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1a50", 406.509827f, -755.673096f, 393.734772f, -743.447388f,
+                            379.510651f, -757.599976f, 391.854950f, -769.755066f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (southwest)
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1a50", 503.118591f, 462.368011f, -756.297546f, -797.092651f, -769.704102f, -783.686096f,
+                            -769.717651f, -784.686462f, 489.802521f, 475.831116f, 489.802521f, 474.831116f, 3.000050f, 18f, 1f); // South area, second level pool (northwest)
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1a50", 503.118591f, 462.368011f, -825.981628f, -867.293274f, -839.658630f, -853.651550f,
+                            -838.658630f, -853.651550f, 489.783752f, 474.854004f, 489.783752f, 475.854004f, 3.000050f, 18f, 1f); // South area, second level pool (northeast)
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1a50", 433.082654f, 392.420123f, -756.679382f, -797.288135f, -769.794458f, -784.708374f,
+                            -769.894458f, -783.708374f, 419.758734f, 405.645306f, 420.858734f, 405.845306f, 3.000050f, 18f, 1f); // South area, second level pool (southwest)
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1a50", 433.082654f, 392.420123f, -826.226501f, -867.087097f, -837.657227f, -853.264429f,
+                            -839.657227f, -853.664429f, 421.758734f, 405.645306f, 419.658734f, 405.845306f, 3.000050f, 18f, 1f); // South area, second level pool (southeast)
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1a50", 475.315918f, 420.430237f, -784.233215f, -839.071289f, -797.651123f, -825.433545f,
+                            -797.651123f, -825.633545f, 461.791595f, 433.775452f, 461.591595f, 433.775452f, 17.000080f, 4.5f, 1f); // South area, top pool
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_falls1a50", 463.792389f, 431.817810f, -795.708984f, -827.656067f, -807.690613f, -815.690063f,
+                            -807.690613f, -815.690063f, 451.802094f, 443.800415f, 451.802094f, 443.800415f, 60f, 47.5f, 0.31f); // South area, top waterfall
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 957.712585f, -801.579041f, 768.454346f, -973.101624f, -69.968651f, 50f); // South second area with eye
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 1292.375366f, -1573.922241f, 1241.988159f, -1711.024536f, -104.968109f, 50f); // Northwest area, water under bridge
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 1107.336060f, -1336.077759f, 932.822266f, -1799.186035f, -97.968651f, 50f); // East area, water around the building with bridges and docks (North)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 932.422266f, -1546.286987f, 696.481934f, -1799.186035f, -97.968651f, 50f); // East area, water around the building with bridges and docks (South)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 824.538452f, -1456.688843f, 798.816895f, -1468.245117f, -81.968712f, 10f); // Central area, dragon statue fountain
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "t75_blood1a75", 1301.838745f, -1249.076172f, 1289.048096f, -1251.979248f, -39.968670f, 3f); // Blood at top of the red temple
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50", "t50_falls1a50", "t25_m0001", "t75_blood1a75");
                     }
                     break;
                 case "northkarana": // Liquid Simple, not yet implemented
