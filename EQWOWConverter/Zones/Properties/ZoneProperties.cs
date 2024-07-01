@@ -483,7 +483,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("eastkarana", 3094.991f, -2315.8328f, 23.849806f, ZoneLineOrientationType.South,-1443.1708f, -542.2266f, 423.58218f, -1665.6155f, -747.2683f, 13f);
                     }
                     break;
-                case "blackburrow": // Liquid - TODO, Complicated (slopes)
+                case "blackburrow": // Liquid - TODO, Complicated
                     {
                         // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinent.Antonica);
@@ -1597,7 +1597,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50", "t50_falls1a50", "t25_m0001", "t75_blood1a75");
                     }
                     break;
-                case "northkarana": // Liquid Simple, not yet implemented
+                case "northkarana": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("northkarana", "Northern Plains of Karana", -382f, -284f, -7f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
@@ -1893,10 +1893,12 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qey2hh1", 1310.998047f, -15935.786133f, 76.923477f, ZoneLineOrientationType.West, 1322.016113f, 3744.417480f, 300.000000f, 1302.016113f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", 1330.998047f, -15935.786133f, 83.973763f, ZoneLineOrientationType.West, 1342.016113f, 3744.417480f, 300.000000f, 1322.016113f, 3714.417480f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qey2hh1", 1350.998047f, -15935.786133f, 91.028137f, ZoneLineOrientationType.West, 1500.016113f, 3744.417480f, 300.000000f, 1342.016113f, 3714.417480f, -100.000000f);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -3484.275635f, 3916.304199f, -5704.020996f, -3762.698975f, -69.281250f, 154f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 2930.502197f, -2396.797363f, -5704.020996f, -3484.375635f, -69.281250f, 154f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "nro": // Liquid Simple, not yet implemented
+                case "nro": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
@@ -2065,11 +2067,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, -840.747498f, -6.406000f, ZoneLineOrientationType.South, -1878f, -828.770020f, 300.000000f, -1900f, -848.770020f, -200.000000f);
                         zoneProperties.AddZoneLineBox("oasis", 2540.233154f, -860.747498f, -6.406110f, ZoneLineOrientationType.South, -1878f, -848.770020f, 300.000000f, -1900f, -1200.770020f, -200.000000f);
                         zoneProperties.AddZoneLineBox("ecommons", -3023.223633f, -1147.192261f, 0.000050f, ZoneLineOrientationType.West, 2077.083984f, 1928.101074f, 28.065140f, 2007.522705f, 1900.196045f, -0.499880f);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 2513.325439f, -761.260254f, -2522.613525f, -1661.002563f, -6.406400f, 100f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "oasis": // Liquid TODO - Semi-complicated. 2 bodies of water that if connected will fill in pits between them
+                case "oasis": // Liquid - Tested
                     {
+                        // TODO: Ladder in the oasis center
                         zoneProperties.SetBaseZoneProperties("oasis", "Oasis of Marr", 903.98f, 490.03f, 6.4f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(250, 250, 180, 10, 800);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, 1241.229980f, 30.033600f, ZoneLineOrientationType.North, 2590f, 1500.252441f, 300.000000f, 2560f, 1229.252441f, -200.000000f);
@@ -2179,6 +2183,11 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -838.770020f, -6.406150f, ZoneLineOrientationType.North, 2590f, -830.747498f, 300.000000f, 2560f, -850.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("nro", -1858.000000f, -858.770020f, -6.406100f, ZoneLineOrientationType.North, 2590f, -850.747498f, 300.000000f, 2560f, -1200.747498f, -200.000000f);
                         zoneProperties.AddZoneLineBox("sro", 1433.793579f, 244.703186f, -13.301640f, ZoneLineOrientationType.South, -1890.072144f, 301.506622f, 119.807327f, -1933.566406f, 58.167610f, 1.784040f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 3204.784424f, -761.411926f, -2522.721680f, -1661.221313f, -6.405980f, 100f); // Ocean line
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 324.968842f, 928.367065f, -592.296204f, -231.830185f, -41.718739f, 300f); // Oasis, north
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
                 case "oggok": // Liquid TODO - Semi-easy. One large water area and a water volume
