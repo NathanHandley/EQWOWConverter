@@ -2275,7 +2275,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("everfrost", 2019.599976f, -7040.121094f, -63.843819f, ZoneLineOrientationType.West, -39.775318f, 172.344788f, 38.435791f, -80.162201f, 102.044090f, -0.499990f);
                     }
                     break;
-                case "qcat": // Liquid TODO - Complicated, lots of water and tunnels
+                case "qcat": // Liquid - Tested
                     {
                         // TODO: Secret pot to Tox
                         zoneProperties.SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinent.Antonica);
@@ -2287,7 +2287,23 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeynos", -147.118271f, -602.695679f, -27.999969f, ZoneLineOrientationType.West, 224.098785f, -251.712753f, -29.532080f, 209.713898f, -294.294037f, -42.468761f);
                         zoneProperties.AddZoneLineBox("qeynos", 174.606125f, -482.169281f, -81.858551f, ZoneLineOrientationType.North, 238.099686f, -55.775669f, 89.590897f, 223.712814f, -70.160507f, 55.560329f);
                         zoneProperties.AddZoneLineBox("qeynos", -188.236420f, 78.551971f, -91.583946f, ZoneLineOrientationType.West, -167.744095f, 314.996979f, -71.500740f, -182.130966f, 286.822327f, -84.468750f);
-                        //zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1", "d_m0001", "t75_m0007", "t75_m0008");
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 1066.685913f, -40.094090f, 1043.013306f, -62.600571f, 450f, 600f); // Water Column - North (and a little swim-under)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 1043.003306f, -40.094090f, 1005.895813f, -67.779869f, -42.968609f, 150f); // Small water section leading to the north water column
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 897.805542f, 224.793762f, 873.986084f, 202.529007f, 300f, 450f); // Water Column - North West (and a little swim-under)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 897.805542f, 202.539007f, 850.501831f, 164.009399f, -42.968609f, 150f); // Small water section leading to the north west water column
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 925.001343f, 211.993073f, 674.584167f, 5.217260f, -42.968609f, 21f); // Northwest large top area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 841.040100f, 5.227260f, 656.927429f, -57.250038f, -42.968609f, 21f); // Northeast large top area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 674.594167f, 211.993073f, 626.825195f, 120.706902f, -42.968609f, 21f); // Sliver connecting top northwest and southwest
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 626.835195f, 522.180908f, -227.728653f, -13.182240f, -42.968609f, 150f); // Southwest area, through dock exit
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 352.625366f, -165.435913f, 331.080566f, -182.326920f, 200.603394f, 350f); // Water Column - East
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 331.090566f, -77.152657f, 78.252281f, -218.270767f, -42.968609f, 150f); // Southeast area, leaving only a sliver in far se
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 117.543510f, -218.260767f, 77.043922f, -226.367447f, -42.968609f, 150f); // Tiny part in the SE
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 241.891846f, -53.101780f, 215.503647f, -77.142657f, 200.603394f, 350f); // Water Column, - South
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 241.891846f, -13.172240f, 215.503647f, -53.111780f, -42.968609f, 150f); // West connecting side of the south water column
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 215.513647f, -13.172240f, 78.252281f, -218.280767f, -42.968609f, 150f);// Center south water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1a75", 686.540344f, 99.223663f, 642.067749f, 12.217740f, -84.968674f, 100f); // Lower water area with the shark sign
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "d_b1", 379.903473f, -557.136230f, 334.749023f, -604.327087f, -42.968700f, 50f); // Blood pool
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1a75", "t75_m0004", "t75_m0007", "t75_m0008", "d_b1", "t75_m0007", "t75_m0008"); // d_b1 is blood, as is 07 and 08
                     }
                     break;
                 case "qey2hh1": // Liquid Not yet Implemented, simple
