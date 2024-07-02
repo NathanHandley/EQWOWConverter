@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (worldModelObject.IsCompletelyInLiquid == false)
+            if (worldModelObject.IsCompletelyInLiquid == false && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
@@ -151,7 +151,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
-            if (worldModelObject.IsCompletelyInLiquid == false)
+            if (worldModelObject.IsCompletelyInLiquid == false && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
                 chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
