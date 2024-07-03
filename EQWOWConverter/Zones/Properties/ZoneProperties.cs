@@ -2624,7 +2624,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1", "t50_m0001", "t50_smke1a50");
                     }
                     break;
-                case "qeynos2": // Liquid TODO: Complicated, multiple wells
+                case "qeynos2": // Liquid - Tested
                     {
                         // TODO: Teleporters after zone collision is implemented
                         zoneProperties.SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinent.Antonica);
@@ -2744,12 +2744,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1040.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1030.846802f, 200.000000f, 1500.794556f, -1050.846802f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1060.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1050.846802f, 200.000000f, 1500.794556f, -1070.846802f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1080.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1070.846802f, 200.000000f, 1500.794556f, -1090.846802f, -100.000000f);
-                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);                   
-                    
-                        // Add purple glow to disabled material collision
+                        zoneProperties.AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 227.730164f, 394.674011f, 165.504913f, 277.284241f, -1.999990f, 350f); // West water and sewer entry
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", 308.709290f, -152.874634f, 292.515320f, -169.049088f, -1.999990f, 350f); // North sewer entry
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_w1a50", -41.123249f, -293.180542f, -239.001862f, -504.985931f, -2.009970f, 75f); // Water around paladin guild entry
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1a50", "t50_m0003", "t75_m0007", "t75_rea1a75");
                     }
                     break;
-                case "qeytoqrg": // Liquid Simple, not yet implemented
+                case "qeytoqrg": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
@@ -2867,7 +2869,8 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1080.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1070.407104f, 200.000000f, -360.758850f, -1090.407104f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qeynos2", 1480.794556f, -1099f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1090.407104f, 200.000000f, -360.758850f, -1150f, -100.000000f);
                         zoneProperties.AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East, 5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 4913.403320f, 1147.879028f, 3488.182617f, 574.132324f, -24.749750f, 150f);
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
                 case "qrg": // Liquid TODO - Complicated.  Lots of water sections.
