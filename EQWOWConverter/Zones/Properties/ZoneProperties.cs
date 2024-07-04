@@ -1529,7 +1529,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("neriaka", -252.560760f, -455.675934f, 14.000010f, ZoneLineOrientationType.South, -252.075302f, -447.619110f, 26.454840f, -267.196991f, -490.619293f, 13.499990f);
                         zoneProperties.AddZoneLineBox("neriakc", 209.334473f, -853.563110f, -41.968079f, ZoneLineOrientationType.North, 210.713379f, -844.618347f, -31.532860f, 203.079483f, -860.849731f, -42.468700f);
                         zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -69.974701f, -461.815002f, -77.969276f, -452.868011f,
-                            -88.878128f, -465.822113f, -83.919678f, -475.731415f, 7f, 250f); // West waterfall 
+                            -89.278128f, -466.222113f, -84.319678f, -476.131415f, 7f, 250f); // West waterfall 
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", 176.435440f, -449.724335f, -75.183372f, -779.972900f, -42.968342f, 100f); // NorthWestmost lake water
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -75.083372f, -449.724335f, -87.210258f, -506.557495f, -42.968342f, 100f); // SouthWestmost lake water
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -124.188118f, -812.949768f, -315.905853f, -1121.356567f, -42.968342f, 29f); // Eastmost lake water
