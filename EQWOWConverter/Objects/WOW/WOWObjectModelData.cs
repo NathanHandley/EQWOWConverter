@@ -128,7 +128,7 @@ namespace EQWOWConverter.Objects
                     // Make a 'blank' animation for this material/texture, since it's static
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)] = new ModelTrackSequences<Fixed16>();
                     ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddSequence();
-                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(32767));
+                    ModelTextureTransparencySequenceSetByMaterialIndex[Convert.ToInt32(material.Index)].AddValueToSequence(0, 0, new Fixed16(material.GetTransparencyValue()));
                     ModelTextureTransparencyLookups.Add(Convert.ToUInt16(ModelTextureTransparencyLookups.Count));
                 }
             }
@@ -229,10 +229,6 @@ namespace EQWOWConverter.Objects
                         case MaterialType.Transparent25Percent:
                         case MaterialType.Transparent75Percent:
                         case MaterialType.Transparent50Percent:
-                            {
-                                newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Alpha);
-                            }
-                            break;
                         case MaterialType.TransparentMasked:
                             {
                                 newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Alpha_Key);
@@ -386,7 +382,7 @@ namespace EQWOWConverter.Objects
                 }
 
                 // Add this shown (non-transparent) frame
-                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(Int16.MaxValue));
+                newAnimation.AddValueToSequence(0, curAnimationTimestamp, new Fixed16(curMaterial.GetTransparencyValue()));
 
                 // Add this animation and the texture lookup, which should match current count
                 ModelTextureTransparencySequenceSetByMaterialIndex[curMaterialIndex] = newAnimation;

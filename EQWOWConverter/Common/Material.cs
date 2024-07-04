@@ -176,5 +176,17 @@ namespace EQWOWConverter.Common
 
             return correctedCoordinates;
         }
+
+        public short GetTransparencyValue()
+        {
+            // Calculated by 32767 / (percent)
+            switch (MaterialType)
+            {
+                case MaterialType.Transparent25Percent: return 8192;
+                case MaterialType.Transparent50Percent: return 16384;
+                case MaterialType.Transparent75Percent: return 24575;
+                default: return Int16.MaxValue;
+            }
+        }
     }
 }
