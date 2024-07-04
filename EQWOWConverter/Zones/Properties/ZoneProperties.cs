@@ -1437,7 +1437,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East, 940.560425f, -2182.093262f, 77.329933f, 889.527710f, -2186.912109f, -5.281170f);
                     }
                     break;
-                case "mistmoore": // Liquid - Tested
+                case "mistmoore": // Liquid - Tested (Change fountain to have water volumes for collision
                     {
                         zoneProperties.SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(60, 30, 90, 10, 250);
@@ -1536,7 +1536,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -0.381660f, -779.758301f, -84.545477f, -840.462952f, -42.968342f, 31f); // South of bar in lake
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -84.445477f, -779.758301f, -126.279922f, -840.462952f, -42.968342f, 30f); // South of bar in lake
                         zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", 33.392849f, -780.018066f, 25.913090f, -754.987305f,
-                            -36.588150f, -796.803223f, -0.109150f, -814.181809f, -42.968342f, 31f); // Outside bar windows
+                            -36.588150f, -796.803223f, -0.109150f, -814.181809f, -42.968342f, 31f, 1000f, 1000f, -1000f, -1000f, 0.4f); // Outside bar windows
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -75.048660f, -657.157166f, -84.026176f, -704.937622f, -42.968342f, 38.551629f); // SW in big lake area
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -84.017327f, -668.889526f, -147.045441f, -687.034424f, -42.968342f, 15.572826f); // SW in big lake area
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -84.017522f, -686f, -124.934113f, -706.436462f, -42.968342f, 15.9f); // SW in big lake area
@@ -1550,13 +1550,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", 122.595047f, -794.080505f, 115.300949f, -801.353149f, -34.999920f, 10f); // North fountain mid
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", 120.801430f, -795.769287f, 117.165176f, -799.421387f, -28.499960f, 30f); // North fountain top
                         zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -133.632080f, -951.659546f, -139.871582f, -945.725891f, -140.807343f, -951.617493f,
-                            -140.026337f, -957.608337f, -39.968609f, 10f, -135.480804f, -945.725891f, -140.807343f, -957.608337f, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE); // East Fountain - Base segment north
+                            -140.026337f, -957.608337f, -39.968609f, 10f, -135.480804f, -945.725891f, -140.807343f, -957.608337f, 0.3f); // East Fountain - Base segment north
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -139.455841f, -946.005310f, -145.963593f, -950.630981f, -39.968609f, 10f); // East Fountain - Base segment center NW
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -147.934845f, -946.005310f, -154.267471f, -950.621704f, -39.968609f, 10f); // East Fountain - Base segment center SW
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -147.917404f, -952.609619f, -154.267471f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center SE 
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -139.455841f, -952.609619f, -145.963593f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center NE
                         zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -151.865845f, -951.571350f, -153.772766f, -945.736450f, -160.001923f, -951.656799f,
-                            -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE); // East Fountain - Base segment south
+                            -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, 0.3f); // East Fountain - Base segment south
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -142.004700f, -950.647949f, -151.977570f, -952.587585f, -23.599950f, 30f); // East Fountain - Top Part NS
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_m0003", -145.975998f, -946.709351f, -147.923950f, -956.632507f, -23.599950f, 30f); // East Fountain - Top Part EW
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_m0001", "t50_m0003", "t50_m0007"); // Falls, water, water
@@ -2210,7 +2210,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;                
-                case "paineel": // Liquid - Tested
+                case "paineel": // Liquid - Tested (Make fountains have water volume)
                     {
                         // TODO: Teleporters after zone collision is mapped (4 glass pads connecting making 2 bounces?  What about red area?)
                         zoneProperties.SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinent.Odus);
