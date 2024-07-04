@@ -33,6 +33,11 @@ namespace EQWOWConverter.ModelObjects
         {
             Material = new Material(material);
             BlendingMode = blendType;
+            if (blendType == ModelMaterialBlendType.Add)
+            {
+                Flags = ModelMaterialFlag.DepthWrite;
+                Flags |= ModelMaterialFlag.Unlit;
+            }
         }
 
         public UInt32 GetBytesSize()
