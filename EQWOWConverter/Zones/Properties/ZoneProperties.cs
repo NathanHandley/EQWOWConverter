@@ -2906,10 +2906,24 @@ namespace EQWOWConverter.Zones
                     break;
                 case "runnyeye": // Liquid TODO - Slightly complicated.  Some green-ish water
                     {
+                        // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(75, 150, 25, 10, 600);
                         zoneProperties.AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West, -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f);
                         zoneProperties.AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_agua1a50", 6.060460f, -4.080790f, 5.092600f, -5.076620f, 2.997610f, -2.994190f, 2.997610f, -2.994190f,
+                            4.004600f, -1.993800f, 4.004600f, -1.993800f, -128.937500f, 100f); // Bottom well entry
+                        zoneProperties.AddLiquidVolume(LiquidType.Water, -28.736370f, -28.261860f, -172.924393f, 20.882460f, 26.487289f, -148.937500f); // Bottom well outlet into the lowest path area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", 294.765076f, 106.255119f, 6.004130f, -258.832855f, -134.937424f, 150f); // North lower area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", -4.007230f, 20.985340f, -278.851288f, -255.727127f, -134.937424f, 150f); // South lower area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", 6.014130f, 32.763168f, -4.017230f, 5.014490f, -134.937424f, 150f);  // West lower area 
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", 6.014130f, -5.003880f, -4.017230f, -255.727127f, -134.937424f, 150f);  // East lower area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t25_slime1a25", 209.147537f, 125.676064f, 183.607407f, 75.932487f, -1.999960f, 12f);// Top green pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", 24.071569f, 43.730431f, 2.673260f, -60.384258f, -2.000000f, 12f); // Top water pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", 188.957626f, 182.237473f, -134.247452f, 85.751991f, -50.968750f, 13.2f); // Second level water, north and west
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_agua1a50", -75.618561f, 182.247473f, -160.054581f, -108.079483f, -50.968750f, 13.2f); // Second level water, south and east
+                        // TODO: Slime Layer
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_agua1a50", "t25_m0002", "t75_m0003", "t25_slime1a25", "t75_m0009");
                     }
                     break;
                 case "soldunga": // Liquid TODO - Complicated lava
