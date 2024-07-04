@@ -229,9 +229,13 @@ namespace EQWOWConverter.Objects
                         case MaterialType.Transparent25Percent:
                         case MaterialType.Transparent75Percent:
                         case MaterialType.Transparent50Percent:
-                        case MaterialType.TransparentMasked:
                             {
                                 newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Alpha);
+                            }
+                            break;
+                        case MaterialType.TransparentMasked:
+                            {
+                                newModelMaterial = new ModelMaterial(material, ModelMaterialBlendType.Alpha_Key);
                             }
                             break;
                         default:
