@@ -3059,14 +3059,17 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_m0002", "d_m0003");
                     }
                     break;
-                case "southkarana": // Liquid Simple, not yet implemented
+                case "southkarana": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("southkarana", "Southern Plains of Karana", 1293.66f, 2346.69f, -5.77f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 200, 220, 10, 800);
                         zoneProperties.AddZoneLineBox("lakerathe", 4352.154297f, 1158.142578f, -0.000990f, ZoneLineOrientationType.South, -8555.652344f, 1180.041138f, 43.965542f, -8569.452148f, 1132.577637f, -0.499510f);
                         zoneProperties.AddZoneLineBox("northkarana", -4472.277344f, 1208.014893f, -34.406212f, ZoneLineOrientationType.North, 2900.742432f, 943.823730f, 17.628691f, 2821.058350f, 862.661682f, -36.353588f);
                         zoneProperties.AddZoneLineBox("paw", -103.683167f, 16.824860f, 0.000050f, ZoneLineOrientationType.East, -3110.107910f, 895.748901f, 2.515520f, -3126.174805f, 861.375854f, -12.438860f);
-                        //zoneProperties.AddLiquidMaterialContour(LiquidType.Water, "d_w1", 500f, true);
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "d_w1", -18.260389f, -104.704063f, -26.714720f, -96.223312f, -35.142010f, -104.840118f, -26.822020f, -113.371986f,
+                            3.656250f, 250f); // Water near center of map
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "d_w1", 3847.334961f, 4207.039062f, 1675.559814f, -4671.479004f, -69.374458f, 250f); // Big north water area
+                        zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
                 case "sro":
