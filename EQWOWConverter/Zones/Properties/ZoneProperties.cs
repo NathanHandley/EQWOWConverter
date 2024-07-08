@@ -3508,9 +3508,12 @@ namespace EQWOWConverter.Zones
                     break;
                 case "tutorial":
                     {
-                        // Two water in here, one is inside
+                        // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("tutorial", "Tutorial", 0f, 0f, 0f, 0, ZoneContinent.Development);
                         zoneProperties.SetFogProperties(0, 0, 0, 500, 2000);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1", 99.116943f, 98.680382f, -101.066818f, -103.535660f, -14.000000f, 350f); // Middle circle of water
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_w1", -316.934570f, -120.476463f, -436.932068f, -189.277786f, -0.999990f, 350f); // Waterfall area
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1", "t75_falls1");
                     }
                     break;
                 default:
