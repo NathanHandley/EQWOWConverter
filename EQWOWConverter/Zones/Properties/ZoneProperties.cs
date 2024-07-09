@@ -566,8 +566,18 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 955.654907f, -275.840149f, 947.576904f, -283.912537f, 105.968758f, 7.75f); // Box room, water column cap
                         zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_water1", 955.654907f, 947.576904f, -275.840149f, -283.912537f, -278.828613f, -280.928589f,
                             -278.828613f, -280.928589f, 952.661194f, 950.571838f, 952.661194f, 950.571838f, 105.968758f, 118f, 0.4f); // Box room, water column
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 980.440186f, -254.128174f, 923.192810f, -305.867035f, 0.001150f, 13.5f); // Box room, upper main pool 1
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 977.539307f, -251.266257f, 923.788025f, -308.644434f, 0.001150f, 13.5f); // Box room, upper main pool 2
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 1000.311096f, 234.174606f, 678.456055f, 89.293968f, -71.968689f, 50f); // Green Pools, 2 NE pools (one north of the other)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 607.513184f, 430.828156f, 470.775665f, 123.239029f, -71.968689f, 50f); // Green Pools, 2 SW pools (one west of the other)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
 
-                        // Box room, upper main pool
+
+                        zoneProperties.AddOctagonLiquidShape(LiquidType.GreenWater, "t50_grnwtr1", 1115.565186f, 1067.562622f, 611.748718f, 563.782227f, 593.734009f, 581.791504f,
+                            593.734009f, 581.791504f, 1097.566772f, 1085.559326f, 1097.566772f, 1085.559326f, -66.880722f, 10f, 0.5f); // Green sphere - Middle Segment
+
+
 
 
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_falls1", "t50_water1", "t50_m0000", "t75_m0004", "t75_m0005", "t50_m0007", "t50_grnwtr1", "t75_m0013",
@@ -1489,7 +1499,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("steamfont", 590.807617f, 2193.784424f, -113.249947f, ZoneLineOrientationType.East, 940.560425f, -2182.093262f, 77.329933f, 889.527710f, -2186.912109f, -5.281170f);
                     }
                     break;
-                case "mistmoore": // Liquid - Tested (Change fountain to have water volumes for collision
+                case "mistmoore": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinent.Faydwer);
                         zoneProperties.SetFogProperties(60, 30, 90, 10, 250);
