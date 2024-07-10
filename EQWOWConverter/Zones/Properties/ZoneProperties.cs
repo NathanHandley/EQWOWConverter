@@ -195,6 +195,239 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddCazicThuleLiquidSphere(LiquidType liquidType, string materialName)
+        {
+            // TODO: Redo this to be calculated smarter. It's very hacky now. Consider that the "sphere" is wider than it is tall.
+
+            // Set boundaries
+            float maxX = 1115.565186f;
+            float maxY = 611.748718f;
+            float minX = 1067.562622f;            
+            float minY = 563.782227f;
+            float maxZ = -49.992290f; // Top of sphere
+            float minZ = -66.992290f; // Top of a side panel (17 units lower)
+            float maxHeight = 43f;
+            float minHeight = 9f;
+
+            //Actuals
+            //float sphereRadius = 24f;
+            //float sphereCenterX = 1067.565186f;
+            //float sphereCenterY = 587.748718f;
+            //float sphereCenterZ = -71.49229f;
+
+            /*
+            // Create a north-south column of steps, 1 unit in size (span is 48)
+            // Middle column is 6x6 units
+            for (int i = 0; i < 48; i++)
+            {
+                // Set boundaries
+                float sphereRadius = 24f;
+                float sphereCenterX = 1067.565186f;
+                float sphereCenterY = 587.748718f;
+                float sphereCenterZ = -66.992290f;
+
+                float sphereRelativeCenterX = sphereCenterX;
+
+                float curTopX = maxX - Convert.ToSingle(i);
+                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
+                float curTopY = maxY;
+                float curBottomY = minY;
+
+                // Calculate the z
+                float x = i;
+                float curZ = maxZ;
+                if (i < 21)
+                {
+                    x = 21 - i;
+                    curZ = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
+                    curZ += sphereCenterZ;
+                    sphereRelativeCenterX += 3f;
+                }
+                else if (i > 27)
+                {
+                    x = i - 28;
+                    curZ = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
+                    curZ += sphereCenterZ;
+                    sphereRelativeCenterX -= 3f;
+                }
+
+                // Bring up the edges a bit
+
+
+                float curHeight = maxHeight;
+
+
+                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
+            }
+            */
+
+            // Create a north-south column of steps, 1 unit in size (span is 48, but middle is 6 units and flat)
+            for (int i = 0; i < 21; i++)
+            {
+
+
+                // Set boundaries
+                float sphereRadius = 24f;
+                float sphereCenterX = 1067.565186f;
+                float sphereCenterY = 587.748718f;
+                float sphereCurveCenterZ = -78.502290f;
+                float sphereTrueCenterZ = -71.49229f;
+
+                float curTopX = maxX - Convert.ToSingle(i);
+                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
+                float curTopY = maxY;
+                float curBottomY = minY;
+
+                // Calculate the height
+                float x = 21 - i;
+                float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
+                float curZ = z + sphereCurveCenterZ;
+
+                // Raise the value by an amount
+                float raiseRelativeBase = 4.3f;
+                float amoutToRaise = raiseRelativeBase * (Convert.ToSingle(i) / 21);
+                curZ += amoutToRaise;
+
+                // Calculate the depth
+                float curDepth = (curZ - sphereTrueCenterZ) * 2f;
+
+                // Create the plane
+                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth);
+            }
+
+
+
+
+
+            //// Create a grid of 16x16 potential squares
+            //for (int x = 0; x < 16; x++)
+            //{
+            //    for (int y = 0; y < 16; y++)
+            //    {
+
+
+
+
+
+
+
+            //    }
+            //}
+
+
+            /* Semi-nice curve over the z
+            // Create a north-south column of steps, 1 unit in size (span is 48)
+            for (int i = 0; i < 48; i++)
+            {
+                
+                
+                // Set boundaries
+                float maxX = 1115.565186f;
+                float maxY = 611.748718f;
+                float minX = 1067.562622f;            
+                float minY = 563.782227f;
+                float maxZ = -49.992290f;
+                float minZ = -66.992290f;
+                float maxHeight = 43f;
+                float minHeight = 9f;
+                float sphereRadius = 24f;
+                float sphereCenterX = 1067.565186f;
+                float sphereCenterY = 587.748718f;
+                float sphereCenterZ = -71.49229f;
+                
+                float curTopX = maxX - Convert.ToSingle(i);
+                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
+                float curTopY = maxY;
+                float curBottomY = minY;
+
+                // Calculate the height
+                float x = i;
+                if (i < 24)
+                    x = 24 - i;
+                else
+                    x = i - 24;
+                float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
+                float curZ = z + sphereCenterZ;
+                float curHeight = maxHeight;
+                
+
+            AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
+            }
+            */
+
+
+
+
+            // Top X curve Start = 1095.393311f (19 units from end)
+
+
+
+            /* Backup
+            
+            // Set boundaries
+            float maxX = 1115.565186f;
+            float maxY = 611.748718f;
+            float minX = 1067.562622f;            
+            float minY = 563.782227f;
+            float maxZ = -49.992290f;
+            float minZ = -66.992290f;
+            float maxHeight = 43f;
+            float minHeight = 9f;
+
+            // Create a north-south column of steps, 1 unit in size (span is 48)
+            for (int i = 0; i < 48; i++)
+            {
+                float curTopX = maxX - Convert.ToSingle(i);
+                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
+                float curTopY = maxY;
+                float curBottomY = minY;
+
+                // Calculate the height
+                float percentToPeak = 1f;
+                if (i < 19)
+                    percentToPeak = Convert.ToSingle(i) / 19f;
+                else if (i > 28)
+                    percentToPeak = Convert.ToSingle(48-i) / 19f;
+                float curZ = (minZ * (1f - percentToPeak)) + (maxZ * percentToPeak);
+                float curHeight = (minHeight * (1f - percentToPeak)) + (maxHeight * percentToPeak);
+
+                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
+            }
+            */
+
+
+
+            /* Somewhat working version
+            // Top square
+            float topX = 1096.225220f;
+            float bottomX = 1086.841064f;
+            float topY = 592.433167f;
+            float bottomY = 583.070251f;
+            float topZ = -49.992290f;
+            float topHeight = 43f;
+
+            // Max extents (not used yet)
+            //float maxX = 1115.565186f;
+            //float minX = 1067.562622f;
+            //float maxY = 611.748718f;
+            //float minY = 563.782227f;
+
+            // This just makes a strange pryamid, and is wildly wrong.  Clean up later with an actual sphere calculation.
+            for (int i = 0; i < 19; ++i)
+            {
+                float curTopX = topX + Convert.ToSingle(i);
+                float curBottomX = bottomX - Convert.ToSingle(i);
+                float curTopY = topY + Convert.ToSingle(i);
+                float curBottomY = bottomY - Convert.ToSingle(i);
+                float curZ = topZ - Convert.ToSingle(i);
+                float curHeight = topHeight - (Convert.ToSingle(i) * 2f);
+
+                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight); // Center Column
+            }
+            */
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
         {
@@ -521,7 +754,8 @@ namespace EQWOWConverter.Zones
                     }
                     break;
                 case "cazicthule": // Liquid - TODO, Complicated (volumes)
-                    {                        
+                    {          
+                        // TODO: Improve the green sphere water volume
                         zoneProperties.SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 80, 20, 10, 450);
                         zoneProperties.AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
@@ -573,12 +807,16 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
 
-
-                        zoneProperties.AddOctagonLiquidShape(LiquidType.GreenWater, "t50_grnwtr1", 1115.565186f, 1067.562622f, 611.748718f, 563.782227f, 593.734009f, 581.791504f,
-                            593.734009f, 581.791504f, 1097.566772f, 1085.559326f, 1097.566772f, 1085.559326f, -66.880722f, 10f, 0.5f); // Green sphere - Middle Segment
+                        zoneProperties.AddCazicThuleLiquidSphere(LiquidType.GreenWater, "t50_grnwtr1");
 
 
+                        //zoneProperties.AddOctagonLiquidShape(LiquidType.GreenWater, "t50_grnwtr1", 1115.565186f, 1067.562622f, 611.748718f, 563.782227f, 593.734009f, 581.791504f,
+                        //    593.734009f, 581.791504f, 1097.566772f, 1085.559326f, 1097.566772f, 1085.559326f, -66.880722f, 10f, 0.5f); // Green sphere - Middle Segment
 
+
+
+                        //zoneProperties.AddDisabledMaterialCollisionByNames("t50_falls1", "t50_water1", "t50_m0000", "t75_m0004", "t75_m0005", "t50_m0007",
+                        //    "t25_m0014", "t75_m0015", "t75_m0016");
 
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_falls1", "t50_water1", "t50_m0000", "t75_m0004", "t75_m0005", "t50_m0007", "t50_grnwtr1", "t75_m0013",
                             "t25_m0014", "t75_m0015", "t75_m0016");
