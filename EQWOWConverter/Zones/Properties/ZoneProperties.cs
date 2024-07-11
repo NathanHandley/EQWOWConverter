@@ -202,7 +202,7 @@ namespace EQWOWConverter.Zones
             // Set boundaries
             float maxX = 1115.565186f;
             float maxY = 611.748718f;
-            float minX = 1067.562622f;            
+            float minX = 1067.562622f;
             float minY = 563.782227f;
             float maxZ = -49.992290f; // Top of sphere
             float minZ = -66.992290f; // Top of a side panel (17 units lower)
@@ -223,42 +223,73 @@ namespace EQWOWConverter.Zones
             //float sphereCenterZ = -71.49229f;
 
             // Create the center column
-            AddLiquidPlaneZAxisAligned(liquidType, materialName, sphereCenterX + 3.01f, sphereCenterY + 3.01f, sphereCenterX - 3.01f, sphereCenterY - 3.01f, maxZ, (maxZ - sphereTrueCenterZ) * 2f);
+            AddLiquidPlaneZAxisAligned(liquidType, materialName, sphereCenterX + 4.01f, sphereCenterY + 4.01f, sphereCenterX - 4.01f, sphereCenterY - 4.01f, maxZ, (maxZ - sphereTrueCenterZ) * 2f);
 
-            // Create a north-south column of steps, 1 unit in size (span is 48, but middle is 6 units and flat)
-            for (int i = 0; i < 48; i++)
+            // Walk across the x in 2 unit steps, total of 48. Center column is 8 units.
+            for (int xi = 0; xi < 48; xi+=2)
             {
-                if (i > 21 && i < 26)
-                    continue;
+                // Walk across the y in 2 unit steps, total of 48.  Center column is 8 units.
+                for (int yi = 0; yi < 48; yi+=2)
+                {
+                    // Skip center column
+                    if (yi > 20 && yi < 27 && xi > 20 && xi < 27)
+                        continue;
 
-                float curTopX = maxX - Convert.ToSingle(i);
-                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
-                float curTopY = maxY;
-                float curBottomY = minY;
+                    // Skip the corners by seeing if this point is in the sphere's max circle.  Test 4 points just inside the square this occupies
+                    float testXPosition = maxX - (Convert.ToSingle(xi) + 1.75f); // nw
+                    float testYPosition = maxY - (Convert.ToSingle(yi) + 1.75f); // nw
+                    float distanceSquared = MathF.Pow(testXPosition - sphereCenterX, 2) + MathF.Pow(testYPosition - sphereCenterY, 2);
+                    if (distanceSquared <= MathF.Pow(sphereRadius, 2) == false)
+                    {
+                        testXPosition = maxX - (Convert.ToSingle(xi) + 1.75f); // ne
+                        testYPosition = maxY - (Convert.ToSingle(yi) + 0.25f); // ne
+                        distanceSquared = MathF.Pow(testXPosition - sphereCenterX, 2) + MathF.Pow(testYPosition - sphereCenterY, 2);
+                        if (distanceSquared <= MathF.Pow(sphereRadius, 2) == false)
+                        {
+                            testXPosition = maxX - (Convert.ToSingle(xi) + 0.25f); // sw
+                            testYPosition = maxY - (Convert.ToSingle(yi) + 1.75f); // sw
+                            distanceSquared = MathF.Pow(testXPosition - sphereCenterX, 2) + MathF.Pow(testYPosition - sphereCenterY, 2);
+                            if (distanceSquared <= MathF.Pow(sphereRadius, 2) == false)
+                            {
+                                testXPosition = maxX - (Convert.ToSingle(xi) + 0.25f); // se
+                                testYPosition = maxY - (Convert.ToSingle(yi) + 0.25f); // se
+                                distanceSquared = MathF.Pow(testXPosition - sphereCenterX, 2) + MathF.Pow(testYPosition - sphereCenterY, 2);
+                                if (distanceSquared <= MathF.Pow(sphereRadius, 2) == false)
+                                    continue;
+                            }
+                        }
+                    }
 
-                // Calculate the height
-                float x = 0f;
-                if (i <= 21)
-                    x = 21 - i;
-                else
-                    x = 21 - (47 - i);
-                float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
-                float curZ = z + sphereCurveCenterZ;
+                    // Calculate the height
+                    float x = 0f;
+                    if (xi <= 20)
+                        x = 20 - xi;
+                    else
+                        x = 20 - (47 - xi);
+                    float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
+                    float curZ = z + sphereCurveCenterZ;
 
-                // Raise the value by an amount
-                float raiseRelativeBase = 4.3f;
-                float amoutToRaise = 0f;
-                if (i <= 21)
-                    amoutToRaise = raiseRelativeBase * (Convert.ToSingle(i) / 21);
-                else
-                    amoutToRaise = raiseRelativeBase * (Convert.ToSingle(47-i) / 21);
-                curZ += amoutToRaise;
+                    // Raise the value by an amount
+                    float raiseRelativeBase = 4.3f;
+                    float amoutToRaise = 0f;
+                    if (xi <= 20)
+                        amoutToRaise = raiseRelativeBase * (Convert.ToSingle(xi) / 20);
+                    else
+                        amoutToRaise = raiseRelativeBase * (Convert.ToSingle(47 - xi) / 20);
+                    curZ += amoutToRaise;
 
-                // Calculate the depth
-                float curDepth = (curZ - sphereTrueCenterZ) * 2f;
+                    // Calculate the depth
+                    float curDepth = (curZ - sphereTrueCenterZ) * 2f;
 
-                // Create the plane
-                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth);
+                    // Calculate the square
+                    float curTopX = maxX - Convert.ToSingle(xi); // May be redundant
+                    float curBottomX = maxX - (Convert.ToSingle(xi) + 2.01f); // May be redundant
+                    float curTopY = maxY - Convert.ToSingle(yi); // May be redundant
+                    float curBottomY = maxY - (Convert.ToSingle(yi) + 2.01f); // May be reduntant
+
+                    // Create the plane
+                    AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth);
+                }
             }
         }
 
@@ -591,10 +622,11 @@ namespace EQWOWConverter.Zones
                 case "cazicthule": // Liquid - TODO, Complicated (volumes)
                     {          
                         // TODO: Improve the green sphere water volume
+                       
                         zoneProperties.SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 80, 20, 10, 450);
                         zoneProperties.AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
-                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool
+                         /*zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 205.585724f, -62.912350f, 7.619390f, -261.991211f, -209.916235f, 150f); // Bottom southmost west blue pool
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 34.715931f, 6.890010f, 20.303070f, -7.677340f, -41.968750f, 250f); // Well into the southmost area
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 72.394638f, -7.667340f, -13.658730f, -63.726299f, -217.888000f, 100f); // Path between well into the bottom southwest west blue pool (north part)
@@ -641,6 +673,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 607.513184f, 430.828156f, 470.775665f, 123.239029f, -71.968689f, 50f); // Green Pools, 2 SW pools (one west of the other)
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
+                        */
 
                         zoneProperties.AddCazicThuleLiquidSphere(LiquidType.GreenWater, "t50_grnwtr1");
 
