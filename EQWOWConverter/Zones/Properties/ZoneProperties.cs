@@ -209,69 +209,27 @@ namespace EQWOWConverter.Zones
             float maxHeight = 43f;
             float minHeight = 9f;
 
+            // Set boundaries
+            float sphereRadius = 24f;
+            float sphereCenterX = 1091.563904f;
+            float sphereCenterY = 587.748718f;
+            float sphereCurveCenterZ = -78.502290f;
+            float sphereTrueCenterZ = -71.49229f;
+
             //Actuals
             //float sphereRadius = 24f;
             //float sphereCenterX = 1067.565186f;
             //float sphereCenterY = 587.748718f;
             //float sphereCenterZ = -71.49229f;
 
-            /*
-            // Create a north-south column of steps, 1 unit in size (span is 48)
-            // Middle column is 6x6 units
-            for (int i = 0; i < 48; i++)
-            {
-                // Set boundaries
-                float sphereRadius = 24f;
-                float sphereCenterX = 1067.565186f;
-                float sphereCenterY = 587.748718f;
-                float sphereCenterZ = -66.992290f;
-
-                float sphereRelativeCenterX = sphereCenterX;
-
-                float curTopX = maxX - Convert.ToSingle(i);
-                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
-                float curTopY = maxY;
-                float curBottomY = minY;
-
-                // Calculate the z
-                float x = i;
-                float curZ = maxZ;
-                if (i < 21)
-                {
-                    x = 21 - i;
-                    curZ = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
-                    curZ += sphereCenterZ;
-                    sphereRelativeCenterX += 3f;
-                }
-                else if (i > 27)
-                {
-                    x = i - 28;
-                    curZ = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
-                    curZ += sphereCenterZ;
-                    sphereRelativeCenterX -= 3f;
-                }
-
-                // Bring up the edges a bit
-
-
-                float curHeight = maxHeight;
-
-
-                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
-            }
-            */
+            // Create the center column
+            AddLiquidPlaneZAxisAligned(liquidType, materialName, sphereCenterX + 3.01f, sphereCenterY + 3.01f, sphereCenterX - 3.01f, sphereCenterY - 3.01f, maxZ, (maxZ - sphereTrueCenterZ) * 2f);
 
             // Create a north-south column of steps, 1 unit in size (span is 48, but middle is 6 units and flat)
-            for (int i = 0; i < 21; i++)
+            for (int i = 0; i < 48; i++)
             {
-
-
-                // Set boundaries
-                float sphereRadius = 24f;
-                float sphereCenterX = 1067.565186f;
-                float sphereCenterY = 587.748718f;
-                float sphereCurveCenterZ = -78.502290f;
-                float sphereTrueCenterZ = -71.49229f;
+                if (i > 21 && i < 26)
+                    continue;
 
                 float curTopX = maxX - Convert.ToSingle(i);
                 float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
@@ -279,13 +237,21 @@ namespace EQWOWConverter.Zones
                 float curBottomY = minY;
 
                 // Calculate the height
-                float x = 21 - i;
+                float x = 0f;
+                if (i <= 21)
+                    x = 21 - i;
+                else
+                    x = 21 - (47 - i);
                 float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
                 float curZ = z + sphereCurveCenterZ;
 
                 // Raise the value by an amount
                 float raiseRelativeBase = 4.3f;
-                float amoutToRaise = raiseRelativeBase * (Convert.ToSingle(i) / 21);
+                float amoutToRaise = 0f;
+                if (i <= 21)
+                    amoutToRaise = raiseRelativeBase * (Convert.ToSingle(i) / 21);
+                else
+                    amoutToRaise = raiseRelativeBase * (Convert.ToSingle(47-i) / 21);
                 curZ += amoutToRaise;
 
                 // Calculate the depth
@@ -294,137 +260,6 @@ namespace EQWOWConverter.Zones
                 // Create the plane
                 AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curDepth);
             }
-
-
-
-
-
-            //// Create a grid of 16x16 potential squares
-            //for (int x = 0; x < 16; x++)
-            //{
-            //    for (int y = 0; y < 16; y++)
-            //    {
-
-
-
-
-
-
-
-            //    }
-            //}
-
-
-            /* Semi-nice curve over the z
-            // Create a north-south column of steps, 1 unit in size (span is 48)
-            for (int i = 0; i < 48; i++)
-            {
-                
-                
-                // Set boundaries
-                float maxX = 1115.565186f;
-                float maxY = 611.748718f;
-                float minX = 1067.562622f;            
-                float minY = 563.782227f;
-                float maxZ = -49.992290f;
-                float minZ = -66.992290f;
-                float maxHeight = 43f;
-                float minHeight = 9f;
-                float sphereRadius = 24f;
-                float sphereCenterX = 1067.565186f;
-                float sphereCenterY = 587.748718f;
-                float sphereCenterZ = -71.49229f;
-                
-                float curTopX = maxX - Convert.ToSingle(i);
-                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
-                float curTopY = maxY;
-                float curBottomY = minY;
-
-                // Calculate the height
-                float x = i;
-                if (i < 24)
-                    x = 24 - i;
-                else
-                    x = i - 24;
-                float z = MathF.Sqrt((sphereRadius * sphereRadius) - (x * x));
-                float curZ = z + sphereCenterZ;
-                float curHeight = maxHeight;
-                
-
-            AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
-            }
-            */
-
-
-
-
-            // Top X curve Start = 1095.393311f (19 units from end)
-
-
-
-            /* Backup
-            
-            // Set boundaries
-            float maxX = 1115.565186f;
-            float maxY = 611.748718f;
-            float minX = 1067.562622f;            
-            float minY = 563.782227f;
-            float maxZ = -49.992290f;
-            float minZ = -66.992290f;
-            float maxHeight = 43f;
-            float minHeight = 9f;
-
-            // Create a north-south column of steps, 1 unit in size (span is 48)
-            for (int i = 0; i < 48; i++)
-            {
-                float curTopX = maxX - Convert.ToSingle(i);
-                float curBottomX = maxX - (Convert.ToSingle(i) + 1.01f);
-                float curTopY = maxY;
-                float curBottomY = minY;
-
-                // Calculate the height
-                float percentToPeak = 1f;
-                if (i < 19)
-                    percentToPeak = Convert.ToSingle(i) / 19f;
-                else if (i > 28)
-                    percentToPeak = Convert.ToSingle(48-i) / 19f;
-                float curZ = (minZ * (1f - percentToPeak)) + (maxZ * percentToPeak);
-                float curHeight = (minHeight * (1f - percentToPeak)) + (maxHeight * percentToPeak);
-
-                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight);
-            }
-            */
-
-
-
-            /* Somewhat working version
-            // Top square
-            float topX = 1096.225220f;
-            float bottomX = 1086.841064f;
-            float topY = 592.433167f;
-            float bottomY = 583.070251f;
-            float topZ = -49.992290f;
-            float topHeight = 43f;
-
-            // Max extents (not used yet)
-            //float maxX = 1115.565186f;
-            //float minX = 1067.562622f;
-            //float maxY = 611.748718f;
-            //float minY = 563.782227f;
-
-            // This just makes a strange pryamid, and is wildly wrong.  Clean up later with an actual sphere calculation.
-            for (int i = 0; i < 19; ++i)
-            {
-                float curTopX = topX + Convert.ToSingle(i);
-                float curBottomX = bottomX - Convert.ToSingle(i);
-                float curTopY = topY + Convert.ToSingle(i);
-                float curBottomY = bottomY - Convert.ToSingle(i);
-                float curZ = topZ - Convert.ToSingle(i);
-                float curHeight = topHeight - (Convert.ToSingle(i) * 2f);
-
-                AddLiquidPlaneZAxisAligned(liquidType, materialName, curTopX, curTopY, curBottomX, curBottomY, curZ, curHeight); // Center Column
-            }
-            */
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
