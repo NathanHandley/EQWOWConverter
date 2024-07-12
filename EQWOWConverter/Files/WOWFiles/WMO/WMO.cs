@@ -56,6 +56,8 @@ namespace EQWOWConverter.WOWFiles
             File.WriteAllBytes(RootFileFullPathAndFileName, RootObject.RootBytes.ToArray());
             
             UInt16 curGroupIndex = 0;
+            if (GroupObjects.Count > 999)
+                Logger.WriteError("Group count for wmo group '" + BaseFileName + "' is >= 999, so any past that line will not load!");
             foreach (WMOGroup group in GroupObjects)
             {
                 string wmoGroupFileName;
@@ -65,12 +67,9 @@ namespace EQWOWConverter.WOWFiles
                     wmoGroupFileName = Path.Combine(FullWMOFolderPath, BaseFileName + "_0" + curGroupIndex + ".wmo");
                 else
                     wmoGroupFileName = Path.Combine(FullWMOFolderPath, BaseFileName + "_" + curGroupIndex + ".wmo");
-
-                if (curGroupIndex >= 512)
-                    Logger.WriteError("Group count for wmo group '" + BaseFileName + "' is >= 512, and will not load!");
                 File.WriteAllBytes(wmoGroupFileName, group.GroupBytes.ToArray());
                 curGroupIndex++;
-            }
+            }            
         }
     }
 }
