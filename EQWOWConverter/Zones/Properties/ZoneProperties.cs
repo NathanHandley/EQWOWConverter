@@ -1382,6 +1382,8 @@ namespace EQWOWConverter.Zones
                     break;                
                 case "gukbottom": // Liquid - TODO Complicated (slopes, volumes)
                     {
+                        // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
+                        // TODO: Bug - Blood collision issue.  If d_m0014 is collision enabled, the floor under some blood pools will be passthrough and fall through the map
                         // TODO: Ladders
                         zoneProperties.SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 45, 20, 10, 140);
@@ -1390,6 +1392,21 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("guktop", 1620.083008f, 181.952133f, -88.660629f, ZoneLineOrientationType.West, 1675.066772f, -37.624660f, -70f, 1648.329590f, -92.907097f, -138.851685f);
                         zoneProperties.AddZoneLineBox("guktop", 1555.745972f, -121.623947f, -91.073799f, ZoneLineOrientationType.West, 1506.506348f, 73.868462f, -80f, 1485.213745f, 14.151250f, -105f);
                         zoneProperties.AddZoneLineBox("guktop", 1196.247681f, -197.502167f, -83.967888f, ZoneLineOrientationType.West, 1203.723999f, -181.743942f, -71.499748f, 1189.337769f, -204.274963f, -84.468781f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1708.509888f, 272.930328f, 1451.755371f, -243.919006f, -64.278084f, 100f); // North water tunnels and their exits, no surface
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1661.019897f, -243.909006f, 1507.664429f, -404.428986f, -84.968712f, 100f); // North water tunnels, tunnel to surface connection
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1581.377319f, -404.428986f, 1553.373291f, -433.808990f, -84.968712f, 200f); // North water tunnels, waterfall
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1584.068481f, -418.669525f, 1581.367319f, -433.808990f, -97.978613f, 200f); // North water tunnels, north waterfall under back area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1553.383291f, -418.669525f, 1551.182861f, -433.808990f, -111.968597f, 200f); // North water tunnels, north waterfall under back area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1602.481323f, -433.798990f, 1426.489136f, -494.352844f, -125.937469f, 200f); // Lower north water tunnels, bottom of waterfall and into tunnel
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1426.499136f, -415.512909f, 1064.963013f, -541.815674f, -140.937408f, 200f);  // Lower north water tunnels, 1 step south of the base of the waterfall
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1064.973013f, -496.693756f, 973.019653f, -542.443848f, -140.937408f, 33.5f); // Lower north water tunnels, first intersection from waterfall
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 991.544373f, -542.433848f, 963.857788f, -634.893738f, -142.640216f, 33f);// Lower north water tunnels, after intersection bend 'under' the overwalk
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1045.445801f, -603.926086f, 991.534373f, -632.068359f, -140.937485f, 33f);// Lower north water tunnels, end of the bend minus very small end
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1040.555786f, -598.379211f, 1032.234619f, -603.936086f, -140.937485f, 33f);// Lower north water tunnels, end of the bend nub
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1165.004395f, -626.927185f, 1116.223389f, -675.938538f, -126.937431f, 55f); // Northeast Water Column over the small blood pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "d_m0014", 1148.422241f, -642.838013f, 1132.825806f, -658.476074f, -195.916113f, 10f); // Northeast blood pool under the water column
+                        // TODO: Tiny water pool under the bend above
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t50_wguk1", "t75_m0000", "t50_gukfalls1", "t75_m0001", "t75_m0002", "t50_m0004", "t75_m0013", "d_m0015", "t25_smke1"); // d_m0014 = blood and used for some surfaces
                     }
                     break;
                 case "guktop": // Liquid - TODO Complicated (slopes, volumes)
