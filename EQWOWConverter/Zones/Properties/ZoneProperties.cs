@@ -623,10 +623,8 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "cazicthule": // Liquid - TODO, Complicated (volumes)
-                    {          
-                        // TODO: Improve the green sphere water volume
-                       
+                case "cazicthule": // Liquid - Tested
+                    {                                 
                         zoneProperties.SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(50, 80, 20, 10, 450);
                         zoneProperties.AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);                     
@@ -1107,13 +1105,19 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
                     }
                     break;
-                case "everfrost": // Liquid - TODO, complicated.  Lots 'under the ice' with no surface.  Water (volumes)
+                case "everfrost": // Liquid - Tested
                     {
                         zoneProperties.SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinent.Antonica);
                         zoneProperties.SetFogProperties(200, 230, 255, 10, 500);
                         zoneProperties.AddZoneLineBox("blackburrow", 64.26508f, -340.1918f, 0.00073920796f, ZoneLineOrientationType.South, -3054.6953f, -515.55963f, -99.7185f, -3094.8235f, -547f, -113.68753f);
                         zoneProperties.AddZoneLineBox("halas", -647.768616f, -75.159027f, 0.000020f, ZoneLineOrientationType.North, 3756.428467f, 397.611786f, 38.469002f, 3706.500488f, 347.150665f, -0.499760f);
                         zoneProperties.AddZoneLineBox("permafrost", -61.690048f, 84.215889f, 0.000010f, ZoneLineOrientationType.East, 2040.192261f, -7055.080078f, -8.999750f, 1989.364502f, -7120.806641f, -64.344040f);
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_wat1", 3592.137207f, -3781.852539f, 1687.589478f, -4645.904785f, -105.843300f, 350f); // NW water that goes into cave
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_wat1", 3312.257568f, -5144.483887f, 2050.186523f, -5937.699219f, -105.843300f, 350f); // NE water that runs into a mountain line
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_wat1", 2050.196523f, -4937.517578f, 1608.196289f, -5580.368652f, -105.843300f, 350f); // NE water path, 2nd leg from north
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_wat1", 1687.825806f, -4247.805176f, -1085.845327f, -5472.050781f, -105.843300f, 350f); // South water path that connects to north
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t75_wat1", -1085.835327f, -4139.526367f, -4905.087891f, -4658.822266f, -105.843300f, 350f); // South water path end
+                        zoneProperties.AddDisabledMaterialCollisionByNames("t75_w1", "t75_wat1");
                     }
                     break;
                 case "fearplane":
