@@ -1405,7 +1405,30 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1040.555786f, -598.379211f, 1032.234619f, -603.936086f, -140.937485f, 33f);// Lower north water tunnels, end of the bend nub
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1165.004395f, -626.927185f, 1116.223389f, -675.938538f, -126.937431f, 55f); // Northeast Water Column over the small blood pool
                         zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "d_m0014", 1148.422241f, -642.838013f, 1132.825806f, -658.476074f, -195.916113f, 10f); // Northeast blood pool under the water column
-                        // TODO: Tiny water pool under the bend above
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 894.365784f, -602.669128f, 882.813538f, -614.657959f, -208.906174f, 10f); // Tiny pool under the north water bend
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "d_m0014", 1076.109741f, -742.590942f, 1064.633545f, -754.634644f, -195.906204f, 10f); // Non-sinking blood pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Blood, "d_m0014", 894.537354f, -742.840332f, 882.744385f, -754.630371f, -194.937439f, 10f); // Center blood pool in north pathway
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", -10.082610f, -124.179993f, -51.616791f, -170.448273f, -238.906235f, 20f); // South area cresent pool
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 125.095451f, -76.734489f, 99.050468f, -104.962547f, -236.906235f, 50f); // South area pool with green curtains
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 407.424347f, -83.456360f, 378.318146f, -145.874329f, -237.916235f, 50f); // South area intersection of water, north part
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 378.328146f, -90.287163f, 370.236725f, -145.874329f, -237.916235f, 50f); // South area intersection of water, next step south of north
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 374.337250f, -97.065567f, 312.977081f, -145.874329f, -237.916235f, 50f); // South area intersection of water, south portion
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 640.710022f, -332.082092f, 487.965851f, -508.010468f, -210.906219f, 100f); // Center large water pool with bridges
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 905.084900f, 610.934448f, 780.849976f, 339.636108f, -223.906143f, 150f); // Large west waterways, lower area - SW area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 874.308472f, 339.646108f, 780.849976f, 247.501633f, -223.906143f, 150f); // Large west waterways, lower area - SE area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 958.589355f, 306.636627f, 874.298472f, 245.511917f, -223.906143f, 150f); // Large west waterways, lower area - SE area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1164.159058f, 333.159912f, 958.579355f, 245.511917f, -223.906143f, 150f); // Large west waterways, lawer area - NE area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 1164.159058f, 439.369568f, 1007.847412f, 333.149912f, -223.906143f, 150f); // Large west waterways, lawer area - W area
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 926.917358f, 719.690857f, 850.220581f, 612.003601f, -167.937393f, 350f); // West upper waterfall lead-up
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 896.710388f, 620.336731f, 856.116089f, 603.203186f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 896.710388f, 603.158020f, 859.755066f, 595.460449f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
+                        zoneProperties.AddLiquidPlaneZAxisAligned(LiquidType.Water, "t50_wguk1", 896.710388f, 595.470449f, 864.465759f, 591.912842f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 896.710388f, 587.925903f, 895.350647f, 599.822693f, 873.723572f, 587.733887f, 
+                            883.672058f, 585.779114f, -167.937393f, 350f); // West upper waterfall, north part
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 879.013733f, 589.615356f, 873.382874f, 596.898560f, 863.668030f, 591.743713f, 
+                            873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
+                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f, 
+                            591.752808f, -167.937393f, 350f); // West upper waterfall, south part
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_wguk1", "t75_m0000", "t50_gukfalls1", "t75_m0001", "t75_m0002", "t50_m0004", "t75_m0013", "d_m0015", "t25_smke1"); // d_m0014 = blood and used for some surfaces
                     }
                     break;
