@@ -369,9 +369,9 @@ namespace EQWOWConverter.WOWFiles
                         liquid.YVertexCount = liquid.YTileCount + 1;
 
                         // Build the tile data.  Z-Axis aligned can build it quicker
-                        if (liquidPlane.IsZAxisAligned)
+                        if (liquidPlane.SlantType == LiquidSlantType.None)
                         {
-                            float zHeight = liquidPlane.NWCornerZ;
+                            float zHeight = liquidPlane.HighZ;
                             for (int y = 0; y < liquid.YVertexCount; y++)
                             {
                                 for (int x = 0; x < liquid.XVertexCount; x++)
@@ -384,32 +384,45 @@ namespace EQWOWConverter.WOWFiles
                                         case LiquidType.Slime:
                                             {
                                                 liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
-                                            }
-                                            break;
+                                            } break;
                                         case LiquidType.Magma:
                                             {
                                                 liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
-                                            }
-                                            break;
+                                            } break;
                                     }
                                 }
                             }
                         }
                         else
                         {
-                            for (int y = liquid.YVertexCount - 1; y >= 0; y--)
+                            float xSlope = 0f;
+                            float ySlope = 0f;
+                            float zDrop = liquidPlane.HighZ - liquidPlane.LowZ;
+                            float seZHeight = liquidPlane.HighZ;
+                            switch (liquidPlane.SlantType) // Walk 'up' from south to north
                             {
-                                for (int x = liquid.XVertexCount - 1; x >= 0; x--)
+                                case LiquidSlantType.None: break; // Intentionally blank
+                                case LiquidSlantType.NorthHighSouthLow:
+                                    {
+                                        xSlope = -(zDrop / xDistance);
+                                        seZHeight = liquidPlane.HighZ;
+                                    } break;
+                                case LiquidSlantType.WestHighEastLow:
+                                    {
+                                        ySlope = -(zDrop / yDistance);
+                                        seZHeight = liquidPlane.HighZ;
+                                    } break;
+                                default:
+                                    {
+                                        Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquidPlane.SlantType +"'.  Plane will be flat.");
+                                    } break;
+                            }
+
+                            for (int y = 0; y < liquid.YVertexCount; y++)
+                            {
+                                for (int x = 0; x < liquid.XVertexCount; x++)
                                 {
-                                    // There are 4 corners, so determine the slope by factoring how close this tile vert is near the corner
-                                    float xWeight = x / (liquid.XVertexCount - 1);
-                                    float yWeight = y / (liquid.YVertexCount - 1);
-                                    float seWeight = (xWeight * yWeight);
-                                    float swWeight = ((1f - xWeight) * yWeight);
-                                    float neWeight = (xWeight * (1f - yWeight));
-                                    float nwWeight = ((1f - xWeight) * (1f - yWeight));
-                                    float vertHeight = (seWeight * liquidPlane.SECornerZ) + (swWeight * liquidPlane.SWCornerZ) +
-                                        (neWeight * liquidPlane.NECornerZ) + (nwWeight * liquidPlane.NWCornerZ);
+                                    float curZHeight = (x * 4.1666625f * xSlope) + (y * 4.1666625f * ySlope) + seZHeight;
                                     switch (worldModelObject.LiquidType)
                                     {
                                         case LiquidType.Water:
@@ -417,14 +430,12 @@ namespace EQWOWConverter.WOWFiles
                                         case LiquidType.GreenWater:
                                         case LiquidType.Slime:
                                             {
-                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, vertHeight));
-                                            }
-                                            break;
+                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, curZHeight));
+                                            } break;
                                         case LiquidType.Magma:
                                             {
-                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, vertHeight));
-                                            }
-                                            break;
+                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
+                                            } break;
                                     }
                                 }
                             }

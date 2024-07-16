@@ -43,7 +43,6 @@ namespace EQWOWConverter.Zones
         public bool IsCompletelyInLiquid = false;
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
-        public MeshData LiquidMeshData = new MeshData();
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
 
         public WorldModelObject()

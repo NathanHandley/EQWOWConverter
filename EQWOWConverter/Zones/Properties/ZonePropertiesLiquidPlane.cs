@@ -41,31 +41,27 @@ namespace EQWOWConverter.Zones
         }
 
         public ZonePropertiesLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ, float minDepth)
+            float highZ, float lowZ, LiquidSlantType slantType, float minDepth)
         {
             LiquidType = liquidType;
             MaterialName = materialName;
             MinDepth = minDepth;
 
             // Add additional height for ripple rendering
-            nwCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            neCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            seCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            swCornerZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            highZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            lowZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
 
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            nwCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            neCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            swCornerZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            highZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            lowZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
             // Note that the rotated coordinates will end with SE and NW flipping
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, nwCornerZ, neCornerZ, seCornerZ, swCornerZ);
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, highZ, lowZ, slantType);
 
             // Generate bounding box
             RegenerateBoundingBox();
@@ -97,13 +93,8 @@ namespace EQWOWConverter.Zones
 
         public void RegenerateBoundingBox()
         {
-            float minZ;
-            float maxZ;
-            if (PlaneAxisAlignedXY.IsZAxisAligned == true)
-                maxZ = PlaneAxisAlignedXY.NWCornerZ;
-            else
-                maxZ = MathF.Max(MathF.Max(MathF.Max(PlaneAxisAlignedXY.NWCornerZ, PlaneAxisAlignedXY.NECornerZ), PlaneAxisAlignedXY.SECornerZ), PlaneAxisAlignedXY.SWCornerZ);
-            minZ = maxZ - MinDepth;
+            float minZ = PlaneAxisAlignedXY.LowZ - MinDepth;
+            float maxZ = PlaneAxisAlignedXY.HighZ;
             BoundingBox = new BoundingBox(PlaneAxisAlignedXY.SECornerXY.X, PlaneAxisAlignedXY.SECornerXY.Y, minZ, PlaneAxisAlignedXY.NWCornerXY.X, PlaneAxisAlignedXY.NWCornerXY.Y, maxZ);
         }
 
@@ -117,7 +108,7 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("ZonePropertiesLiquidPlane maximumXYSizePerChunk is less than or zero.");
                 return dividedPlanes;
             }
-            if (PlaneAxisAlignedXY.IsZAxisAligned == false)
+            if (PlaneAxisAlignedXY.SlantType != LiquidSlantType.None)
             {
                 Logger.WriteError("ZonePropertiesLiquidPlane is not z axis aligned but is being split.  There will be issues.");
             }

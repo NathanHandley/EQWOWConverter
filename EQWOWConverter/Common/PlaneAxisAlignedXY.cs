@@ -24,52 +24,44 @@ namespace EQWOWConverter.Common
 {
     internal class PlaneAxisAlignedXY
     {
-        public float NWCornerZ;
-        public float NECornerZ;
-        public float SECornerZ;
-        public float SWCornerZ;
+        public float HighZ;
+        public float LowZ;
+        public LiquidSlantType SlantType = LiquidSlantType.None;
         public Vector2 NWCornerXY = new Vector2();
         public Vector2 SECornerXY = new Vector2();
-        public bool IsZAxisAligned = false;
 
         public PlaneAxisAlignedXY() { }
 
         public PlaneAxisAlignedXY(PlaneAxisAlignedXY other)
         {
-            NWCornerZ = other.NWCornerZ;
-            NECornerZ = other.NECornerZ;
-            SECornerZ = other.SECornerZ;
-            SWCornerZ = other.SWCornerZ;
+            HighZ = other.HighZ;
+            LowZ = other.LowZ;
+            SlantType = other.SlantType;
             NWCornerXY = new Vector2(other.NWCornerXY);
             SECornerXY = new Vector2(other.SECornerXY);
-            IsZAxisAligned = other.IsZAxisAligned;
         }
 
         public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float nwCornerZ, float neCornerZ, float seCornerZ, float swCornerZ)
+            float highZ, float lowZ, LiquidSlantType slantType)
         {
             NWCornerXY.X = nwCornerX;
             NWCornerXY.Y = nwCornerY;
             SECornerXY.X = seCornerX;
             SECornerXY.Y = seCornerY;
-            NWCornerZ = nwCornerZ;
-            NECornerZ = neCornerZ;
-            SECornerZ = seCornerZ;
-            SWCornerZ = swCornerZ;            
+            HighZ = highZ;
+            LowZ = lowZ;
+            SlantType = slantType;
         }
 
         public PlaneAxisAlignedXY(float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float allCornersZ)
+            float fixedZ)
         {
             NWCornerXY.X = nwCornerX;
             NWCornerXY.Y = nwCornerY;
             SECornerXY.X = seCornerX;
             SECornerXY.Y = seCornerY;
-            NWCornerZ = allCornersZ;
-            NECornerZ = allCornersZ;
-            SECornerZ = allCornersZ;
-            SWCornerZ = allCornersZ;
-            IsZAxisAligned = true;
+            HighZ = fixedZ;
+            LowZ = fixedZ;
         }
 
         public float GetXDistance()
