@@ -94,9 +94,10 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddLiquidVolume(LiquidType liquidType, float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
+        public void AddLiquidVolume(LiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float highZ, float lowZ)
         {
-            ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(liquidType, bottomX, bottomY, bottomZ, topX, topY, topZ);
+            ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(liquidType, nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, lowZ);
             LiquidVolumes.Add(liquidVolume);
         }
 
@@ -1307,7 +1308,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_w1");
                     }
                     break;
-                case "freportw": // Liquid TODO - Complicated water (slopes)
+                case "freportw": // Liquid - Tested
                     {
                         // TODO: Gaps in the geometry at -325.65 -797.158 -32
                         zoneProperties.SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinent.Antonica);
@@ -3224,7 +3225,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);                        
                         zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_agua1", 6.060460f, -4.080790f, 5.092600f, -5.076620f, 2.997610f, -2.994190f, 2.997610f, -2.994190f,
                             4.004600f, -1.993800f, 4.004600f, -1.993800f, -128.937500f, 100f); // Bottom well entry
-                        zoneProperties.AddLiquidVolume(LiquidType.Water, -28.736370f, -28.261860f, -172.924393f, 20.882460f, 26.487289f, -148.937500f); // Bottom well outlet into the lowest path area
+                        zoneProperties.AddLiquidVolume(LiquidType.Water, 20.882460f, 26.487289f, -28.736370f, -28.261860f, -148.937500f, -172.924393f); // Bottom well outlet into the lowest path area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 294.765076f, 106.255119f, 6.004130f, -258.832855f, -134.937424f, 150f); // North lower area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -4.007230f, 20.985340f, -278.851288f, -264.851929f, -134.937424f, 150f); // South lower area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 6.014130f, 32.763168f, -4.017230f, 5.014490f, -134.937424f, 150f);  // West lower area 

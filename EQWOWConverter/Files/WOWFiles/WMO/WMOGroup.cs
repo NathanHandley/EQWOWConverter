@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (worldModelObject.IsCompletelyInLiquid == false && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
+            if (worldModelObject.IsCompletelyInLiquid == false)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
@@ -151,7 +151,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
-            if (worldModelObject.IsCompletelyInLiquid == false && worldModelObject.WMOType != WorldModelObjectType.LiquidVolume)
+            if (worldModelObject.IsCompletelyInLiquid == false)
                 chunkBytes.AddRange(GenerateMLIQChunk(worldModelObject));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
@@ -436,6 +436,52 @@ namespace EQWOWConverter.WOWFiles
                                             {
                                                 liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
                                             } break;
+                                    }
+                                }
+                            }
+                        }
+                    } break;
+                case WorldModelObjectType.LiquidVolume:
+                    {
+                        PlaneAxisAlignedXY liquidPlane = worldModelObject.LiquidPlane;
+
+                        // The corner position of a liquid is the SE corner due to it being in world coordinate space, not model space
+                        liquid.CornerPosition = new Vector3();
+                        liquid.CornerPosition.X = liquidPlane.SECornerXY.X;
+                        liquid.CornerPosition.Y = liquidPlane.SECornerXY.Y;
+                        liquid.CornerPosition.Z = 0f;
+
+                        // Calculate tiles
+                        float xDistance = worldModelObject.BoundingBox.GetXDistance();
+                        float yDistance = worldModelObject.BoundingBox.GetYDistance();
+                        liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                        liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                        liquid.XVertexCount = liquid.XTileCount + 1;
+                        liquid.YVertexCount = liquid.YTileCount + 1;
+
+                        // Build the tile data.  Z-Axis aligned can build it quicker
+                        if (liquidPlane.SlantType == LiquidSlantType.None)
+                        {
+                            float zHeight = liquidPlane.HighZ + 1000f;
+                            for (int y = 0; y < liquid.YVertexCount; y++)
+                            {
+                                for (int x = 0; x < liquid.XVertexCount; x++)
+                                {
+                                    switch (worldModelObject.LiquidType)
+                                    {
+                                        case LiquidType.Water:
+                                        case LiquidType.Blood:
+                                        case LiquidType.GreenWater:
+                                        case LiquidType.Slime:
+                                            {
+                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
+                                            }
+                                            break;
+                                        case LiquidType.Magma:
+                                            {
+                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
+                                            }
+                                            break;
                                     }
                                 }
                             }

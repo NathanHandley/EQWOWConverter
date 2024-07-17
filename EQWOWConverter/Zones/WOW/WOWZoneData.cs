@@ -173,7 +173,7 @@ namespace EQWOWConverter.Zones
             foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
                 WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.VolumeBox);
+                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.PlaneAxisAlignedXY, liquidVolume.BoundingBox);
                 WorldObjects.Add(curWorldModelObject);
             }
 

@@ -51,11 +51,12 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
         }
 
-        public void LoadAsLiquidVolume(LiquidType liquidType, BoundingBox boundingBox)
+        public void LoadAsLiquidVolume(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, BoundingBox boundingBox)
         {
             WMOType = WorldModelObjectType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
+            LiquidPlane = liquidPlane;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
             IsLoaded = true;
         }

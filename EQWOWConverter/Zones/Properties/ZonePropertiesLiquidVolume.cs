@@ -26,12 +26,34 @@ namespace EQWOWConverter.Zones
     internal class ZonePropertiesLiquidVolume
     {
         public LiquidType LiquidType { get; set; }
-        public BoundingBox VolumeBox;
+        public BoundingBox BoundingBox = new BoundingBox();
+        public PlaneAxisAlignedXY PlaneAxisAlignedXY;
 
-        public ZonePropertiesLiquidVolume(LiquidType liquidType, float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ)
+        public ZonePropertiesLiquidVolume(LiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY, float highZ, float lowZ)
         {
             LiquidType = liquidType;
-            VolumeBox = new BoundingBox(bottomX, bottomY, bottomZ, topX, topY, topZ);
+
+            // Scale and save the coordinates, rotated
+            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            highZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            lowZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            // Note that the rotated coordinates will end with SE and NW flipping
+            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, highZ, lowZ, LiquidSlantType.None);
+
+            // Generate bounding box
+            RegenerateBoundingBox();
         }
+
+        public void RegenerateBoundingBox()
+        {
+            float minZ = PlaneAxisAlignedXY.LowZ;
+            float maxZ = PlaneAxisAlignedXY.HighZ;
+            BoundingBox = new BoundingBox(PlaneAxisAlignedXY.SECornerXY.X, PlaneAxisAlignedXY.SECornerXY.Y, minZ, PlaneAxisAlignedXY.NWCornerXY.X, PlaneAxisAlignedXY.NWCornerXY.Y, maxZ);
+        }
+
     }
 }
