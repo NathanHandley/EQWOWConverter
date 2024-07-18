@@ -11,5 +11,7 @@ namespace EQWOWConverter.Common
         None,
         NorthHighSouthLow,
         WestHighEastLow,
+        EastHighWestLow,
+        SouthHighNorthLow
     }
 }

@@ -412,6 +412,16 @@ namespace EQWOWConverter.WOWFiles
                                         ySlope = -(zDrop / yDistance);
                                         seZHeight = liquidPlane.HighZ;
                                     } break;
+                                case LiquidSlantType.EastHighWestLow:
+                                    {
+                                        ySlope = zDrop / yDistance;
+                                        seZHeight = liquidPlane.LowZ;
+                                    } break;
+                                case LiquidSlantType.SouthHighNorthLow:
+                                    {
+                                        xSlope = zDrop / xDistance;
+                                        seZHeight = liquidPlane.LowZ;
+                                    } break;
                                 default:
                                     {
                                         Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquidPlane.SlantType +"'.  Plane will be flat.");
