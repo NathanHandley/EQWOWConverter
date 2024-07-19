@@ -45,7 +45,6 @@ namespace EQWOWConverter.Zones
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-            MinDepth = minDepth;
 
             // Add additional height for ripple rendering
             highZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
@@ -60,6 +59,8 @@ namespace EQWOWConverter.Zones
             lowZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
+            MinDepth = minDepth;
+
             // Note that the rotated coordinates will end with SE and NW flipping
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, highZ, lowZ, slantType);
 
@@ -72,7 +73,6 @@ namespace EQWOWConverter.Zones
         {
             LiquidType = liquidType;
             MaterialName = materialName;
-            MinDepth = minDepth;
 
             // Add additional height for ripple rendering
             allCornersZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
@@ -83,6 +83,9 @@ namespace EQWOWConverter.Zones
             seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             allCornersZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+            MinDepth = minDepth;
 
             // Note that the rotated coordinates will end with SE and NW flipping
             PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, allCornersZ);
