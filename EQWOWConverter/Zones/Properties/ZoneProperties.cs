@@ -793,7 +793,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -0.238990f, -89.776736f, -7.250610f, -116.160797f, -147.937485f, 200f); // Water Pit southeast, more east
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -12.023590f, -55.575169f, -48.071800f, -86.330437f, -147.937485f, 200f); // Water Pit southeast, small fill-in
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -48.656361f, -34.435612f, -53.5f, -39.857670f, -147.937485f, 200f); // Water Pit south small fill-in
-                        zoneProperties.AddLiquidVolume(LiquidType.Water, 95.977043f, -8.343080f, -69.914612f, -134.899902f, -158.947485f, -244.461487f); // Volume that covers water under the barrier between inner and outer center pool
+                        zoneProperties.AddLiquidVolume(LiquidType.Water, 95.977043f, -8.343080f, -69.914612f, -134.899902f, -168.947485f, -244.461487f); // Volume that covers water under the barrier between inner and outer center pool
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -32.244919f, 123.822372f, -81.219780f, 68.939758f, -42.968739f, 12.5f); // Water middle channel with bridge, upper section
                         zoneProperties.AddLiquidPlane(LiquidType.Water, "t50_agua1", -46.537670f, 68.945758f, -63.377460f, 62.118111f, -42.968739f, -45.999279f, LiquidSlantType.WestHighEastLow, 8f); // Water middle channel with bridge, incline)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -47.383591f, 62.128111f, -71.285881f, 29.986389f, -45.999279f, 8f); // Water middle channel with bridge, waterfall)
