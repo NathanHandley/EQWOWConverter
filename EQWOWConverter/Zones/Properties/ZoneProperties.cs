@@ -135,19 +135,57 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+        public void AddTriangleLiquidShapeSouthEdgeAligned(LiquidType liquidType, string materialName, float northX, float northY, float southEdgeX, float southWestY, 
+            float southEastY, float allCornerZ, float minDepth, float stepSize)
+        {
+            float curXTop = northX;
+            bool moreXToWalk = true;
+            float xDelta = southEdgeX - northX;
+            float yWestDelta = northY - southWestY;
+            float yEastDelta = northY - southEastY;
+            float northToSouthWestDistance = MathF.Sqrt(xDelta * xDelta + yWestDelta * yWestDelta);
+            float northToSouthEastDistance = MathF.Sqrt(xDelta * xDelta + yEastDelta * yEastDelta);
+            while (moreXToWalk == true)
+            {
+                // Calculate the bottom edge, and align bottom edge if extends
+                float curXBottom = curXTop - stepSize;
+                if (curXBottom < southEdgeX)
+                {
+                    curXBottom = southEdgeX;
+                    moreXToWalk = false;
+                }
+
+                // Determine NW position
+                float nwX = curXTop;
+                float nwY = GetYOnLineAtX(northX, northY, southEdgeX, southWestY, curXTop);
+
+                // Determine SE position
+                float seX = curXBottom;
+                float seY = GetYOnLineAtX(northX, northY, southEdgeX, southEastY, curXBottom);
+
+                // Add the plane if the bounds are good
+                if (nwX > seX && nwY > seY)
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth);
+
+                // Set new top factoring for overlap
+                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+            }
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        public void AddQuadrilateralLiquidShapeZLevel(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth, float northXLimit, float westYLimit,
             float southXLimit, float eastYLimit, float stepSize)
         {
             // Boundary Control (very limited)
             if (northMostX < southMostX)
             {
-                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as north x < south x");
+                Logger.WriteError("AddQuadrilateralLiquidShapeZLevel error for zone '" + ShortName + "' and material '" + materialName + "' as north x < south x");
                 return;
             }
             if (westMostY < eastMostY)
             {
-                Logger.WriteError("AddQuadrilateralLiquidShape error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
+                Logger.WriteError("AddQuadrilateralLiquidShapeZLevel error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
                 return;
             }
 
@@ -196,7 +234,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddTrapezoidAxisAlignedZLevel(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
+        public void AddTrapezoidLiquidAxisAlignedZLevelShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
             float southWestY, float southEastY, float topZ, float height, float stepSize)
         {
             float curXTop = northEdgeX;
@@ -365,10 +403,10 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddQuadrilateralLiquidShape(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+        public void AddQuadrilateralLiquidShapeZLevel(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
         {
-            AddQuadrilateralLiquidShape(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
+            AddQuadrilateralLiquidShapeZLevel(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
                 eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE);
         }
 
@@ -646,8 +684,8 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 946.898315f, -29.885700f, 937.846619f, -35.895458f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (middle)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 950.656982f, -27.905569f, 936.563416f, -32.405380f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (north)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 944.902893f, -27.905569f, 936.563416f, -38.282459f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (south)
-                        zoneProperties.AddTrapezoidAxisAlignedZLevel(LiquidType.Water, "d_m0004", 503.825012f, 489.799225f, 0.645790f, -97.986412f, -13.937520f, -83.965424f, 174.745728f, 350f, 0.3f); // Entry waterfall, south
-                        zoneProperties.AddTrapezoidAxisAlignedZLevel(LiquidType.Water, "d_m0004", 517.780579f, 503.815012f, 28.102119f, -126.010399f, 0.645790f, -97.986412f, 174.745728f, 350f, 0.3f); // Entry waterfall, north
+                        zoneProperties.AddTrapezoidLiquidAxisAlignedZLevelShape(LiquidType.Water, "d_m0004", 503.825012f, 489.799225f, 0.645790f, -97.986412f, -13.937520f, -83.965424f, 174.745728f, 350f, 0.3f); // Entry waterfall, south
+                        zoneProperties.AddTrapezoidLiquidAxisAlignedZLevelShape(LiquidType.Water, "d_m0004", 517.780579f, 503.815012f, 28.102119f, -126.010399f, 0.645790f, -97.986412f, 174.745728f, 350f, 0.3f); // Entry waterfall, north
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1393.839966f, -624.353882f, 1099.773682f, -687.787842f, -29.000010f, 50f); // Large to Medium connection channel, bridge and forge nearby
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1159.325195f, -600.300171f, 1069.149658f, -624.363882f, -29.000010f, 50f); // Large to Medium connection channel, bend around low internal 
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1147.023926f, -455.328409f, 1076.342651f, -600.290171f, -29.000010f, 50f); // Large to Medium connection channel, south run
@@ -658,23 +696,31 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1385.424927f, -219.524216f, 1235.044922f, -601.738088f, -83.969673f, 200f);  // Angle water room, large west stretch
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1690.890137f, -222.218719f, 1583.315674f, -459.795074f, -125.937500f, 250f); // Angle water room, large lower area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1749.439209f, -264.337097f, 1690.880137f, -323.689636f, -125.937500f, 250f); // Angle water room, outflow
-                        zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1583.325674f, -178.395126f, 1443.454224f, -335.889893f, -125.937500f, 250f); // Angle water room, large lower area west
-                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1387.379883f, -219.524216f, 1385.414927f, -363.847931f, -83.968643f, -85.968513f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw first decline
+                        zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1583.325674f, -180.395126f, 1441.454224f, -337.889893f, -125.937500f, 250f); // Angle water room, large lower area west
+                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1387.379883f, -219.524216f, 1385.414927f, -363.847931f, -83.968643f, -85.391907f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw first decline
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1399.420288f, -219.524216f, 1387.369883f, -363.827362f, -85.968513f, 250f); // Angle water room, nw first flat step down
-                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1401.434204f, -219.524216f, 1399.410288f, -349.886871f, -85.968513f, -87.270897f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw second decline
+                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1401.434204f, -219.524216f, 1399.410288f, -349.886871f, -85.968513f, -86.975113f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw second decline
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1413.430298f, -219.524216f, 1401.424204f, -349.881958f, -97.968422f, 250f); // Angle water room, nw second flat step down
-                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1415.407471f, -219.524216f, 1413.420298f, -349.887268f, -97.968422f, -99.569473f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw third decline
+                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1415.407471f, -219.524216f, 1413.420298f, -349.887268f, -97.968422f, -99.147186f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw third decline
                         zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1441.441650f, -206.769455f, 1415.397471f, -349.856812f, -110.013939f, -113.806763f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room, nw 4th shelf with slight decline
-                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1443.464224f, -206.769455f, 1441.431650f, -335.904602f, -119.955673f, -120.894173f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room nw fourth decline
+                        zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1443.464224f, -206.769455f, 1441.431650f, -335.904602f, -119.955673f, -120.584892f, LiquidSlantType.SouthHighNorthLow, 250f); // Angle water room nw fourth decline
+                        zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1511.302856f, -503.851990f, 1384.338257f, -560.399841f, -83.968643f, 250f); // Angle water room, top layer NE square
+                        zoneProperties.AddTriangleLiquidShapeSouthEdgeAligned(LiquidType.Water, "d_m0004", 1515.426270f, -504.053528f, 1385.414927f, -358.403595f, -504.195312f, -83.968643f, 250f, 1.5f); // Angle water room, top NE flat triangle
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1542.222852f, -501.844788f, 1401.386353f, -348.008789f, 1384.896362f, -363.390625f, 1521.530518f, -517.400146f, -85.968620f, 250f, 2000f, 3000f, -3000f, -2000f, 1.5f); // Angle water room, NE 2nd shelf
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1567.441406f, -499.122986f, 1414.456177f, -347.694214f, 1396.811646f, -349.537689f, 1540.378662f, -503.297974f, -97.968719f, 250f, 2000f, 2000f, -2000f, -2000f, 1.5f); // Angle water room, NE 3rd shelf
+
+                        
+                        
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1570.003418f, -473.291626f, 1432.528931f, -340.194733f, 1410.220215f, -349.923248f, 1566.189819f, -504.060883f, -113.5f, 250f, 5000f, 5000f, -5000f, -5000f, 1.5f); // Angle water room, NE 4th shelf half 1
 
 
 
-
-
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1583.776367f, -461.868988f, 1441.326538f, -334.384521f, 1428.510986f, -337.834198f, 1566.220581f, -478.165771f, -116.642921f, 250f, 2000f, 2000f, -2000f, -2000f, 1.5f); // Angle water room, NE 4th shelf half 2
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1585.881958f, -460.313110f, 1443.003540f, -334.342102f, 1441.548584f, -340.078186f, 1581.346069f, -466.686768f, -120f, 250f, 5000f, 5000f, -5000f, -5000f, 1.5f); // Angle water room, NE 5th shelf (small shelf)
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_m0004", 1583.547729f, -335.616241f, 1445.949463f, -335.960205f, 1441.000366f, -337.993347f, 1582.367554f, -462.521454f, -125.936363f, 250f, 2000f, 2000f, -2000f, -2000f, 1.5f); // Angle room bottom level SE corner
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1973.211548f, -193.271240f, 1749.429209f, -380.653412f, -126.937317f, 500f); // Outflow room, up to waterfall
                         zoneProperties.AddLiquidPlane(LiquidType.Water, "d_m0004", 1987.200806f, -264.239075f, 1973.201548f, -322.780212f, -126.937317f, -140.044510f, LiquidSlantType.SouthHighNorthLow, 500f); // Outfloom room, waterfall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 2086.414307f, -264.974457f, 1987.190806f, -322.667267f, -197.909174f, 500f); // Outfloow room, outflow
-
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_m0004", "d_m0005", "d_gukfalls1", "d_m0008", "d_wguk1", "d_m0003", "d_m0009");
                     }
                     break;
@@ -720,7 +766,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 234.584244f, -90.963503f, 170.944214f, -124.503326f, -158.947485f, 150f); // Bottom Water, east (north)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 170.954214f, -90.963503f, 93.964104f, -160.562027f, -158.947485f, 150f); // Bottom Water, east (south)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 282.843597f, -79.548123f, 267.529062f, -90.973503f, -158.947485f, 150f); // Bottom Water, waterfall
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_agua1", 259.918518f, -90.954803f, 248.863174f, -77.377518f, 237.386520f, -90.410217f, 240.733398f, -108.128197f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_agua1", 259.918518f, -90.954803f, 248.863174f, -77.377518f, 237.386520f, -90.410217f, 240.733398f, -108.128197f,
                             -158.947485f, 150f); // Bottom Water, waterfall diagonal
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 324.693939f, -41.142281f, 238.570114f, -153.171570f, -169.944504f, 150f); // Very bottom of the waterfall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 93.974104f, -120.654640f, -97.214737f, -158.702621f, -158.947485f, 150f); // Bottom water, east strip
@@ -1594,11 +1640,11 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_wguk1", 896.710388f, 620.336731f, 856.116089f, 603.203186f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_wguk1", 896.710388f, 603.158020f, 859.755066f, 595.460449f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_wguk1", 896.710388f, 595.470449f, 864.465759f, 591.912842f, -167.937393f, 350f); // West upper waterfall block-in near the waterfall line
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 896.710388f, 587.925903f, 895.350647f, 599.822693f, 873.723572f, 587.733887f, 
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_wguk1", 896.710388f, 587.925903f, 895.350647f, 599.822693f, 873.723572f, 587.733887f, 
                             883.672058f, 585.779114f, -167.937393f, 350f); // West upper waterfall, north part
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 879.013733f, 589.615356f, 873.382874f, 596.898560f, 863.668030f, 591.743713f, 
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_wguk1", 879.013733f, 589.615356f, 873.382874f, 596.898560f, 863.668030f, 591.743713f, 
                             873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f, 
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f, 
                             591.752808f, -167.937393f, 350f); // West upper waterfall, south part
                         zoneProperties.AddDisabledMaterialCollisionByNames("t50_wguk1", "t75_m0000", "t50_gukfalls1", "t75_m0001", "t75_m0002", "t50_m0004", "t75_m0013", "d_m0015", "t25_smke1"); // d_m0014 = blood and used for some surfaces
                     }
@@ -1662,7 +1708,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 233.094543f, -33.407860f, 194.514984f, -73.351349f, -27.999990f, 22f); // Southwest lower area with ring and pillars, southeast
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 209.908493f, 0.003580f, 179.352478f, -20.191879f, -0.01f, 200f); // Southwest upper, southeast waterfall area (west waterfall)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 209.908493f, -20.181879f, 179.352478f, -99.504303f, -0.01f, 5f); // Southwest upper, southeast waterfall area (before waterfall)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t75_wguk1", 223.918457f, -28.026270f, 209.902557f, -14.027710f, 209f, -33.400539f, 223.737534f, -31.665899f, -0.01f, 200f); // Southwest upper, southeast waterfall area (waterfall angle)
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t75_wguk1", 223.918457f, -28.026270f, 209.902557f, -14.027710f, 209f, -33.400539f, 223.737534f, -31.665899f, -0.01f, 200f); // Southwest upper, southeast waterfall area (waterfall angle)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 217.842773f, -22.133650f, 207.968323f, -37.862080f, -0.01f, 200f); // Southwest upper, southeast waterfall area (waterfall gap (on top))
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 824.671265f, 460.855042f, 812.857971f, 448.846191f, -68.968689f, 5); // Water square with high rise fire braizer
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 399.586334f, -59.966660f, 293.230927f, -114.731056f, -41.968712f, 9f); // Center middle east  (ne lower from ring with pillers)
@@ -1960,14 +2006,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("neriaka", 83.959953f, -322.479065f, -14.000000f, ZoneLineOrientationType.West, 98.161079f, -305.681519f, 12.467630f, 69.775436f, -384.671295f, -14.500000f);
                         zoneProperties.AddZoneLineBox("neriaka", -252.560760f, -455.675934f, 14.000010f, ZoneLineOrientationType.South, -252.075302f, -447.619110f, 26.454840f, -267.196991f, -490.619293f, 13.499990f);
                         zoneProperties.AddZoneLineBox("neriakc", 209.334473f, -853.563110f, -41.968079f, ZoneLineOrientationType.North, 210.713379f, -844.618347f, -31.532860f, 203.079483f, -860.849731f, -42.468700f);
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -69.974701f, -461.815002f, -77.969276f, -452.868011f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_m0003", -69.974701f, -461.815002f, -77.969276f, -452.868011f,
                             -89.278128f, -466.222113f, -84.319678f, -476.131415f, 7f, 250f); // West waterfall 
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", 176.435440f, -449.724335f, -75.183372f, -779.972900f, -42.968342f, 100f); // NorthWestmost lake water
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -75.083372f, -449.724335f, -87.210258f, -506.557495f, -42.968342f, 100f); // SouthWestmost lake water
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -124.188118f, -812.949768f, -315.905853f, -1121.356567f, -42.968342f, 29f); // Eastmost lake water
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -0.381660f, -779.758301f, -84.545477f, -840.462952f, -42.968342f, 31f); // South of bar in lake
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -84.445477f, -779.758301f, -126.279922f, -840.462952f, -42.968342f, 30f); // South of bar in lake
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", 33.392849f, -780.018066f, 25.913090f, -754.987305f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_m0003", 33.392849f, -780.018066f, 25.913090f, -754.987305f,
                             -36.588150f, -796.803223f, -0.109150f, -814.181809f, -42.968342f, 31f, 1000f, 1000f, -1000f, -1000f, 0.4f); // Outside bar windows
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -75.048660f, -657.157166f, -84.026176f, -704.937622f, -42.968342f, 38.551629f); // SW in big lake area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -84.017327f, -668.889526f, -147.045441f, -687.034424f, -42.968342f, 15.572826f); // SW in big lake area
@@ -1977,17 +2023,17 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -94.696983f, -706.349182f, -126.859512f, -747.437988f, -42.968342f, 19.949695f); // Small section in SW big lake, around protrusion over underground
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -118.663292f, -706.492859f, -125.724388f, -711.350220f, -42.968342f, 25.416886f); // Tiny deep spot in south pool area
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -125.828957f, -686.784729f, -170.818741f, -748.498291f, -42.968342f, 35f); // Small section in SW big lake
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", 130.234726f, -797.568542f, 119.068558f, -786.073120f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_m0003", 130.234726f, -797.568542f, 119.068558f, -786.073120f,
                             107.652733f, -797.633850f, 119.055656f, -809.229187f, -39.968719f, 10f); // North fountain base
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", 122.595047f, -794.080505f, 115.300949f, -801.353149f, -34.999920f, 10f); // North fountain mid
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", 120.801430f, -795.769287f, 117.165176f, -799.421387f, -28.499960f, 30f); // North fountain top
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -133.632080f, -951.659546f, -139.871582f, -945.725891f, -140.807343f, -951.617493f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_m0003", -133.632080f, -951.659546f, -139.871582f, -945.725891f, -140.807343f, -951.617493f,
                             -140.026337f, -957.608337f, -39.968609f, 10f, -135.480804f, -945.725891f, -140.807343f, -957.608337f, 0.3f); // East Fountain - Base segment north
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -139.455841f, -946.005310f, -145.963593f, -950.630981f, -39.968609f, 10f); // East Fountain - Base segment center NW
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -147.934845f, -946.005310f, -154.267471f, -950.621704f, -39.968609f, 10f); // East Fountain - Base segment center SW
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -147.917404f, -952.609619f, -154.267471f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center SE 
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -139.455841f, -952.609619f, -145.963593f, -957.223267f, -39.968609f, 10f); // East Fountain - Base segment center NE
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_m0003", -151.865845f, -951.571350f, -153.772766f, -945.736450f, -160.001923f, -951.656799f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_m0003", -151.865845f, -951.571350f, -153.772766f, -945.736450f, -160.001923f, -951.656799f,
                             -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, 0.3f); // East Fountain - Base segment south
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -142.004700f, -950.647949f, -151.977570f, -952.587585f, -23.599950f, 30f); // East Fountain - Top Part NS
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -145.975998f, -946.709351f, -147.923950f, -956.632507f, -23.599950f, 30f); // East Fountain - Top Part EW
@@ -2000,13 +2046,13 @@ namespace EQWOWConverter.Zones
                         zoneProperties.SetFogProperties(10, 0, 60, 10, 250);
                         zoneProperties.AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 564.595459f, -695.657227f, 331.376404f, -930.340698f, -69.968529f, 30f); // South area, water moat (bottom)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1", 515.853943f, -757.694885f, 501.844330f, -743.636108f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_w1", 515.853943f, -757.694885f, 501.844330f, -743.636108f,
                             489.708313f, -755.678589f, 503.854492f, -769.786743f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (northwest)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1", 516.064209f, -865.767456f, 503.501434f, -853.133545f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_w1", 516.064209f, -865.767456f, 503.501434f, -853.133545f,
                             489.493195f, -867.663330f, 501.900360f, -879.862610f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (northeast)                        
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1", 405.875366f, -867.682312f, 391.754523f, -853.294373f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_w1", 405.875366f, -867.682312f, 391.754523f, -853.294373f,
                             379.614746f, -865.668030f, 393.802002f, -879.829529f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (southeast)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1", 406.509827f, -755.673096f, 393.734772f, -743.447388f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_w1", 406.509827f, -755.673096f, 393.734772f, -743.447388f,
                             379.510651f, -757.599976f, 391.854950f, -769.755066f, -27.999990f, 50f, 1000f, 1000f, -1000f, -1000f, 0.5f); // South area, lowest spillover into moat (southwest)
                         zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1", 503.118591f, 462.368011f, -756.297546f, -797.092651f, -769.704102f, -783.686096f,
                             -769.717651f, -784.686462f, 489.802521f, 475.831116f, 489.802521f, 474.831116f, 3.000050f, 18f, 1f); // South area, second level pool (northwest)
@@ -2655,7 +2701,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 666.567322f, -801.855347f, 534.581116f, -984.564148f, -69.978620f, 50f); // Water path where you swim to the hole
                         zoneProperties.AddOctagonLiquidShape(LiquidType.Water, "t50_w1", 726.081848f, 701.436951f, -792.323425f, -817.091125f, -797.694214f, -811.679016f,
                             -797.694214f, -811.679016f, 720.692749f, 706.710144f, 720.692749f, 706.710144f, -25.999870f, 50f); // Fountain inside on way to The Hole water path - Top
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "t50_w1", 708.056885f, -814.862244f, 701.712341f, -810.206421f, 699.726074f, -811.770020f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_w1", 708.056885f, -814.862244f, 701.712341f, -810.206421f, 699.726074f, -811.770020f,
                             706.642822f, -818.681946f, -25.999870f, 50f); // Fountain inside on the way to The Hole water path - Waterfall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 712.035706f, -802.286377f, 676.356934f, -843.325256f, -29.000031f, 50f); // Fountain inside on the way to The Hole water path - Bottom
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 685.144226f, 556.225159f, 674.213623f, 549.373779f, -97.968712f, 20f); // From The Hole to the City, indoor square pools (top)
@@ -3424,11 +3470,11 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -1155.879150f, -353.806427f, -1363.432739f, -569.984619f, -15.000010f, 150f); // Area below lava flow under Nagafen
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -998.797852f, -395.365641f, -1056.736938f, -469.923004f, -49.968731f, 150f); // Lava steps west of Nagafen, 2nd step plane (east)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -1012.745972f, -367.435913f, -1056.736938f, -395.385641f, -49.968731f, 150f); // Lava steps west of Nagafen, 2nd step plane (west)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -1020.252136f, -369.291748f, -1027.900391f, -354.708851f, -1052.254028f, -368.784038f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -1020.252136f, -369.291748f, -1027.900391f, -354.708851f, -1052.254028f, -368.784038f,
                             -1049.278198f, -377.636841f, -49.968731f, 150f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Lava steps west of Nagafen, 2nd step (top of lavafall)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -957.797424f, -463.603119f, -1030.056519f, -546.555298f, -17.999990f, 150f); // Lava steps west of Nagafen, top step plane east
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -988.444214f, -451.760712f, -1003.117676f, -470.173279f, -17.999990f, 150f); // Lava steps west of Nagafen, top step plane west
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -990.568665f, -454.285675f, -1003.253906f, -451.589722f, -1019.192810f, -463.566467f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -990.568665f, -454.285675f, -1003.253906f, -451.589722f, -1019.192810f, -463.566467f,
                             -1008.867859f, -464.364014f, -17.999990f, 150f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Lava steps west of Nagafen, top step waterfall top
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -1013.488708f, -239.818726f, -1086.548828f, -372.778351f, -71.968651f, 150f); // Lava steps west of Nagafen, bottom eastmost
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -975.216736f, -137.976318f, -1013.580933f, -264.936951f, -71.968651f, 150f); // Lava steps west of Nagafen, bottom middle
@@ -3436,14 +3482,14 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -973.749146f, -109.691994f, -997.505066f, -193.307343f, -71.968651f, 150f); // Lava steps west of Nagafen, south coming up to other intersection
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -975.342407f, -96.718460f, -990.840393f, -110.728691f, -71.968651f, 150f); // Lava steps west of Nagafen, near intersection
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -967.319946f, -95.079277f, -979.230469f, -116.164574f, -71.968651f, 150f); // Lava steps west of Nagafen, near intersection bottom of lavafall
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -969.702698f, -82.734779f, -974.341309f, -74.098640f, -987.817749f, -96.341690f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -969.702698f, -82.734779f, -974.341309f, -74.098640f, -987.817749f, -96.341690f,
                             -979.366150f, -100.475906f, -71.968651f, 150f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Lava steps west of Nagafen, near intersection at bottom of lava fall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -1077.559692f, -135.729828f, -1389.664673f, -382.311005f, - 67.968674f, 150f); // Lava path south of Nagafen, eastmost
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -1010.905090f, -49.302589f, -1080.569692f, -185.783417f, -67.968674f, 150f); // Lava path south of Nagafen, center block
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -994.834534f, -49.302589f, -1010.915090f, -117.912903f, -67.968674f, 150f); // Lava path south of Nagafen, near top lava fall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -988.720825f, -49.302589f, -994.844534f, -102.415977f, -67.968674f, 150f); // Lava path south of Nagafen, near top lava fall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -972.454163f, -49.302589f, -988.730825f, -72.405312f, -67.968674f, 150f); // Lava path south of Nagafen, near top lava fall
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -972.271851f, -72.494850f, -990.341980f, -66.949249f, 
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -972.271851f, -72.494850f, -990.341980f, -66.949249f, 
                             -994.710083f, -91.504433f, -989.396301f, -97.818367f, -67.968674f, 150f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Lava path south of Nagafen, lava fall into next step down
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -834.602905f, 8.966730f, -953.106262f, -111.683937f, -88.968590f, 150f); // Lava west middle area, full between two lava falls
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -447.087067f, 287.395966f, -840.904663f, -140.857407f, -108.968658f, 150f); // Lava west and northwest
@@ -3453,12 +3499,12 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -637.853333f, -428.289948f, -722.261108f, -477.929626f, -15.999950f, 150f); // Lava east upper middle, minority segment
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -331.496796f, -549.121582f, -399.097748f, -619.549866f, -13.999960f, 150f); // Lava north east upper 
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -370.305115f, -522.029358f, -388.071930f, -549.131582f, -13.999960f, 150f); // Lava north east upper pt 2
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -378.460907f, -528.554138f, -386.896851f, -523.995361f, -396.291107f, -545.855591f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -378.460907f, -528.554138f, -386.896851f, -523.995361f, -396.291107f, -545.855591f,
                             -384.069855f, -557.535339f, -13.999960f, 150f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Lava north east top of falls
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -386.336121f, -404.101440f, -462.968964f, -540.660461f, -32.999962f, 17.45f); // Lava north east mid
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -463.904785f, -366.310272f, -539.539490f, -448.649292f, -51.968731f, 19.5f); // Lava north east bottom
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -537.387085f, -379.438049f, -545.856812f, -393.651611f, -51.968731f, 19.5f); // Lava north east bottom near falls
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", -535.108704f, -378.957306f, -546.292969f, -367.877228f, -551.902222f, -374.825226f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -535.108704f, -378.957306f, -546.292969f, -367.877228f, -551.902222f, -374.825226f,
                             -545.501892f, -397.644989f, -51.968731f, 19.5f, 2000f, 2000f, -2000f, -2000f, 0.4f); // Lave north top of falls
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_m0002", "d_m0008", "d_lava001", "t25_oily1"); // Lava, Oil (t50_oily1) is not included because of collision barrier preventing swim
                     }
@@ -3471,7 +3517,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 499.080811f, 32.964199f, 472.570038f, -48.240250f, 5.000010f, 12.6f);   // Top area, lowest lava
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 519.093750f, -58.637852f, 474.333313f, -114.066833f, 12.000010f, 15f);   // Top area, east upper level (east side)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 516.087341f, -34.205761f, 498.917908f, -58.666969f, 12.000010f, 15f);   // Top area, east upper level (west side)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_lava001", 505.731720f, -42.152409f, 499.536438f, -38.081902f, 484.816589f, -50.759651f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", 505.731720f, -42.152409f, 499.536438f, -38.081902f, 484.816589f, -50.759651f,
                             495.153717f, -62.718128f, 12.000010f, 15f, 2000f, 2000f, -2000f, -2000f, 0.4f); // Top area, east fall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 501.026611f, 57.315898f, 480.985962f, 51.630980f, 8.000030f, 14.5f); // Top area, west 1st level up near NW
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 491.430985f, 59.392169f, 480.985962f, 57.105898f, 8.000030f, 14.5f); // Top area, west 1st level up near NW
@@ -3479,11 +3525,11 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 487.431763f, 62.665852f, 484.416931f, 60.989130f, 8.000030f, 14.5f); // Top area, west 1st level up near NW
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 501.026611f, 51.640980f, 479.441040f, 33.969700f, 8.000030f, 14.5f); // Top area, west 1st level up near NW
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 482.425110f, 37.876530f, 478.034607f, 33.969700f, 8.000030f, 14.5f); // Top area, west 1st level up near NW
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_m0002", 484.653290f, 37.431648f, 479.832001f, 45.032742f, 475.742035f, 34.063629f, 
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_m0002", 484.653290f, 37.431648f, 479.832001f, 45.032742f, 475.742035f, 34.063629f, 
                             475.808105f, 32.345268f, 8.000030f, 14.5f, 2000f, 2000f, -2000f, -2000f, 0.4f); // Top area, west 1st level up
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 557.422913f, 127.655708f, 485.443909f, 63.568630f, 12.000010f, 50f); // Top area, west 2st level up (west)
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 514.152710f, 66.235321f, 498.986969f, 52.200989f, 12.000010f, 50f); // Top area, west 2st level up (west)
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Magma, "d_m0002", 503.979767f, 59.812340f, 494.726990f, 70.472641f, 485.481201f, 63.863422f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_m0002", 503.979767f, 59.812340f, 494.726990f, 70.472641f, 485.481201f, 63.863422f,
                             499.118988f, 52.208672f, 12.000010f, 50f, 2000f, 2000f, -2000f, -2000f, 0.5f); // Top area, west 2nd level lava fall
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Magma, "d_m0002", 509.190308f, 33.766731f, 452.649292f, -25.908581f, -52.968712f, 50f); // Bottom area pool
                         zoneProperties.AddOctagonLiquidShape(LiquidType.Magma, "d_m0002", 489.820374f, 476.808990f, 13.012480f, -0.013940f, 9.020610f, 3.978410f,
@@ -3498,7 +3544,7 @@ namespace EQWOWConverter.Zones
                         zoneProperties.AddZoneLineBox("lakerathe", 4352.154297f, 1158.142578f, -0.000990f, ZoneLineOrientationType.South, -8555.652344f, 1180.041138f, 43.965542f, -8569.452148f, 1132.577637f, -0.499510f);
                         zoneProperties.AddZoneLineBox("northkarana", -4472.277344f, 1208.014893f, -34.406212f, ZoneLineOrientationType.North, 2900.742432f, 943.823730f, 17.628691f, 2821.058350f, 862.661682f, -36.353588f);
                         zoneProperties.AddZoneLineBox("paw", -103.683167f, 16.824860f, 0.000050f, ZoneLineOrientationType.East, -3110.107910f, 895.748901f, 2.515520f, -3126.174805f, 861.375854f, -12.438860f);
-                        zoneProperties.AddQuadrilateralLiquidShape(LiquidType.Water, "d_w1", -18.260389f, -104.704063f, -26.714720f, -96.223312f, -35.142010f, -104.840118f, -26.822020f, -113.371986f,
+                        zoneProperties.AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_w1", -18.260389f, -104.704063f, -26.714720f, -96.223312f, -35.142010f, -104.840118f, -26.822020f, -113.371986f,
                             3.656250f, 250f); // Water near center of map
                         zoneProperties.AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3847.334961f, 4207.039062f, 1675.559814f, -4671.479004f, -69.374458f, 250f); // Big north water area
                         zoneProperties.AddDisabledMaterialCollisionByNames("d_w1");
