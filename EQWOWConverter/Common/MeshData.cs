@@ -162,6 +162,26 @@ namespace EQWOWConverter.Common
             return extractedMeshData;
         }
 
+        public MeshData GetMeshDataExcludingNonRenderedAndAnimatedMaterials(params Material[] allMaterials)
+        {
+            // Extract out copies of the geometry data specific to data that would be considered zone static and rendered materials
+            List<Material> includedMaterials = new List<Material>();
+            foreach (Material material in allMaterials)
+            {
+                if (material.IsAnimated())
+                    continue;
+                if (material.HasTransparency())
+                    continue;
+                if (material.IsRenderable() == false)
+                    continue;
+                includedMaterials.Add(material);
+            }
+            if (includedMaterials.Count == 0)
+                return new MeshData();
+            else
+                return GetMeshDataForMaterials(includedMaterials.ToArray());
+        }
+
         public MeshData GetMeshDataForFaces(List<TriangleFace> faces)
         {
             // Since the face list is likely to not include all faces, rebuild the render object lists

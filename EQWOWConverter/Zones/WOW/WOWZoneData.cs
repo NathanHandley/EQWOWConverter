@@ -117,23 +117,26 @@ namespace EQWOWConverter.Zones
                     GenerateAndAddObjectInstancesForZoneMaterial(material, meshData);
                 }
 
+            // Reduce meshdata to what will actually be rendered
+            MeshData staticMeshData = meshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
+
             // If this can be generated as a single WMO, just do that
-            if (meshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+            if (staticMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
             {
                 List<string> materialNames = new List<string>();
                 foreach(Material material in Materials)
                     materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectByMaterials(materialNames, meshData.TriangleFaces, meshData);
+                GenerateWorldModelObjectByMaterials(materialNames, staticMeshData.TriangleFaces, staticMeshData);
             }
             // Otherwise, break into parts
             else
             {
                 // Generate the world groups by splitting the map down into subregions as needed
-                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
                 List<string> materialNames = new List<string>();
                 foreach (Material material in Materials)
                     materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, meshData.TriangleFaces, meshData);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, staticMeshData.TriangleFaces, staticMeshData);
             }
 
             // Save the loading screen
