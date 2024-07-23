@@ -59,7 +59,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 605.389660f, 387.356210f, 578.504487f, 330.563707f, -896.656190f, 10f); // Very bottom pond, bottom of waterfall 2
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 594.486337f, 331.230373f, 510.567933f, 279.507370f, -896.656190f, 10f); // Very bottom pond, bottom of waterfall 3
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 560.783283f, 266.736960f, 510.567933f, 243.898263f, -896.656190f, 10f); // Very bottom pond, bottom of waterfall 4
-            AddDisabledMaterialCollisionByNames("t25_m0004", "t25_m0005", "t50_m0006", "d_m0007", "t50_w1", "t50_wve1"); // m0005 is "watrock2"
         }
     }
 }

@@ -78,7 +78,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 1973.211548f, -193.271240f, 1749.429209f, -380.653412f, -126.937317f, 500f); // Outflow room, up to waterfall
             AddLiquidPlane(LiquidType.Water, "d_m0004", 1987.200806f, -264.239075f, 1973.201548f, -322.780212f, -126.937317f, -140.044510f, LiquidSlantType.SouthHighNorthLow, 500f); // Outfloom room, waterfall
             AddLiquidPlaneZLevel(LiquidType.Water, "d_m0004", 2086.414307f, -264.974457f, 1987.190806f, -322.667267f, -197.909174f, 500f); // Outfloow room, outflow
-            AddDisabledMaterialCollisionByNames("d_m0004", "d_m0005", "d_gukfalls1", "d_m0008", "d_wguk1", "d_m0003", "d_m0009");
         }
     }
 }

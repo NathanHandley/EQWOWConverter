@@ -38,7 +38,6 @@ namespace EQWOWConverter.Zones.Properties
             AddTeleportPad("felwitheb", 552.740112f, -743.948242f, 0.000020f, ZoneLineOrientationType.East, 435.665283f, -618.718323f, 31.000561f, 6.0f);
             AddTeleportPad("felwitheb", 303.943054f, -581.065125f, -13.999980f, ZoneLineOrientationType.North, 553.732544f, -919.604370f, 4.000090f, 6.0f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t25_agua1", 567.282104f, -512.480042f, 322.703186f, -713.834900f, -27.999870f, 300f);
-            AddDisabledMaterialCollisionByNames("t25_agua1");
         }
     }
 }

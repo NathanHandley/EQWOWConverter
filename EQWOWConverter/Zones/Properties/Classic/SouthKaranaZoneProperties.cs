@@ -35,7 +35,6 @@ namespace EQWOWConverter.Zones.Properties
             AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "d_w1", -18.260389f, -104.704063f, -26.714720f, -96.223312f, -35.142010f, -104.840118f, -26.822020f, -113.371986f,
                 3.656250f, 250f); // Water near center of map
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3847.334961f, 4207.039062f, 1675.559814f, -4671.479004f, -69.374458f, 250f); // Big north water area
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

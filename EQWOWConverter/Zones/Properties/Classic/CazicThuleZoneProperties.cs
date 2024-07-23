@@ -78,8 +78,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
             AddCazicThuleLiquidSphere(LiquidType.GreenWater, "t50_grnwtr1");
-            AddDisabledMaterialCollisionByNames("t50_falls1", "t50_water1", "t50_m0000", "t75_m0004", "t75_m0005", "t50_m0007", "t50_grnwtr1", "t75_m0013",
-                "t25_m0014", "t75_m0015", "t75_m0016");
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)

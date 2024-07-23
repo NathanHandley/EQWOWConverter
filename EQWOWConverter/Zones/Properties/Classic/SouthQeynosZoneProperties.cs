@@ -41,7 +41,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0001", 228.634933f, -374.583069f, 140.408615f, -512.894714f, -1.999940f, 350f); // South well and tunnel (just SW of east tunnel)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0001", 372.959717f, -523.751526f, 264.531525f, -562.092468f, -4.000000f, 350f); // Northeast Well and tunnel
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0001", -156.018356f, -430.961548f, -170.753387f, -451.301483f, -1.999930f, 5f); // Indoor pond in the Rainbringer building in the SE
-            AddDisabledMaterialCollisionByNames("d_w1", "t50_m0001", "t50_smke1");
         }
     }
 }

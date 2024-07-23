@@ -149,7 +149,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 227.730164f, 394.674011f, 165.504913f, 277.284241f, -1.999990f, 350f); // West water and sewer entry
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 308.709290f, -152.874634f, 292.515320f, -169.049088f, -1.999990f, 350f); // North sewer entry
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -41.123249f, -293.180542f, -239.001862f, -504.985931f, -2.009970f, 75f); // Water around paladin guild entry
-            AddDisabledMaterialCollisionByNames("t50_w1", "t50_m0003", "t75_m0007", "t75_rea1");
         }
     }
 }

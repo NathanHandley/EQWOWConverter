@@ -52,9 +52,11 @@ namespace EQWOWConverter
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
         public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;
 
-        // Maximum number of faces that fit into a WMO group before it subdivides
-        // max value can only ever be 21,840, but >2100 not advised due to btree size
-        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 2100;
+        // Maximum number of faces that fit into a WMO group before it subdivides (true max is 21,840)
+        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21000;
+
+        // Maximum number of BTREE faces that fit into a WMO group before it subdivides
+        public static readonly int CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT = 0.01f;

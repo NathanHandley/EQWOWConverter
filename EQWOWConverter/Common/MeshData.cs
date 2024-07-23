@@ -207,8 +207,10 @@ namespace EQWOWConverter.Common
 
                     // Add objects
                     extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(Normals[oldVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                 }
@@ -229,8 +231,10 @@ namespace EQWOWConverter.Common
 
                     // Add objects
                     extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(Normals[oldVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                 }
@@ -251,8 +255,10 @@ namespace EQWOWConverter.Common
 
                     // Add objects
                     extractedMeshData.Vertices.Add(Vertices[oldVertIndex]);
-                    extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
-                    extractedMeshData.Normals.Add(Normals[oldVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        extractedMeshData.TextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                 }
@@ -261,6 +267,97 @@ namespace EQWOWConverter.Common
                 extractedMeshData.TriangleFaces.Add(curTriangleFace);
             }
             return extractedMeshData;
+        }
+
+        // TODO: Consider making it not specific to collision
+        public void CondenseAndRenumberVertexIndices()
+        {
+            // Reorder the vertices / texcoords / normals / to match the sorted triangle faces
+            List<Vector3> sortedVertices = new List<Vector3>();
+            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
+            List<Vector3> sortedNormals = new List<Vector3>();
+            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
+            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+            for (int i = 0; i < TriangleFaces.Count; i++)
+            {
+                TriangleFace curTriangleFace = new TriangleFace(TriangleFaces[i]);
+
+                // Delete any that use the same index three times
+                if (curTriangleFace.V1 == curTriangleFace.V2 && curTriangleFace.V1 == curTriangleFace.V3)
+                    continue;
+
+                // Face vertex 1
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V1))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V1 = oldNewVertexIndices[curTriangleFace.V1];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V1;
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V1 = newVertIndex;
+                    sortedVertices.Add(Vertices[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        sortedNormals.Add(Normals[newVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[newVertIndex]);
+                }
+
+                // Face vertex 2
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V2))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V2 = oldNewVertexIndices[curTriangleFace.V2];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V2;
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V2 = newVertIndex;
+                    sortedVertices.Add(Vertices[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        sortedNormals.Add(Normals[newVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[newVertIndex]);
+                }
+
+                // Face vertex 3
+                if (oldNewVertexIndices.ContainsKey(curTriangleFace.V3))
+                {
+                    // This index was aready remapped
+                    curTriangleFace.V3 = oldNewVertexIndices[curTriangleFace.V3];
+                }
+                else
+                {
+                    // Store new mapping
+                    int oldVertIndex = curTriangleFace.V3;
+                    int newVertIndex = sortedVertices.Count;
+                    oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
+                    curTriangleFace.V3 = newVertIndex;
+                    sortedVertices.Add(Vertices[oldVertIndex]);
+                    if (Normals.Count != 0)
+                        sortedNormals.Add(Normals[newVertIndex]);
+                    if (TextureCoordinates.Count != 0)
+                        sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
+                    if (VertexColors.Count != 0)
+                        sortedVertexColors.Add(VertexColors[newVertIndex]);
+                }
+
+                // Save this updated triangle
+                sortedTriangleFaces.Add(curTriangleFace);
+            }
+            TriangleFaces = sortedTriangleFaces;
+            Vertices = sortedVertices;
         }
 
         public void SortDataByMaterial()
@@ -420,104 +517,6 @@ namespace EQWOWConverter.Common
                 // Save the mesh
                 chunkMeshDatas.Add(newMeshData);
             }
-        }
-    
-        private bool IsPointInTriangle(System.Numerics.Vector2 point, System.Numerics.Vector2 v1, System.Numerics.Vector2 v2, System.Numerics.Vector2 v3)
-        {
-            double a = ((v2.Y - v3.Y) * (point.X - v3.X) + (v3.X - v2.X) * (point.Y - v3.Y)) / ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-            double b = ((v3.Y - v1.Y) * (point.X - v3.X) + (v1.X - v3.X) * (point.Y - v3.Y)) / ((v2.Y - v3.Y) * (v1.X - v3.X) + (v3.X - v2.X) * (v1.Y - v3.Y));
-            double c = 1 - a - b;
-
-            if (a == 0 || b == 0 || c == 0)
-                return true;
-            else if (a >= 0 && a <= 1 && b >= 0 && b <= 1 && c >= 0 && c <= 1)
-                return true;
-            else
-                return false;
-
-            //float dX = point.X - v3.X;
-            //float dY = point.Y - v3.Y;
-            //float dX21 = v3.X - v2.X;
-            //float dY12 = v2.Y - v3.Y;
-            //float D = dY12 * (v1.X - v3.X) + dX21 * (v1.Y - v3.Y);
-            //float s = dY12 * dX + dX21 * dY;
-            //float t = (v3.Y - v1.Y) * dX + (v1.X - v3.X) * dY;
-
-            //if (D < 0) return s <= 0 && t <= 0 && s + t >= D;
-            //return s >= 0 && t >= 0 && s + t <= D;
-        }
-
-        public bool GetHighestZAtXYPosition(float xPosition, float yPosition, out float highestZ)
-        {
-            //// Test against every triangle to see if the point is inside when cast to a 2D vector
-            //// Going to use the .Net Vector methods instead of writing my own since this is the only set of use cases
-            //highestZ = -2000.0f; // This is the minimum in the map
-            //System.Numerics.Vector2 rayPoint = new System.Numerics.Vector2(xPosition, yPosition);
-            //foreach(TriangleFace triangle in TriangleFaces)
-            //{
-            //    // Test if it's in this triangle
-            //    System.Numerics.Vector2 v1_2D = new System.Numerics.Vector2(Vertices[triangle.V1].X, Vertices[triangle.V1].Y);
-            //    System.Numerics.Vector2 v2_2D = new System.Numerics.Vector2(Vertices[triangle.V2].X, Vertices[triangle.V2].Y);
-            //    System.Numerics.Vector2 v3_2D = new System.Numerics.Vector2(Vertices[triangle.V3].X, Vertices[triangle.V3].Y);
-            //    if (IsPointInTriangle(rayPoint, v1_2D, v2_2D, v3_2D))
-            //    {
-            //        // Calculate the intersection
-            //        System.Numerics.Vector3 v1_3D = new System.Numerics.Vector3(Vertices[triangle.V1].X, Vertices[triangle.V1].Y, Vertices[triangle.V1].Z);
-            //        System.Numerics.Vector3 v2_3D = new System.Numerics.Vector3(Vertices[triangle.V2].X, Vertices[triangle.V2].Y, Vertices[triangle.V2].Z);
-            //        System.Numerics.Vector3 v3_3D = new System.Numerics.Vector3(Vertices[triangle.V3].X, Vertices[triangle.V3].Y, Vertices[triangle.V3].Z);
-            //        System.Numerics.Vector3 normal = System.Numerics.Vector3.Cross(v2_3D - v1_3D, v3_3D - v1_3D);
-            //        float A = normal.X;
-            //        float B = normal.Y;
-            //        float C = normal.Z;
-            //        float D = -System.Numerics.Vector3.Dot(normal, v1_3D);
-            //        float z_intersect = -(A * xPosition + B * yPosition + D) / C;
-            //        if (z_intersect > highestZ)
-            //            highestZ = z_intersect;
-            //    }
-            //}
-
-            //if (highestZ > -1999f)
-            //    return true;
-            //else
-            //    return false;
-
-            // Test against every triangle to see if the point is inside when cast to a 2D vector
-            // Going to use the .Net Vector methods instead of writing my own since this is the only set of use cases
-            highestZ = -2000.0f; // This is the minimum in the map
-            System.Numerics.Vector2 testPosition = new System.Numerics.Vector2(xPosition, yPosition);
-            foreach (TriangleFace triangle in TriangleFaces)
-            {
-                // Test if it's in this triangle
-                System.Numerics.Vector2 v1 = new System.Numerics.Vector2(Vertices[triangle.V1].X, Vertices[triangle.V1].Y);
-                System.Numerics.Vector2 v2 = new System.Numerics.Vector2(Vertices[triangle.V2].X, Vertices[triangle.V2].Y);
-                System.Numerics.Vector2 v3 = new System.Numerics.Vector2(Vertices[triangle.V3].X, Vertices[triangle.V3].Y);
-                bool side1Test = ((testPosition.X - v2.X) * (v1.Y - v2.Y) - (v1.X - v2.X) * (testPosition.X - v2.Y)) < 0.0f;
-                bool side2Test = ((testPosition.X - v3.X) * (v2.Y - v3.Y) - (v2.X - v3.X) * (testPosition.Y - v3.Y)) < 0.0f;
-                bool side3Test = ((testPosition.X - v1.X) * (v3.Y - v1.Y) - (v3.X - v1.X) * (testPosition.Y - v1.X)) < 0.0f;
-                if ((side1Test == side2Test == side3Test))
-                {
-                    // It's in the triangle.  Get the barycentric coordinates to find where it intersected
-                    System.Numerics.Vector2 v0 = v2 - v1;
-                    System.Numerics.Vector2 v1v = v3 - v1;
-                    System.Numerics.Vector2 v2v = testPosition - v1;
-                    float d00 = System.Numerics.Vector2.Dot(v0, v0);
-                    float d01 = System.Numerics.Vector2.Dot(v0, v1v);
-                    float d11 = System.Numerics.Vector2.Dot(v1v, v1v);
-                    float d20 = System.Numerics.Vector2.Dot(v2v, v0);
-                    float d21 = System.Numerics.Vector2.Dot(v2v, v1v);
-                    float denom = d00 * d11 - d01 * d01;
-                    float v = (d11 * d20 - d01 * d21) / denom;
-                    float w = (d00 * d21 - d01 * d20) / denom;
-                    float u = 1.0f - v - w;
-                    float zValue = u * Vertices[triangle.V1].Z + v * Vertices[triangle.V2].Z + w * Vertices[triangle.V3].Z;
-                    if (zValue > highestZ)
-                        highestZ = zValue;
-                }
-            }
-            if (highestZ > -1999f)
-                return true;
-            else
-                return false;
-        }
+        }    
     }
 }

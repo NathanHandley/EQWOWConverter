@@ -70,9 +70,6 @@ namespace EQWOWConverter.Zones
             AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, AmbientLight.A);
             LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
 
-            MeshData meshData = new MeshData(eqZoneData.MeshData);
-            meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
-
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
             {
@@ -106,38 +103,47 @@ namespace EQWOWConverter.Zones
 
             WorldObjects.Clear();
 
+            // Get and translate the mesh data
+            MeshData renderMeshData = new MeshData(eqZoneData.RenderMeshData);
+            renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+            MeshData collisionMeshData = new MeshData(eqZoneData.CollisionMeshData);
+            collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+
             // Build liquid wmos first
-            GenerateLiquidWorldModelObjects(meshData, ZoneProperties);
+            GenerateLiquidWorldModelObjects(renderMeshData, ZoneProperties);
 
             // Determine which materials are animated or transparent and create objects to represent them
             foreach (Material material in Materials)
                 if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
                 {
                     MeshData allMeshData = new MeshData();
-                    GenerateAndAddObjectInstancesForZoneMaterial(material, meshData);
+                    GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
                 }
 
-            // Reduce meshdata to what will actually be rendered
-            MeshData staticMeshData = meshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
-
-            // If this can be generated as a single WMO, just do that
-            if (staticMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+            // Create collision data for the map
+            if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
             {
-                List<string> materialNames = new List<string>();
-                foreach(Material material in Materials)
-                    materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectByMaterials(materialNames, staticMeshData.TriangleFaces, staticMeshData);
+                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
+                collisionMeshData = new MeshData(renderMeshData);
+                GenerateCollisionWorldModelObjects(collisionMeshData);
             }
-            // Otherwise, break into parts
             else
             {
-                // Generate the world groups by splitting the map down into subregions as needed
-                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                List<string> materialNames = new List<string>();
-                foreach (Material material in Materials)
-                    materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, staticMeshData.TriangleFaces, staticMeshData);
+                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
+                if (collisionMeshData.Normals.Count == 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
+                if (collisionMeshData.TextureCoordinates.Count == 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+                if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
+                GenerateCollisionWorldModelObjects(collisionMeshData);
             }
+
+            // Generate the render objects
+            GenerateRenderWorldModelObjects(renderMeshData, Materials);
 
             // Save the loading screen
             switch (ZoneProperties.Continent)
@@ -166,8 +172,54 @@ namespace EQWOWConverter.Zones
             }
 
             // Rebuild the bounding box
-            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             IsLoaded = true;
+        }
+
+        private void GenerateCollisionWorldModelObjects(MeshData collisionMeshData)
+        {
+            // Reduce the collision triangle incidies since they won't map to actual render indicies anymore
+            collisionMeshData.CondenseAndRenumberVertexIndices();
+
+            // If this can be generated as a single WMO, just do that
+            if (collisionMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP)
+            {
+                WorldModelObject curWorldModelObject = new WorldModelObject();
+                curWorldModelObject.LoadAsCollision(collisionMeshData, DoodadInstances, ZoneProperties);
+                WorldObjects.Add(curWorldModelObject);
+            }
+            // Otherwise, break into parts
+            else
+            {
+                // Generate the world groups by splitting the map down into subregions as needed
+                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, new List<string>(), collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, true);
+            }
+        }
+
+        private void GenerateRenderWorldModelObjects(MeshData allMeshData, List<Material> allMaterials)
+        {
+            // Reduce meshdata to what will actually be rendered
+            MeshData staticMeshData = allMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(allMaterials.ToArray());
+
+            // If this can be generated as a single WMO, just do that
+            if (staticMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+            {
+                List<string> materialNames = new List<string>();
+                foreach (Material material in allMaterials)
+                    materialNames.Add(material.UniqueName);
+                GenerateWorldModelObjectByMaterials(materialNames, staticMeshData.TriangleFaces, staticMeshData);
+            }
+            // Otherwise, break into parts
+            else
+            {
+                // Generate the world groups by splitting the map down into subregions as needed
+                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+                List<string> materialNames = new List<string>();
+                foreach (Material material in allMaterials)
+                    materialNames.Add(material.UniqueName);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, staticMeshData.TriangleFaces, staticMeshData, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP, false);
+            }
         }
 
         public void GenerateLiquidWorldModelObjects(MeshData meshData, ZoneProperties zoneProperties)
@@ -222,10 +274,10 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, MeshData meshData)
+        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, MeshData meshData, int maxFacesPerWMOGroup, bool isCollisionMesh)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
-            if (faces.Count > Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
+            if (faces.Count > maxFacesPerWMOGroup)
             {
                 // Create two new bounding boxes
                 SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox);
@@ -257,16 +309,24 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Generate for the two sub boxes
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, meshData);
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, meshData);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
             }
             else
             {
-                GenerateWorldModelObjectByMaterials(materialNames, faces, meshData);
+                if (isCollisionMesh == false)
+                    GenerateWorldModelObjectByMaterials(materialNames, faces, meshData);
+                else
+                {
+                    MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
+                    WorldModelObject curWorldModelObject = new WorldModelObject();
+                    curWorldModelObject.LoadAsCollision(extractedMeshData, DoodadInstances, ZoneProperties);
+                    WorldObjects.Add(curWorldModelObject);
+                }
             }
         }
 
-         private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> faceToProcess, MeshData meshData)
+        private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> faceToProcess, MeshData meshData)
         {
             List<UInt32> materialIDs = new List<UInt32>();
             bool materialFound = false;

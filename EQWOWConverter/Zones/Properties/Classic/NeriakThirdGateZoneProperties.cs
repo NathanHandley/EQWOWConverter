@@ -57,7 +57,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 932.422266f, -1546.286987f, 696.481934f, -1799.186035f, -97.968651f, 50f); // East area, water around the building with bridges and docks (South)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 824.538452f, -1456.688843f, 798.816895f, -1468.245117f, -81.968712f, 10f); // Central area, dragon statue fountain
             AddLiquidPlaneZLevel(LiquidType.Blood, "t75_blood1", 1301.838745f, -1249.076172f, 1289.048096f, -1251.979248f, -39.968670f, 3f); // Blood at top of the red temple
-            AddDisabledMaterialCollisionByNames("t50_w1", "t50_falls1", "t25_m0001", "t75_blood1");
         }
     }
 }

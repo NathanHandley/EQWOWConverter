@@ -141,7 +141,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 324.968842f, 928.367065f, -592.296204f, -231.830185f, -41.718739f, 300f); // Oasis, north
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

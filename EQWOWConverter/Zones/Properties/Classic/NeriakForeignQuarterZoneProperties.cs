@@ -55,7 +55,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t25_m0001", 101.654227f, -132.986319f, 96.259752f, -149.091455f, 2.000000f, 10f); // Center fountain
             AddLiquidPlaneZLevel(LiquidType.Water, "t25_m0001", 100.554227f, -131.886319f, 97.359752f, -150.191455f, 2.000000f, 10f); // Center fountain
             AddLiquidPlaneZLevel(LiquidType.Water, "t25_m0001", 99.454227f, -130.786319f, 98.459752f, -151.291455f, 2.000000f, 10f); // Center fountain
-            AddDisabledMaterialCollisionByNames("t75_m0000", "t25_m0001");
         }
     }
 }

@@ -35,7 +35,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -229.968414f, 2123.114746f, -848.817383f, 945.974426f, -30.156151f, 200f); // West most part of river
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -545.284668f, 946.974426f, -1134.071777f, -186.474213f, -30.156151f, 200f); // Middle part of river
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -853.824585f, -185.474213f, -1614.697388f, -1905.550659f, -30.156151f, 200f); // East part of river
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

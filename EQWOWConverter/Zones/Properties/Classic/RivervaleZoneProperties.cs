@@ -27,14 +27,13 @@ namespace EQWOWConverter.Zones.Properties
     {
         public RivervaleZoneProperties()
         {
-            // The two waterfalls (using "d_falls1") have issues.  If non-collide, you go through the wall on the other
+            // TODO: Bug - You can fall through the waterfall base
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 210, 200, 10, 400);
             AddZoneLineBox("kithicor", 2012.985229f, 3825.189209f, 462.250427f, ZoneLineOrientationType.South, -384.065887f, -275.682556f, 22.469000f, -396.650330f, -290.013977f, -0.499910f);
             AddZoneLineBox("misty", 407.486847f, -2571.641357f, -10.749720f, ZoneLineOrientationType.West, -69.729698f, 134.790482f, 22.466999f, -96.162209f, 113.427109f, -0.500000f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 215.891556f, -251.910565f, -15.339250f, -512.838562f, -11.999970f, 200f); // South lake (lower)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 373.244324f, -227.197754f, 215.881556f, -336.578491f, -7.999990f, 200f); // North lake (higher)
-            AddDisabledMaterialCollisionByNames("t50_agua1", "t50_m0000", "t25_m0005", "t25_m0006");
         }
     }
 }

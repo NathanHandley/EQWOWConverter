@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public GukBottomZoneProperties()
         {
             // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
-            // TODO: Bug - Blood collision issue.  If d_m0014 is collision enabled, the floor under some blood pools will be passthrough and fall through the map
             // TODO: Ladders
             SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinent.Antonica);
             SetFogProperties(50, 45, 20, 10, 140);
@@ -74,7 +73,6 @@ namespace EQWOWConverter.Zones.Properties
                 873.733572f, 587.733887f, -167.937393f, 350f); // West upper waterfall, east part
             AddQuadrilateralLiquidShapeZLevel(LiquidType.Water, "t50_wguk1", 867.500549f, 593.786804f, 857.799255f, 606.497314f, 853.164795f, 602.243958f, 863.647827f,
                 591.752808f, -167.937393f, 350f); // West upper waterfall, south part
-            AddDisabledMaterialCollisionByNames("t50_wguk1", "t75_m0000", "t50_gukfalls1", "t75_m0001", "t75_m0002", "t50_m0004", "t75_m0013", "d_m0015", "t25_smke1"); // d_m0014 = blood and used for some surfaces
         }
     }
 }

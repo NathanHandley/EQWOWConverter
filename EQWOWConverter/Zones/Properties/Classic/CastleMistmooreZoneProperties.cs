@@ -38,7 +38,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -5.059470f, 93.924767f, -6.917720f, 86.123688f, -189.882553f, 10f); // Courtyard Pool Fountain W and E
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -314.182220f, 77.662148f, -329.567352f, 14.306520f, -191.936478f, 10f); // Coffin room
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -170.154343f, 95.783401f, -181.624146f, 84.045723f, -161.937485f, 5f); // small pool with steps
-            AddDisabledMaterialCollisionByNames("t50_w1", "t50_falls1");
         }
     }
 }

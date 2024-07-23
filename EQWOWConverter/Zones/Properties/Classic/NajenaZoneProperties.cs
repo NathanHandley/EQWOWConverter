@@ -34,7 +34,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_w1", 271.931427f, 65.983147f, 182.312454f, -28.775570f, -16.000010f, 30f); // East / Upper water
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_w1", 253.706802f, 122.485786f, 184.148834f, 61.766312f, -21.999990f, 30f); // West / Lower water
             AddLiquidPlaneZLevel(LiquidType.Blood, "t75_b1", 126.516800f, -139.600418f, 110.629539f, -155.153397f, 0.000040f, 10f); // Blood pool with spikes
-            AddDisabledMaterialCollisionByNames("t75_w1", "t75_b1");
         }
     }
 }

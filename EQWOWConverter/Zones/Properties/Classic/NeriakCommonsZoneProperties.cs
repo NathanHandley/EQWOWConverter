@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NeriakCommonsZoneProperties()
         {
-            //TODO: Can go in from glass (water side) into building(bug).  May not fix.
             //TODO: Base of the waterfall has collision when it shouldn't, and shares material with walls so can't change that way
             SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
             SetFogProperties(10, 0, 60, 10, 250);
@@ -65,7 +64,6 @@ namespace EQWOWConverter.Zones.Properties
                 -153.700836f, -957.501465f, -39.968609f, 10f, -151.865845f, -945.736450f, -158.453781f, -957.501465f, 0.3f); // East Fountain - Base segment south
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -142.004700f, -950.647949f, -151.977570f, -952.587585f, -23.599950f, 30f); // East Fountain - Top Part NS
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_m0003", -145.975998f, -946.709351f, -147.923950f, -956.632507f, -23.599950f, 30f); // East Fountain - Top Part EW
-            AddDisabledMaterialCollisionByNames("t50_m0001", "t50_m0003", "t50_m0007"); // Falls, water, water
         }
     }
 }

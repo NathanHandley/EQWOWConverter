@@ -31,7 +31,6 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3854.056396f, 11660.213867f, -5955.389648f, -11718.996094f, -20.063040f, 300f);
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

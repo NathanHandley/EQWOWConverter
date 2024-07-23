@@ -57,7 +57,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -333.911011f, -519.980408f, -400.758453f, -611.953796f, -13.999950f, 150f); // Main Lava - Northwest lower
             AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -276.853088f, -684.851990f, -412.576324f, -943.044861f, 20.000010f, 150f); // Main Lava - East area
             AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -348.883087f, -610.981750f, -382.591187f, -943.044861f, 10.000240f, 150f); // Main Lava - West area
-            AddDisabledMaterialCollisionByNames("d_m0018", "d_lava001"); // Lava, Oil (t50_oily1) is not included because of collision barrier preventing swim
         }
     }
 }

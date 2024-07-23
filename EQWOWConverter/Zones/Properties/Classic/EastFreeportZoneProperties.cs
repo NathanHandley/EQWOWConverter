@@ -96,7 +96,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "d_ow1", 391.193787f, -828.030029f, -177.646881f, -1195.420410f, -69.966743f, 300f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_ow1", -212.893402f, -1035.786987f, -483.346436f, -1188.991699f, -69.966743f, 300f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_ow1", -176.359528f, -962.933838f, -213.906982f, -1189.269043f, -69.966743f, 300f);
-            AddDisabledMaterialCollisionByNames("d_ow1", "d_m0007");
         }
     }
 }

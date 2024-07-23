@@ -34,7 +34,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("highpass", -1014.530701f, 112.901894f, -0.000030f, ZoneLineOrientationType.East, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3007.819092f, 1837.666504f, -3782.756836f, 551.661438f, -74.156052f, 500f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -3772.680420f, 1837.766504f, -5798.433105f, -4512.786133f, -74.156052f, 500f);
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

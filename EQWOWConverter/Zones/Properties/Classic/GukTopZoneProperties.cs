@@ -91,7 +91,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 434.903229f, 98.151421f, 311.871765f, -59.956660f, -41.968712f, 9f); // Center middle north  (ne lower from ring with pillers)
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 508.331848f, 186.730713f, 377.217804f, 82.592552f, -41.968712f, 9f); // Center middle northwest  (ne lower from ring with pillers)
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wguk1", 451.951996f, -13.112000f, 363.141907f, -127.284462f, -84.968719f, 30f); // Center middle low
-            AddDisabledMaterialCollisionByNames("t75_wguk1", "t50_m0000", "t75_m0002", "t50_b1", "t75_m0008", "t75_m0010", "t50_m0012", "d_gukfalls1");
         }
     }
 }

@@ -33,7 +33,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 264.136719f, 37.288700f, 48.358829f, -182.936539f, -3.999990f, 100f); // Pool around house on stilts
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 688.963257f, -248.454926f, 141.856928f, -567.358032f, -1.000000f, 100f); // Cave water, high
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 141.866928f, -420.606171f, 89.630241f, -567.358032f, -3.999990f, 100f); // Cave water, low
-            AddDisabledMaterialCollisionByNames("t50_w1", "t50_falls0");
         }
     }
 }

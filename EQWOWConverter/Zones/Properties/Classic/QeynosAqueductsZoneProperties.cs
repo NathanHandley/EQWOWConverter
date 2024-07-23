@@ -53,7 +53,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_w1", 215.513647f, -13.172240f, 78.252281f, -218.280767f, -42.968609f, 150f);// Center south water
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_w1", 686.540344f, 99.223663f, 642.067749f, 12.217740f, -84.968674f, 100f); // Lower water area with the shark sign
             AddLiquidPlaneZLevel(LiquidType.Blood, "d_b1", 379.903473f, -557.136230f, 334.749023f, -604.327087f, -42.968700f, 50f); // Blood pool
-            AddDisabledMaterialCollisionByNames("t75_w1", "t75_m0004", "t75_m0007", "t75_m0008", "d_b1", "t75_m0007", "t75_m0008"); // d_b1 is blood, as is 07 and 08
         }
     }
 }

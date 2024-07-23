@@ -34,7 +34,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("highkeep", 62.486179f, 97.604347f, 0.000030f, ZoneLineOrientationType.East, 70.161171f, -118.140022f, 12.469000f, 53.453629f, -126.744057f, -0.500010f);
             AddZoneLineBox("kithicor", 552.036682f, 4892.523438f, 689.904907f, ZoneLineOrientationType.South, -986.189697f, 98.161331f, 38.800350f, -1007.820984f, 83.809853f, -0.499890f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -52.058632f, 488.075775f, -396.379669f, 248.035797f, -0.999960f, 100f);
-            AddDisabledMaterialCollisionByNames("t50_w1");
         }
     }
 }

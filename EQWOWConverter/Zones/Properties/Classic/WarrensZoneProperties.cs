@@ -37,7 +37,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 714.974060f, -483.080292f, 223.336105f, -537.922302f, -80.978719f, 100f); // Channel, run through south (west side)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 545.971436f, -537.104858f, 223.336105f, -558.051575f, -80.978719f, 100f); // Channel, run through south (east side)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 347.002655f, -558.337036f, 234.729202f, -624.938477f, -80.978719f, 100f); // Channel, southeast past the gate
-            AddDisabledMaterialCollisionByNames("t50_w1");
         }
     }
 }

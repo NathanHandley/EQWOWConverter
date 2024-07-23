@@ -31,7 +31,6 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinent.Odus);
             SetFogProperties(200, 200, 220, 10, 800);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500);
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

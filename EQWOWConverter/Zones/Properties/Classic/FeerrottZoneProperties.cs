@@ -44,8 +44,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "d_sw1", -250.212585f, -27.550091f, -1067.875122f, -492.329712f, -29.031210f, 300f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_sw1", -663.865784f, -488.732147f, -1322.731934f, -681.698486f, -29.031210f, 300f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_sw1", -906.003662f, -678.693909f, -2143.735596f, -965.550171f, -29.031210f, 300f);
-            AddDisabledMaterialCollisionByNames("d_sw1");
-            AddDisabledMaterialCollisionByNames("tau_r1"); // Fear portal    
         }
     }
 }

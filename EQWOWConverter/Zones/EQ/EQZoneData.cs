@@ -29,14 +29,13 @@ namespace EQWOWConverter.Zones
     {
         private bool IsLoaded = false;
         private string MaterialListFileName = string.Empty;
-        public MeshData MeshData = new MeshData();
+        public MeshData RenderMeshData = new MeshData();
+        public MeshData CollisionMeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
-        public List<Vector3> CollisionVertices = new List<Vector3>();
-        public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
 
         private string MaterialListName = string.Empty;
 
@@ -70,8 +69,26 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("- [" + inputZoneFolderName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
-            MeshData = meshData.Meshdata;
+            RenderMeshData = meshData.Meshdata;
             MaterialListFileName = meshData.MaterialListFileName;
+        }
+
+        private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
+        {
+            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
+            string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
+            if (File.Exists(collisionMeshFileName) == false)
+            {
+                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found, skipping for zone.");
+                return;
+            }
+            EQMesh meshData = new EQMesh();
+            if (meshData.LoadFromDisk(collisionMeshFileName) == false)
+            {
+                Logger.WriteError("- [" + inputZoneFolderName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
+                return;
+            }
+            CollisionMeshData = meshData.Meshdata;
         }
 
         private void LoadMaterialDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -92,24 +109,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
-        {
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
-            string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
-            if (File.Exists(collisionMeshFileName) == false)
-            {
-                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found, skipping for zone.");
-                return;
-            }
-            EQMesh meshData = new EQMesh();
-            if (meshData.LoadFromDisk(collisionMeshFileName) == false)
-            {
-                Logger.WriteError("- [" + inputZoneFolderName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
-                return;
-            }
-            CollisionTriangleFaces = meshData.Meshdata.TriangleFaces;
-            CollisionVertices = meshData.Meshdata.Vertices;
-        }
+
 
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {

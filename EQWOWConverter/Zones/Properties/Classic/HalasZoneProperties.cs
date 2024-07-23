@@ -33,7 +33,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_agua1", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_agua1", 199.293900f, -199.563965f, 177.719742f, -224.856445f, -0.999970f, 250f); // Well
-            AddDisabledMaterialCollisionByNames("t75_agua1");
         }
     }
 }

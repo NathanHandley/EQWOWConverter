@@ -79,7 +79,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Magma, "d_lava001", -537.387085f, -379.438049f, -545.856812f, -393.651611f, -51.968731f, 19.5f); // Lava north east bottom near falls
             AddQuadrilateralLiquidShapeZLevel(LiquidType.Magma, "d_lava001", -535.108704f, -378.957306f, -546.292969f, -367.877228f, -551.902222f, -374.825226f,
                 -545.501892f, -397.644989f, -51.968731f, 19.5f, 2000f, 2000f, -2000f, -2000f, 0.4f); // Lave north top of falls
-            AddDisabledMaterialCollisionByNames("d_m0002", "d_m0008", "d_lava001", "t25_oily1"); // Lava, Oil (t50_oily1) is not included because of collision barrier preventing swim
         }
     }
 }

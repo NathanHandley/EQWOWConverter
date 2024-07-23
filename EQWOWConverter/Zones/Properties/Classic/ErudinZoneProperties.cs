@@ -49,7 +49,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -121.552803f, 8.839670f, -123.378937f, -24.332081f, 38.000011f, 10f); // Inside towards dock, small pool pt 4
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -123.378937f, 7.186920f, -125.058151f, -22.762091f, 38.000011f, 10f); // Inside towards dock, small pool pt 5
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -125.058151f, 5.446620f, -126.930794f, -20.884710f, 38.000011f, 10f); // Inside towards dock, small pool pt 6
-            AddDisabledMaterialCollisionByNames("d_ow1", "t50_w1", "t50_falls1");
         }
     }
 }

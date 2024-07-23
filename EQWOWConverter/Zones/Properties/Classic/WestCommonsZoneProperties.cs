@@ -147,7 +147,6 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("ecommons", -1101.222046f, 5081.237793f, 13.762880f, ZoneLineOrientationType.East, -1091.429565f, -1616.641235f, 200.000000f, -1111.429565f, -1646.641235f, -100.000000f);
             AddZoneLineBox("ecommons", -1121.222046f, 5081.237793f, 21.418200f, ZoneLineOrientationType.East, -1111.429565f, -1616.641235f, 200.000000f, -1151.429565f, -1646.641235f, -100.000000f);
             AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 377.188812f, 3223.834473f, -460.310211f, 2200.130127f, -66.088470f, 500f);
-            AddDisabledMaterialCollisionByNames("d_w1");
         }
     }
 }

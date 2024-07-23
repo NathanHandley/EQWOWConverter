@@ -38,7 +38,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 723.807068f, -112.854370f, 661.784668f, -173.061676f, -40.978719f, 100f); // Southeast Water, middle
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 727.727112f, 19.525690f, 616.720337f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 769.085815f, -69.982788f, 727.627112f, -117.570297f, -40.978719f, 100f); // Southeast Water, southwest
-            AddDisabledMaterialCollisionByNames("t50_falls1", "t50_w1");
         }
     }
 }

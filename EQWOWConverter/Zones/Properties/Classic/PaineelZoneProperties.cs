@@ -65,7 +65,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 940.828613f, 869.948547f, 937.455994f, 866.379211f, -65.978742f, 5f); // NW red roof house, bedroom water 2
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 1001.873413f, 894.942810f, 998.371216f, 891.451416f, -65.978742f, 5f); // NW red roof house, bedroom water 3
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 1002.055908f, 848.042725f, 998.262268f, 844.184570f, -65.978742f, 5f); // NW red roof house, bedroom water 4
-            AddDisabledMaterialCollisionByNames("t25_m0000", "t50_m0003", "t50_m0004", "t50_w1");
         }
     }
 }

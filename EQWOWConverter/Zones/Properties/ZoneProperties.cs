@@ -40,7 +40,6 @@ namespace EQWOWConverter.Zones
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
-        public HashSet<string> NonCollisionMaterialNames = new HashSet<string>();
         public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
         public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();       
         public List<ZonePropertiesLiquidPlane> LiquidPlanes = new List<ZonePropertiesLiquidPlane>();
@@ -382,13 +381,6 @@ namespace EQWOWConverter.Zones
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
-        }
-
-        protected void AddDisabledMaterialCollisionByNames(params string[] names)
-        {
-            foreach(string name in names)
-                if (NonCollisionMaterialNames.Contains(name) == false)
-                    NonCollisionMaterialNames.Add(name);
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)

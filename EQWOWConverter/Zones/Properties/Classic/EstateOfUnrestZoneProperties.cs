@@ -38,7 +38,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 836.316162f, -197.394684f, 687.165100f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat north
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 664.912354f, -197.394684f, 509.776093f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat south
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 687.175100f, -197.394684f, 664.902354f, -273.965698f, -1.999930f, 50f); // Outside the mound with a moat center
-            AddDisabledMaterialCollisionByNames("t50_agua1", "d_m0009", "d_underwater1");
         }
     }
 }

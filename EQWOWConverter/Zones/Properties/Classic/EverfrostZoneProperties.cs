@@ -37,7 +37,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wat1", 2050.196523f, -4937.517578f, 1608.196289f, -5580.368652f, -105.843300f, 350f); // NE water path, 2nd leg from north
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wat1", 1687.825806f, -4247.805176f, -1085.845327f, -5472.050781f, -105.843300f, 350f); // South water path that connects to north
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_wat1", -1085.835327f, -4139.526367f, -4905.087891f, -4658.822266f, -105.843300f, 350f); // South water path end
-            AddDisabledMaterialCollisionByNames("t75_w1", "t75_wat1");
         }
     }
 }

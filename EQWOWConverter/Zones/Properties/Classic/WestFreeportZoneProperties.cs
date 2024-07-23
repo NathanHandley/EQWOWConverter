@@ -112,7 +112,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 919.481262f, 163.751633f, 757.783447f, -11.916170f, -56.968739f, 50f); // North hidden pathway
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -419.396210f, -863.264893f, -652.994568f, -962.689810f, -69.968712f, 150f); // Far southeast underground pathway, west part
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -558.365784f, -962.679810f, -652.994568f, -1040.707886f, -69.968712f, 150f); // Far southeast underground pathway, south part
-            AddDisabledMaterialCollisionByNames("t50_w1", "t25_m0004");
         }
     }
 }

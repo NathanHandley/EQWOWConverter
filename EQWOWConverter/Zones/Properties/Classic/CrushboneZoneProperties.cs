@@ -62,10 +62,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Blood, "t50_m0003", 83.292168f, -16.110729f, 72.905113f, -18.55f, 15.000010f, 150f); // Blood in south keep
             AddLiquidPlaneZLevel(LiquidType.Blood, "t50_m0003", 82.313110f, -18.549540f, 72.905113f, -21.76f, 15.000010f, 150f); // Blood in south keep
             AddLiquidPlaneZLevel(LiquidType.Blood, "t50_m0003", 81.036003f, -21.751711f, 72.905113f, -24.25f, 15.000010f, 150f); // Blood in south keep
-            AddDisabledMaterialCollisionByNames("t25_river1"); // Rivers
-            AddDisabledMaterialCollisionByNames("t50_m0002"); // Rivers
-            AddDisabledMaterialCollisionByNames("t50_m0003"); // Blood
-            AddDisabledMaterialCollisionByNames("d_m0000"); // Blood under-surface
         }
     }
 }

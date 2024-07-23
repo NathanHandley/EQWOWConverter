@@ -42,7 +42,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 500.166443f, 574.449402f, 251.204926f, 377.377808f, -20.999960f, 40f); // NW Area through bridge
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 281.622162f, 406.833252f, 152.311096f, -1.537300f, -20.999960f, 40f); // NW area up to Hall of Truth
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 314.695953f, 4.034020f, -70.747742f, -504.712555f, -20.999960f, 40f); // Around Hall of Truth through back water exit
-            AddDisabledMaterialCollisionByNames("t50_w1");
         }
     }
 }

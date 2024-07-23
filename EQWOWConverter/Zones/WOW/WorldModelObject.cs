@@ -81,8 +81,27 @@ namespace EQWOWConverter.Zones
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
-            BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
+            //BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
+            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
+            if (zoneProperties.IsCompletelyInLiquid)
+            {
+                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
+                LiquidType = zoneProperties.CompletelyInLiquidType;
+            }
+            IsLoaded = true;
+        }
+
+        public void LoadAsCollision(MeshData collisionMeshData, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances, ZoneProperties zoneProperties)
+        {
+            WMOType = WorldModelObjectType.Collision;
+            MeshData = collisionMeshData;
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<UInt32> collisionTriangleIncidies = new List<UInt32>();
+            for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
+                collisionTriangleIncidies.Add(i);
+            BSPTree = new BSPTree(BoundingBox, collisionTriangleIncidies);
+            //CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
@@ -146,10 +165,7 @@ namespace EQWOWConverter.Zones
             for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
             {
                 Material curMaterial = materials[MeshData.TriangleFaces[i].MaterialIndex];
-                if (zoneProperties.NonCollisionMaterialNames.Contains(curMaterial.UniqueName) == false)
-                {
-                    collisionTriangleIncidies.Add(Convert.ToUInt32(i));
-                }
+                collisionTriangleIncidies.Add(Convert.ToUInt32(i));
             }
 
             // Store the new render batches

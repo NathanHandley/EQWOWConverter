@@ -25,6 +25,7 @@ namespace EQWOWConverter.Zones
     internal enum WorldModelObjectType
     {
         Rendered,
+        Collision,
         LiquidVolume,
         LiquidPlane
     }

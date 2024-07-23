@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BlackburrowZoneProperties()
         {
-            // TODO: "Solid" waterfall materials, which some shouldn't be solid
             // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
             // TODO: Ladders
             SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinent.Antonica);
@@ -77,7 +76,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlane(LiquidType.Water, "t50_agua1", -46.537670f, 68.945758f, -63.377460f, 62.118111f, -42.968739f, -45.999279f, LiquidSlantType.WestHighEastLow, 8f); // Water middle channel with bridge, incline)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -47.383591f, 62.128111f, -71.285881f, 29.986389f, -45.999279f, 8f); // Water middle channel with bridge, waterfall)
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", -46.328320f, 30.177059f, -131.536011f, -113.023521f, -55.968750f, 12.2f); // Water middle channel with bridge, lower section
-            AddDisabledMaterialCollisionByNames("t50_agua1", "t25_m0001", "t75_m0002", "t25_m0008");
         }
     }
 }
