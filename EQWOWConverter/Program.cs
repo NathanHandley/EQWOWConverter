@@ -40,47 +40,57 @@ internal class Program
             }
             else
             {
-                switch (enteredCommand.ToUpper())
+                try
                 {
-                    case "X":
-                        {
-                            Logger.WriteInfo("Exiting.");
-                            doLoopForCommands = false;
-                        }
-                        break;
-                    case "1":
-                        {
-                            Logger.WriteInfo("Conditioning Exported EQ Data...");
-                            AssetConditioner conditioner = new AssetConditioner();
-                            bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
-                            if (condenseResult == false)
+                    switch (enteredCommand.ToUpper())
+                    {
+                        case "X":
                             {
-                                Logger.WriteInfo("Exported EQ Data Conditioning Failed.");
-                                break;
+                                Logger.WriteInfo("Exiting.");
+                                doLoopForCommands = false;
                             }
-                            Logger.WriteInfo("Exported EQ Data Conditioning Succeeded.");
-                        }
-                        break;
-                    case "5":
-                        {
-                            
-                            AssetConverter converter = new AssetConverter();
-                            bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
-                            if (conversionResult == false)
+                            break;
+                        case "1":
                             {
-                                Logger.WriteInfo("EQ to WoW conversion Failed.");
-                                break;
+                                Logger.WriteInfo("Conditioning Exported EQ Data...");
+                                AssetConditioner conditioner = new AssetConditioner();
+                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                                if (condenseResult == false)
+                                {
+                                    Logger.WriteInfo("Exported EQ Data Conditioning Failed.");
+                                    break;
+                                }
+                                Logger.WriteInfo("Exported EQ Data Conditioning Succeeded.");
                             }
+                            break;
+                        case "5":
+                            {
                             
-                        } break;
-                    default:
-                        {
-                            Logger.WriteInfo("Exiting.");
-                            doLoopForCommands = false;
-                        }
-                        break;
+                                AssetConverter converter = new AssetConverter();
+                                bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
+                                if (conversionResult == false)
+                                {
+                                    Logger.WriteInfo("EQ to WoW conversion Failed.");
+                                    break;
+                                }
+                            
+                            } break;
+                        default:
+                            {
+                                Logger.WriteInfo("Exiting.");
+                                doLoopForCommands = false;
+                            }
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Exception Occurred: " + ex.Message);
                 }
             }
         }
+        Console.WriteLine("");
+        Console.WriteLine("Press any key to exit");
+        Console.ReadKey();
     }
 }
