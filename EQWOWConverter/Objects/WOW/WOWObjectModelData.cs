@@ -209,11 +209,9 @@ namespace EQWOWConverter.Objects
             Int16 curIndex = 0;
             foreach (Material material in materials)
             {
-                // TODO: Account for more textures once texture animation is fully implemented
                 if (material.TextureNames.Count > 0)
                 {
                     ModelTexture newModelTexture = new ModelTexture();
-                    // TODO: Account for more textures once texture animation is fully implemented
                     newModelTexture.TextureName = material.TextureNames[0];
                     ModelTextures.Add(newModelTexture);
                     ModelMaterial newModelMaterial;
