@@ -101,7 +101,7 @@ namespace EQWOWConverter.Zones
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
             BSPTree = new BSPTree(BoundingBox, collisionTriangleIncidies);
-            //CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
+            CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;

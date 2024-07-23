@@ -172,7 +172,10 @@ namespace EQWOWConverter.Zones
             }
 
             // Rebuild the bounding box
-            BoundingBox = BoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<Vector3> boundingVectors = new List<Vector3>();
+            boundingVectors.AddRange(collisionMeshData.Vertices);
+            boundingVectors.AddRange(renderMeshData.Vertices);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             IsLoaded = true;
         }
 
