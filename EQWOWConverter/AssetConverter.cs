@@ -28,6 +28,7 @@ using EQWOWConverter.Objects;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ModelObjects;
+using EQWOWConverter.Objects.Properties;
 
 namespace EQWOWConverter
 {
@@ -92,14 +93,11 @@ namespace EQWOWConverter
                 if (objectMeshFileInfo.Name.Contains("_collision"))
                     continue;
 
-                // Restrict to one object for testing
-                //if (staticObjectMeshNameNoExt != "oggrug")
-                //    continue;
-
                 // Load the EQ object
+                ObjectProperties objectProperties = ObjectProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
                 ModelObject curObject = new ModelObject(staticObjectMeshNameNoExt);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-                curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot);
+                curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot, objectProperties);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object

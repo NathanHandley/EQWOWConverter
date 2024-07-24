@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ModelObjects;
+using EQWOWConverter.Objects.Properties;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System;
@@ -30,6 +31,7 @@ namespace EQWOWConverter.Objects
     internal class WOWObjectModelData
     {
         public string Name = string.Empty;
+        public ObjectProperties Properties = new ObjectProperties();
         public List<UInt32> GlobalLoopSequenceLimits = new List<UInt32>();
         public List<ModelAnimation> ModelAnimations = new List<ModelAnimation>();
         public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
@@ -57,9 +59,10 @@ namespace EQWOWConverter.Objects
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
 
-        public WOWObjectModelData()
+        public WOWObjectModelData() { }
+        public WOWObjectModelData(ObjectProperties objectProperties)
         {
-
+            Properties = objectProperties;
         }
 
         // TODO: Vertex Colors

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Objects.Properties;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -36,17 +37,16 @@ namespace EQWOWConverter.Objects
             Name = name;
         }
 
-        public void LoadEQObjectData(string inputObjectName, string inputObjectFolder)
+        public void LoadEQObjectData(string inputObjectName, string inputObjectFolder, ObjectProperties objectProperties)
         {
             // Clear any old data and reload
             EQModelObjectData = new EQModelObjectData();
             EQModelObjectData.LoadDataFromDisk(inputObjectName, inputObjectFolder);
+            WOWModelObjectData = new WOWObjectModelData(objectProperties);
         }
 
         public void PopulateWOWModelObjectDataFromEQModelObjectData()
         {
-            WOWModelObjectData = new WOWObjectModelData();
-
             if (EQModelObjectData.CollisionVertices.Count == 0)
                 WOWModelObjectData.Load(Name, EQModelObjectData.Materials, EQModelObjectData.MeshData, new List<Vector3>(), new List<TriangleFace>(), true);
             else
