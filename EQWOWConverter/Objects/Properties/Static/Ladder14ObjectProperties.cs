@@ -26,7 +26,7 @@ namespace EQWOWConverter.Objects.Properties
     {
         public Ladder14ObjectProperties()
         {
-            AddClimbingFrame(0.5f, 0.1f);
+            SetClimbingFrame(0.8f, 0.3f);
         }
     }
 }

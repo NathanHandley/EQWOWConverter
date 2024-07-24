@@ -28,7 +28,8 @@ namespace EQWOWConverter.Objects.Properties
         static private Dictionary<string, ObjectProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectProperties>();
 
         public string Name = string.Empty;
-        public List<ObjectPropertiesClimbingFrame> ClimbingFrames = new List<ObjectPropertiesClimbingFrame>();
+        //public List<ObjectPropertiesClimbingFrame> ClimbingFrames = new List<ObjectPropertiesClimbingFrame>();
+        public ObjectPropertiesClimbingFrame? ClimbingFrame = null;
 
         public ObjectProperties() { }
         protected ObjectProperties(string name)
@@ -36,10 +37,10 @@ namespace EQWOWConverter.Objects.Properties
             Name = name;
         }
 
-        protected void AddClimbingFrame(float extendDistance, float stepDistance)
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        protected void SetClimbingFrame(float extendDistance, float stepDistance)
         {
-            ObjectPropertiesClimbingFrame climbingFrame = new ObjectPropertiesClimbingFrame(extendDistance, stepDistance);
-            ClimbingFrames.Add(climbingFrame);
+            ClimbingFrame = new ObjectPropertiesClimbingFrame(extendDistance, stepDistance);
         }
 
         public static ObjectProperties GetObjectPropertiesForObject(string objectName)
@@ -55,9 +56,9 @@ namespace EQWOWConverter.Objects.Properties
         private static void PopulateObjectPropertiesList()
         {
             ObjectPropertiesByByName.Clear();
-            ObjectPropertiesByByName.Add("Ladder14", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("Ladder28", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("Ladder42", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("ladder14", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
         }
     }
 }

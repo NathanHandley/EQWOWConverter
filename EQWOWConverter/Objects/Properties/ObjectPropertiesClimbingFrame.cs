@@ -29,8 +29,8 @@ namespace EQWOWConverter.Objects.Properties
 
         public ObjectPropertiesClimbingFrame(float extendDistance, float stepDistance)
         {
-            ExtendDistance = extendDistance;
-            StepDistance = stepDistance;
+            ExtendDistance = extendDistance * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            StepDistance = stepDistance * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
         }   
     }
 }

@@ -172,6 +172,90 @@ namespace EQWOWConverter.Objects
             //-------------------------------------------------------------------------------------------
         }
 
+        public void AddClimbingFrameToCollisionData(float extendDistance, float stepDistance, ref List<Vector3> collisionVertices,
+            ref List<TriangleFace> collisionTriangleFaces)
+        {
+            // Note: For now, the only climbing frame is for ladders.  Those will work by putting a flat collide surface on the long side with steps
+            // Determine the boundary box
+            BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
+
+            // Build steps
+            // Extend outword from the longer side
+            float stepHighX = workingBoundingBox.TopCorner.X;
+            float stepLowX = workingBoundingBox.BottomCorner.X;
+            float stepHighY = workingBoundingBox.TopCorner.Y;
+            float stepLowY = workingBoundingBox.BottomCorner.Y;
+            if (workingBoundingBox.FurthestPointDistanceFromCenterXOnly() > workingBoundingBox.FurthestPointDistanceFromCenterYOnly())
+            {
+                stepHighY = workingBoundingBox.TopCorner.Y + extendDistance;
+                stepLowY = workingBoundingBox.BottomCorner.Y - extendDistance;
+            }
+            else
+            {
+                stepHighX = workingBoundingBox.TopCorner.X + extendDistance;
+                stepLowX = workingBoundingBox.BottomCorner.X - extendDistance;
+            }
+
+            // Build 'steps' by adding collision quads perpendicular to Z along the long side
+            for (float curZ = workingBoundingBox.BottomCorner.Z; curZ <= workingBoundingBox.TopCorner.Z; curZ+=stepDistance)
+            {
+                // Translate into vertices
+                int stepStartVert = collisionVertices.Count;
+                collisionVertices.Add(new Vector3(stepHighX, stepHighY, curZ)); // front left
+                collisionVertices.Add(new Vector3(stepHighX, stepLowY, curZ)); // front right
+                collisionVertices.Add(new Vector3(stepLowX, stepLowY, curZ)); // back right
+                collisionVertices.Add(new Vector3(stepLowX, stepHighY, curZ)); // back left
+
+                // Add faces
+                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert, stepStartVert + 1, stepStartVert + 3));
+                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
+            }
+
+            // Add collision walls on the sides
+            float highX = workingBoundingBox.TopCorner.X + 0.5f;
+            float lowX = workingBoundingBox.BottomCorner.X - 0.5f;
+            float highY = workingBoundingBox.TopCorner.Y + 0.5f;
+            float lowY = workingBoundingBox.BottomCorner.Y - 0.5f;
+            float highZ = workingBoundingBox.TopCorner.Z;
+            float lowZ = workingBoundingBox.BottomCorner.Z;
+
+            // Side 1
+            int wallStartVert = collisionVertices.Count;
+            collisionVertices.Add(new Vector3(highX, lowY, highZ)); // top left
+            collisionVertices.Add(new Vector3(lowX, lowY, highZ)); // top right
+            collisionVertices.Add(new Vector3(highX, lowY, lowZ)); // bottom right
+            collisionVertices.Add(new Vector3(lowX, lowY, lowZ)); // bottom left
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+
+            // Side 2
+            wallStartVert = collisionVertices.Count;
+            collisionVertices.Add(new Vector3(lowX, highY, highZ)); // top left
+            collisionVertices.Add(new Vector3(highX, highY, highZ)); // top right
+            collisionVertices.Add(new Vector3(lowX, highY, lowZ)); // bottom right
+            collisionVertices.Add(new Vector3(highX, highY, lowZ)); // bottom left
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+
+            // Side 3
+            wallStartVert = collisionVertices.Count;
+            collisionVertices.Add(new Vector3(lowX, highY, highZ)); // top left
+            collisionVertices.Add(new Vector3(lowX, lowY, highZ)); // top right
+            collisionVertices.Add(new Vector3(lowX, highY, lowZ)); // bottom right
+            collisionVertices.Add(new Vector3(lowX, lowY, lowZ)); // bottom left
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+
+            // Side 4
+            wallStartVert = collisionVertices.Count;
+            collisionVertices.Add(new Vector3(highX, lowY, highZ)); // top left
+            collisionVertices.Add(new Vector3(highX, highY, highZ)); // top right
+            collisionVertices.Add(new Vector3(highX, lowY, lowZ)); // bottom right
+            collisionVertices.Add(new Vector3(highX, highY, lowZ)); // bottom left
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+        }
+
         public void CorrectTextureCoordinates()
         {
             HashSet<int> textureCoordRemappedVertexIndices = new HashSet<int>();
@@ -293,6 +377,11 @@ namespace EQWOWConverter.Objects
                 }
             }
 
+            // Set a climbing frame, if there is one
+            if (Properties.ClimbingFrame != null)
+                AddClimbingFrameToCollisionData(Properties.ClimbingFrame.ExtendDistance, Properties.ClimbingFrame.StepDistance,
+                    ref collisionVertices, ref collisionTriangleFaces);
+
             // Purge prior data
             CollisionPositions.Clear();
             CollisionFaceNormals.Clear();
@@ -326,7 +415,6 @@ namespace EQWOWConverter.Objects
                 System.Numerics.Vector3 normalizedNormalSystem = System.Numerics.Vector3.Normalize(normalSystem);
 
                 // Invert the normal due to winding order difference
-                //Vector3 normal = new Vector3(normalizedNormalSystem.X * -1, normalizedNormalSystem.Y * -1, normalizedNormalSystem.Z * -1);
                 Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
                 CollisionFaceNormals.Add(normal);
             }
