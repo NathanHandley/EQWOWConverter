@@ -382,7 +382,7 @@ namespace EQWOWConverter.Zones
                 foreach (int faceIndex in faceIndexesToDelete.Reverse())
                     faceToProcess.RemoveAt(faceIndex);
 
-                // Generate a world model object if there are any verticies
+                // Generate a world model object if there are any vertices
                 MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
                 if (extractedMeshData.Vertices.Count > 0)
                 {
@@ -414,7 +414,7 @@ namespace EQWOWConverter.Zones
                 Vector3 curPosition = meshPositions[i];
                 MeshData curMeshData = meshDatas[i];
 
-                List<Vector3> collisionVerticies = new List<Vector3>();
+                List<Vector3> collisionVertices = new List<Vector3>();
 
                 // Generate the object
                 string name = "ZO_" + ShortName + "_" + material.UniqueName + "_" + i.ToString();
