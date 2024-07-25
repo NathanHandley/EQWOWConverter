@@ -137,15 +137,31 @@ namespace EQWOWConverter.Objects
             }
 
             // Save the geometry data
-            foreach (TriangleFace face in meshData.TriangleFaces)
-                ModelTriangles.Add(new TriangleFace(face));
-            for (int i = 0; i < meshData.Vertices.Count; i++)
+            if (Configuration.CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION == true && isFromRawEQObject == true)
             {
-                ModelVertex newModelVertex = new ModelVertex();
-                newModelVertex.Position = new Vector3(meshData.Vertices[i]);
-                newModelVertex.Normal = new Vector3(meshData.Normals[i]);
-                newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
-                ModelVertices.Add(newModelVertex);
+                foreach (TriangleFace face in collisionTriangleFaces)
+                    ModelTriangles.Add(new TriangleFace(face));
+                for (int i = 0; i < collisionVertices.Count; i++)
+                {
+                    ModelVertex newModelVertex = new ModelVertex();
+                    newModelVertex.Position = new Vector3(collisionVertices[i]);
+                    newModelVertex.Normal = new Vector3(0, 0, 0);
+                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
+                    ModelVertices.Add(newModelVertex);
+                }
+            }
+            else
+            { 
+                foreach (TriangleFace face in meshData.TriangleFaces)
+                    ModelTriangles.Add(new TriangleFace(face));
+                for (int i = 0; i < meshData.Vertices.Count; i++)
+                {
+                    ModelVertex newModelVertex = new ModelVertex();
+                    newModelVertex.Position = new Vector3(meshData.Vertices[i]);
+                    newModelVertex.Normal = new Vector3(meshData.Normals[i]);
+                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
+                    ModelVertices.Add(newModelVertex);
+                }
             }
 
             // Process materials
@@ -211,7 +227,7 @@ namespace EQWOWConverter.Objects
                 collisionVertices.Add(new Vector3(stepLowX, stepHighY, curZ)); // back left
 
                 // Add faces
-                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert, stepStartVert + 1, stepStartVert + 3));
+                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
             }
          

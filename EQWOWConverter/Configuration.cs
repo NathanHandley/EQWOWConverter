@@ -102,7 +102,10 @@ namespace EQWOWConverter
         // Objects
         //=====================================================================
         // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
-        public static readonly float CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE = 25f;
+        public static readonly float CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE = 25.1f;
+
+        // If set to true, the collision is rendered and not the actual render geometry. Leave false unless debugging.
+        public static readonly bool CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION = false;
 
         // ====================================================================
         // WOW DBC/File IDs
