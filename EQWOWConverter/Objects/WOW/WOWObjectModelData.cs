@@ -231,51 +231,61 @@ namespace EQWOWConverter.Objects
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
             }
          
-            /*
             // Add collision walls on the sides
-            float highX = workingBoundingBox.TopCorner.X + 2;
-            float lowX = workingBoundingBox.BottomCorner.X - 2;
-            float highY = workingBoundingBox.TopCorner.Y + 2;
-            float lowY = workingBoundingBox.BottomCorner.Y - 2;
+            float highX = workingBoundingBox.TopCorner.X;
+            float lowX = workingBoundingBox.BottomCorner.X;
+            float highY = workingBoundingBox.TopCorner.Y;
+            float lowY = workingBoundingBox.BottomCorner.Y;
             float highZ = workingBoundingBox.TopCorner.Z;
             float lowZ = workingBoundingBox.BottomCorner.Z;
 
-            // Side 1
+            // Reduce size of short sides to make you step more 'inside' the ladder
+            if (workingBoundingBox.FurthestPointDistanceFromCenterXOnly() > workingBoundingBox.FurthestPointDistanceFromCenterYOnly())
+            {
+                highY -= workingBoundingBox.GetYDistance() * 0.2f;
+                lowY += workingBoundingBox.GetYDistance() * 0.2f;
+            }
+            else
+            {
+                highX -= workingBoundingBox.GetXDistance() * 0.2f;
+                lowX += workingBoundingBox.GetXDistance() * 0.2f;
+            }
+
+            // Side 1 (side)
             int wallStartVert = collisionVertices.Count;
-            collisionVertices.Add(new Vector3(highX, lowY, highZ)); // top left
-            collisionVertices.Add(new Vector3(lowX, lowY, highZ)); // top right
-            collisionVertices.Add(new Vector3(highX, lowY, lowZ)); // bottom right
-            collisionVertices.Add(new Vector3(lowX, lowY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionVertices.Add(new Vector3(highX, lowY, highZ));
+            collisionVertices.Add(new Vector3(highX, lowY, lowZ));
+            collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
+            collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
             collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
 
-            // Side 2
+            // Side 2 (side)
             wallStartVert = collisionVertices.Count;
-            collisionVertices.Add(new Vector3(lowX, highY, highZ)); // top left
-            collisionVertices.Add(new Vector3(highX, highY, highZ)); // top right
-            collisionVertices.Add(new Vector3(lowX, highY, lowZ)); // bottom right
-            collisionVertices.Add(new Vector3(highX, highY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
+            collisionVertices.Add(new Vector3(highX, highY, highZ));
+            collisionVertices.Add(new Vector3(lowX, highY, highZ));
+            collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+            collisionVertices.Add(new Vector3(highX, highY, lowZ));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
             collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
 
             // Side 3
             wallStartVert = collisionVertices.Count;
-            collisionVertices.Add(new Vector3(lowX, highY, highZ)); // top left
-            collisionVertices.Add(new Vector3(lowX, lowY, highZ)); // top right
-            collisionVertices.Add(new Vector3(lowX, highY, lowZ)); // bottom right
-            collisionVertices.Add(new Vector3(lowX, lowY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 3, wallStartVert + 1, wallStartVert));
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 2, wallStartVert + 3, wallStartVert + 1));
+            collisionVertices.Add(new Vector3(highX, highY, highZ));
+            collisionVertices.Add(new Vector3(highX, highY, lowZ));
+            collisionVertices.Add(new Vector3(highX, lowY, lowZ));
+            collisionVertices.Add(new Vector3(highX, lowY, highZ));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
 
             // Side 4
             wallStartVert = collisionVertices.Count;
-            collisionVertices.Add(new Vector3(highX, lowY, highZ)); // top left
-            collisionVertices.Add(new Vector3(highX, highY, highZ)); // top right
-            collisionVertices.Add(new Vector3(highX, lowY, lowZ)); // bottom right
-            collisionVertices.Add(new Vector3(highX, highY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 3, wallStartVert + 1, wallStartVert));
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 2, wallStartVert + 3, wallStartVert + 1));
-            */
+            collisionVertices.Add(new Vector3(lowX, highY, highZ));
+            collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+            collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
+            collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
         }
 
         public void CorrectTextureCoordinates()
