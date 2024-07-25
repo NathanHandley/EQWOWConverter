@@ -22,11 +22,11 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Objects.Properties
 {
-    internal class Ladder42ObjectProperties : ObjectProperties
+    internal class Ladder20ObjectProperties : ObjectProperties
     {
-        public Ladder42ObjectProperties()
+        public Ladder20ObjectProperties() 
         {
             SetClimbingFrame(1f, 0.2f);
-        }
+        }        
     }
 }

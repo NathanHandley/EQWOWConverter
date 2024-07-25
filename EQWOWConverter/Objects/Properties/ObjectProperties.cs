@@ -57,8 +57,10 @@ namespace EQWOWConverter.Objects.Properties
         {
             ObjectPropertiesByByName.Clear();
             ObjectPropertiesByByName.Add("ladder14", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("ladder20", new Ladder20ObjectProperties());
             ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());
         }
     }
 }

@@ -179,8 +179,12 @@ namespace EQWOWConverter.Objects
             // Determine the boundary box
             BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
+            // Purge the existing collision data for now
+            collisionVertices.Clear();
+            collisionTriangleFaces.Clear();
+
             // Build steps
-            // Extend outword from the longer side
+            // Extend outword from the longer side (forward only)
             float stepHighX = workingBoundingBox.TopCorner.X;
             float stepLowX = workingBoundingBox.BottomCorner.X;
             float stepHighY = workingBoundingBox.TopCorner.Y;
@@ -210,12 +214,13 @@ namespace EQWOWConverter.Objects
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert, stepStartVert + 1, stepStartVert + 3));
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
             }
-
+         
+            /*
             // Add collision walls on the sides
-            float highX = workingBoundingBox.TopCorner.X + 0.5f;
-            float lowX = workingBoundingBox.BottomCorner.X - 0.5f;
-            float highY = workingBoundingBox.TopCorner.Y + 0.5f;
-            float lowY = workingBoundingBox.BottomCorner.Y - 0.5f;
+            float highX = workingBoundingBox.TopCorner.X + 2;
+            float lowX = workingBoundingBox.BottomCorner.X - 2;
+            float highY = workingBoundingBox.TopCorner.Y + 2;
+            float lowY = workingBoundingBox.BottomCorner.Y - 2;
             float highZ = workingBoundingBox.TopCorner.Z;
             float lowZ = workingBoundingBox.BottomCorner.Z;
 
@@ -243,8 +248,8 @@ namespace EQWOWConverter.Objects
             collisionVertices.Add(new Vector3(lowX, lowY, highZ)); // top right
             collisionVertices.Add(new Vector3(lowX, highY, lowZ)); // bottom right
             collisionVertices.Add(new Vector3(lowX, lowY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 3, wallStartVert + 1, wallStartVert));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 2, wallStartVert + 3, wallStartVert + 1));
 
             // Side 4
             wallStartVert = collisionVertices.Count;
@@ -252,8 +257,9 @@ namespace EQWOWConverter.Objects
             collisionVertices.Add(new Vector3(highX, highY, highZ)); // top right
             collisionVertices.Add(new Vector3(highX, lowY, lowZ)); // bottom right
             collisionVertices.Add(new Vector3(highX, highY, lowZ)); // bottom left
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert, wallStartVert + 1, wallStartVert + 3));
-            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 3, wallStartVert + 1, wallStartVert));
+            collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 2, wallStartVert + 3, wallStartVert + 1));
+            */
         }
 
         public void CorrectTextureCoordinates()
