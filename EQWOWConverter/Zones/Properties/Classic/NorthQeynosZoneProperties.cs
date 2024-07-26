@@ -146,6 +146,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("qeytoqrg", -310.758850f, -1060.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1050.846802f, 200.000000f, 1500.794556f, -1070.846802f, -100.000000f);
             AddZoneLineBox("qeytoqrg", -310.758850f, -1080.407104f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1070.846802f, 200.000000f, 1500.794556f, -1090.846802f, -100.000000f);
             AddZoneLineBox("qeytoqrg", -310.758850f, -1099f, -7.843740f, ZoneLineOrientationType.North, 1530.794556f, -1090.846802f, 200.000000f, 1500.794556f, -1150f, -100.000000f);
+            AddZoneLineBox("qeynos2", -155.322067f, -699.484131f, -14.999940f, ZoneLineOrientationType.NorthWest, -157.864014f, -472.939392f, 49.568951f, -164.179825f, -478.591766f, 32.480042f);  // To the saucer 1
+            AddZoneLineBox("qeynos2", -155.322067f, -699.484131f, -14.999940f, ZoneLineOrientationType.NorthWest, -156.997330f, -474.081573f, 48.106071f, -165.076935f, -477.619629f, 32.480042f);  // To the saucer 2
+            AddZoneLineBox("qeynos2", -155.322067f, -699.484131f, -14.999940f, ZoneLineOrientationType.NorthWest, -158.996887f, -471.783356f, 33.000019f, -162.633759f, -479.874207f, 32.480042f);  // To the saucer 3
+            AddZoneLineBox("qeynos2", -29.628080f, -154.001953f, 6.000010f, ZoneLineOrientationType.South, -111.775909f, -657.557861f, -80.440407f, -154.130737f, -699.911682f, -120.813408f); // From saucer
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 227.730164f, 394.674011f, 165.504913f, 277.284241f, -1.999990f, 350f); // West water and sewer entry
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 308.709290f, -152.874634f, 292.515320f, -169.049088f, -1.999990f, 350f); // North sewer entry
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -41.123249f, -293.180542f, -239.001862f, -504.985931f, -2.009970f, 75f); // Water around paladin guild entry

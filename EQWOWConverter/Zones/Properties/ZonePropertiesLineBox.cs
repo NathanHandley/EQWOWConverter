@@ -62,6 +62,7 @@ namespace EQWOWConverter.Zones
                 case ZoneLineOrientationType.South: TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
                 case ZoneLineOrientationType.West: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
                 case ZoneLineOrientationType.East: TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+                case ZoneLineOrientationType.NorthWest: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.25); break;
             }
 
             // Calculate the dimensions in the form needed by a wow trigger zone
@@ -97,6 +98,7 @@ namespace EQWOWConverter.Zones
                 case ZoneLineOrientationType.South: TargetZoneOrientation = Convert.ToSingle(Math.PI); break;
                 case ZoneLineOrientationType.West: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.5); break;
                 case ZoneLineOrientationType.East: TargetZoneOrientation = Convert.ToSingle(Math.PI * 1.5); break;
+                case ZoneLineOrientationType.NorthWest: TargetZoneOrientation = Convert.ToSingle(Math.PI * 0.25); break;
             }
 
             // Calculate the dimensions in the form needed by a wow trigger zone

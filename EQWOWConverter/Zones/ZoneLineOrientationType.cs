@@ -12,5 +12,6 @@ namespace EQWOWConverter.Zones
         South,
         East,
         West,
+        NorthWest
     }
 }
