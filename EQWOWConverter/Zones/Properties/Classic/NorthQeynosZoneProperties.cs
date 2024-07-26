@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthQeynosZoneProperties()
         {
-            // TODO: Teleporters after zone collision is implemented
             SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 450);
             AddZoneLineBox("qcat", 1056.423950f, -48.181938f, 199.885666f, ZoneLineOrientationType.South, 308.068420f, -153.744324f, -87.613121f, 293.681549f, -168.130386f, -126.259743f);
