@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -28,8 +29,7 @@ namespace EQWOWConverter.Objects.Properties
         static private Dictionary<string, ObjectProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectProperties>();
 
         public string Name = string.Empty;
-        //public List<ObjectPropertiesClimbingFrame> ClimbingFrames = new List<ObjectPropertiesClimbingFrame>();
-        public ObjectPropertiesClimbingFrame? ClimbingFrame = null;
+        public ObjectCustomCollisionType CustomCollisionType = ObjectCustomCollisionType.None;
 
         public ObjectProperties() { }
         protected ObjectProperties(string name)
@@ -37,10 +37,9 @@ namespace EQWOWConverter.Objects.Properties
             Name = name;
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void SetClimbingFrame(float extendDistance, float stepDistance)
+        public void SetCustomCollisionType(ObjectCustomCollisionType customCollisionType)
         {
-            ClimbingFrame = new ObjectPropertiesClimbingFrame(extendDistance, stepDistance);
+            CustomCollisionType = customCollisionType;
         }
 
         public static ObjectProperties GetObjectPropertiesForObject(string objectName)

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Objects.Properties
     {
         public Ladder20ObjectProperties() 
         {
-            SetClimbingFrame(1f, 0.5f);
+            SetCustomCollisionType(ObjectCustomCollisionType.Ladder);
         }        
     }
 }

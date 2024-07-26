@@ -107,6 +107,12 @@ namespace EQWOWConverter
         // If set to true, the collision is rendered and not the actual render geometry. Leave false unless debugging.
         public static readonly bool CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION = false;
 
+        // For ladders, this is how far to extend out the steppable area in front and back of it (value is before world scaling)
+        public static readonly float CONFIG_STATIC_OBJECT_LADDER_EXTEND_DISTANCE = 1.0f;
+
+        // How much space between each step of a ladder along the Z axis (value is before world scaling)
+        public static readonly float CONFIG_STATIC_OBJECT_LADDER_STEP_DISTANCE = 0.5f;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================

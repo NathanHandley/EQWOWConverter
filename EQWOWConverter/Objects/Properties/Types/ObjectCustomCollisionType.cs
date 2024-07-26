@@ -16,21 +16,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EQWOWConverter.Objects.Properties
 {
-    internal class ObjectPropertiesClimbingFrame
+    internal enum ObjectCustomCollisionType
     {
-        public float ExtendDistance = 0f;
-        public float StepDistance = 0f;
-
-        public ObjectPropertiesClimbingFrame(float extendDistance, float stepDistance)
-        {
-            ExtendDistance = extendDistance * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            StepDistance = stepDistance * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-        }   
+        None,
+        Ladder
     }
 }
