@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public BlackburrowZoneProperties()
         {
             // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
-            // TODO: Ladders
             SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinent.Antonica);
             SetFogProperties(50, 100, 90, 10, 700);
             AddZoneLineBox("everfrost", -3027.1943f, -532.2794f, -113.18725f, ZoneLineOrientationType.North, 106.64458f, -329.8163f, 13.469f, 80.88026f, -358.2026f, -0.49926078f);

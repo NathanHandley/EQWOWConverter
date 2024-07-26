@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OggokZoneProperties()
         {
-            // TODO: Ladders
             SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(130, 140, 80, 10, 300);
             AddZoneLineBox("feerrott", 1652.742065f, 811.823181f, 57.281330f, ZoneLineOrientationType.South, -399.834625f, -77.776642f, 56.437752f, -462.005951f, -120.130768f, -0.500000f);

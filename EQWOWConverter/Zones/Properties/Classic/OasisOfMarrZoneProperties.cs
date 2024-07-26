@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OasisOfMarrZoneProperties()
         {
-            // TODO: Ladder in the oasis center
             SetBaseZoneProperties("oasis", "Oasis of Marr", 903.98f, 490.03f, 6.4f, 0, ZoneContinent.Antonica);
             SetFogProperties(250, 250, 180, 10, 800);
             AddZoneLineBox("nro", -1858.000000f, 1241.229980f, 30.033600f, ZoneLineOrientationType.North, 2590f, 1500.252441f, 300.000000f, 2560f, 1229.252441f, -200.000000f);

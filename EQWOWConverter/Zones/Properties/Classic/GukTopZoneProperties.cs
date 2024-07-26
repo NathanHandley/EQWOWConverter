@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GukTopZoneProperties()
         {
-            // TODO: Ladders
             // TODO: Large areas to 'delete' that you couldn't access anyway
             // "gap" that falls down at 931 -2 -125
             SetBaseZoneProperties("guktop", "Guk", 7f, -36f, 4f, 0, ZoneContinent.Antonica);

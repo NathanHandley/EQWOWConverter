@@ -200,33 +200,31 @@ namespace EQWOWConverter.Objects
             collisionTriangleFaces.Clear();
 
             // Build steps
-            // Extend outword from the longer side (forward only)
-            float stepHighX = workingBoundingBox.TopCorner.X;
-            float stepLowX = workingBoundingBox.BottomCorner.X;
+            // Extend outword from the longer side
+            float stepHighX = workingBoundingBox.TopCorner.X + extendDistance;
+            float stepMidX = workingBoundingBox.TopCorner.X - (workingBoundingBox.GetXDistance() * 0.5f);
+            float stepLowX = workingBoundingBox.BottomCorner.X - extendDistance;
             float stepHighY = workingBoundingBox.TopCorner.Y;
+            float stepMidY = workingBoundingBox.TopCorner.Y - (workingBoundingBox.GetYDistance() * 0.5f);
             float stepLowY = workingBoundingBox.BottomCorner.Y;
-            if (workingBoundingBox.FurthestPointDistanceFromCenterXOnly() > workingBoundingBox.FurthestPointDistanceFromCenterYOnly())
-            {
-                stepHighY = workingBoundingBox.TopCorner.Y + extendDistance;
-                stepLowY = workingBoundingBox.BottomCorner.Y - extendDistance;
-            }
-            else
-            {
-                stepHighX = workingBoundingBox.TopCorner.X + extendDistance;
-                stepLowX = workingBoundingBox.BottomCorner.X - extendDistance;
-            }
 
-            // Build 'steps' by adding collision quads perpendicular to Z along the long side
+            // Build 'steps' by adding collision quads perpendicular to Z along the long side, along with graduating angled ones
             for (float curZ = workingBoundingBox.BottomCorner.Z; curZ <= workingBoundingBox.TopCorner.Z; curZ+=stepDistance)
             {
-                // Translate into vertices
+                // 2-step Angle (splits from the middle)
                 int stepStartVert = collisionVertices.Count;
-                collisionVertices.Add(new Vector3(stepHighX, stepHighY, curZ)); // front left
-                collisionVertices.Add(new Vector3(stepHighX, stepLowY, curZ)); // front right
-                collisionVertices.Add(new Vector3(stepLowX, stepLowY, curZ)); // back right
-                collisionVertices.Add(new Vector3(stepLowX, stepHighY, curZ)); // back left
+                collisionVertices.Add(new Vector3(stepMidX, stepHighY, curZ));
+                collisionVertices.Add(new Vector3(stepMidX, stepLowY, curZ));
+                collisionVertices.Add(new Vector3(stepLowX, stepLowY, curZ-(stepDistance*3)));
+                collisionVertices.Add(new Vector3(stepLowX, stepHighY, curZ-(stepDistance*3)));
+                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
+                collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
 
-                // Add faces
+                stepStartVert = collisionVertices.Count;
+                collisionVertices.Add(new Vector3(stepHighX, stepHighY, curZ - (stepDistance * 3)));
+                collisionVertices.Add(new Vector3(stepHighX, stepLowY, curZ - (stepDistance * 3)));
+                collisionVertices.Add(new Vector3(stepMidX, stepLowY, curZ));
+                collisionVertices.Add(new Vector3(stepMidX, stepHighY, curZ));
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert, stepStartVert + 3));
                 collisionTriangleFaces.Add(new TriangleFace(0, stepStartVert + 1, stepStartVert + 3, stepStartVert + 2));
             }
@@ -240,16 +238,8 @@ namespace EQWOWConverter.Objects
             float lowZ = workingBoundingBox.BottomCorner.Z;
 
             // Reduce size of short sides to make you step more 'inside' the ladder
-            if (workingBoundingBox.FurthestPointDistanceFromCenterXOnly() > workingBoundingBox.FurthestPointDistanceFromCenterYOnly())
-            {
-                highY -= workingBoundingBox.GetYDistance() * 0.2f;
-                lowY += workingBoundingBox.GetYDistance() * 0.2f;
-            }
-            else
-            {
-                highX -= workingBoundingBox.GetXDistance() * 0.2f;
-                lowX += workingBoundingBox.GetXDistance() * 0.2f;
-            }
+            highX -= workingBoundingBox.GetXDistance() * 0.2f;
+            lowX += workingBoundingBox.GetXDistance() * 0.2f;
 
             // Side 1 (side)
             int wallStartVert = collisionVertices.Count;

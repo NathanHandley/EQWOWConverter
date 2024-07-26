@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TutorialZoneProperties()
         {
-            // TODO: Ladders
             SetBaseZoneProperties("tutorial", "Tutorial", 0f, 0f, 0f, 0, ZoneContinent.Development);
             SetFogProperties(0, 0, 0, 500, 2000);
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_w1", 99.116943f, 98.680382f, -101.066818f, -103.535660f, -14.000000f, 350f); // Middle circle of water
