@@ -39,11 +39,11 @@ namespace EQWOWConverter.Zones
         public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
-
         public bool IsCompletelyInLiquid = false;
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
+        public List<UInt16> LightInstanceIDs = new List<UInt16>();
 
         public WorldModelObject()
         {
@@ -73,7 +73,7 @@ namespace EQWOWConverter.Zones
         }
 
         public void LoadAsRendered(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
-            ZoneProperties zoneProperties)
+            List<LightInstance> lightInstances, ZoneProperties zoneProperties)
         {
             WMOType = WorldModelObjectType.Rendered;
             MeshData = meshData;
@@ -89,6 +89,9 @@ namespace EQWOWConverter.Zones
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
                 LiquidType = zoneProperties.CompletelyInLiquidType;
             }
+            for (UInt16 i = 0; i < lightInstances.Count; i++)
+            //    if (BoundingBox.ContainsPoint(lightInstances[i].Position))
+                    LightInstanceIDs.Add(i);
             IsLoaded = true;
         }
 

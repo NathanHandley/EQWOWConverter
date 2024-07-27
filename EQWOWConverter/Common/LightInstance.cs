@@ -26,8 +26,38 @@ namespace EQWOWConverter.Common
     {
         public Vector3 Position = new Vector3();
         public float Radius;
-        public float ColorRed = 0.0f;
-        public float ColorGreen = 0.0f;
-        public float ColorBlue = 0.0f;
+        public ColorRGBA Color = new ColorRGBA();
+
+        public void SetColor(float R, float G, float B)
+        {
+            Color.R = Convert.ToByte(255f * R);
+            Color.G = Convert.ToByte(255f * G);
+            Color.B = Convert.ToByte(255f * B);
+        }
+
+        public List<byte> ToBytes()
+        {
+            // Calculate attentuation, factoring for world scale
+            float attentuationEnd = Radius * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            float attentuationStart = Configuration.CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION * attentuationEnd;
+
+            // Write the bytes
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.Add(0); // LightType (Omni[0], Spot[1], Directional[2], Ambient[3]).  All EQ lights are omni (point) lights
+            returnBytes.Add(1); // If true, use attenuation, otherwise don't. No EQ light has attenuation
+            returnBytes.Add(0); // Padding / Unknown Use
+            returnBytes.Add(0); // Padding / Unknown Use
+            returnBytes.AddRange(Color.ToBytesBGRA()); // Color of the light
+            returnBytes.AddRange(Position.ToBytes()); // Light position
+            returnBytes.AddRange(BitConverter.GetBytes(1.0f)); // Intensity.  Not 100% sure on the value range, but I see 0.6 a lot so assuming 0-1
+            returnBytes.AddRange(BitConverter.GetBytes(0f)); // Unknown 1 (Start Radius 1?)
+            returnBytes.AddRange(BitConverter.GetBytes(0f)); // Unknown 2 (End Radius 1?)
+            returnBytes.AddRange(BitConverter.GetBytes(-1f)); // Unknown 3 (Start Radius 2?) - -1 is common in existing files
+            returnBytes.AddRange(BitConverter.GetBytes(-0.5f)); // Unknown 4 (End Radius 2?) - -0.5 is common in existing files
+            returnBytes.AddRange(BitConverter.GetBytes(attentuationStart)); // Attenuation Start. (3.305556f is a common value)
+            returnBytes.AddRange(BitConverter.GetBytes(attentuationEnd)); // Attenuation End. (11.19444f is a common value)
+            return returnBytes;
+        }
+
     }
 }

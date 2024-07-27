@@ -99,6 +99,15 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
 
         //=====================================================================
+        // Lighting
+        //=====================================================================
+        // If true, light instances are enabled.  They don't work at this time, so leave false
+        public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = false;
+
+        // Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it
+        public static readonly float CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
+
+        //=====================================================================
         // Objects
         //=====================================================================
         // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away

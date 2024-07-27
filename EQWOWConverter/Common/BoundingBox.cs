@@ -147,6 +147,23 @@ namespace EQWOWConverter.Common
             return System.Numerics.Vector3.Distance(cornerSystem, centerSystem);
         }
 
+        public bool ContainsPoint(Vector3 point)
+        {
+            if (point.X < BottomCorner.X)
+                return false;
+            if (point.Y < BottomCorner.Y)
+                return false;
+            if (point.Y < BottomCorner.Y)
+                return false;
+            if (point.X > TopCorner.X)
+                return false;
+            if (point.Y > TopCorner.Y)
+                return false;
+            if (point.Z > TopCorner.Z)
+                return false;
+            return true;
+        }
+
         public static BoundingBox GenerateBoxFromVectors(List<Vector3> vertices, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();

@@ -68,7 +68,8 @@ namespace EQWOWConverter.Zones
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
             AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, AmbientLight.A);
-            LightInstances = eqZoneData.LightInstances; // TODO: Factor for scale
+            if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
+                LightInstances = eqZoneData.LightInstances;
 
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
@@ -328,7 +329,7 @@ namespace EQWOWConverter.Zones
             if (extractedMeshData.Vertices.Count > 0)
             {
                 WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
+                curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, LightInstances, ZoneProperties);
                 WorldObjects.Add(curWorldModelObject);
             }
         }

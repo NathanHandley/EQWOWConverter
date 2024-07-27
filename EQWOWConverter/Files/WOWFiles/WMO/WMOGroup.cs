@@ -59,12 +59,15 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
             // Flags
-            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
+            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsOutdoors); // TEMP
+            //UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsIndoors); // TEMP
             groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             if (worldModelObject.IsCompletelyInLiquid == false)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
+            if (worldModelObject.LightInstanceIDs.Count > 0)
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -76,8 +79,10 @@ namespace EQWOWConverter.WOWFiles
 
             // NOTE: Temp code in place. Making everything a single render batch for testing.
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount ("transition" blend light from ext and int)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // internalBatchCount // TEMP
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount // TEMP
+            //chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // externalBatchCount // TEMP
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount TEMP
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // padding/unknown
 
             // This fog Id list may be wrong, but hoping that 0 works
@@ -134,11 +139,12 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(GenerateMOBAChunk(worldModelObject));
 
             // MOLR (Light References) ------------------------------------------------------------
-            //chunkBytes.AddRange(GenerateMOLRChunk(zone));
+            if (worldModelObject.LightInstanceIDs.Count > 0)
+                chunkBytes.AddRange(GenerateMOLRChunk(worldModelObject));
 
             // MODR (Doodad References) -----------------------------------------------------------
             if (worldModelObject.DoodadInstances.Count > 0)
-                chunkBytes.AddRange(GenerateMODRChunk(worldModelObject));
+            chunkBytes.AddRange(GenerateMODRChunk(worldModelObject));
 
             // MOBN (Nodes of the BSP tree) -------------------------------------------------------
             chunkBytes.AddRange(GenerateMOBNChunk(worldModelObject));
@@ -275,9 +281,8 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOLRChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            // Intentionally blank for now
-
+            foreach (UInt16 lightInstanceID in worldModelObject.LightInstanceIDs)
+                chunkBytes.AddRange(BitConverter.GetBytes(lightInstanceID));
             return WrapInChunk("MOLR", chunkBytes.ToArray());
         }
 

@@ -79,7 +79,7 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMOVBChunk());
 
             // MOLT (Lighting Information) --------------------------------------------------------
-            RootBytes.AddRange(GenerateMOLTChunk());
+            RootBytes.AddRange(GenerateMOLTChunk(zone.WOWZoneData));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
             RootBytes.AddRange(GenerateMODSChunk(zone.WOWZoneData));
@@ -122,7 +122,9 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));             
             
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    // Number of Portals (Zero for now, but may cause problems?)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    // Number of Lights (TBD)
+
+            // Number of Lights
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.LightInstances.Count())));
 
             // Number of Doodad Names
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(DoodadNameOffsets.Count())));
@@ -399,12 +401,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk()
+        private List<byte> GenerateMOLTChunk(WOWZoneData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            // Intentionally blank for now
-
+            foreach (LightInstance lightInstance in wowZoneData.LightInstances)
+                chunkBytes.AddRange(lightInstance.ToBytes());
             return WrapInChunk("MOLT", chunkBytes.ToArray());
         }
 
