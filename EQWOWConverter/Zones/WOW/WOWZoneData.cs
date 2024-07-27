@@ -67,7 +67,7 @@ namespace EQWOWConverter.Zones
                 return;
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
-            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, AmbientLight.A);
+            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, eqZoneData.AmbientLight.A);
             if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
                 LightInstances = eqZoneData.LightInstances;
 
