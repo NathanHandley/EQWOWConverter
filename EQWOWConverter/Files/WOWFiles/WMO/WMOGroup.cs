@@ -68,6 +68,8 @@ namespace EQWOWConverter.WOWFiles
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (worldModelObject.LightInstanceIDs.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
+            if (worldModelObject.WMOType == WorldModelObjectType.Rendered && worldModelObject.MeshData.VertexColors.Count > 0)
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
             chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
 
             // Bounding box
@@ -153,7 +155,8 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(GenerateMOBRChunk(worldModelObject));
 
             // MOCV (Vertex Colors) ---------------------------------------------------------------
-            //chunkBytes.AddRange(GenerateMOCVChunk(zone));
+            if (worldModelObject.WMOType == WorldModelObjectType.Rendered && worldModelObject.MeshData.VertexColors.Count > 0)
+                chunkBytes.AddRange(GenerateMOCVChunk(worldModelObject));
 
             // MLIQ (Liquid/Water details) --------------------------------------------------------
             // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
@@ -333,9 +336,8 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOCVChunk(WorldModelObject worldModelObject)
         {
             List<byte> chunkBytes = new List<byte>();
-
-            // Intentionally blank for now
-
+            foreach (ColorRGBA vertexColor in worldModelObject.MeshData.VertexColors)
+                chunkBytes.AddRange(vertexColor.ToBytesBGRA());
             return WrapInChunk("MOCV", chunkBytes.ToArray());
         }
 

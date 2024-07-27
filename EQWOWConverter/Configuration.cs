@@ -99,13 +99,18 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
 
         //=====================================================================
-        // Lighting
+        // Lighting and Coloring
         //=====================================================================
         // If true, light instances are enabled.  They don't work at this time, so leave false
-        public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = false;
+        public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = true;
 
         // Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it
         public static readonly float CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
+
+        // How much of the EQ original vertex color to apply to exterior surfaces
+        // HIGH influences original EQ values closer to 255, where LOW influences values closer to 0
+        public static readonly double CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_HIGH = 0.3;
+        public static readonly double CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_LOW = 0.4;
 
         //=====================================================================
         // Objects

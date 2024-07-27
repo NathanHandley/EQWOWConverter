@@ -71,6 +71,22 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void ApplyEQToWoWVertexColor()
+        {
+            // WoW considers 127 the center value for vertex color, with values
+            // above being addative and below subtractive
+            foreach (ColorRGBA vertexColor in VertexColors)
+            {
+                double intensityLean = (Convert.ToDouble(vertexColor.R) + Convert.ToDouble(vertexColor.G) + Convert.ToDouble(vertexColor.B)) / 765;
+                double intensityMod = (intensityLean * Configuration.CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_HIGH) +
+                                       (1 - intensityLean) * Configuration.CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_LOW;
+                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * intensityMod);
+                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * intensityMod);
+                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * intensityMod);
+                vertexColor.A = 255;
+            }
+        }
+
         public MeshData GetMeshDataForMaterials(params Material[] materials)
         {
             // Extract out copies of the geometry data specific to these materials

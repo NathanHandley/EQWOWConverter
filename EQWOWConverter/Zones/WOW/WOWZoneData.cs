@@ -104,9 +104,10 @@ namespace EQWOWConverter.Zones
 
             WorldObjects.Clear();
 
-            // Get and translate the mesh data
+            // Get and convert/translate the mesh data
             MeshData renderMeshData = new MeshData(eqZoneData.RenderMeshData);
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+            renderMeshData.ApplyEQToWoWVertexColor();
             MeshData collisionMeshData = new MeshData(eqZoneData.CollisionMeshData);
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
 

@@ -111,7 +111,6 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Number of Textures
-            // TODO: Account for more texture names when texture animation is fully implemented
             UInt32 numOfTextures = 0;
             foreach (Material material in wowZoneData.Materials)
                 if (material.TextureNames.Count != 0)
@@ -119,9 +118,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));             
-            
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    // Number of Portals (Zero for now, but may cause problems?)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));
+
+            // Number of Portals (rendering related, not going to use it for now)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    
 
             // Number of Lights
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.LightInstances.Count())));
@@ -132,13 +132,22 @@ namespace EQWOWConverter.WOWFiles
             // Number of Doodad Definitions
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.DoodadInstances.Count())));
 
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));    // Number of Doodad Sets (first is the global)
-            chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytesARGB());            // Ambiant Light
-            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));      // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      // Axis aligned bounding box for the zone mesh(es)
+            // Number of Doodad Sets (first is the global)
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
+
+            // Ambiant Light
+            chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytesARGB());
+
+            // WMOID (inside WMOAreaTable.dbc)
+            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));
+
+            // Axis aligned bounding box for the zone mesh(es)
+            chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      
 
             // Set any flags
             WMORootFlags rootFlags = WMORootFlags.UseLiquidTypeDBCID;
+            rootFlags |= WMORootFlags.DoNotFixVertexColorAlpha;
+            rootFlags |= WMORootFlags.UseUnifiedRenderingPath;
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(rootFlags)));
             return WrapInChunk("MOHD", chunkBytes.ToArray());
         }
