@@ -196,7 +196,7 @@ namespace EQWOWConverter.Zones
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, new List<string>(), collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, true);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, true);
             }
         }
 
@@ -207,21 +207,13 @@ namespace EQWOWConverter.Zones
 
             // If this can be generated as a single WMO, just do that
             if (staticMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
-            {
-                List<string> materialNames = new List<string>();
-                foreach (Material material in allMaterials)
-                    materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectByMaterials(materialNames, staticMeshData.TriangleFaces, staticMeshData);
-            }
+                GenerateWorldModelObject(staticMeshData.TriangleFaces, staticMeshData);
             // Otherwise, break into parts
             else
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                List<string> materialNames = new List<string>();
-                foreach (Material material in allMaterials)
-                    materialNames.Add(material.UniqueName);
-                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, materialNames, staticMeshData.TriangleFaces, staticMeshData, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP, false);
+                GenerateWorldModelObjectsByXYRegion(fullBoundingBox, staticMeshData.TriangleFaces, staticMeshData, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP, false);
             }
         }
 
@@ -277,7 +269,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<string> materialNames, List<TriangleFace> faces, MeshData meshData, int maxFacesPerWMOGroup, bool isCollisionMesh)
+        private void GenerateWorldModelObjectsByXYRegion(BoundingBox boundingBox, List<TriangleFace> faces, MeshData meshData, int maxFacesPerWMOGroup, bool isCollisionMesh)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
             if (faces.Count > maxFacesPerWMOGroup)
@@ -312,13 +304,13 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Generate for the two sub boxes
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, materialNames, aBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
-                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, materialNames, bBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxA, aBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
+                GenerateWorldModelObjectsByXYRegion(splitBox.BoxB, bBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
             }
             else
             {
                 if (isCollisionMesh == false)
-                    GenerateWorldModelObjectByMaterials(materialNames, faces, meshData);
+                    GenerateWorldModelObject(faces, meshData);
                 else
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
@@ -329,67 +321,15 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateWorldModelObjectByMaterials(List<string> materialNames, List<TriangleFace> faceToProcess, MeshData meshData)
+        private void GenerateWorldModelObject(List<TriangleFace> facesToInclude, MeshData meshData)
         {
-            List<UInt32> materialIDs = new List<UInt32>();
-            bool materialFound = false;
-
-            // Get the related materials
-            foreach (string materialName in materialNames)
+            // Generate a world model object if there are any vertices
+            MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesToInclude);
+            if (extractedMeshData.Vertices.Count > 0)
             {
-                foreach (Material material in Materials)
-                {
-                    if (material.UniqueName == materialName)
-                    {
-                        materialIDs.Add(material.Index);
-                        materialFound = true;
-                        break;
-                    }
-                }
-                if (materialFound == false)
-                {
-                    Logger.WriteError("Error generating world model object, as material named '" + materialName +"' could not be found");
-                    return;
-                }
-            }
-
-            // Build a list of faces specific to these materials, controlling for overflow
-            bool facesLeftToProcess = true;
-            while (facesLeftToProcess)
-            {
-                facesLeftToProcess = false;
-                List<TriangleFace> facesInGroup = new List<TriangleFace>();
-                SortedSet<int> faceIndexesToDelete = new SortedSet<int>();
-                for (int i = 0; i < faceToProcess.Count; i++)
-                {
-                    // Skip anything not matching the material
-                    if (materialIDs.Contains(Convert.ToUInt32(faceToProcess[i].MaterialIndex)) == false)
-                        continue;
-
-                    // Save it
-                    facesInGroup.Add(faceToProcess[i]);
-                    faceIndexesToDelete.Add(i);
-
-                    // Only go up to a maximum to avoid overflowing the model arrays
-                    if (facesInGroup.Count >= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
-                    {
-                        facesLeftToProcess = true;
-                        break;
-                    }
-                }
-
-                // Purge the faces from the original list
-                foreach (int faceIndex in faceIndexesToDelete.Reverse())
-                    faceToProcess.RemoveAt(faceIndex);
-
-                // Generate a world model object if there are any vertices
-                MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesInGroup);
-                if (extractedMeshData.Vertices.Count > 0)
-                {
-                    WorldModelObject curWorldModelObject = new WorldModelObject();
-                    curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
-                    WorldObjects.Add(curWorldModelObject);
-                }
+                WorldModelObject curWorldModelObject = new WorldModelObject();
+                curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, ZoneProperties);
+                WorldObjects.Add(curWorldModelObject);
             }
         }
 
