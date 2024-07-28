@@ -382,10 +382,29 @@ namespace EQWOWConverter.Zones
                 newObject.Load(name, new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
                 GeneratedZoneObjects.Add(newObject);
 
+                // Note: Below doesn't seem to work yet
+                // Calculate the average vertex color
+                //int totalR = 0;
+                //int totalG = 0;
+                //int totalB = 0;
+                //foreach(ColorRGBA vertexColor in curMeshData.VertexColors)
+                //{
+                //    totalR += vertexColor.R;
+                //    totalG += vertexColor.G;
+                //    totalB += vertexColor.B;
+                //}
+                //ColorRGBA vertexColorAverage = new ColorRGBA();
+                //vertexColorAverage.R = Convert.ToByte(totalR / curMeshData.VertexColors.Count);
+                //vertexColorAverage.G = Convert.ToByte(totalG / curMeshData.VertexColors.Count);
+                //vertexColorAverage.B = Convert.ToByte(totalB / curMeshData.VertexColors.Count);
+                //vertexColorAverage.A = 0; // Alpha 0 keeps directional, alpha 255 is from center
+
                 // Add as a doodad
                 WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
                 doodadInstance.ObjectName = name;
                 doodadInstance.Position = curPosition;
+                //doodadInstance.Color = vertexColorAverage; // Not yet working
+                //doodadInstance.Flags |= DoodadInstanceFlags.UseInteriorLighting; // Not yet working
                 DoodadInstances.Add(doodadInstance);
             }
         }
