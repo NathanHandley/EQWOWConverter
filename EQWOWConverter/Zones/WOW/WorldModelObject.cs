@@ -40,6 +40,7 @@ namespace EQWOWConverter.Zones
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
         public bool IsCompletelyInLiquid = false;
+        public bool IsExterior = true;
         public LiquidType LiquidType = LiquidType.None;
         public Material LiquidMaterial = new Material();
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
@@ -51,17 +52,19 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
         }
 
-        public void LoadAsLiquidVolume(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, BoundingBox boundingBox)
+        public void LoadAsLiquidVolume(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = WorldModelObjectType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidPlane = liquidPlane;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 
-        public void LoadAsLiquidPlane(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox)
+        public void LoadAsLiquidPlane(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
+            ZoneProperties zoneProperties)
         {
             WMOType = WorldModelObjectType.LiquidPlane;
             BoundingBox = boundingBox;
@@ -69,6 +72,7 @@ namespace EQWOWConverter.Zones
             LiquidMaterial = liquidMaterial;
             LiquidPlane = liquidPlane;
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 
@@ -92,6 +96,7 @@ namespace EQWOWConverter.Zones
             for (UInt16 i = 0; i < lightInstances.Count; i++)
             //    if (BoundingBox.ContainsPoint(lightInstances[i].Position))
                     LightInstanceIDs.Add(i);
+            IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 
@@ -110,6 +115,7 @@ namespace EQWOWConverter.Zones
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
                 LiquidType = zoneProperties.CompletelyInLiquidType;
             }
+            IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 

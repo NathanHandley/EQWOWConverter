@@ -33,6 +33,7 @@ namespace EQWOWConverter.Zones
         public string DescriptiveName = string.Empty;
         public ZoneContinent Continent;
         public ColorRGBA FogColor = new ColorRGBA();
+        public bool IsExteriorByDefault = true;
         public bool IsCompletelyInLiquid = false;
         public LiquidType CompletelyInLiquidType = LiquidType.None;
         public int FogMinClip = -1;

@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public SoluseksEyeZoneProperties()
         {
             SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinent.Antonica);
+            IsExteriorByDefault = false;
             SetFogProperties(180, 30, 30, 10, 100);
             AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f); // Works
             AddZoneLineBox("soldungb", -165.640060f, -595.953247f, 14.000010f, ZoneLineOrientationType.East, -158.745377f, -582.988464f, 25.937571f, -173.130524f, -600.847412f, 13.500000f);

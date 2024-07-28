@@ -59,9 +59,11 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
             // Flags
-            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsOutdoors); // TEMP
-            //UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.IsIndoors); // TEMP
-            groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
+            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
+            if (worldModelObject.IsExterior == true)
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
+            else
+                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
             if (worldModelObject.DoodadInstances.Count > 0)
                 groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             if (worldModelObject.IsCompletelyInLiquid == false)
@@ -81,8 +83,16 @@ namespace EQWOWConverter.WOWFiles
 
             // Render batches
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // transBatchCount ("transition" blend light from ext and int)
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount
+            if (worldModelObject.IsExterior == true)
+            {
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // internalBatchCount
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // externalBatchCount
+            }
+            else
+            {
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(worldModelObject.RenderBatches.Count()))); // internalBatchCount
+                chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // externalBatchCount
+            }
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // padding/unknown
 
             // This fog Id list may be wrong, but hoping that 0 works

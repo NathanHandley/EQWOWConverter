@@ -243,7 +243,7 @@ namespace EQWOWConverter.Zones
             foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
                 WorldModelObject curWorldModelObject = new WorldModelObject();
-                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.PlaneAxisAlignedXY, liquidVolume.BoundingBox);
+                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.PlaneAxisAlignedXY, liquidVolume.BoundingBox, zoneProperties);
                 WorldObjects.Add(curWorldModelObject);
             }
 
@@ -276,14 +276,14 @@ namespace EQWOWConverter.Zones
                     foreach (ZonePropertiesLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
                         WorldModelObject curWorldModelObject = new WorldModelObject();
-                        curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane.PlaneAxisAlignedXY, planeMaterial, curLiquidPlane.BoundingBox);
+                        curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane.PlaneAxisAlignedXY, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
                         WorldObjects.Add(curWorldModelObject);
                     }
                 }
                 else
                 {
                     WorldModelObject curWorldModelObject = new WorldModelObject();
-                    curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox);
+                    curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     WorldObjects.Add(curWorldModelObject);
                 }
             }
