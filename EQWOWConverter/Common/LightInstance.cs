@@ -44,9 +44,9 @@ namespace EQWOWConverter.Common
             // Write the bytes
             List<byte> returnBytes = new List<byte>();
             returnBytes.Add(0); // LightType (Omni[0], Spot[1], Directional[2], Ambient[3]).  All EQ lights are omni (point) lights
-            returnBytes.Add(1); // If true, use attenuation, otherwise don't. No EQ light has attenuation
-            returnBytes.Add(0); // Padding / Unknown Use
-            returnBytes.Add(0); // Padding / Unknown Use
+            returnBytes.Add(1); // If true, use attenuation, otherwise don't.
+            returnBytes.Add(1); // Padding / Unknown Use
+            returnBytes.Add(1); // Padding / Unknown Use
             returnBytes.AddRange(Color.ToBytesBGRA()); // Color of the light
             returnBytes.AddRange(Position.ToBytes()); // Light position
             returnBytes.AddRange(BitConverter.GetBytes(1.0f)); // Intensity.  Not 100% sure on the value range, but I see 0.6 a lot so assuming 0-1

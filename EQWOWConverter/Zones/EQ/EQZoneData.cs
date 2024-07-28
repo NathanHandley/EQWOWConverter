@@ -109,8 +109,6 @@ namespace EQWOWConverter.Zones
             }
         }
 
-
-
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             // Get the ambient light

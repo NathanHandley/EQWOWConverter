@@ -68,8 +68,6 @@ namespace EQWOWConverter.Zones
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
             AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, eqZoneData.AmbientLight.A);
-            if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
-                LightInstances = eqZoneData.LightInstances;
 
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
@@ -100,6 +98,26 @@ namespace EQWOWConverter.Zones
 
                 // Add it
                 DoodadInstances.Add(doodadInstance);
+            }
+
+            // Add light instances
+            if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
+            {
+                LightInstances = eqZoneData.LightInstances;
+
+                // Correct light instance data
+                foreach (LightInstance lightInstance in LightInstances)
+                {
+                    Vector3 originalPosition = new Vector3(lightInstance.Position);
+                    lightInstance.Position.X = originalPosition.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    // Invert Z and Y because of mapping differences
+                    lightInstance.Position.Z = originalPosition.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    lightInstance.Position.Y = originalPosition.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+                    // Also rotate the X and Y positions around Z axis 180 degrees
+                    lightInstance.Position.X = -lightInstance.Position.X;
+                    lightInstance.Position.Y = -lightInstance.Position.Y;
+                }
             }
 
             WorldObjects.Clear();
