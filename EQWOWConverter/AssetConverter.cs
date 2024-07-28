@@ -315,6 +315,7 @@ namespace EQWOWConverter
                 areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
                 mapDBC.AddRow(zone.WOWZoneData.MapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.AreaID), zone.WOWZoneData.LoadingScreenID);
                 difficultyDBC.AddRow(zone.WOWZoneData.MapID);
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(-1), Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName); // Header record
                 foreach (WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
                 {
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(wmo.WMOGroupID),
