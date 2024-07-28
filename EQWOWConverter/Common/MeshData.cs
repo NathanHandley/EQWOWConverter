@@ -73,8 +73,7 @@ namespace EQWOWConverter.Common
 
         public void ApplyEQToWoWVertexColor()
         {
-            // WoW considers 127 the center value for vertex color, with values
-            // above being addative and below subtractive
+            // Vertex colors are reduced for external areas due to the natural zone light
             foreach (ColorRGBA vertexColor in VertexColors)
             {
                 double intensityLean = (Convert.ToDouble(vertexColor.R) + Convert.ToDouble(vertexColor.G) + Convert.ToDouble(vertexColor.B)) / 765;
