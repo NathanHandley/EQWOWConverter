@@ -55,9 +55,6 @@ namespace EQWOWConverter
         // Maximum number of faces that fit into a WMO group before it subdivides (true max is 21,840)
         public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21000;
 
-        // Maximum number of BTREE faces that fit into a WMO group before it subdivides
-        public static readonly int CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
-
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
@@ -97,6 +94,15 @@ namespace EQWOWConverter
 
         // If true, zones for Velious are generated
         public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
+
+        //=====================================================================
+        // Collision
+        //=====================================================================
+        // If true, allow collision with world model objects
+        public static readonly bool CONFIG_WORLD_MODEL_OBJECT_COLLISION_ENABLED = true;
+        
+        // Maximum number of BTREE faces that fit into a WMO group before it subdivides
+        public static readonly int CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
 
         //=====================================================================
         // Lighting and Coloring

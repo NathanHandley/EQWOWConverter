@@ -141,25 +141,28 @@ namespace EQWOWConverter.Zones
                 }
 
             // Create collision data for the map
-            if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
+            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_ENABLED == true)
             {
-                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
-                collisionMeshData = new MeshData(renderMeshData);
-                GenerateCollisionWorldModelObjects(collisionMeshData);
-            }
-            else
-            {
-                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
-                if (collisionMeshData.Normals.Count == 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
-                if (collisionMeshData.TextureCoordinates.Count == 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
-                if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
-                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                        collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
-                GenerateCollisionWorldModelObjects(collisionMeshData);
+                if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
+                {
+                    Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
+                    collisionMeshData = new MeshData(renderMeshData);
+                    GenerateCollisionWorldModelObjects(collisionMeshData);
+                }
+                else
+                {
+                    Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
+                    if (collisionMeshData.Normals.Count == 0)
+                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                            collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
+                    if (collisionMeshData.TextureCoordinates.Count == 0)
+                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                            collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+                    if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
+                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                            collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
+                    GenerateCollisionWorldModelObjects(collisionMeshData);
+                }
             }
 
             // Generate the render objects

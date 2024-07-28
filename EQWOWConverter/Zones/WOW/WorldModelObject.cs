@@ -85,7 +85,6 @@ namespace EQWOWConverter.Zones
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIndices;
             GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
-            //BSPTree = new BSPTree(BoundingBox, collisionTriangleIndices);
             BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
