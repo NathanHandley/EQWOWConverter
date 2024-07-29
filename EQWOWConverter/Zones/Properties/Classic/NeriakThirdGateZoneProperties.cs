@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakThirdGateZoneProperties()
         {
             SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinent.Antonica);
+            IsExteriorByDefault = false;
             SetFogProperties(10, 0, 60, 10, 250);
             AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 564.595459f, -695.657227f, 331.376404f, -930.340698f, -69.968529f, 30f); // South area, water moat (bottom)

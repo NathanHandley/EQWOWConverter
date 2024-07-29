@@ -29,6 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Lots of 'garbage' zone material to delete
             SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinent.Odus);
+            IsExteriorByDefault = false;
             SetFogProperties(0, 0, 0, 0, 0);
             AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, 711.744934f, 806.283813f, 5.000060f, 12.0f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_eruw1", 764.244263f, 770.935730f, 659.586243f, 716.210144f, 35.000069f, 5f); // Top pool 1

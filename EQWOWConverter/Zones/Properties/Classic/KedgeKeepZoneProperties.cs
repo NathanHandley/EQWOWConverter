@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public KedgeKeepZoneProperties()
         {
             SetBaseZoneProperties("kedge", "Kedge Keep", 99.96f, 14.02f, 31.75f, 0, ZoneContinent.Faydwer);
+            IsExteriorByDefault = false;
             SetFogProperties(10, 10, 10, 25, 25);
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
             SetIsCompletelyUnderLiquid(LiquidType.Water);

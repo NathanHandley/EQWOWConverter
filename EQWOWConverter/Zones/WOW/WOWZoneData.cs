@@ -67,7 +67,10 @@ namespace EQWOWConverter.Zones
                 return;
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
-            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, eqZoneData.AmbientLight.A);
+            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, 25);
+            AmbientLight.R += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
+            AmbientLight.G += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
+            AmbientLight.B += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
 
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
@@ -199,6 +202,14 @@ namespace EQWOWConverter.Zones
             boundingVectors.AddRange(collisionMeshData.Vertices);
             boundingVectors.AddRange(renderMeshData.Vertices);
             BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+
+            // Set the fog
+            FogSettings.FarRadius = ZoneProperties.FogMaxClip * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            FogSettings.NormalColor.R = ZoneProperties.FogColor.R;
+            FogSettings.NormalColor.G = ZoneProperties.FogColor.G;
+            FogSettings.NormalColor.B = ZoneProperties.FogColor.B;
+
+            // Completely loaded
             IsLoaded = true;
         }
 

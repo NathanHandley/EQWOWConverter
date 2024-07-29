@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public BefallenZoneProperties()
         {
             SetBaseZoneProperties("befallen", "Befallen", 35.22f, -75.27f, 2.19f, 0, ZoneContinent.Antonica);
+            IsExteriorByDefault = false;
             SetFogProperties(30, 30, 90, 10, 175);
             AddZoneLineBox("commons", -1155.6317f, 596.3344f, -42.280308f, ZoneLineOrientationType.North, -49.9417f, 42.162197f, 12.469f, -63.428658f, 27.86666f, -0.5000006f);
         }

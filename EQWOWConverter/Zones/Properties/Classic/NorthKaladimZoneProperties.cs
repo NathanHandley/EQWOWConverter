@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaladimZoneProperties()
         {
             SetBaseZoneProperties("kaladimb", "North Kaladim", -267f, 414f, 3.75f, 0, ZoneContinent.Faydwer);
+            IsExteriorByDefault = false;
             SetFogProperties(70, 50, 20, 10, 175);
             AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
             AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
