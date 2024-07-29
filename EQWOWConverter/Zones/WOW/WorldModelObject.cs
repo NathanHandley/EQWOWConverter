@@ -114,7 +114,7 @@ namespace EQWOWConverter.Zones
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
                 LiquidType = zoneProperties.CompletelyInLiquidType;
             }
-            IsExterior = zoneProperties.IsExteriorByDefault;
+            //IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 
@@ -169,6 +169,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Construct the collision triangle indices
+            // TODO: Delete?
             collisionTriangleIncidies = new List<UInt32>();
             for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
             {

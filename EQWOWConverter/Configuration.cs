@@ -110,6 +110,9 @@ namespace EQWOWConverter
         // If true, light instances are enabled.  They don't work at this time, so leave false
         public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = true;
 
+        // How much additional value to add to the ambiant indoor areas
+        public static readonly byte CONFIG_LIGHT_AMBIANT_ADD_AMOUNT = 120;
+
         // Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it
         public static readonly float CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
 
