@@ -84,8 +84,7 @@ namespace EQWOWConverter.Zones
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<UInt32> collisionTriangleIndices;
-            GenerateRenderBatches(materials, zoneProperties, out collisionTriangleIndices);
+            GenerateRenderBatches(materials, zoneProperties);
             BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
@@ -119,14 +118,11 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties, out List<UInt32> collisionTriangleIncidies)
+        private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties)
         {
             // Don't make a render batch if static rendering is disabled
             if (Configuration.CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY == false)
-            {
-                collisionTriangleIncidies = new List<UInt32>();
                 return;
-            }
 
             // Reorder the faces and related objects
             MeshData.SortDataByMaterial();
@@ -167,15 +163,6 @@ namespace EQWOWConverter.Zones
                     if (curFaceMaxIndex > renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex)
                         renderBatchesByMaterialID[curMaterialIndex].LastVertexIndex = Convert.ToUInt16(curFaceMaxIndex);
                 }
-            }
-
-            // Construct the collision triangle indices
-            // TODO: Delete?
-            collisionTriangleIncidies = new List<UInt32>();
-            for (int i = 0; i < MeshData.TriangleFaces.Count; ++i)
-            {
-                Material curMaterial = materials[MeshData.TriangleFaces[i].MaterialIndex];
-                collisionTriangleIncidies.Add(Convert.ToUInt32(i));
             }
 
             // Store the new render batches
