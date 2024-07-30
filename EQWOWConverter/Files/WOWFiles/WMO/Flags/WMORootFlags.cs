@@ -29,5 +29,6 @@ namespace EQWOWConverter.WOWFiles
         UseUnifiedRenderingPath = 0x02,
         UseLiquidTypeDBCID = 0x04,
         DoNotFixVertexColorAlpha = 0x08,
+        AlwaysDraw = 0x10000
     }
 }
