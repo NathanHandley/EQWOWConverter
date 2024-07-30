@@ -195,5 +195,25 @@ namespace EQWOWConverter.Zones
                 DoodadInstances.Add(i, doodadInstance);
             }
         }
+
+        public UInt32 GenerateWMOHeaderFlags()
+        {
+            UInt32 headerFlags = Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
+            if (IsExterior == true)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
+            else
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
+            if (WMOType != WorldModelObjectType.Collision)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.AlwaysDraw);
+            if (DoodadInstances.Count > 0)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
+            if (IsCompletelyInLiquid == false)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
+            if (LightInstanceIDs.Count > 0)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
+            if (WMOType == WorldModelObjectType.Rendered && MeshData.VertexColors.Count > 0)
+                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
+            return headerFlags;
+        }
     }
 }

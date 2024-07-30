@@ -59,20 +59,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(wmoRoot.GroupNameDescriptiveOffset));
 
             // Flags
-            UInt32 groupHeaderFlags = Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
-            if (worldModelObject.IsExterior == true)
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
-            else
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
-            if (worldModelObject.DoodadInstances.Count > 0)
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (worldModelObject.IsCompletelyInLiquid == false)
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
-            if (worldModelObject.LightInstanceIDs.Count > 0)
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
-            if (worldModelObject.WMOType == WorldModelObjectType.Rendered && worldModelObject.MeshData.VertexColors.Count > 0)
-                groupHeaderFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
-            chunkBytes.AddRange(BitConverter.GetBytes(groupHeaderFlags));
+            chunkBytes.AddRange(BitConverter.GetBytes(worldModelObject.GenerateWMOHeaderFlags()));
 
             // Bounding box
             chunkBytes.AddRange(worldModelObject.BoundingBox.ToBytesHighRes());

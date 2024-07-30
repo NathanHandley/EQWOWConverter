@@ -138,10 +138,7 @@ namespace EQWOWConverter.Zones
             // Determine which materials are animated or transparent and create objects to represent them
             foreach (Material material in Materials)
                 if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
-                {
-                    MeshData allMeshData = new MeshData();
                     GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
-                }
 
             // Create collision data for the map
             if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_ENABLED == true)

@@ -316,11 +316,10 @@ namespace EQWOWConverter.WOWFiles
 
             foreach(WorldModelObject curWorldModelObject in wowZoneData.WorldObjects)
             {
-                // Group flags
-                UInt32 groupInfoFlags = GetPackedFlags(Convert.ToUInt32(WMOGroupFlags.IsOutdoors)); // Convert.ToUInt32(WMOGroupFlags.UseExteriorLighting));
-                chunkBytes.AddRange(BitConverter.GetBytes(groupInfoFlags));
+                // Header flags
+                chunkBytes.AddRange(BitConverter.GetBytes(curWorldModelObject.GenerateWMOHeaderFlags()));
 
-                // Since only one group, use the overall bounding box
+                // Use the bounding box
                 chunkBytes.AddRange(curWorldModelObject.BoundingBox.ToBytesHighRes());
 
                 // Group name is the first offset
