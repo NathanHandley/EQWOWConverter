@@ -213,7 +213,7 @@ namespace EQWOWConverter.Objects
                         float stepMidY = workingBoundingBox.TopCorner.Y - (workingBoundingBox.GetYDistance() * 0.5f);
                         float stepLowY = workingBoundingBox.BottomCorner.Y;
 
-                        // Build 'steps' by adding collision quads perpendicular to Z along the long side, along with graduating angled ones
+                        // Build 'steps' by adding collision quads angled away from the center jutting out the longer sides (makes an upside-down V shape)
                         for (float curZ = workingBoundingBox.BottomCorner.Z; curZ <= workingBoundingBox.TopCorner.Z; curZ += stepDistance)
                         {
                             // 2-step Angle (splits from the middle, angles down and away)
