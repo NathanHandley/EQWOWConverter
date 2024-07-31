@@ -16,17 +16,17 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace EQWOWConverter.Objects.Properties
 {
-    internal enum ObjectCustomCollisionType
+    internal class Torch2Alt1ObjectProperties : ObjectProperties
     {
-        None,
-        Ladder,
-        ReducedBoxBoundary
+        public Torch2Alt1ObjectProperties()
+        {
+            SetCustomCollisionType(ObjectCustomCollisionType.ReducedBoxBoundary);
+        }
     }
 }

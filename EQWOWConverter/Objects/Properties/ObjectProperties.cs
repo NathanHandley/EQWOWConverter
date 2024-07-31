@@ -30,6 +30,7 @@ namespace EQWOWConverter.Objects.Properties
 
         public string Name = string.Empty;
         public ObjectCustomCollisionType CustomCollisionType = ObjectCustomCollisionType.None;
+        public bool DisableCollision = false;
 
         public ObjectProperties() { }
         protected ObjectProperties(string name)
@@ -37,9 +38,14 @@ namespace EQWOWConverter.Objects.Properties
             Name = name;
         }
 
-        public void SetCustomCollisionType(ObjectCustomCollisionType customCollisionType)
+        protected void SetCustomCollisionType(ObjectCustomCollisionType customCollisionType)
         {
             CustomCollisionType = customCollisionType;
+        }
+
+        protected void SetCollisionDisabled(bool disableCollision)
+        {
+            DisableCollision = disableCollision;
         }
 
         public static ObjectProperties GetObjectPropertiesForObject(string objectName)
@@ -60,6 +66,8 @@ namespace EQWOWConverter.Objects.Properties
             ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("torch2", new Torch2ObjectProperties());
+            ObjectPropertiesByByName.Add("torch2alt1", new Torch2Alt1ObjectProperties());
         }
     }
 }

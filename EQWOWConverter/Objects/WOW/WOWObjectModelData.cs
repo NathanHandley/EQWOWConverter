@@ -282,6 +282,77 @@ namespace EQWOWConverter.Objects
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert, wallStartVert + 3));
                         collisionTriangleFaces.Add(new TriangleFace(0, wallStartVert + 1, wallStartVert + 3, wallStartVert + 2));
                     } break;
+                case ObjectCustomCollisionType.ReducedBoxBoundary:
+                    {
+                        // Determine the boundary box
+                        BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
+
+                        // Purge the existing collision data
+                        collisionVertices.Clear();
+                        collisionTriangleFaces.Clear();
+
+                        // Add collision walls on the sides, and add a 'reduction' factor so you can step a little into it
+                        float highX = workingBoundingBox.TopCorner.X * 0.8f;
+                        float lowX = workingBoundingBox.BottomCorner.X * 0.8f;
+                        float highY = workingBoundingBox.TopCorner.Y * 0.8f;
+                        float lowY = workingBoundingBox.BottomCorner.Y * 0.8f;
+                        float highZ = workingBoundingBox.TopCorner.Z * 0.8f;
+                        float lowZ = workingBoundingBox.BottomCorner.Z * 0.8f;
+
+                        // Side 1
+                        int quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(highX, lowY, highZ));
+                        collisionVertices.Add(new Vector3(highX, lowY, lowZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+                        // Side 2
+                        quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(highX, highY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, highY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+                        collisionVertices.Add(new Vector3(highX, highY, lowZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+                        // Side 3
+                        quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(highX, highY, highZ));
+                        collisionVertices.Add(new Vector3(highX, highY, lowZ));
+                        collisionVertices.Add(new Vector3(highX, lowY, lowZ));
+                        collisionVertices.Add(new Vector3(highX, lowY, highZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+                        // Side 4
+                        quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(lowX, highY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
+                        collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+                        // Top
+                        quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(highX, highY, highZ));
+                        collisionVertices.Add(new Vector3(highX, lowY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, highZ));
+                        collisionVertices.Add(new Vector3(lowX, highY, highZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+                        // Bottom
+                        quadFaceStartVert = collisionVertices.Count;
+                        collisionVertices.Add(new Vector3(highX, highY, lowZ));
+                        collisionVertices.Add(new Vector3(lowX, highY, lowZ));
+                        collisionVertices.Add(new Vector3(lowX, lowY, lowZ));
+                        collisionVertices.Add(new Vector3(highX, lowY, lowZ));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+                        collisionTriangleFaces.Add(new TriangleFace(0, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+                    } break;
                 default:
                     {
                         Logger.WriteError("ApplyCustomCollision has unhandled custom collision type of '" + customCollisionType + "'");
@@ -369,6 +440,15 @@ namespace EQWOWConverter.Objects
 
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
         {
+            // Purge prior data
+            CollisionPositions.Clear();
+            CollisionFaceNormals.Clear();
+            CollisionTriangles.Clear();
+
+            // Do nothing for collision-disabled objects
+            if (Properties.DisableCollision)
+                return;
+
             // Generate collision data if there is none and it's from an EQ object
             if (collisionVertices.Count == 0 && isFromRawEQObject == true)
             {
@@ -413,11 +493,6 @@ namespace EQWOWConverter.Objects
             // Apply any custom collision data
             if (Properties.CustomCollisionType != ObjectCustomCollisionType.None)
                 ApplyCustomCollision(Properties.CustomCollisionType, ref collisionVertices, ref collisionTriangleFaces);
-
-            // Purge prior data
-            CollisionPositions.Clear();
-            CollisionFaceNormals.Clear();
-            CollisionTriangles.Clear();
 
             // Store positions, factoring for world scailing and rotation around Z axis
             foreach (Vector3 collisionVertex in collisionVertices)

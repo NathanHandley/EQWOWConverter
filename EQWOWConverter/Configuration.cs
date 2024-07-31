@@ -128,6 +128,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE = 25.1f;
 
         // If set to true, the collision is rendered and not the actual render geometry. Leave false unless debugging.
+        // TODO: Add a custom material for this purpose, as some boundary boxes don't show
         public static readonly bool CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION = false;
 
         // For ladders, this is how far to extend out the steppable area in front and back of it (value is before world scaling)
