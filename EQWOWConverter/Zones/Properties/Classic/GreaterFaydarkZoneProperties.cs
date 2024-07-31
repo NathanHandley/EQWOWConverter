@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class GreaterFaydarkZoneProperties : ZoneProperties
     {
-        public GreaterFaydarkZoneProperties()
+        public GreaterFaydarkZoneProperties() : base()
         {
             // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
             SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinent.Faydwer);

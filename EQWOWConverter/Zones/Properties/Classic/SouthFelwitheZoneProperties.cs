@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthFelwitheZoneProperties : ZoneProperties
     {
-        public SouthFelwitheZoneProperties()
+        public SouthFelwitheZoneProperties() : base()
         {
             // Bug: Hole in the doorway into the teleport room (bottom).  Might be scale related -- It's also this way on live!  Test after collision changes.
             SetBaseZoneProperties("felwitheb", "Southern Felwithe", -790f, 320f, -10.25f, 0, ZoneContinent.Faydwer);

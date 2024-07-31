@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class HighKeepZoneProperties : ZoneProperties
     {
-        public HighKeepZoneProperties()
+        public HighKeepZoneProperties() : base()
         {
             SetBaseZoneProperties("highkeep", "High Keep", 88f, -16f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(0, 0, 0, 0, 0);

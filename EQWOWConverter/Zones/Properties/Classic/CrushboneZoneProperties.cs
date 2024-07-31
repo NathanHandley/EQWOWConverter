@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CrushboneZoneProperties : ZoneProperties
     {
-        public CrushboneZoneProperties()
+        public CrushboneZoneProperties() : base()
         {
             SetBaseZoneProperties("crushbone", "Crushbone", 158f, -644f, 4f, 0, ZoneContinent.Faydwer);
             SetFogProperties(90, 90, 190, 10, 400);

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class RivervaleZoneProperties : ZoneProperties
     {
-        public RivervaleZoneProperties()
+        public RivervaleZoneProperties() : base()
         {
             // TODO: Bug - You can fall through the waterfall base
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinent.Antonica);

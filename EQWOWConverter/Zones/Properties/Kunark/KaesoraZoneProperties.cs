@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KaesoraZoneProperties : ZoneProperties
     {
-        public KaesoraZoneProperties()
+        public KaesoraZoneProperties() : base()
         {
             SetBaseZoneProperties("kaesora", "Kaesora", 40f, 370f, 99.72f, 0, ZoneContinent.Kunark);
             SetFogProperties(0, 10, 0, 20, 200);

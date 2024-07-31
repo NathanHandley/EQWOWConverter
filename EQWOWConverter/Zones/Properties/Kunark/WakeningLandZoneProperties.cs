@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class WakeningLandZoneProperties : ZoneProperties
     {
-        public WakeningLandZoneProperties()
+        public WakeningLandZoneProperties() : base()
         {
             SetBaseZoneProperties("wakening", "Wakening Land", -5000f, -673f, -195f, 0, ZoneContinent.Kunark);
             SetFogProperties(254, 254, 254, 60, 600);

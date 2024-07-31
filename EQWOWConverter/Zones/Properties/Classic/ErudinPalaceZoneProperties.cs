@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudinPalaceZoneProperties : ZoneProperties
     {
-        public ErudinPalaceZoneProperties()
+        public ErudinPalaceZoneProperties() : base()
         {
             // TODO: Lots of 'garbage' zone material to delete
             SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinent.Odus);

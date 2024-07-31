@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class LesserFaydarkZoneProperties : ZoneProperties
     {
-        public LesserFaydarkZoneProperties()
+        public LesserFaydarkZoneProperties() : base()
         {
             SetBaseZoneProperties("lfaydark", "Lesser Faydark", -1769.93f, -108.08f, -1.11f, 0, ZoneContinent.Faydwer);
             SetFogProperties(230, 255, 200, 10, 300);

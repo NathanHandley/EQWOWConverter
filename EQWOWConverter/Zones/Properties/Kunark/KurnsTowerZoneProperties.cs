@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KurnsTowerZoneProperties : ZoneProperties
     {
-        public KurnsTowerZoneProperties()
+        public KurnsTowerZoneProperties() : base()
         {
             SetBaseZoneProperties("kurn", "Kurn's Tower", 77.72f, -277.64f, 3.75f, 0, ZoneContinent.Kunark);
             SetFogProperties(50, 50, 20, 10, 200);

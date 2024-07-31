@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NeriakForeignQuarterZoneProperties : ZoneProperties
     {
-        public NeriakForeignQuarterZoneProperties()
+        public NeriakForeignQuarterZoneProperties() : base()
         {
             SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

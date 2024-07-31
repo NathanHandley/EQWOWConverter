@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class RatheMountainsZoneProperties : ZoneProperties
     {
-        public RatheMountainsZoneProperties()
+        public RatheMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("rathemtn", "Rathe Mountains", 1831f, 3825f, 29.03f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);

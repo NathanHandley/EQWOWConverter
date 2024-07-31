@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudinZoneProperties : ZoneProperties
     {
-        public ErudinZoneProperties()
+        public ErudinZoneProperties() : base()
         {
             SetBaseZoneProperties("erudnext", "Erudin", -309.75f, 109.64f, 23.75f, 0, ZoneContinent.Odus);
             SetFogProperties(200, 200, 220, 10, 550);

@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class FieldOfBoneZoneProperties : ZoneProperties
     {
-        public FieldOfBoneZoneProperties()
+        public FieldOfBoneZoneProperties() : base()
         {
             SetBaseZoneProperties("fieldofbone", "Field of Bone", 1617f, -1684f, -54.78f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 235, 235, 200, 800);

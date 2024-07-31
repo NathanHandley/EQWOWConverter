@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class OasisOfMarrZoneProperties : ZoneProperties
     {
-        public OasisOfMarrZoneProperties()
+        public OasisOfMarrZoneProperties() : base()
         {
             SetBaseZoneProperties("oasis", "Oasis of Marr", 903.98f, 490.03f, 6.4f, 0, ZoneContinent.Antonica);
             SetFogProperties(250, 250, 180, 10, 800);

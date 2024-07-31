@@ -312,18 +312,18 @@ namespace EQWOWConverter
             LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
             foreach (Zone zone in zones)
             {
-                areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zone.WOWZoneData.MapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.AreaID), zone.WOWZoneData.LoadingScreenID);
-                difficultyDBC.AddRow(zone.WOWZoneData.MapID);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(-1), Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName); // Header record
+                areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName);
+                mapDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
+                difficultyDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, zone.WOWZoneData.ZoneProperties.DBCMapDifficultyID);
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
                 foreach (WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
                 {
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.WMOID), Convert.ToInt32(wmo.WMOGroupID),
-                        Convert.ToInt32(zone.WOWZoneData.AreaID), zone.DescriptiveName);
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
+                        Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName);
                 }
                 foreach (ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
-                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.MapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
             }
@@ -353,7 +353,7 @@ namespace EQWOWConverter
                     Logger.WriteError("Error!  More than one map had the same short name of '" + zone.ShortName + "'");
                     continue;
                 }
-                zoneMapIDsByShortName[zone.ShortName] = zone.WOWZoneData.MapID;
+                zoneMapIDsByShortName[zone.ShortName] = zone.WOWZoneData.ZoneProperties.DBCMapID;
             }
 
             // Create the SQL Scripts
@@ -365,12 +365,12 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.DescriptiveNameOnlyLetters, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
-                    gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID), zone.ShortName, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                    gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID), zone.ShortName, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
 
                 // Instance list
-                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.MapID));
+                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID));
 
                 // Zone lines
                 foreach(ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
@@ -392,7 +392,7 @@ namespace EQWOWConverter
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
 
                     // Area Trigger
-                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.MapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
             }

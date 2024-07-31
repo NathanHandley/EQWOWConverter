@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class EmeraldJungleZoneProperties : ZoneProperties
     {
-        public EmeraldJungleZoneProperties()
+        public EmeraldJungleZoneProperties() : base()
         {
             SetBaseZoneProperties("emeraldjungle", "Emerald Jungle", 4648.06f, -1222.97f, 0f, 0, ZoneContinent.Kunark);
             SetFogProperties(200, 235, 210, 60, 200);

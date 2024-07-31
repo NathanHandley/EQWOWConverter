@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class DagnorsCauldronZoneProperties : ZoneProperties
     {
-        public DagnorsCauldronZoneProperties()
+        public DagnorsCauldronZoneProperties() : base()
         {
             SetBaseZoneProperties("cauldron", "Dagnor's Cauldron", 320f, 2815f, 473f, 0, ZoneContinent.Faydwer);
             SetFogProperties(100, 100, 140, 10, 1000);

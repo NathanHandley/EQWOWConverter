@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ChardokZoneProperties : ZoneProperties
     {
-        public ChardokZoneProperties()
+        public ChardokZoneProperties() : base()
         {
             SetBaseZoneProperties("chardok", "Chardok", 859f, 119f, 106f, 0, ZoneContinent.Kunark);
             SetFogProperties(90, 53, 6, 30, 300);

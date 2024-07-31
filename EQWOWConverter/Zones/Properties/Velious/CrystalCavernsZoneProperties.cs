@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CrystalCavernsZoneProperties : ZoneProperties
     {
-        public CrystalCavernsZoneProperties()
+        public CrystalCavernsZoneProperties() : base()
         {
             SetBaseZoneProperties("crystal", "Crystal Caverns", 303f, 487f, -74f, 0, ZoneContinent.Velious);
             SetFogProperties(0, 0, 0, 0, 0);

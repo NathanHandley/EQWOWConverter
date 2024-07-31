@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KaelDrakkalZoneProperties : ZoneProperties
     {
-        public KaelDrakkalZoneProperties()
+        public KaelDrakkalZoneProperties() : base()
         {
             SetBaseZoneProperties("kael", "Kael Drakkal", -633f, -47f, 128f, 0, ZoneContinent.Velious);
             SetFogProperties(10, 10, 50, 20, 500);

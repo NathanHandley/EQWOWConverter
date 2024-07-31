@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class WarsliksWoodsZoneProperties : ZoneProperties
     {
-        public WarsliksWoodsZoneProperties()
+        public WarsliksWoodsZoneProperties() : base()
         {
             SetBaseZoneProperties("warslikswood", "Warslik's Woods", -467.95f, -1428.95f, 197.31f, 0, ZoneContinent.Kunark);
             SetFogProperties(210, 235, 210, 60, 600);

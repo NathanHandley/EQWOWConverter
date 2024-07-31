@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class FeerrottZoneProperties : ZoneProperties
     {
-        public FeerrottZoneProperties()
+        public FeerrottZoneProperties() : base()
         {
             SetBaseZoneProperties("feerrott", "The Feerrott", 902.6f, 1091.7f, 28f, 0, ZoneContinent.Antonica);
             SetFogProperties(60, 90, 30, 10, 175);

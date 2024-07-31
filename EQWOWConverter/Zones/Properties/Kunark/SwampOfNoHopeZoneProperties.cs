@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SwampOfNoHopeZoneProperties : ZoneProperties
     {
-        public SwampOfNoHopeZoneProperties()
+        public SwampOfNoHopeZoneProperties() : base()
         {
             SetBaseZoneProperties("swampofnohope", "Swamp of No Hope", -1830f, -1259.9f, 27.1f, 0, ZoneContinent.Kunark);
             SetFogProperties(210, 200, 210, 60, 400);

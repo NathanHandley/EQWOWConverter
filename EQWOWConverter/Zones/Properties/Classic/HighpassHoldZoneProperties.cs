@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class HighpassHoldZoneProperties : ZoneProperties
     {
-        public HighpassHoldZoneProperties()
+        public HighpassHoldZoneProperties() : base()
         {
             SetBaseZoneProperties("highpass", "Highpass Hold", -104f, -14f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 200, 10, 400);

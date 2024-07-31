@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TimorousDeepZoneProperties : ZoneProperties
     {
-        public TimorousDeepZoneProperties()
+        public TimorousDeepZoneProperties() : base()
         {
             SetBaseZoneProperties("timorous", "Timorous Deep", 2194f, -5392f, 4f, 0, ZoneContinent.Kunark);
             SetFogProperties(225, 225, 230, 100, 700);

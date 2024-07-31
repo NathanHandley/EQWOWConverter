@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class EastFreeportZoneProperties : ZoneProperties
     {
-        public EastFreeportZoneProperties()
+        public EastFreeportZoneProperties() : base()
         {
             // TODO: There is a boat that goes to ocean of tears (OOT)
             SetBaseZoneProperties("freporte", "East Freeport", -648f, -1097f, -52.2f, 0, ZoneContinent.Antonica);

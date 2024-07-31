@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NagafensLairZoneProperties : ZoneProperties
     {
-        public NagafensLairZoneProperties()
+        public NagafensLairZoneProperties() : base()
         {
             SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class GukTopZoneProperties : ZoneProperties
     {
-        public GukTopZoneProperties()
+        public GukTopZoneProperties() : base()
         {
             // TODO: Large areas to 'delete' that you couldn't access anyway
             // "gap" that falls down at 931 -2 -125

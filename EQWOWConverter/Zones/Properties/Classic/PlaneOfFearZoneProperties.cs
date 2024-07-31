@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfFearZoneProperties : ZoneProperties
     {
-        public PlaneOfFearZoneProperties()
+        public PlaneOfFearZoneProperties() : base()
         {
             SetBaseZoneProperties("fearplane", "Plane of Fear", 1282.09f, -1139.03f, 1.67f, 0, ZoneContinent.Antonica);
             SetFogProperties(255, 50, 10, 10, 1000);

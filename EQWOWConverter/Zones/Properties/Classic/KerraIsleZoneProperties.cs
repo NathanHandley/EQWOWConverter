@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KerraIsleZoneProperties : ZoneProperties
     {
-        public KerraIsleZoneProperties()
+        public KerraIsleZoneProperties() : base()
         {
             SetBaseZoneProperties("kerraridge", "Kerra Isle", -859.97f, 474.96f, 23.75f, 0, ZoneContinent.Odus);
             SetFogProperties(220, 220, 200, 10, 600);

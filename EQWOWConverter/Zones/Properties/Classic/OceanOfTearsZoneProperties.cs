@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class OceanOfTearsZoneProperties : ZoneProperties
     {
-        public OceanOfTearsZoneProperties()
+        public OceanOfTearsZoneProperties() : base()
         {
             // TODO: Boat connecting east freeport and butcherblock
             SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinent.Antonica);

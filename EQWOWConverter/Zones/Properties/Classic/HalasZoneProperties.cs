@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class HalasZoneProperties : ZoneProperties
     {
-        public HalasZoneProperties()
+        public HalasZoneProperties() : base()
         {
             // TODO: Boat that goes back and forth
             SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinent.Antonica);

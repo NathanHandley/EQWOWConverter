@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class PermafrostCavernsZoneProperties : ZoneProperties
     {
-        public PermafrostCavernsZoneProperties()
+        public PermafrostCavernsZoneProperties() : base()
         {
             SetBaseZoneProperties("permafrost", "Permafrost Caverns", 0f, 0f, 3.75f, 0, ZoneContinent.Antonica);
             SetFogProperties(25, 35, 45, 10, 180);

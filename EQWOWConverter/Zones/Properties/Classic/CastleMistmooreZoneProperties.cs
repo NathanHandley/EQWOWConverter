@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CastleMistmooreZoneProperties : ZoneProperties
     {
-        public CastleMistmooreZoneProperties()
+        public CastleMistmooreZoneProperties() : base()
         {
             SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinent.Faydwer);
             SetFogProperties(60, 30, 90, 10, 250);

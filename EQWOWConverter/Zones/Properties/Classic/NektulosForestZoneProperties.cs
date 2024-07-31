@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NektulosForestZoneProperties : ZoneProperties
     {
-        public NektulosForestZoneProperties()
+        public NektulosForestZoneProperties() : base()
         {
             SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinent.Antonica);
             SetFogProperties(80, 90, 70, 10, 400);

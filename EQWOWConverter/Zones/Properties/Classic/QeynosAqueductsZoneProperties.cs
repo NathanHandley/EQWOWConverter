@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class QeynosAqueductsZoneProperties : ZoneProperties
     {
-        public QeynosAqueductsZoneProperties()
+        public QeynosAqueductsZoneProperties() : base()
         {
             // TODO: Secret pot to Tox
             SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinent.Antonica);

@@ -25,8 +25,9 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SoluseksEyeZoneProperties : ZoneProperties
     {
-        public SoluseksEyeZoneProperties()
+        public SoluseksEyeZoneProperties() : base()
         {
+            // TODO: BUG: Touching the sharp torch at X: -136.9613 Y: -262.874 Z: 11.700028 orientation 4.2292504 causes crash
             SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(180, 30, 30, 10, 100);

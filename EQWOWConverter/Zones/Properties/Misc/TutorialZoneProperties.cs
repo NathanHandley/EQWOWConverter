@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TutorialZoneProperties : ZoneProperties
     {
-        public TutorialZoneProperties()
+        public TutorialZoneProperties() : base()
         {
             SetBaseZoneProperties("tutorial", "Tutorial", 0f, 0f, 0f, 0, ZoneContinent.Development);
             SetFogProperties(0, 0, 0, 500, 2000);

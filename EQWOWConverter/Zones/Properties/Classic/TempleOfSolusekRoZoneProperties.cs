@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfSolusekRoZoneProperties : ZoneProperties
     {
-        public TempleOfSolusekRoZoneProperties()
+        public TempleOfSolusekRoZoneProperties() : base()
         {
             SetBaseZoneProperties("soltemple", "Temple of Solusek Ro", 7.5f, 268.8f, 3f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

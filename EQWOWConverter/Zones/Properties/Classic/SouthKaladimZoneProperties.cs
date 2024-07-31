@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthKaladimZoneProperties : ZoneProperties
     {
-        public SouthKaladimZoneProperties()
+        public SouthKaladimZoneProperties() : base()
         {
             SetBaseZoneProperties("kaladima", "South Kaladim", -2f, -18f, 3.75f, 0, ZoneContinent.Faydwer);
             IsExteriorByDefault = false;

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class EverfrostZoneProperties : ZoneProperties
     {
-        public EverfrostZoneProperties()
+        public EverfrostZoneProperties() : base()
         {
             SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 230, 255, 10, 500);

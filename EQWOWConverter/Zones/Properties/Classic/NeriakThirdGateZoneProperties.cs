@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NeriakThirdGateZoneProperties : ZoneProperties
     {
-        public NeriakThirdGateZoneProperties()
+        public NeriakThirdGateZoneProperties() : base()
         {
             SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class LakeOfIllOmenZoneProperties : ZoneProperties
     {
-        public LakeOfIllOmenZoneProperties()
+        public LakeOfIllOmenZoneProperties() : base()
         {
             SetBaseZoneProperties("lakeofillomen", "Lake of Ill Omen", -5383.07f, 5747.14f, 68.27f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 235, 235, 200, 800);

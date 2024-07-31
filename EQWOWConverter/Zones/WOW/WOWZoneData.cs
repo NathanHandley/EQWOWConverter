@@ -29,9 +29,6 @@ namespace EQWOWConverter.Zones
     {
         private string ShortName = string.Empty;
         private bool IsLoaded = false;
-        private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
-        private static UInt32 CURRENT_AREAID = Configuration.CONFIG_DBCID_AREAID_START;
-        private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
 
         public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
         public List<WOWObjectModelData> GeneratedZoneObjects = new List<WOWObjectModelData>();
@@ -41,9 +38,6 @@ namespace EQWOWConverter.Zones
         public List<WorldModelObjectDoodadInstance> DoodadInstances = new List<WorldModelObjectDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public Fog FogSettings = new Fog();
-        public UInt32 AreaID;
-        public UInt32 WMOID;
-        public int MapID;
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
 
@@ -51,13 +45,6 @@ namespace EQWOWConverter.Zones
 
         public WOWZoneData(ZoneProperties zoneProperties)
         {
-            // Gen/Update IDs
-            AreaID = CURRENT_AREAID;
-            CURRENT_AREAID++;
-            WMOID = CURRENT_WMOID;
-            CURRENT_WMOID++;
-            MapID = CURRENT_MAPID;
-            CURRENT_MAPID++;
             ZoneProperties = zoneProperties;
         }
 

@@ -139,7 +139,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytesBGRA());
 
             // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.WMOID));
+            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.ZoneProperties.DBCWMOID));
 
             // Axis aligned bounding box for the zone mesh(es)
             chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      

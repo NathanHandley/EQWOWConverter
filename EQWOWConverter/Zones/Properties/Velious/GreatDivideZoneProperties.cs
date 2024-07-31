@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class GreatDivideZoneProperties : ZoneProperties
     {
-        public GreatDivideZoneProperties()
+        public GreatDivideZoneProperties() : base()
         {
             SetBaseZoneProperties("greatdivide", "The Great Divide", -965f, -7720f, -557f, 0, ZoneContinent.Velious);
             SetFogProperties(160, 160, 172, 200, 1800);

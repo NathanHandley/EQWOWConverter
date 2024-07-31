@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CabilisEastZoneProperties : ZoneProperties
     {
-        public CabilisEastZoneProperties()
+        public CabilisEastZoneProperties() : base()
         {
             SetBaseZoneProperties("cabeast", "Cabilis East", -416f, 1343f, 4f, 0, ZoneContinent.Kunark);
             SetFogProperties(150, 120, 80, 40, 300);

@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CityOfMistZoneProperties : ZoneProperties
     {
-        public CityOfMistZoneProperties()
+        public CityOfMistZoneProperties() : base()
         {
             // TODO: Any in-zone teleports?
             SetBaseZoneProperties("citymist", "City of Mist", -734f, 28f, 3.75f, 0, ZoneContinent.Kunark);

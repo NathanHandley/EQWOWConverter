@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SurefallGladeZoneProperties : ZoneProperties
     {
-        public SurefallGladeZoneProperties()
+        public SurefallGladeZoneProperties() : base()
         {
             SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(180, 175, 183, 10, 450);

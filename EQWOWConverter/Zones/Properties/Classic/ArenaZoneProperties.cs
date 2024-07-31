@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ArenaZoneProperties : ZoneProperties
     {
-        public ArenaZoneProperties()
+        public ArenaZoneProperties() : base()
         {
             SetBaseZoneProperties("arena", "The Arena", 460.9f, -41.4f, -7.38f, 0, ZoneContinent.Antonica);
             SetFogProperties(100, 100, 100, 10, 1500);

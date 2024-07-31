@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class PlaneOfSkyZoneProperties : ZoneProperties
     {
-        public PlaneOfSkyZoneProperties()
+        public PlaneOfSkyZoneProperties() : base()
         {
             // TODO: Add teleport pads
             SetBaseZoneProperties("airplane", "Plane of Sky", 542.45f, 1384.6f, -650f, 0, ZoneContinent.Antonica);

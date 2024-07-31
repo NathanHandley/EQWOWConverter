@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class IcewellKeepZoneProperties : ZoneProperties
     {
-        public IcewellKeepZoneProperties()
+        public IcewellKeepZoneProperties() : base()
         {
             SetBaseZoneProperties("thurgadinb", "Icewell Keep", 0f, 250f, 0f, 0, ZoneContinent.Velious);
             SetFogProperties(25, 25, 25, 100, 300);

@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SkyfireMountainsZoneProperties : ZoneProperties
     {
-        public SkyfireMountainsZoneProperties()
+        public SkyfireMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("skyfire", "Skyfire Mountains", -3931.32f, -1139.25f, 39.76f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 200, 200, 200, 600);

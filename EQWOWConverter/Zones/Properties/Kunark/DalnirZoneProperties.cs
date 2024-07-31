@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class DalnirZoneProperties : ZoneProperties
     {
-        public DalnirZoneProperties()
+        public DalnirZoneProperties() : base()
         {
             SetBaseZoneProperties("dalnir", "Dalnir", 90f, 8f, 3.75f, 0, ZoneContinent.Kunark);
             SetFogProperties(20, 10, 25, 30, 210);

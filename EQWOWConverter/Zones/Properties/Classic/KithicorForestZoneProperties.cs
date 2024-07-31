@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KithicorForestZoneProperties : ZoneProperties
     {
-        public KithicorForestZoneProperties()
+        public KithicorForestZoneProperties() : base()
         {
             SetBaseZoneProperties("kithicor", "Kithicor Forest", 3828f, 1889f, 459f, 0, ZoneContinent.Antonica);
             SetFogProperties(120, 140, 100, 10, 200);

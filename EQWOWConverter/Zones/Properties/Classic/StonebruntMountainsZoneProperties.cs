@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class StonebruntMountainsZoneProperties : ZoneProperties
     {
-        public StonebruntMountainsZoneProperties()
+        public StonebruntMountainsZoneProperties() : base()
         {
             // TODO: Bad objects in map (scaled to 0.3, -1316 587 -17 orientation 4.5)
             SetBaseZoneProperties("stonebrunt", "Stonebrunt Mountains", -1643.01f, -3427.84f, -6.57f, 0, ZoneContinent.Odus);

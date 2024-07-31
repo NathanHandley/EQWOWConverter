@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class BurningWoodZoneProperties : ZoneProperties
     {
-        public BurningWoodZoneProperties()
+        public BurningWoodZoneProperties() : base()
         {
             SetBaseZoneProperties("burningwood", "Burning Wood", -820f, -4942f, 200.31f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 235, 235, 60, 400);

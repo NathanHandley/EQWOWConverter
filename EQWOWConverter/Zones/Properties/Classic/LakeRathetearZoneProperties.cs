@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class LakeRathetearZoneProperties : ZoneProperties
     {
-        public LakeRathetearZoneProperties()
+        public LakeRathetearZoneProperties() : base()
         {
             SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);

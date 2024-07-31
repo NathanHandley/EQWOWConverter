@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class DreadlandsZoneProperties : ZoneProperties
     {
-        public DreadlandsZoneProperties()
+        public DreadlandsZoneProperties() : base()
         {
             SetBaseZoneProperties("dreadlands", "Dreadlands", 9565.05f, 2806.04f, 1045.2f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 235, 235, 200, 600);

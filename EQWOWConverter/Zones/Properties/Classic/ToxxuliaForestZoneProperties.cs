@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ToxxuliaForestZoneProperties : ZoneProperties
     {
-        public ToxxuliaForestZoneProperties()
+        public ToxxuliaForestZoneProperties() : base()
         {
             SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinent.Odus);
             SetFogProperties(220, 200, 30, 50, 250);

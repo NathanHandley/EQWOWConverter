@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class MistyThicketZoneProperties : ZoneProperties
     {
-        public MistyThicketZoneProperties()
+        public MistyThicketZoneProperties() : base()
         {
             SetBaseZoneProperties("misty", "Misty Thicket", 0f, 0f, 2.43f, 0, ZoneContinent.Antonica);
             SetFogProperties(100, 120, 50, 10, 500);

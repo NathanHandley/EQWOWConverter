@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class GrobbZoneProperties : ZoneProperties
     {
-        public GrobbZoneProperties()
+        public GrobbZoneProperties() : base()
         {
             SetBaseZoneProperties("grobb", "Grobb", 0f, -100f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(0, 0, 0, 500, 2000);

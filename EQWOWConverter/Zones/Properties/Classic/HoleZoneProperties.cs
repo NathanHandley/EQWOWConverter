@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class HoleZoneProperties : ZoneProperties
     {
-        public HoleZoneProperties()
+        public HoleZoneProperties() : base()
         {
             // TODO: Bad object at 117 164 -349 (1x scale)
             // TODO: Forge in first building when coming in needs damage zone

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class OggokZoneProperties : ZoneProperties
     {
-        public OggokZoneProperties()
+        public OggokZoneProperties() : base()
         {
             SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(130, 140, 80, 10, 300);

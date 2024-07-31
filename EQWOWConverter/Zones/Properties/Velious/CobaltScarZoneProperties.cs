@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CobaltScarZoneProperties : ZoneProperties
     {
-        public CobaltScarZoneProperties()
+        public CobaltScarZoneProperties() : base()
         {
             // TODO: Portal to skyshrine is a clicky in the tower
             SetBaseZoneProperties("cobaltscar", "Cobalt Scar", 895f, -939f, 318f, 0, ZoneContinent.Velious);

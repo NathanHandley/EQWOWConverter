@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SleeperTombZoneProperties : ZoneProperties
     {
-        public SleeperTombZoneProperties()
+        public SleeperTombZoneProperties() : base()
         {
             SetBaseZoneProperties("sleeper", "Sleeper's Tomb", 0f, 0f, 5f, 0, ZoneContinent.Velious);
             SetFogProperties(80, 80, 220, 200, 800);

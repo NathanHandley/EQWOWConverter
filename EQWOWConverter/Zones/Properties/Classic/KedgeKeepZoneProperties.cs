@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class KedgeKeepZoneProperties : ZoneProperties
     {
-        public KedgeKeepZoneProperties()
+        public KedgeKeepZoneProperties() : base()
         {
             SetBaseZoneProperties("kedge", "Kedge Keep", 99.96f, 14.02f, 31.75f, 0, ZoneContinent.Faydwer);
             IsExteriorByDefault = false;

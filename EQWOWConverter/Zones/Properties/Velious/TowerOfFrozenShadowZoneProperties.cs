@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TowerOfFrozenShadowZoneProperties : ZoneProperties
     {
-        public TowerOfFrozenShadowZoneProperties()
+        public TowerOfFrozenShadowZoneProperties() : base()
         {
             SetBaseZoneProperties("frozenshadow", "Tower of Frozen Shadow", 200f, 120f, 0f, 0, ZoneContinent.Velious);
             SetFogProperties(25, 25, 25, 10, 350);

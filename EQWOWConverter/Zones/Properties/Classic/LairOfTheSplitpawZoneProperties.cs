@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class LairOfTheSplitpawZoneProperties : ZoneProperties
     {
-        public LairOfTheSplitpawZoneProperties()
+        public LairOfTheSplitpawZoneProperties() : base()
         {
             SetBaseZoneProperties("paw", "Lair of the Splitpaw", -7.9f, -79.3f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(30, 25, 10, 10, 180);

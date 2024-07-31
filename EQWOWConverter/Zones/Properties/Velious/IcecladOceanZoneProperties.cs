@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class IcecladOceanZoneProperties : ZoneProperties
     {
-        public IcecladOceanZoneProperties()
+        public IcecladOceanZoneProperties() : base()
         {
             SetBaseZoneProperties("iceclad", "Iceclad Ocean", 340f, 5330f, -17f, 0, ZoneContinent.Velious);
             SetFogProperties(200, 200, 200, 200, 1800);

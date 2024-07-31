@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfVeeshanZoneProperties : ZoneProperties
     {
-        public TempleOfVeeshanZoneProperties()
+        public TempleOfVeeshanZoneProperties() : base()
         {
             SetBaseZoneProperties("templeveeshan", "Temple of Veeshan", -499f, -2086f, -36f, 0, ZoneContinent.Velious);
             SetFogProperties(60, 10, 10, 30, 300);

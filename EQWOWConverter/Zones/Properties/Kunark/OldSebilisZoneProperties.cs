@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class OldSebilisZoneProperties : ZoneProperties
     {
-        public OldSebilisZoneProperties()
+        public OldSebilisZoneProperties() : base()
         {
             SetBaseZoneProperties("sebilis", "Old Sebilis", 0f, 235f, 40f, 0, ZoneContinent.Kunark);
             SetFogProperties(20, 10, 60, 50, 400);

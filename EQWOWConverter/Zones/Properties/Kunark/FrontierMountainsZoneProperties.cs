@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class FrontierMountainsZoneProperties : ZoneProperties
     {
-        public FrontierMountainsZoneProperties()
+        public FrontierMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("frontiermtns", "Frontier Mountains", -4262f, -633f, 113.24f, 0, ZoneContinent.Kunark);
             SetFogProperties(235, 235, 235, 200, 800);

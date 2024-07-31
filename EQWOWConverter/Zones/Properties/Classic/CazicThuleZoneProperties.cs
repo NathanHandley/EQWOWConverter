@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class CazicThuleZoneProperties : ZoneProperties
     {
-        public CazicThuleZoneProperties()
+        public CazicThuleZoneProperties() : base()
         {
             SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
             SetFogProperties(50, 80, 20, 10, 450);

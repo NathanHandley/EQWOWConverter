@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ErudsCrossingZoneProperties : ZoneProperties
     {
-        public ErudsCrossingZoneProperties()
+        public ErudsCrossingZoneProperties() : base()
         {
             // TODO: There's a boat that connects to erudnext and qeynos (south)
             SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinent.Odus);

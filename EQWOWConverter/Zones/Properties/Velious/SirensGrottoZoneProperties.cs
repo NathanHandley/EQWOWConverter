@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SirensGrottoZoneProperties : ZoneProperties
     {
-        public SirensGrottoZoneProperties()
+        public SirensGrottoZoneProperties() : base()
         {
             SetBaseZoneProperties("sirens", "Siren's Grotto", -33f, 196f, 4f, 0, ZoneContinent.Velious);
             SetFogProperties(30, 100, 130, 10, 500);

@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class WestFreeportZoneProperties : ZoneProperties
     {
-        public WestFreeportZoneProperties()
+        public WestFreeportZoneProperties() : base()
         {
             // TODO: Gaps in the geometry at -325.65 -797.158 -32
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinent.Antonica);

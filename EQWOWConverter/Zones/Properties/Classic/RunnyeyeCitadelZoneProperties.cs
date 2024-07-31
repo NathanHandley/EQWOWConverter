@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class RunnyeyeCitadelZoneProperties : ZoneProperties
     {
-        public RunnyeyeCitadelZoneProperties()
+        public RunnyeyeCitadelZoneProperties() : base()
         {
             SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

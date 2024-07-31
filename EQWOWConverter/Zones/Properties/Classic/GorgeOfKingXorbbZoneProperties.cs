@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class GorgeOfKingXorbbZoneProperties : ZoneProperties
     {
-        public GorgeOfKingXorbbZoneProperties()
+        public GorgeOfKingXorbbZoneProperties() : base()
         {
             SetBaseZoneProperties("beholder", "Gorge of King Xorbb", -21.44f, -512.23f, 45.13f, 0, ZoneContinent.Antonica);
             SetFogProperties(240, 180, 150, 10, 600);

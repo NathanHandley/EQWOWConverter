@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NajenaZoneProperties : ZoneProperties
     {
-        public NajenaZoneProperties()
+        public NajenaZoneProperties() : base()
         {
             SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinent.Antonica);
             IsExteriorByDefault = false;

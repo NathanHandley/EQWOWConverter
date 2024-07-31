@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthQeynosZoneProperties : ZoneProperties
     {
-        public SouthQeynosZoneProperties()
+        public SouthQeynosZoneProperties() : base()
         {
             // TODO: Boat to Erudes Crossing
             SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinent.Antonica);

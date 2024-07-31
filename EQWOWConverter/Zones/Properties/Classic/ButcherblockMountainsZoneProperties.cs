@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class ButcherblockMountainsZoneProperties : ZoneProperties
     {
-        public ButcherblockMountainsZoneProperties()
+        public ButcherblockMountainsZoneProperties() : base()
         {
             // Note: There should be a boat to Firiona Vie [Timorous Deep] (NYI) and a boat to Freeport [Ocean of Tears] (NYI)
             SetBaseZoneProperties("butcher", "Butcherblock Mountains", -700f, 2550f, 2.9f, 0, ZoneContinent.Faydwer);

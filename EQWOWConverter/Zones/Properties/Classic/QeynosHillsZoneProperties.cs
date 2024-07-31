@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class QeynosHillsZoneProperties : ZoneProperties
     {
-        public QeynosHillsZoneProperties()
+        public QeynosHillsZoneProperties() : base()
         {
             SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinent.Antonica);
             SetFogProperties(0, 0, 0, 500, 2000);

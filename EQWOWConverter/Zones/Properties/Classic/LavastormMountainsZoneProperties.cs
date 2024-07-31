@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class LavastormMountainsZoneProperties : ZoneProperties
     {
-        public LavastormMountainsZoneProperties()
+        public LavastormMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinent.Antonica);
             SetFogProperties(255, 50, 10, 10, 800);

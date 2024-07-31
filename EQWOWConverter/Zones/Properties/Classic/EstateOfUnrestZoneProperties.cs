@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class EstateOfUnrestZoneProperties : ZoneProperties
     {
-        public EstateOfUnrestZoneProperties()
+        public EstateOfUnrestZoneProperties() : base()
         {
             SetBaseZoneProperties("unrest", "Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinent.Faydwer);
             SetFogProperties(40, 10, 60, 10, 300);

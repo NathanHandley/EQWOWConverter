@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class WestKaranaZoneProperties : ZoneProperties
     {
-        public WestKaranaZoneProperties()
+        public WestKaranaZoneProperties() : base()
         {
             SetBaseZoneProperties("qey2hh1", "Western Plains of Karana", -638f, 12f, -4f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);

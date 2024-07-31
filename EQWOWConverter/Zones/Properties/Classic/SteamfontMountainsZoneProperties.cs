@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SteamfontMountainsZoneProperties : ZoneProperties
     {
-        public SteamfontMountainsZoneProperties()
+        public SteamfontMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("steamfont", "Steamfont Mountains", -272.86f, 159.86f, -21.4f, 0, ZoneContinent.Faydwer);
             SetFogProperties(200, 200, 220, 10, 800);

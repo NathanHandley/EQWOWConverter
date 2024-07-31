@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NorthFreeportZoneProperties : ZoneProperties
     {
-        public NorthFreeportZoneProperties()
+        public NorthFreeportZoneProperties() : base()
         {
             SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinent.Antonica);
             SetFogProperties(230, 200, 200, 10, 450);

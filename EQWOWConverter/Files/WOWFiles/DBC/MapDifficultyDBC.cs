@@ -26,7 +26,6 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_ROWID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
             public int Id;
             public int MapID;
             public int Diffculty = 0; // Not sure 100%
@@ -37,17 +36,17 @@ namespace EQWOWConverter.WOWFiles
 
             public Row()
             {
-                Id = CURRENT_ROWID;
-                CURRENT_ROWID++;
+
             }
         }
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int mapID)
+        public void AddRow(int mapID, int mapDifficultyID)
         {
             Row newRow = new Row();
             newRow.MapID = mapID;
+            newRow.Id = mapDifficultyID;
             rows.Add(newRow);
         }
 

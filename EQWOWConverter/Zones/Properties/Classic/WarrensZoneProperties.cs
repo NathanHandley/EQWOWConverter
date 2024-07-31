@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class WarrensZoneProperties : ZoneProperties
     {
-        public WarrensZoneProperties()
+        public WarrensZoneProperties() : base()
         {
             SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinent.Odus);
             IsExteriorByDefault = false;

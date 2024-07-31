@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class HowlingStonesZoneProperties : ZoneProperties
     {
-        public HowlingStonesZoneProperties()
+        public HowlingStonesZoneProperties() : base()
         {
             SetBaseZoneProperties("charasis", "Howling Stones", 0f, 0f, -4.25f, 0, ZoneContinent.Kunark);
             SetFogProperties(160, 180, 200, 50, 400);

@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class TempleOfDrogaZoneProperties : ZoneProperties
     {
-        public TempleOfDrogaZoneProperties()
+        public TempleOfDrogaZoneProperties() : base()
         {
             SetBaseZoneProperties("droga", "Temple of Droga", 294.11f, 1371.43f, 3.75f, 0, ZoneContinent.Kunark);
             SetFogProperties(0, 15, 0, 100, 300);

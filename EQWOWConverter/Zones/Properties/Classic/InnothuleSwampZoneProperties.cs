@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class InnothuleSwampZoneProperties : ZoneProperties
     {
-        public InnothuleSwampZoneProperties()
+        public InnothuleSwampZoneProperties() : base()
         {
             SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinent.Antonica);
             SetFogProperties(170, 160, 90, 10, 500);

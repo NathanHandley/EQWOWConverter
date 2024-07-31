@@ -187,12 +187,7 @@ namespace EQWOWConverter.Zones
         public UInt32 GenerateWMOHeaderFlags()
         {
             UInt32 headerFlags = Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
-            if (IsExterior == true)
-                headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
-            else
-                headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
-            if (WMOType != WorldModelObjectType.Collision)
-                headerFlags |= Convert.ToUInt32(WMOGroupFlags.AlwaysDraw);
+            headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
             if (DoodadInstances.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
             if (IsCompletelyInLiquid == false)

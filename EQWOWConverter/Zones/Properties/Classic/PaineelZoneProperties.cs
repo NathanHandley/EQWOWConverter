@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class PaineelZoneProperties : ZoneProperties
     {
-        public PaineelZoneProperties()
+        public PaineelZoneProperties() : base()
         {
             // TODO: "Lift" near the hole that goes up and down
             SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinent.Odus);

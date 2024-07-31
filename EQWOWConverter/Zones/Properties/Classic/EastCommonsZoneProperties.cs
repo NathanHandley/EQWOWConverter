@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class EastCommonsZoneProperties : ZoneProperties
     {
-        public EastCommonsZoneProperties()
+        public EastCommonsZoneProperties() : base()
         {
             SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinent.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);

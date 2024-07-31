@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class AkAnonZoneProperties : ZoneProperties
     {
-        public AkAnonZoneProperties()
+        public AkAnonZoneProperties() : base()
         {
             // TODO: Improve the angle water room water surfaces
             // TODO: Swimming up the entry waterfall will allow you to exit the map

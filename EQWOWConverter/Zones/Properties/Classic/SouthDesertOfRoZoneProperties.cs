@@ -24,7 +24,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class SouthDesertOfRoZoneProperties : ZoneProperties
     {
-        public SouthDesertOfRoZoneProperties()
+        public SouthDesertOfRoZoneProperties() : base()
         {
             SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinent.Antonica);
             SetFogProperties(250, 250, 180, 10, 800);

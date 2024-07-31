@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones.Properties
 {
     internal class NorthFelwitheZoneProperties : ZoneProperties
     {
-        public NorthFelwitheZoneProperties()
+        public NorthFelwitheZoneProperties() : base()
         {
             SetBaseZoneProperties("felwithea", "Northern Felwithe", 94f, -25f, 3.75f, 0, ZoneContinent.Faydwer);
             SetFogProperties(100, 130, 100, 10, 300);
