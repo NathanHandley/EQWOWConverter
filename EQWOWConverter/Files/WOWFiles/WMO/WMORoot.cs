@@ -476,8 +476,18 @@ namespace EQWOWConverter.WOWFiles
         /// </summary>
         private List<byte> GenerateMFOGChunk(ZoneWOWData wowZoneData)
         {
+            // Hard coded defaults since we won't be using this block
             List<byte> chunkBytes = new List<byte>();
-            chunkBytes.AddRange(wowZoneData.FogSettings.ToBytes());
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0x00))); // HasInfiniteRadius boolean
+            chunkBytes.AddRange(new Vector3().ToBytes()); // Position
+            chunkBytes.AddRange(BitConverter.GetBytes(0)); // Near Radius
+            chunkBytes.AddRange(BitConverter.GetBytes(0)); // Far Radius
+            chunkBytes.AddRange(BitConverter.GetBytes(444.4445f)); // Fog End Distance
+            chunkBytes.AddRange(BitConverter.GetBytes(0.25f)); // Fog Start Scalar
+            chunkBytes.AddRange(new ColorRGBA(255, 255, 255, 255).ToBytesBGRA()); // Fog color
+            chunkBytes.AddRange(BitConverter.GetBytes(222.2222f)); // Underwater Fog End Distance
+            chunkBytes.AddRange(BitConverter.GetBytes(-0.5f)); // Underwater Fog Start Scalar
+            chunkBytes.AddRange(new ColorRGBA(255, 0, 0, 255).ToBytesBGRA()); // Underwater Fog Color
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 

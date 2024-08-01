@@ -37,7 +37,6 @@ namespace EQWOWConverter.Zones
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<ZoneDoodadInstance> DoodadInstances = new List<ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
-        public Fog FogSettings = new Fog();
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
 
@@ -187,11 +186,11 @@ namespace EQWOWConverter.Zones
             boundingVectors.AddRange(renderMeshData.Vertices);
             BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
 
-            // Set the fog
-            FogSettings.FarRadius = ZoneProperties.FogMaxClip * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            FogSettings.NormalColor.R = ZoneProperties.FogColor.R;
-            FogSettings.NormalColor.G = ZoneProperties.FogColor.G;
-            FogSettings.NormalColor.B = ZoneProperties.FogColor.B;
+            //// Set the fog
+            //FogSettings.FarRadius = ZoneProperties.FogMaxClip * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            //FogSettings.NormalColor.R = ZoneProperties.FogColor.R;
+            //FogSettings.NormalColor.G = ZoneProperties.FogColor.G;
+            //FogSettings.NormalColor.B = ZoneProperties.FogColor.B;
 
             // Completely loaded
             IsLoaded = true;

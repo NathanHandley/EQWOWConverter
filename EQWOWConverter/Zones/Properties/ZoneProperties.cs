@@ -32,18 +32,19 @@ namespace EQWOWConverter.Zones
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinentType Continent;
-        public ColorRGBA FogColor = new ColorRGBA();
-        public bool IsExteriorByDefault = true;
         public bool IsCompletelyInLiquid = false;
         public ZoneLiquidType CompletelyInLiquidType = ZoneLiquidType.None;
-        public int FogMinClip = -1;
-        public int FogMaxClip = -1;
-        public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
         public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
+
+        // Environment Properties
+        public bool IsExteriorByDefault = true; // Delete this
+        public ColorRGBA FogColor = new ColorRGBA();
+        public int FogMinClip = -1;
+        public int FogMaxClip = -1;
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -82,11 +83,12 @@ namespace EQWOWConverter.Zones
 
         protected void SetFogProperties(byte red, byte green, byte blue, int minClip, int maxClip)
         {
-            FogColor.R = red;
-            FogColor.G = green;
-            FogColor.B = blue;
-            FogMinClip = minClip;
-            FogMaxClip = maxClip;
+            // Does nothing for now
+            //FogColor.R = red;
+            //FogColor.G = green;
+            //FogColor.B = blue;
+            //FogMinClip = minClip;
+            //FogMaxClip = maxClip;
         }
 
         protected void SetIsCompletelyUnderLiquid(ZoneLiquidType liquidType)
