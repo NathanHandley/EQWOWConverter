@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_AREABIT = Configuration.CONFIG_DBIC_AREATABLE_AREABIT_START;
+            private static int CURRENT_AREABIT = Configuration.CONFIG_DBCID_AREATABLE_AREABIT_START;
 
             public int Id;
             public int ContinentID = 724;

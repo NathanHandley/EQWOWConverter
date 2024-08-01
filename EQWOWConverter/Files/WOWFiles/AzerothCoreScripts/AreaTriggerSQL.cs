@@ -62,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM areatrigger WHERE `entry` >= " + Configuration.CONFIG_DBIC_AREATRIGGERID_START.ToString() + ";"); // TODO: Put a max on here
+            stringBuilder.AppendLine("DELETE FROM areatrigger WHERE `entry` >= " + Configuration.CONFIG_DBCID_AREATRIGGERID_START.ToString() + ";"); // TODO: Put a max on here
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `areatrigger` (`entry`, `map`, `x`, `y`, `z`, `radius`, `length`, `width`, `height`, `orientation`) VALUES (");

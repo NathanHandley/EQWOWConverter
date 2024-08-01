@@ -162,11 +162,17 @@ namespace EQWOWConverter
         public static readonly int CONFIG_DBCID_LOADINGSCREENID_START = 255;
 
         // IDs for AreaBit used in AreaTable, should be unique
-        public static readonly int CONFIG_DBIC_AREATABLE_AREABIT_START = 3800;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_START = 3800;
 
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in AzerothCore scripts
         // for teleports as well any other area-based triggers
-        public static readonly int CONFIG_DBIC_AREATRIGGERID_START = 6500;
+        public static readonly int CONFIG_DBCID_AREATRIGGERID_START = 6500;
+
+        // Identifies the Light.DBC row, used for environmental properties
+        public static readonly int CONFIG_DBCID_LIGHT_START = 3500;
+
+        // Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row
+        public static readonly int CONFIG_DBCID_LIGHTPARAMS_START = 1050;
 
         // ====================================================================
         // AzerothCore Database IDs

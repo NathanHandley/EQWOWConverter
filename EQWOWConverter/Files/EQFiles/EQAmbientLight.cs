@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.EQFiles
 {
+    // TODO: Consider deleting, as this won't be used
     internal class EQAmbientLight
     {
         public ColorRGBA AmbientLight = new ColorRGBA();
