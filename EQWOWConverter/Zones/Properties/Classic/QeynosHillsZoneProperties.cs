@@ -143,7 +143,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("qeynos2", 1480.794556f, -1080.846802f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1070.407104f, 200.000000f, -360.758850f, -1090.407104f, -100.000000f);
             AddZoneLineBox("qeynos2", 1480.794556f, -1099f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, -1090.407104f, 200.000000f, -360.758850f, -1150f, -100.000000f);
             AddZoneLineBox("qrg", -631.004761f, 137.129745f, 0.000030f, ZoneLineOrientationType.East, 5189.661133f, 143.432114f, 7.875250f, 5173.275391f, 103.197861f, -7.093250f);
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 4913.403320f, 1147.879028f, 3488.182617f, 574.132324f, -24.749750f, 150f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 4913.403320f, 1147.879028f, 3488.182617f, 574.132324f, -24.749750f, 150f);
         }
     }
 }

@@ -35,15 +35,15 @@ namespace EQWOWConverter.Zones
         public ColorRGBA FogColor = new ColorRGBA();
         public bool IsExteriorByDefault = true;
         public bool IsCompletelyInLiquid = false;
-        public LiquidType CompletelyInLiquidType = LiquidType.None;
+        public ZoneLiquidType CompletelyInLiquidType = ZoneLiquidType.None;
         public int FogMinClip = -1;
         public int FogMaxClip = -1;
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
-        public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();       
-        public List<ZonePropertiesLiquidPlane> LiquidPlanes = new List<ZonePropertiesLiquidPlane>();
+        public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
+        public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -89,7 +89,7 @@ namespace EQWOWConverter.Zones
             FogMaxClip = maxClip;
         }
 
-        protected void SetIsCompletelyUnderLiquid(LiquidType liquidType)
+        protected void SetIsCompletelyUnderLiquid(ZoneLiquidType liquidType)
         {
             IsCompletelyInLiquid = true;
             CompletelyInLiquidType = liquidType;
@@ -118,27 +118,27 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddLiquidVolume(LiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+        protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ)
         {
-            ZonePropertiesLiquidVolume liquidVolume = new ZonePropertiesLiquidVolume(liquidType, nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, lowZ);
+            ZoneLiquidVolume liquidVolume = new ZoneLiquidVolume(liquidType, nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, lowZ);
             LiquidVolumes.Add(liquidVolume);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddLiquidPlane(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float highZ, float lowZ, LiquidSlantType slantType, float minDepth)
+        protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth)
         {
-            ZonePropertiesLiquidPlane liquidPlane = new ZonePropertiesLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
+            ZoneLiquidPlane liquidPlane = new ZoneLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
                 highZ, lowZ, slantType, minDepth);
             LiquidPlanes.Add(liquidPlane);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddLiquidPlaneZLevel(LiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+        protected void AddLiquidPlaneZLevel(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float fixedZ, float minDepth)
         {
-            ZonePropertiesLiquidPlane liquidPlane = new ZonePropertiesLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
+            ZoneLiquidPlane liquidPlane = new ZoneLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
                 seCornerY, fixedZ, minDepth);
             LiquidPlanes.Add(liquidPlane);
         }
@@ -159,7 +159,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddQuadrilateralLiquidShapeZLevel(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+        protected void AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth, float northXLimit, float westYLimit,
             float southXLimit, float eastYLimit, float stepSize)
         {
@@ -220,7 +220,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddTriangleLiquidShapeSouthEdgeAligned(LiquidType liquidType, string materialName, float northX, float northY, float southEdgeX, float southWestY,
+        protected void AddTriangleLiquidShapeSouthEdgeAligned(ZoneLiquidType liquidType, string materialName, float northX, float northY, float southEdgeX, float southWestY,
             float southEastY, float allCornerZ, float minDepth, float stepSize)
         {
             float curXTop = northX;
@@ -258,7 +258,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddLiquidCylinder(LiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
+        protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
         {
             // Step down through all text X positions based on radius
@@ -291,7 +291,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddTrapezoidLiquidAxisAlignedZLevelShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
+        protected void AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
             float southWestY, float southEastY, float topZ, float height, float stepSize)
         {
             float curXTop = northEdgeX;
@@ -324,7 +324,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddQuadrilateralLiquidShapeZLevel(LiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
+        protected void AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
         {
             AddQuadrilateralLiquidShapeZLevel(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
@@ -332,7 +332,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddOctagonLiquidShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+        protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth)
         {
             AddOctagonLiquidShape(liquidType, materialName, northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX,
@@ -340,7 +340,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void AddOctagonLiquidShape(LiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+        protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth, float stepSize)
         {
             // Boundary Control (very limited)

@@ -42,9 +42,9 @@ namespace EQWOWConverter.Zones
         public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
         public bool IsCompletelyInLiquid = false;
         public bool IsExterior = true;
-        public LiquidType LiquidType = LiquidType.None;
+        public ZoneLiquidType LiquidType = ZoneLiquidType.None;
         public Material LiquidMaterial = new Material();
-        public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
+        public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
 
         public ZoneModelObject()
@@ -53,7 +53,7 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
         }
 
-        public void LoadAsLiquidVolume(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
+        public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = ZoneModelObjectType.LiquidVolume;
             BoundingBox = boundingBox;
@@ -64,7 +64,7 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsLiquidPlane(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
+        public void LoadAsLiquidPlane(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
             ZoneProperties zoneProperties)
         {
             WMOType = ZoneModelObjectType.LiquidPlane;

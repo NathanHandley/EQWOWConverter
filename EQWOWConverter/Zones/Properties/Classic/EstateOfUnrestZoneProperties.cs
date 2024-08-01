@@ -30,14 +30,14 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("unrest", "Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinentType.Faydwer);
             SetFogProperties(40, 10, 60, 10, 300);
             AddZoneLineBox("cauldron", -2014.301880f, -627.332886f, 90.001083f, ZoneLineOrientationType.North, 113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
-            AddOctagonLiquidShape(LiquidType.Water, "d_m0006", 296.937286f, 232.862274f, 36.855289f, 12.970670f, 32.835838f, 17.249861f, 32.835838f, 17.249861f,
+            AddOctagonLiquidShape(ZoneLiquidType.Water, "d_m0006", 296.937286f, 232.862274f, 36.855289f, 12.970670f, 32.835838f, 17.249861f, 32.835838f, 17.249861f,
                 292.667419f, 236.893173f, 292.667419f, 236.893173f, 2.000010f, 25f, 0.4f); // West fountain
-            AddOctagonLiquidShape(LiquidType.Water, "d_m0006", 296.937286f, 232.862274f, -13.138050f, -37.008369f, -17.099560f, -32.811298f, -17.099560f, -32.811298f,
+            AddOctagonLiquidShape(ZoneLiquidType.Water, "d_m0006", 296.937286f, 232.862274f, -13.138050f, -37.008369f, -17.099560f, -32.811298f, -17.099560f, -32.811298f,
                 292.667419f, 236.893173f, 292.667419f, 236.893173f, 2.000010f, 25f, 0.4f); // East fountain
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 684.855469f, -278.539734f, 662.342163f, -300.645325f, -1.999930f, 50f); // Inside the mound with a moat
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 836.316162f, -197.394684f, 687.165100f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat north
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 664.912354f, -197.394684f, 509.776093f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat south
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_agua1", 687.175100f, -197.394684f, 664.902354f, -273.965698f, -1.999930f, 50f); // Outside the mound with a moat center
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 684.855469f, -278.539734f, 662.342163f, -300.645325f, -1.999930f, 50f); // Inside the mound with a moat
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 836.316162f, -197.394684f, 687.165100f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat north
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 664.912354f, -197.394684f, 509.776093f, -304.020538f, -1.999930f, 50f); // Outside the mound with a moat south
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 687.175100f, -197.394684f, 664.902354f, -273.965698f, -1.999930f, 50f); // Outside the mound with a moat center
         }
     }
 }

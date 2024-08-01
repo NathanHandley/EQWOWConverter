@@ -30,58 +30,58 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinentType.Antonica);
             SetFogProperties(50, 80, 20, 10, 450);
             AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
-            AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 205.585724f, -62.912350f, 7.619390f, -261.991211f, -209.916235f, 150f); // Bottom southmost west blue pool
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 34.715931f, 6.890010f, 20.303070f, -7.677340f, -41.968750f, 250f); // Well into the southmost area
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 72.394638f, -7.667340f, -13.658730f, -63.726299f, -217.888000f, 100f); // Path between well into the bottom southwest west blue pool (north part)
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 20.313070f, 11.799870f, -13.658730f, -7.677340f, -217.888000f, 100f); // Path between well into the bottom southwest west blue pool (south part)
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 407.618530f, 43.798050f, 389.914734f, 19.075970f, 16.000031f, 3.25f); // Main level (southern area) two pools in front of the mask and door, west pool
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 407.731812f, -19.086250f, 390.065369f, -43.806450f, 16.000031f, 200f); // Main level (southern area) two pools in front of the mask and door, east pool well
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 523.011658f, 126.719681f, 357.898254f, -19.096250f, -83.968727f, 200f); // Second southern lower area with two ladder
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 523.011658f, -19.086250f, 407.741812f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well north
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 390.075369f, -19.086250f, 357.898254f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well south
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 407.731812f, -43.796450f, 390.065369f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well east
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 982.359985f, 1.667420f, 919.420166f, -125.411972f, -83.968719f, 200f); // Lower area just west of the pyramid, west of the 'box room'
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1095.464600f, -102.121727f, 808.316101f, -223.348434f, -83.968719f, 200f); // Box room, west north-to-south strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1095.464600f, -266.567535f, 808.316101f, -293.227356f, -83.968719f, 200f); // Box room, middle north-to-south strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1095.464600f, -336.594269f, 808.316101f, -425.962585f, -83.968719f, 200f); // Box room, east north-to-south strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1095.464600f, -102.121727f, 1010.181763f, -425.962585f, -83.968719f, 200f); // Box room, north west-to-east strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 966.708252f, -102.121727f, 936.318237f, -425.962585f, -83.968719f, 200f); // Box room, middle west-to-east strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 892.906250f, -102.121727f, 808.316101f, -425.962585f, -83.968719f, 200f); // Box room, south west-to-east strip
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1012.899658f, -220.574554f, 964.489685f, -269.064453f, -102.968727f, 200f); // Box room, northwest lower inset box
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1012.693848f, -290.770050f, 964.413025f, -338.923492f, -102.968727f, 200f); // Box room, northeast lower inset box
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 938.528625f, -220.663116f, 890.579651f, -268.775848f, -102.968727f, 200f); // Box room, southwest lower inset box
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 938.573975f, -290.665588f, 890.756714f, -338.776917f, -102.968727f, 200f); // Box room, southeast lower inset box
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1046.981201f, -184.259537f, 1023.519897f, -207.940338f, 12.000030f, 25.25f); // Box room, top floating boxes, NW
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1047.296997f, -352.026215f, 1023.714478f, -375.895355f, 12.000030f, 25.25f); // Box room, top floating boxes, NE
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 879.563843f, -184.107864f, 855.742249f, -208.065643f, 12.000030f, 25.25f); // Box room, top floating boxes, SW
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 879.431519f, -351.990387f, 855.728210f, -375.791809f, 12.000030f, 25.25f); // Box room, top floating boxes, SE
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1068.337280f, -268.078522f, 1044.354248f, -292.106171f, -1.999960f, 25.25f); // Box room, top floating boxes, N
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 963.263550f, -163.235046f, 939.509338f, -186.844406f, -1.999960f, 25.25f); // Box room, top floating boxes, W
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 858.450073f, -267.749237f, 834.732056f, -291.823425f, -1.999960f, 25.25f); // Box room, top floating boxes, S
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 963.366028f, -373.022614f, 939.551147f, -396.703369f, -1.999960f, 25.25f); // Box room, top floating boxes, E
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1089.363037f, -212.148621f, 1065.942749f, -235.578781f, -15.999990f, 25.25f); // Box room, bottom floating boxes, NW
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1089.126099f, -324.102631f, 1065.771240f, -347.771088f, -15.999990f, 25.25f); // Box room, bottom floating boxes, NE
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 837.303040f, -212.146423f, 813.819275f, -235.875565f, -15.999990f, 25.25f); // Box room, bottom floating boxes, SW
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 837.325134f, -324.070801f, 813.694092f, -347.815552f, -15.999990f, 25.25f); // Box room, bottom floating boxes, SE
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1019.393066f, -142.063370f, 995.592651f, -166.004639f, -15.999990f, 25.25f); // Box room, bottom floating boxes, WN
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 907.446106f, -142.299225f, 883.726135f, -165.849716f, -15.999990f, 25.25f); // Box room, bottom floating boxes, WS
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1019.354065f, -394.024109f, 995.515015f, -417.751160f, -15.999990f, 25.25f); // Box room, bottom floating boxes, EN
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 907.568542f, -394.017395f, 883.673218f, -417.884613f, -15.999990f, 25.25f); // Box room, bottom floating boxes, ES
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 955.654907f, -275.840149f, 947.576904f, -283.912537f, 105.968758f, 7.75f); // Box room, water column cap
-            AddOctagonLiquidShape(LiquidType.Water, "t50_water1", 955.654907f, 947.576904f, -275.840149f, -283.912537f, -278.828613f, -280.928589f,
+            AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 205.585724f, -62.912350f, 7.619390f, -261.991211f, -209.916235f, 150f); // Bottom southmost west blue pool
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 34.715931f, 6.890010f, 20.303070f, -7.677340f, -41.968750f, 250f); // Well into the southmost area
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 72.394638f, -7.667340f, -13.658730f, -63.726299f, -217.888000f, 100f); // Path between well into the bottom southwest west blue pool (north part)
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 20.313070f, 11.799870f, -13.658730f, -7.677340f, -217.888000f, 100f); // Path between well into the bottom southwest west blue pool (south part)
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 407.618530f, 43.798050f, 389.914734f, 19.075970f, 16.000031f, 3.25f); // Main level (southern area) two pools in front of the mask and door, west pool
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 407.731812f, -19.086250f, 390.065369f, -43.806450f, 16.000031f, 200f); // Main level (southern area) two pools in front of the mask and door, east pool well
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 523.011658f, 126.719681f, 357.898254f, -19.096250f, -83.968727f, 200f); // Second southern lower area with two ladder
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 523.011658f, -19.086250f, 407.741812f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well north
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 390.075369f, -19.086250f, 357.898254f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well south
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 407.731812f, -43.796450f, 390.065369f, -89.008179f, -83.968727f, 200f); // Second southern lower area, bottom of well east
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 982.359985f, 1.667420f, 919.420166f, -125.411972f, -83.968719f, 200f); // Lower area just west of the pyramid, west of the 'box room'
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1095.464600f, -102.121727f, 808.316101f, -223.348434f, -83.968719f, 200f); // Box room, west north-to-south strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1095.464600f, -266.567535f, 808.316101f, -293.227356f, -83.968719f, 200f); // Box room, middle north-to-south strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1095.464600f, -336.594269f, 808.316101f, -425.962585f, -83.968719f, 200f); // Box room, east north-to-south strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1095.464600f, -102.121727f, 1010.181763f, -425.962585f, -83.968719f, 200f); // Box room, north west-to-east strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 966.708252f, -102.121727f, 936.318237f, -425.962585f, -83.968719f, 200f); // Box room, middle west-to-east strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 892.906250f, -102.121727f, 808.316101f, -425.962585f, -83.968719f, 200f); // Box room, south west-to-east strip
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1012.899658f, -220.574554f, 964.489685f, -269.064453f, -102.968727f, 200f); // Box room, northwest lower inset box
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1012.693848f, -290.770050f, 964.413025f, -338.923492f, -102.968727f, 200f); // Box room, northeast lower inset box
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 938.528625f, -220.663116f, 890.579651f, -268.775848f, -102.968727f, 200f); // Box room, southwest lower inset box
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 938.573975f, -290.665588f, 890.756714f, -338.776917f, -102.968727f, 200f); // Box room, southeast lower inset box
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1046.981201f, -184.259537f, 1023.519897f, -207.940338f, 12.000030f, 25.25f); // Box room, top floating boxes, NW
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1047.296997f, -352.026215f, 1023.714478f, -375.895355f, 12.000030f, 25.25f); // Box room, top floating boxes, NE
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 879.563843f, -184.107864f, 855.742249f, -208.065643f, 12.000030f, 25.25f); // Box room, top floating boxes, SW
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 879.431519f, -351.990387f, 855.728210f, -375.791809f, 12.000030f, 25.25f); // Box room, top floating boxes, SE
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1068.337280f, -268.078522f, 1044.354248f, -292.106171f, -1.999960f, 25.25f); // Box room, top floating boxes, N
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 963.263550f, -163.235046f, 939.509338f, -186.844406f, -1.999960f, 25.25f); // Box room, top floating boxes, W
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 858.450073f, -267.749237f, 834.732056f, -291.823425f, -1.999960f, 25.25f); // Box room, top floating boxes, S
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 963.366028f, -373.022614f, 939.551147f, -396.703369f, -1.999960f, 25.25f); // Box room, top floating boxes, E
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1089.363037f, -212.148621f, 1065.942749f, -235.578781f, -15.999990f, 25.25f); // Box room, bottom floating boxes, NW
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1089.126099f, -324.102631f, 1065.771240f, -347.771088f, -15.999990f, 25.25f); // Box room, bottom floating boxes, NE
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 837.303040f, -212.146423f, 813.819275f, -235.875565f, -15.999990f, 25.25f); // Box room, bottom floating boxes, SW
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 837.325134f, -324.070801f, 813.694092f, -347.815552f, -15.999990f, 25.25f); // Box room, bottom floating boxes, SE
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1019.393066f, -142.063370f, 995.592651f, -166.004639f, -15.999990f, 25.25f); // Box room, bottom floating boxes, WN
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 907.446106f, -142.299225f, 883.726135f, -165.849716f, -15.999990f, 25.25f); // Box room, bottom floating boxes, WS
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1019.354065f, -394.024109f, 995.515015f, -417.751160f, -15.999990f, 25.25f); // Box room, bottom floating boxes, EN
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 907.568542f, -394.017395f, 883.673218f, -417.884613f, -15.999990f, 25.25f); // Box room, bottom floating boxes, ES
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 955.654907f, -275.840149f, 947.576904f, -283.912537f, 105.968758f, 7.75f); // Box room, water column cap
+            AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_water1", 955.654907f, 947.576904f, -275.840149f, -283.912537f, -278.828613f, -280.928589f,
                 -278.828613f, -280.928589f, 952.661194f, 950.571838f, 952.661194f, 950.571838f, 105.968758f, 118f, 0.4f); // Box room, water column
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 980.440186f, -254.128174f, 923.192810f, -305.867035f, 0.001150f, 13.5f); // Box room, upper main pool 1
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 977.539307f, -251.266257f, 923.788025f, -308.644434f, 0.001150f, 13.5f); // Box room, upper main pool 2
-            AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 1000.311096f, 234.174606f, 678.456055f, 89.293968f, -71.968689f, 50f); // Green Pools, 2 NE pools (one north of the other)
-            AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 607.513184f, 430.828156f, 470.775665f, 123.239029f, -71.968689f, 50f); // Green Pools, 2 SW pools (one west of the other)
-            AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
-            AddCazicThuleLiquidSphere(LiquidType.GreenWater, "t50_grnwtr1");
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 980.440186f, -254.128174f, 923.192810f, -305.867035f, 0.001150f, 13.5f); // Box room, upper main pool 1
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 977.539307f, -251.266257f, 923.788025f, -308.644434f, 0.001150f, 13.5f); // Box room, upper main pool 2
+            AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 1000.311096f, 234.174606f, 678.456055f, 89.293968f, -71.968689f, 50f); // Green Pools, 2 NE pools (one north of the other)
+            AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 607.513184f, 430.828156f, 470.775665f, 123.239029f, -71.968689f, 50f); // Green Pools, 2 SW pools (one west of the other)
+            AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 822.394958f, 609.747925f, 682.704468f, 287.781982f, -71.968689f, 50f); // Green Pools, 2 NW pools (one west of the other)
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 1152.813599f, 646.499207f, 1034.159546f, 530.071350f, -41.978620f, 6.2f); // Water above green orb
+            AddCazicThuleLiquidSphere(ZoneLiquidType.GreenWater, "t50_grnwtr1");
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        public void AddCazicThuleLiquidSphere(LiquidType liquidType, string materialName)
+        public void AddCazicThuleLiquidSphere(ZoneLiquidType liquidType, string materialName)
         {
             // TODO: Redo this to be calculated smarter. It's very hacky now. Consider that the "sphere" is wider than it is tall.
 

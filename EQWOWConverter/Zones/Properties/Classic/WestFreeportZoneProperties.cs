@@ -97,21 +97,21 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("freportn", -366.081055f, -82.489418f, -28.000010f, ZoneLineOrientationType.North, 307.515747f, -684.160217f, 0.500130f, 265.184326f, -713.913147f, -28.499969f);
             AddTeleportPad("freportw", 146.800308f, -681.771179f, -12.999480f, ZoneLineOrientationType.East, 97.993584f, -657.753784f, -40.968651f, 7.7f);
             AddTeleportPad("freportw", 12.084580f, -655.863647f, -54.968719f, ZoneLineOrientationType.North, 157.920013f, -715.959045f, -12.000000f, 7.7f);
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 799.806030f, -498.484985f, 657.738413f, -891.634094f, -20.999941f, 10f); // North tunnels from fork to exits
-            AddLiquidPlane(LiquidType.Water, "t50_w1", 657.748413f, -727.049255f, 629.859070f, -742.386902f, -21.606260f, -32.01f, LiquidSlantType.NorthHighSouthLow, 10f); // North water slant near the fork in the tunnels
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 629.869070f, -727.049255f, 405.834116f, -869.017700f, -32.01f, 10f); // North area between slanting tunnels
-            AddLiquidPlane(LiquidType.Water, "t50_w1", 405.844116f, -725.139465f, 293.876282f, -743.528076f, -32.01f, -69.578629f, LiquidSlantType.NorthHighSouthLow, 10f); // Large water slant behind the magic guilds
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 405.834116f, -842.651917f, -129.254303f, -884.942749f, -32.01f, 10f); // Channel that runs next to the magic guild, that goes into the tunnel
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 293.886282f, -654.427490f, 19.920610f, -827.145630f, -69.968712f, 100f); // Water around the mage guild and into the channel
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -102.443680f, -745.005737f, -142.103119f, -842.661917f, -32.01f, 100f); // Channel water south of the mage area, into the gate and around the bend
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 111.530647f, -303.077606f, 76.707130f, -336.678467f, -33.999981f, 30f); // Small pool
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -142.113119f, -731.640381f, -338.503693f, -797.679382f, -32.01f, 20f); // Channel heading back south into more tunnels and the stairs
-            AddLiquidPlane(LiquidType.Water, "t50_w1", -321.548035f, -797.669382f, -336.199432f, -853.656311f, -32.7f, -47.968361f, LiquidSlantType.WestHighEastLow, 20f);
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -321.254303f, -853.646311f, -363.852386f, -896.863098f, -47.968739f, 20f); // South bend between two declines
-            AddLiquidPlane(LiquidType.Water, "t50_w1", -363.842386f, -880.658325f, -419.860931f, -896.736633f, -48.525330f, -69.968788f, LiquidSlantType.NorthHighSouthLow, 20f); // Southeastmost decline waterway
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 919.481262f, 163.751633f, 757.783447f, -11.916170f, -56.968739f, 50f); // North hidden pathway
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -419.396210f, -863.264893f, -652.994568f, -962.689810f, -69.968712f, 150f); // Far southeast underground pathway, west part
-            AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", -558.365784f, -962.679810f, -652.994568f, -1040.707886f, -69.968712f, 150f); // Far southeast underground pathway, south part
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 799.806030f, -498.484985f, 657.738413f, -891.634094f, -20.999941f, 10f); // North tunnels from fork to exits
+            AddLiquidPlane(ZoneLiquidType.Water, "t50_w1", 657.748413f, -727.049255f, 629.859070f, -742.386902f, -21.606260f, -32.01f, ZoneLiquidSlantType.NorthHighSouthLow, 10f); // North water slant near the fork in the tunnels
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 629.869070f, -727.049255f, 405.834116f, -869.017700f, -32.01f, 10f); // North area between slanting tunnels
+            AddLiquidPlane(ZoneLiquidType.Water, "t50_w1", 405.844116f, -725.139465f, 293.876282f, -743.528076f, -32.01f, -69.578629f, ZoneLiquidSlantType.NorthHighSouthLow, 10f); // Large water slant behind the magic guilds
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 405.834116f, -842.651917f, -129.254303f, -884.942749f, -32.01f, 10f); // Channel that runs next to the magic guild, that goes into the tunnel
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 293.886282f, -654.427490f, 19.920610f, -827.145630f, -69.968712f, 100f); // Water around the mage guild and into the channel
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -102.443680f, -745.005737f, -142.103119f, -842.661917f, -32.01f, 100f); // Channel water south of the mage area, into the gate and around the bend
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 111.530647f, -303.077606f, 76.707130f, -336.678467f, -33.999981f, 30f); // Small pool
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -142.113119f, -731.640381f, -338.503693f, -797.679382f, -32.01f, 20f); // Channel heading back south into more tunnels and the stairs
+            AddLiquidPlane(ZoneLiquidType.Water, "t50_w1", -321.548035f, -797.669382f, -336.199432f, -853.656311f, -32.7f, -47.968361f, ZoneLiquidSlantType.WestHighEastLow, 20f);
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -321.254303f, -853.646311f, -363.852386f, -896.863098f, -47.968739f, 20f); // South bend between two declines
+            AddLiquidPlane(ZoneLiquidType.Water, "t50_w1", -363.842386f, -880.658325f, -419.860931f, -896.736633f, -48.525330f, -69.968788f, ZoneLiquidSlantType.NorthHighSouthLow, 20f); // Southeastmost decline waterway
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 919.481262f, 163.751633f, 757.783447f, -11.916170f, -56.968739f, 50f); // North hidden pathway
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -419.396210f, -863.264893f, -652.994568f, -962.689810f, -69.968712f, 150f); // Far southeast underground pathway, west part
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -558.365784f, -962.679810f, -652.994568f, -1040.707886f, -69.968712f, 150f); // Far southeast underground pathway, south part
         }
     }
 }

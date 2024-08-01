@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal enum LiquidSlantType : byte
+    internal enum ZoneLiquidSlantType : byte
     {
         None,
         NorthHighSouthLow,

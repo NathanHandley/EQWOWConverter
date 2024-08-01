@@ -23,26 +23,18 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZonePropertiesLiquidVolume
+    internal class ZoneLiquidVolume
     {
-        public LiquidType LiquidType { get; set; }
+        public ZoneLiquidType LiquidType { get; set; }
         public BoundingBox BoundingBox = new BoundingBox();
-        public PlaneAxisAlignedXY PlaneAxisAlignedXY;
+        public ZoneLiquidPlane LiquidPlane;
 
-        public ZonePropertiesLiquidVolume(LiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY, float highZ, float lowZ)
+        public ZoneLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY, float highZ, float lowZ)
         {
             LiquidType = liquidType;
 
-            // Scale and save the coordinates, rotated
-            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            highZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            lowZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
             // Note that the rotated coordinates will end with SE and NW flipping
-            PlaneAxisAlignedXY = new PlaneAxisAlignedXY(seCornerX, seCornerY, nwCornerX, nwCornerY, highZ, lowZ, LiquidSlantType.None);
+            LiquidPlane = new ZoneLiquidPlane(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, lowZ, ZoneLiquidSlantType.None, highZ-lowZ);
 
             // Generate bounding box
             RegenerateBoundingBox();
@@ -50,9 +42,9 @@ namespace EQWOWConverter.Zones
 
         public void RegenerateBoundingBox()
         {
-            float minZ = PlaneAxisAlignedXY.LowZ;
-            float maxZ = PlaneAxisAlignedXY.HighZ;
-            BoundingBox = new BoundingBox(PlaneAxisAlignedXY.SECornerXY.X, PlaneAxisAlignedXY.SECornerXY.Y, minZ, PlaneAxisAlignedXY.NWCornerXY.X, PlaneAxisAlignedXY.NWCornerXY.Y, maxZ);
+            float minZ = LiquidPlane.LowZ;
+            float maxZ = LiquidPlane.HighZ;
+            BoundingBox = new BoundingBox(LiquidPlane.SECornerXY.X, LiquidPlane.SECornerXY.Y, minZ, LiquidPlane.NWCornerXY.X, LiquidPlane.NWCornerXY.Y, maxZ);
         }
 
     }

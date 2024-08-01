@@ -136,10 +136,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("nro", -1858.000000f, -838.770020f, -6.406150f, ZoneLineOrientationType.North, 2590f, -830.747498f, 300.000000f, 2560f, -850.747498f, -200.000000f);
             AddZoneLineBox("nro", -1858.000000f, -858.770020f, -6.406100f, ZoneLineOrientationType.North, 2590f, -850.747498f, 300.000000f, 2560f, -1200.747498f, -200.000000f);
             AddZoneLineBox("sro", 1433.793579f, 244.703186f, -13.301640f, ZoneLineOrientationType.South, -1890.072144f, 301.506622f, 119.807327f, -1933.566406f, 58.167610f, 1.784040f);
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3204.784424f, -761.411926f, -2522.721680f, -1661.221313f, -6.405980f, 100f); // Ocean line
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 324.968842f, 928.367065f, -592.296204f, -231.830185f, -41.718739f, 300f); // Oasis, north
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3204.784424f, -761.411926f, -2522.721680f, -1661.221313f, -6.405980f, 100f); // Ocean line
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 324.968842f, 928.367065f, -592.296204f, -231.830185f, -41.718739f, 300f); // Oasis, north
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 962.252136f, -1073.070679f, 135.639008f, -41.718739f, 300f); // Oasis, south west
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -592.196204f, 135.739008f, -1130.410278f, -507.798889f, -41.718739f, 300f); // Oasis, south east
         }
     }
 }

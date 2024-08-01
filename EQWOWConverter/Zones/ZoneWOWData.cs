@@ -238,15 +238,15 @@ namespace EQWOWConverter.Zones
         public void GenerateLiquidWorldModelObjects(MeshData meshData, ZoneProperties zoneProperties)
         {
             // Volumes
-            foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
                 ZoneModelObject curWorldModelObject = new ZoneModelObject();
-                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.PlaneAxisAlignedXY, liquidVolume.BoundingBox, zoneProperties);
+                curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
                 ZoneModelObjects.Add(curWorldModelObject);
             }
 
             // Planes
-            foreach (ZonePropertiesLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
+            foreach (ZoneLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
             {
                 Material planeMaterial = new Material();
                 bool materialFound = false;
@@ -270,18 +270,18 @@ namespace EQWOWConverter.Zones
                 if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION ||
                     liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION)
                 {
-                    List<ZonePropertiesLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
-                    foreach (ZonePropertiesLiquidPlane curLiquidPlane in liquidPlaneChunks)
+                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                    foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
                         ZoneModelObject curWorldModelObject = new ZoneModelObject();
-                        curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane.PlaneAxisAlignedXY, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
+                        curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneModelObjects.Add(curWorldModelObject);
                     }
                 }
                 else
                 {
                     ZoneModelObject curWorldModelObject = new ZoneModelObject();
-                    curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
+                    curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     ZoneModelObjects.Add(curWorldModelObject);
                 }
             }
