@@ -27,8 +27,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SoluseksEyeZoneProperties() : base()
         {
-            // TODO: BUG: Touching the sharp torch at X: -136.9613 Y: -262.874 Z: 11.700028 orientation 4.2292504 causes crash
-            SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinent.Antonica);
+            // TODO: Drawbridges at -156.465775f, -289.006134f, 15.660960f
+            SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(180, 30, 30, 10, 100);
             AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f); // Works

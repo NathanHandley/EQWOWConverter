@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OggokZoneProperties() : base()
         {
-            SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(130, 140, 80, 10, 300);
             AddZoneLineBox("feerrott", 1652.742065f, 811.823181f, 57.281330f, ZoneLineOrientationType.South, -399.834625f, -77.776642f, 56.437752f, -462.005951f, -120.130768f, -0.500000f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_oggokwater1", 200.303665f, 192.993454f, -183.825287f, -191.923065f, -62.968739f, 200f); // Water around the blood/sludge arena at 0,0,0

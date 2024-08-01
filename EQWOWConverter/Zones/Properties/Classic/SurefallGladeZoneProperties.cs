@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SurefallGladeZoneProperties() : base()
         {
-            SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(180, 175, 183, 10, 450);
             AddZoneLineBox("qeytoqrg", 5180.557617f, 161.911987f, -6.594880f, ZoneLineOrientationType.West, -623.557495f, 168.640945f, 0.500030f, -639.942505f, 150.659027f, -0.499970f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 264.136719f, 37.288700f, 48.358829f, -182.936539f, -3.999990f, 100f); // Pool around house on stilts

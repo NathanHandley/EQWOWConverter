@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public SouthFelwitheZoneProperties() : base()
         {
             // Bug: Hole in the doorway into the teleport room (bottom).  Might be scale related -- It's also this way on live!  Test after collision changes.
-            SetBaseZoneProperties("felwitheb", "Southern Felwithe", -790f, 320f, -10.25f, 0, ZoneContinent.Faydwer);
+            SetBaseZoneProperties("felwitheb", "Southern Felwithe", -790f, 320f, -10.25f, 0, ZoneContinentType.Faydwer);
             SetFogProperties(100, 130, 100, 10, 300);
             AddZoneLineBox("felwithea", 336.521210f, -720.996582f, -13.999750f, ZoneLineOrientationType.South, 245.892227f, -825.463867f, -1.531000f, 218.101257f, -839.849731f, -14.500020f);
             AddTeleportPad("felwitheb", 503.797028f, -496.463074f, -5.001940f, ZoneLineOrientationType.West, 435.755615f, -584.819824f, 31.000059f, 6.0f);

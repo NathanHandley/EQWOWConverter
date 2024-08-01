@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CazicThuleZoneProperties() : base()
         {
-            SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinentType.Antonica);
             SetFogProperties(50, 80, 20, 10, 450);
             AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
             AddLiquidPlaneZLevel(LiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool

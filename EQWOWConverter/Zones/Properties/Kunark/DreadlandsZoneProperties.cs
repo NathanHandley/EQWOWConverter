@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DreadlandsZoneProperties() : base()
         {
-            SetBaseZoneProperties("dreadlands", "Dreadlands", 9565.05f, 2806.04f, 1045.2f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("dreadlands", "Dreadlands", 9565.05f, 2806.04f, 1045.2f, 0, ZoneContinentType.Kunark);
             SetFogProperties(235, 235, 235, 200, 600);
             AddZoneLineBox("burningwood", -4247.9624f, -712.7452f, 245.30704f, ZoneLineOrientationType.North,
                 3057.91f, -414.8485f, 319.16867f, 2988.2588f, -1083.3096f, 240.4023f);

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KarnorsCastleZoneProperties() : base()
         {
-            SetBaseZoneProperties("karnor", "Karnor's Castle", 0f, 0f, 4f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("karnor", "Karnor's Castle", 0f, 0f, 4f, 0, ZoneContinentType.Kunark);
             SetFogProperties(50, 20, 20, 10, 350);
         }
     }

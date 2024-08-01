@@ -106,7 +106,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOHD (Header)
         /// </summary>
-        private List<byte> GenerateMOHDChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMOHDChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -118,7 +118,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.WorldObjects.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.ZoneModelObjects.Count())));
 
             // Number of Portals (rendering related, not going to use it for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    
@@ -184,7 +184,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOMT (Materials)
         /// </summary>
-        private List<byte> GenerateMOMTChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMOMTChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (Material material in wowZoneData.Materials)
@@ -309,12 +309,12 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGI (Group Information)
         /// </summary>
-        private List<byte> GenerateMOGIChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMOGIChunk(ZoneWOWData wowZoneData)
         {
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(WorldModelObject curWorldModelObject in wowZoneData.WorldObjects)
+            foreach(ZoneModelObject curWorldModelObject in wowZoneData.ZoneModelObjects)
             {
                 // Header flags
                 chunkBytes.AddRange(BitConverter.GetBytes(curWorldModelObject.GenerateWMOHeaderFlags()));
@@ -409,7 +409,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMOLTChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (LightInstance lightInstance in wowZoneData.LightInstances)
@@ -420,7 +420,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODS (Doodad Set Definitions)
         /// </summary>
-        private List<byte> GenerateMODSChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMODSChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -458,11 +458,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODD (Doodad Instance Information)
         /// </summary>
-        private List<byte> GenerateMODDChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMODDChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (WorldModelObjectDoodadInstance doodadInstance in wowZoneData.DoodadInstances)
+            foreach (ZoneDoodadInstance doodadInstance in wowZoneData.DoodadInstances)
             {
                 doodadInstance.ObjectNameOffset = DoodadNameOffsets[doodadInstance.ObjectName];
                 chunkBytes.AddRange(doodadInstance.ToBytes());
@@ -474,17 +474,17 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MFOG (Fog Information)
         /// </summary>
-        private List<byte> GenerateMFOGChunk(WOWZoneData wowZoneData)
+        private List<byte> GenerateMFOGChunk(ZoneWOWData wowZoneData)
         {
             List<byte> chunkBytes = new List<byte>();
             chunkBytes.AddRange(wowZoneData.FogSettings.ToBytes());
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 
-        private void PopulateDoodadNameOffsets(WOWZoneData wowZoneData, string exportObjectsFolder)
+        private void PopulateDoodadNameOffsets(ZoneWOWData wowZoneData, string exportObjectsFolder)
         {
             int curNameOffset = 0;
-            foreach (WorldModelObjectDoodadInstance objectInstance in wowZoneData.DoodadInstances)
+            foreach (ZoneDoodadInstance objectInstance in wowZoneData.DoodadInstances)
             {
                 string objectName = objectInstance.ObjectName;
                 string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();

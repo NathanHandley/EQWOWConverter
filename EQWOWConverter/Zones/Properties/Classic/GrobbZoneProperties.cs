@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GrobbZoneProperties() : base()
         {
-            SetBaseZoneProperties("grobb", "Grobb", 0f, -100f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("grobb", "Grobb", 0f, -100f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(0, 0, 0, 500, 2000);
             AddZoneLineBox("innothule", -2795.355469f, -654.658081f, -34.562538f, ZoneLineOrientationType.East, -169.745117f, 26.887341f, 28.469000f, -192.243027f, 9.193430f, -0.499990f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_gwater1", 152.433304f, 36.971439f, 94.668137f, -120.081017f, -1.999990f, 20f); // South river, near ent

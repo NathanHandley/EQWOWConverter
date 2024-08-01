@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SwampOfNoHopeZoneProperties() : base()
         {
-            SetBaseZoneProperties("swampofnohope", "Swamp of No Hope", -1830f, -1259.9f, 27.1f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("swampofnohope", "Swamp of No Hope", -1830f, -1259.9f, 27.1f, 0, ZoneContinentType.Kunark);
             SetFogProperties(210, 200, 210, 60, 400);
             AddZoneLineBox("cabeast", -98.067253f, -657.688232f, 0.000070f, ZoneLineOrientationType.North,
                 3172.572266f, 3068.755859f, 43.239300f, 3137.161865f, 3040.213135f, -0.374930f);

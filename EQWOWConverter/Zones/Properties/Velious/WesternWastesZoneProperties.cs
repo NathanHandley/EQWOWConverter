@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public WesternWastesZoneProperties() : base()
         {
             SetFogProperties(128, 128, 160, 200, 1800);
-            SetBaseZoneProperties("westwastes", "Western Wastes", -3499f, -4099f, -16.66f, 0, ZoneContinent.Velious);
+            SetBaseZoneProperties("westwastes", "Western Wastes", -3499f, -4099f, -16.66f, 0, ZoneContinentType.Velious);
         }
     }
 }

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public HighKeepZoneProperties() : base()
         {
-            SetBaseZoneProperties("highkeep", "High Keep", 88f, -16f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("highkeep", "High Keep", 88f, -16f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(0, 0, 0, 0, 0);
             AddZoneLineBox("highpass", 62.824429f, -112.595383f, 0.000000f, ZoneLineOrientationType.West, 70.162773f, 126.130470f, 12.469000f, 55.775291f, 104.252892f, -0.499970f);
             AddZoneLineBox("highpass", -90.567039f, -112.659950f, -0.000010f, ZoneLineOrientationType.West, -82.355392f, 112.775299f, 12.469000f, -98.161209f, 104.758774f, -0.500000f);

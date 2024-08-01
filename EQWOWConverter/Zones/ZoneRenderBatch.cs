@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class WorldModelRenderBatch
+    internal class ZoneRenderBatch
     {
         public BoundingBox BoundingBox = new BoundingBox();
         public byte MaterialIndex = 0;
@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones
         public UInt16 FirstVertexIndex = 0;
         public UInt16 LastVertexIndex = 0;
 
-        public WorldModelRenderBatch()
+        public ZoneRenderBatch()
         {
 
         }

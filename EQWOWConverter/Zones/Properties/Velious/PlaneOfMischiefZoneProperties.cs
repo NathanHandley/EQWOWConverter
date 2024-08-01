@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PlaneOfMischiefZoneProperties() : base()
         {
-            SetBaseZoneProperties("mischiefplane", "Plane of Mischief", -395f, -1410f, 115f, 0, ZoneContinent.Velious);
+            SetBaseZoneProperties("mischiefplane", "Plane of Mischief", -395f, -1410f, 115f, 0, ZoneContinentType.Velious);
             SetFogProperties(210, 235, 210, 60, 600);
         }
     }

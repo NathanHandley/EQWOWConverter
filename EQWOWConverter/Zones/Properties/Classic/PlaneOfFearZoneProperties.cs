@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PlaneOfFearZoneProperties() : base()
         {
-            SetBaseZoneProperties("fearplane", "Plane of Fear", 1282.09f, -1139.03f, 1.67f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("fearplane", "Plane of Fear", 1282.09f, -1139.03f, 1.67f, 0, ZoneContinentType.Antonica);
             SetFogProperties(255, 50, 10, 10, 1000);
             AddZoneLineBox("feerrott", -2347.395752f, 2604.589111f, 10.280410f, ZoneLineOrientationType.North, -790.410828f, 1052.103638f, 150.821121f, -803.796631f, 1015.684509f, 105.875198f);
         }

@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones
 
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
-        public ZoneContinent Continent;
+        public ZoneContinentType Continent;
         public ColorRGBA FogColor = new ColorRGBA();
         public bool IsExteriorByDefault = true;
         public bool IsCompletelyInLiquid = false;
@@ -41,7 +41,7 @@ namespace EQWOWConverter.Zones
         public bool DoShowSky = true;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
-        public List<ZonePropertiesLineBox> ZoneLineBoxes = new List<ZonePropertiesLineBox>();
+        public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZonePropertiesLiquidVolume> LiquidVolumes = new List<ZonePropertiesLiquidVolume>();       
         public List<ZonePropertiesLiquidPlane> LiquidPlanes = new List<ZonePropertiesLiquidPlane>();
 
@@ -69,7 +69,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
-        protected void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinent continent)
+        protected void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinentType continent)
         {
             ShortName = shortName;
             DescriptiveName = descriptiveName;
@@ -101,7 +101,7 @@ namespace EQWOWConverter.Zones
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY, 
             float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
-            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
+            ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
                 targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX, 
                 boxBottomSoutheastY, boxBottomSoutheastZ);
             ZoneLineBoxes.Add(zoneLineBox);
@@ -112,7 +112,7 @@ namespace EQWOWConverter.Zones
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth)
         {
-            ZonePropertiesLineBox zoneLineBox = new ZonePropertiesLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY, targetZonePositionZ,
+            ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY, targetZonePositionZ,
             targetZoneOrientation, padBottomCenterXPosition, padBottomCenterYPosition, padBottomCenterZPosition, padWidth);
             ZoneLineBoxes.Add(zoneLineBox);
         }

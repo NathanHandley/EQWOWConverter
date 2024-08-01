@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EmeraldJungleZoneProperties() : base()
         {
-            SetBaseZoneProperties("emeraldjungle", "Emerald Jungle", 4648.06f, -1222.97f, 0f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("emeraldjungle", "Emerald Jungle", 4648.06f, -1222.97f, 0f, 0, ZoneContinentType.Kunark);
             SetFogProperties(200, 235, 210, 60, 200);
             AddZoneLineBox("citymist", 300.490265f, -1799.661743f, -334.968658f, ZoneLineOrientationType.East,
                 10.193290f, -783.147522f, 34.308090f, -10.191010f, -844.774231f, -0.500000f);

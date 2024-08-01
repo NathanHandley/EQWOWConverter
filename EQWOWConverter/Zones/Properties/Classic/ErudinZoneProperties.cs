@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ErudinZoneProperties() : base()
         {
-            SetBaseZoneProperties("erudnext", "Erudin", -309.75f, 109.64f, 23.75f, 0, ZoneContinent.Odus);
+            SetBaseZoneProperties("erudnext", "Erudin", -309.75f, 109.64f, 23.75f, 0, ZoneContinentType.Odus);
             SetFogProperties(200, 200, 220, 10, 550);
             AddZoneLineBox("tox", 2543.662842f, 297.415588f, -48.407711f, ZoneLineOrientationType.South, -1559.726196f, -175.747467f, -17.531000f, -1584.182617f, -211.414566f, -48.468529f);
             AddTeleportPad("erudnext", -1410.466431f, -184.863327f, 34.000938f, ZoneLineOrientationType.North, -1392.625977f, -254.981995f, -42.968651f, 6.0f);

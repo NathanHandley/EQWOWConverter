@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public ErudinPalaceZoneProperties() : base()
         {
             // TODO: Lots of 'garbage' zone material to delete
-            SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinent.Odus);
+            SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinentType.Odus);
             IsExteriorByDefault = false;
             SetFogProperties(0, 0, 0, 0, 0);
             AddTeleportPad("erudnext", -773.795898f, -183.949753f, 50.968781f, ZoneLineOrientationType.North, 711.744934f, 806.283813f, 5.000060f, 12.0f);

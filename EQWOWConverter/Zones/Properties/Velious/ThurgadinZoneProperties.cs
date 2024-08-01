@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ThurgadinZoneProperties() : base()
         {
-            SetBaseZoneProperties("thurgadina", "Thurgadin", 0f, -1222f, 0f, 0, ZoneContinent.Velious);
+            SetBaseZoneProperties("thurgadina", "Thurgadin", 0f, -1222f, 0f, 0, ZoneContinentType.Velious);
             SetFogProperties(25, 25, 25, 100, 300);
         }
     }

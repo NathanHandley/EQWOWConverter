@@ -24,7 +24,7 @@ using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZonePropertiesLineBox
+    internal class ZonePropertiesZoneLineBox
     {
         public int AreaTriggerID;
         public string TargetZoneShortName = string.Empty;
@@ -36,7 +36,7 @@ namespace EQWOWConverter.Zones
         public float BoxHeight;
         public float BoxOrientation = 0.0f;
 
-        public ZonePropertiesLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
+        public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
             float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
@@ -74,7 +74,7 @@ namespace EQWOWConverter.Zones
             BoxHeight = zoneLineBoxBounding.GetZDistance();
         }
 
-        public ZonePropertiesLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
+        public ZonePropertiesZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth)
         {

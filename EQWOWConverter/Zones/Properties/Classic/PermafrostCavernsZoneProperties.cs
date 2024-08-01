@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PermafrostCavernsZoneProperties() : base()
         {
-            SetBaseZoneProperties("permafrost", "Permafrost Caverns", 0f, 0f, 3.75f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("permafrost", "Permafrost Caverns", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
             SetFogProperties(25, 35, 45, 10, 180);
             AddZoneLineBox("everfrost", 2019.599976f, -7040.121094f, -63.843819f, ZoneLineOrientationType.West, -39.775318f, 172.344788f, 38.435791f, -80.162201f, 102.044090f, -0.499990f);
         }

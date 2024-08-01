@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public HalasZoneProperties() : base()
         {
             // TODO: Boat that goes back and forth
-            SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
             SetFogProperties(200, 230, 255, 10, 300);
             AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t75_agua1", -16.822701f, 195.248566f, -464.163391f, -189.505676f, -2.999970f, 250f); // Pool at zone line

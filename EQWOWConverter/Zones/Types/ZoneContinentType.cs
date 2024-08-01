@@ -22,11 +22,13 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal enum WorldModelObjectType
+    internal enum ZoneContinentType
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane
+        Antonica,
+        Odus,
+        Faydwer,
+        Kunark,
+        Velious,
+        Development
     }
 }

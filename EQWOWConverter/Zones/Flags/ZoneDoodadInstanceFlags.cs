@@ -1,4 +1,4 @@
-//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2024 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -14,23 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones.Properties
+namespace EQWOWConverter.Zones.WOW
 {
-    internal class OceanOfTearsZoneProperties : ZoneProperties
+    internal enum ZoneDoodadInstanceFlags : byte
     {
-        public OceanOfTearsZoneProperties() : base()
-        {
-            // TODO: Boat connecting east freeport and butcherblock
-            SetBaseZoneProperties("oot", "Ocean of Tears", -9200f, 390f, 6f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(200, 200, 220, 10, 800);
-            AddLiquidPlaneZLevel(LiquidType.Water, "d_w1", 3854.056396f, 11660.213867f, -5955.389648f, -11718.996094f, -20.063040f, 300f);
-        }
+        AcceptProjectedTexture  = 0x1,
+        UseInteriorLighting     = 0x2
     }
 }

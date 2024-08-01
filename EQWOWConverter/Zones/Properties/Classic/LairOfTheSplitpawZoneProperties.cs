@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LairOfTheSplitpawZoneProperties() : base()
         {
-            SetBaseZoneProperties("paw", "Lair of the Splitpaw", -7.9f, -79.3f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("paw", "Lair of the Splitpaw", -7.9f, -79.3f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(30, 25, 10, 10, 180);
             AddZoneLineBox("southkarana", -3118.534424f, 908.824341f, -11.938860f, ZoneLineOrientationType.West, -95.775307f, 64.159088f, 14.467540f, -112.163208f, 29.530199f, -0.499950f);
             AddLiquidPlaneZLevel(LiquidType.Water, "t50_w1", 1171.132324f, 159.264618f, 1098.533813f, 89.405617f, -5.999900f, 100f); // Western water (higher) - Northmost

@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Bad object at 117 164 -349 (1x scale)
             // TODO: Forge in first building when coming in needs damage zone
-            SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinent.Odus);
+            SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinentType.Odus);
             SetFogProperties(10, 10, 10, 200, 500);
             AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);
             AddZoneLineBox("neriakc", 480.001648f, -809.905090f, -55.968712f, ZoneLineOrientationType.North, 75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);

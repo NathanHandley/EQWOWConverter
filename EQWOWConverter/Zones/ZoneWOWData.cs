@@ -25,17 +25,17 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class WOWZoneData
+    internal class ZoneWOWData
     {
         private string ShortName = string.Empty;
         private bool IsLoaded = false;
 
-        public List<WorldModelObject> WorldObjects = new List<WorldModelObject>();
+        public List<ZoneModelObject> ZoneModelObjects = new List<ZoneModelObject>();
         public List<WOWObjectModelData> GeneratedZoneObjects = new List<WOWObjectModelData>();
         public List<Material> Materials = new List<Material>();
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
-        public List<WorldModelObjectDoodadInstance> DoodadInstances = new List<WorldModelObjectDoodadInstance>();
+        public List<ZoneDoodadInstance> DoodadInstances = new List<ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public Fog FogSettings = new Fog();
         public int LoadingScreenID;
@@ -43,12 +43,12 @@ namespace EQWOWConverter.Zones
 
         public Vector3 SafePosition = new Vector3();
 
-        public WOWZoneData(ZoneProperties zoneProperties)
+        public ZoneWOWData(ZoneProperties zoneProperties)
         {
             ZoneProperties = zoneProperties;
         }
 
-        public void LoadFromEQZone(EQZoneData eqZoneData)
+        public void LoadFromEQZone(ZoneEQData eqZoneData)
         {
             if (IsLoaded == true)
                 return;
@@ -62,7 +62,7 @@ namespace EQWOWConverter.Zones
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)
             {
-                WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
                 doodadInstance.ObjectName = objectInstance.ModelName;
                 doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
                 // Invert Z and Y because of mapping differences
@@ -110,7 +110,7 @@ namespace EQWOWConverter.Zones
                 }
             }
 
-            WorldObjects.Clear();
+            ZoneModelObjects.Clear();
 
             // Get and convert/translate the mesh data
             MeshData renderMeshData = new MeshData(eqZoneData.RenderMeshData);
@@ -158,19 +158,19 @@ namespace EQWOWConverter.Zones
             // Save the loading screen
             switch (ZoneProperties.Continent)
             {
-                case ZoneContinent.Antonica:
-                case ZoneContinent.Faydwer:
-                case ZoneContinent.Development:
-                case ZoneContinent.Odus:
+                case ZoneContinentType.Antonica:
+                case ZoneContinentType.Faydwer:
+                case ZoneContinentType.Development:
+                case ZoneContinentType.Odus:
                     {
                         LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START;
                     } break;
-                case ZoneContinent.Kunark:
+                case ZoneContinentType.Kunark:
                     {
                         LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1;
                     }
                     break;
-                case ZoneContinent.Velious:
+                case ZoneContinentType.Velious:
                     {
                         LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2;
                     }
@@ -205,9 +205,9 @@ namespace EQWOWConverter.Zones
             // If this can be generated as a single WMO, just do that
             if (collisionMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP)
             {
-                WorldModelObject curWorldModelObject = new WorldModelObject();
+                ZoneModelObject curWorldModelObject = new ZoneModelObject();
                 curWorldModelObject.LoadAsCollision(collisionMeshData, DoodadInstances, ZoneProperties);
-                WorldObjects.Add(curWorldModelObject);
+                ZoneModelObjects.Add(curWorldModelObject);
             }
             // Otherwise, break into parts
             else
@@ -240,9 +240,9 @@ namespace EQWOWConverter.Zones
             // Volumes
             foreach (ZonePropertiesLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
-                WorldModelObject curWorldModelObject = new WorldModelObject();
+                ZoneModelObject curWorldModelObject = new ZoneModelObject();
                 curWorldModelObject.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.PlaneAxisAlignedXY, liquidVolume.BoundingBox, zoneProperties);
-                WorldObjects.Add(curWorldModelObject);
+                ZoneModelObjects.Add(curWorldModelObject);
             }
 
             // Planes
@@ -273,16 +273,16 @@ namespace EQWOWConverter.Zones
                     List<ZonePropertiesLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
                     foreach (ZonePropertiesLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
-                        WorldModelObject curWorldModelObject = new WorldModelObject();
+                        ZoneModelObject curWorldModelObject = new ZoneModelObject();
                         curWorldModelObject.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane.PlaneAxisAlignedXY, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
-                        WorldObjects.Add(curWorldModelObject);
+                        ZoneModelObjects.Add(curWorldModelObject);
                     }
                 }
                 else
                 {
-                    WorldModelObject curWorldModelObject = new WorldModelObject();
+                    ZoneModelObject curWorldModelObject = new ZoneModelObject();
                     curWorldModelObject.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane.PlaneAxisAlignedXY, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
-                    WorldObjects.Add(curWorldModelObject);
+                    ZoneModelObjects.Add(curWorldModelObject);
                 }
             }
         }
@@ -332,9 +332,9 @@ namespace EQWOWConverter.Zones
                 else
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
-                    WorldModelObject curWorldModelObject = new WorldModelObject();
+                    ZoneModelObject curWorldModelObject = new ZoneModelObject();
                     curWorldModelObject.LoadAsCollision(extractedMeshData, DoodadInstances, ZoneProperties);
-                    WorldObjects.Add(curWorldModelObject);
+                    ZoneModelObjects.Add(curWorldModelObject);
                 }
             }
         }
@@ -345,9 +345,9 @@ namespace EQWOWConverter.Zones
             MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesToInclude);
             if (extractedMeshData.Vertices.Count > 0)
             {
-                WorldModelObject curWorldModelObject = new WorldModelObject();
+                ZoneModelObject curWorldModelObject = new ZoneModelObject();
                 curWorldModelObject.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, LightInstances, ZoneProperties);
-                WorldObjects.Add(curWorldModelObject);
+                ZoneModelObjects.Add(curWorldModelObject);
             }
         }
 
@@ -398,7 +398,7 @@ namespace EQWOWConverter.Zones
                 //vertexColorAverage.A = 0; // Alpha 0 keeps directional, alpha 255 is from center
 
                 // Add as a doodad
-                WorldModelObjectDoodadInstance doodadInstance = new WorldModelObjectDoodadInstance();
+                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
                 doodadInstance.ObjectName = name;
                 doodadInstance.Position = curPosition;
                 //doodadInstance.Color = vertexColorAverage; // Not yet working

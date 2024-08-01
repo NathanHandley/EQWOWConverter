@@ -24,11 +24,11 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones.WOW
 {
-    internal class WorldModelObjectDoodadInstance
+    internal class ZoneDoodadInstance
     {
         public string ObjectName = string.Empty;
         public UInt32 ObjectNameOffset = 0;
-        public DoodadInstanceFlags Flags = DoodadInstanceFlags.AcceptProjectedTexture;
+        public ZoneDoodadInstanceFlags Flags = ZoneDoodadInstanceFlags.AcceptProjectedTexture;
         public Vector3 Position = new Vector3();
         public Quaternion Orientation = new Quaternion();
         public float Scale = 1.0f;

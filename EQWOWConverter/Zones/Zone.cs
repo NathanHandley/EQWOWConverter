@@ -29,12 +29,12 @@ namespace EQWOWConverter.Zones
         public string DescriptiveName = string.Empty;
         public string ShortName { get; } = string.Empty;
         public string DescriptiveNameOnlyLetters = string.Empty;
-        public EQZoneData EQZoneData = new EQZoneData();
-        public WOWZoneData WOWZoneData;
+        public ZoneEQData EQZoneData = new ZoneEQData();
+        public ZoneWOWData WOWZoneData;
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
-            WOWZoneData = new WOWZoneData(zoneProperties);
+            WOWZoneData = new ZoneWOWData(zoneProperties);
             ShortName = shortName;
             if (zoneProperties.DescriptiveName != string.Empty)
                 SetDescriptiveName(zoneProperties.DescriptiveName);

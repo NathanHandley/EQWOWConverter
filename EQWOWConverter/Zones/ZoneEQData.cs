@@ -25,7 +25,7 @@ using EQWOWConverter.EQFiles;
 
 namespace EQWOWConverter.Zones
 {
-    internal class EQZoneData
+    internal class ZoneEQData
     {
         private bool IsLoaded = false;
         private string MaterialListFileName = string.Empty;

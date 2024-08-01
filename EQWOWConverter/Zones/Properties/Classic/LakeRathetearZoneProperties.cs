@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LakeRathetearZoneProperties() : base()
         {
-            SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(200, 200, 220, 10, 800);
             AddZoneLineBox("arena", -56.940857f, -835.9014f, 7.882746f, ZoneLineOrientationType.West, 2360.1794f, 2708.7017f, 130.344f, 2329.8247f, 2699.243f, 92.11265f);
             AddZoneLineBox("southkarana", -8541.681641f, 1158.678223f, 0.000370f, ZoneLineOrientationType.North, 4392.966797f, 1200f, 38.467892f, 4366.503906f, 1132.421143f, -0.500990f);

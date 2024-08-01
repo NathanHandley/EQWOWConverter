@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthFreeportZoneProperties() : base()
         {
-            SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinentType.Antonica);
             SetFogProperties(230, 200, 200, 10, 450);
             AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
             AddZoneLineBox("freportw", 728.335388f, -581.244812f, -20.999701f, ZoneLineOrientationType.South, -15.071440f, -433.618988f, -11.531000f, -34.966301f, -454.098175f, -50f);

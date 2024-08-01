@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakCommonsZoneProperties() : base()
         {
             //TODO: Base of the waterfall has collision when it shouldn't, and shares material with walls so can't change that way
-            SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("neriakb", "Neriak Commons", -499.91f, 2.97f, -10.25f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(10, 0, 60, 10, 250);
             AddZoneLineBox("neriaka", 83.959953f, -322.479065f, -14.000000f, ZoneLineOrientationType.West, 98.161079f, -305.681519f, 12.467630f, 69.775436f, -384.671295f, -14.500000f);

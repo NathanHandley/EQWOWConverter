@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TempleOfSolusekRoZoneProperties() : base()
         {
-            SetBaseZoneProperties("soltemple", "Temple of Solusek Ro", 7.5f, 268.8f, 3f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("soltemple", "Temple of Solusek Ro", 7.5f, 268.8f, 3f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(180, 5, 5, 50, 500);
             AddZoneLineBox("lavastorm", 1346.515381f, 330.955505f, 146.188034f, ZoneLineOrientationType.South, 244.129364f, 62.161572f, 9.468010f, 219.713821f, 44.408550f, -1.500000f);

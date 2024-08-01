@@ -316,12 +316,12 @@ namespace EQWOWConverter
                 mapDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
                 difficultyDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, zone.WOWZoneData.ZoneProperties.DBCMapDifficultyID);
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
-                foreach (WorldModelObject wmo in zone.WOWZoneData.WorldObjects)
+                foreach (ZoneModelObject wmo in zone.WOWZoneData.ZoneModelObjects)
                 {
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
                         Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName);
                 }
-                foreach (ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
@@ -373,7 +373,7 @@ namespace EQWOWConverter
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID));
 
                 // Zone lines
-                foreach(ZonePropertiesLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                foreach(ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
                     if (zoneMapIDsByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
                     {

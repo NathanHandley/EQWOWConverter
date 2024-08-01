@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public LoadingAreaZoneProperties() : base()
         {
-            SetBaseZoneProperties("load", "Loading Area", -316f, 5f, 8.2f, 0, ZoneContinent.Development);
+            SetBaseZoneProperties("load", "Loading Area", -316f, 5f, 8.2f, 0, ZoneContinentType.Development);
             SetFogProperties(0, 0, 0, 500, 2000);
         }
     }

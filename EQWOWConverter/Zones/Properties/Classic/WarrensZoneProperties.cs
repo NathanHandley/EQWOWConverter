@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public WarrensZoneProperties() : base()
         {
-            SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinent.Odus);
+            SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinentType.Odus);
             IsExteriorByDefault = false;
             SetFogProperties(0, 15, 0, 100, 300);
             AddZoneLineBox("paineel", 721.470337f, -881.333069f, -36.999989f, ZoneLineOrientationType.South, 734.975342f, -874.463745f, -26.531000f, 713.524292f, -888.849182f, -37.499908f);

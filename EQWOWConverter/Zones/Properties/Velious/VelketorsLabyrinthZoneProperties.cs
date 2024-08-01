@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public VelketorsLabyrinthZoneProperties() : base()
         {
-            SetBaseZoneProperties("velketor", "Velketor's Labyrinth", -65f, 581f, -152f, 0, ZoneContinent.Velious);
+            SetBaseZoneProperties("velketor", "Velketor's Labyrinth", -65f, 581f, -152f, 0, ZoneContinentType.Velious);
             SetFogProperties(10, 130, 130, 10, 500);
         }
     }

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SkyfireMountainsZoneProperties() : base()
         {
-            SetBaseZoneProperties("skyfire", "Skyfire Mountains", -3931.32f, -1139.25f, 39.76f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("skyfire", "Skyfire Mountains", -3931.32f, -1139.25f, 39.76f, 0, ZoneContinentType.Kunark);
             SetFogProperties(235, 200, 200, 200, 600);
             AddZoneLineBox("burningwood", 5087.0146f, 1740.0859f, -163.56395f, ZoneLineOrientationType.South,
                 -5623.817f, 1910.7054f, -56.840195f, -5703.1704f, 1580.5497f, -164.28036f); // Zone-in had no geometery

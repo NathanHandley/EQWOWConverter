@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NeriakForeignQuarterZoneProperties() : base()
         {
-            SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(10, 0, 60, 10, 250);
             AddZoneLineBox("nektulos", 2294.104980f, -1105.768066f, 0.000190f, ZoneLineOrientationType.North, 27.909149f, 168.129883f, 40.197109f, -14.193390f, 134.459396f, 27.500010f);

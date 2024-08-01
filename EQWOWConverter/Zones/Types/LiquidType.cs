@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.Zones
 {
     internal enum LiquidType : byte
     {

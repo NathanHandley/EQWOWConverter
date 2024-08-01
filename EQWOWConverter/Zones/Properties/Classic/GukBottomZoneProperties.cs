@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public GukBottomZoneProperties() : base()
         {
             // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
-            SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(50, 45, 20, 10, 140);
             AddZoneLineBox("guktop", 1113.605835f, 617.183350f, -88.333542f, ZoneLineOrientationType.East, 1161.719360f, 662.774170f, -81.499748f, 1143.830933f, 656.943542f, -110f);

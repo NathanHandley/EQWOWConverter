@@ -27,17 +27,17 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class WorldModelObject
+    internal class ZoneModelObject
     {
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
         public bool IsLoaded = false;
-        public WorldModelObjectType WMOType = WorldModelObjectType.Rendered;
+        public ZoneModelObjectType WMOType = ZoneModelObjectType.Rendered;
         public List<Material> Materials = new List<Material>();
         public MeshData MeshData = new MeshData();
-        public List<WorldModelRenderBatch> RenderBatches = new List<WorldModelRenderBatch>();
-        public Dictionary<int, WorldModelObjectDoodadInstance> DoodadInstances = new Dictionary<int, WorldModelObjectDoodadInstance>();
+        public List<ZoneRenderBatch> RenderBatches = new List<ZoneRenderBatch>();
+        public Dictionary<int, ZoneDoodadInstance> DoodadInstances = new Dictionary<int, ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
         public bool IsCompletelyInLiquid = false;
@@ -47,7 +47,7 @@ namespace EQWOWConverter.Zones
         public PlaneAxisAlignedXY LiquidPlane = new PlaneAxisAlignedXY();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
 
-        public WorldModelObject()
+        public ZoneModelObject()
         {
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
@@ -55,7 +55,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsLiquidVolume(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
-            WMOType = WorldModelObjectType.LiquidVolume;
+            WMOType = ZoneModelObjectType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidPlane = liquidPlane;
@@ -67,7 +67,7 @@ namespace EQWOWConverter.Zones
         public void LoadAsLiquidPlane(LiquidType liquidType, PlaneAxisAlignedXY liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
             ZoneProperties zoneProperties)
         {
-            WMOType = WorldModelObjectType.LiquidPlane;
+            WMOType = ZoneModelObjectType.LiquidPlane;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
@@ -77,10 +77,10 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances,
+        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<ZoneDoodadInstance> zoneWideDoodadInstances,
             List<LightInstance> lightInstances, ZoneProperties zoneProperties)
         {
-            WMOType = WorldModelObjectType.Rendered;
+            WMOType = ZoneModelObjectType.Rendered;
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
@@ -99,9 +99,9 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollision(MeshData collisionMeshData, List<WorldModelObjectDoodadInstance> zoneWideDoodadInstances, ZoneProperties zoneProperties)
+        public void LoadAsCollision(MeshData collisionMeshData, List<ZoneDoodadInstance> zoneWideDoodadInstances, ZoneProperties zoneProperties)
         {
-            WMOType = WorldModelObjectType.Collision;
+            WMOType = ZoneModelObjectType.Collision;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
@@ -128,7 +128,7 @@ namespace EQWOWConverter.Zones
             MeshData.SortDataByMaterial();
 
             // Build a render batch per material
-            Dictionary<int, WorldModelRenderBatch> renderBatchesByMaterialID = new Dictionary<int, WorldModelRenderBatch>();
+            Dictionary<int, ZoneRenderBatch> renderBatchesByMaterialID = new Dictionary<int, ZoneRenderBatch>();
             for (int i = 0; i < MeshData.TriangleFaces.Count; i++)
             {
                 // Work off material index
@@ -145,7 +145,7 @@ namespace EQWOWConverter.Zones
                 // Create a new one if this is the first instance of the material
                 if (renderBatchesByMaterialID.ContainsKey(curMaterialIndex) == false)
                 {
-                    renderBatchesByMaterialID.Add(curMaterialIndex, new WorldModelRenderBatch());
+                    renderBatchesByMaterialID.Add(curMaterialIndex, new ZoneRenderBatch());
                     renderBatchesByMaterialID[curMaterialIndex].MaterialIndex = Convert.ToByte(curMaterialIndex);
                     renderBatchesByMaterialID[curMaterialIndex].FirstTriangleFaceIndex = Convert.ToUInt32(i * 3);
                     renderBatchesByMaterialID[curMaterialIndex].NumOfFaceIndices = 3;
@@ -174,12 +174,12 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void CreateZoneWideDoodadAssociations(List<WorldModelObjectDoodadInstance> zoneWidedoodadInstances)
+        private void CreateZoneWideDoodadAssociations(List<ZoneDoodadInstance> zoneWidedoodadInstances)
         {
             // All zonewide doodads should be associated with all WMOs
             for (int i = 0; i < zoneWidedoodadInstances.Count; i++)
             {
-                WorldModelObjectDoodadInstance doodadInstance = zoneWidedoodadInstances[i];
+                ZoneDoodadInstance doodadInstance = zoneWidedoodadInstances[i];
                 DoodadInstances.Add(i, doodadInstance);
             }
         }
@@ -194,7 +194,7 @@ namespace EQWOWConverter.Zones
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (LightInstanceIDs.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
-            if (WMOType == WorldModelObjectType.Rendered && MeshData.VertexColors.Count > 0)
+            if (WMOType == ZoneModelObjectType.Rendered && MeshData.VertexColors.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
             return headerFlags;
         }

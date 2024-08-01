@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NagafensLairZoneProperties() : base()
         {
-            SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(180, 30, 30, 10, 350);
             AddZoneLineBox("lavastorm", 909.788574f, 484.493713f, 51.688461f, ZoneLineOrientationType.North, -399.037048f, -259.033051f, -101.499748f, -410.349213f, -270.100739f, -112.467888f);

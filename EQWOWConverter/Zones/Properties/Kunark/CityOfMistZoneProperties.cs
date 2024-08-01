@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public CityOfMistZoneProperties() : base()
         {
             // TODO: Any in-zone teleports?
-            SetBaseZoneProperties("citymist", "City of Mist", -734f, 28f, 3.75f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("citymist", "City of Mist", -734f, 28f, 3.75f, 0, ZoneContinentType.Kunark);
             SetFogProperties(90, 110, 60, 50, 275);
             AddZoneLineBox("emeraldjungle", 0.121500f, -774.691650f, 0.000000f, ZoneLineOrientationType.West,
                 309.691193f, -1730.243408f, -300.343506f, 291.030334f, -1789.959473f, -335.468658f);

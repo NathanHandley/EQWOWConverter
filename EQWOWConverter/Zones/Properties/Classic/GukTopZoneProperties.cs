@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Large areas to 'delete' that you couldn't access anyway
             // "gap" that falls down at 931 -2 -125
-            SetBaseZoneProperties("guktop", "Guk", 7f, -36f, 4f, 0, ZoneContinent.Antonica);
+            SetBaseZoneProperties("guktop", "Guk", 7f, -36f, 4f, 0, ZoneContinentType.Antonica);
             IsExteriorByDefault = false;
             SetFogProperties(40, 45, 20, 10, 140);
             AddZoneLineBox("gukbottom", 1154.039917f, 670.316589f, -93.968727f, ZoneLineOrientationType.West, 1122.238281f, 644.556519f, -77.740372f, 1105.369995f, 629.647583f, -95.468483f);

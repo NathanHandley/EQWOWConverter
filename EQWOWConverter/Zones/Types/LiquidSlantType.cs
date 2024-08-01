@@ -20,11 +20,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones.WOW
+namespace EQWOWConverter.Zones
 {
-    internal enum DoodadInstanceFlags : byte
+    internal enum LiquidSlantType : byte
     {
-        AcceptProjectedTexture  = 0x1,
-        UseInteriorLighting     = 0x2
+        None,
+        NorthHighSouthLow,
+        WestHighEastLow,
+        EastHighWestLow,
+        SouthHighNorthLow
     }
 }

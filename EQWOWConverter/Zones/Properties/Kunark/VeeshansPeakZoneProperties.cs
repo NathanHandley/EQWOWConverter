@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public VeeshansPeakZoneProperties() : base()
         {
-            SetBaseZoneProperties("veeshan", "Veeshan's Peak", 1682f, 41f, 28f, 0, ZoneContinent.Kunark);
+            SetBaseZoneProperties("veeshan", "Veeshan's Peak", 1682f, 41f, 28f, 0, ZoneContinentType.Kunark);
             SetFogProperties(20, 0, 0, 100, 1200);
         }
     }
