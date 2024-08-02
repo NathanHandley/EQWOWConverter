@@ -101,6 +101,14 @@ namespace EQWOWConverter.Zones
             CustomZonewideEnvironmentProperties.SetAsFoggyIndoors(fogRed, fogGreen, fogBlue, fogDistance, fogDistanceMultiplier, ambientRed, ambientGreen, ambientBlue);
         }
 
+        protected void SetZonewideEnvironmentAsOutdoors()
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as outdoors but the zonewide environment settings were already set. There could be issues.");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsOutdoors();
+        }
+
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)
         {
             IsCompletelyInLiquid = true;
