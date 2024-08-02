@@ -18,6 +18,8 @@ namespace EQWOWConverter.Zones
                 public float FogMultiplier = -0.1f; // Fog Multiplier - Fog Distance * fogMultiplier = fog start distance. 0-0.999
                 public float CelestialGlowThrough = 0; // 0-1, how much the moon or sun shows through the the clouds
                 public float CloudDensity = 0; // 0-1 = clear-full
+                public float UnknownFloat1 = 0.95f;
+                public float UnknownFloat2 = 1f;
                 public ColorRGBA SkyCastDiffuseLightColor = new ColorRGBA(); // Sunshine / Moonshine
                 public ColorRGBA AmbientLightColor = new ColorRGBA();
                 public ColorRGBA SkyTopColor = new ColorRGBA();
@@ -60,7 +62,8 @@ namespace EQWOWConverter.Zones
             // DBCIDs
             private static int CURRENT_LIGHTPARAMSID = Configuration.CONFIG_DBCID_LIGHTPARAMS_START;
             public int DBCLightParamsID;
-            public float Glow = 0.0f; // This is 0.5f in the default
+            public float Glow = 0.0f;
+            public int HighlightSky = 0; // Boolean, 1 or 0
 
             public ZoneEnvironmentParameters()
             {

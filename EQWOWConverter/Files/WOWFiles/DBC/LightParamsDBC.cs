@@ -29,6 +29,7 @@ namespace EQWOWConverter.Files.WOWFiles
         {
             public int Id;
             public int LightSkyboxID = 0;
+            public int HighlightSky;
             public float Glow;
         }
 
@@ -39,6 +40,7 @@ namespace EQWOWConverter.Files.WOWFiles
             Row newRow = new Row();
             newRow.Id = environmentParameters.DBCLightParamsID;
             newRow.Glow = environmentParameters.Glow;
+            newRow.HighlightSky = environmentParameters.HighlightSky;
             rows.Add(newRow);
         }
 
@@ -52,14 +54,14 @@ namespace EQWOWConverter.Files.WOWFiles
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"0\"");
+                stringBuilder.Append(",\"" + row.HighlightSky.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.LightSkyboxID.ToString() + "\"");
-                stringBuilder.Append(",\"0\"");
+                stringBuilder.Append(",\"0\""); // CloudTypeID (always 0)
                 stringBuilder.Append(",\"" + row.Glow.ToString() + "\"");
-                stringBuilder.Append(",\"0.5\"");
-                stringBuilder.Append(",\"1\"");
-                stringBuilder.Append(",\"1\"");
-                stringBuilder.AppendLine(",\"1\"");
+                stringBuilder.Append(",\"0.5\""); // Water Shallow Alpha
+                stringBuilder.Append(",\"1\""); // Water Deep Alpha
+                stringBuilder.Append(",\"0.75\""); // Ocean Shallow Alpha
+                stringBuilder.AppendLine(",\"1\""); // Ocean Deep Alpha
             }
 
             // Output it

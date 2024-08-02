@@ -86,7 +86,7 @@ namespace EQWOWConverter.Files.WOWFiles
                 fogColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
                 fogColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogColor.ToDecimalNoAlpha();
                 unknown1Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown1Row.DataValues[i] = 0;
+                unknown1Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown1Color.ToDecimalNoAlpha();
                 sunColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
                 sunColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SunColor.ToDecimalNoAlpha();
                 sunLargeHaloColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
@@ -96,7 +96,7 @@ namespace EQWOWConverter.Files.WOWFiles
                 cloudColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
                 cloudColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudColor.ToDecimalNoAlpha();
                 unknown2Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown2Row.DataValues[i] = 0;
+                unknown2Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown2Color.ToDecimalNoAlpha();
                 oceanShallowColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
                 oceanShallowColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].OceanShallowColor.ToDecimalNoAlpha();
                 oceanDeepColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes

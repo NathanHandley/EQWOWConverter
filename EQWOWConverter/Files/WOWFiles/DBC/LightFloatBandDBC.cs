@@ -66,9 +66,9 @@ namespace EQWOWConverter.Files.WOWFiles
                 cloudDensityRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
                 cloudDensityRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudDensity;
                 unknown1Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown1Row.DataValues[i] = 0.95f;
+                unknown1Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat1;
                 unknown2Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown2Row.DataValues[i] = 1f;
+                unknown2Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat2;
             }
 
             // Save rows
