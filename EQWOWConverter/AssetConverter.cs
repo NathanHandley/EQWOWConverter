@@ -29,6 +29,7 @@ using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ModelObjects;
 using EQWOWConverter.Objects.Properties;
+using EQWOWConverter.Files.WOWFiles;
 
 namespace EQWOWConverter
 {
@@ -310,21 +311,43 @@ namespace EQWOWConverter
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
+            LightDBC lightDBC = new LightDBC();
+            LightParamsDBC lightParamsDBC = new LightParamsDBC();
+            LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
+            LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
             foreach (Zone zone in zones)
             {
-                areaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
-                difficultyDBC.AddRow(zone.WOWZoneData.ZoneProperties.DBCMapID, zone.WOWZoneData.ZoneProperties.DBCMapDifficultyID);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
+                ZoneProperties zoneProperties = zone.WOWZoneData.ZoneProperties;
+
+                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
+                difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
                 foreach (ZoneModelObject wmo in zone.WOWZoneData.ZoneModelObjects)
-                {
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
-                        Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCAreaID), zone.DescriptiveName);
-                }
-                foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
-                {
-                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
+                        Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
+                foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
+                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+                if (zoneProperties.CustomZonewideEnvironmentProperties != null)
+                {
+                    lightDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.CustomZonewideEnvironmentProperties);
+
+                    lightParamsDBC.AddRow(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeather);
+                    lightIntBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeather);
+                    lightFloatBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeather);
+                    
+                    lightParamsDBC.AddRow(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeatherUnderwater);
+                    lightIntBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeatherUnderwater);
+                    lightFloatBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersClearWeatherUnderwater);
+                    
+                    lightParamsDBC.AddRow(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeather);
+                    lightIntBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeather);
+                    lightFloatBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeather);
+                    
+                    lightParamsDBC.AddRow(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeatherUnderwater);
+                    lightIntBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeatherUnderwater);
+                    lightFloatBandDBC.AddRows(zoneProperties.CustomZonewideEnvironmentProperties.ParamatersStormyWeatherUnderwater);
                 }
             }
 
@@ -336,6 +359,10 @@ namespace EQWOWConverter
             loadingScreensDBC.WriteToDisk(dbcUpdateScriptFolder);
             areaTriggerDBC.WriteToDisk(dbcUpdateScriptFolder);
             liquidTypeDBC.WriteToDisk(dbcUpdateScriptFolder);
+            lightDBC.WriteToDisk(dbcUpdateScriptFolder);
+            lightParamsDBC.WriteToDisk(dbcUpdateScriptFolder);
+            lightIntBandDBC.WriteToDisk(dbcUpdateScriptFolder);
+            lightFloatBandDBC.WriteToDisk(dbcUpdateScriptFolder);
         }
 
         public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)

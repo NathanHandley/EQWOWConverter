@@ -98,24 +98,32 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(ambientRed, ambientGreen, ambientBlue, 0);
             ParamatersClearWeather.ParametersTimeSlices[0].FogColor = new ColorRGBA(fogRed, fogGreen, fogBlue, 0);
+            ParamatersClearWeather.ParametersTimeSlices[0].FogDistance = fogDistance;
+            ParamatersClearWeather.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersClearWeather.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(fogRed, fogGreen, fogBlue);
 
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(ambientRed, ambientGreen, ambientBlue, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = new ColorRGBA(fogRed, fogGreen, fogBlue, 0);
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogDistance = fogDistance;
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(fogRed, fogGreen, fogBlue);
 
             ParamatersStormyWeather.ParametersTimeSlices.Clear();
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(ambientRed, ambientGreen, ambientBlue, 0);
             ParamatersStormyWeather.ParametersTimeSlices[0].FogColor = new ColorRGBA(fogRed, fogGreen, fogBlue, 0);
+            ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = fogDistance;
+            ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersStormyWeather.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(fogRed, fogGreen, fogBlue);
 
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(ambientRed, ambientGreen, ambientBlue, 0);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogColor = new ColorRGBA(fogRed, fogGreen, fogBlue, 0);
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogDistance = fogDistance;
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(fogRed, fogGreen, fogBlue);
         }
     }

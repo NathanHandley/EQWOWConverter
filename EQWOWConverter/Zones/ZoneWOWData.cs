@@ -186,12 +186,6 @@ namespace EQWOWConverter.Zones
             boundingVectors.AddRange(renderMeshData.Vertices);
             BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
 
-            //// Set the fog
-            //FogSettings.FarRadius = ZoneProperties.FogMaxClip * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            //FogSettings.NormalColor.R = ZoneProperties.FogColor.R;
-            //FogSettings.NormalColor.G = ZoneProperties.FogColor.G;
-            //FogSettings.NormalColor.B = ZoneProperties.FogColor.B;
-
             // Completely loaded
             IsLoaded = true;
         }
