@@ -41,6 +41,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
 
         // Environment Properties
+        public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public bool IsExteriorByDefault = true; // Delete this
         public ColorRGBA FogColor = new ColorRGBA();
         public int FogMinClip = -1;
@@ -91,7 +92,16 @@ namespace EQWOWConverter.Zones
             //FogMaxClip = maxClip;
         }
 
-        protected void SetIsCompletelyUnderLiquid(ZoneLiquidType liquidType)
+        protected void SetZonewideEnvironmentAsFoggyIndoors(byte fogRed, byte fogGreen, byte fogBlue, float fogDistance, float fogDistanceMultiplier,
+            byte ambientRed, byte ambientGreen, byte ambientBlue)
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as Foggy Indoors but the zonewide environment settings were already set. There could be issues.");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsFoggyIndoors(fogRed, fogGreen, fogBlue, fogDistance, fogDistanceMultiplier, ambientRed, ambientGreen, ambientBlue);
+        }
+
+        protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)
         {
             IsCompletelyInLiquid = true;
             CompletelyInLiquidType = liquidType;

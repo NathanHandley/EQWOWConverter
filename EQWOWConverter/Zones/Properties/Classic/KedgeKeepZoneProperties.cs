@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones.Properties
             IsExteriorByDefault = false;
             SetFogProperties(10, 10, 10, 25, 25);
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
-            SetIsCompletelyUnderLiquid(ZoneLiquidType.Water);
+            SetIsCompletelyInLiquid(ZoneLiquidType.Water);
         }
     }
 }

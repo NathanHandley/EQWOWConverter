@@ -27,11 +27,11 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SoluseksEyeZoneProperties() : base()
         {
-            // TODO: Drawbridges at -156.465775f, -289.006134f, 15.660960f
+            // TODO: Drawbridges at -156.465775f, -289.006134f, 15.660960f, probably other places too
+            // TODO: Traps
             SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinentType.Antonica);
-            IsExteriorByDefault = false;
-            SetFogProperties(180, 30, 30, 10, 100);
-            AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f); // Works
+            SetZonewideEnvironmentAsFoggyIndoors(180, 30, 30, 30f, -0.1f, 145, 145, 145);
+            AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f);
             AddZoneLineBox("soldungb", -165.640060f, -595.953247f, 14.000010f, ZoneLineOrientationType.East, -158.745377f, -582.988464f, 25.937571f, -173.130524f, -600.847412f, 13.500000f);
             AddZoneLineBox("soldungb", -275.436981f, -507.896454f, 22.000071f, ZoneLineOrientationType.North, -267.713684f, -499.620789f, 32.469002f, -286.491913f, -514.974121f, 21.500681f);
             AddZoneLineBox("soldungb", -364.385254f, -406.963348f, 8.000610f, ZoneLineOrientationType.East, -357.650269f, -400.866211f, 18.469000f, -377.148956f, -409.100372f, 6.500000f);
@@ -51,8 +51,7 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -321.059143f, -1004.023926f, -329.228455f, -1009.762573f, 38.000019f, 150f); // Main Lava, south east area moving up towards east (little corner nub)
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -349.973083f, -998.862610f, -364.150787f, -1013.383667f, 38.000019f, 150f); // Main Lava, south east area moving up towards east (little corner nub (more south))
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -163.275757f, -1032.966431f, -189.657944f, -1065.715454f, 44.968781f, 150f); // Northeast offshoot (probably can't actually get up here)
-            AddOctagonLiquidShape(ZoneLiquidType.Magma, "d_lava001", -119.976532f, -132.940643f, -941.631226f, -954.618103f, -945.635254f, -950.622864f,
-                -945.635254f, -950.622864f, -123.916550f, -128.932663f, -123.916550f, -128.932663f, 70.643982f, 300f); // North Lava Pillar                     
+            AddOctagonLiquidShape(ZoneLiquidType.Magma, "d_lava001", -119.976532f, -132.940643f, -941.631226f, -954.618103f, -945.635254f, -950.622864f, -945.635254f, -950.622864f, -123.916550f, -128.932663f, -123.916550f, -128.932663f, 70.643982f, 300f); // North Lava Pillar                     
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -112.599098f, -934.069336f, -218.988007f, -1020.933228f, 45.968830f, 150f); // North connecting tunnels to the north lava pillar
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -189.409256f, -996.889221f, -273.904785f, -1053.176514f, 38.000019f, 150f); // Main Lava - Northeast area
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -218.673187f, -882.159790f, -278.829376f, -997.477417f, 38.000019f, 150f); // Main Lava - North area

@@ -79,5 +79,10 @@ namespace EQWOWConverter.Common
             returnBytes.Add(A);
             return returnBytes;
         }
+
+        public int ToDecimalNoAlpha()
+        {
+            return ((R << 16) | (G << 8) | B);
+        }
     }
 }
