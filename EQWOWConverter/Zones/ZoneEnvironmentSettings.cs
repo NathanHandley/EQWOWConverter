@@ -19,7 +19,7 @@ namespace EQWOWConverter.Zones
                 public float CelestialGlowThrough = 0; // 0-1, how much the moon or sun shows through the the clouds
                 public float CloudDensity = 0; // 0-1 = clear-full
                 public float UnknownFloat1 = 0.95f;
-                public float UnknownFloat2 = 1f;
+                public float UnknownFloat2 = 1f; // Everything seems to use this value
                 public ColorRGBA SkyCastDiffuseLightColor = new ColorRGBA(); // Sunshine / Moonshine
                 public ColorRGBA AmbientLightColor = new ColorRGBA();
                 public ColorRGBA SkyTopColor = new ColorRGBA();
@@ -64,7 +64,7 @@ namespace EQWOWConverter.Zones
             // DBCIDs
             private static int CURRENT_LIGHTPARAMSID = Configuration.CONFIG_DBCID_LIGHTPARAMS_START;
             public int DBCLightParamsID;
-            public float Glow = 0.0f;
+            public float Glow = 0.5f;
             public int HighlightSky = 0; // Boolean, 1 or 0
 
             public ZoneEnvironmentParameters()
@@ -97,7 +97,13 @@ namespace EQWOWConverter.Zones
 
         public void SetAsOutdoors()
         {
+            ParamatersClearWeather.ParametersTimeSlices.Clear();
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
+            ParamatersStormyWeather.ParametersTimeSlices.Clear();
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
+
             // Clear Weather
+            ParamatersClearWeather.Glow = 0f;
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -134,24 +140,32 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersClearWeather.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersClearWeather.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersClearWeather.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[5].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
-            ParamatersClearWeather.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
-            ParamatersClearWeather.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(255, 103, 0);
-            ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(255, 136, 0);
-            ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(255, 109, 0);
-            ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
-            ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(29, 60, 84);
-            ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = new ColorRGBA(29, 60, 84);
-            ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = new ColorRGBA(93, 125, 156);
-            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = new ColorRGBA(104, 130, 154);
-            ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = new ColorRGBA(102, 92, 119);
-            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = new ColorRGBA(29, 60, 84);
+            //ParamatersClearWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
+            //ParamatersClearWeather.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
+            //ParamatersClearWeather.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(255, 103, 0);
+            //ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(255, 136, 0);
+            //ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(255, 109, 0);
+            //ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
+            ColorRGBA skyDiffuse = new ColorRGBA(96, 96, 96);
+            ParamatersClearWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[1].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[2].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = skyDiffuse;
+            ColorRGBA ambientColor = new ColorRGBA(239, 239, 239);
+            ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = ambientColor;
+            //ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(29, 60, 84);
+            //ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = new ColorRGBA(29, 60, 84);
+            //ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = new ColorRGBA(93, 125, 156);
+            //ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = new ColorRGBA(104, 130, 154);
+            //ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = new ColorRGBA(102, 92, 119);
+            //ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = new ColorRGBA(29, 60, 84);
             ParamatersClearWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeather.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeather.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(35, 74, 84);
@@ -250,6 +264,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(39, 55, 47);
 
             // Clear Weather - Underwater
+            ParamatersClearWeatherUnderwater.Glow = 1;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -286,12 +301,6 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat2 = 1f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
@@ -402,13 +411,13 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(91, 61, 75);
 
             // Stormy Weather 
+            ParamatersStormyWeather.Glow = 0.5f;
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = 278f;
             ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = -0.5f;
             ParamatersStormyWeather.ParametersTimeSlices[0].CelestialGlowThrough = 1f;
             ParamatersStormyWeather.ParametersTimeSlices[0].CloudDensity = 0.95f;
             ParamatersStormyWeather.ParametersTimeSlices[0].UnknownFloat1 = 0f;
-            ParamatersStormyWeather.ParametersTimeSlices[0].UnknownFloat2 = 1f;
             ParamatersStormyWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(101, 101, 101);
             ParamatersStormyWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(78, 78, 95);
             ParamatersStormyWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(111, 111, 111);
@@ -429,6 +438,7 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeather.ParametersTimeSlices[0].RiverDeepColor = new ColorRGBA(67, 67, 67);
 
             // Stormy Weather - Underwater
+            ParamatersStormyWeatherUnderwater.Glow = 1;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -465,12 +475,6 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat2 = 1f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
@@ -583,8 +587,14 @@ namespace EQWOWConverter.Zones
 
         // MapID = 0, Light.dbc = 1, Clear LightParams = 12, Clear Underwater LightParams = 13, Stormy LightParams = 10, Stormy Underwater LightParams = 13
         public void SetAsEasternKingdomsOutdoors()
-        {            
+        {
+            ParamatersClearWeather.ParametersTimeSlices.Clear();
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
+            ParamatersStormyWeather.ParametersTimeSlices.Clear();
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
+
             // Clear Weather (Based on LightParams 12)
+            ParamatersClearWeather.Glow = 0.65f;
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -621,12 +631,6 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersClearWeather.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersClearWeather.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersClearWeather.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersClearWeather.ParametersTimeSlices[5].UnknownFloat2 = 1f;
             ParamatersClearWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
             ParamatersClearWeather.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
             ParamatersClearWeather.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(255, 103, 0);
@@ -737,6 +741,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(39, 55, 47);
 
             // Clear Weather Underwater (Based on LightParams 13)
+            ParamatersClearWeatherUnderwater.Glow = 1;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -773,12 +778,6 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat2 = 1f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
@@ -889,13 +888,13 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(91, 61, 75);
 
             // Stormy Weather (Based on LightParams 10)
+            ParamatersStormyWeather.Glow = 0.5f;
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = 278f;
             ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = -0.5f;
             ParamatersStormyWeather.ParametersTimeSlices[0].CelestialGlowThrough = 1f;
             ParamatersStormyWeather.ParametersTimeSlices[0].CloudDensity = 0.95f;
             ParamatersStormyWeather.ParametersTimeSlices[0].UnknownFloat1 = 0f;
-            ParamatersStormyWeather.ParametersTimeSlices[0].UnknownFloat2 = 1f;
             ParamatersStormyWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(101, 101, 101);
             ParamatersStormyWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(78, 78, 95);
             ParamatersStormyWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(111, 111, 111);
@@ -916,6 +915,7 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeather.ParametersTimeSlices[0].RiverDeepColor = new ColorRGBA(67, 67, 67);
 
             // Stormy Weather Underwater (Based on LightParams 13)
+            ParamatersStormyWeatherUnderwater.Glow = 1f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -952,12 +952,6 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[1].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[2].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat2 = 1f;
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat2 = 1f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);

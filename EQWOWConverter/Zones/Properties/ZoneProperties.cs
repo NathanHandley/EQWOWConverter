@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones
     internal class ZoneProperties
     {
         static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        static public ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
@@ -43,9 +44,6 @@ namespace EQWOWConverter.Zones
         // Environment Properties
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public bool IsExteriorByDefault = true; // Delete this
-        public ColorRGBA FogColor = new ColorRGBA();
-        public int FogMinClip = -1;
-        public int FogMaxClip = -1;
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -99,14 +97,6 @@ namespace EQWOWConverter.Zones
                 Logger.WriteInfo("Warning: Environment set as Foggy Indoors but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
             CustomZonewideEnvironmentProperties.SetAsFoggyIndoors(fogRed, fogGreen, fogBlue, fogDistance, fogDistanceMultiplier, ambientRed, ambientGreen, ambientBlue);
-        }
-
-        protected void SetZonewideEnvironmentAsOutdoors()
-        {
-            if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as outdoors but the zonewide environment settings were already set. There could be issues.");
-            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors();
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)
