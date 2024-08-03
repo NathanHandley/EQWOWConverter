@@ -82,12 +82,14 @@ internal class Program
                             }
                             break;
                     }
-                }
+            }
                 catch (Exception ex)
                 {
-                    Logger.WriteError("Exception Occurred: " + ex.Message);
-                }
+                Logger.WriteError("Exception Occurred: " + ex.Message);
+                if (ex.StackTrace != null)
+                    Logger.WriteDetail(ex.StackTrace);
             }
+        }
         }
         Console.WriteLine("");
         Console.WriteLine("Press any key to exit");
