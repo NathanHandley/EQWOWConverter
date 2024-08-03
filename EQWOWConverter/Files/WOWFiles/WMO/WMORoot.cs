@@ -135,8 +135,8 @@ namespace EQWOWConverter.WOWFiles
             // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
 
-            // Ambiant Light
-            chunkBytes.AddRange(wowZoneData.AmbientLight.ToBytesBGRA());
+            // Ambiant Light (indoor areas only)
+            chunkBytes.AddRange(new ColorRGBA().ToBytesBGRA());
 
             // WMOID (inside WMOAreaTable.dbc)
             chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.ZoneProperties.DBCWMOID));

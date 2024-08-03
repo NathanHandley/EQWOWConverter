@@ -97,13 +97,15 @@ namespace EQWOWConverter.Zones
 
         public void SetAsOutdoors()
         {
+            // Note: SkyDiffuse and Ambient should be only 
+
             ParamatersClearWeather.ParametersTimeSlices.Clear();
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
             ParamatersStormyWeather.ParametersTimeSlices.Clear();
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
 
             // Clear Weather
-            ParamatersClearWeather.Glow = 0f;
+            ParamatersClearWeather.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER;
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -146,20 +148,21 @@ namespace EQWOWConverter.Zones
             //ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(255, 136, 0);
             //ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(255, 109, 0);
             //ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162);
-            ColorRGBA skyDiffuse = new ColorRGBA(96, 96, 96);
+            // ColorRGBA skyDiffuse = new ColorRGBA(96, 96, 96); - Noon (hour 12) 
+            ColorRGBA skyDiffuse = new ColorRGBA(128, 96, 64); // Noon
             ParamatersClearWeather.ParametersTimeSlices[0].SkyCastDiffuseLightColor = skyDiffuse;
             ParamatersClearWeather.ParametersTimeSlices[1].SkyCastDiffuseLightColor = skyDiffuse;
             ParamatersClearWeather.ParametersTimeSlices[2].SkyCastDiffuseLightColor = skyDiffuse;
-            ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(128, 96, 64); // Noon
             ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = skyDiffuse;
-            ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = skyDiffuse;
+            ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(64, 96, 128); // 10PM
             ColorRGBA ambientColor = new ColorRGBA(239, 239, 239);
             ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = ambientColor;
             ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = ambientColor;
             ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = ambientColor;
-            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = new ColorRGBA(239, 239, 239); // Noon
             ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = ambientColor;
-            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = ambientColor;
+            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = new ColorRGBA(32, 32, 32); // 10PM
             //ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(29, 60, 84);
             //ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = new ColorRGBA(29, 60, 84);
             //ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = new ColorRGBA(93, 125, 156);
@@ -264,7 +267,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(39, 55, 47);
 
             // Clear Weather - Underwater
-            ParamatersClearWeatherUnderwater.Glow = 1;
+            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -411,7 +414,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(91, 61, 75);
 
             // Stormy Weather 
-            ParamatersStormyWeather.Glow = 0.5f;
+            ParamatersStormyWeather.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_STORMY_WEATHER;
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = 278f;
             ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = -0.5f;
@@ -438,7 +441,7 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeather.ParametersTimeSlices[0].RiverDeepColor = new ColorRGBA(67, 67, 67);
 
             // Stormy Weather - Underwater
-            ParamatersStormyWeatherUnderwater.Glow = 1;
+            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));

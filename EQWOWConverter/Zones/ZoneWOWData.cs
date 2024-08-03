@@ -33,7 +33,6 @@ namespace EQWOWConverter.Zones
         public List<ZoneModelObject> ZoneModelObjects = new List<ZoneModelObject>();
         public List<WOWObjectModelData> GeneratedZoneObjects = new List<WOWObjectModelData>();
         public List<Material> Materials = new List<Material>();
-        public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
         public List<ZoneDoodadInstance> DoodadInstances = new List<ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
@@ -53,10 +52,6 @@ namespace EQWOWConverter.Zones
                 return;
             ShortName = ZoneProperties.ShortName;
             Materials = eqZoneData.Materials;
-            AmbientLight = new ColorRGBA(eqZoneData.AmbientLight.R, eqZoneData.AmbientLight.G, eqZoneData.AmbientLight.B, 25);
-            AmbientLight.R += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
-            AmbientLight.G += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
-            AmbientLight.B += Configuration.CONFIG_LIGHT_AMBIANT_ADD_AMOUNT;
 
             // Add object instances
             foreach (ObjectInstance objectInstance in eqZoneData.ObjectInstances)

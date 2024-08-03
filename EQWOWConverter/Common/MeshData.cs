@@ -76,12 +76,9 @@ namespace EQWOWConverter.Common
             // Vertex colors are reduced for external areas due to the natural zone light
             foreach (ColorRGBA vertexColor in VertexColors)
             {
-                double intensityLean = (Convert.ToDouble(vertexColor.R) + Convert.ToDouble(vertexColor.G) + Convert.ToDouble(vertexColor.B)) / 765;
-                double intensityMod = (intensityLean * Configuration.CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_HIGH) +
-                                       (1 - intensityLean) * Configuration.CONFIG_EXTERIOR_VERTEX_COLOR_INTENSITY_LOW;
-                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * intensityMod);
-                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * intensityMod);
-                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * intensityMod);
+                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
+                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
+                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
                 vertexColor.A = 255;
             }
         }
