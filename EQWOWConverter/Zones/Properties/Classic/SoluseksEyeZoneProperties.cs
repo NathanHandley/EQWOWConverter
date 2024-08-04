@@ -30,7 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Drawbridges at -156.465775f, -289.006134f, 15.660960f, probably other places too
             // TODO: Traps
             SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinentType.Antonica);
-            SetZonewideEnvironmentAsFoggyIndoors(180, 30, 30, 30f, -0.1f, 145, 145, 145);
+            SetZonewideEnvironmentAsIndoorFoggy(180, 30, 30, 145, 145, 145);
             AddZoneLineBox("lavastorm", 792.794373f, 226.540787f, 127.062599f, ZoneLineOrientationType.North, -429.005951f, -518.254517f, 82.437752f, -440.369812f, -529.974792f, 69.468758f);
             AddZoneLineBox("soldungb", -165.640060f, -595.953247f, 14.000010f, ZoneLineOrientationType.East, -158.745377f, -582.988464f, 25.937571f, -173.130524f, -600.847412f, 13.500000f);
             AddZoneLineBox("soldungb", -275.436981f, -507.896454f, 22.000071f, ZoneLineOrientationType.North, -267.713684f, -499.620789f, 32.469002f, -286.491913f, -514.974121f, 21.500681f);

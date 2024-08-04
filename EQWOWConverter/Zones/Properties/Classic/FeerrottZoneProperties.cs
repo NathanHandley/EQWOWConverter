@@ -23,12 +23,13 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones.Properties
 {
-    internal class FeerrottZoneProperties : ZoneProperties
+    internal class FeerrottZoneProperties : ZoneProperties 
     {
         public FeerrottZoneProperties() : base()
         {
+            // Stump causes a clash at 281.88 281.34 -3.04, the small jutted side
             SetBaseZoneProperties("feerrott", "The Feerrott", 902.6f, 1091.7f, 28f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(60, 90, 30, 10, 175);
+            SetZonewideEnvironmentAsOutdoorFoggy(40, 128, 0, ZoneOutdoorFogType.Near, 1, 0.7f, 0.2f);
             AddZoneLineBox("cazicthule", 55.471420f, -67.975937f, 0.000000f, ZoneLineOrientationType.North, -1469.255859f, -100.275429f, 58.405380f, -1499.662231f, -120.661491f, 47.437580f);
             AddZoneLineBox("oggok", -373.311127f, -102.846184f, -0.000000f, ZoneLineOrientationType.North, 1700.901245f, 832.210693f, 110.609047f, 1669.091797f, 786.900452f, 56.781330f);
             AddZoneLineBox("innothule", -1120.934570f, 1876.716309f, -12.343200f, ZoneLineOrientationType.East, -1053.738770f, -3064.860107f, 34.236019f, -1118.701904f, -3134.157959f, -12.843610f);

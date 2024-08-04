@@ -100,14 +100,15 @@ namespace EQWOWConverter.Zones
             CustomZonewideEnvironmentProperties.SetAsIndoorFoggy(fogRed, fogGreen, fogBlue, ambientRed, ambientGreen, ambientBlue);
         }
 
-        protected void SetZonewideEnvironmentAsOutdoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, ZoneOutdoorFogType fogType)
+        protected void SetZonewideEnvironmentAsOutdoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, ZoneOutdoorFogType fogType, float cloudDensity, 
+            float brightnessMod, float ambientOnFogInfluenceMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
                 Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
 
             // Distance and multiplier don't seem to be honored below a certain line, so hard coding them
-            CustomZonewideEnvironmentProperties.SetAsOutdoorFoggy(fogRed, fogGreen, fogBlue, fogType);
+            CustomZonewideEnvironmentProperties.SetAsOutdoorFoggy(fogRed, fogGreen, fogBlue, fogType, cloudDensity, brightnessMod, ambientOnFogInfluenceMod);
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)

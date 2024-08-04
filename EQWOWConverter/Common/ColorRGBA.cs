@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -87,19 +88,28 @@ namespace EQWOWConverter.Common
             return returnBytes;
         }
 
-        static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB)
-        {
-            ColorRGBA returnColor = new ColorRGBA();
-            returnColor.R = Convert.ToByte((Convert.ToInt16(colorA.R) + Convert.ToInt16(colorB.R)) / 2);
-            returnColor.G = Convert.ToByte((Convert.ToInt16(colorA.G) + Convert.ToInt16(colorB.G)) / 2);
-            returnColor.B = Convert.ToByte((Convert.ToInt16(colorA.B) + Convert.ToInt16(colorB.B)) / 2);
-            returnColor.A = Convert.ToByte((Convert.ToInt16(colorA.A) + Convert.ToInt16(colorB.A)) / 2);
-            return returnColor;
-        }
-
         public int ToDecimalNoAlpha()
         {
             return ((R << 16) | (G << 8) | B);
+        }
+
+        static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
+        {
+            ColorRGBA returnColor = new ColorRGBA();
+            returnColor.R = Convert.ToByte(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight) / 2);
+            returnColor.G = Convert.ToByte(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight) / 2);
+            returnColor.B = Convert.ToByte(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight) / 2);
+            returnColor.A = Convert.ToByte(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight) / 2);
+            return returnColor;
+        }
+
+        public ColorRGBA ApplyMod(float modValue)
+        {
+            R = Convert.ToByte(Convert.ToSingle(R) * modValue);
+            G = Convert.ToByte(Convert.ToSingle(G) * modValue);
+            B = Convert.ToByte(Convert.ToSingle(B) * modValue);
+            A = Convert.ToByte(Convert.ToSingle(A) * modValue);
+            return this;
         }
     }
 }
