@@ -402,18 +402,6 @@ namespace EQWOWConverter
 
             string sqlScriptFolder = Path.Combine(wowExportPath, "AzerothCoreSQLScripts");
 
-            // Create a list of zone IDs by short names, used for lookups
-            Dictionary<string, int> zoneMapIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
-            {
-                if (zoneMapIDsByShortName.ContainsKey(zone.ShortName) == true)
-                {
-                    Logger.WriteError("Error!  More than one map had the same short name of '" + zone.ShortName + "'");
-                    continue;
-                }
-                zoneMapIDsByShortName[zone.ShortName] = zone.WOWZoneData.ZoneProperties.DBCMapID;
-            }
-
             // Create the SQL Scripts
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
@@ -433,7 +421,7 @@ namespace EQWOWConverter
                 // Zone lines
                 foreach(ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
-                    if (zoneMapIDsByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
+                    if (ZoneProperties.ZonePropertyListByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
                     {
                         Logger.WriteError("Error!  When attempting to map a zone line, there was no zone with short name '" + zoneLine.TargetZoneShortName + "'");
                         continue;
@@ -442,7 +430,7 @@ namespace EQWOWConverter
                     // Area Trigger Teleport
                     int areaTriggerID = zoneLine.AreaTriggerID;
                     string descriptiveName = "EQ " + zone.ShortName + " - " + zoneLine.TargetZoneShortName + " zone line";
-                    int targetMapId = zoneMapIDsByShortName[zoneLine.TargetZoneShortName];
+                    int targetMapId = ZoneProperties.GetZonePropertiesForZone(zoneLine.TargetZoneShortName).DBCMapID;
                     float targetPositionX = zoneLine.TargetZonePosition.X;
                     float targetPositionY = zoneLine.TargetZonePosition.Y;
                     float targetPositionZ = zoneLine.TargetZonePosition.Z;
