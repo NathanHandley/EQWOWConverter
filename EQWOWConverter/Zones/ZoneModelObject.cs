@@ -115,6 +115,18 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
+        public void LoadAsSkyBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)
+        {
+            WMOType = ZoneModelObjectType.SkyBox;
+            BoundingBox = boundingBox;
+            Materials = materials;
+            ZoneSkyBox skyBox = new ZoneSkyBox(boundingBox, materials, zoneProperties.ShortName);
+            MeshData = skyBox.MeshData;
+            GenerateRenderBatches(materials, zoneProperties);
+            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
+            IsLoaded = true;
+        }
+
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties)
         {
             // Don't make a render batch if static rendering is disabled
