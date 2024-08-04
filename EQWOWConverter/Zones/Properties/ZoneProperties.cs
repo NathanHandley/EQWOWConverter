@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneProperties
     {
-        static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        static public Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
         static public ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
         public string ShortName = string.Empty;
@@ -90,13 +90,24 @@ namespace EQWOWConverter.Zones
             //FogMaxClip = maxClip;
         }
 
-        protected void SetZonewideEnvironmentAsFoggyIndoors(byte fogRed, byte fogGreen, byte fogBlue, float fogDistance, float fogDistanceMultiplier,
-            byte ambientRed, byte ambientGreen, byte ambientBlue)
+        protected void SetZonewideEnvironmentAsIndoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, byte ambientRed, byte ambientGreen, byte ambientBlue)
         {
             if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as Foggy Indoors but the zonewide environment settings were already set. There could be issues.");
+                Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsFoggyIndoors(fogRed, fogGreen, fogBlue, fogDistance, fogDistanceMultiplier, ambientRed, ambientGreen, ambientBlue);
+
+            
+            CustomZonewideEnvironmentProperties.SetAsIndoorFoggy(fogRed, fogGreen, fogBlue, ambientRed, ambientGreen, ambientBlue);
+        }
+
+        protected void SetZonewideEnvironmentAsOutdoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, ZoneOutdoorFogType fogType)
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+
+            // Distance and multiplier don't seem to be honored below a certain line, so hard coding them
+            CustomZonewideEnvironmentProperties.SetAsOutdoorFoggy(fogRed, fogGreen, fogBlue, fogType);
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)

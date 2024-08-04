@@ -87,6 +87,16 @@ namespace EQWOWConverter.Common
             return returnBytes;
         }
 
+        static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB)
+        {
+            ColorRGBA returnColor = new ColorRGBA();
+            returnColor.R = Convert.ToByte((Convert.ToInt16(colorA.R) + Convert.ToInt16(colorB.R)) / 2);
+            returnColor.G = Convert.ToByte((Convert.ToInt16(colorA.G) + Convert.ToInt16(colorB.G)) / 2);
+            returnColor.B = Convert.ToByte((Convert.ToInt16(colorA.B) + Convert.ToInt16(colorB.B)) / 2);
+            returnColor.A = Convert.ToByte((Convert.ToInt16(colorA.A) + Convert.ToInt16(colorB.A)) / 2);
+            return returnColor;
+        }
+
         public int ToDecimalNoAlpha()
         {
             return ((R << 16) | (G << 8) | B);

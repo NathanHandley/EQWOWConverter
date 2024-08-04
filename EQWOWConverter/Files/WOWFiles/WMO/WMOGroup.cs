@@ -178,8 +178,7 @@ namespace EQWOWConverter.WOWFiles
 
                 // Set 0xFF for non-renderable materials
                 if (worldModelObject.WMOType == ZoneModelObjectType.Collision || worldModelObject.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
-                    //chunkBytes.Add(Convert.ToByte(0));
-                chunkBytes.Add(Convert.ToByte(0xFF));
+                    chunkBytes.Add(Convert.ToByte(0xFF));
                 else
                     chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
             }

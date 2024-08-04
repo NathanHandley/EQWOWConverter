@@ -333,22 +333,11 @@ namespace EQWOWConverter
             lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
             lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
 
-            foreach (Zone zone in zones)
+            // Output the zonewide light properties for all possible known zones
+            foreach (var zonePropertiesByShortname in ZoneProperties.ZonePropertyListByShortName)
             {
-                ZoneProperties zoneProperties = zone.WOWZoneData.ZoneProperties;
-
-                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
-                difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
-                foreach (ZoneModelObject wmo in zone.WOWZoneData.ZoneModelObjects)
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
-                        Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
-                foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
-                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
-                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
-
-                // Environment Properties, default to the common outdoor
+                // Default to the outdoor one
+                ZoneProperties zoneProperties = zonePropertiesByShortname.Value;                
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
                 {
                     ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
@@ -374,7 +363,23 @@ namespace EQWOWConverter
                 else
                 {
                     lightDBC.AddRow(zoneProperties.DBCMapID, ZoneProperties.CommonOutdoorEnvironmentProperties);
-                }                
+                }
+            }
+
+            foreach (Zone zone in zones)
+            {
+                ZoneProperties zoneProperties = zone.WOWZoneData.ZoneProperties;
+
+                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
+                difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
+                foreach (ZoneModelObject wmo in zone.WOWZoneData.ZoneModelObjects)
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
+                        Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
+                foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
+                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);            
             }
 
             // Output them

@@ -38,6 +38,15 @@ namespace EQWOWConverter.Files.WOWFiles
             public int ParamsClearWaterID;
             public int ParamsStormID;
             public int ParamsStormWaterID;
+
+            // DBCIDs
+            private static int CURRENT_LIGHTID = Configuration.CONFIG_DBCID_LIGHT_START;
+
+            public Row()
+            {
+                Id = CURRENT_LIGHTID;
+                CURRENT_LIGHTID++;
+            }
         }
 
         private List<Row> rows = new List<Row>();
@@ -45,7 +54,6 @@ namespace EQWOWConverter.Files.WOWFiles
         public void AddRow(int mapId, ZoneEnvironmentSettings zoneEnvironmentSettings)
         {
             Row newRow = new Row();
-            newRow.Id = zoneEnvironmentSettings.DBCLightID;
             newRow.MapId = mapId;
             newRow.PositionX = zoneEnvironmentSettings.PositionX;
             newRow.PositionY = zoneEnvironmentSettings.PositionY;
