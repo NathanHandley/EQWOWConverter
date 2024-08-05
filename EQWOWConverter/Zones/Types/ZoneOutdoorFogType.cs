@@ -24,7 +24,8 @@ namespace EQWOWConverter.Zones
 {
     internal enum ZoneOutdoorFogType
     {
-        Near,
-        Far
+        High,
+        Medium,
+        Low,
     }
 }
