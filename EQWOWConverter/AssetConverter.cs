@@ -208,7 +208,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
             // Generate the WOW zone data first
-            zone.PopulateWOWZoneDataFromEQZoneData();
+            zone.LoadFromEQZone();
 
             // Create the zone WMO objects
             WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeExportObjectsFolder);
@@ -223,7 +223,7 @@ namespace EQWOWConverter
             zoneWDL.WriteToDisk(exportMPQRootFolder);
 
             // Create the zone-specific object files
-            foreach(WOWObjectModelData zoneObject in zone.WOWZoneData.GeneratedZoneObjects)
+            foreach(WOWObjectModelData zoneObject in zone.GeneratedZoneObjects)
             {
                 // Recreate the folder if needed
                 string curZoneObjectRelativePath = Path.Combine(relativeExportObjectsFolder, zoneObject.Name);
@@ -368,13 +368,13 @@ namespace EQWOWConverter
 
             foreach (Zone zone in zones)
             {
-                ZoneProperties zoneProperties = zone.WOWZoneData.ZoneProperties;
+                ZoneProperties zoneProperties = zone.ZoneProperties;
 
                 areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.WOWZoneData.LoadingScreenID);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.LoadingScreenID);
                 difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
-                foreach (ZoneModelObject wmo in zone.WOWZoneData.ZoneModelObjects)
+                foreach (ZoneModelObject wmo in zone.ZoneModelObjects)
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
                         Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
@@ -411,12 +411,12 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
-                    gameTeleSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID), zone.ShortName, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Y, zone.WOWZoneData.SafePosition.Z);
+                    gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
 
                 // Instance list
-                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.WOWZoneData.ZoneProperties.DBCMapID));
+                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
 
                 // Zone lines
                 foreach(ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
@@ -438,7 +438,7 @@ namespace EQWOWConverter
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
 
                     // Area Trigger
-                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.WOWZoneData.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
             }
@@ -460,7 +460,7 @@ namespace EQWOWConverter
                 FileTool.CreateBlankDirectory(zoneOutputTextureFolder, true);
 
             // Go through every texture to move and put it there
-            foreach (Material material in zone.WOWZoneData.Materials)
+            foreach (Material material in zone.Materials)
             {
                 foreach (string textureName in material.TextureNames)
                 {
@@ -477,7 +477,7 @@ namespace EQWOWConverter
             }
 
             // Also copy textures for the zone specific objects
-            foreach (WOWObjectModelData zoneObject in zone.WOWZoneData.GeneratedZoneObjects)
+            foreach (WOWObjectModelData zoneObject in zone.GeneratedZoneObjects)
             {
                 foreach(ModelTexture texture in zoneObject.ModelTextures)
                 {

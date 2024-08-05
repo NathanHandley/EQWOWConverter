@@ -38,27 +38,27 @@ namespace EQWOWConverter.WOWFiles
 
         public WMORoot(Zone zone, string exportObjectsFolder)
         {
-            ZoneProperties = zone.WOWZoneData.ZoneProperties;
+            ZoneProperties = zone.ZoneProperties;
 
-            PopulateDoodadNameOffsets(zone.WOWZoneData, exportObjectsFolder);
+            PopulateDoodadNameOffsets(zone, exportObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
             RootBytes.AddRange(GenerateMVERChunk());
 
             // MOHD (Header) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOHDChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMOHDChunk(zone));
 
             // MOTX (Textures) --------------------------------------------------------------------
             RootBytes.AddRange(GenerateMOTXChunk(zone));
 
             // MOMT (Materials) -------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOMTChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMOMTChunk(zone));
 
             // MOGN (Groups) ----------------------------------------------------------------------
             RootBytes.AddRange(GenerateMOGNChunk(zone));
 
             // MOGI (Group Information) -----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGIChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMOGIChunk(zone));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
             RootBytes.AddRange(GenerateMOSBChunk());
@@ -79,19 +79,19 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMOVBChunk());
 
             // MOLT (Lighting Information) --------------------------------------------------------
-            RootBytes.AddRange(GenerateMOLTChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMOLTChunk(zone));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
-            RootBytes.AddRange(GenerateMODSChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMODSChunk(zone));
 
             // MODN (List of M2s) -----------------------------------------------------------------
             RootBytes.AddRange(GenerateMODNChunk(exportObjectsFolder));
 
             // MODD (Doodad Instance Information) -------------------------------------------------
-            RootBytes.AddRange(GenerateMODDChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMODDChunk(zone));
 
             // MFOG (Fog Information) -------------------------------------------------------------
-            RootBytes.AddRange(GenerateMFOGChunk(zone.WOWZoneData));
+            RootBytes.AddRange(GenerateMFOGChunk(zone));
         }
 
         /// <summary>
@@ -106,31 +106,31 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOHD (Header)
         /// </summary>
-        private List<byte> GenerateMOHDChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMOHDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
             // Number of Textures
             UInt32 numOfTextures = 0;
-            foreach (Material material in wowZoneData.Materials)
+            foreach (Material material in zone.Materials)
                 if (material.TextureNames.Count != 0)
                     numOfTextures++;
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.ZoneModelObjects.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.ZoneModelObjects.Count())));
 
             // Number of Portals (rendering related, not going to use it for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    
 
             // Number of Lights
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.LightInstances.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count())));
 
             // Number of Doodad Names
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(DoodadNameOffsets.Count())));
 
             // Number of Doodad Definitions
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.DoodadInstances.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.DoodadInstances.Count())));
 
             // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
@@ -139,10 +139,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(new ColorRGBA().ToBytesBGRA());
 
             // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(BitConverter.GetBytes(wowZoneData.ZoneProperties.DBCWMOID));
+            chunkBytes.AddRange(BitConverter.GetBytes(zone.ZoneProperties.DBCWMOID));
 
             // Axis aligned bounding box for the zone mesh(es)
-            chunkBytes.AddRange(wowZoneData.BoundingBox.ToBytesHighRes());      
+            chunkBytes.AddRange(zone.BoundingBox.ToBytesHighRes());      
 
             // Set any flags
             WMORootFlags rootFlags = WMORootFlags.UseLiquidTypeDBCID;
@@ -160,7 +160,7 @@ namespace EQWOWConverter.WOWFiles
             //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
             //  Pad to make the lengths multiples of 4, with a buffer at the end
             List<byte> textureBuffer = new List<byte>();
-            foreach (Material material in zone.WOWZoneData.Materials)
+            foreach (Material material in zone.Materials)
             {
                 if (material.TextureNames.Count > 0)
                 {
@@ -184,10 +184,10 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOMT (Materials)
         /// </summary>
-        private List<byte> GenerateMOMTChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMOMTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (Material material in wowZoneData.Materials)
+            foreach (Material material in zone.Materials)
             {
                 List<byte> curMaterialBytes = new List<byte>();
 
@@ -309,12 +309,12 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGI (Group Information)
         /// </summary>
-        private List<byte> GenerateMOGIChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMOGIChunk(Zone zone)
         {
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(ZoneModelObject curWorldModelObject in wowZoneData.ZoneModelObjects)
+            foreach(ZoneModelObject curWorldModelObject in zone.ZoneModelObjects)
             {
                 // Header flags
                 chunkBytes.AddRange(BitConverter.GetBytes(curWorldModelObject.GenerateWMOHeaderFlags()));
@@ -409,10 +409,10 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMOLTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (LightInstance lightInstance in wowZoneData.LightInstances)
+            foreach (LightInstance lightInstance in zone.LightInstances)
                 chunkBytes.AddRange(lightInstance.ToBytes());
             return WrapInChunk("MOLT", chunkBytes.ToArray());
         }
@@ -420,7 +420,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODS (Doodad Set Definitions)
         /// </summary>
-        private List<byte> GenerateMODSChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMODSChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -432,7 +432,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of doodads
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(wowZoneData.DoodadInstances.Count)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.DoodadInstances.Count)));
 
             // Padding
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
@@ -458,11 +458,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODD (Doodad Instance Information)
         /// </summary>
-        private List<byte> GenerateMODDChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMODDChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (ZoneDoodadInstance doodadInstance in wowZoneData.DoodadInstances)
+            foreach (ZoneDoodadInstance doodadInstance in zone.DoodadInstances)
             {
                 doodadInstance.ObjectNameOffset = DoodadNameOffsets[doodadInstance.ObjectName];
                 chunkBytes.AddRange(doodadInstance.ToBytes());
@@ -474,7 +474,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MFOG (Fog Information)
         /// </summary>
-        private List<byte> GenerateMFOGChunk(ZoneWOWData wowZoneData)
+        private List<byte> GenerateMFOGChunk(Zone zone)
         {
             // Hard coded defaults since we won't be using this block
             List<byte> chunkBytes = new List<byte>();
@@ -491,10 +491,10 @@ namespace EQWOWConverter.WOWFiles
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 
-        private void PopulateDoodadNameOffsets(ZoneWOWData wowZoneData, string exportObjectsFolder)
+        private void PopulateDoodadNameOffsets(Zone zone, string exportObjectsFolder)
         {
             int curNameOffset = 0;
-            foreach (ZoneDoodadInstance objectInstance in wowZoneData.DoodadInstances)
+            foreach (ZoneDoodadInstance objectInstance in zone.DoodadInstances)
             {
                 string objectName = objectInstance.ObjectName;
                 string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();

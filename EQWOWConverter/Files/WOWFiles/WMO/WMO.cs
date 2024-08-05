@@ -41,7 +41,7 @@ namespace EQWOWConverter.WOWFiles
             RootObject = new WMORoot(zone, exportObjectsFolder);
 
             // Create the groups
-            foreach(ZoneModelObject curWorldModelObject in zone.WOWZoneData.ZoneModelObjects)
+            foreach(ZoneModelObject curWorldModelObject in zone.ZoneModelObjects)
                 GroupObjects.Add(new WMOGroup(RootObject, curWorldModelObject));
 
             // Generate the root file name
