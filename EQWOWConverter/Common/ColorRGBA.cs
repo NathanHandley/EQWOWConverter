@@ -96,19 +96,19 @@ namespace EQWOWConverter.Common
         static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
         {
             ColorRGBA returnColor = new ColorRGBA();
-            returnColor.R = Convert.ToByte(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight) / 2);
-            returnColor.G = Convert.ToByte(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight) / 2);
-            returnColor.B = Convert.ToByte(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight) / 2);
-            returnColor.A = Convert.ToByte(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight) / 2);
+            returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight) / 2, 255));
+            returnColor.G = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight) / 2, 255));
+            returnColor.B = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight) / 2, 255));
+            returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight) / 2, 255));
             return returnColor;
         }
 
         public ColorRGBA ApplyMod(float modValue)
         {
-            R = Convert.ToByte(Convert.ToSingle(R) * modValue);
-            G = Convert.ToByte(Convert.ToSingle(G) * modValue);
-            B = Convert.ToByte(Convert.ToSingle(B) * modValue);
-            A = Convert.ToByte(Convert.ToSingle(A) * modValue);
+            R = Convert.ToByte(MathF.Min(Convert.ToSingle(R) * modValue, 255f));
+            G = Convert.ToByte(MathF.Min(Convert.ToSingle(G) * modValue, 255f));
+            B = Convert.ToByte(MathF.Min(Convert.ToSingle(B) * modValue, 255f));
+            A = Convert.ToByte(MathF.Min(Convert.ToSingle(A) * modValue, 255f));
             return this;
         }
     }
