@@ -122,7 +122,7 @@ namespace EQWOWConverter.Zones
             // Get and convert/translate the mesh data
             MeshData renderMeshData = new MeshData(EQZoneData.RenderMeshData);
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
-            renderMeshData.ApplyEQToWoWVertexColor();
+            renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties);
             MeshData collisionMeshData = new MeshData(EQZoneData.CollisionMeshData);
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
 

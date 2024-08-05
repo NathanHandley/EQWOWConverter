@@ -86,7 +86,7 @@ namespace EQWOWConverter.Zones
         public ZoneEnvironmentParameters ParamatersStormyWeather = new ZoneEnvironmentParameters();
         public ZoneEnvironmentParameters ParamatersStormyWeatherUnderwater = new ZoneEnvironmentParameters();
 
-        public void SetAsOutdoors()
+        public void SetAsDefaultOutdoors()
         {
             ParamatersClearWeather.ParametersTimeSlices.Clear();
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
@@ -1042,24 +1042,24 @@ namespace EQWOWConverter.Zones
         }
 
         // Used for outdoor zones that are foggy, but also have day/night cycles and potentially weather
-        public void SetAsOutdoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, ZoneOutdoorFogType fogType, bool isSkyVisible, float cloudDensity, float brightnessMod, float ambientOnFogInfluenceMod)
+        public void SetAsOutdoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, bool isSkyVisible, float cloudDensity, float brightnessMod, float ambientOnFogInfluenceMod)
         {
             float fogDistance = 0;
             float fogDistanceMultiplier = 0;
             switch(fogType)
             {
-                case ZoneOutdoorFogType.High:
+                case ZoneFogType.Heavy:
                     {
                         fogDistance = 28f;
                         fogDistanceMultiplier = -0.9f;
                     } break;
-                case ZoneOutdoorFogType.Medium:
+                case ZoneFogType.Medium:
                     {
                         fogDistance = 250f;
                         fogDistanceMultiplier = -0.5f;
                     }
                     break;
-                case ZoneOutdoorFogType.Low:
+                case ZoneFogType.Clear:
                     {
                         fogDistance = 500f;
                         fogDistanceMultiplier = 0.25f;
@@ -1266,7 +1266,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].UnknownFloat1 = 0.95f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].UnknownFloat1 = 0.95f;
-            if (fogType == ZoneOutdoorFogType.High)
+            if (fogType == ZoneFogType.Heavy)
             {
                 ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
                 ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
@@ -1326,7 +1326,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(66, 132, 166);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(66, 132, 166);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            if (fogType == ZoneOutdoorFogType.High)
+            if (fogType == ZoneFogType.Heavy)
             {
                 ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), 1f); // Mix fog color and water color
                 ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), 1f); // Mix fog color and water color
@@ -1585,11 +1585,36 @@ namespace EQWOWConverter.Zones
         }
 
         // Used for indoor zones that have no day/night cycle, no weather, and are obscured by fog
-        public void SetAsIndoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, byte ambientRed, byte ambientGreen, byte ambientBlue)
+        public void SetAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, byte ambientRed, byte ambientGreen, byte ambientBlue)
         {
-            // Distance and multiplier don't seem to be honored below a certain line, so hard coding them
-            float fogDistance = 30.0f;
-            float fogDistanceMultiplier = -0.9f;
+            float fogDistance = 0;
+            float fogDistanceMultiplier = 0;
+            switch (fogType)
+            {
+                case ZoneFogType.Heavy:
+                    {
+                        fogDistance = 28f;
+                        fogDistanceMultiplier = -0.9f;
+                    }
+                    break;
+                case ZoneFogType.Medium:
+                    {
+                        fogDistance = 250f;
+                        fogDistanceMultiplier = -0.5f;
+                    }
+                    break;
+                case ZoneFogType.Clear:
+                    {
+                        fogDistance = 500f;
+                        fogDistanceMultiplier = 0.25f;
+                    }
+                    break;
+                default:
+                    {
+                        Logger.WriteError("Error in SetAsOutdoorFogg, as ZoneOutdoorFogType is '" + fogType + "'");
+                    }
+                    break;
+            }
 
             ParamatersClearWeather.ParametersTimeSlices.Clear();
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));

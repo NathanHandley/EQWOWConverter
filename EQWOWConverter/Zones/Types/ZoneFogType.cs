@@ -22,10 +22,10 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal enum ZoneOutdoorFogType
+    internal enum ZoneFogType
     {
-        High,
+        Heavy,
         Medium,
-        Low,
+        Clear,
     }
 }

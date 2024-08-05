@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,15 +72,19 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public void ApplyEQToWoWVertexColor()
+        public void ApplyEQToWoWVertexColor(ZoneProperties zoneProperties)
         {
+            double intensityAmount = Configuration.CONFIG_LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY;
+            if (zoneProperties.VertexColorIntensityOverride > 0)
+                intensityAmount = zoneProperties.VertexColorIntensityOverride;
+
             // Vertex colors are reduced for external areas due to the natural zone light
             foreach (ColorRGBA vertexColor in VertexColors)
             {
-                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
-                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
-                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * Configuration.CONFIG_LIGHT_VERTEX_COLOR_INTENSITY);
-                vertexColor.A = 255;
+                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * intensityAmount);
+                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * intensityAmount);
+                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * intensityAmount);
+                //vertexColor.A = vertexColor.A;
             }
         }
 

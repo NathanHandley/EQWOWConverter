@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public RunnyeyeCitadelZoneProperties() : base()
         {
             SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinentType.Antonica);
-            IsExteriorByDefault = false;
             SetFogProperties(75, 150, 25, 10, 600);
             AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West, -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f);
             AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);

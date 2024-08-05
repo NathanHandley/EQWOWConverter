@@ -111,7 +111,6 @@ namespace EQWOWConverter.Zones
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
                 LiquidType = zoneProperties.CompletelyInLiquidType;
             }
-            //IsExterior = zoneProperties.IsExteriorByDefault;
             IsLoaded = true;
         }
 

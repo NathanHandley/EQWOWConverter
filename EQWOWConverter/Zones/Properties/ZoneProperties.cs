@@ -44,7 +44,7 @@ namespace EQWOWConverter.Zones
 
         // Environment Properties
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
-        public bool IsExteriorByDefault = true; // Delete this
+        public double VertexColorIntensityOverride = 0;
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -96,25 +96,26 @@ namespace EQWOWConverter.Zones
             HasShadowBox = true;
         }
 
-        protected void SetZonewideEnvironmentAsIndoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, byte ambientRed, byte ambientGreen, byte ambientBlue)
+        protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, byte ambientRed, byte ambientGreen, byte ambientBlue)
         {
             if (CustomZonewideEnvironmentProperties != null)
                 Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-
-            
-            CustomZonewideEnvironmentProperties.SetAsIndoorFoggy(fogRed, fogGreen, fogBlue, ambientRed, ambientGreen, ambientBlue);
+            CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, ambientRed, ambientGreen, ambientBlue);
         }
 
-        protected void SetZonewideEnvironmentAsOutdoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, ZoneOutdoorFogType fogType, bool isSkyVisible, float cloudDensity, 
+        protected void SetZonewideEnvironmentAsOutdoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, bool isSkyVisible, float cloudDensity, 
             float brightnessMod, float ambientOnFogInfluenceMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
                 Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, isSkyVisible, cloudDensity, brightnessMod, ambientOnFogInfluenceMod);
+        }
 
-            // Distance and multiplier don't seem to be honored below a certain line, so hard coding them
-            CustomZonewideEnvironmentProperties.SetAsOutdoorFoggy(fogRed, fogGreen, fogBlue, fogType, isSkyVisible, cloudDensity, brightnessMod, ambientOnFogInfluenceMod);
+        protected void OverrideVertexColorIntensity(double overrideIntensityAmount)
+        {
+            VertexColorIntensityOverride = overrideIntensityAmount;
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)

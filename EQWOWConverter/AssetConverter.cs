@@ -151,7 +151,7 @@ namespace EQWOWConverter
             string exportObjectsFolderRelative = Path.Combine("World", "Everquest", "Objects");
 
             // Load shared environment settings
-            ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors();
+            ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsDefaultOutdoors();
 
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);

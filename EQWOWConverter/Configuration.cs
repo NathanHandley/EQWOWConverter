@@ -114,7 +114,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
 
         // How much of the EQ original vertex color to apply to surfaces
-        public static readonly double CONFIG_LIGHT_VERTEX_COLOR_INTENSITY = 0.2;
+        public static readonly double CONFIG_LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY = 0.2;
 
         // Amonut of glow to add to outdoor areas (ranges are 0-1)
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER = 0.4f;

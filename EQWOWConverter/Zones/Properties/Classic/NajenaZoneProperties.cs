@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NajenaZoneProperties() : base()
         {
             SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinentType.Antonica);
-            IsExteriorByDefault = false;
             SetFogProperties(30, 0, 40, 10, 110);
             AddZoneLineBox("lavastorm", -937.992371f, -1044.653320f, 12.625020f, ZoneLineOrientationType.West, 0.193110f, 929.818542f, 48.437752f, -30.192530f, 883.758789f, -0.499850f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Blood, "t75_b1", 352.940308f, 213.064240f, 308.154907f, 178.544678f, -28.999861f, 5f); // Blood pool under bridge
