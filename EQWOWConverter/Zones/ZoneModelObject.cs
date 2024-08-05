@@ -115,13 +115,13 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsSkyBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)
+        public void LoadAsShadowBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.SkyBox;
+            WMOType = ZoneModelObjectType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
-            ZoneSkyBox skyBox = new ZoneSkyBox(boundingBox, materials, zoneProperties.ShortName);
-            MeshData = skyBox.MeshData;
+            ZoneShadowBox shadowBox = new ZoneShadowBox(boundingBox, materials, zoneProperties.ShortName);
+            MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());
             IsLoaded = true;

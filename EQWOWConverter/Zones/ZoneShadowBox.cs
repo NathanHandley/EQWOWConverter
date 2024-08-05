@@ -23,12 +23,12 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZoneSkyBox
+    internal class ZoneShadowBox
     {
         public Material SelectedMaterial;
         public MeshData MeshData = new MeshData();
 
-        public ZoneSkyBox(BoundingBox boundingBox, List<Material> materials, string zoneShortName)
+        public ZoneShadowBox(BoundingBox boundingBox, List<Material> materials, string zoneShortName)
         {
             // Find a material that can be used by looking for something opaque
             Material? selectedMaterial = null;
@@ -42,19 +42,19 @@ namespace EQWOWConverter.Zones
             }
             if (selectedMaterial == null)
             {
-                Logger.WriteError("Error, no suitable material found for SkyBox for zone shortname '" + zoneShortName + "', skybox will probably not render properly");
+                Logger.WriteError("Error, no suitable material found for ShadowBox for zone shortname '" + zoneShortName + "', shadowbox may not render properly");
                 selectedMaterial = new Material();
             }
             SelectedMaterial = selectedMaterial;
             int materialIndex = Convert.ToInt32(SelectedMaterial.Index);
 
-            // Generate an inward facing box
+            // Generate an outward facing box, pushed away from the start
             MeshData = new MeshData();
-            float highX = boundingBox.TopCorner.X;
-            float lowX = boundingBox.BottomCorner.X;
-            float highY = boundingBox.TopCorner.Y;
-            float lowY = boundingBox.BottomCorner.Y;
-            float highZ = boundingBox.TopCorner.Z;
+            float highX = boundingBox.TopCorner.X + 50f;
+            float lowX = boundingBox.BottomCorner.X - 50f;
+            float highY = boundingBox.TopCorner.Y + 50f;
+            float lowY = boundingBox.BottomCorner.Y - 50f;
+            float highZ = boundingBox.TopCorner.Z + 50f;
             float lowZ = boundingBox.BottomCorner.Z;
 
             // Side 1
@@ -75,8 +75,8 @@ namespace EQWOWConverter.Zones
             MeshData.Vertices.Add(new Vector3(lowX, lowY, highZ));
             MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 1));
             MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
 
             // Side 2
             quadFaceStartVert = MeshData.Vertices.Count;
@@ -96,8 +96,8 @@ namespace EQWOWConverter.Zones
             MeshData.Vertices.Add(new Vector3(highX, highY, lowZ));
             MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 0));
             MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
 
             // Side 3
             quadFaceStartVert = MeshData.Vertices.Count;
@@ -117,8 +117,8 @@ namespace EQWOWConverter.Zones
             MeshData.Normals.Add(new Vector3(0, 0, 0));
             MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 1));
             MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
 
             // Side 4
             quadFaceStartVert = MeshData.Vertices.Count;
@@ -138,8 +138,8 @@ namespace EQWOWConverter.Zones
             MeshData.Normals.Add(new Vector3(0, 0, 0));
             MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 0));
             MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
 
             // Top
             quadFaceStartVert = MeshData.Vertices.Count;
@@ -159,29 +159,29 @@ namespace EQWOWConverter.Zones
             MeshData.Normals.Add(new Vector3(0, 0, 0));
             MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 1));
             MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
 
             // Bottom
-            quadFaceStartVert = MeshData.Vertices.Count;
-            MeshData.Vertices.Add(new Vector3(highX, highY, lowZ));
-            MeshData.Normals.Add(new Vector3(0, 0, 0));
-            MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.Vertices.Add(new Vector3(lowX, highY, lowZ));
-            MeshData.Normals.Add(new Vector3(0, 0, 0));
-            MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.Vertices.Add(new Vector3(lowX, lowY, lowZ));
-            MeshData.Normals.Add(new Vector3(0, 0, 0));
-            MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.Vertices.Add(new Vector3(highX, lowY, lowZ));
-            MeshData.Normals.Add(new Vector3(0, 0, 0));
-            MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
-            MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            //quadFaceStartVert = MeshData.Vertices.Count;
+            //MeshData.Vertices.Add(new Vector3(highX, highY, lowZ));
+            //MeshData.Normals.Add(new Vector3(0, 0, 0));
+            //MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 1));
+            //MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
+            //MeshData.Vertices.Add(new Vector3(lowX, highY, lowZ));
+            //MeshData.Normals.Add(new Vector3(0, 0, 0));
+            //MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 1));
+            //MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
+            //MeshData.Vertices.Add(new Vector3(lowX, lowY, lowZ));
+            //MeshData.Normals.Add(new Vector3(0, 0, 0));
+            //MeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+            //MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
+            //MeshData.Vertices.Add(new Vector3(highX, lowY, lowZ));
+            //MeshData.Normals.Add(new Vector3(0, 0, 0));
+            //MeshData.TextureCoordinates.Add(new TextureCoordinates(1, 0));
+            //MeshData.VertexColors.Add(new ColorRGBA(0, 0, 0));
+            //MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            //MeshData.TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
         }
     }
 }

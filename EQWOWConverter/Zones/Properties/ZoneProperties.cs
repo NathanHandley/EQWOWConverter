@@ -34,6 +34,7 @@ namespace EQWOWConverter.Zones
         public string DescriptiveName = string.Empty;
         public ZoneContinentType Continent;
         public bool IsCompletelyInLiquid = false;
+        public bool HasShadowBox = false;
         public ZoneLiquidType CompletelyInLiquidType = ZoneLiquidType.None;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
@@ -88,6 +89,11 @@ namespace EQWOWConverter.Zones
             //FogColor.B = blue;
             //FogMinClip = minClip;
             //FogMaxClip = maxClip;
+        }
+
+        protected void DisableSunlight()
+        {
+            HasShadowBox = true;
         }
 
         protected void SetZonewideEnvironmentAsIndoorFoggy(byte fogRed, byte fogGreen, byte fogBlue, byte ambientRed, byte ambientGreen, byte ambientBlue)

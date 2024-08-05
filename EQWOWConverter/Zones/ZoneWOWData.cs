@@ -181,6 +181,14 @@ namespace EQWOWConverter.Zones
             boundingVectors.AddRange(renderMeshData.Vertices);
             BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
 
+            // If set, generate a shadowbox
+            if (ZoneProperties.HasShadowBox == true)
+            {
+                ZoneModelObject curWorldModelObject = new ZoneModelObject();
+                curWorldModelObject.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
+                ZoneModelObjects.Add(curWorldModelObject);
+            }
+
             // Completely loaded
             IsLoaded = true;
         }

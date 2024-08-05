@@ -28,6 +28,6 @@ namespace EQWOWConverter.Zones
         Collision,
         LiquidVolume,
         LiquidPlane,
-        SkyBox
+        ShadowBox
     }
 }
