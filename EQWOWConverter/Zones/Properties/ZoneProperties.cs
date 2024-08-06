@@ -44,7 +44,7 @@ namespace EQWOWConverter.Zones
 
         // Environment Properties
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
-        public double VertexColorIntensityOverride = 0;
+        public double VertexColorIntensityOverride = -1;
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
@@ -94,6 +94,17 @@ namespace EQWOWConverter.Zones
         protected void DisableSunlight()
         {
             HasShadowBox = true;
+        }
+
+        protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType,
+                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE,
+                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE,
+                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE);
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, byte ambientRed, byte ambientGreen, byte ambientBlue)

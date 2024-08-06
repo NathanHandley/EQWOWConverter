@@ -28,7 +28,8 @@ namespace EQWOWConverter.Zones.Properties
         public NagafensLairZoneProperties() : base()
         {
             SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinentType.Antonica);
-            SetZonewideEnvironmentAsIndoors(180, 30, 30, ZoneFogType.Heavy, 145, 145, 145);
+            SetZonewideEnvironmentAsIndoors(180, 30, 30, ZoneFogType.Heavy);
+            OverrideVertexColorIntensity(0.3);
             AddZoneLineBox("lavastorm", 909.788574f, 484.493713f, 51.688461f, ZoneLineOrientationType.North, -399.037048f, -259.033051f, -101.499748f, -410.349213f, -270.100739f, -112.467888f);
             AddZoneLineBox("soldunga", -166.265717f, -572.437744f, 15.365680f, ZoneLineOrientationType.West, -158.744904f, -540.487061f, 35.468010f, -173.130875f, -581.914795f, 13.500010f);
             AddZoneLineBox("soldunga", -299.452057f, -508.939087f, 22.000681f, ZoneLineOrientationType.South, -285.998016f, -499.999878f, 32.469002f, -300.556580f, -514.974731f, 21.500320f);

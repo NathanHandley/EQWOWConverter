@@ -81,13 +81,13 @@ namespace EQWOWConverter
         public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 
         // If populated, only the zones listed here will be generated
-        public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { };
+        public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { "soldunga"};
 
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -115,6 +115,9 @@ namespace EQWOWConverter
 
         // How much of the EQ original vertex color to apply to surfaces
         public static readonly double CONFIG_LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY = 0.2;
+
+        // Default ambience to apply to indoor areas (sets to r g and b). To have colors pop more like in EQ, set it lower like 96 or so.
+        public static readonly byte CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE = 165;
 
         // Amonut of glow to add to outdoor areas (ranges are 0-1)
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER = 0.4f;
