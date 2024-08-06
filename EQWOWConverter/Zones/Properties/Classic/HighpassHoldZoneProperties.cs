@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public HighpassHoldZoneProperties() : base()
         {
             SetBaseZoneProperties("highpass", "Highpass Hold", -104f, -14f, 4f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(200, 200, 200, 10, 400);
+            SetZonewideEnvironmentAsOutdoors(200, 200, 200, ZoneFogType.Medium, true, 1f, 1f, 0.5f);
             AddZoneLineBox("eastkarana", -3069.264893f, -8291.038086f, 689.907410f, ZoneLineOrientationType.West, -1000.400269f, 153.409576f, 25.578859f, -1021.786133f, 121.336189f, -0.500030f);
             AddZoneLineBox("highkeep", -90.607208f, 98.531219f, 0.000000f, ZoneLineOrientationType.East, -83.776314f, -118.791763f, 12.469000f, -98.162193f, -140.129593f, -0.500000f);
             AddZoneLineBox("highkeep", 62.486179f, 97.604347f, 0.000030f, ZoneLineOrientationType.East, 70.161171f, -118.140022f, 12.469000f, 53.453629f, -126.744057f, -0.500010f);

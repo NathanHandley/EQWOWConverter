@@ -28,7 +28,8 @@ namespace EQWOWConverter.Zones.Properties
         public InnothuleSwampZoneProperties() : base()
         {
             SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(170, 160, 90, 10, 500);
+            SetZonewideEnvironmentAsOutdoors(150, 146, 12, ZoneFogType.Heavy, false, 1f, 0.9f, 0.5f);
+            DisableSunlight();
             AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f);
             AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West, -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);
             AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East, 150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f);

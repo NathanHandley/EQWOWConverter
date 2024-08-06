@@ -1051,12 +1051,12 @@ namespace EQWOWConverter.Zones
                 case ZoneFogType.Heavy:
                     {
                         fogDistance = 28f;
-                        fogDistanceMultiplier = -0.9f;
+                        fogDistanceMultiplier = -0.95f;
                     } break;
                 case ZoneFogType.Medium:
                     {
                         fogDistance = 250f;
-                        fogDistanceMultiplier = -0.5f;
+                        fogDistanceMultiplier = -0.95f;
                     }
                     break;
                 case ZoneFogType.Clear:

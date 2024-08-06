@@ -29,7 +29,8 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
             SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(50, 45, 20, 10, 140);
+            SetZonewideEnvironmentAsIndoors(50, 45, 20, ZoneFogType.Heavy, 96, 96, 96);
+            OverrideVertexColorIntensity(0.5);
             AddZoneLineBox("guktop", 1113.605835f, 617.183350f, -88.333542f, ZoneLineOrientationType.East, 1161.719360f, 662.774170f, -81.499748f, 1143.830933f, 656.943542f, -110f);
             AddZoneLineBox("innothule", 144.032776f, -821.548645f, -11.500000f, ZoneLineOrientationType.West, -123.419243f, 84.161140f, -225.437256f, -140f, 69.775558f, -238.406235f);
             AddZoneLineBox("guktop", 1620.083008f, 181.952133f, -88.660629f, ZoneLineOrientationType.West, 1675.066772f, -37.624660f, -70f, 1648.329590f, -92.907097f, -138.851685f);
