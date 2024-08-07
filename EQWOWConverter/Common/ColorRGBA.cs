@@ -96,10 +96,10 @@ namespace EQWOWConverter.Common
         static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
         {
             ColorRGBA returnColor = new ColorRGBA();
-            returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight) / 2, 255));
-            returnColor.G = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight) / 2, 255));
-            returnColor.B = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight) / 2, 255));
-            returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight) / 2, 255));
+            returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight), 255));
+            returnColor.G = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight), 255));
+            returnColor.B = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight), 255));
+            returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight), 255));
             return returnColor;
         }
 
