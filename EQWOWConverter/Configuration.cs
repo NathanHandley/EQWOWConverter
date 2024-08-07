@@ -81,13 +81,13 @@ namespace EQWOWConverter
         public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 
         // If populated, only the zones listed here will be generated
-        public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { "soldunga"};
+        public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { };
 
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -122,7 +122,7 @@ namespace EQWOWConverter
         // Amonut of glow to add to outdoor areas (ranges are 0-1)
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER = 0.4f;
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_STORMY_WEATHER = 0.2f;
-        public static readonly float CONFIG_LIGHT_OUTSIDE_UNDERWATER = 1.0f;
+        public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER = 0.6f;
 
         //=====================================================================
         // Objects

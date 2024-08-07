@@ -271,7 +271,7 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(39, 55, 47);
 
             // Clear Weather - Underwater
-            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
+            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -447,7 +447,7 @@ namespace EQWOWConverter.Zones
 
             // Stormy Weather - Underwater
             // TODO: Update
-            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
+            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -1210,7 +1210,7 @@ namespace EQWOWConverter.Zones
 
             // Clear Weather - Underwater
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
-            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
+            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -1219,157 +1219,117 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(22));
             ParamatersClearWeatherUnderwater.SetAllTimeSlicesFogDistance(167f);
             ParamatersClearWeatherUnderwater.SetAllTimeSlicesFogDistanceMultiplier(-0.5f);
-            if (isSkyVisible == true)
-            {
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CelestialGlowThrough = 1f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CelestialGlowThrough = 1f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CelestialGlowThrough = 1f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CelestialGlowThrough = 1f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CelestialGlowThrough = 1f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CelestialGlowThrough = 1f;
-            }
-            else
-            {
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CelestialGlowThrough = 0f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CelestialGlowThrough = 0f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CelestialGlowThrough = 0f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CelestialGlowThrough = 0f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CelestialGlowThrough = 0f;
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CelestialGlowThrough = 0f;
-            }
             if (fogType == ZoneFogType.Heavy)
             {
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(66, 101, 134), ambientOnFogInfluenceMod); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), 0.5f); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), 0.5f); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), 0.5f); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(37, 92, 92), 0.5f); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(37, 92, 92), 0.5f); // Mix fog color and water color
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].FogColor = ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(37, 92, 92), 0.5f); // Mix fog color and water color
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(20, 61, 61), 0.5f).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(20, 61, 61), 0.5f).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(20, 61, 61), 0.5f).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(37, 92, 92), 0.5f).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(37, 92, 92), 0.5f).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].FogColor = ColorRGBA.GetBlendedColorWithMaintainedBColorIntensity(fogColor, new ColorRGBA(37, 92, 92), 0.5f).ApplyMod(brightnessMod);
             }
             else
             {
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = new ColorRGBA(20, 61, 61);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].FogColor = new ColorRGBA(20, 61, 61);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].FogColor = new ColorRGBA(20, 61, 61);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].FogColor = new ColorRGBA(37, 92, 92);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].FogColor = new ColorRGBA(37, 92, 92);
-                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].FogColor = new ColorRGBA(37, 92, 92);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(66, 101, 134).ApplyMod(brightnessMod);                
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = new ColorRGBA(20, 61, 61).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].FogColor = new ColorRGBA(20, 61, 61).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].FogColor = new ColorRGBA(20, 61, 61).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].FogColor = new ColorRGBA(37, 92, 92).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].FogColor = new ColorRGBA(37, 92, 92).ApplyMod(brightnessMod);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].FogColor = new ColorRGBA(37, 92, 92).ApplyMod(brightnessMod);
             }
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CloudDensity = cloudDensity;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CloudDensity = cloudDensity;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CloudDensity = cloudDensity;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CloudDensity = cloudDensity;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CloudDensity = cloudDensity;
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CloudDensity = cloudDensity;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor, 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor, 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor, 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor, 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor, 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(66, 101, 134), ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor, 0.5f);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyTopColor = new ColorRGBA(30, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyMiddleColor = new ColorRGBA(53, 107, 136);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(66, 132, 166);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].Unknown1Color = new ColorRGBA(66, 101, 134);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SunColor = new ColorRGBA(91, 128, 158);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CloudEdgeColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CloudEdgeColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CloudEdgeColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CloudEdgeColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CloudEdgeColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+            if (isSkyVisible == true)
+            {                
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyTopColor = new ColorRGBA(30, 61, 76);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyMiddleColor = new ColorRGBA(53, 107, 136);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyMiddleToHorizonColor = new ColorRGBA(54, 112, 142);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyAboveHorizonColor = new ColorRGBA(56, 113, 141);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(66, 132, 166);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].Unknown1Color = new ColorRGBA(66, 101, 134);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SunColor = new ColorRGBA(91, 128, 158);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SunLargeHaloColor = new ColorRGBA(82, 106, 123);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CloudEdgeColor = new ColorRGBA(64, 101, 125);
+                ParamatersClearWeatherUnderwater.SetAllTimeSlicesCelestialGlowThrough(1f);
+            }
+            else
+            {
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(126, 167, 167), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(201, 242, 242), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(154, 195, 195), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].SetSkyboxElementsToSolidColor(ColorRGBA.GetBlendedColor(fogColor, new ColorRGBA(20, 61, 61), ambientOnFogInfluenceMod).ApplyMod(brightnessMod));
+                ParamatersClearWeatherUnderwater.SetAllTimeSlicesCelestialGlowThrough(0f);
+            }
+            ParamatersClearWeatherUnderwater.SetAllTimeSlicesCloudDensity(cloudDensity);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CloudColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].CloudColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].CloudColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].CloudColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].CloudColor = new ColorRGBA(0, 0, 0);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].CloudColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].Unknown2Color = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].OceanShallowColor = new ColorRGBA(37, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].OceanShallowColor = new ColorRGBA(37, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].OceanShallowColor = new ColorRGBA(37, 61, 76);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].OceanShallowColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].OceanShallowColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].OceanShallowColor = new ColorRGBA(64, 101, 125);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].OceanDeepColor = new ColorRGBA(0, 0, 0);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].RiverShallowColor = new ColorRGBA(58, 55, 47);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].RiverShallowColor = new ColorRGBA(58, 55, 47);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].RiverShallowColor = new ColorRGBA(91, 72, 66);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].RiverShallowColor = new ColorRGBA(78, 63, 55);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].RiverShallowColor = new ColorRGBA(90, 72, 70);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].RiverShallowColor = new ColorRGBA(58, 55, 47);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].RiverDeepColor = new ColorRGBA(0, 12, 24);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[1].RiverDeepColor = new ColorRGBA(0, 12, 24);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[2].RiverDeepColor = new ColorRGBA(63, 85, 75);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[3].RiverDeepColor = new ColorRGBA(61, 94, 113);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[4].RiverDeepColor = new ColorRGBA(91, 61, 75);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[5].RiverDeepColor = new ColorRGBA(91, 61, 75);
-
 
             // Stormy Weather
             // TODO
@@ -1403,7 +1363,7 @@ namespace EQWOWConverter.Zones
             // Stormy Weather - Underwater
             // TODO
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
-            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_UNDERWATER;
+            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -1589,15 +1549,16 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[0].FogDistance = fogDistance;
             ParamatersClearWeather.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersClearWeather.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(new ColorRGBA(fogRed, fogGreen, fogBlue));
+            ParamatersClearWeather.ParametersTimeSlices[0].CloudDensity = 1f;
 
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(166, 201, 234), new ColorRGBA(ambientRed, ambientGreen, ambientBlue), 0.5f);
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColor(new ColorRGBA(20, 61, 61), new ColorRGBA(fogRed, fogGreen, fogBlue), 0.25f);
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColor(new ColorRGBA(20, 61, 61), new ColorRGBA(fogRed, fogGreen, fogBlue), 0.5f);
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogDistance = 167f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].FogMultiplier = -0.5f;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(new ColorRGBA(fogRed, fogGreen, fogBlue));
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(166, 201, 234), new ColorRGBA(ambientRed, ambientGreen, ambientBlue), 0.5f);
+            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].CloudDensity = 1f;
 
             ParamatersStormyWeather.ParametersTimeSlices.Clear();
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
@@ -1606,15 +1567,16 @@ namespace EQWOWConverter.Zones
             ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = fogDistance;
             ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = fogDistanceMultiplier;
             ParamatersStormyWeather.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(new ColorRGBA(fogRed, fogGreen, fogBlue));
+            ParamatersStormyWeather.ParametersTimeSlices[0].CloudDensity = 1f;
 
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
-            ParamatersClearWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(166, 201, 234), new ColorRGBA(ambientRed, ambientGreen, ambientBlue), 0.5f);
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].AmbientLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(166, 201, 234), new ColorRGBA(ambientRed, ambientGreen, ambientBlue), 0.5f);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogColor = ColorRGBA.GetBlendedColor(new ColorRGBA(20, 61, 61), new ColorRGBA(fogRed, fogGreen, fogBlue), 0.5f);
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogDistance = 167f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].FogMultiplier = -0.5f;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].SetSkyboxElementsToSolidColor(new ColorRGBA(fogRed, fogGreen, fogBlue));
-            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].SkyCastDiffuseLightColor = ColorRGBA.GetBlendedColor(new ColorRGBA(166, 201, 234), new ColorRGBA(ambientRed, ambientGreen, ambientBlue), 0.5f);
+            ParamatersStormyWeatherUnderwater.ParametersTimeSlices[0].CloudDensity = 1f;
         }
     }
 }
