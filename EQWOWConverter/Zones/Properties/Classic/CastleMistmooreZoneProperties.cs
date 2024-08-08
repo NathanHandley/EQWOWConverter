@@ -28,8 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public CastleMistmooreZoneProperties() : base()
         {
             SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinentType.Faydwer);
-            SetZonewideEnvironmentAsOutdoors(60, 30, 90, ZoneFogType.Heavy, false, 1f, 1.5f, 0.3f);
-            DisableSunlight();
+            SetZonewideEnvironmentAsIndoors(30, 0, 60, ZoneFogType.Heavy);
             AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East, -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", -207.922714f, 518.252563f, -409.548492f, 418.513092f, -237.916143f, 100f); // Entry pool, big
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 2.439530f, 95.290939f, -14.319680f, 84.488243f, -194.937485f, 5f); // Courtyard Pool Base 1

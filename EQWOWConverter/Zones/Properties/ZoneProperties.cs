@@ -116,12 +116,12 @@ namespace EQWOWConverter.Zones
         }
 
         protected void SetZonewideEnvironmentAsOutdoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, bool isSkyVisible, float cloudDensity, 
-            float brightnessMod, float ambientOnFogInfluenceMod)
+            float aboveWaterBrightnessMod, float underWaterBrightnessMod, float ambientOnFogInfluenceMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
                 Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, isSkyVisible, cloudDensity, brightnessMod, ambientOnFogInfluenceMod);
+            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, isSkyVisible, cloudDensity, aboveWaterBrightnessMod, underWaterBrightnessMod, ambientOnFogInfluenceMod);
         }
 
         protected void OverrideVertexColorIntensity(double overrideIntensityAmount)

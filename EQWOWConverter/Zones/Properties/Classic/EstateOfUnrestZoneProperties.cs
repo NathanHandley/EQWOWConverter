@@ -27,9 +27,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EstateOfUnrestZoneProperties() : base()
         {
-            // TODO: Indoor Light Properties
             SetBaseZoneProperties("unrest", "Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinentType.Faydwer);
-            SetZonewideEnvironmentAsOutdoors(40, 10, 60, ZoneFogType.Heavy, false, 1f, 1.5f, 0.2f); //SetFogProperties(40, 10, 60, 10, 300);
+            SetZonewideEnvironmentAsIndoors(10, 0, 30, ZoneFogType.Heavy);
             DisableSunlight();
             AddZoneLineBox("cauldron", -2014.301880f, -627.332886f, 90.001083f, ZoneLineOrientationType.North, 113.163170f, 340.068451f, 18.469000f, 72.315872f, 319.681549f, -0.500000f);
             AddOctagonLiquidShape(ZoneLiquidType.Water, "d_m0006", 296.937286f, 232.862274f, 36.855289f, 12.970670f, 32.835838f, 17.249861f, 32.835838f, 17.249861f,
