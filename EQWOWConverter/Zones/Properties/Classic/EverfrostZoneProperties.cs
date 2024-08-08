@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public EverfrostZoneProperties() : base()
         {
             SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinentType.Antonica);
-            SetZonewideEnvironmentAsOutdoors(0, 15, 39, ZoneFogType.Heavy, false, 1f, 1f, 1f, 0.5f);
+            SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("blackburrow", 64.26508f, -340.1918f, 0.00073920796f, ZoneLineOrientationType.South, -3054.6953f, -515.55963f, -99.7185f, -3094.8235f, -547f, -113.68753f);
             AddZoneLineBox("halas", -647.768616f, -75.159027f, 0.000020f, ZoneLineOrientationType.North, 3756.428467f, 397.611786f, 38.469002f, 3706.500488f, 347.150665f, -0.499760f);

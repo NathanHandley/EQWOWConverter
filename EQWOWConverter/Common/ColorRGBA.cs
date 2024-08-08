@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -98,7 +99,7 @@ namespace EQWOWConverter.Common
             R = Convert.ToByte(MathF.Min(Convert.ToSingle(R) * modValue, 255f));
             G = Convert.ToByte(MathF.Min(Convert.ToSingle(G) * modValue, 255f));
             B = Convert.ToByte(MathF.Min(Convert.ToSingle(B) * modValue, 255f));
-            A = Convert.ToByte(MathF.Min(Convert.ToSingle(A) * modValue, 255f));
+            //A = Convert.ToByte(MathF.Min(Convert.ToSingle(A) * modValue, 255f));
             return this;
         }
 
@@ -108,26 +109,7 @@ namespace EQWOWConverter.Common
             returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight), 255));
             returnColor.G = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight), 255));
             returnColor.B = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight), 255));
-            returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight), 255));
-            return returnColor;
-        }
-
-        static public ColorRGBA GetBlendedColorWithMaintainedBColorIntensity(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
-        {
-            // Scale color A to be as intense as color B
-            decimal colorAIntensity = colorA.R + colorA.G + colorA.B;
-            decimal colorBIntensity = colorB.R + colorB.G + colorB.B;
-            decimal colorAIntMod = colorBIntensity / colorAIntensity;
-            ColorRGBA scaledColorA = new ColorRGBA();
-            scaledColorA.R = Convert.ToByte(Math.Min(Convert.ToDecimal(colorA.R) * colorAIntensity, 255));
-            scaledColorA.G = Convert.ToByte(Math.Min(Convert.ToDecimal(colorA.G) * colorAIntensity, 255));
-            scaledColorA.B = Convert.ToByte(Math.Min(Convert.ToDecimal(colorA.B) * colorAIntensity, 255));
-            scaledColorA.A = Convert.ToByte(Math.Min(Convert.ToDecimal(colorA.A) * colorAIntensity, 255));
-            ColorRGBA returnColor = new ColorRGBA();
-            returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(scaledColorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight), 255));
-            returnColor.G = Convert.ToByte(Math.Min(((Convert.ToSingle(scaledColorA.G) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.G)) * colorBWeight), 255));
-            returnColor.B = Convert.ToByte(Math.Min(((Convert.ToSingle(scaledColorA.B) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.B)) * colorBWeight), 255));
-            returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(scaledColorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight), 255));
+            //returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight), 255));
             return returnColor;
         }
     }

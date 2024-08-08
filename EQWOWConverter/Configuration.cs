@@ -124,6 +124,14 @@ namespace EQWOWConverter
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_STORMY_WEATHER = 0.2f;
         public static readonly float CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER = 0.6f;
 
+        // Brightness of outdoor areas based on time
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_0 = 58; // Midnight
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_3 = 58; // 3 AM
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_6 = 164; // 6 AM
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12 = 239; // Noon - Must always be the most bright
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_21 = 192; // 9 PM
+        public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22 = 58; // 10 PM
+
         //=====================================================================
         // Objects
         //=====================================================================
