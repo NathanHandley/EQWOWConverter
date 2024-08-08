@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("kaladimb", "North Kaladim", -267f, 414f, 3.75f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.5);
+            OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
             AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 789.445374f, 379.175079f, 736.143677f, 226.058517f, -75.968742f, 50f); // NW Rail Pool

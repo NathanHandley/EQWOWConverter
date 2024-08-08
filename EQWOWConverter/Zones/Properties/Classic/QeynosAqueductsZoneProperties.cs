@@ -30,7 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Secret pot to Tox
             SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(11, 36, 28, ZoneFogType.Medium);
-            OverrideVertexColorIntensity(0.5);
+            OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("qeynos2", 301.114655f, -161.613953f, -63.449379f, ZoneLineOrientationType.North, 1063.755981f, -41.776192f, 262.653015f, 1049.400269f, -56.161572f, 215f);
             AddZoneLineBox("qeynos2", 187.834518f, 341.638733f, -87.992813f, ZoneLineOrientationType.West, 895.849731f, 224.099167f, 61.134998f, 881.462830f, 209.713654f, 39.701309f);
             AddZoneLineBox("qeynos2", 175.706985f, 97.447029f, -41.968739f, ZoneLineOrientationType.West, 645.282104f, 140.744995f, -29.533369f, 629.556519f, 111.476059f, -42.468731f);

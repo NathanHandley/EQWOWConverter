@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(26, 52, 9, ZoneFogType.Heavy);
-            OverrideVertexColorIntensity(0.5f);
+            OverrideVertexColorIntensity(0.4f);
             AddZoneLineBox("beholder", 903.2041f, -1850.1808f, 1.0001143f, ZoneLineOrientationType.West, -102.775955f, 12.901143f, 15.468005f, -119.129944f, -8.304958f, -0.49999338f);
             AddZoneLineBox("misty", -816.631531f, 1427.580444f, -10.751390f, ZoneLineOrientationType.North, 271.099457f, 170f, 15.469000f, 250.497299f, 135.744324f, 0.501060f);
             AddOctagonLiquidShape(ZoneLiquidType.Water, "t50_agua1", 6.060460f, -4.080790f, 5.092600f, -5.076620f, 2.997610f, -2.994190f, 2.997610f, -2.994190f,

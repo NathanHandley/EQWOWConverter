@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             DisableSunlight();
-            OverrideVertexColorIntensity(0.5);
+            OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 608.765930f, -935.432007f, -82.499748f, 580.660583f, -947.818420f, -98.468742f);
             AddZoneLineBox("neriakc", 480.001648f, -809.905090f, -55.968712f, ZoneLineOrientationType.North, 75.090286f, 356.037201f, -375.374756f, 67.145378f, 341.312317f, -386.343719f);
             AddZoneLineBox("paineel", 588.502197f, -941.292969f, -93.159729f, ZoneLineOrientationType.South, 55.819328f, 375.380615f, -375.374756f, 41.268639f, 367.254913f, -386.343750f);
