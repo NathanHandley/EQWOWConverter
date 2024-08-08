@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public SkyshrineZoneProperties() : base()
         {
             SetBaseZoneProperties("skyshrine", "Skyshrine", -730f, -210f, 0f, 0, ZoneContinentType.Velious);
-            SetFogProperties(50, 0, 200, 100, 600);
         }
     }
 }

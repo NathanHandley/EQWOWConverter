@@ -81,16 +81,6 @@ namespace EQWOWConverter.Zones
             SafeOrientation = safeOrientation;
         }
 
-        protected void SetFogProperties(byte red, byte green, byte blue, int minClip, int maxClip)
-        {
-            // Does nothing for now
-            //FogColor.R = red;
-            //FogColor.G = green;
-            //FogColor.B = blue;
-            //FogMinClip = minClip;
-            //FogMaxClip = maxClip;
-        }
-
         protected void DisableSunlight()
         {
             HasShadowBox = true;

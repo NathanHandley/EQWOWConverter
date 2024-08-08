@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public SouthDesertOfRoZoneProperties() : base()
         {
             SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinentType.Antonica);
-            SetFogProperties(250, 250, 180, 10, 800);
             AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South, -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);
             AddZoneLineBox("oasis", -1859.231567f, 182.460098f, 2.406740f, ZoneLineOrientationType.North, 1526.327637f, 9.256500f, 131.793716f, 1478.424438f, 292.955048f, 1.148580f);
         }

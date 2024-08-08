@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public IcecladOceanZoneProperties() : base()
         {
             SetBaseZoneProperties("iceclad", "Iceclad Ocean", 340f, 5330f, -17f, 0, ZoneContinentType.Velious);
-            SetFogProperties(200, 200, 200, 200, 1800);
         }
     }
 }

@@ -28,7 +28,8 @@ namespace EQWOWConverter.Zones.Properties
         public SouthKaladimZoneProperties() : base()
         {
             SetBaseZoneProperties("kaladima", "South Kaladim", -2f, -18f, 3.75f, 0, ZoneContinentType.Faydwer);
-            SetFogProperties(70, 50, 20, 10, 175);
+            SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
+            OverrideVertexColorIntensity(0.5);
             AddZoneLineBox("butcher", 3121.1667f, -179.98013f, 0.00088672107f, ZoneLineOrientationType.South, -66.545395f, 47.896313f, 14.469f, -85.64434f, 34.009415f, -0.49999186f);
             AddZoneLineBox("kaladimb", 409.332306f, 340.759308f, -24.000509f, ZoneLineOrientationType.North, 334.304260f, 252.005707f, 16.310989f, 317.203705f, 225.868561f, 0.608990f);
             AddZoneLineBox("kaladimb", 394.005920f, -270.823303f, 0.000210f, ZoneLineOrientationType.North, 414.648987f, -209.715607f, 22.469000f, 405.986603f, -280f, -0.499960f);

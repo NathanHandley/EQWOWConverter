@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public ChardokZoneProperties() : base()
         {
             SetBaseZoneProperties("chardok", "Chardok", 859f, 119f, 106f, 0, ZoneContinentType.Kunark);
-            SetFogProperties(90, 53, 6, 30, 300);
             AddZoneLineBox("burningwood", 7357.6494f, -4147.4604f, -235.93742f, ZoneLineOrientationType.North,
                 -20.012981f, 879.84973f, 137.60643f, -70.907234f, 839.5071f, 99.46923f);
             AddZoneLineBox("burningwood", 7357.6494f, -4147.4604f, -235.93742f, ZoneLineOrientationType.North,

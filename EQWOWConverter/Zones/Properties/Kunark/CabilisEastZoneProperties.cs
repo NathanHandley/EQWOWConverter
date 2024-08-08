@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public CabilisEastZoneProperties() : base()
         {
             SetBaseZoneProperties("cabeast", "Cabilis East", -416f, 1343f, 4f, 0, ZoneContinentType.Kunark);
-            SetFogProperties(150, 120, 80, 40, 300);
             AddZoneLineBox("fieldofbone", -2557.7278f, 3688.0273f, 4.093815f, ZoneLineOrientationType.East,
                 1377.6309f, -455.81412f, 97.201485f, 1346.7754f, -497.1183f, -0.49989557f);
             AddZoneLineBox("fieldofbone", -2747.7383f, 3530.195f, 4.093984f, ZoneLineOrientationType.North,

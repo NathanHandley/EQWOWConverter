@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public SirensGrottoZoneProperties() : base()
         {
             SetBaseZoneProperties("sirens", "Siren's Grotto", -33f, 196f, 4f, 0, ZoneContinentType.Velious);
-            SetFogProperties(30, 100, 130, 10, 500);
             AddZoneLineBox("cobaltscar", 1584.026611f, 1626.080811f, 62.937771f, ZoneLineOrientationType.South,
                 -600.025208f, 83.160942f, -72.500954f, -625.650818f, 62.775249f, -97.468727f);
         }

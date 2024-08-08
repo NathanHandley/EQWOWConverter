@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public LakeOfIllOmenZoneProperties() : base()
         {
             SetBaseZoneProperties("lakeofillomen", "Lake of Ill Omen", -5383.07f, 5747.14f, 68.27f, 0, ZoneContinentType.Kunark);
-            SetFogProperties(235, 235, 235, 200, 800);
             AddZoneLineBox("cabwest", -802.654480f, 767.458740f, -0.000070f, ZoneLineOrientationType.North,
                 6577.715820f, -6613.837891f, 145.213730f, 6533.130859f, -6645.066895f, 34.593719f);
             AddZoneLineBox("cabwest", -985.943787f, 584.806458f, 0.000380f, ZoneLineOrientationType.East,

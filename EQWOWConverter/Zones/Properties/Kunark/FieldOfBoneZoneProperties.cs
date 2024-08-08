@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public FieldOfBoneZoneProperties() : base()
         {
             SetBaseZoneProperties("fieldofbone", "Field of Bone", 1617f, -1684f, -54.78f, 0, ZoneContinentType.Kunark);
-            SetFogProperties(235, 235, 235, 200, 800);
             AddZoneLineBox("cabeast", 1359.3015f, -435.72766f, 0.000174f, ZoneLineOrientationType.West,
                 -2541.8613f, 3747.162f, 50.543545f, -2570.4119f, 3699.717f, 3.5938148f);
             AddZoneLineBox("cabeast", 1179.1279f, -619.062f, 0.000174f, ZoneLineOrientationType.South,
