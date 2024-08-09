@@ -114,6 +114,15 @@ namespace EQWOWConverter.Zones
                     // Also rotate the X and Y positions around Z axis 180 degrees
                     lightInstance.Position.X = -lightInstance.Position.X;
                     lightInstance.Position.Y = -lightInstance.Position.Y;
+
+                    // If enabled, show light instances as torches for debugging
+                    if (Configuration.CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
+                    {
+                        ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
+                        doodadInstance.ObjectName = "torch";
+                        doodadInstance.Position = lightInstance.Position;
+                        DoodadInstances.Add(doodadInstance);
+                    }
                 }
             }
 

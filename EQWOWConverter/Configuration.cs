@@ -110,6 +110,9 @@ namespace EQWOWConverter
         // If true, light instances are enabled.  They don't work at this time, so leave false
         public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = true;
 
+        // If true, light instances are rendered as torches.  Use for debugging only, and typically leave false
+        public static readonly bool CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES = false;
+
         // Sets the modifier to add to the attenuation to define the start, calculated by multiplying this value to it
         public static readonly float CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION = 0.25f;
 
