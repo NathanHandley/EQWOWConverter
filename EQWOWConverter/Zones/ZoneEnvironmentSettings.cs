@@ -595,7 +595,7 @@ namespace EQWOWConverter.Zones
 
         // Used for outdoor zones that are foggy, but also have day/night cycles and potentially weather
         public void SetAsOutdoors(byte fogRedNoon, byte fogGreenNoon, byte fogBlueNoon, ZoneFogType fogType, bool isSkyVisible, float cloudDensity, 
-            float ambientBrightnessMod)
+            float ambientBrightnessMod, ZoneSkySpecialType skyTypeSpecial)
         {
             float fogDistance = 0;
             float fogDistanceMultiplier = 0;
@@ -648,54 +648,108 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(22));
             if (isSkyVisible == true)
             {
-                ParamatersClearWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(0, 0, 0);
-                ParamatersClearWeather.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(0, 0, 0);
-                ParamatersClearWeather.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(35, 74, 84);
-                ParamatersClearWeather.ParametersTimeSlices[3].SkyTopColor = new ColorRGBA(0, 31, 73);
-                ParamatersClearWeather.ParametersTimeSlices[4].SkyTopColor = new ColorRGBA(47, 53, 62);
-                ParamatersClearWeather.ParametersTimeSlices[5].SkyTopColor = new ColorRGBA(0, 0, 0);
-                ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleColor = new ColorRGBA(0, 12, 32);
-                ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleColor = new ColorRGBA(0, 12, 32);
-                ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleColor = new ColorRGBA(68, 140, 128);
-                ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleColor = new ColorRGBA(58, 162, 207);
-                ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleColor = new ColorRGBA(107, 92, 128);
-                ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleColor = new ColorRGBA(0, 12, 32);
-                ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
-                ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
-                ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleToHorizonColor = new ColorRGBA(210, 121, 72);
-                ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleToHorizonColor = new ColorRGBA(153, 220, 245);
-                ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleToHorizonColor = new ColorRGBA(148, 119, 101);
-                ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
-                ParamatersClearWeather.ParametersTimeSlices[0].SkyAboveHorizonColor = new ColorRGBA(27, 70, 112);
-                ParamatersClearWeather.ParametersTimeSlices[1].SkyAboveHorizonColor = new ColorRGBA(16, 40, 72);
-                ParamatersClearWeather.ParametersTimeSlices[2].SkyAboveHorizonColor = new ColorRGBA(255, 171, 64);
-                ParamatersClearWeather.ParametersTimeSlices[3].SkyAboveHorizonColor = new ColorRGBA(175, 218, 224);
-                ParamatersClearWeather.ParametersTimeSlices[4].SkyAboveHorizonColor = new ColorRGBA(181, 115, 66);
-                ParamatersClearWeather.ParametersTimeSlices[5].SkyAboveHorizonColor = new ColorRGBA(27, 70, 112);
-                ParamatersClearWeather.ParametersTimeSlices[0].SkyHorizonColor = new ColorRGBA(49, 86, 123);
-                ParamatersClearWeather.ParametersTimeSlices[1].SkyHorizonColor = new ColorRGBA(49, 60, 99);
-                ParamatersClearWeather.ParametersTimeSlices[2].SkyHorizonColor = new ColorRGBA(255, 202, 76);
-                ParamatersClearWeather.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(180, 180, 180);
-                ParamatersClearWeather.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(199, 130, 43);
-                ParamatersClearWeather.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(49, 86, 123);
-                ParamatersClearWeather.ParametersTimeSlices[0].SunColor = new ColorRGBA(232, 241, 255);
-                ParamatersClearWeather.ParametersTimeSlices[1].SunColor = new ColorRGBA(232, 241, 255);
-                ParamatersClearWeather.ParametersTimeSlices[2].SunColor = new ColorRGBA(255, 210, 150);
-                ParamatersClearWeather.ParametersTimeSlices[3].SunColor = new ColorRGBA(255, 247, 222);
-                ParamatersClearWeather.ParametersTimeSlices[4].SunColor = new ColorRGBA(255, 226, 169);
-                ParamatersClearWeather.ParametersTimeSlices[5].SunColor = new ColorRGBA(232, 241, 255);
-                ParamatersClearWeather.ParametersTimeSlices[0].SunLargeHaloColor = new ColorRGBA(50, 97, 132);
-                ParamatersClearWeather.ParametersTimeSlices[1].SunLargeHaloColor = new ColorRGBA(58, 95, 128);
-                ParamatersClearWeather.ParametersTimeSlices[2].SunLargeHaloColor = new ColorRGBA(255, 179, 60);
-                ParamatersClearWeather.ParametersTimeSlices[3].SunLargeHaloColor = new ColorRGBA(255, 199, 138);
-                ParamatersClearWeather.ParametersTimeSlices[4].SunLargeHaloColor = new ColorRGBA(255, 212, 160);
-                ParamatersClearWeather.ParametersTimeSlices[5].SunLargeHaloColor = new ColorRGBA(50, 97, 132);
-                ParamatersClearWeather.ParametersTimeSlices[0].CloudEdgeColor = new ColorRGBA(18, 56, 81);
-                ParamatersClearWeather.ParametersTimeSlices[1].CloudEdgeColor = new ColorRGBA(19, 67, 81);
-                ParamatersClearWeather.ParametersTimeSlices[2].CloudEdgeColor = new ColorRGBA(68, 162, 171);
-                ParamatersClearWeather.ParametersTimeSlices[3].CloudEdgeColor = new ColorRGBA(43, 105, 132);
-                ParamatersClearWeather.ParametersTimeSlices[4].CloudEdgeColor = new ColorRGBA(138, 93, 72);
-                ParamatersClearWeather.ParametersTimeSlices[5].CloudEdgeColor = new ColorRGBA(18, 56, 81);
+                if (skyTypeSpecial == ZoneSkySpecialType.FearPlane)
+                {
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(0, 0, 0); //
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(0, 0, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(84, 74, 35);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyTopColor = new ColorRGBA(73, 31, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyTopColor = new ColorRGBA(62, 53, 47);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyTopColor = new ColorRGBA(0, 0, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleColor = new ColorRGBA(32, 12, 0); //
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleColor = new ColorRGBA(32, 12, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleColor = new ColorRGBA(128, 140, 68);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleColor = new ColorRGBA(207, 162, 56);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleColor = new ColorRGBA(128, 92, 107);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleColor = new ColorRGBA(32, 12, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleToHorizonColor = new ColorRGBA(78, 40, 0); //
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleToHorizonColor = new ColorRGBA(78, 40, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleToHorizonColor = new ColorRGBA(210, 121, 72);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleToHorizonColor = new ColorRGBA(245, 220, 153);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleToHorizonColor = new ColorRGBA(148, 119, 101);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleToHorizonColor = new ColorRGBA(78, 40, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyAboveHorizonColor = new ColorRGBA(112, 70, 27); // 
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyAboveHorizonColor = new ColorRGBA(72, 40, 16);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyAboveHorizonColor = new ColorRGBA(255, 171, 64);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyAboveHorizonColor = new ColorRGBA(224, 218, 174);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyAboveHorizonColor = new ColorRGBA(181, 115, 66);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyAboveHorizonColor = new ColorRGBA(112, 70, 27);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyHorizonColor = new ColorRGBA(123, 86, 49); //
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyHorizonColor = new ColorRGBA(99, 60, 49);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyHorizonColor = new ColorRGBA(255, 202, 76);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(180, 180, 180);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(199, 130, 43);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(123, 86, 43);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SunColor = new ColorRGBA(255, 241, 232); // 
+                    ParamatersClearWeather.ParametersTimeSlices[1].SunColor = new ColorRGBA(255, 241, 223);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SunColor = new ColorRGBA(255, 210, 150);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SunColor = new ColorRGBA(255, 247, 222);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SunColor = new ColorRGBA(255, 226, 169);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SunColor = new ColorRGBA(255, 241, 232);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SunLargeHaloColor = new ColorRGBA(132, 97, 50); // 
+                    ParamatersClearWeather.ParametersTimeSlices[1].SunLargeHaloColor = new ColorRGBA(128, 95, 53);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SunLargeHaloColor = new ColorRGBA(255, 179, 60);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SunLargeHaloColor = new ColorRGBA(255, 199, 138);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SunLargeHaloColor = new ColorRGBA(255, 212, 160);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SunLargeHaloColor = new ColorRGBA(132, 97, 50);
+                    ParamatersClearWeather.ParametersTimeSlices[0].CloudEdgeColor = new ColorRGBA(81, 56, 18); //
+                    ParamatersClearWeather.ParametersTimeSlices[1].CloudEdgeColor = new ColorRGBA(81, 67, 19);
+                    ParamatersClearWeather.ParametersTimeSlices[2].CloudEdgeColor = new ColorRGBA(171, 162, 68);
+                    ParamatersClearWeather.ParametersTimeSlices[3].CloudEdgeColor = new ColorRGBA(132, 105, 43);
+                    ParamatersClearWeather.ParametersTimeSlices[4].CloudEdgeColor = new ColorRGBA(138, 93, 72);
+                    ParamatersClearWeather.ParametersTimeSlices[5].CloudEdgeColor = new ColorRGBA(81, 56, 18);
+                }
+                else
+                {
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyTopColor = new ColorRGBA(0, 0, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyTopColor = new ColorRGBA(0, 0, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyTopColor = new ColorRGBA(35, 74, 84);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyTopColor = new ColorRGBA(0, 31, 73);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyTopColor = new ColorRGBA(47, 53, 62);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyTopColor = new ColorRGBA(0, 0, 0);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleColor = new ColorRGBA(0, 12, 32);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleColor = new ColorRGBA(0, 12, 32);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleColor = new ColorRGBA(68, 140, 128);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleColor = new ColorRGBA(58, 162, 207);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleColor = new ColorRGBA(107, 92, 128);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleColor = new ColorRGBA(0, 12, 32);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyMiddleToHorizonColor = new ColorRGBA(210, 121, 72);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyMiddleToHorizonColor = new ColorRGBA(153, 220, 245);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyMiddleToHorizonColor = new ColorRGBA(148, 119, 101);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyMiddleToHorizonColor = new ColorRGBA(0, 40, 78);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyAboveHorizonColor = new ColorRGBA(27, 70, 112);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyAboveHorizonColor = new ColorRGBA(16, 40, 72);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyAboveHorizonColor = new ColorRGBA(255, 171, 64);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyAboveHorizonColor = new ColorRGBA(175, 218, 224);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyAboveHorizonColor = new ColorRGBA(181, 115, 66);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyAboveHorizonColor = new ColorRGBA(27, 70, 112);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SkyHorizonColor = new ColorRGBA(49, 86, 123);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SkyHorizonColor = new ColorRGBA(49, 60, 99);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SkyHorizonColor = new ColorRGBA(255, 202, 76);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SkyHorizonColor = new ColorRGBA(180, 180, 180);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SkyHorizonColor = new ColorRGBA(199, 130, 43);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SkyHorizonColor = new ColorRGBA(49, 86, 123);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SunColor = new ColorRGBA(232, 241, 255);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SunColor = new ColorRGBA(232, 241, 255);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SunColor = new ColorRGBA(255, 210, 150);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SunColor = new ColorRGBA(255, 247, 222);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SunColor = new ColorRGBA(255, 226, 169);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SunColor = new ColorRGBA(232, 241, 255);
+                    ParamatersClearWeather.ParametersTimeSlices[0].SunLargeHaloColor = new ColorRGBA(50, 97, 132);
+                    ParamatersClearWeather.ParametersTimeSlices[1].SunLargeHaloColor = new ColorRGBA(58, 95, 128);
+                    ParamatersClearWeather.ParametersTimeSlices[2].SunLargeHaloColor = new ColorRGBA(255, 179, 60);
+                    ParamatersClearWeather.ParametersTimeSlices[3].SunLargeHaloColor = new ColorRGBA(255, 199, 138);
+                    ParamatersClearWeather.ParametersTimeSlices[4].SunLargeHaloColor = new ColorRGBA(255, 212, 160);
+                    ParamatersClearWeather.ParametersTimeSlices[5].SunLargeHaloColor = new ColorRGBA(50, 97, 132);
+                    ParamatersClearWeather.ParametersTimeSlices[0].CloudEdgeColor = new ColorRGBA(18, 56, 81);
+                    ParamatersClearWeather.ParametersTimeSlices[1].CloudEdgeColor = new ColorRGBA(19, 67, 81);
+                    ParamatersClearWeather.ParametersTimeSlices[2].CloudEdgeColor = new ColorRGBA(68, 162, 171);
+                    ParamatersClearWeather.ParametersTimeSlices[3].CloudEdgeColor = new ColorRGBA(43, 105, 132);
+                    ParamatersClearWeather.ParametersTimeSlices[4].CloudEdgeColor = new ColorRGBA(138, 93, 72);
+                    ParamatersClearWeather.ParametersTimeSlices[5].CloudEdgeColor = new ColorRGBA(18, 56, 81);
+                }
                 ParamatersClearWeather.SetAllTimeSlicesCloudColor(0, 0, 0);
                 ParamatersClearWeather.SetAllTimeSlicesCelestialGlowThrough(1f);
             }

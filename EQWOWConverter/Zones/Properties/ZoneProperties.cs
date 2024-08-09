@@ -109,17 +109,25 @@ namespace EQWOWConverter.Zones
             float ambientBrightnessMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
+                Logger.WriteInfo("Warning: Environment set as outdoor with sky, but the zonewide environment settings were already set.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, true, cloudDensity, ambientBrightnessMod);
+            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, true, cloudDensity, ambientBrightnessMod, ZoneSkySpecialType.None);
         }
 
         protected void SetZonewideEnvironmentAsOutdoorsNoSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float ambientBrightnessMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
-                Logger.WriteInfo("Warning: Environment set as outdoors foggy, but the zonewide environment settings were already set. There could be issues.");
+                Logger.WriteInfo("Warning: Environment set as outdoor no sky, but the zonewide environment settings were already set");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
-            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, false, 1f, ambientBrightnessMod);
+            CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, false, 1f, ambientBrightnessMod, ZoneSkySpecialType.None);
+        }
+
+        protected void SetZonewideEnvironmentAsPlaneOfFear()
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as Plane of Fear, but the zonewide environment settings were already set");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsOutdoors(167, 33, 7, ZoneFogType.Medium, false, 0.75f, 1f, ZoneSkySpecialType.FearPlane);
         }
 
         protected void OverrideVertexColorIntensity(double overrideIntensityAmount)
