@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4f);
+            DisableSunlight();
             AddZoneLineBox("paineel", 721.470337f, -881.333069f, -36.999989f, ZoneLineOrientationType.South, 734.975342f, -874.463745f, -26.531000f, 713.524292f, -888.849182f, -37.499908f);
             AddZoneLineBox("stonebrunt", -3720.441895f, 2921.923096f, -39.687389f, ZoneLineOrientationType.South, -119.277092f, 1159.723511f, -93.500740f, -145.652954f, 1130f, -111.468353f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 617.556641f, 317.333496f, 545.656250f, 247.194733f, -114.968719f, 100f); // Pool
