@@ -1,12 +1,16 @@
 # EQ to WOW Converter
-Converts the EverQuest assets from the original three game releases (Initial, Ruins of Kunark, Scars of Velious) into World of Warcraft 3.3.5
+Converts the EverQuest assets from the original game into World of Warcraft 3.3.5
 
-<img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Loading-Velious.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/WestFreeportGate.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Rivervale.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/HighKeep.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/FirionaVie.png?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/CrystalCaverns.png?raw=true" width="300"/>
+<img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/WestFreeportInterior.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/ErudinDay.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/KelethinHighFog.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Neriak.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/Lavastorm.jpg?raw=true" width="300"/><img src="https://github.com/NathanHandley/EQWOWConverter/blob/Screenshots/AkanonMusings.jpg?raw=true" width="300"/>
 
 # Current State
-It is currently still in heavy development and things are changing daily.  Currently the maps are outputting with static objects, but there are several issues (lighting is wrong, etc)
-
-Current focus is on getting original/classic content polished, then Kunark and Velious will follow.  Note that Kunark and Velious static objects and maps are already exporting.
+It is currently still in heavy development and things are changing daily.  Currently these features are completed (for classic):
+- Map Geometry & Collision
+- Ladders
+- Water/Lava
+- Zone Lines
+- Fog / Environment Lighting
+- Vertex Colors (on WMOs)
 
 # Requirements
 - Windows build environment
@@ -68,6 +72,7 @@ Run the scripts located into the exports directory subfolder \AzerothCoreSQLScri
 **Regenerate map files for AzerothCore**
 
 - Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor (this is optional UNTIL creatures are implemented)
+NOTE: Having trouble with this, so this may not work for you as well.  Will debug later.
 
 # Special Thanks
 In no particular order...
