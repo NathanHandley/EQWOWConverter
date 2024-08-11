@@ -51,6 +51,11 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_m0002", 509.190308f, 33.766731f, 452.649292f, -25.908581f, -52.968712f, 50f); // Bottom area pool
             AddOctagonLiquidShape(ZoneLiquidType.Magma, "d_m0002", 489.820374f, 476.808990f, 13.012480f, -0.013940f, 9.020610f, 3.978410f,
                 9.020610f, 3.978410f, 485.784668f, 480.833710f, 485.784668f, 480.833710f, 5.000010f, 90f);
+            AddAlwaysBrightMaterial("d_lava001");
+            AddAlwaysBrightMaterial("d_lavafall1");
+            AddAlwaysBrightMaterial("d_m0002");
+            AddAlwaysBrightMaterial("d_m0003");
+            AddAlwaysBrightMaterial("d_underlava1");
         }
     }
 }

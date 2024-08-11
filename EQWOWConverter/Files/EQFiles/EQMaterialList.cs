@@ -115,7 +115,7 @@ namespace EQWOWConverter.EQFiles
 
                 // Create and add it
                 Material newMaterial = new Material(name, name, index, materialType, sourceTextureNameArray, animationDelayInMS, 
-                    sourceTextureWidth, sourceTextureHeight);
+                    sourceTextureWidth, sourceTextureHeight, false);
                 Materials.Add(newMaterial);
             }
 

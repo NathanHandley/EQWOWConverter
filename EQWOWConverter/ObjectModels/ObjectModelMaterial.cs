@@ -33,7 +33,7 @@ namespace EQWOWConverter.ObjectModels
         {
             Material = new Material(material);
             BlendingMode = blendType;
-            if (blendType == ObjectModelMaterialBlendType.Add)
+            if (blendType == ObjectModelMaterialBlendType.Add || material.AlwaysBrightOverride == true)
                 Flags |= ObjectModelMaterialFlag.Unlit;
             if (blendType == ObjectModelMaterialBlendType.Add || material.GetTransparencyValue() != Int16.MaxValue)
                 Flags |= ObjectModelMaterialFlag.DepthWrite;

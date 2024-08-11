@@ -81,6 +81,11 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Magma, "d_lava001", -537.387085f, -379.438049f, -545.856812f, -393.651611f, -51.968731f, 19.5f); // Lava north east bottom near falls
             AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Magma, "d_lava001", -535.108704f, -378.957306f, -546.292969f, -367.877228f, -551.902222f, -374.825226f,
                 -545.501892f, -397.644989f, -51.968731f, 19.5f, 2000f, 2000f, -2000f, -2000f, 0.4f); // Lave north top of falls
+            AddAlwaysBrightMaterial("d_lava001");
+            AddAlwaysBrightMaterial("d_lavafall1");
+            AddAlwaysBrightMaterial("d_m0002");
+            AddAlwaysBrightMaterial("d_m0008");
+            AddAlwaysBrightMaterial("d_underlava1");
         }
     }
 }

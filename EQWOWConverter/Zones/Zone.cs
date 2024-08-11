@@ -67,6 +67,11 @@ namespace EQWOWConverter.Zones
             ShortName = ZoneProperties.ShortName;
             Materials = EQZoneData.Materials;
 
+            // Update the materials
+            foreach (Material material in Materials)
+                if (ZoneProperties.AlwaysBrightMaterialsByName.Contains(material.Name) == true)
+                    material.AlwaysBrightOverride = true;
+
             // Add object instances
             foreach (ObjectInstance objectInstance in EQZoneData.ObjectInstances)
             {

@@ -41,6 +41,7 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
         public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
+        public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
 
         // Environment Properties
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
@@ -139,6 +140,12 @@ namespace EQWOWConverter.Zones
         {
             IsCompletelyInLiquid = true;
             CompletelyInLiquidType = liquidType;
+        }
+
+        protected void AddAlwaysBrightMaterial(string materialName)
+        {
+            if (AlwaysBrightMaterialsByName.Contains(materialName) == false)
+                AlwaysBrightMaterialsByName.Add(materialName);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)

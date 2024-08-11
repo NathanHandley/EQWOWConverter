@@ -195,7 +195,10 @@ namespace EQWOWConverter.WOWFiles
                 if (material.TextureNames.Count == 0)
                     hasNoTexture = true;
 
-                curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                if (material.AlwaysBrightOverride == true)
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WMOMaterialFlags.DisableLighting)));
+                else
+                    curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
                 //UInt32 materialFlags = GetPackedFlags(Convert.ToUInt32(WMOMaterialFlags.ClampTextureS), Convert.ToUInt32(WMOMaterialFlags.ClampTextureT));
                 //chunkBytes.AddRange(BitConverter.GetBytes(materialFlags));
 

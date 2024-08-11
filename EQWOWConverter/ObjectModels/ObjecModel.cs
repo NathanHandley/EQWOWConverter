@@ -511,7 +511,7 @@ namespace EQWOWConverter.ObjectModels
                     UInt32 newMaterialIndex = GetUniqueMaterialIDFromMaterials(expandedMaterials);
                     List<string> newMaterialTextureName = new List<string>() { initialMaterial.TextureNames[textureIter] };
                     Material newAnimationMaterial = new Material(curMaterialName, initialMaterial.UniqueName, newMaterialIndex, initialMaterial.MaterialType,
-                        newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight);
+                        newMaterialTextureName, initialMaterial.AnimationDelayMs, initialMaterial.TextureWidth, initialMaterial.TextureHeight, initialMaterial.AlwaysBrightOverride);
                     curMaterial = newAnimationMaterial;
                     expandedMaterials.Add(curMaterial);
                     curMaterialIndex = Convert.ToInt32(newMaterialIndex);
