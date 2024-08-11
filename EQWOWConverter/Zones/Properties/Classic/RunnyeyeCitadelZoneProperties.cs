@@ -57,6 +57,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t25_slime1", -1.994960f, -100.078423f, -65.945371f, -134.621674f, -99.968750f, 12f); // 3rd Level Slime - Between two inlets, just south of close stairs
             AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t25_slime1", 32.363239f, -103.054077f, -1.984960f, -134.381683f, -99.968750f, 12f); // 3rd Level Slime - Between two inlets, closer to the stairs
             AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t25_slime1", 33.061699f, 42.747589f, -37.459019f, -45.247662f, -93.968742f, 12f); // 3rd Level Slime - mid-step up pool
+            AddAlwaysBrightMaterial("d_herthwall");
+            AddAlwaysBrightMaterial("d_hearth1");
         }
     }
 }
