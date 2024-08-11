@@ -120,7 +120,14 @@ namespace EQWOWConverter.ObjectModels
             // Process materials
             List<Material> expandedMaterials = new List<Material>();
             foreach (Material material in initialMaterials)
+            {
+                // Mark exception materials that should always be bright
+                if (Properties.AlwaysBrightMaterialsByName.Contains(material.Name))
+                    material.AlwaysBrightOverride = true;
+
+                // Save on the exception list
                 expandedMaterials.Add(new Material(material));
+            }
             foreach (Material material in initialMaterials)
             {
                 // If animated, expand out into additional materials with additional geometry
@@ -389,10 +396,6 @@ namespace EQWOWConverter.ObjectModels
             CollisionPositions.Clear();
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
-
-            // Do nothing for collision-disabled objects
-            if (Properties.DisableCollision)
-                return;
 
             // Generate collision data if there is none and it's from an EQ object
             if (collisionVertices.Count == 0 && isFromRawEQObject == true)

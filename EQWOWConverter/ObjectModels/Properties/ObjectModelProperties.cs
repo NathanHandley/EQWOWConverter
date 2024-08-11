@@ -30,7 +30,7 @@ namespace EQWOWConverter.ObjectModels.Properties
 
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
-        public bool DisableCollision = false;
+        public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
 
         public ObjectModelProperties() { }
         protected ObjectModelProperties(string name)
@@ -43,9 +43,10 @@ namespace EQWOWConverter.ObjectModels.Properties
             CustomCollisionType = customCollisionType;
         }
 
-        protected void SetCollisionDisabled(bool disableCollision)
+        protected void AddAlwaysBrightMaterial(string materialName)
         {
-            DisableCollision = disableCollision;
+            if (AlwaysBrightMaterialsByName.Contains(materialName) == false)
+                AlwaysBrightMaterialsByName.Add(materialName);
         }
 
         public static ObjectModelProperties GetObjectPropertiesForObject(string objectName)
@@ -65,7 +66,10 @@ namespace EQWOWConverter.ObjectModels.Properties
             ObjectPropertiesByByName.Add("ladder20", new Ladder20ObjectProperties());
             ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());    
+            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());
+            ObjectPropertiesByByName.Add("slbraz101", new SLBraz101ObjectPreperties());
+            ObjectPropertiesByByName.Add("slfountain101", new SLFountain101ObjectProperties());
+            ObjectPropertiesByByName.Add("sltorch101", new SLTorch101ObjectProperties());
         }
     }
 }
