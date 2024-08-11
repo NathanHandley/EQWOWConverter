@@ -24,8 +24,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
-using EQWOWConverter.Objects;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -35,34 +35,34 @@ namespace EQWOWConverter.WOWFiles
         private M2SkinHeader Header = new M2SkinHeader();
         private List<byte> SkinBytes = new List<byte>();
 
-        public M2Skin(WOWObjectModelData wowModelObject)
+        public M2Skin(ObjectModel wowObjectModel)
         {
-            Name = wowModelObject.Name;
+            Name = wowObjectModel.Name;
             SkinBytes.Clear();
             List<byte> nonHeaderBytes = new List<byte>();
             int curOffset = Header.GetSize();
 
             // Indices
-            List<byte> indicesBytes = GenerateIndicesBlock(wowModelObject);
-            Header.Indices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVertices.Count));
+            List<byte> indicesBytes = GenerateIndicesBlock(wowObjectModel);
+            Header.Indices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelVertices.Count));
             curOffset += indicesBytes.Count;
             nonHeaderBytes.AddRange(indicesBytes);
 
             // Triangles
-            List<byte> triangleBytes = GenerateTrianglesBlock(wowModelObject);
-            Header.TriangleIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelTriangles.Count * 3));
+            List<byte> triangleBytes = GenerateTrianglesBlock(wowObjectModel);
+            Header.TriangleIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelTriangles.Count * 3));
             curOffset += triangleBytes.Count;
             nonHeaderBytes.AddRange(triangleBytes);
 
             // Bone Indices
-            List<byte> boneIndicesBytes = GenerateBoneIndicesBlock(wowModelObject);
-            Header.BoneIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowModelObject.ModelVertices.Count));
+            List<byte> boneIndicesBytes = GenerateBoneIndicesBlock(wowObjectModel);
+            Header.BoneIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelVertices.Count));
             curOffset += boneIndicesBytes.Count;
             nonHeaderBytes.AddRange(boneIndicesBytes);
 
             // SubMeshes
             List<M2SkinTextureUnit> textureUnits;
-            List<byte> subMeshesBytes = GenerateSubMeshesBlock(wowModelObject, out textureUnits);
+            List<byte> subMeshesBytes = GenerateSubMeshesBlock(wowObjectModel, out textureUnits);
             Header.SubMeshes.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(textureUnits.Count));     // 1 sub mesh per texture unit
             curOffset += subMeshesBytes.Count;
             nonHeaderBytes.AddRange(subMeshesBytes);
@@ -80,7 +80,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Indices
         /// </summary>
-        private List<byte> GenerateIndicesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateIndicesBlock(ObjectModel modelObject)
         {
             List<byte> blockBytes = new List<byte>();
             for (UInt16 i = 0; i < modelObject.ModelVertices.Count; ++i)
@@ -91,7 +91,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Triangles
         /// </summary>
-        private List<byte> GenerateTrianglesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateTrianglesBlock(ObjectModel modelObject)
         {
             List<byte> blockBytes = new List<byte>();
             foreach (TriangleFace triangle in modelObject.ModelTriangles)
@@ -102,10 +102,10 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// Bone Indices
         /// </summary>
-        private List<byte> GenerateBoneIndicesBlock(WOWObjectModelData modelObject)
+        private List<byte> GenerateBoneIndicesBlock(ObjectModel modelObject)
         {
             List<byte> blockBytes = new List<byte>();
-            foreach(ModelVertex modelVertex in modelObject.ModelVertices)
+            foreach(ObjectModelVertex modelVertex in modelObject.ModelVertices)
             {
                 M2SkinBoneIndices curIndices = new M2SkinBoneIndices(modelVertex.BoneIndices);
                 blockBytes.AddRange(curIndices.ToBytes());
@@ -116,7 +116,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// SubMeshes
         /// </summary>
-        private List<byte> GenerateSubMeshesBlock(WOWObjectModelData modelObject, out List<M2SkinTextureUnit> textureUnits)
+        private List<byte> GenerateSubMeshesBlock(ObjectModel modelObject, out List<M2SkinTextureUnit> textureUnits)
         {
             textureUnits = new List<M2SkinTextureUnit>();
 
@@ -124,7 +124,7 @@ namespace EQWOWConverter.WOWFiles
             // Note: It's expected that triangles and vertices are sorted by texture already
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
             UInt16 materialIter = 0;
-            foreach (ModelMaterial material in modelObject.ModelMaterials)
+            foreach (ObjectModelMaterial material in modelObject.ModelMaterials)
             {
                 // Find the geometry offsets related to this material
                 int startTriangleIndex = -1;
@@ -155,7 +155,7 @@ namespace EQWOWConverter.WOWFiles
                 // Build the sub mesh
                 M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
                     Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3));
-                List<ModelVertex> subMeshVertices = new List<ModelVertex>();
+                List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
                 foreach (int vertexIndex in countedVertexIndices)
                     subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
                 curSubMesh.CalculatePositionAndBoundingData(subMeshVertices);

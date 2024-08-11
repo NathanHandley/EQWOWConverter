@@ -20,8 +20,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
-using EQWOWConverter.Objects;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
             TriangleIndexCount = triangleIndexCount;
         }
 
-        public void CalculatePositionAndBoundingData(List<ModelVertex> modelVertices)
+        public void CalculatePositionAndBoundingData(List<ObjectModelVertex> modelVertices)
         {
             // Do nothing if empty
             if (modelVertices.Count == 0)
@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             float totalX = 0;
             float totalY = 0;
             float totalZ = 0;
-            foreach (ModelVertex vertex in modelVertices)
+            foreach (ObjectModelVertex vertex in modelVertices)
             {
                 totalX += vertex.Position.X;
                 totalY += vertex.Position.Y;

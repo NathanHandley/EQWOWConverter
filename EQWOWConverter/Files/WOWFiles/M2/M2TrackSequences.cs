@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,11 +26,11 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2TrackSequences<T> where T : IByteSerializable
     {
-        public ModelTrackSequences<T> TrackSequences;
+        public ObjectModelTrackSequences<T> TrackSequences;
         public UInt32 TimestampsOffset = 0;
         public UInt32 ValuesOffset = 0;
 
-        public M2TrackSequences(ModelTrackSequences<T> trackSequences)
+        public M2TrackSequences(ObjectModelTrackSequences<T> trackSequences)
         {
             TrackSequences = trackSequences;
         }
@@ -69,13 +69,13 @@ namespace EQWOWConverter.WOWFiles
             // Set space aside for timestamp headers
             TimestampsOffset = Convert.ToUInt32(byteBuffer.Count);
             UInt32 timestampHeaderBlockSize = 0;
-            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+            foreach (ObjectModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
                 timestampHeaderBlockSize += timestamp.GetHeaderSize();
 
             // Set space aside for the value headers
             ValuesOffset = TimestampsOffset + timestampHeaderBlockSize;
             UInt32 valueHeaderBlockSize = 0;
-            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+            foreach (ObjectModelTrackSequenceValues<T> values in TrackSequences.Values)
                 valueHeaderBlockSize += values.GetHeaderSize();
 
             // Reserve the space for all headers in the byte buffer
@@ -84,14 +84,14 @@ namespace EQWOWConverter.WOWFiles
                 byteBuffer.Add(0);
 
             // Add timestamp data
-            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+            foreach (ObjectModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
             {
                 timestamp.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(timestamp.GetDataBytes());
             }
 
             // Add value data
-            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+            foreach (ObjectModelTrackSequenceValues<T> values in TrackSequences.Values)
             {
                 values.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(values.GetDataBytes());
@@ -99,9 +99,9 @@ namespace EQWOWConverter.WOWFiles
 
             // Write the track header data
             List<byte> trackHeaderBytes = new List<byte>();
-            foreach (ModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
+            foreach (ObjectModelTrackSequenceTimestamps timestamp in TrackSequences.Timestamps)
                 trackHeaderBytes.AddRange(timestamp.GetHeaderBytes());
-            foreach (ModelTrackSequenceValues<T> values in TrackSequences.Values)
+            foreach (ObjectModelTrackSequenceValues<T> values in TrackSequences.Values)
                 trackHeaderBytes.AddRange(values.GetHeaderBytes());
             for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
                 byteBuffer[i + Convert.ToInt32(TimestampsOffset)] = trackHeaderBytes[i];

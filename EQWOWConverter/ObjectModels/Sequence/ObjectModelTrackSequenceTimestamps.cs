@@ -14,46 +14,50 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWFiles
+namespace EQWOWConverter.ObjectModels
 {
-    internal class M2Texture
+    internal class ObjectModelTrackSequenceTimestamps
     {
-        public ObjectModelTexture Texture;
-        public string FullTexturePath;
-        public UInt32 FileNameLength = 0;
-        public UInt32 FileNameOffset = 0;
+        public List<UInt32> Timestamps = new List<UInt32>();
+        public UInt32 DataOffset = 0;
 
-        public M2Texture(ObjectModelTexture texture, string textureFolder)
+        public void AddTimestamp(UInt32 timestamp)
         {
-            Texture = texture;
-            FullTexturePath = Path.Combine(textureFolder, texture.TextureName + ".blp\0");
-            FileNameLength = Convert.ToUInt32(FullTexturePath.Length);
+            Timestamps.Add(timestamp);
         }
-
+                
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
-            size += 4;  // Type
-            size += 4;  // WrapType
-            size += 4;  // Texture Name Length
-            size += 4;  // Texture Offset
+            size += 4; // Number of elements
+            size += 4; // Data offset
             return size;
         }
 
-        public List<byte> GetHeaderBytes()
+        public UInt32 GetDataSize()
+        {
+            return Convert.ToUInt32(Timestamps.Count * 4);
+        }
+
+        public List<Byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Texture.Type)));
-            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Texture.WrapType)));
-            bytes.AddRange(BitConverter.GetBytes(FileNameLength));
-            bytes.AddRange(BitConverter.GetBytes(FileNameOffset));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
+            bytes.AddRange(BitConverter.GetBytes(DataOffset));
+            return bytes;
+        }
+
+        public List<Byte> GetDataBytes()
+        {
+            List<Byte> bytes = new List<Byte>();
+            foreach (UInt32 value in Timestamps)
+                bytes.AddRange(BitConverter.GetBytes(value));
             return bytes;
         }
     }

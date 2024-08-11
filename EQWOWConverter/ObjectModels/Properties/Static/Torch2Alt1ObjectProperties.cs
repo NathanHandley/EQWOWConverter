@@ -20,14 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels.Properties
 {
-    internal enum ZoneObjectModelType
+    internal class Torch2Alt1ObjectProperties : ObjectModelProperties
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        public Torch2Alt1ObjectProperties()
+        {
+            SetCustomCollisionType(ObjectModelCustomCollisionType.ReducedBoxBoundary);
+        }
     }
 }

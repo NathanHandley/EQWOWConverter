@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,9 +30,9 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 Offset = 0;
         private List<M2Bone> Bones = new List<M2Bone>();
 
-        public void AddModelBones(List<ModelBone> bones)
+        public void AddModelBones(List<ObjectModelBone> bones)
         {
-            foreach(ModelBone bone in bones)
+            foreach(ObjectModelBone bone in bones)
             {
                 Bones.Add(new M2Bone(bone));
             }

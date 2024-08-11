@@ -14,20 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels
 {
-    internal enum ZoneObjectModelType
+    internal class ObjectModelBone
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        public Int32 KeyBoneID = -1;
+        public ObjectModelBoneFlags Flags = 0;
+        public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
+        public UInt16 SubMeshID = 0;
+        public UInt32 BoneNameCRC = 0;
+        public ObjectModelTrackSequences<Vector3> TranslationTrack = new ObjectModelTrackSequences<Vector3>();
+        public ObjectModelTrackSequences<Quaternion> RotationTrack = new ObjectModelTrackSequences<Quaternion>();
+        public ObjectModelTrackSequences<Vector3> ScaleTrack = new ObjectModelTrackSequences<Vector3>();
+        public Vector3 PivotPoint = new Vector3();
     }
 }

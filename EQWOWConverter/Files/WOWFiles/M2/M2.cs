@@ -22,8 +22,8 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
-using EQWOWConverter.Objects;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
@@ -35,18 +35,18 @@ namespace EQWOWConverter.WOWFiles
         private M2StringByOffset Name = new M2StringByOffset(string.Empty);
         private M2Flags Flags = 0; // UInt32
         private M2GenericArrayByOffset<M2Timestamp> GlobalLoopTimestamps = new M2GenericArrayByOffset<M2Timestamp>();
-        private M2GenericArrayByOffset<ModelAnimation> AnimationSequences = new M2GenericArrayByOffset<ModelAnimation>();
+        private M2GenericArrayByOffset<ObjectModelAnimation> AnimationSequences = new M2GenericArrayByOffset<ObjectModelAnimation>();
         private M2GenericArrayByOffset<M2Int16> AnimationSequenceLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2BoneArrayByOffset Bones = new M2BoneArrayByOffset();
         private M2GenericArrayByOffset<M2Int16> BoneKeyLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2GenericArrayByOffset<ModelVertex> Vertices = new M2GenericArrayByOffset<ModelVertex>();
+        private M2GenericArrayByOffset<ObjectModelVertex> Vertices = new M2GenericArrayByOffset<ObjectModelVertex>();
         private UInt32 SkinProfileCount = 0;
         private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
         private M2TrackSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackSequencesArrayByOffset<Fixed16>();
         private M2TextureAnimationArrayByOffset TextureAnimations = new M2TextureAnimationArrayByOffset();
         private M2GenericArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2GenericArrayByOffset<ModelMaterial> Materials = new M2GenericArrayByOffset<ModelMaterial>();
+        private M2GenericArrayByOffset<ObjectModelMaterial> Materials = new M2GenericArrayByOffset<ObjectModelMaterial>();
         private M2GenericArrayByOffset<M2Int16> BoneLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Int16> TextureLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Int16> TextureMappingLookup = new M2GenericArrayByOffset<M2Int16>();
@@ -71,37 +71,37 @@ namespace EQWOWConverter.WOWFiles
 
         public M2Skin Skin;
 
-        public M2(WOWObjectModelData wowModelObject, string mpqObjectFolder)
+        public M2(ObjectModel wowObjectModel, string mpqObjectFolder)
         {
             // Populate the M2 Data objects
-            Name = new M2StringByOffset(wowModelObject.Name);
+            Name = new M2StringByOffset(wowObjectModel.Name);
             Textures = new M2TextureArrayByOffset(mpqObjectFolder);
-            PopulateElements(wowModelObject, mpqObjectFolder);
-            Skin = new M2Skin(wowModelObject);
+            PopulateElements(wowObjectModel, mpqObjectFolder);
+            Skin = new M2Skin(wowObjectModel);
         }
 
-        private void PopulateElements(WOWObjectModelData wowModelObject, string mpqObjectFolder)
+        private void PopulateElements(ObjectModel wowObjectModel, string mpqObjectFolder)
         {
             // Global Loop Timestamps
-            foreach (UInt32 timestamp in wowModelObject.GlobalLoopSequenceLimits)
+            foreach (UInt32 timestamp in wowObjectModel.GlobalLoopSequenceLimits)
                 GlobalLoopTimestamps.Add(new M2Timestamp(timestamp));
 
             // Animation Sequences
-            AnimationSequences.AddArray(wowModelObject.ModelAnimations);
+            AnimationSequences.AddArray(wowObjectModel.ModelAnimations);
 
             // Animation Sequence ID Lookup
-            foreach (Int16 value in wowModelObject.AnimationSequenceIDLookups)
+            foreach (Int16 value in wowObjectModel.AnimationSequenceIDLookups)
                 AnimationSequenceLookup.Add(new M2Int16(value));
 
             // Bones
-            Bones.AddModelBones(wowModelObject.ModelBones);
+            Bones.AddModelBones(wowObjectModel.ModelBones);
 
             // Key Bone ID Lookup
-            foreach (Int16 value in wowModelObject.ModelBoneKeyLookups)
+            foreach (Int16 value in wowObjectModel.ModelBoneKeyLookups)
                 BoneKeyLookup.Add(new M2Int16(value));
 
             // Vertices
-            Vertices.AddArray(wowModelObject.ModelVertices);
+            Vertices.AddArray(wowObjectModel.ModelVertices);
 
             // Number of Skin Profiles
             SkinProfileCount = 1;  // Fix to 1 for now
@@ -110,62 +110,62 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Textures
-            Textures.AddModelTextures(wowModelObject.ModelTextures);
+            Textures.AddModelTextures(wowObjectModel.ModelTextures);
 
             // Texture Transparency Sequences
-            foreach(var transparencySequenceSet in wowModelObject.ModelTextureTransparencySequenceSetByMaterialIndex)
+            foreach(var transparencySequenceSet in wowObjectModel.ModelTextureTransparencySequenceSetByMaterialIndex)
                 TextureTransparencySequences.Add(transparencySequenceSet.Value);
 
             // Texture Transforms
-            TextureAnimations.AddModelTextureAnimations(wowModelObject.ModelTextureAnimations);
+            TextureAnimations.AddModelTextureAnimations(wowObjectModel.ModelTextureAnimations);
 
             // Replaceable Texture ID Lookup
-            foreach (Int16 value in wowModelObject.ModelReplaceableTextureLookups)
+            foreach (Int16 value in wowObjectModel.ModelReplaceableTextureLookups)
                 ReplaceableTextureLookup.Add(new M2Int16(value));
 
             // Materials
-            Materials.AddArray(wowModelObject.ModelMaterials);
+            Materials.AddArray(wowObjectModel.ModelMaterials);
 
             // Bone Lookup
-            foreach (Int16 value in wowModelObject.ModelBoneLookups)
+            foreach (Int16 value in wowObjectModel.ModelBoneLookups)
                 BoneLookup.Add(new M2Int16(value));
 
             // Texture Lookup
-            foreach (Int16 value in wowModelObject.ModelTextureLookups)
+            foreach (Int16 value in wowObjectModel.ModelTextureLookups)
                 TextureLookup.Add(new M2Int16(value));
 
             // Texture Mapping Lookup
-            foreach (Int16 value in wowModelObject.ModelTextureMappingLookups)
+            foreach (Int16 value in wowObjectModel.ModelTextureMappingLookups)
                 TextureMappingLookup.Add(new M2Int16(value));
 
             // Texture Transparency Lookup (Weights)
-            foreach (var transparencyValue in wowModelObject.ModelTextureTransparencyLookups)
+            foreach (var transparencyValue in wowObjectModel.ModelTextureTransparencyLookups)
                 TextureTransparencyLookup.Add(new M2Int16(Convert.ToInt16(transparencyValue)));
 
             // Texture Transformations Lookup
-            foreach (Int16 value in wowModelObject.ModelTextureAnimationLookup)
+            foreach (Int16 value in wowObjectModel.ModelTextureAnimationLookup)
                 TextureAnimationsLookup.Add(new M2Int16(value));
 
             // Bounding Box
-            BoundingBox = wowModelObject.BoundingBox;
+            BoundingBox = wowObjectModel.BoundingBox;
 
             // Bounding Sphere Radius
-            BoundingSphereRadius = wowModelObject.BoundingSphereRadius;
+            BoundingSphereRadius = wowObjectModel.BoundingSphereRadius;
 
             // Collision Box
-            CollisionBox = wowModelObject.CollisionBoundingBox;
+            CollisionBox = wowObjectModel.CollisionBoundingBox;
 
             // Collision Sphere Raidus
-            CollisionSphereRadius = wowModelObject.CollisionSphereRaidus;
+            CollisionSphereRadius = wowObjectModel.CollisionSphereRaidus;
 
             // Collision Triangle Incidies
-            CollisionTriangleIndices.AddArray(wowModelObject.CollisionTriangles);
+            CollisionTriangleIndices.AddArray(wowObjectModel.CollisionTriangles);
 
             // Collision Vertices
-            CollisionVertices.AddArray(wowModelObject.CollisionPositions);
+            CollisionVertices.AddArray(wowObjectModel.CollisionPositions);
 
             // Collision Face Normals
-            CollisionFaceNormals.AddArray(wowModelObject.CollisionFaceNormals);
+            CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
 
             // Attachments
             // none for now

@@ -20,14 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels.Properties
 {
-    internal enum ZoneObjectModelType
+    internal class Ladder20ObjectProperties : ObjectModelProperties
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        public Ladder20ObjectProperties() 
+        {
+            SetCustomCollisionType(ObjectModelCustomCollisionType.Ladder);
+        }        
     }
 }

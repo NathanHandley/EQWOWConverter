@@ -20,14 +20,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels
 {
-    internal enum ZoneObjectModelType
+    internal enum ObjectModelTextureType : UInt32
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        Hardcoded = 0, // Nothing special
+        BodySkin = 1,
+        ObjectSkin = 2, // Capes
+        WeaponBlade = 3,
+        WeaponHandle = 4,
+        // 5 Obsolete
+        CharacterHair = 6,
+        // 7-10 Skip
+        CreatureSkin1 = 11
     }
 }

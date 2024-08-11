@@ -27,13 +27,13 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZoneModelObject
+    internal class ZoneObjectModel
     {
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
         public bool IsLoaded = false;
-        public ZoneModelObjectType WMOType = ZoneModelObjectType.Rendered;
+        public ZoneObjectModelType WMOType = ZoneObjectModelType.Rendered;
         public List<Material> Materials = new List<Material>();
         public MeshData MeshData = new MeshData();
         public List<ZoneRenderBatch> RenderBatches = new List<ZoneRenderBatch>();
@@ -47,7 +47,7 @@ namespace EQWOWConverter.Zones
         public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
 
-        public ZoneModelObject()
+        public ZoneObjectModel()
         {
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
@@ -55,7 +55,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.LiquidVolume;
+            WMOType = ZoneObjectModelType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidPlane = liquidPlane;
@@ -66,7 +66,7 @@ namespace EQWOWConverter.Zones
         public void LoadAsLiquidPlane(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
             ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.LiquidPlane;
+            WMOType = ZoneObjectModelType.LiquidPlane;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
@@ -78,7 +78,7 @@ namespace EQWOWConverter.Zones
         public void LoadAsRendered(MeshData meshData, List<Material> materials, List<ZoneDoodadInstance> zoneWideDoodadInstances,
             List<LightInstance> lightInstances, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.Rendered;
+            WMOType = ZoneObjectModelType.Rendered;
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
@@ -98,7 +98,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsCollision(MeshData collisionMeshData, List<ZoneDoodadInstance> zoneWideDoodadInstances, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.Collision;
+            WMOType = ZoneObjectModelType.Collision;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
@@ -116,7 +116,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsShadowBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneModelObjectType.ShadowBox;
+            WMOType = ZoneObjectModelType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
             ZoneShadowBox shadowBox = new ZoneShadowBox(boundingBox, materials, zoneProperties.ShortName);
@@ -202,7 +202,7 @@ namespace EQWOWConverter.Zones
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (LightInstanceIDs.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
-            if (WMOType == ZoneModelObjectType.Rendered && MeshData.VertexColors.Count > 0)
+            if (WMOType == ZoneObjectModelType.Rendered && MeshData.VertexColors.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
             return headerFlags;
         }

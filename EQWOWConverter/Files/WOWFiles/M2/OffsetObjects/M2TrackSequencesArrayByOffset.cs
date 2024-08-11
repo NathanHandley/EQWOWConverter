@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,13 +30,13 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 Count = 0;
         private UInt32 Offset = 0;
 
-        public void Add(ModelTrackSequences<T> modelTrackSequences)
+        public void Add(ObjectModelTrackSequences<T> modelTrackSequences)
         {
             TrackSequences.Add(new M2TrackSequences<T>(modelTrackSequences));
             Count = Convert.ToUInt32(TrackSequences.Count);
         }
 
-        public void AddArray(List<ModelTrackSequences<T>> trackSequences)
+        public void AddArray(List<ObjectModelTrackSequences<T>> trackSequences)
         {
             foreach(var trackSequence in trackSequences)
                 Add(trackSequence);

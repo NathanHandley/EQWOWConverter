@@ -118,7 +118,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.ZoneModelObjects.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.ZoneObjectModels.Count())));
 
             // Number of Portals (rendering related, not going to use it for now)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));    
@@ -314,13 +314,13 @@ namespace EQWOWConverter.WOWFiles
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(ZoneModelObject curWorldModelObject in zone.ZoneModelObjects)
+            foreach(ZoneObjectModel curWorldObjectModel in zone.ZoneObjectModels)
             {
                 // Header flags
-                chunkBytes.AddRange(BitConverter.GetBytes(curWorldModelObject.GenerateWMOHeaderFlags()));
+                chunkBytes.AddRange(BitConverter.GetBytes(curWorldObjectModel.GenerateWMOHeaderFlags()));
 
                 // Use the bounding box
-                chunkBytes.AddRange(curWorldModelObject.BoundingBox.ToBytesHighRes());
+                chunkBytes.AddRange(curWorldObjectModel.BoundingBox.ToBytesHighRes());
 
                 // Group name is the first offset
                 chunkBytes.AddRange(BitConverter.GetBytes(GroupNameOffset));

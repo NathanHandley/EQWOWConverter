@@ -20,14 +20,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels
 {
-    internal enum ZoneObjectModelType
+    // Pulled from wowdev.wiki
+    internal enum ObjectModelBoneFlags : UInt32
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        IgnoreParentTranslate       = 0x1,
+        IgnoreParentScale           = 0x2,
+        IgnoreParentRotation        = 0x4,
+        SphericalBillboard          = 0x8,
+        CylindricalBillboardLockX   = 0x10,
+        CylindricalBillboardLockY   = 0x20,
+        CylindricalBillboardLockZ   = 0x40,
+        Transformed                 = 0x200,
     }
 }

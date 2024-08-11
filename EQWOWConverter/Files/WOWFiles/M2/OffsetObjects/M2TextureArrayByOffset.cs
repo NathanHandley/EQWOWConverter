@@ -14,8 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ModelObjects;
-using EQWOWConverter.Objects;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,9 +36,9 @@ namespace EQWOWConverter.WOWFiles
             TextureFolder = textureFolder;
         }
 
-        public void AddModelTextures(List<ModelTexture> modelTextures)
+        public void AddModelTextures(List<ObjectModelTexture> modelTextures)
         {
-            foreach(ModelTexture texture in modelTextures)
+            foreach(ObjectModelTexture texture in modelTextures)
             {
                 Textures.Add(new M2Texture(texture, TextureFolder));
             }

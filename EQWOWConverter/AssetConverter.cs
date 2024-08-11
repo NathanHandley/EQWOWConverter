@@ -24,11 +24,11 @@ using System.Threading.Tasks;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using EQWOWConverter.Common;
-using EQWOWConverter.Objects;
+using EQWOWConverter.ObjectModels;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
-using EQWOWConverter.ModelObjects;
-using EQWOWConverter.Objects.Properties;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Files.WOWFiles;
 
 namespace EQWOWConverter
@@ -84,7 +84,7 @@ namespace EQWOWConverter
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
             DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
             FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            List<ModelObject> staticObjects = new List<ModelObject>();
+            List<ObjectModel> staticObjects = new List<ObjectModel>();
             foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
@@ -95,10 +95,10 @@ namespace EQWOWConverter
                     continue;
 
                 // Load the EQ object
-                ObjectProperties objectProperties = ObjectProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
-                ModelObject curObject = new ModelObject(staticObjectMeshNameNoExt);
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
+                ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-                curObject.LoadEQObjectData(staticObjectMeshNameNoExt, objectFolderRoot, objectProperties);
+                curObject.LoadEQObjectData(objectFolderRoot);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object
@@ -107,7 +107,7 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
-                ExportTexturesForObject(curObject.WOWModelObjectData, objectTextureFolder, curStaticObjectOutputFolder);
+                ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
 
                 // Save the object
                 staticObjects.Add(curObject);
@@ -223,7 +223,7 @@ namespace EQWOWConverter
             zoneWDL.WriteToDisk(exportMPQRootFolder);
 
             // Create the zone-specific object files
-            foreach(WOWObjectModelData zoneObject in zone.GeneratedZoneObjects)
+            foreach(ObjectModel zoneObject in zone.GeneratedZoneObjects)
             {
                 // Recreate the folder if needed
                 string curZoneObjectRelativePath = Path.Combine(relativeExportObjectsFolder, zoneObject.Name);
@@ -240,15 +240,15 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
-        public static void CreateWoWObjectFromEQObject(ModelObject modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
+        public static void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
         {
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
 
             // Generate the object
-            modelObject.PopulateWOWModelObjectDataFromEQModelObjectData();
+            modelObject.PopulateObjectModelFromEQObjectModelData();
 
             // Create the M2 and Skin
-            M2 objectM2 = new M2(modelObject.WOWModelObjectData, mpqObjectPathRelative);
+            M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
             objectM2.WriteToDisk(modelObject.Name, exportMPQObjectRootFolder);
 
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
@@ -374,7 +374,7 @@ namespace EQWOWConverter
                 mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.LoadingScreenID);
                 difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
-                foreach (ZoneModelObject wmo in zone.ZoneModelObjects)
+                foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
                         Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
@@ -477,9 +477,9 @@ namespace EQWOWConverter
             }
 
             // Also copy textures for the zone specific objects
-            foreach (WOWObjectModelData zoneObject in zone.GeneratedZoneObjects)
+            foreach (ObjectModel zoneObject in zone.GeneratedZoneObjects)
             {
-                foreach(ModelTexture texture in zoneObject.ModelTextures)
+                foreach(ObjectModelTexture texture in zoneObject.ModelTextures)
                 {
                     string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", texture.TextureName + ".blp");
                     string outputTextureFullPath = Path.Combine(wowExportPath, objectExportPath, zoneObject.Name, texture.TextureName + ".blp");
@@ -496,12 +496,12 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
         }
 
-        public static void ExportTexturesForObject(WOWObjectModelData wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
+        public static void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
         {
             Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
 
             // Go through every texture and copy it
-            foreach(ModelTexture texture in wowObjectModelData.ModelTextures)
+            foreach(ObjectModelTexture texture in wowObjectModelData.ModelTextures)
             {
                 string inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(objectExportPath, texture.TextureName + ".blp");

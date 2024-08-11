@@ -16,18 +16,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Tracing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels.Properties
 {
-    internal enum ZoneObjectModelType
+    internal enum ObjectModelCustomCollisionType
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        None,
+        Ladder,
+        ReducedBoxBoundary
     }
 }

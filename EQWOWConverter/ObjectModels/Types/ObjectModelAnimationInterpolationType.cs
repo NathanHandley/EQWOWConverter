@@ -20,14 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels
 {
-    internal enum ZoneObjectModelType
+    internal enum ObjectModelAnimationInterpolationType : UInt16
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        None                = 0,
+        Linear              = 1,
+        CubicBezierSpline   = 2,
+        CubicHermiteSpline  = 3
     }
 }

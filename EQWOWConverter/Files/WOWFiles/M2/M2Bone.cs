@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,12 +26,12 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2Bone
     {
-        public ModelBone Bone;
+        public ObjectModelBone Bone;
         public M2TrackSequences<Vector3> TranslationTrack;
         public M2TrackSequences<Quaternion> RotationTrack;
         public M2TrackSequences<Vector3> ScaleTrack;
 
-        public M2Bone(ModelBone modelBone)
+        public M2Bone(ObjectModelBone modelBone)
         {
             Bone = modelBone;
             TranslationTrack = new M2TrackSequences<Vector3>(modelBone.TranslationTrack);

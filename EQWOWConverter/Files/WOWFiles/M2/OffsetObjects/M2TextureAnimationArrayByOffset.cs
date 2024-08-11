@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
@@ -25,9 +25,9 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 Offset = 0;
         private List<M2TextureAnimation> TextureAnimations = new List<M2TextureAnimation>();
 
-        public void AddModelTextureAnimations(List<ModelTextureAnimation> textureAnimations)
+        public void AddModelTextureAnimations(List<ObjectModelTextureAnimation> textureAnimations)
         {
-            foreach (ModelTextureAnimation textureAnimation in textureAnimations)
+            foreach (ObjectModelTextureAnimation textureAnimation in textureAnimations)
             {
                 TextureAnimations.Add(new M2TextureAnimation(textureAnimation));
             }

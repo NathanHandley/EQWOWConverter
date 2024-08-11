@@ -20,14 +20,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels.Properties
 {
-    internal enum ZoneObjectModelType
+    internal class Anvil2ObjectProperties : ObjectModelProperties
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        public Anvil2ObjectProperties()
+        {
+            SetCustomCollisionType(ObjectModelCustomCollisionType.ReducedBoxBoundary);
+        }
     }
 }

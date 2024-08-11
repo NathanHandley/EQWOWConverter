@@ -15,7 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -27,12 +27,12 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2TextureAnimation
     {
-        ModelTextureAnimation TextureAnimation;
+        ObjectModelTextureAnimation TextureAnimation;
         public M2TrackSequences<Vector3> TranslationTrack;
         public M2TrackSequences<Quaternion> RotationTrack;
         public M2TrackSequences<Vector3> ScaleTrack;
 
-        public M2TextureAnimation(ModelTextureAnimation textureAnimation)
+        public M2TextureAnimation(ObjectModelTextureAnimation textureAnimation)
         {
             TextureAnimation = textureAnimation;
             TranslationTrack = new M2TrackSequences<Vector3>(textureAnimation.TranslationTrack);

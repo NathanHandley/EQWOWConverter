@@ -14,7 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ModelObjects;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -202,11 +202,11 @@ namespace EQWOWConverter.Common
             return boundingBox;
         }
 
-        public static BoundingBox GenerateBoxFromVectors(List<ModelVertex> vertices, float minSize = 0)
+        public static BoundingBox GenerateBoxFromVectors(List<ObjectModelVertex> vertices, float minSize = 0)
         {
             BoundingBox boundingBox = new BoundingBox();
             bool isFirstVector = true;
-            foreach (ModelVertex renderVert in vertices)
+            foreach (ObjectModelVertex renderVert in vertices)
             {
                 if (isFirstVector)
                 {

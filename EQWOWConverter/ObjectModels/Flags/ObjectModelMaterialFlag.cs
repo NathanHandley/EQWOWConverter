@@ -20,14 +20,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.ObjectModels
 {
-    internal enum ZoneObjectModelType
+    internal enum ObjectModelMaterialFlag : UInt16
     {
-        Rendered,
-        Collision,
-        LiquidVolume,
-        LiquidPlane,
-        ShadowBox
+        None        = 0,
+        Unlit       = 0x1,
+        Unfogged    = 0x2,
+        TwoSided    = 0x4,
+        DepthTest   = 0x8,
+        DepthWrite  = 0x10,
     }
 }
