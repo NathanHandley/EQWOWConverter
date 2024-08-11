@@ -26,7 +26,6 @@ namespace EQWOWConverter.ObjectModels.Properties
     internal enum ObjectModelCustomCollisionType
     {
         None,
-        Ladder,
-        ReducedBoxBoundary
+        Ladder
     }
 }

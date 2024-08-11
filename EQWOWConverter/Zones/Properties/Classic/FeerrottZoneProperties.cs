@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FeerrottZoneProperties() : base()
         {
-            // Stump causes a clash at 281.88 281.34 -3.04, the small jutted side
             SetBaseZoneProperties("feerrott", "The Feerrott", 902.6f, 1091.7f, 28f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(30, 46, 15, ZoneFogType.Heavy, 1f);
             OverrideVertexColorIntensity(0.4);

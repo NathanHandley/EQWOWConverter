@@ -61,15 +61,11 @@ namespace EQWOWConverter.ObjectModels.Properties
         private static void PopulateObjectPropertiesList()
         {
             ObjectPropertiesByByName.Clear();
-            ObjectPropertiesByByName.Add("anvil1", new Anvil1ObjectProperties());
-            ObjectPropertiesByByName.Add("anvil2", new Anvil2ObjectProperties());
             ObjectPropertiesByByName.Add("ladder14", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder20", new Ladder20ObjectProperties());
             ObjectPropertiesByByName.Add("ladder28", new Ladder14ObjectProperties());
             ObjectPropertiesByByName.Add("ladder42", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());
-            ObjectPropertiesByByName.Add("torch2", new Torch2ObjectProperties());
-            ObjectPropertiesByByName.Add("torch2alt1", new Torch2Alt1ObjectProperties());            
+            ObjectPropertiesByByName.Add("ladder60", new Ladder14ObjectProperties());    
         }
     }
 }

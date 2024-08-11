@@ -27,7 +27,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
-using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Files.WOWFiles;
 
