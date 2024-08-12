@@ -37,6 +37,9 @@ namespace EQWOWConverter
         // Where the generated WOW files go
         public static readonly string CONFIG_PATH_EXPORT_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
 
+        // The root of the tools directory (included in this source repository)
+        public static readonly string CONFIG_PATH_TOOLS_FOLDER = "E:\\Development\\EQWOW\\Tools";
+
         // ====================================================================
         // Logging
         // ====================================================================

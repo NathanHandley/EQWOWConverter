@@ -65,7 +65,6 @@ internal class Program
                             break;
                         case "5":
                             {
-                            
                                 AssetConverter converter = new AssetConverter();
                                 bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
                                 if (conversionResult == false)
@@ -74,6 +73,13 @@ internal class Program
                                     break;
                                 }
                             
+                            } break;
+                        case "9": // Temp: Delete after testing
+                            {
+                                AssetConditioner conditioner = new AssetConditioner();
+                                string musicExportRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, "music");
+                                conditioner.ConditionMusicFiles(musicExportRoot);
+                                
                             } break;
                         default:
                             {

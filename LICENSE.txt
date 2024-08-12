@@ -1,4 +1,8 @@
-                    GNU GENERAL PUBLIC LICENSE
+The GNU V3 license herein does not necessarily apply to anything in the
+\Tools\ folder of the original source directory.  Every item inside the 
+\Tools\ folder has its own related copying or license agreements.
+					
+					GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>

@@ -29,6 +29,7 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Xml.Linq;
 using EQWOWConverter.EQFiles;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.IO;
 
 namespace EQWOWConverter
 {
@@ -337,6 +338,51 @@ namespace EQWOWConverter
                     newMaterialListFileContents.AppendLine(materialFileRow);
                 File.WriteAllText(materialListFile, newMaterialListFileContents.ToString());
             }
+        }
+
+        public void ConditionMusicFiles(string musicDirectory)
+        {
+            Logger.WriteInfo("Conditioning music files...");
+            if (Path.Exists(musicDirectory) == false)
+            {
+                Logger.WriteError("Failed to process music files.  The music directory at '" + musicDirectory + "' does not exist.");
+                return;
+            }
+
+            // Delete previously created files, if any
+            string[] priorCreatedMusicFiles = Directory.GetFiles(musicDirectory, "*.mp3");
+            foreach (string priorCreatedMusicFile in priorCreatedMusicFiles)
+                File.Delete(priorCreatedMusicFile);
+            priorCreatedMusicFiles = Directory.GetFiles(musicDirectory, "*.mid");
+            foreach (string priorCreatedMusicFile in priorCreatedMusicFiles)
+                File.Delete(priorCreatedMusicFile);
+
+            // Get the list of xmi files, which contain the MIDIs
+            string[] musicXMIFiles = Directory.GetFiles(musicDirectory, "*.xmi");
+            Logger.WriteDetail("There are '" + musicXMIFiles.Count() + "' music files to process");
+
+            // Convert .xmi files to .mid
+            string ssplayerFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
+            if (File.Exists(ssplayerFileFullPath) == false)
+            {
+                Logger.WriteError("Failed to process music files. ssplayer.exe was not found at '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                return;
+
+            }
+            foreach(string musicXMIFile in musicXMIFiles)
+            {
+                Logger.WriteDetail("Extracting XMI file at '" + musicXMIFile + "'");
+                string args = "-extractall \"" + musicXMIFile + "\"";
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.Arguments = args;
+                process.StartInfo.FileName = ssplayerFileFullPath;
+                process.Start();
+                process.WaitForExit();
+                Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+            }
+
+            // Convert .midi files to .mp3
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)

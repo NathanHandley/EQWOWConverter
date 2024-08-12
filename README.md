@@ -39,7 +39,7 @@ Use LaternExtractor (https://github.com/NathanHandley/LanternExtractor)
 
 **Configure and build EQWOWConverter**
 
-Before building, set your Paths propertly in Configuration.cs.  There are 3 paths to set there
+Before building, set your Paths propertly in Configuration.cs.  There are 4 paths to set there (all 4 in "Paths" section)
 
 **Condition the EQ objects** 
 
