@@ -441,7 +441,7 @@ namespace EQWOWConverter
                     Console.Write(".");
                 }
             }
-            Logger.WriteDetail(" done");
+            Logger.WriteInfo(" done", false, false);
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)

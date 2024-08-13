@@ -72,8 +72,9 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                                     break;
                                 }
-                            
-                            } break;
+
+                            }
+                            break;
                         default:
                             {
                                 Logger.WriteInfo("Exiting.");
@@ -81,14 +82,14 @@ internal class Program
                             }
                             break;
                     }
-            }
+                }
                 catch (Exception ex)
                 {
-                Logger.WriteError("Exception Occurred: " + ex.Message);
-                if (ex.StackTrace != null)
-                    Logger.WriteDetail(ex.StackTrace);
+                    Logger.WriteError("Exception Occurred: " + ex.Message);
+                    if (ex.StackTrace != null)
+                        Logger.WriteDetail(ex.StackTrace);
+                }
             }
-        }
         }
         Console.WriteLine("");
         Console.WriteLine("Press any key to exit");

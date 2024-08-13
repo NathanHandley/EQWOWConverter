@@ -30,9 +30,13 @@ namespace EQWOWConverter
                 File.Delete("log.txt");
         }
 
-        public static void WriteInfo(string text, bool noNewLineInConsole = false)
+        public static void WriteInfo(string text, bool noNewLineInConsole = false, bool includeLeaderBlock = true)
         {
-            string outputLine = "[ ] Info | " + text;
+            string outputLine;
+            if (includeLeaderBlock == true)
+                outputLine = "[ ] Info | " + text;
+            else
+                outputLine = text;
             if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
             {
                 if (noNewLineInConsole)
