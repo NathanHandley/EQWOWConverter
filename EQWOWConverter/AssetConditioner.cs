@@ -226,6 +226,9 @@ namespace EQWOWConverter
                 }
             }
 
+            // Convert music
+            ConditionMusicFiles(outputMusicFolderRoot);
+
             // Generate the liquid surfaces
             Logger.WriteInfo("Generating liquid surface materials...");
             for (int i = 1; i <= 30; i++)

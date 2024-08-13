@@ -74,13 +74,6 @@ internal class Program
                                 }
                             
                             } break;
-                        case "9": // Temp: Delete after testing
-                            {
-                                AssetConditioner conditioner = new AssetConditioner();
-                                string musicExportRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, "music");
-                                conditioner.ConditionMusicFiles(musicExportRoot);
-                                
-                            } break;
                         default:
                             {
                                 Logger.WriteInfo("Exiting.");
