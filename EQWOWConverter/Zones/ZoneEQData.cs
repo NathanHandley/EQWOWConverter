@@ -35,6 +35,7 @@ namespace EQWOWConverter.Zones
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
+        public List<MusicInstance> MusicInstances = new List<MusicInstance>();
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
 
         private string MaterialListName = string.Empty;
@@ -55,6 +56,7 @@ namespace EQWOWConverter.Zones
             LoadCollisionMeshData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadAmbientLightData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadMusicInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             IsLoaded = true;
         }
@@ -163,6 +165,25 @@ namespace EQWOWConverter.Zones
                     return;
                 }
                 LightInstances = lightInstances.LightInstances;
+            }
+        }
+
+        private void LoadMusicInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
+        {
+            // Get the music instances
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading music instances...");
+            string musicInstancesFileName = Path.Combine(inputZoneFolderFullPath, "music_instances.txt");
+            if (File.Exists(musicInstancesFileName) == false)
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No music instance data found.");
+            else
+            {
+                EQMusicInstances musicInstances = new EQMusicInstances();
+                if (musicInstances.LoadFromDisk(musicInstancesFileName) == false)
+                {
+                    Logger.WriteError("- [" + inputZoneFolder + "]: Error loading music instances at '" + musicInstancesFileName + "'");
+                    return;
+                }
+                MusicInstances = musicInstances.MusicInstances;
             }
         }
     }
