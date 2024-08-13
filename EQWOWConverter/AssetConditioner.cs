@@ -342,7 +342,7 @@ namespace EQWOWConverter
 
         public void ConditionMusicFiles(string musicDirectory)
         {
-            Logger.WriteInfo("Conditioning music files...");
+            Logger.WriteInfo("Converting music files...", true);
             if (Path.Exists(musicDirectory) == false)
             {
                 Logger.WriteError("Failed to process music files.  The music directory at '" + musicDirectory + "' does not exist.");
@@ -356,21 +356,43 @@ namespace EQWOWConverter
             priorCreatedMusicFiles = Directory.GetFiles(musicDirectory, "*.mid");
             foreach (string priorCreatedMusicFile in priorCreatedMusicFiles)
                 File.Delete(priorCreatedMusicFile);
+            priorCreatedMusicFiles = Directory.GetFiles(musicDirectory, "*.wav");
+            foreach (string priorCreatedMusicFile in priorCreatedMusicFiles)
+                File.Delete(priorCreatedMusicFile);
 
-            // Get the list of xmi files, which contain the MIDIs
             string[] musicXMIFiles = Directory.GetFiles(musicDirectory, "*.xmi");
-            Logger.WriteDetail("There are '" + musicXMIFiles.Count() + "' music files to process");
+            Logger.WriteDetail("There are '" + musicXMIFiles.Count() + "' music .xmi files to process into .mid");
 
-            // Convert .xmi files to .mid
+            // Establish paths to tool files
             string ssplayerFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
             if (File.Exists(ssplayerFileFullPath) == false)
             {
-                Logger.WriteError("Failed to process music files. ssplayer.exe was not found at '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to process music files. '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
                 return;
-
             }
-            foreach(string musicXMIFile in musicXMIFiles)
+            string fluidsynthFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "fluidsynth", "fluidsynth.exe");
+            if (File.Exists(fluidsynthFileFullPath) == false)
             {
+                Logger.WriteError("Failed to process music files. '" + fluidsynthFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                return;
+            }
+            string soundfontFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "soundfont", "AweROMGM.sf2");
+            if (File.Exists(soundfontFileFullPath) == false)
+            {
+                Logger.WriteError("Failed to process music files. '" + soundfontFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                return;
+            }
+            string ffmpegFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ffmpeg", "ffmpeg.exe");
+            if (File.Exists(ffmpegFileFullPath) == false)
+            {
+                Logger.WriteError("Failed to process music files. '" + ffmpegFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                return;
+            }
+
+            // Process all of the xmi files, which contain the midi information
+            foreach (string musicXMIFile in musicXMIFiles)
+            {
+                // Extract XMI into 1 or more .mid
                 Logger.WriteDetail("Extracting XMI file at '" + musicXMIFile + "'");
                 string args = "-extractall \"" + musicXMIFile + "\"";
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
@@ -380,9 +402,43 @@ namespace EQWOWConverter
                 process.Start();
                 process.WaitForExit();
                 Logger.WriteDetail(process.StandardOutput.ReadToEnd());
-            }
 
-            // Convert .midi files to .mp3
+                // Go through each .mid to complete the conversion
+                string[] musicMidiFiles = Directory.GetFiles(musicDirectory, "*.mid");
+                Logger.WriteDetail("There are '" + musicMidiFiles.Count() + "' music .mid files created from '" + musicXMIFile + "'");
+                foreach (string musicMidiFile in musicMidiFiles)
+                {
+                    // Create the .wav
+                    string tempWavFileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".wav");
+                    Logger.WriteDetail("Converting .mid file at '" + musicMidiFile + "' to .wav");
+                    args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\"";
+                    process = new System.Diagnostics.Process();
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.Arguments = args;
+                    process.StartInfo.FileName = fluidsynthFileFullPath;
+                    process.Start();
+                    process.WaitForExit();
+                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+
+                    // Create the .mp3
+                    string mp3FileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".mp3");
+                    Logger.WriteDetail("Converting .wav file at '" + tempWavFileName + "' to .mp3");
+                    args = "-i \"" + tempWavFileName + "\" -acodec mp3 \"" + mp3FileName + "\" -hide_banner -loglevel error";
+                    process = new System.Diagnostics.Process();
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.Arguments = args;
+                    process.StartInfo.FileName = ffmpegFileFullPath;
+                    process.Start();
+                    process.WaitForExit();
+                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+
+                    // Delete the temp files
+                    File.Delete(musicMidiFile);
+                    File.Delete(tempWavFileName);
+                    Console.Write(".");
+                }
+            }
+            Logger.WriteDetail(" done");
         }
 
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
