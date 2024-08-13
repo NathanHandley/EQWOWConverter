@@ -74,7 +74,7 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append(",\"" + row.IntroSound.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.ExplorationLevel.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.AreaName + "\"");
-                stringBuilder.AppendLine(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\",\"0\",\"0\",\"0\",\"0\",\"0\",\"-2000\",\"0\",\"0\"");
+                stringBuilder.AppendLine(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\",\"0\",\"0\",\"0\",\"0\",\"0\",\"-5000\",\"0\",\"0\"");
             }
 
             // Output it
