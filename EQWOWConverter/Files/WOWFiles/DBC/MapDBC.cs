@@ -51,7 +51,7 @@ namespace EQWOWConverter.WOWFiles
         public void WriteToDisk(string baseFolderPath)
         {
             FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "Map.csv");
+            string fullFilePath = Path.Combine(baseFolderPath, "MapDBC.csv");
 
             // Add each row of data
             StringBuilder stringBuilder = new StringBuilder();
