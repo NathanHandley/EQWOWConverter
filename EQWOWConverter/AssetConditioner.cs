@@ -405,6 +405,7 @@ namespace EQWOWConverter
                 process.Start();
                 process.WaitForExit();
                 Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                Console.Title = "EverQuest to WoW Converter";
 
                 // Go through each .mid to complete the conversion
                 string[] musicMidiFiles = Directory.GetFiles(musicDirectory, "*.mid");
@@ -414,7 +415,7 @@ namespace EQWOWConverter
                     // Create the .wav
                     string tempWavFileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".wav");
                     Logger.WriteDetail("Converting .mid file at '" + musicMidiFile + "' to .wav");
-                    args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\"";
+                    args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\" -g " + Configuration.CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT.ToString();
                     process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.Arguments = args;

@@ -139,6 +139,12 @@ namespace EQWOWConverter
         public static readonly byte CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22 = 58; // 10 PM
 
         //=====================================================================
+        // Audio
+        //=====================================================================
+        // How much to increase the music sound when converted from EverQuest
+        public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 2;
+
+        //=====================================================================
         // Objects
         //=====================================================================
         // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
