@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
             SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinentType.Faydwer);
+            AddValidMusicInstanceTrackIndexes(0, 2, 3, 4, 5);
             SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);

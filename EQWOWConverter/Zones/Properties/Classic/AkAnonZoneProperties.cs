@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Improve the angle water room water surfaces
             // TODO: Swimming up the entry waterfall will allow you to exit the map
             SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinentType.Faydwer);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 6, 7);
             SetZonewideEnvironmentAsIndoors(0, 30, 0, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("steamfont", -2059.579834f, 528.815857f, -111.126549f, ZoneLineOrientationType.North, 70.830750f, -69.220848f, 12.469000f, 60.770279f, -84.162193f, -0.500000f);

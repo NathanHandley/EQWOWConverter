@@ -46,6 +46,10 @@ namespace EQWOWConverter.Zones
         public Material LiquidMaterial = new Material();
         public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
+        public int ZoneMusicDBCID = -1;
+        public string ZoneMusicDBCName = string.Empty;
+        public Sound? MusicDaySound = null;
+        public Sound? MusicNightSound = null;
 
         public ZoneObjectModel()
         {
@@ -112,6 +116,21 @@ namespace EQWOWConverter.Zones
                 LiquidType = zoneProperties.CompletelyInLiquidType;
             }
             IsLoaded = true;
+        }
+
+        public void LoadAsMusic(MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, Sound? musicDaySound, Sound? musicNightSound)
+        {
+            if (musicDaySound == null || musicNightSound == null)
+                throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was somehow null");
+
+            WMOType = ZoneObjectModelType.Music;
+            BoundingBox = new BoundingBox(musicInstance.CenterPosition, musicInstance.Radius);
+            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
+            IsLoaded = true;
+            ZoneMusicDBCID = zoneMusicDBCID;
+            ZoneMusicDBCName = zoneMusicDBCName;
+            MusicDaySound = musicDaySound;
+            MusicNightSound = musicNightSound;
         }
 
         public void LoadAsShadowBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)

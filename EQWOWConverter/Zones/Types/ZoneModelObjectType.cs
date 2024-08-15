@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones
         Collision,
         LiquidVolume,
         LiquidPlane,
-        ShadowBox
+        ShadowBox,
+        Music
     }
 }

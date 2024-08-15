@@ -130,6 +130,7 @@ namespace EQWOWConverter
             string zoneFolderRoot = Path.Combine(eqExportsConditionedPath, "zones");
             if (Directory.Exists(zoneFolderRoot) == false)
                 Directory.CreateDirectory(zoneFolderRoot);
+            string inputMusicFolderRoot = Path.Combine(eqExportsConditionedPath, "music");
 
             // Clean out the zone and interface folders
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
@@ -145,6 +146,9 @@ namespace EQWOWConverter
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             if (Directory.Exists(exportInterfaceFolder))
                 Directory.Delete(exportInterfaceFolder, true);
+            string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
+            if (Directory.Exists(exportMusicFolder))
+                Directory.Delete(exportMusicFolder, true);
 
             // Generate folder name for objects
             string exportObjectsFolderRelative = Path.Combine("World", "Everquest", "Objects");
@@ -184,6 +188,9 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, exportObjectsFolderRelative);
+
+                // Place the related music files
+                ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
 
                 zones.Add(curZone);
             }
@@ -493,6 +500,37 @@ namespace EQWOWConverter
             }
 
             Logger.WriteDetail("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
+        }
+
+        public static void ExportMusicForZone(Zone zone, string musicInputFolder, string wowExportPath)
+        {
+            Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
+
+            if (zone.ZoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
+            {
+                Logger.WriteDetail("- [" + zone.ShortName + "]: No music found for this zone");
+                return;
+            }
+
+            // Create the folder to output
+            string zoneOutputMusicFolder = Path.Combine(wowExportPath, "Sound", "Music", "Everquest", zone.ShortName);
+            if (Directory.Exists(zoneOutputMusicFolder) == false)
+                FileTool.CreateBlankDirectory(zoneOutputMusicFolder, true);
+
+            // Go through every music sound object and put there if needed
+            foreach(var zoneMusicSoundByIndex in zone.ZoneMusicSoundsByIndex)
+            {
+                string sourceFullPath = Path.Combine(musicInputFolder, zoneMusicSoundByIndex.Value.AudioFileName);
+                string targetFullPath = Path.Combine(zoneOutputMusicFolder, zoneMusicSoundByIndex.Value.AudioFileName);
+                if (File.Exists(sourceFullPath) == false)
+                {
+                    Logger.WriteError("Could not copy music file '" + sourceFullPath + "', as it did not exist");
+                    continue;
+                }
+                File.Copy(sourceFullPath, targetFullPath, true);
+                Logger.WriteDetail("- [" + zone.ShortName + "]: Music named '" + zoneMusicSoundByIndex.Value.AudioFileName + "' copied");
+            }
+            Logger.WriteDetail("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
         }
 
         public static void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)

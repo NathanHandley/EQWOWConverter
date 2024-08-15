@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public QeynosHillsZoneProperties() : base()
         {
             SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinentType.Antonica);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5);
             AddZoneLineBox("blackburrow", -163.06775f, 29.47728f, 0.000014f, ZoneLineOrientationType.West, 3442.5054f, -1124.6694f, 11.548047f, 3424.3691f, -1135.8118f, -0.4999545f);
             AddZoneLineBox("qey2hh1", 16.735029f, -634.390564f, -7.000000f, ZoneLineOrientationType.East, 1511.327637f, -2226.687500f, 67.544861f, 1317.927246f, -2336.197754f, -4.843780f);
             AddZoneLineBox("qeynos2", 1480.794556f, 1099.153198f, 0.000010f, ZoneLineOrientationType.South, -330.758850f, 1109.592896f, 200.000000f, -360.758850f, 1089.592896f, -100.000000f);

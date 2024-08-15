@@ -51,6 +51,16 @@ namespace EQWOWConverter.Common
             TopCorner = new Vector3(topX, topY, topZ);
         }
 
+        public BoundingBox(Vector3 centerPosition, float apothem)
+        {
+            BottomCorner.X = centerPosition.X - apothem;
+            BottomCorner.Y = centerPosition.Y - apothem;
+            BottomCorner.Z = centerPosition.Z - apothem;
+            TopCorner.X = centerPosition.X + apothem;
+            TopCorner.Y = centerPosition.Y + apothem;
+            TopCorner.Z = centerPosition.Z + apothem;
+        }
+
         public BoundingBox(BoundingBox box)
         {
             TopCorner = new Vector3(box.TopCorner);

@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public DagnorsCauldronZoneProperties() : base()
         {
             SetBaseZoneProperties("cauldron", "Dagnor's Cauldron", 320f, 2815f, 473f, 0, ZoneContinentType.Faydwer);
+            AddValidMusicInstanceTrackIndexes(2, 4);
             AddZoneLineBox("butcher", -2921.925537f, -335.659668f, 0.000200f, ZoneLineOrientationType.North, 2872.3113f, 280.6821f, 496.7702f, 2863.3867f, 247.66762f, 468.8444f);
             AddZoneLineBox("kedge", 129.834778f, 19.404051f, 320.322083f, ZoneLineOrientationType.West, -1160.462646f, -1000.650696f, -287.718506f, -1180.848267f, -1024.053711f, -334.875000f);
             AddZoneLineBox("unrest", 60.597672f, 329.112183f, 0.000000f, ZoneLineOrientationType.South, -2022.738403f, -616.401611f, 108.469002f, -2054.549072f, -636.787415f, 89.500183f);

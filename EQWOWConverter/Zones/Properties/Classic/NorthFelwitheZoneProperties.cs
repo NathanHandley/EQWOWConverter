@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NorthFelwitheZoneProperties() : base()
         {
             SetBaseZoneProperties("felwithea", "Northern Felwithe", 94f, -25f, 3.75f, 0, ZoneContinentType.Faydwer);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2);
             SetZonewideEnvironmentAsOutdoorsWithSky(58, 75, 58, ZoneFogType.Medium, 0.5f, 1f);
             AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North, 364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f);
             AddZoneLineBox("gfaydark", -1931.678101f, -2613.879639f, 20.406450f, ZoneLineOrientationType.West, 56.161152f, 242.410782f, 26.469000f, 27.806530f, 193.596893f, -0.500000f);

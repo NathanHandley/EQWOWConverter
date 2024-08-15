@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public RunnyeyeCitadelZoneProperties() : base()
         {
             SetBaseZoneProperties("runnyeye", "Runnyeye Citadel", -21.85f, -108.88f, 3.75f, 0, ZoneContinentType.Antonica);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2);
             SetZonewideEnvironmentAsIndoors(26, 52, 9, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4f);
             DisableSunlight();

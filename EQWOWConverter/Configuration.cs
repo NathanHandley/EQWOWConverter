@@ -197,11 +197,14 @@ namespace EQWOWConverter
         // Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row
         public static readonly int CONFIG_DBCID_LIGHTPARAMS_START = 1050;
 
-        // ID for music in ZoneMusic.dbc
-        public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;
+        // ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis
+        public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;        
+        public static readonly int CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE = 20;
 
         // ID for sounds found in SoundEntries.dbc
-        public static readonly int CONFIG_DBCID_SOUNDENTRIES_START = 22000;
+        // ZoneMusic IDs are reserved for SoundEntries used for music, and they are reserved in blocks per-zone
+        public static readonly int CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START = 22000;
+        public static readonly int CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE = 10;
 
         // ====================================================================
         // AzerothCore Database IDs

@@ -41,6 +41,7 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
         public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
+        public HashSet<int> ValidMusicInstanceTrackIndexes = new HashSet<int>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
 
         // Environment Properties
@@ -51,11 +52,15 @@ namespace EQWOWConverter.Zones
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
         private static UInt32 CURRENT_AREAID = Configuration.CONFIG_DBCID_AREAID_START;
-        private static int CURRENT_ROWID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
+        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
+        private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
+        private static int CURRENT_SOUNDENTRY_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
         public UInt32 DBCAreaID;
         public UInt32 DBCWMOID;
+        public int DBCZoneMusicStartID;
+        public int DBCSoundEntryZoneMusicStartID;
 
         protected ZoneProperties()
         {
@@ -66,8 +71,12 @@ namespace EQWOWConverter.Zones
             CURRENT_AREAID++;
             DBCWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
-            DBCMapDifficultyID = CURRENT_ROWID;
-            CURRENT_ROWID++;
+            DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
+            CURRENT_MAPDIFFICULTYID++;
+            DBCZoneMusicStartID = CURRENT_ZONEMUSICSTARTID;
+            CURRENT_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
+            DBCSoundEntryZoneMusicStartID = CURRENT_SOUNDENTRY_ZONEMUSICSTARTID;
+            CURRENT_SOUNDENTRY_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -85,6 +94,15 @@ namespace EQWOWConverter.Zones
         protected void DisableSunlight()
         {
             HasShadowBox = true;
+        }
+
+        // Only some music instances are valid, this is an inclusive list of the good ones.  The index referenced here refer to 
+        // the day or night track index value found in the music_instances.txt file within the exported zone folders
+        protected void AddValidMusicInstanceTrackIndexes(params int [] trackIndexes)
+        {
+            foreach(int trackIndex in trackIndexes)
+                if (ValidMusicInstanceTrackIndexes.Contains(trackIndex) == false)
+                    ValidMusicInstanceTrackIndexes.Add(trackIndex);
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)

@@ -32,5 +32,13 @@ namespace EQWOWConverter.Common
         public bool Loop = false;
         public float MinDistance = 8f; // Default for zone music
         public float DistanceCutoff = 45f; // Default for zone music
+
+        public Sound(int id, string name, string audioFileName, SoundType type)
+        {
+            Id = id;
+            Name = name;
+            AudioFileName = audioFileName;
+            Type = type;
+        }
     }
 }

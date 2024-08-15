@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public ToxxuliaForestZoneProperties() : base()
         {
             SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinentType.Odus);
+            AddValidMusicInstanceTrackIndexes(0, 1, 3);
             SetZonewideEnvironmentAsOutdoorsNoSky(138, 125, 19, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 2574.356934f, 305.599121f, -33.937248f, 2550.955078f, 289.213013f, -48.907711f);

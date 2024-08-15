@@ -20,6 +20,7 @@ using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -43,6 +44,7 @@ namespace EQWOWConverter.Zones
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
         public Vector3 SafePosition = new Vector3();
+        public Dictionary<int, Sound> ZoneMusicSoundsByIndex = new Dictionary<int, Sound>();
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
@@ -141,8 +143,11 @@ namespace EQWOWConverter.Zones
             MeshData collisionMeshData = new MeshData(EQZoneData.CollisionMeshData);
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
 
-            // Build liquid wmos first
+            // Build liquid wmos
             GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
+
+            // Build music wmos
+            GenerateMusicWorldObjects(EQZoneData.MusicInstances, ZoneProperties);
 
             // Determine which materials are animated or transparent and create objects to represent them
             foreach (Material material in Materials)
@@ -310,6 +315,80 @@ namespace EQWOWConverter.Zones
                     curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
+            }
+        }
+
+        public void GenerateMusicWorldObjects(List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        {
+            // Skip if there are no valid index references
+            if (zoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
+                return;
+
+            int curSoundEntryDBCID = zoneProperties.DBCSoundEntryZoneMusicStartID;
+            int curZoneMusicDBCID = zoneProperties.DBCZoneMusicStartID;
+            int curZoneMusicIndex = 1;
+            foreach(MusicInstance musicInstance in musicInstances)
+            {
+                // Create day sound
+                Sound? dayMusicSound = null;
+                if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.DayIndex) == true)
+                {
+                    if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.DayIndex) == false)
+                    {
+                        string curSoundName = "EQ " + zoneProperties.ShortName + " music " + musicInstance.DayIndex.ToString();
+                        string audioFileName = zoneProperties.ShortName + "-";
+                        if (musicInstance.DayIndex > 9)
+                            audioFileName += musicInstance.DayIndex.ToString() + ".mp3";
+                        else
+                            audioFileName += "0" + musicInstance.DayIndex.ToString() + ".mp3";
+                        dayMusicSound = new Sound(curSoundEntryDBCID, curSoundName, audioFileName, SoundType.ZoneMusic);
+                        curSoundEntryDBCID++;
+                        ZoneMusicSoundsByIndex.Add(musicInstance.DayIndex, dayMusicSound);
+                    }
+                    else
+                        dayMusicSound = ZoneMusicSoundsByIndex[musicInstance.DayIndex];
+                }
+
+                // Create night sound
+                Sound? nightMusicSound = null;
+                if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.NightIndex) == true)
+                {
+                    if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.NightIndex) == false)
+                    {
+                        string curSoundName = "EQ " + zoneProperties.ShortName + " music " + musicInstance.NightIndex.ToString();
+                        string audioFileName = zoneProperties.ShortName + "-";
+                        if (musicInstance.NightIndex > 9)
+                            audioFileName += musicInstance.NightIndex.ToString() + ".mp3";
+                        else
+                            audioFileName += "0" + musicInstance.NightIndex.ToString() + ".mp3";
+                        nightMusicSound = new Sound(curSoundEntryDBCID, curSoundName, audioFileName, SoundType.ZoneMusic);
+                        curSoundEntryDBCID++;
+                        ZoneMusicSoundsByIndex.Add(musicInstance.NightIndex, nightMusicSound);
+                    }
+                    else
+                        nightMusicSound = ZoneMusicSoundsByIndex[musicInstance.NightIndex];
+                }
+
+                if (nightMusicSound == null && dayMusicSound == null)
+                    continue;
+                if (nightMusicSound == null)
+                    nightMusicSound = dayMusicSound;
+                if (dayMusicSound == null)
+                    dayMusicSound = nightMusicSound;
+
+                // Create the zone music record data
+                ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel();
+                string curZoneMusicName = "Zone-" + zoneProperties.ShortName;
+                if (curZoneMusicIndex > 9)
+                    curZoneMusicName += curZoneMusicIndex.ToString();
+                else
+                    curZoneMusicName += "0" + curZoneMusicIndex.ToString();
+
+                // Create the WMO
+                musicWorldObjectModel.LoadAsMusic(musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound);
+                ZoneObjectModels.Add(musicWorldObjectModel);
+                curZoneMusicDBCID++;
+                curZoneMusicIndex++;
             }
         }
 

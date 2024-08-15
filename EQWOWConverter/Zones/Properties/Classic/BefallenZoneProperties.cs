@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public BefallenZoneProperties() : base()
         {
             SetBaseZoneProperties("befallen", "Befallen", 35.22f, -75.27f, 2.19f, 0, ZoneContinentType.Antonica);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 6, 7);
             SetZonewideEnvironmentAsIndoors(0, 0, 60, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("commons", -1155.6317f, 596.3344f, -42.280308f, ZoneLineOrientationType.North, -49.9417f, 42.162197f, 12.469f, -63.428658f, 27.86666f, -0.5000006f);

@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public TowerOfFrozenShadowZoneProperties() : base()
         {
             SetBaseZoneProperties("frozenshadow", "Tower of Frozen Shadow", 200f, 120f, 0f, 0, ZoneContinentType.Velious);
+            AddValidMusicInstanceTrackIndexes(1, 2, 3);
         }
     }
 }

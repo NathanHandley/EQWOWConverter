@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public KaelDrakkalZoneProperties() : base()
         {
             SetBaseZoneProperties("kael", "Kael Drakkal", -633f, -47f, 128f, 0, ZoneContinentType.Velious);
+            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3);
         }
     }
 }

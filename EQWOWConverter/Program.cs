@@ -21,6 +21,7 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+        Console.Title = "EverQuest to WoW Converter";
         Logger.ResetLog();
         Logger.WriteInfo("###### EQ WOW Converter ######");
         bool doLoopForCommands = true;
