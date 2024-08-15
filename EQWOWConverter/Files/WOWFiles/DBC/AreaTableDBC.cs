@@ -31,6 +31,7 @@ namespace EQWOWConverter.WOWFiles
 
             public int Id;
             public int ContinentID = 724;
+            public int ParentAreaID = 0;
             public int AreaBit = 0;
             public int Flags = 0;
             public int ZoneMusic = 0;
@@ -47,10 +48,12 @@ namespace EQWOWConverter.WOWFiles
 
         private List<Row> rows = new List<Row>();
 
-        public void AddRow(int id, string areaName)
+        public void AddRow(int id, int parentAreaID, int zoneMusicID, string areaName)
         {
             Row newRow = new Row();
             newRow.Id = id;
+            newRow.ParentAreaID = parentAreaID;
+            newRow.ZoneMusic = zoneMusicID;
             newRow.AreaName = areaName;
             rows.Add(newRow);
         }
@@ -66,7 +69,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.ContinentID.ToString() + "\"");
-                stringBuilder.Append(",\"0\"");
+                stringBuilder.Append(",\"" + row.ParentAreaID.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.AreaBit.ToString() + "\"");
                 stringBuilder.Append(",\"" + row.Flags.ToString() + "\"");
                 stringBuilder.Append(",\"0\",\"0\",\"0\"");

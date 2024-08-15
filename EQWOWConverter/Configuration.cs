@@ -172,8 +172,9 @@ namespace EQWOWConverter
         // Specific rows in WMOAreaTable.dbc. (~52000-60000)
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
 
-        // Identifies Area rows in AreaTable.dbc. (~6000-6200)
-        public static readonly UInt32 CONFIG_DBCID_AREAID_START = 6000;
+        // Identifies Area rows in AreaTable.dbc
+        public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 7000;
+        public static readonly UInt32 CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE = 20;
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc. (~750-900)
         public static readonly int CONFIG_DBCID_MAPID_START = 750;

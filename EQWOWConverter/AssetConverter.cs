@@ -376,13 +376,23 @@ namespace EQWOWConverter
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
-                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaID), zone.LoadingScreenID);
+                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot), 0, 0, zone.DescriptiveName);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot), zone.LoadingScreenID);
                 difficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName); // Header record
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot), zone.DescriptiveName); // Header record
+                UInt32 subAreaTableIndex = 0;
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID),
-                        Convert.ToInt32(zoneProperties.DBCAreaID), zone.DescriptiveName);
+                {
+                    if (wmo.WMOType == ZoneObjectModelType.Music)
+                    {
+                        subAreaTableIndex++;
+                        int curAreaTableID = Convert.ToInt32(subAreaTableIndex) + Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot);
+                        areaTableDBC.AddRow(curAreaTableID, Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot), wmo.ZoneMusicDBCID, zone.DescriptiveName);
+                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), curAreaTableID, zone.DescriptiveName);
+                    }
+                    else
+                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), Convert.ToInt32(zoneProperties.DBCAreaTableIDRoot), zone.DescriptiveName);
+                }
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);            
