@@ -133,8 +133,9 @@ namespace EQWOWConverter.Files.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "LightIntBandDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"Num\",\"Time_1\",\"Time_2\",\"Time_3\",\"Time_4\",\"Time_5\",\"Time_6\",\"Time_7\",\"Time_8\",\"Time_9\",\"Time_10\",\"Time_11\",\"Time_12\",\"Time_13\",\"Time_14\",\"Time_15\",\"Time_16\",\"Data_1\",\"Data_2\",\"Data_3\",\"Data_4\",\"Data_5\",\"Data_6\",\"Data_7\",\"Data_8\",\"Data_9\",\"Data_10\",\"Data_11\",\"Data_12\",\"Data_13\",\"Data_14\",\"Data_15\",\"Data_16\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");

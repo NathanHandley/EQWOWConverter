@@ -56,8 +56,8 @@ Use EQWOWConverter
 
 **Update related DBC files**
 
-Use WDBX Editor and go into the exports directory and import the csv script files in \DBCUpdateScripts\.  Replace any values that exist, and there is no header row
-(To do this, uncheck "Has Header Row?" and select "Update Existing" on the CSV settings pop-up on import)
+Use WDBX Editor and go into the exports directory and import the csv script files in \DBCUpdateScripts\.  Replace any values that exist.
+(To do this, select "Update Existing" on the CSV settings pop-up on import)
 
 IMPORTANT: For AreaTrigger, be sure to to "Import New" since this file needs to sort by MapID.  If you do "Update Existing", it will misorder them which will break your other zones.
 

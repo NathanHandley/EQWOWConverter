@@ -62,8 +62,9 @@ namespace EQWOWConverter.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "WMOAreaTableDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"WMOID\",\"NameSetID\",\"WMOGroupID\",\"SoundProviderPref\",\"SoundProviderPrefUnderwater\",\"AmbienceID\",\"ZoneMusic\",\"IntroSound\",\"Flags\",\"AreaTableID\",\"AreaName_Lang_enUS\",\"AreaName_Lang_enGB\",\"AreaName_Lang_koKR\",\"AreaName_Lang_frFR\",\"AreaName_Lang_deDE\",\"AreaName_Lang_enCN\",\"AreaName_Lang_zhCN\",\"AreaName_Lang_enTW\",\"AreaName_Lang_zhTW\",\"AreaName_Lang_esES\",\"AreaName_Lang_esMX\",\"AreaName_Lang_ruRU\",\"AreaName_Lang_ptPT\",\"AreaName_Lang_ptBR\",\"AreaName_Lang_itIT\",\"AreaName_Lang_Unk\",\"AreaName_Lang_Mask\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.ID.ToString() + "\"");

@@ -54,8 +54,9 @@ namespace EQWOWConverter.Files.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "ZoneMusicDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"SetName\",\"SilenceintervalMin_1\",\"SilenceintervalMin_2\",\"SilenceintervalMax_1\",\"SilenceintervalMax_2\",\"Sounds_1\",\"Sounds_2\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");

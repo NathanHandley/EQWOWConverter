@@ -72,8 +72,9 @@ namespace EQWOWConverter.Files.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "LightDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"ContinentID\",\"X\",\"Y\",\"Z\",\"FalloffStart\",\"FalloffEnd\",\"LightParamsID_1\",\"LightParamsID_2\",\"LightParamsID_3\",\"LightParamsID_4\",\"LightParamsID_5\",\"LightParamsID_6\",\"LightParamsID_7\",\"LightParamsID_8\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");

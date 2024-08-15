@@ -68,8 +68,9 @@ namespace EQWOWConverter.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "AreaTriggerDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"ContinentID\",\"X\",\"Y\",\"Z\",\"Radius\",\"Box_Length\",\"Box_Width\",\"Box_Height\",\"Box_Yaw\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.ID.ToString() + "\"");

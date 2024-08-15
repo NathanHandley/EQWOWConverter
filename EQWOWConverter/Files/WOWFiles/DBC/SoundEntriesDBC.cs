@@ -64,8 +64,9 @@ namespace EQWOWConverter.Files.WOWFiles
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "SoundEntriesDBC.csv");
 
-            // Add each row of data
+            // Add each row of data (and header)
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"SoundType\",\"Name\",\"File_1\",\"File_2\",\"File_3\",\"File_4\",\"File_5\",\"File_6\",\"File_7\",\"File_8\",\"File_9\",\"File_10\",\"Freq_1\",\"Freq_2\",\"Freq_3\",\"Freq_4\",\"Freq_5\",\"Freq_6\",\"Freq_7\",\"Freq_8\",\"Freq_9\",\"Freq_10\",\"DirectoryBase\",\"Volumefloat\",\"Flags\",\"MinDistance\",\"DistanceCutoff\",\"EAXDef\",\"SoundEntriesAdvancedID\"");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("\"" + row.Id.ToString() + "\"");
