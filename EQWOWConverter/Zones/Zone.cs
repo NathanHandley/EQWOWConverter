@@ -329,6 +329,20 @@ namespace EQWOWConverter.Zones
             int curZoneMusicIndex = 1;
             foreach(MusicInstance musicInstance in musicInstances)
             {
+                // Correct the position of the music instance first
+                Vector3 originalPosition = new Vector3(musicInstance.CenterPosition);
+                musicInstance.CenterPosition.X = originalPosition.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                // Invert Z and Y because of mapping differences
+                musicInstance.CenterPosition.Z = originalPosition.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                musicInstance.CenterPosition.Y = originalPosition.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
+                // Also rotate the X and Y positions around Z axis 180 degrees
+                musicInstance.CenterPosition.X = -musicInstance.CenterPosition.X;
+                musicInstance.CenterPosition.Y = -musicInstance.CenterPosition.Y;
+
+                // Scale the radius
+                musicInstance.Radius *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+
                 // Create day sound
                 Sound? dayMusicSound = null;
                 if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.DayIndex) == true)
