@@ -126,11 +126,11 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.Music;
             BoundingBox = new BoundingBox(musicInstance.CenterPosition, musicInstance.Radius);
             BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
-            IsLoaded = true;
             ZoneMusicDBCID = zoneMusicDBCID;
             ZoneMusicDBCName = zoneMusicDBCName;
             MusicDaySound = musicDaySound;
             MusicNightSound = musicNightSound;
+            IsLoaded = true;
         }
 
         public void LoadAsShadowBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)

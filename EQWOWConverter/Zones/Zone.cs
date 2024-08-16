@@ -211,10 +211,10 @@ namespace EQWOWConverter.Zones
             }
 
             // Rebuild the bounding box
-            List<Vector3> boundingVectors = new List<Vector3>();
-            boundingVectors.AddRange(collisionMeshData.Vertices);
-            boundingVectors.AddRange(renderMeshData.Vertices);
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(boundingVectors, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
+            foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
+                allBoundingBoxes.Add(zoneObject.BoundingBox);
+            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
 
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)

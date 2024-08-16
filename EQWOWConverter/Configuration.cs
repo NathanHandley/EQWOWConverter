@@ -185,7 +185,7 @@ namespace EQWOWConverter
         // IDs for the loading screen
         public static readonly int CONFIG_DBCID_LOADINGSCREENID_START = 255;
 
-        // IDs for AreaBit used in AreaTable, should be unique
+        // IDs for AreaBit used in AreaTable, should be unique (max of 4091)
         public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_START = 3800;
 
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in AzerothCore scripts

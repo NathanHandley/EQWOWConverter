@@ -174,6 +174,29 @@ namespace EQWOWConverter.Common
             return true;
         }
 
+        public static BoundingBox GenerateBoxFromBoxes(List<BoundingBox> boxes)
+        {
+            BoundingBox boundingBox = new BoundingBox();
+            foreach(BoundingBox box in boxes)
+            {
+                if (box.TopCorner.X > boundingBox.TopCorner.X)
+                    boundingBox.TopCorner.X = box.TopCorner.X;
+                if (box.TopCorner.Y > boundingBox.TopCorner.Y)
+                    boundingBox.TopCorner.Y = box.TopCorner.Y;
+                if (box.TopCorner.Z > boundingBox.TopCorner.Z)
+                    boundingBox.TopCorner.Z = box.TopCorner.Z;
+
+                if (box.BottomCorner.X < boundingBox.BottomCorner.X)
+                    boundingBox.BottomCorner.X = box.BottomCorner.X;
+                if (box.BottomCorner.Y < boundingBox.BottomCorner.Y)
+                    boundingBox.BottomCorner.Y = box.BottomCorner.Y;
+                if (box.BottomCorner.Z < boundingBox.BottomCorner.Z)
+                    boundingBox.BottomCorner.Z = box.BottomCorner.Z;
+            }
+
+            return boundingBox;
+        }
+
         public static BoundingBox GenerateBoxFromVectors(List<Vector3> vertices, float addedBoundary)
         {
             BoundingBox boundingBox = new BoundingBox();
