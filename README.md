@@ -68,10 +68,15 @@ Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ 
 
 Run the scripts located into the exports directory subfolder \AzerothCoreSQLScripts\
 
-**Regenerate map files for AzerothCore**
+**Regenerate map/vmap files for AzerothCore**
 
-- Re-run the map_extractor, mmaps_generator, vmap4_assembler, vmap4_extractor (this is optional UNTIL creatures are implemented)
-NOTE: Having trouble with this, so this may not work for you as well.  Will debug later.
+- Re-run the map_extractor, vmap4_assembler, etc.  Technically this is optional until creatures are implemented.  Here is the status of each
+| Generator | Status |
+| --------- | -------------- |
+| map_extractor | Works |
+| vmap4_extractor | Works |
+| vmap4_assembler | Works |
+| mmaps_generator | DOES NOT WORK (runs forever).  For now, generate this without the patch.mpq for this project |
 
 # Special Thanks
 In no particular order...

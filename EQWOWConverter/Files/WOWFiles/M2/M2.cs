@@ -23,7 +23,6 @@ using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
@@ -56,7 +55,7 @@ namespace EQWOWConverter.WOWFiles
         private float BoundingSphereRadius = 0f;
         private BoundingBox CollisionBox = new BoundingBox();
         private float CollisionSphereRadius = 0f;
-        private M2GenericArrayByOffset<TriangleFace> CollisionTriangleIndices = new M2GenericArrayByOffset<TriangleFace>();
+        private M2TriangleFacesArrayByOffset CollisionTriangleIndices = new M2TriangleFacesArrayByOffset();
         private M2GenericArrayByOffset<Vector3> CollisionVertices = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<Vector3> CollisionFaceNormals = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<M2Attachment> Attachments = new M2GenericArrayByOffset<M2Attachment>();
