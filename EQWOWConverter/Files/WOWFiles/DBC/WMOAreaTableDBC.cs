@@ -47,12 +47,13 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int wmoID, int wmoGroupID, int areaTableID, string areaName)
+        public void AddRow(int wmoID, int wmoGroupID, int zoneMusic, int areaTableID, string areaName)
         {
             Row newRow = new Row();
             newRow.WMOID = wmoID;
             newRow.WMOGroupID = wmoGroupID;
             newRow.AreaTableID = areaTableID;
+            newRow.ZoneMusic = zoneMusic;
             newRow.AreaName = areaName;
             rows.Add(newRow);
         }

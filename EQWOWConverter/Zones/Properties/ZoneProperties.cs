@@ -57,7 +57,7 @@ namespace EQWOWConverter.Zones
         private static int CURRENT_SOUNDENTRY_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
-        public UInt32 DBCAreaTableIDRoot;
+        public UInt32 DBCAreaTableID;
         public UInt32 DBCWMOID;
         public int DBCZoneMusicStartID;
         public int DBCSoundEntryZoneMusicStartID;
@@ -67,8 +67,8 @@ namespace EQWOWConverter.Zones
             // Generate zone-specific IDs
             DBCMapID = CURRENT_MAPID;
             CURRENT_MAPID++;
-            DBCAreaTableIDRoot = CURRENT_AREATABLEID_ROOT;
-            CURRENT_AREATABLEID_ROOT += Configuration.CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE;
+            DBCAreaTableID = CURRENT_AREATABLEID_ROOT;
+            CURRENT_AREATABLEID_ROOT++;
             DBCWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
             DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
