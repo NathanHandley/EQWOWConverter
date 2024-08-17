@@ -70,7 +70,8 @@ Run the scripts located into the exports directory subfolder \AzerothCoreSQLScri
 
 **Regenerate map/vmap files for AzerothCore**
 
-- Re-run the map_extractor, vmap4_assembler, etc.  Technically this is optional until creatures are implemented.  Here is the status of each
+Re-run the map_extractor, vmap4_assembler, etc.  Technically this is optional until creatures are implemented.  Here is the status of each
+
 |Generator|Status|
 |:---|:---|
 |map_extractor|Works|
