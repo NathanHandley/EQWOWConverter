@@ -118,7 +118,8 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsMusic(MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, Sound? musicDaySound, Sound? musicNightSound)
+        public void LoadAsMusic(MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, Sound? musicDaySound, Sound? musicNightSound,
+            List<Material> materials, ZoneProperties zoneProperties)
         {
             if (musicDaySound == null || musicNightSound == null)
                 throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was somehow null");
@@ -130,6 +131,13 @@ namespace EQWOWConverter.Zones
             ZoneMusicDBCName = zoneMusicDBCName;
             MusicDaySound = musicDaySound;
             MusicNightSound = musicNightSound;
+            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
+            {
+                ZoneBox areaBox = new ZoneBox(BoundingBox, materials, zoneProperties.ShortName, 0, ZoneBoxRenderType.Both);
+                MeshData = areaBox.MeshData;
+                Materials = materials;
+                GenerateRenderBatches(materials, zoneProperties);
+            }
             IsLoaded = true;
         }
 
@@ -138,7 +146,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
-            ZoneShadowBox shadowBox = new ZoneShadowBox(boundingBox, materials, zoneProperties.ShortName);
+            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE, ZoneBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
             BSPTree = new BSPTree(boundingBox, new List<UInt32>());

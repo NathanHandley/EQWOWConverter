@@ -399,7 +399,8 @@ namespace EQWOWConverter.Zones
                     curZoneMusicName += "0" + curZoneMusicIndex.ToString();
 
                 // Create the WMO
-                musicWorldObjectModel.LoadAsMusic(musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound);
+                musicWorldObjectModel.LoadAsMusic(musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
+                    Materials, ZoneProperties);
                 ZoneObjectModels.Add(musicWorldObjectModel);
                 curZoneMusicDBCID++;
                 curZoneMusicIndex++;

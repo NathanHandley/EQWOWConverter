@@ -83,6 +83,9 @@ namespace EQWOWConverter
         // Maxinum number of triangle faces that can be in any zone-to-material-object
         public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 
+        // How much bigger to make the box which causes the shadow in a shadowbox
+        public static readonly float CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
+
         // If populated, only the zones listed here will be generated
         public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { };
 
@@ -141,6 +144,9 @@ namespace EQWOWConverter
         //=====================================================================
         // Audio
         //=====================================================================
+        // If set to 'true', show a box where the music zones are. This is for debugging only
+        public static readonly bool CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES = true;
+        
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 2;
 
