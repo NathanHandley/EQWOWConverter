@@ -503,17 +503,17 @@ namespace EQWOWConverter.WOWFiles
                     {
                         // Create just a single water block and put in the middle of nowhere
                         liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = 100000f;
-                        liquid.CornerPosition.Y = 100000f;
+                        liquid.CornerPosition.X = 0f;
+                        liquid.CornerPosition.Y = 0f;
                         liquid.CornerPosition.Z = 0f;
                         liquid.XTileCount = 1;
                         liquid.YTileCount = 1;
                         liquid.XVertexCount = 2;
                         liquid.YVertexCount = 2;
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -100000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
                     } break;
             }
             chunkBytes.AddRange(liquid.ToBytes());
