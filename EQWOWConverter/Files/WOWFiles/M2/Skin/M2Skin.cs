@@ -25,7 +25,6 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels;
 
 namespace EQWOWConverter.WOWFiles
 {
