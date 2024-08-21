@@ -226,6 +226,9 @@ namespace EQWOWConverter
                 }
             }
 
+            // Replace the custom textures
+            ReplaceCustomTextures(outputObjectsFolderRoot);
+
             // Convert music
             ConditionMusicFiles(outputMusicFolderRoot);
 
