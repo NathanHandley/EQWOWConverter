@@ -343,6 +343,31 @@ namespace EQWOWConverter
             }
         }
 
+        public void ReplaceCustomTextures(string objectsDirectory)
+        {
+            Logger.WriteInfo("Performing texture replacements with any custom textures...");
+            
+            // Objects
+            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "texcustom", "object");
+            if (Directory.Exists(objectTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to perform object texture replacements, as '" + objectTexturesFolder + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+            }
+            else
+            {
+                Logger.WriteInfo("Performing custom object texture replacements...");
+                string[] customTextures = Directory.GetFiles(objectTexturesFolder);
+                foreach (string customTexture in customTextures)
+                {
+                    string targetFileName = Path.Combine(objectsDirectory, "textures", Path.GetFileName(customTexture));
+                    Logger.WriteDetail("Replacing custom object texture '" + customTexture + "'");
+                    File.Copy(customTexture, targetFileName, true);
+                }
+                Logger.WriteInfo("Object custom texture replacements complete");
+            }
+            Logger.WriteInfo("Texture replacements complete");
+        }
+
         public void ConditionMusicFiles(string musicDirectory)
         {
             Logger.WriteInfo("Converting music files...", true);
