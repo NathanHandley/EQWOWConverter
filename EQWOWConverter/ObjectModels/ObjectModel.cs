@@ -358,28 +358,35 @@ namespace EQWOWConverter.ObjectModels
                     newModelTexture.TextureName = material.TextureNames[0];
                     ModelTextures.Add(newModelTexture);
                     ObjectModelMaterial newModelMaterial;
-                    switch (material.MaterialType)
+                    if (Properties.AlphaBlendMaterialsByname.Contains(material.Name))
                     {
-                        case MaterialType.TransparentAdditive:
-                        case MaterialType.TransparentAdditiveUnlit:
-                        case MaterialType.TransparentAdditiveUnlitSkydome:
-                            {
-                                newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Add);
-                            }
-                            break;
-                        case MaterialType.Transparent25Percent:
-                        case MaterialType.Transparent75Percent:
-                        case MaterialType.Transparent50Percent:
-                        case MaterialType.TransparentMasked:
-                            {
-                                newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha_Key);
-                            }
-                            break;
-                        default:
-                            {
-                                newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Opaque);
-                            }
-                            break;
+                        newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha);
+                    }
+                    else
+                    {   
+                        switch (material.MaterialType)
+                        {
+                            case MaterialType.TransparentAdditive:
+                            case MaterialType.TransparentAdditiveUnlit:
+                            case MaterialType.TransparentAdditiveUnlitSkydome:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Add);
+                                }
+                                break;
+                            case MaterialType.Transparent25Percent:
+                            case MaterialType.Transparent75Percent:
+                            case MaterialType.Transparent50Percent:
+                            case MaterialType.TransparentMasked:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha_Key);
+                                }
+                                break;
+                            default:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Opaque);
+                                }
+                                break;
+                        }
                     }
                     ModelMaterials.Add(newModelMaterial);
                     ModelTextureAnimationLookup.Add(-1);

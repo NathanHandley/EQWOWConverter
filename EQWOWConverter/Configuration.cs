@@ -114,7 +114,7 @@ namespace EQWOWConverter
         // Lighting and Coloring
         //=====================================================================
         // If true, light instances are enabled.  They don't work at this time, so leave false
-        public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = true;
+        public static readonly bool CONFIG_LIGHT_INSTANCES_ENABLED = false;
 
         // If true, light instances are rendered as torches.  Use for debugging only, and typically leave false
         public static readonly bool CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES = false;

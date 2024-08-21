@@ -31,11 +31,13 @@ namespace EQWOWConverter.ObjectModels.Properties
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
+        public HashSet<string> AlphaBlendMaterialsByname = new HashSet<string>();
 
         public ObjectModelProperties() { }
         protected ObjectModelProperties(string name)
         {
             Name = name;
+            PopulateAllMaterialAlphaBlendMaterials();
         }
 
         protected void SetCustomCollisionType(ObjectModelCustomCollisionType customCollisionType)
@@ -70,6 +72,12 @@ namespace EQWOWConverter.ObjectModels.Properties
             ObjectPropertiesByByName.Add("slbraz101", new SLBraz101ObjectPreperties());
             ObjectPropertiesByByName.Add("slfountain101", new SLFountain101ObjectProperties());
             ObjectPropertiesByByName.Add("sltorch101", new SLTorch101ObjectProperties());
+        }
+
+        private void PopulateAllMaterialAlphaBlendMaterials()
+        {
+            AlphaBlendMaterialsByname.Clear();
+            AlphaBlendMaterialsByname.Add("d_ub5"); // Treetops that should 'fade into the sky'
         }
     }
 }
