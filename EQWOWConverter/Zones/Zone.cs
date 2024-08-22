@@ -136,6 +136,11 @@ namespace EQWOWConverter.Zones
 
             ZoneObjectModels.Clear();
 
+            // Create the root object
+            ZoneObjectModel rootModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+            rootModel.LoadAsRoot(ZoneProperties);
+            ZoneObjectModels.Add(rootModel);
+
             // Get and convert/translate the mesh data
             MeshData renderMeshData = new MeshData(EQZoneData.RenderMeshData);
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
@@ -215,6 +220,7 @@ namespace EQWOWConverter.Zones
             foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
             BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            rootModel.BoundingBox = new BoundingBox(BoundingBox);
 
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)

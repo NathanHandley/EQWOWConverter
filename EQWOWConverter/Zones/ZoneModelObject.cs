@@ -41,7 +41,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneRenderBatch> RenderBatches = new List<ZoneRenderBatch>();
         public Dictionary<int, ZoneDoodadInstance> DoodadInstances = new Dictionary<int, ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
-        public BSPTree BSPTree = new BSPTree(new BoundingBox(), new List<UInt32>());
+        public BSPTree BSPTree = new BSPTree(new List<UInt32>());
         public bool IsCompletelyInLiquid = false;
         public bool IsExterior = true;
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
@@ -61,13 +61,18 @@ namespace EQWOWConverter.Zones
             GroupIndex = groupIndex;
         }
 
+        public void LoadAsRoot(ZoneProperties properties)
+        {
+            WMOType = ZoneObjectModelType.Root;
+            IsLoaded = true;
+        }
+
         public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidPlane = liquidPlane;
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
             IsLoaded = true;
         }
 
@@ -79,7 +84,6 @@ namespace EQWOWConverter.Zones
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
             LiquidPlane = liquidPlane;
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
             IsLoaded = true;
         }
 
@@ -91,7 +95,6 @@ namespace EQWOWConverter.Zones
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials, zoneProperties);
-            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
@@ -112,7 +115,7 @@ namespace EQWOWConverter.Zones
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
-            BSPTree = new BSPTree(BoundingBox, collisionTriangleIncidies);
+            BSPTree = new BSPTree(collisionTriangleIncidies);
             CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
@@ -130,7 +133,6 @@ namespace EQWOWConverter.Zones
 
             WMOType = ZoneObjectModelType.Music;
             BoundingBox = new BoundingBox(musicInstance.CenterPosition, musicInstance.Radius);
-            BSPTree = new BSPTree(BoundingBox, new List<UInt32>());
             ZoneMusicDBCID = zoneMusicDBCID;
             ZoneMusicDBCName = zoneMusicDBCName;
             MusicDaySound = musicDaySound;
@@ -154,7 +156,6 @@ namespace EQWOWConverter.Zones
             ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE, ZoneBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
-            BSPTree = new BSPTree(boundingBox, new List<UInt32>());
             IsLoaded = true;
         }
 
