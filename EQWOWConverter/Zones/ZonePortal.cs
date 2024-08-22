@@ -28,11 +28,41 @@ namespace EQWOWConverter.Zones
     {
         public List<Vector3> Vertices = new List<Vector3>();
         public Vector3 Normal = new Vector3();
+        public float Distance = 0f;
         public UInt16 GroupIndex;
 
         public ZonePortal(UInt16 groupIndex)
         {
             GroupIndex = groupIndex;
+        }
+
+        public List<byte> ToBytesInfo(UInt16 startVertex)
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(startVertex));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(4)));
+            returnBytes.AddRange(Normal.ToBytes());
+            returnBytes.AddRange(BitConverter.GetBytes(Distance));
+            return returnBytes;
+        }
+
+        public List<byte> ToBytesReferences(UInt16 portalIndex)
+        {
+            List<byte> returnBytes = new List<byte>();
+
+            // Negative side (inside)
+            returnBytes.AddRange(BitConverter.GetBytes(portalIndex));
+            returnBytes.AddRange(BitConverter.GetBytes(GroupIndex));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToInt16(-1)));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Filler
+
+            // Positive side (outside)
+            returnBytes.AddRange(BitConverter.GetBytes(portalIndex));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0)));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToInt16(1)));
+            returnBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt16(0))); // Filler
+
+            return returnBytes;
         }
     }
 }

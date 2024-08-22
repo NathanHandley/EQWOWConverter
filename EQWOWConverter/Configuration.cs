@@ -93,7 +93,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -145,7 +145,7 @@ namespace EQWOWConverter
         // Audio
         //=====================================================================
         // If set to 'true', show a box where the music zones are. This is for debugging only
-        public static readonly bool CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES = false;
+        public static readonly bool CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES = true;
         
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 2;
