@@ -24,6 +24,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics.Tracing;
 
 namespace EQWOWConverter.Zones
 {
@@ -32,6 +33,7 @@ namespace EQWOWConverter.Zones
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
+        public UInt16 GroupIndex;
         public bool IsLoaded = false;
         public ZoneObjectModelType WMOType = ZoneObjectModelType.Rendered;
         public List<Material> Materials = new List<Material>();
@@ -50,11 +52,13 @@ namespace EQWOWConverter.Zones
         public string ZoneMusicDBCName = string.Empty;
         public Sound? MusicDaySound = null;
         public Sound? MusicNightSound = null;
+        public List<ZonePortal> Portals = new List<ZonePortal>();
 
-        public ZoneObjectModel()
+        public ZoneObjectModel(UInt16 groupIndex)
         {
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
+            GroupIndex = groupIndex;
         }
 
         public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
@@ -138,6 +142,7 @@ namespace EQWOWConverter.Zones
                 Materials = materials;
                 GenerateRenderBatches(materials, zoneProperties);
             }
+            WrapInPortals();
             IsLoaded = true;
         }
 
@@ -232,6 +237,74 @@ namespace EQWOWConverter.Zones
             if (WMOType == ZoneObjectModelType.Rendered && MeshData.VertexColors.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
             return headerFlags;
+        }
+
+        public void WrapInPortals()
+        {
+            // Empty any previous portals
+            Portals.Clear();
+
+            // Make a portal for each side, facing outward
+            float highX = BoundingBox.TopCorner.X;
+            float lowX = BoundingBox.BottomCorner.X;
+            float highY = BoundingBox.TopCorner.Y;
+            float lowY = BoundingBox.BottomCorner.Y;
+            float highZ = BoundingBox.TopCorner.Z;
+            float lowZ = BoundingBox.BottomCorner.Z;
+
+            // Side 1 (top)
+            ZonePortal zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(highX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, highZ));
+            zonePortal.Normal = new Vector3(0, 0, 1f);
+            Portals.Add(zonePortal);
+
+            // Side 2 (bottom)
+            zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(highX, highY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, lowZ));
+            zonePortal.Normal = new Vector3(0, 0, -1f);
+            Portals.Add(zonePortal);
+
+            // Side 3 (north)
+            zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(highX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(highX, highY, lowZ));
+            zonePortal.Normal = new Vector3(1f, 0, 0);
+            Portals.Add(zonePortal);
+
+            // Side 4 (south)
+            zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, highZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, lowZ));
+            zonePortal.Normal = new Vector3(-1f, 0, 0);
+            Portals.Add(zonePortal);
+
+            // Side 5 (west)
+            zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, highY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, highY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, highY, lowZ));
+            zonePortal.Normal = new Vector3(0, 1f, 0);
+            Portals.Add(zonePortal);
+
+            // Side 6 (east)
+            zonePortal = new ZonePortal(GroupIndex);
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, highZ));
+            zonePortal.Vertices.Add(new Vector3(highX, lowY, lowZ));
+            zonePortal.Vertices.Add(new Vector3(lowX, lowY, lowZ));
+            zonePortal.Normal = new Vector3(0, -1f, 0);
+            Portals.Add(zonePortal);
         }
     }
 }

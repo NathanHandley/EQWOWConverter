@@ -219,7 +219,7 @@ namespace EQWOWConverter.Zones
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -236,7 +236,7 @@ namespace EQWOWConverter.Zones
             // If this can be generated as a single WMO, just do that
             if (collisionMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsCollision(collisionMeshData, DoodadInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -271,7 +271,7 @@ namespace EQWOWConverter.Zones
             // Volumes
             foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -304,14 +304,14 @@ namespace EQWOWConverter.Zones
                     List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
                     foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
-                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                         curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneObjectModels.Add(curWorldObjectModel);
                     }
                 }
                 else
                 {
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                     curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
@@ -391,7 +391,7 @@ namespace EQWOWConverter.Zones
                     dayMusicSound = nightMusicSound;
 
                 // Create the zone music record data
-                ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel();
+                ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 string curZoneMusicName = "Zone-" + zoneProperties.ShortName;
                 if (curZoneMusicIndex > 9)
                     curZoneMusicName += curZoneMusicIndex.ToString();
@@ -452,7 +452,7 @@ namespace EQWOWConverter.Zones
                 else
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                     curWorldObjectModel.LoadAsCollision(extractedMeshData, DoodadInstances, ZoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
@@ -465,7 +465,7 @@ namespace EQWOWConverter.Zones
             MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesToInclude);
             if (extractedMeshData.Vertices.Count > 0)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel();
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, LightInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
