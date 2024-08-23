@@ -50,6 +50,7 @@ namespace EQWOWConverter.Zones
         public string ZoneMusicDBCName = string.Empty;
         public Sound? MusicDaySound = null;
         public Sound? MusicNightSound = null;
+        public UInt32? AreaTableID = null;
 
         public ZoneObjectModel(UInt16 groupIndex, UInt32 wmoGroupID)
         {
@@ -83,15 +84,13 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<ZoneDoodadInstance> zoneWideDoodadInstances,
-            List<LightInstance> lightInstances, ZoneProperties zoneProperties)
+        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<LightInstance> lightInstances, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.Rendered;
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials, zoneProperties);
-            CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
@@ -103,16 +102,15 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollision(MeshData collisionMeshData, List<ZoneDoodadInstance> zoneWideDoodadInstances, ZoneProperties zoneProperties)
+        public void LoadAsCollision(MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.Collision;
+            WMOType = ZoneObjectModelType.CollisionOnly;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
             BSPTree = new BSPTree(collisionTriangleIncidies);
-            CreateZoneWideDoodadAssociations(zoneWideDoodadInstances);
             if (zoneProperties.IsCompletelyInLiquid)
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
@@ -127,7 +125,7 @@ namespace EQWOWConverter.Zones
             if (musicDaySound == null || musicNightSound == null)
                 throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was null");
 
-            WMOType = ZoneObjectModelType.Music;
+            WMOType = ZoneObjectModelType.MusicCollision;
             Vector3 newCenter = new Vector3(musicInstance.CenterPosition);
             //newCenter.Z += 100f;
             BoundingBox = new BoundingBox(newCenter, musicInstance.Radius);
@@ -212,7 +210,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void CreateZoneWideDoodadAssociations(List<ZoneDoodadInstance> zoneWidedoodadInstances)
+        public void CreateZoneWideDoodadAssociations(List<ZoneDoodadInstance> zoneWidedoodadInstances)
         {
             // All zonewide doodads should be associated with all WMOs
             for (int i = 0; i < zoneWidedoodadInstances.Count; i++)

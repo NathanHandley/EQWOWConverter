@@ -169,21 +169,22 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
-        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files.
+        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files
         public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_START = 30000;
         public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE = 1000;
 
-        // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc. (~7000-7200)
+        // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
 
-        // Specific rows in WMOAreaTable.dbc. (~52000-60000)
+        // Specific rows in WMOAreaTable.dbc
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_NUM_RESERVED_PER_ZONE = 1000;
 
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 5100;
+        public static readonly UInt32 CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE = 10;
 
-        // Identifies Maps in Map.dbc and MapDifficulty.dbc. (~750-900)
+        // Identifies Maps in Map.dbc and MapDifficulty.dbc
         public static readonly int CONFIG_DBCID_MAPID_START = 750;
 
         // Specific rows in MapDifficulty.dbc. (~800-922)

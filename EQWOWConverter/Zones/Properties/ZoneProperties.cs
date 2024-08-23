@@ -51,14 +51,14 @@ namespace EQWOWConverter.Zones
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
-        private static UInt32 CURRENT_AREATABLEID_ROOT = Configuration.CONFIG_DBCID_AREATABLE_START;
+        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_START;
         private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
         private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
-        private static int CURRENT_SOUNDENTRY_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
+        private static int CURRENT_SOUNDENTRY_ZONEMUSICID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
-        public UInt32 DBCAreaTableID;
+        public UInt32 DBCAreaTableStartID;
         public UInt32 DBCWMOID;
         public int DBCZoneMusicStartID;
         public int DBCSoundEntryZoneMusicStartID;
@@ -69,16 +69,16 @@ namespace EQWOWConverter.Zones
             // Generate zone-specific IDs
             DBCMapID = CURRENT_MAPID;
             CURRENT_MAPID++;
-            DBCAreaTableID = CURRENT_AREATABLEID_ROOT;
-            CURRENT_AREATABLEID_ROOT++;
+            DBCAreaTableStartID = CURRENT_AREATABLEID;
+            CURRENT_AREATABLEID += Configuration.CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE;
             DBCWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
             DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
             CURRENT_MAPDIFFICULTYID++;
             DBCZoneMusicStartID = CURRENT_ZONEMUSICSTARTID;
             CURRENT_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
-            DBCSoundEntryZoneMusicStartID = CURRENT_SOUNDENTRY_ZONEMUSICSTARTID;
-            CURRENT_SOUNDENTRY_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
+            DBCSoundEntryZoneMusicStartID = CURRENT_SOUNDENTRY_ZONEMUSICID;
+            CURRENT_SOUNDENTRY_ZONEMUSICID += Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
             DBCWMOGroupStartID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID += Configuration.CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE;
         }

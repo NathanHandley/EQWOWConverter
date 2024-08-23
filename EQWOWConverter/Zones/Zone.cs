@@ -187,6 +187,9 @@ namespace EQWOWConverter.Zones
                 }
             }
 
+            // Attach all doodads to the root
+            rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
+
             // Generate the render objects
             GenerateRenderWorldObjectModels(renderMeshData, Materials);
 
@@ -248,7 +251,7 @@ namespace EQWOWConverter.Zones
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                 CurWMOGroupID++;
-                curWorldObjectModel.LoadAsCollision(collisionMeshData, DoodadInstances, ZoneProperties);
+                curWorldObjectModel.LoadAsCollision(collisionMeshData, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
             // Otherwise, break into parts
@@ -469,7 +472,7 @@ namespace EQWOWConverter.Zones
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                     CurWMOGroupID++;
-                    curWorldObjectModel.LoadAsCollision(extractedMeshData, DoodadInstances, ZoneProperties);
+                    curWorldObjectModel.LoadAsCollision(extractedMeshData, ZoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
             }
@@ -483,7 +486,7 @@ namespace EQWOWConverter.Zones
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                 CurWMOGroupID++;
-                curWorldObjectModel.LoadAsRendered(extractedMeshData, Materials, DoodadInstances, LightInstances, ZoneProperties);
+                curWorldObjectModel.LoadAsRendered(extractedMeshData, Materials, LightInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }

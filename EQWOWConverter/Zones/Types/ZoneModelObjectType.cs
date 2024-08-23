@@ -26,10 +26,10 @@ namespace EQWOWConverter.Zones
     {
         Root,
         Rendered,
-        Collision,
+        CollisionOnly,
+        MusicCollision,
         LiquidVolume,
         LiquidPlane,
-        ShadowBox,
-        Music
+        ShadowBox
     }
 }
