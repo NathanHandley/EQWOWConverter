@@ -64,13 +64,13 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMOSBChunk());
 
             // MOPV (Portal Vertices) ------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPVChunk(zone));
+            RootBytes.AddRange(GenerateMOPVChunk());
 
             // MOPT (Portal Information) ----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPTChunk(zone));
+            RootBytes.AddRange(GenerateMOPTChunk());
 
             // MOPR (Map Object Portal References) ------------------------------------------------
-            RootBytes.AddRange(GenerateMOPRChunk(zone));
+            RootBytes.AddRange(GenerateMOPRChunk());
 
             // MOVV (Visible Block Vertices) -----------------------------------------------------
             RootBytes.AddRange(GenerateMOVVChunk());
@@ -121,11 +121,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.ZoneObjectModels.Count())));
 
             // Number of Portals
-            UInt32 numOfPortals = 0;
-            foreach (ZoneObjectModel zoneObjectModel in zone.ZoneObjectModels)
-                if (zoneObjectModel.Portals.Count > 0)
-                    numOfPortals += Convert.ToUInt32(zoneObjectModel.Portals.Count);
-            chunkBytes.AddRange(BitConverter.GetBytes(numOfPortals));    
+            chunkBytes.AddRange(BitConverter.GetBytes(0));    
 
             // Number of Lights
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count())));
@@ -356,50 +352,35 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPV (Portal Vertices)
         /// </summary>
-        private List<byte> GenerateMOPVChunk(Zone zone)
+        private List<byte> GenerateMOPVChunk()
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach(ZoneObjectModel zoneObjectModel in zone.ZoneObjectModels)
-                foreach(ZonePortal portal in zoneObjectModel.Portals)
-                    foreach(Vector3 portalVertex in portal.Vertices)
-                        chunkBytes.AddRange(portalVertex.ToBytes());
+
+            // Intentionally blank for now
+
             return WrapInChunk("MOPV", chunkBytes.ToArray());
         }
 
         /// <summary>
         /// MOPT (Portal Information)
         /// </summary>
-        private List<byte> GenerateMOPTChunk(Zone zone)
+        private List<byte> GenerateMOPTChunk()
         {
             List<byte> chunkBytes = new List<byte>();
-            UInt16 curStartVertex = 0;
-            foreach (ZoneObjectModel zoneObjectModel in zone.ZoneObjectModels)
-            {
-                foreach (ZonePortal portal in zoneObjectModel.Portals)
-                {
-                    chunkBytes.AddRange(portal.ToBytesInfo(curStartVertex));
-                    curStartVertex += 4;
-                }
-            }
+
+            // Intentionally blank for now
+
             return WrapInChunk("MOPT", chunkBytes.ToArray());
         }
 
         /// <summary>
         /// MOPR (Map Object Portal References)
         /// </summary>
-        private List<byte> GenerateMOPRChunk(Zone zone)
+        private List<byte> GenerateMOPRChunk()
         {
             List<byte> chunkBytes = new List<byte>();
 
-            UInt16 curIndex = 0;
-            foreach (ZoneObjectModel zoneObjectModel in zone.ZoneObjectModels)
-            {
-                foreach (ZonePortal portal in zoneObjectModel.Portals)
-                {
-                    chunkBytes.AddRange(portal.ToBytesReferences(curIndex));
-                    curIndex++;
-                }
-            }
+            // Intentionally blank for now
 
             return WrapInChunk("MOPR", chunkBytes.ToArray());
         }
