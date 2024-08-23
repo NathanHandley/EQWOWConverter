@@ -154,38 +154,14 @@ namespace EQWOWConverter.Zones
             // Build liquid wmos
             GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
 
-            // Build music wmos
-            GenerateMusicWorldObjects(EQZoneData.MusicInstances, ZoneProperties);
-
             // Determine which materials are animated or transparent and create objects to represent them
             foreach (Material material in Materials)
                 if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
                     GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
 
-            // Create collision data for the map
-            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_ENABLED == true)
-            {
-                if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
-                {
-                    Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
-                    collisionMeshData = new MeshData(renderMeshData);
-                    GenerateCollisionWorldObjectModels(collisionMeshData);
-                }
-                else
-                {
-                    Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
-                    if (collisionMeshData.Normals.Count == 0)
-                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                            collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
-                    if (collisionMeshData.TextureCoordinates.Count == 0)
-                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                            collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
-                    if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
-                        for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
-                            collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
-                    GenerateCollisionWorldObjectModels(collisionMeshData);
-                }
-            }
+            // Create collision and music data for the map
+            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == true)
+                GenerateMusicAndCollisionWorldObjectModels(renderMeshData, collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
 
             // Attach all doodads to the root
             rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
@@ -251,7 +227,7 @@ namespace EQWOWConverter.Zones
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                 CurWMOGroupID++;
-                curWorldObjectModel.LoadAsCollision(collisionMeshData, ZoneProperties);
+                curWorldObjectModel.LoadAsCollisionOnly(collisionMeshData, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
             // Otherwise, break into parts
@@ -259,7 +235,7 @@ namespace EQWOWConverter.Zones
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, true);
+                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollisionOnly);
             }
         }
 
@@ -270,14 +246,41 @@ namespace EQWOWConverter.Zones
 
             // If this can be generated as a single WMO, just do that
             if (staticMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP)
-                GenerateWorldObjectModel(staticMeshData.TriangleFaces, staticMeshData);
+                GenerateRenderedWorldObjectModel(staticMeshData.TriangleFaces, staticMeshData);
             // Otherwise, break into parts
             else
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, staticMeshData.TriangleFaces, staticMeshData, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP, false);
+                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, staticMeshData.TriangleFaces, staticMeshData, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP, ZoneObjectModelType.Rendered);
             }
+        }
+
+        public void GenerateMusicAndCollisionWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        {
+            // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
+            if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
+            {
+                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
+                collisionMeshData = new MeshData(renderMeshData);
+            }
+            else
+            {
+                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
+                if (collisionMeshData.Normals.Count == 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
+                if (collisionMeshData.TextureCoordinates.Count == 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+                if (collisionMeshData.VertexColors.Count == 0 && renderMeshData.VertexColors.Count != 0)
+                    for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+                        collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
+            }
+
+            // Generate music first, then plain collision
+            GenerateMusicWorldObjects(collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
+            GenerateCollisionWorldObjectModels(collisionMeshData);
         }
 
         public void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
@@ -335,7 +338,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        public void GenerateMusicWorldObjects(List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        public void GenerateMusicWorldObjects(MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
         {
             // Skip if there are no valid index references
             if (zoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
@@ -417,7 +420,7 @@ namespace EQWOWConverter.Zones
                     curZoneMusicName += "0" + curZoneMusicIndex.ToString();
 
                 // Create the WMO
-                musicWorldObjectModel.LoadAsMusic(musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
+                musicWorldObjectModel.LoadAsMusicCollision(collisionMeshData, musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
                     Materials, ZoneProperties);
                 ZoneObjectModels.Add(musicWorldObjectModel);
                 curZoneMusicDBCID++;
@@ -425,7 +428,8 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateWorldObjectModelsByXYRegion(BoundingBox boundingBox, List<TriangleFace> faces, MeshData meshData, int maxFacesPerWMOGroup, bool isCollisionMesh)
+        private void GenerateWorldObjectModelsByXYRegion(BoundingBox boundingBox, List<TriangleFace> faces, MeshData meshData, int maxFacesPerWMOGroup, 
+            ZoneObjectModelType wmoType)
         {
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
             if (faces.Count > maxFacesPerWMOGroup)
@@ -460,25 +464,25 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Generate for the two sub boxes
-                GenerateWorldObjectModelsByXYRegion(splitBox.BoxA, aBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
-                GenerateWorldObjectModelsByXYRegion(splitBox.BoxB, bBoxTriangles, meshData, maxFacesPerWMOGroup, isCollisionMesh);
+                GenerateWorldObjectModelsByXYRegion(splitBox.BoxA, aBoxTriangles, meshData, maxFacesPerWMOGroup, wmoType);
+                GenerateWorldObjectModelsByXYRegion(splitBox.BoxB, bBoxTriangles, meshData, maxFacesPerWMOGroup, wmoType);
             }
             else
             {
-                if (isCollisionMesh == false)
-                    GenerateWorldObjectModel(faces, meshData);
-                else
+                if (wmoType == ZoneObjectModelType.Rendered)
+                    GenerateRenderedWorldObjectModel(faces, meshData);
+                else if (wmoType == ZoneObjectModelType.CollisionOnly)
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                     CurWMOGroupID++;
-                    curWorldObjectModel.LoadAsCollision(extractedMeshData, ZoneProperties);
+                    curWorldObjectModel.LoadAsCollisionOnly(extractedMeshData, ZoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
             }
         }
 
-        private void GenerateWorldObjectModel(List<TriangleFace> facesToInclude, MeshData meshData)
+        private void GenerateRenderedWorldObjectModel(List<TriangleFace> facesToInclude, MeshData meshData)
         {
             // Generate a world model object if there are any vertices
             MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesToInclude);

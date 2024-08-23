@@ -50,7 +50,7 @@ namespace EQWOWConverter.Zones
         public string ZoneMusicDBCName = string.Empty;
         public Sound? MusicDaySound = null;
         public Sound? MusicNightSound = null;
-        public UInt32? AreaTableID = null;
+        public UInt32? AreaTableIDOverride = null;
 
         public ZoneObjectModel(UInt16 groupIndex, UInt32 wmoGroupID)
         {
@@ -102,7 +102,7 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollision(MeshData collisionMeshData, ZoneProperties zoneProperties)
+        public void LoadAsCollisionOnly(MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.CollisionOnly;
             MeshData = collisionMeshData;
@@ -119,16 +119,23 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsMusic(MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, Sound? musicDaySound, Sound? musicNightSound,
-            List<Material> materials, ZoneProperties zoneProperties)
+        public void LoadAsMusicCollision(MeshData collisionMeshData, MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, 
+            Sound? musicDaySound, Sound? musicNightSound, List<Material> materials, ZoneProperties zoneProperties)
         {
             if (musicDaySound == null || musicNightSound == null)
                 throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was null");
 
             WMOType = ZoneObjectModelType.MusicCollision;
-            Vector3 newCenter = new Vector3(musicInstance.CenterPosition);
-            //newCenter.Z += 100f;
-            BoundingBox = new BoundingBox(newCenter, musicInstance.Radius);
+
+            // Collision
+            //MeshData = collisionMeshData;
+            BoundingBox = new BoundingBox(musicInstance.CenterPosition, musicInstance.Radius); //BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            //List<UInt32> collisionTriangleIncidies = new List<UInt32>();
+            //for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
+            //    collisionTriangleIncidies.Add(i);
+            //BSPTree = new BSPTree(collisionTriangleIncidies);
+            
+            // Music
             ZoneMusicDBCID = zoneMusicDBCID;
             ZoneMusicDBCName = zoneMusicDBCName;
             MusicDaySound = musicDaySound;
@@ -139,6 +146,12 @@ namespace EQWOWConverter.Zones
                 MeshData = areaBox.MeshData;
                 Materials = materials;
                 GenerateRenderBatches(materials, zoneProperties);
+            }
+
+            if (zoneProperties.IsCompletelyInLiquid)
+            {
+                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
+                LiquidType = zoneProperties.CompletelyInLiquidType;
             }
             IsLoaded = true;
         }

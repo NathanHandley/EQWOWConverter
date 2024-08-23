@@ -105,7 +105,7 @@ namespace EQWOWConverter
         // Collision
         //=====================================================================
         // If true, allow collision with world model objects
-        public static readonly bool CONFIG_WORLD_MODEL_OBJECT_COLLISION_ENABLED = true;
+        public static readonly bool CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED = true;
         
         // Maximum number of BTREE faces that fit into a WMO group before it subdivides
         public static readonly int CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
