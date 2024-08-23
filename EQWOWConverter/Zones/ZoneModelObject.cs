@@ -144,10 +144,6 @@ namespace EQWOWConverter.Zones
                 MeshData = areaBox.MeshData;
                 Materials = materials;
                 GenerateRenderBatches(materials, zoneProperties);
-                List<UInt32> collisionTriangleIncidies = new List<UInt32>();
-                for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
-                    collisionTriangleIncidies.Add(i);
-                BSPTree = new BSPTree(collisionTriangleIncidies);
             }
             IsLoaded = true;
         }
