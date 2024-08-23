@@ -30,8 +30,6 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneObjectModel
     {
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
-
         public UInt32 WMOGroupID;
         public UInt16 GroupIndex;
         public bool IsLoaded = false;
@@ -53,10 +51,9 @@ namespace EQWOWConverter.Zones
         public Sound? MusicDaySound = null;
         public Sound? MusicNightSound = null;
 
-        public ZoneObjectModel(UInt16 groupIndex)
+        public ZoneObjectModel(UInt16 groupIndex, UInt32 wmoGroupID)
         {
-            WMOGroupID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID++;
+            WMOGroupID = wmoGroupID;
             GroupIndex = groupIndex;
         }
 

@@ -93,7 +93,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -169,14 +169,16 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
-        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files. (~30000-38000)
+        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files.
         public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_START = 30000;
+        public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE = 1000;
 
         // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc. (~7000-7200)
         public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
 
         // Specific rows in WMOAreaTable.dbc. (~52000-60000)
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
+        public static readonly int CONFIG_DBCID_WMOAREATABLEID_NUM_RESERVED_PER_ZONE = 1000;
 
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 5100;

@@ -55,12 +55,14 @@ namespace EQWOWConverter.Zones
         private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
         private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
         private static int CURRENT_SOUNDENTRY_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
         public UInt32 DBCAreaTableID;
         public UInt32 DBCWMOID;
         public int DBCZoneMusicStartID;
         public int DBCSoundEntryZoneMusicStartID;
+        public UInt32 DBCWMOGroupStartID;
 
         protected ZoneProperties()
         {
@@ -77,6 +79,8 @@ namespace EQWOWConverter.Zones
             CURRENT_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
             DBCSoundEntryZoneMusicStartID = CURRENT_SOUNDENTRY_ZONEMUSICSTARTID;
             CURRENT_SOUNDENTRY_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
+            DBCWMOGroupStartID = CURRENT_WMOGROUPID;
+            CURRENT_WMOGROUPID += Configuration.CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE;
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
