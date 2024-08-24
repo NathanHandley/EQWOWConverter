@@ -14,36 +14,30 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.Zones
 {
-    internal class Sound
+    internal class ZoneMusic
     {
-        public int Id = -1;
-        public string Name = string.Empty;
-        public string AudioFileName = string.Empty;
-        public SoundType Type = SoundType.None;
-        public float Volume = 1f;
-        public bool Loop = false;
-        public float MinDistance = 8f; // Default for zone music
-        public float DistanceCutoff = 45f; // Default for zone music
+        public int DBCID;
+        public string DBCName;
+        public Sound DaySound;
+        public Sound NightSound;
+        public UInt32 AreaTableIDOverride;
 
-        public Sound()
+        public ZoneMusic(int dbcID, string dbcName, Sound daySound, Sound nightSound, UInt32 areaTableIDOverride)
         {
-
-        }
-
-        public Sound(int id, string name, string audioFileName, SoundType type)
-        {
-            Id = id;
-            Name = name;
-            AudioFileName = audioFileName;
-            Type = type;
+            DBCID = dbcID;
+            DBCName = dbcName;
+            DaySound = daySound;
+            NightSound = nightSound;
+            AreaTableIDOverride = areaTableIDOverride;
         }
     }
 }

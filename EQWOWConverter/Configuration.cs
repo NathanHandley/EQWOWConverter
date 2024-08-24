@@ -93,7 +93,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -182,7 +182,7 @@ namespace EQWOWConverter
 
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 5100;
-        public static readonly UInt32 CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE = 10;
+        public static readonly UInt32 CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE = 11;
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc
         public static readonly int CONFIG_DBCID_MAPID_START = 750;

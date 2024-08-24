@@ -377,16 +377,24 @@ namespace EQWOWConverter
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
-                areaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCAreaTableStartID), 0, 0, zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.LoadingScreenID);
+                areaTableDBC.AddRow(Convert.ToInt32(zone.AreaTableZoneDBCID), 0, 0, zone.DescriptiveName);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
                 {
-                    if (wmo.WMOType == ZoneObjectModelType.CollisionWithAudio && wmo.ZoneMusicDBCID != -1 && wmo.MusicDaySound != null && wmo.MusicNightSound != null)
+                    if (wmo.WMOType == ZoneObjectModelType.CollisionWithAudio)
                     {
-                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), wmo.ZoneMusicDBCID, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName);
-                        zoneMusicDBC.AddRow(wmo.ZoneMusicDBCID, wmo.ZoneMusicDBCName, wmo.MusicDaySound.Id, wmo.MusicNightSound.Id);
+                        int curAreaTableID = Convert.ToInt32(zone.AreaTableZoneDBCID);
+                        int curMusicID = 0;
+                        if (wmo.ZoneMusic == null)
+                            Logger.WriteError("Zone '" + zone.ShortName + "' had a wmo group of CollisionWithAudio but had a null ZoneMusic object");
+                        else
+                        {
+                            curAreaTableID = Convert.ToInt32(wmo.ZoneMusic.AreaTableIDOverride);
+                            curMusicID = wmo.ZoneMusic.DBCID;
+                        }
+                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), curMusicID, Convert.ToInt32(curAreaTableID), zone.DescriptiveName);
                     }
                     else
                         wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName);
@@ -397,6 +405,13 @@ namespace EQWOWConverter
                 string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
                 foreach (var sound in zone.ZoneMusicSoundsByIndex)
                     soundEntriesDBC.AddRow(sound.Value, musicDirectory);
+
+                foreach(ZoneMusic zoneMusic in zone.ZoneMusics)
+                {
+                    areaTableDBC.AddRow(Convert.ToInt32(zoneMusic.AreaTableIDOverride), Convert.ToInt32(zone.AreaTableZoneDBCID), zoneMusic.DBCID, zone.DescriptiveName);
+                    zoneMusicDBC.AddRow(zoneMusic.DBCID, zoneMusic.DBCName, zoneMusic.DaySound.Id, zoneMusic.NightSound.Id);
+                }
+
             }
 
             // Output them

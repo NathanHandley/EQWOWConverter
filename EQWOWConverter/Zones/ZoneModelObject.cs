@@ -46,11 +46,7 @@ namespace EQWOWConverter.Zones
         public Material LiquidMaterial = new Material();
         public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
-        public int ZoneMusicDBCID = -1;
-        public string ZoneMusicDBCName = string.Empty;
-        public Sound? MusicDaySound = null;
-        public Sound? MusicNightSound = null;
-        public UInt32? AreaTableIDOverride = null;
+        public ZoneMusic? ZoneMusic = null;
 
         public ZoneObjectModel(UInt16 groupIndex, UInt32 wmoGroupID)
         {
@@ -119,12 +115,8 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsMusicCollision(MeshData collisionMeshData, MusicInstance musicInstance, int zoneMusicDBCID, string zoneMusicDBCName, 
-            Sound? musicDaySound, Sound? musicNightSound, List<Material> materials, ZoneProperties zoneProperties)
+        public void LoadAsMusicCollision(MeshData collisionMeshData, ZoneMusic zoneMusic, List<Material> materials, ZoneProperties zoneProperties)
         {
-            if (musicDaySound == null || musicNightSound == null)
-                throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was null");
-
             WMOType = ZoneObjectModelType.CollisionWithAudio;
 
             // Collision
@@ -136,10 +128,7 @@ namespace EQWOWConverter.Zones
             BSPTree = new BSPTree(collisionTriangleIncidies);
 
             // Music
-            ZoneMusicDBCID = zoneMusicDBCID;
-            ZoneMusicDBCName = zoneMusicDBCName;
-            MusicDaySound = musicDaySound;
-            MusicNightSound = musicNightSound;
+            ZoneMusic = zoneMusic;
             //if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
             //{
             //    ZoneBox areaBox = new ZoneBox(BoundingBox, materials, zoneProperties.ShortName, 0, ZoneBoxRenderType.Both);

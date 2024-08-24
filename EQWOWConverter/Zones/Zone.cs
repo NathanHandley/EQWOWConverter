@@ -33,6 +33,7 @@ namespace EQWOWConverter.Zones
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;        
         public string DescriptiveNameOnlyLetters = string.Empty;
+        public UInt32 AreaTableZoneDBCID;
         public ZoneEQData EQZoneData = new ZoneEQData();
         private bool IsLoaded = false;
         public List<ZoneObjectModel> ZoneObjectModels = new List<ZoneObjectModel>();
@@ -45,7 +46,10 @@ namespace EQWOWConverter.Zones
         public ZoneProperties ZoneProperties;
         public Vector3 SafePosition = new Vector3();
         public Dictionary<int, Sound> ZoneMusicSoundsByIndex = new Dictionary<int, Sound>();
+        public List<ZoneMusic> ZoneMusics = new List<ZoneMusic>();
+
         private UInt32 CurWMOGroupID;
+        private UInt32 CurMusicAreaTableDBCID;
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
@@ -56,6 +60,8 @@ namespace EQWOWConverter.Zones
             else
                 DescriptiveNameOnlyLetters = shortName;
             CurWMOGroupID = zoneProperties.DBCWMOGroupStartID;
+            AreaTableZoneDBCID = zoneProperties.DBCAreaTableStartID;
+            CurMusicAreaTableDBCID = AreaTableZoneDBCID + 1;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -366,7 +372,7 @@ namespace EQWOWConverter.Zones
                 musicInstance.Radius *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
 
                 // Create day sound
-                Sound? dayMusicSound = null;
+                Sound dayMusicSound = new Sound();
                 if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.DayIndex) == true)
                 {
                     if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.DayIndex) == false)
@@ -386,7 +392,7 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Create night sound
-                Sound? nightMusicSound = null;
+                Sound nightMusicSound = new Sound();
                 if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.NightIndex) == true)
                 {
                     if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.NightIndex) == false)
@@ -405,19 +411,22 @@ namespace EQWOWConverter.Zones
                         nightMusicSound = ZoneMusicSoundsByIndex[musicInstance.NightIndex];
                 }
 
-                if (nightMusicSound == null && dayMusicSound == null)
+                if (nightMusicSound.Id == -1 && dayMusicSound.Id == -1)
                     continue;
-                if (nightMusicSound == null)
+                if (nightMusicSound.Id == -1)
                     nightMusicSound = dayMusicSound;
-                if (dayMusicSound == null)
+                if (dayMusicSound.Id == -1)
                     dayMusicSound = nightMusicSound;
 
-                // Create the zone music record data
+                // Create the zone music record
                 string curZoneMusicName = "Zone-" + zoneProperties.ShortName;
                 if (curZoneMusicIndex > 9)
                     curZoneMusicName += curZoneMusicIndex.ToString();
                 else
                     curZoneMusicName += "0" + curZoneMusicIndex.ToString();
+                ZoneMusic zoneMusic = new ZoneMusic(curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound, CurMusicAreaTableDBCID);
+                ZoneMusics.Add(zoneMusic);
+                CurMusicAreaTableDBCID++;
 
                 // Extract out the mesh data for this music sphere
                 MeshData collisionSphereMeshData;
@@ -434,8 +443,7 @@ namespace EQWOWConverter.Zones
                 {
                     ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                     CurWMOGroupID++;
-                    musicWorldObjectModel.LoadAsMusicCollision(meshData, musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
-                        Materials, ZoneProperties);
+                    musicWorldObjectModel.LoadAsMusicCollision(meshData, zoneMusic, Materials, ZoneProperties);
                     ZoneObjectModels.Add(musicWorldObjectModel);
                 }
                 curZoneMusicDBCID++;
