@@ -50,6 +50,41 @@ namespace EQWOWConverter.Common
                 VertexColors.Add(new ColorRGBA(colorRGBA));
         }
 
+        public void DeleteInvalidTriangles()
+        {
+            List<TriangleFace> keepTriangleFaces = new List<TriangleFace>();
+            foreach (TriangleFace triangle in TriangleFaces)
+            {
+                // Remove triangles that don't have 3 unique indices
+                if (triangle.V1 == triangle.V2 || triangle.V2 == triangle.V3 || triangle.V1 == triangle.V3)
+                    continue;
+
+                // Remove triangles that have indices beyond the vertex list
+                if (triangle.V1 >= Vertices.Count)
+                    continue;
+                if (triangle.V2 >= Vertices.Count)
+                    continue;
+                if (triangle.V3 >= Vertices.Count)
+                    continue;
+
+                // This is a good one, keep it
+                keepTriangleFaces.Add(triangle);
+            }
+
+            // Only rebuild if things are different, and there's at least one
+            if (keepTriangleFaces.Count != TriangleFaces.Count)
+            {
+                Logger.WriteDetail("DeleteInvalidTriangles found a mesh with invalid triangles, changing count from '" + TriangleFaces.Count + "' to '" + keepTriangleFaces.Count + "'");
+                MeshData newMeshData = GetMeshDataForFaces(keepTriangleFaces);
+                newMeshData.CondenseAndRenumberVertexIndices();
+                Vertices = newMeshData.Vertices;
+                Normals = newMeshData.Normals;
+                TextureCoordinates = newMeshData.TextureCoordinates;
+                TriangleFaces = newMeshData.TriangleFaces;
+                VertexColors = newMeshData.VertexColors;
+            }
+        }
+
         public void ApplyEQToWoWGeometryTranslationsAndWorldScale()
         {
             // Change face indices for winding over differences

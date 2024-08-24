@@ -191,6 +191,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
+            Meshdata.DeleteInvalidTriangles();
             Logger.WriteDetail(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");
             return true;
         }
