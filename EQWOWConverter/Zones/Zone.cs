@@ -202,6 +202,20 @@ namespace EQWOWConverter.Zones
                     break;
             }
 
+            // If set, show the area box around music instances
+            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
+            {
+                for (int i = 0; i < ZoneObjectModels.Count; i++)
+                {
+                    ZoneObjectModel wmo = ZoneObjectModels[i];
+                    if (wmo.ZoneMusic != null)
+                    {
+                        ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        GenerateRenderedWorldObjectModel(zoneBox.MeshData.TriangleFaces, zoneBox.MeshData);
+                    }
+                }
+            }
+
             // Rebuild the bounding box
             List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
             foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
