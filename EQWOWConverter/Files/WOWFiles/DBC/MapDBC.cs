@@ -48,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
             rows.Add(newRow);
         }
 
-        public void WriteToDisk(string baseFolderPath)
+        public void WriteToDiskForPatch(string baseFolderPath)
         {
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "MapDBC.csv");
@@ -65,7 +65,34 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append(",\"0\"");
                 stringBuilder.Append(",\"" + row.MapName + "\"");
                 stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\"");
-                stringBuilder.Append(",\"" + row.AreaTableID.ToString() + "\"");
+                stringBuilder.Append(",\"0\""); // Override AreaTableID in patch version to 0 so music will play from wmoareatable
+                stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712188\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712188\"");
+                stringBuilder.Append(",\"" + row.LoadingScreenID.ToString() + "\"");
+                stringBuilder.AppendLine(",\"1\",\"0\",\"0\",\"0\",\"-1\",\"2\",\"0\",\"0\"");
+            }
+
+            // Output it
+            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+        }
+
+        public void WriteToDiskForServer(string baseFolderPath)
+        {
+            FileTool.CreateBlankDirectory(baseFolderPath, true);
+            string fullFilePath = Path.Combine(baseFolderPath, "MapDBC.csv");
+
+            // Add each row of data (and header)
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("\"ID\",\"Directory\",\"InstanceType\",\"Flags\",\"PVP\",\"MapName_Lang_enUS\",\"MapName_Lang_enGB\",\"MapName_Lang_koKR\",\"MapName_Lang_frFR\",\"MapName_Lang_deDE\",\"MapName_Lang_enCN\",\"MapName_Lang_zhCN\",\"MapName_Lang_enTW\",\"MapName_Lang_zhTW\",\"MapName_Lang_esES\",\"MapName_Lang_esMX\",\"MapName_Lang_ruRU\",\"MapName_Lang_ptPT\",\"MapName_Lang_ptBR\",\"MapName_Lang_itIT\",\"MapName_Lang_Unk\",\"MapName_Lang_Mask\",\"AreaTableID\",\"MapDescription0_Lang_enUS\",\"MapDescription0_Lang_enGB\",\"MapDescription0_Lang_koKR\",\"MapDescription0_Lang_frFR\",\"MapDescription0_Lang_deDE\",\"MapDescription0_Lang_enCN\",\"MapDescription0_Lang_zhCN\",\"MapDescription0_Lang_enTW\",\"MapDescription0_Lang_zhTW\",\"MapDescription0_Lang_esES\",\"MapDescription0_Lang_esMX\",\"MapDescription0_Lang_ruRU\",\"MapDescription0_Lang_ptPT\",\"MapDescription0_Lang_ptBR\",\"MapDescription0_Lang_itIT\",\"MapDescription0_Lang_Unk\",\"MapDescription0_Lang_Mask\",\"MapDescription1_Lang_enUS\",\"MapDescription1_Lang_enGB\",\"MapDescription1_Lang_koKR\",\"MapDescription1_Lang_frFR\",\"MapDescription1_Lang_deDE\",\"MapDescription1_Lang_enCN\",\"MapDescription1_Lang_zhCN\",\"MapDescription1_Lang_enTW\",\"MapDescription1_Lang_zhTW\",\"MapDescription1_Lang_esES\",\"MapDescription1_Lang_esMX\",\"MapDescription1_Lang_ruRU\",\"MapDescription1_Lang_ptPT\",\"MapDescription1_Lang_ptBR\",\"MapDescription1_Lang_itIT\",\"MapDescription1_Lang_Unk\",\"MapDescription1_Lang_Mask\",\"LoadingScreenID\",\"MinimapIconScale\",\"CorpseMapID\",\"CorpseX\",\"CorpseY\",\"TimeOfDayOverride\",\"ExpansionID\",\"RaidOffset\",\"MaxPlayers\"");
+            foreach (Row row in rows)
+            {
+                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
+                stringBuilder.Append(",\"" + row.Directory + "\"");
+                stringBuilder.Append(",\"" + row.InstanceType.ToString() + "\"");
+                stringBuilder.Append(",\"" + row.Flags.ToString() + "\"");
+                stringBuilder.Append(",\"0\"");
+                stringBuilder.Append(",\"" + row.MapName + "\"");
+                stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\"");
+                stringBuilder.Append(",\"" + row.AreaTableID.ToString() + "\""); // Use areatable here on server version so the map name will show up in the character screen
                 stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712188\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712188\"");
                 stringBuilder.Append(",\"" + row.LoadingScreenID.ToString() + "\"");
                 stringBuilder.AppendLine(",\"1\",\"0\",\"0\",\"0\",\"-1\",\"2\",\"0\",\"0\"");

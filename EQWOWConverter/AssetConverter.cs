@@ -305,7 +305,15 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Creating DBC Update Scripts...");
 
-            string dbcUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts");
+            // Clear prior folders
+            string dbcPatchUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts-Patch");
+            if (Directory.Exists(dbcPatchUpdateScriptFolder) == true)
+                Directory.Delete(dbcPatchUpdateScriptFolder, true);
+            Directory.CreateDirectory(dbcPatchUpdateScriptFolder);
+            string dbcServerUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts-Server");
+            if (Directory.Exists(dbcServerUpdateScriptFolder) == true)
+                Directory.Delete(dbcServerUpdateScriptFolder, true);
+            Directory.CreateDirectory(dbcServerUpdateScriptFolder);
 
             // Populate the loading screens script
             LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
@@ -378,7 +386,7 @@ namespace EQWOWConverter
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
                 areaTableDBC.AddRow(Convert.ToInt32(zone.AreaTableZoneDBCID), 0, 0, zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.AreaTableZoneDBCID), zone.LoadingScreenID);
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
@@ -414,20 +422,33 @@ namespace EQWOWConverter
 
             }
 
-            // Output them
-            areaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
-            areaTriggerDBC.WriteToDisk(dbcUpdateScriptFolder);
-            mapDBC.WriteToDisk(dbcUpdateScriptFolder);
-            mapDifficultyDBC.WriteToDisk(dbcUpdateScriptFolder);
-            liquidTypeDBC.WriteToDisk(dbcUpdateScriptFolder);
-            lightDBC.WriteToDisk(dbcUpdateScriptFolder);
-            lightFloatBandDBC.WriteToDisk(dbcUpdateScriptFolder);
-            lightIntBandDBC.WriteToDisk(dbcUpdateScriptFolder);
-            lightParamsDBC.WriteToDisk(dbcUpdateScriptFolder);
-            loadingScreensDBC.WriteToDisk(dbcUpdateScriptFolder);
-            soundEntriesDBC.WriteToDisk(dbcUpdateScriptFolder);
-            wmoAreaTableDBC.WriteToDisk(dbcUpdateScriptFolder);
-            zoneMusicDBC.WriteToDisk(dbcUpdateScriptFolder);
+            // Output them for both patch and server
+            areaTableDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            areaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            areaTriggerDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            areaTriggerDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            mapDBC.WriteToDiskForPatch(dbcPatchUpdateScriptFolder);
+            mapDBC.WriteToDiskForServer(dbcServerUpdateScriptFolder);
+            mapDifficultyDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            mapDifficultyDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            liquidTypeDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            liquidTypeDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            lightDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            lightDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            lightFloatBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            lightFloatBandDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            lightIntBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            lightIntBandDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            lightParamsDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            lightParamsDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            loadingScreensDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            loadingScreensDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            soundEntriesDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            soundEntriesDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            wmoAreaTableDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            wmoAreaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+            zoneMusicDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
+            zoneMusicDBC.WriteToDisk(dbcServerUpdateScriptFolder);
         }
 
         public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
