@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public VelketorsLabyrinthZoneProperties() : base()
         {
             SetBaseZoneProperties("velketor", "Velketor's Labyrinth", -65f, 581f, -152f, 0, ZoneContinentType.Velious);
-            AddValidMusicInstanceTrackIndexes(0, 1);
+            //AddValidMusicInstanceTrackIndexes(0, 1);
         }
     }
 }

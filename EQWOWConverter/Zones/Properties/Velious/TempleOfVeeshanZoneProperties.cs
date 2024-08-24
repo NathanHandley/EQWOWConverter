@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public TempleOfVeeshanZoneProperties() : base()
         {
             SetBaseZoneProperties("templeveeshan", "Temple of Veeshan", -499f, -2086f, -36f, 0, ZoneContinentType.Velious);
-            AddValidMusicInstanceTrackIndexes(0, 2, 3);
+            //AddValidMusicInstanceTrackIndexes(0, 2, 3);
         }
     }
 }

@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public ThurgadinZoneProperties() : base()
         {
             SetBaseZoneProperties("thurgadina", "Thurgadin", 0f, -1222f, 0f, 0, ZoneContinentType.Velious);
-            AddValidMusicInstanceTrackIndexes(0, 3, 4, 5);
+            //AddValidMusicInstanceTrackIndexes(0, 3, 4, 5);
         }
     }
 }

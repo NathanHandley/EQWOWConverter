@@ -27,7 +27,7 @@ namespace EQWOWConverter.Zones.Properties
         public CrystalCavernsZoneProperties() : base()
         {
             SetBaseZoneProperties("crystal", "Crystal Caverns", 303f, 487f, -74f, 0, ZoneContinentType.Velious);
-            AddValidMusicInstanceTrackIndexes(1, 2, 3);
+            //AddValidMusicInstanceTrackIndexes(1, 2, 3);
         }
     }
 }
