@@ -160,8 +160,7 @@ namespace EQWOWConverter.Zones
                     GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
 
             // Create collision and music data for the map
-            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == true)
-                GenerateMusicAndCollisionWorldObjectModels(renderMeshData, collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
+            GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
 
             // Attach all doodads to the root
             rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
@@ -227,7 +226,7 @@ namespace EQWOWConverter.Zones
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                 CurWMOGroupID++;
-                curWorldObjectModel.LoadAsCollisionOnly(collisionMeshData, ZoneProperties);
+                curWorldObjectModel.LoadAsCollisionSimple(collisionMeshData, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
             // Otherwise, break into parts
@@ -235,7 +234,7 @@ namespace EQWOWConverter.Zones
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollisionOnly);
+                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollisionSimple);
             }
         }
 
@@ -256,8 +255,11 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        public void GenerateMusicAndCollisionWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        public void GenerateCollidableWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
         {
+            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == false)
+                return;
+
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
             if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
             {
@@ -279,7 +281,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate music first, then plain collision
-            GenerateMusicWorldObjects(collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
+            GenerateMusicWorldObjectModels(ref collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
             GenerateCollisionWorldObjectModels(collisionMeshData);
         }
 
@@ -338,7 +340,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        public void GenerateMusicWorldObjects(MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        public void GenerateMusicWorldObjectModels(ref MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
         {
             // Skip if there are no valid index references
             if (zoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
@@ -411,18 +413,31 @@ namespace EQWOWConverter.Zones
                     dayMusicSound = nightMusicSound;
 
                 // Create the zone music record data
-                ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                CurWMOGroupID++;
                 string curZoneMusicName = "Zone-" + zoneProperties.ShortName;
                 if (curZoneMusicIndex > 9)
                     curZoneMusicName += curZoneMusicIndex.ToString();
                 else
                     curZoneMusicName += "0" + curZoneMusicIndex.ToString();
 
-                // Create the WMO
-                musicWorldObjectModel.LoadAsMusicCollision(collisionMeshData, musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
-                    Materials, ZoneProperties);
-                ZoneObjectModels.Add(musicWorldObjectModel);
+                // Extract out the mesh data for this music sphere
+                MeshData collisionSphereMeshData;
+                MeshData collisionRemainingMeshData;
+                MeshData.GetSplitMeshDataBySphere(collisionMeshData, out collisionSphereMeshData, out collisionRemainingMeshData,
+                    musicInstance.CenterPosition, musicInstance.Radius);
+                collisionMeshData = collisionRemainingMeshData;
+
+                // Create the WMO(s)
+                BoundingBox collisionSphereBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionSphereMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+                List<MeshData> meshDataChunks = collisionSphereMeshData.GetMeshDataChunks(collisionSphereBoundingBox, collisionSphereMeshData.TriangleFaces,
+                    Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP);
+                foreach (MeshData meshData in meshDataChunks)
+                {
+                    ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
+                    CurWMOGroupID++;
+                    musicWorldObjectModel.LoadAsMusicCollision(meshData, musicInstance, curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound,
+                        Materials, ZoneProperties);
+                    ZoneObjectModels.Add(musicWorldObjectModel);
+                }
                 curZoneMusicDBCID++;
                 curZoneMusicIndex++;
             }
@@ -471,12 +486,12 @@ namespace EQWOWConverter.Zones
             {
                 if (wmoType == ZoneObjectModelType.Rendered)
                     GenerateRenderedWorldObjectModel(faces, meshData);
-                else if (wmoType == ZoneObjectModelType.CollisionOnly)
+                else if (wmoType == ZoneObjectModelType.CollisionSimple)
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
                     CurWMOGroupID++;
-                    curWorldObjectModel.LoadAsCollisionOnly(extractedMeshData, ZoneProperties);
+                    curWorldObjectModel.LoadAsCollisionSimple(extractedMeshData, ZoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
             }

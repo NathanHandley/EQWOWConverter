@@ -17,6 +17,7 @@
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
@@ -286,7 +287,6 @@ namespace EQWOWConverter.Common
             return extractedMeshData;
         }
 
-        // TODO: Consider making it not specific to collision
         public void CondenseAndRenumberVertexIndices()
         {
             // Reorder the vertices / texcoords / normals / to match the sorted triangle faces
@@ -471,6 +471,7 @@ namespace EQWOWConverter.Common
             VertexColors = sortedVertexColors;
         }
 
+        // TODO: Look into collapsing into the following method since there is a lot of shared code
         public void SplitIntoChunks(MeshData allMeshData, BoundingBox curBoundingBox, List<TriangleFace> curTriangleFaces, Material curMaterial, ref List<Vector3> chunkPositions, ref List<MeshData> chunkMeshDatas)
         {
             // Calculate the true number of triangles that will be made
@@ -534,6 +535,96 @@ namespace EQWOWConverter.Common
                 // Save the mesh
                 chunkMeshDatas.Add(newMeshData);
             }
-        }    
+        }
+
+        public List<MeshData> GetMeshDataChunks(BoundingBox boundingBox, List<TriangleFace> faces, int maxFaceCountPerChunk)
+        {
+            List<MeshData> returnMeshChunks = new List<MeshData>();
+
+            // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
+            if (faces.Count > maxFaceCountPerChunk)
+            {
+                // Create two new bounding boxes
+                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox);
+
+                // Calculate what triangles fit into these boxes
+                List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
+                List<TriangleFace> bBoxTriangles = new List<TriangleFace>();
+
+                foreach (TriangleFace triangle in faces)
+                {
+                    // Skip any faces that aren't actually triangles
+                    if (triangle.V1 == triangle.V2 || triangle.V2 == triangle.V3 || triangle.V1 == triangle.V3)
+                        continue;
+
+                    // Get center point
+                    Vector3 v1 = Vertices[triangle.V1];
+                    Vector3 v2 = Vertices[triangle.V2];
+                    Vector3 v3 = Vertices[triangle.V3];
+                    Vector3 center = new Vector3((v1.X + v2.X + v3.X) / 3, (v1.Y + v2.Y + v3.Y) / 3, (v1.Z + v2.Z + v3.Z) / 3);
+
+                    // Align to the first box if it is inside it (only based on xy), otherwise put in the other box
+                    // and don't do if/else since there is intentional overlap
+                    if (center.X >= splitBox.BoxA.BottomCorner.X && center.X <= splitBox.BoxA.TopCorner.X &&
+                        center.Y >= splitBox.BoxA.BottomCorner.Y && center.Y <= splitBox.BoxA.TopCorner.Y)
+                    {
+                        aBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                    if (center.X >= splitBox.BoxB.BottomCorner.X && center.X <= splitBox.BoxB.TopCorner.X &&
+                        center.Y >= splitBox.BoxB.BottomCorner.Y && center.Y <= splitBox.BoxB.TopCorner.Y)
+                    {
+                        bBoxTriangles.Add(new TriangleFace(triangle));
+                    }
+                }
+
+                // Generate for the two sub boxes
+                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxA, aBoxTriangles, maxFaceCountPerChunk));
+                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxB, bBoxTriangles, maxFaceCountPerChunk));
+            }
+            else
+            {
+                MeshData newMeshChunk = GetMeshDataForFaces(faces);
+                if (newMeshChunk.TriangleFaces.Count > 0)
+                {
+                    newMeshChunk.CondenseAndRenumberVertexIndices();
+                    returnMeshChunks.Add(newMeshChunk);
+                }
+            }
+            return returnMeshChunks;
+        }
+        
+        public static void GetSplitMeshDataBySphere(MeshData meshToExtractFrom, out MeshData extractedSphereMesh,
+            out MeshData extractedNonSphereMesh, Vector3 sphereCenter, float sphereRadius)
+        {
+            // Divide all triangles into the two groups, those in the sphere and those that are not
+            List<TriangleFace> facesToKeep = new List<TriangleFace>();
+            List<TriangleFace> facesInSphere = new List<TriangleFace>();
+            foreach (TriangleFace face in meshToExtractFrom.TriangleFaces)
+            {
+                // Skip any faces that aren't actually triangles
+                if (face.V1 == face.V2 || face.V2 == face.V3 || face.V1 == face.V3)
+                    continue;
+
+                // Get center point
+                Vector3 faceV1 = meshToExtractFrom.Vertices[face.V1];
+                Vector3 faceV2 = meshToExtractFrom.Vertices[face.V2];
+                Vector3 faceV3 = meshToExtractFrom.Vertices[face.V3];
+                Vector3 faceCenter = new Vector3((faceV1.X + faceV2.X + faceV3.X) / 3, (faceV1.Y + faceV2.Y + faceV3.Y) / 3, (faceV1.Z + faceV2.Z + faceV3.Z) / 3);
+
+                // Determine if it's inside the sphere, and split accordingly
+                float dX = faceCenter.X - sphereCenter.X;
+                float dY = faceCenter.Y - sphereCenter.Y;
+                float dZ = faceCenter.Z - sphereCenter.Z;
+                double distanceSquared = dX * dX + dY * dY + dZ * dZ;
+                if (distanceSquared <= (sphereRadius * sphereRadius))
+                    facesInSphere.Add(face);
+                else
+                    facesToKeep.Add(face);
+            }
+
+            // Create the new mesh objects
+            extractedSphereMesh = new MeshData(meshToExtractFrom).GetMeshDataForFaces(facesInSphere);
+            extractedNonSphereMesh = new MeshData(meshToExtractFrom).GetMeshDataForFaces(facesToKeep);
+        }
     }
 }

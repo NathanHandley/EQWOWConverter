@@ -102,9 +102,9 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollisionOnly(MeshData collisionMeshData, ZoneProperties zoneProperties)
+        public void LoadAsCollisionSimple(MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.CollisionOnly;
+            WMOType = ZoneObjectModelType.CollisionSimple;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
@@ -125,28 +125,28 @@ namespace EQWOWConverter.Zones
             if (musicDaySound == null || musicNightSound == null)
                 throw new Exception("In ZoneModelObject.LoadAsMusic, musicDaySound or musicNightSound was null");
 
-            WMOType = ZoneObjectModelType.MusicCollision;
+            WMOType = ZoneObjectModelType.CollisionWithAudio;
 
             // Collision
-            //MeshData = collisionMeshData;
-            BoundingBox = new BoundingBox(musicInstance.CenterPosition, musicInstance.Radius); //BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            //List<UInt32> collisionTriangleIncidies = new List<UInt32>();
-            //for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
-            //    collisionTriangleIncidies.Add(i);
-            //BSPTree = new BSPTree(collisionTriangleIncidies);
-            
+            MeshData = collisionMeshData;
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<UInt32> collisionTriangleIncidies = new List<UInt32>();
+            for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
+                collisionTriangleIncidies.Add(i);
+            BSPTree = new BSPTree(collisionTriangleIncidies);
+
             // Music
             ZoneMusicDBCID = zoneMusicDBCID;
             ZoneMusicDBCName = zoneMusicDBCName;
             MusicDaySound = musicDaySound;
             MusicNightSound = musicNightSound;
-            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
-            {
-                ZoneBox areaBox = new ZoneBox(BoundingBox, materials, zoneProperties.ShortName, 0, ZoneBoxRenderType.Both);
-                MeshData = areaBox.MeshData;
-                Materials = materials;
-                GenerateRenderBatches(materials, zoneProperties);
-            }
+            //if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
+            //{
+            //    ZoneBox areaBox = new ZoneBox(BoundingBox, materials, zoneProperties.ShortName, 0, ZoneBoxRenderType.Both);
+            //    MeshData = areaBox.MeshData;
+            //    Materials = materials;
+            //    GenerateRenderBatches(materials, zoneProperties);
+            //}
 
             if (zoneProperties.IsCompletelyInLiquid)
             {

@@ -383,7 +383,7 @@ namespace EQWOWConverter
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
                 {
-                    if (wmo.WMOType == ZoneObjectModelType.MusicCollision && wmo.ZoneMusicDBCID != -1 && wmo.MusicDaySound != null && wmo.MusicNightSound != null)
+                    if (wmo.WMOType == ZoneObjectModelType.CollisionWithAudio && wmo.ZoneMusicDBCID != -1 && wmo.MusicDaySound != null && wmo.MusicNightSound != null)
                     {
                         wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), wmo.ZoneMusicDBCID, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName);
                         zoneMusicDBC.AddRow(wmo.ZoneMusicDBCID, wmo.ZoneMusicDBCName, wmo.MusicDaySound.Id, wmo.MusicNightSound.Id);

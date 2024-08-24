@@ -177,7 +177,8 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.Add(Convert.ToByte(flags));
 
                 // Set 0xFF for non-renderable materials
-                if (worldObjectModel.WMOType == ZoneObjectModelType.CollisionOnly || worldObjectModel.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
+                if ((worldObjectModel.WMOType == ZoneObjectModelType.CollisionSimple || worldObjectModel.WMOType == ZoneObjectModelType.CollisionWithAudio) 
+                    || worldObjectModel.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
                     chunkBytes.Add(Convert.ToByte(0xFF));
                 else
                     chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
