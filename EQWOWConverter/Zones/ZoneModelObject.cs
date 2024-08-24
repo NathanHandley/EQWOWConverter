@@ -100,7 +100,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsCollisionSimple(MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.CollisionSimple;
+            WMOType = ZoneObjectModelType.CollidableMainArea;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
@@ -117,7 +117,7 @@ namespace EQWOWConverter.Zones
 
         public void LoadAsMusicCollision(MeshData collisionMeshData, ZoneMusic zoneMusic, List<Material> materials, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.CollisionWithAudio;
+            WMOType = ZoneObjectModelType.CollidableSubArea;
 
             // Collision
             MeshData = collisionMeshData;

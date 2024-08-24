@@ -391,7 +391,7 @@ namespace EQWOWConverter
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
                 {
-                    if (wmo.WMOType == ZoneObjectModelType.CollisionWithAudio)
+                    if (wmo.WMOType == ZoneObjectModelType.CollidableSubArea)
                     {
                         int curAreaTableID = Convert.ToInt32(zone.AreaTableZoneDBCID);
                         int curMusicID = 0;

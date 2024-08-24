@@ -240,7 +240,7 @@ namespace EQWOWConverter.Zones
             {
                 // Generate the world groups by splitting the map down into subregions as needed
                 BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollisionSimple);
+                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollidableMainArea);
             }
         }
 
@@ -494,7 +494,7 @@ namespace EQWOWConverter.Zones
             {
                 if (wmoType == ZoneObjectModelType.Rendered)
                     GenerateRenderedWorldObjectModel(faces, meshData);
-                else if (wmoType == ZoneObjectModelType.CollisionSimple)
+                else if (wmoType == ZoneObjectModelType.CollidableMainArea)
                 {
                     MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
