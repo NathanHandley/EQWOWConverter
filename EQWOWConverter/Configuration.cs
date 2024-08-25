@@ -86,9 +86,6 @@ namespace EQWOWConverter
         // How much bigger to make the box which causes the shadow in a shadowbox
         public static readonly float CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
 
-        // If populated, only the zones listed here will be generated
-        public static readonly List<string> CONFIG_EQTOWOW_RESTRICTD_ZONE_SHORTNAMES_FOR_GENERATION = new List<string>() { };
-
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
 
