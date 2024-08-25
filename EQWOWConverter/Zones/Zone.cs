@@ -283,7 +283,7 @@ namespace EQWOWConverter.Zones
             {
                 MeshData areaMeshData;
                 MeshData remainderMeshData;
-                MeshData.GetSplitMeshDataWithClipping(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
+                MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
                 collisionMeshData = remainderMeshData;
                 GenerateWorldObjectModelsForCollidableArea(areaMeshData, subArea);
                 SubAreas.Add(subArea);
