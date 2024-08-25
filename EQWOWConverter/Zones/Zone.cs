@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,6 @@ namespace EQWOWConverter.Zones
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;        
         public string DescriptiveNameOnlyLetters = string.Empty;
-        public UInt32 AreaTableZoneDBCID;
         public ZoneEQData EQZoneData = new ZoneEQData();
         private bool IsLoaded = false;
         public List<ZoneObjectModel> ZoneObjectModels = new List<ZoneObjectModel>();
@@ -45,11 +45,10 @@ namespace EQWOWConverter.Zones
         public int LoadingScreenID;
         public ZoneProperties ZoneProperties;
         public Vector3 SafePosition = new Vector3();
-        public Dictionary<int, Sound> ZoneMusicSoundsByIndex = new Dictionary<int, Sound>();
-        public List<ZoneMusic> ZoneMusics = new List<ZoneMusic>();
-
-        private UInt32 CurWMOGroupID;
-        private UInt32 CurMusicAreaTableDBCID;
+        public Dictionary<string, Sound> MusicSoundsByFileNameNoExt = new Dictionary<string, Sound>();
+        public List<ZoneAreaMusic> ZoneAreaMusics = new List<ZoneAreaMusic>();
+        public ZoneArea DefaultArea;
+        public List<ZoneArea> SubAreas = new List<ZoneArea>();
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
@@ -59,9 +58,7 @@ namespace EQWOWConverter.Zones
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             else
                 DescriptiveNameOnlyLetters = shortName;
-            CurWMOGroupID = zoneProperties.DBCWMOGroupStartID;
-            AreaTableZoneDBCID = zoneProperties.DBCAreaTableStartID;
-            CurMusicAreaTableDBCID = AreaTableZoneDBCID + 1;
+            DefaultArea = new ZoneArea(DescriptiveName, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight);
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -81,6 +78,10 @@ namespace EQWOWConverter.Zones
             foreach (Material material in Materials)
                 if (ZoneProperties.AlwaysBrightMaterialsByName.Contains(material.Name) == true)
                     material.AlwaysBrightOverride = true;
+
+            // Make the zonewide music if needed
+            if (DefaultArea.MusicFileNameNoExtDay != string.Empty || DefaultArea.MusicFileNameNoExtNight != string.Empty)
+                DefaultArea.AreaMusic = GenerateZoneAreaMusic(DefaultArea.MusicFileNameNoExtDay, DefaultArea.MusicFileNameNoExtNight);
 
             // Add object instances
             foreach (ObjectInstance objectInstance in EQZoneData.ObjectInstances)
@@ -145,8 +146,7 @@ namespace EQWOWConverter.Zones
             ZoneObjectModels.Clear();
 
             // Create the root object
-            ZoneObjectModel rootModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-            CurWMOGroupID++;
+            ZoneObjectModel rootModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
             rootModel.LoadAsRoot(ZoneProperties);
             ZoneObjectModels.Add(rootModel);
 
@@ -165,8 +165,8 @@ namespace EQWOWConverter.Zones
                 if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
                     GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
 
-            // Create collision and music data for the map
-            GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
+            // Create the areas
+            GenerateWorldObjectModelsForAllCollidableAreas(renderMeshData, collisionMeshData, ZoneProperties);
 
             // Attach all doodads to the root
             rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
@@ -226,36 +226,13 @@ namespace EQWOWConverter.Zones
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                CurWMOGroupID++;
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
 
             // Completely loaded
             IsLoaded = true;
-        }
-
-        private void GenerateCollisionWorldObjectModels(MeshData collisionMeshData)
-        {
-            // Reduce the collision triangle incidies since they won't map to actual render indicies anymore
-            collisionMeshData.CondenseAndRenumberVertexIndices();
-
-            // If this can be generated as a single WMO, just do that
-            if (collisionMeshData.TriangleFaces.Count <= Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP)
-            {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                CurWMOGroupID++;
-                curWorldObjectModel.LoadAsCollisionSimple(collisionMeshData, ZoneProperties);
-                ZoneObjectModels.Add(curWorldObjectModel);
-            }
-            // Otherwise, break into parts
-            else
-            {
-                // Generate the world groups by splitting the map down into subregions as needed
-                BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                GenerateWorldObjectModelsByXYRegion(fullBoundingBox, collisionMeshData.TriangleFaces, collisionMeshData, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP, ZoneObjectModelType.CollidableMainArea);
-            }
         }
 
         private void GenerateRenderWorldObjectModels(MeshData allMeshData, List<Material> allMaterials)
@@ -275,7 +252,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        public void GenerateCollidableWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
+        private void GenerateWorldObjectModelsForAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
             if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == false)
                 return;
@@ -300,18 +277,106 @@ namespace EQWOWConverter.Zones
                         collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
             }
 
-            // Generate music first, then plain collision
-            GenerateMusicWorldObjectModels(ref collisionMeshData, EQZoneData.MusicInstances, ZoneProperties);
-            GenerateCollisionWorldObjectModels(collisionMeshData);
+            // Generate sub-areas
+            foreach(ZoneArea subArea in zoneProperties.ZoneAreas)
+            {
+                MeshData areaMeshData;
+                MeshData remainderMeshData;
+                MeshData.GetSplitMeshData(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
+                collisionMeshData = remainderMeshData;
+                GenerateWorldObjectModelsForCollidableArea(areaMeshData, subArea);
+                SubAreas.Add(subArea);
+            }
+
+            // Remainder is the primary area
+            DefaultArea.BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            GenerateWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
         }
 
-        public void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
+        private void GenerateWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea)
+        {
+            // Create a music if needed
+            ZoneAreaMusic? areaMusic = null;
+            if (zoneArea.MusicFileNameNoExtDay != string.Empty || zoneArea.MusicFileNameNoExtNight != string.Empty)
+            {
+                areaMusic = GenerateZoneAreaMusic(zoneArea.MusicFileNameNoExtDay, zoneArea.MusicFileNameNoExtNight);
+                zoneArea.AreaMusic = areaMusic;
+            }
+
+            // Break the geometry into as many parts as limited by the system
+            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP);
+
+            // Create a group for each chunk
+            foreach(MeshData meshDataChunk in meshDataChunks)
+            {
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                meshDataChunk.CondenseAndRenumberVertexIndices();
+                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, zoneArea.DBCAreaTableID, zoneArea.DisplayName, areaMusic, ZoneProperties);
+                ZoneObjectModels.Add(curWorldObjectModel);
+            }
+        }
+
+        private ZoneAreaMusic GenerateZoneAreaMusic(string musicFileNameDay, string musicFileNameNight)
+        {
+            // Reuse if exists
+            foreach (ZoneAreaMusic areaMusic in ZoneAreaMusics)
+                if (areaMusic.FileNameNoExtDay == musicFileNameDay && areaMusic.FileNameNoExtNight == musicFileNameNight)
+                    return areaMusic;
+
+            // Error if both are blank names
+            if (musicFileNameDay == string.Empty &&  musicFileNameNight == string.Empty)
+            {
+                string errorMessage = "GenerateZoneAreaMusic failed for '" + ShortName + "' because both the day and night file names were blank";
+                Logger.WriteError(errorMessage);
+                throw new Exception(errorMessage);
+            }
+
+            // Generate new sounds if needed
+            Sound? daySound = null;
+            if (musicFileNameDay != string.Empty)
+            {
+                if (MusicSoundsByFileNameNoExt.ContainsKey(musicFileNameDay))
+                    daySound = MusicSoundsByFileNameNoExt[musicFileNameDay];
+                else
+                {
+                    string curSoundName = "EQ Music " + musicFileNameDay;
+                    daySound = new Sound(curSoundName, musicFileNameDay, SoundType.ZoneMusic);
+                    MusicSoundsByFileNameNoExt.Add(musicFileNameDay, daySound);
+                }
+            }
+            Sound? nightSound = null;
+            if (musicFileNameNight != string.Empty)
+            {
+                if (MusicSoundsByFileNameNoExt.ContainsKey(musicFileNameNight))
+                    nightSound = MusicSoundsByFileNameNoExt[musicFileNameNight];
+                else
+                {
+                    string curSoundName = "EQ Music " + musicFileNameNight;
+                    nightSound = new Sound(curSoundName, musicFileNameNight, SoundType.ZoneMusic);
+                    MusicSoundsByFileNameNoExt.Add(musicFileNameNight, nightSound);
+                }
+            }
+
+            // Generate the music
+            string musicName = "Zone-" + ShortName;
+            if (ZoneAreaMusics.Count > 9)
+                musicName += ZoneAreaMusics.Count.ToString();
+            else
+                musicName += "0" + ZoneAreaMusics.Count.ToString();
+            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight);
+            ZoneAreaMusics.Add(newMusic);
+
+            // Return it
+            return newMusic;
+        }
+
+        private void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
         {
             // Volumes
             foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                CurWMOGroupID++;
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -344,124 +409,17 @@ namespace EQWOWConverter.Zones
                     List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
                     foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
-                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                        CurWMOGroupID++;
+                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                         curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneObjectModels.Add(curWorldObjectModel);
                     }
                 }
                 else
                 {
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                    CurWMOGroupID++;
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                     curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
-            }
-        }
-
-        public void GenerateMusicWorldObjectModels(ref MeshData collisionMeshData, List<MusicInstance> musicInstances, ZoneProperties zoneProperties)
-        {
-            // Skip if there are no valid index references
-            if (zoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
-                return;
-
-            int curSoundEntryDBCID = zoneProperties.DBCSoundEntryZoneMusicStartID;
-            int curZoneMusicDBCID = zoneProperties.DBCZoneMusicStartID;
-            int curZoneMusicIndex = 1;
-            foreach(MusicInstance musicInstance in musicInstances)
-            {
-                // Correct the position of the music instance first
-                Vector3 originalPosition = new Vector3(musicInstance.CenterPosition);
-                musicInstance.CenterPosition.X = originalPosition.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                // Invert Z and Y because of mapping differences
-                musicInstance.CenterPosition.Z = originalPosition.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                musicInstance.CenterPosition.Y = originalPosition.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
-                // Also rotate the X and Y positions around Z axis 180 degrees
-                musicInstance.CenterPosition.X = -musicInstance.CenterPosition.X;
-                musicInstance.CenterPosition.Y = -musicInstance.CenterPosition.Y;
-
-                // Scale the radius
-                musicInstance.Radius *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-
-                // Create day sound
-                Sound dayMusicSound = new Sound();
-                if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.DayIndex) == true)
-                {
-                    if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.DayIndex) == false)
-                    {
-                        string curSoundName = "EQ " + zoneProperties.ShortName + " music " + musicInstance.DayIndex.ToString();
-                        string audioFileName = zoneProperties.ShortName + "-";
-                        if (musicInstance.DayIndex > 9)
-                            audioFileName += musicInstance.DayIndex.ToString() + ".mp3";
-                        else
-                            audioFileName += "0" + musicInstance.DayIndex.ToString() + ".mp3";
-                        dayMusicSound = new Sound(curSoundEntryDBCID, curSoundName, audioFileName, SoundType.ZoneMusic);
-                        curSoundEntryDBCID++;
-                        ZoneMusicSoundsByIndex.Add(musicInstance.DayIndex, dayMusicSound);
-                    }
-                    else
-                        dayMusicSound = ZoneMusicSoundsByIndex[musicInstance.DayIndex];
-                }
-
-                // Create night sound
-                Sound nightMusicSound = new Sound();
-                if (zoneProperties.ValidMusicInstanceTrackIndexes.Contains(musicInstance.NightIndex) == true)
-                {
-                    if (ZoneMusicSoundsByIndex.ContainsKey(musicInstance.NightIndex) == false)
-                    {
-                        string curSoundName = "EQ " + zoneProperties.ShortName + " music " + musicInstance.NightIndex.ToString();
-                        string audioFileName = zoneProperties.ShortName + "-";
-                        if (musicInstance.NightIndex > 9)
-                            audioFileName += musicInstance.NightIndex.ToString() + ".mp3";
-                        else
-                            audioFileName += "0" + musicInstance.NightIndex.ToString() + ".mp3";
-                        nightMusicSound = new Sound(curSoundEntryDBCID, curSoundName, audioFileName, SoundType.ZoneMusic);
-                        curSoundEntryDBCID++;
-                        ZoneMusicSoundsByIndex.Add(musicInstance.NightIndex, nightMusicSound);
-                    }
-                    else
-                        nightMusicSound = ZoneMusicSoundsByIndex[musicInstance.NightIndex];
-                }
-
-                if (nightMusicSound.Id == -1 && dayMusicSound.Id == -1)
-                    continue;
-                if (nightMusicSound.Id == -1)
-                    nightMusicSound = dayMusicSound;
-                if (dayMusicSound.Id == -1)
-                    dayMusicSound = nightMusicSound;
-
-                // Create the zone music record
-                string curZoneMusicName = "Zone-" + zoneProperties.ShortName;
-                if (curZoneMusicIndex > 9)
-                    curZoneMusicName += curZoneMusicIndex.ToString();
-                else
-                    curZoneMusicName += "0" + curZoneMusicIndex.ToString();
-                ZoneMusic zoneMusic = new ZoneMusic(curZoneMusicDBCID, curZoneMusicName, dayMusicSound, nightMusicSound, CurMusicAreaTableDBCID);
-                ZoneMusics.Add(zoneMusic);
-                CurMusicAreaTableDBCID++;
-
-                // Extract out the mesh data for this music sphere
-                MeshData collisionSphereMeshData;
-                MeshData collisionRemainingMeshData;
-                MeshData.GetSplitMeshDataBySphere(collisionMeshData, out collisionSphereMeshData, out collisionRemainingMeshData,
-                    musicInstance.CenterPosition, musicInstance.Radius);
-                collisionMeshData = collisionRemainingMeshData;
-
-                // Create the WMO(s)
-                BoundingBox collisionSphereBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionSphereMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-                List<MeshData> meshDataChunks = collisionSphereMeshData.GetMeshDataChunks(collisionSphereBoundingBox, collisionSphereMeshData.TriangleFaces,
-                    Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP);
-                foreach (MeshData meshData in meshDataChunks)
-                {
-                    ZoneObjectModel musicWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                    CurWMOGroupID++;
-                    musicWorldObjectModel.LoadAsMusicCollision(meshData, zoneMusic, Materials, ZoneProperties);
-                    ZoneObjectModels.Add(musicWorldObjectModel);
-                }
-                curZoneMusicDBCID++;
-                curZoneMusicIndex++;
             }
         }
 
@@ -508,14 +466,6 @@ namespace EQWOWConverter.Zones
             {
                 if (wmoType == ZoneObjectModelType.Rendered)
                     GenerateRenderedWorldObjectModel(faces, meshData);
-                else if (wmoType == ZoneObjectModelType.CollidableMainArea)
-                {
-                    MeshData extractedMeshData = meshData.GetMeshDataForFaces(faces);
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                    CurWMOGroupID++;
-                    curWorldObjectModel.LoadAsCollisionSimple(extractedMeshData, ZoneProperties);
-                    ZoneObjectModels.Add(curWorldObjectModel);
-                }
             }
         }
 
@@ -525,8 +475,7 @@ namespace EQWOWConverter.Zones
             MeshData extractedMeshData = meshData.GetMeshDataForFaces(facesToInclude);
             if (extractedMeshData.Vertices.Count > 0)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), CurWMOGroupID);
-                CurWMOGroupID++;
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 curWorldObjectModel.LoadAsRendered(extractedMeshData, Materials, LightInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }

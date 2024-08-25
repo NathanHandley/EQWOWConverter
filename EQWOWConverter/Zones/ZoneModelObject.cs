@@ -30,7 +30,11 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneObjectModel
     {
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
+
         public UInt32 WMOGroupID;
+        public string DisplayName = string.Empty;
+        public UInt32 AreaTableID = 0;
         public UInt16 GroupIndex;
         public bool IsLoaded = false;
         public ZoneObjectModelType WMOType = ZoneObjectModelType.Rendered;
@@ -46,11 +50,12 @@ namespace EQWOWConverter.Zones
         public Material LiquidMaterial = new Material();
         public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
-        public ZoneMusic? ZoneMusic = null;
+        public ZoneAreaMusic? ZoneMusic = null;
 
-        public ZoneObjectModel(UInt16 groupIndex, UInt32 wmoGroupID)
+        public ZoneObjectModel(UInt16 groupIndex)
         {
-            WMOGroupID = wmoGroupID;
+            WMOGroupID = CURRENT_WMOGROUPID;
+            CURRENT_WMOGROUPID++;
             GroupIndex = groupIndex;
         }
 
@@ -98,45 +103,18 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollisionSimple(MeshData collisionMeshData, ZoneProperties zoneProperties)
+        public void LoadAsCollidableArea(MeshData collisionMeshData, UInt32 areaTableID, string displayName, ZoneAreaMusic? zoneMusic, ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.CollidableMainArea;
+            WMOType = ZoneObjectModelType.CollidableArea;
+            AreaTableID = areaTableID;
+            DisplayName = displayName;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
             BSPTree = new BSPTree(collisionTriangleIncidies);
-            if (zoneProperties.IsCompletelyInLiquid)
-            {
-                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
-                LiquidType = zoneProperties.CompletelyInLiquidType;
-            }
-            IsLoaded = true;
-        }
-
-        public void LoadAsMusicCollision(MeshData collisionMeshData, ZoneMusic zoneMusic, List<Material> materials, ZoneProperties zoneProperties)
-        {
-            WMOType = ZoneObjectModelType.CollidableSubArea;
-
-            // Collision
-            MeshData = collisionMeshData;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<UInt32> collisionTriangleIncidies = new List<UInt32>();
-            for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
-                collisionTriangleIncidies.Add(i);
-            BSPTree = new BSPTree(collisionTriangleIncidies);
-
-            // Music
             ZoneMusic = zoneMusic;
-            //if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
-            //{
-            //    ZoneBox areaBox = new ZoneBox(BoundingBox, materials, zoneProperties.ShortName, 0, ZoneBoxRenderType.Both);
-            //    MeshData = areaBox.MeshData;
-            //    Materials = materials;
-            //    GenerateRenderBatches(materials, zoneProperties);
-            //}
-
             if (zoneProperties.IsCompletelyInLiquid)
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;

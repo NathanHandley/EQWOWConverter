@@ -25,20 +25,30 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneArea
     {
+        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_START;
+
+        public UInt32 DBCAreaTableID;
         public string DisplayName = string.Empty;
         public BoundingBox BoundingBox = new BoundingBox();
-        public string MusicFileName = string.Empty;
+        public string MusicFileNameNoExtDay = string.Empty;
+        public string MusicFileNameNoExtNight = string.Empty;
+        public ZoneAreaMusic? AreaMusic = null;
 
-        public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileName)
+        public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileNameDay, string musicFileNameNight)
         {
+            DBCAreaTableID = CURRENT_AREATABLEID;
+            CURRENT_AREATABLEID++;
             DisplayName = displayName;
-            BoundingBox.TopCorner.X = boundingBox.TopCorner.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.TopCorner.Y = boundingBox.TopCorner.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            MusicFileNameNoExtDay = musicFileNameDay;
+            MusicFileNameNoExtNight = musicFileNameNight;
+
+            // Scale and rotate
+            BoundingBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            BoundingBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             BoundingBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.BottomCorner.X = boundingBox.BottomCorner.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.BottomCorner.Y = boundingBox.BottomCorner.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            BoundingBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            BoundingBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
             BoundingBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            MusicFileName = musicFileName;
         }
     }
 }

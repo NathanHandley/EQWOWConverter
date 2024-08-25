@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Files.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,21 +24,26 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZoneMusic
+    internal class ZoneAreaMusic
     {
-        public int DBCID;
-        public string DBCName;
-        public Sound DaySound;
-        public Sound NightSound;
-        public UInt32 AreaTableIDOverride;
+        private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
 
-        public ZoneMusic(int dbcID, string dbcName, Sound daySound, Sound nightSound, UInt32 areaTableIDOverride)
+        public int DBCID;
+        public string Name;
+        public string FileNameNoExtDay = string.Empty;
+        public string FileNameNoExtNight = string.Empty;
+        public Sound? DaySound;
+        public Sound? NightSound;
+
+        public ZoneAreaMusic(string zoneDBCName, Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
         {
-            DBCID = dbcID;
-            DBCName = dbcName;
+            DBCID = CURRENT_ZONEMUSICSTARTID;
+            CURRENT_ZONEMUSICSTARTID++;
+            Name = zoneDBCName;
             DaySound = daySound;
             NightSound = nightSound;
-            AreaTableIDOverride = areaTableIDOverride;
+            FileNameNoExtDay = fileNameNoExtDay;
+            FileNameNoExtNight = fileNameNoExtNight;
         }
     }
 }

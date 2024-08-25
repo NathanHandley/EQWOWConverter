@@ -41,26 +41,21 @@ namespace EQWOWConverter.Zones
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
         public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
-        public HashSet<int> ValidMusicInstanceTrackIndexes = new HashSet<int>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public double VertexColorIntensityOverride = -1;
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
+        public string ZonewideMusicFileNameDay = string.Empty;
+        public string ZonewideMusicFileNameNight = string.Empty;
 
         // DBCIDs
         private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
-        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_START;
-        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;
-        private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
-        private static int CURRENT_SOUNDENTRY_ZONEMUSICID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START;
+        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;        
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
-        public UInt32 DBCAreaTableStartID;
         public UInt32 DBCWMOID;
-        public int DBCZoneMusicStartID;
-        public int DBCSoundEntryZoneMusicStartID;
         public UInt32 DBCWMOGroupStartID;
 
         protected ZoneProperties()
@@ -68,18 +63,12 @@ namespace EQWOWConverter.Zones
             // Generate zone-specific IDs
             DBCMapID = CURRENT_MAPID;
             CURRENT_MAPID++;
-            DBCAreaTableStartID = CURRENT_AREATABLEID;
-            CURRENT_AREATABLEID += Configuration.CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE;
             DBCWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
             DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
             CURRENT_MAPDIFFICULTYID++;
-            DBCZoneMusicStartID = CURRENT_ZONEMUSICSTARTID;
-            CURRENT_ZONEMUSICSTARTID += Configuration.CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
-            DBCSoundEntryZoneMusicStartID = CURRENT_SOUNDENTRY_ZONEMUSICID;
-            CURRENT_SOUNDENTRY_ZONEMUSICID += Configuration.CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE;
             DBCWMOGroupStartID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID += Configuration.CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE;
+            CURRENT_WMOGROUPID++;
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -97,15 +86,6 @@ namespace EQWOWConverter.Zones
         protected void DisableSunlight()
         {
             HasShadowBox = true;
-        }
-
-        // Only some music instances are valid, this is an inclusive list of the good ones.  The index referenced here refer to 
-        // the day or night track index value found in the music_instances.txt file within the exported zone folders
-        protected void AddValidMusicInstanceTrackIndexes(params int [] trackIndexes)
-        {
-            foreach(int trackIndex in trackIndexes)
-                if (ValidMusicInstanceTrackIndexes.Contains(trackIndex) == false)
-                    ValidMusicInstanceTrackIndexes.Add(trackIndex);
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)
@@ -160,11 +140,17 @@ namespace EQWOWConverter.Zones
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
         protected void AddZoneArea(string displayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
-            string musicFileName)
+            string musicFileNameNoExtensionDay, string musicFileNameNoExtensionNight)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
-            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileName);
+            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight);
             ZoneAreas.Add(newZoneArea);
+        }
+
+        protected void SetZonewideMusicFileNames(string musicFileNameDay, string musicFileNameNight)
+        {
+            ZonewideMusicFileNameDay = musicFileNameDay;
+            ZonewideMusicFileNameNight = musicFileNameNight;
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)

@@ -145,7 +145,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES = false;
         
         // How much to increase the music sound when converted from EverQuest
-        public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 2;
+        public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
         //=====================================================================
         // Objects
@@ -168,18 +168,15 @@ namespace EQWOWConverter
         // ====================================================================
         // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files
         public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_START = 30000;
-        public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_NUM_RESERVED_PER_ZONE = 1000;
 
         // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
 
         // Specific rows in WMOAreaTable.dbc
         public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
-        public static readonly int CONFIG_DBCID_WMOAREATABLEID_NUM_RESERVED_PER_ZONE = 1000;
 
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 5100;
-        public static readonly UInt32 CONFIG_DBCID_AREATABLE_NUM_RESERVED_PER_ZONE = 11;
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc
         public static readonly int CONFIG_DBCID_MAPID_START = 750;
@@ -205,12 +202,9 @@ namespace EQWOWConverter
 
         // ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis
         public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;        
-        public static readonly int CONFIG_DBCID_ZONEMUSIC_NUM_RESERVED_PER_ZONE = 20;
 
         // ID for sounds found in SoundEntries.dbc
-        // ZoneMusic IDs are reserved for SoundEntries used for music, and they are reserved in blocks per-zone
-        public static readonly int CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_START = 22000;
-        public static readonly int CONFIG_DBCID_SOUNDENTRIES_ZONEMUSIC_NUM_RESERVED_PER_ZONE = 10;
+        public static readonly int CONFIG_DBCID_SOUNDENTRIES_START = 22000;
 
         // ====================================================================
         // AzerothCore Database IDs

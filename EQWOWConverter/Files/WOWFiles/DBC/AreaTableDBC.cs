@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -25,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class AreaTableDBC
     {
-        public class Row
+        public class Row : IComparable<Row>
         {
             private static int CURRENT_AREABIT = Configuration.CONFIG_DBCID_AREATABLE_AREABIT_START;
 
@@ -44,22 +45,40 @@ namespace EQWOWConverter.WOWFiles
                 AreaBit = CURRENT_AREABIT;
                 CURRENT_AREABIT++;
             }
+
+            public int CompareTo(Row? otherRow)
+            {
+                if (otherRow == null)
+                    return -1;
+                if (Id == otherRow.Id)
+                    return 0;
+                else if (Id < otherRow.Id)
+                    return -1;
+                else
+                    return 1;
+            }
         }
 
         private List<Row> rows = new List<Row>();
 
-        public void AddRow(int id, int parentAreaID, int zoneMusicID, string areaName)
+        public void AddRow(int id, int parentAreaID, ZoneAreaMusic? areaMusic, string areaName)
         {
             Row newRow = new Row();
             newRow.Id = id;
             newRow.ParentAreaID = parentAreaID;
-            newRow.ZoneMusic = zoneMusicID;
+            if (areaMusic != null)
+                newRow.ZoneMusic = areaMusic.DBCID;
+            else
+                newRow.ZoneMusic = 0;
             newRow.AreaName = areaName;
             rows.Add(newRow);
         }
 
         public void WriteToDisk(string baseFolderPath)
         {
+            // Sort first
+            rows.Sort();
+
             FileTool.CreateBlankDirectory(baseFolderPath, true);
             string fullFilePath = Path.Combine(baseFolderPath, "AreaTableDBC.csv");
 

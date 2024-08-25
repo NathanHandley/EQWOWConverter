@@ -628,12 +628,12 @@ namespace EQWOWConverter.Common
             return returnMeshChunks;
         }
         
-        public static void GetSplitMeshDataBySphere(MeshData meshToExtractFrom, out MeshData extractedSphereMesh,
-            out MeshData extractedNonSphereMesh, Vector3 sphereCenter, float sphereRadius)
+        public static void GetSplitMeshData(MeshData meshToExtractFrom, BoundingBox extractionArea,
+            out MeshData extractedMeshData, out MeshData remainderMeshData)
         {
             // Divide all triangles into the two groups, those in the sphere and those that are not
-            List<TriangleFace> facesToKeep = new List<TriangleFace>();
-            List<TriangleFace> facesInSphere = new List<TriangleFace>();
+            List<TriangleFace> extractedFaces = new List<TriangleFace>();
+            List<TriangleFace> remainderFaces = new List<TriangleFace>();
             foreach (TriangleFace face in meshToExtractFrom.TriangleFaces)
             {
                 // Skip any faces that aren't actually triangles
@@ -646,20 +646,16 @@ namespace EQWOWConverter.Common
                 Vector3 faceV3 = meshToExtractFrom.Vertices[face.V3];
                 Vector3 faceCenter = new Vector3((faceV1.X + faceV2.X + faceV3.X) / 3, (faceV1.Y + faceV2.Y + faceV3.Y) / 3, (faceV1.Z + faceV2.Z + faceV3.Z) / 3);
 
-                // Determine if it's inside the sphere, and split accordingly
-                float dX = faceCenter.X - sphereCenter.X;
-                float dY = faceCenter.Y - sphereCenter.Y;
-                float dZ = faceCenter.Z - sphereCenter.Z;
-                double distanceSquared = dX * dX + dY * dY + dZ * dZ;
-                if (distanceSquared <= (sphereRadius * sphereRadius))
-                    facesInSphere.Add(face);
+                // Determine if it's within the extraction region and split accordingly
+                if (extractionArea.ContainsPoint(faceCenter))
+                    extractedFaces.Add(face);
                 else
-                    facesToKeep.Add(face);
+                    remainderFaces.Add(face);
             }
 
             // Create the new mesh objects
-            extractedSphereMesh = new MeshData(meshToExtractFrom).GetMeshDataForFaces(facesInSphere);
-            extractedNonSphereMesh = new MeshData(meshToExtractFrom).GetMeshDataForFaces(facesToKeep);
+            extractedMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(extractedFaces);
+            remainderMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(remainderFaces);
         }
     }
 }

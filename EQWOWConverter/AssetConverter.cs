@@ -375,44 +375,49 @@ namespace EQWOWConverter
                 }
             }
 
+            // Zone-specific records
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
-                areaTableDBC.AddRow(Convert.ToInt32(zone.AreaTableZoneDBCID), 0, 0, zone.DescriptiveName);
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.AreaTableZoneDBCID), zone.LoadingScreenID);
+
+                // AreaTable
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.DisplayName);
+                foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.DisplayName);
+
+                // Map & Map Difficulty
+                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName); // Header record
+                
+                // WMOAreaTable (Header than groups)
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
-                {
-                    if (wmo.WMOType == ZoneObjectModelType.CollidableSubArea)
-                    {
-                        int curAreaTableID = Convert.ToInt32(zone.AreaTableZoneDBCID);
-                        int curMusicID = 0;
-                        if (wmo.ZoneMusic == null)
-                            Logger.WriteError("Zone '" + zone.ShortName + "' had a wmo group of CollisionWithAudio but had a null ZoneMusic object");
-                        else
-                        {
-                            curAreaTableID = Convert.ToInt32(wmo.ZoneMusic.AreaTableIDOverride);
-                            curMusicID = wmo.ZoneMusic.DBCID;
-                        }
-                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), curMusicID, Convert.ToInt32(curAreaTableID), zone.DescriptiveName);
-                    }
-                    else
-                        wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(zoneProperties.DBCAreaTableStartID), zone.DescriptiveName);
-                }
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(wmo.AreaTableID), wmo.DisplayName);
+
+                // AreaTrigger
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
-                string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
-                foreach (var sound in zone.ZoneMusicSoundsByIndex)
-                    soundEntriesDBC.AddRow(sound.Value, musicDirectory);
 
-                foreach(ZoneMusic zoneMusic in zone.ZoneMusics)
+                // SoundEntries
+                string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
+                foreach (var sound in zone.MusicSoundsByFileNameNoExt)
                 {
-                    areaTableDBC.AddRow(Convert.ToInt32(zoneMusic.AreaTableIDOverride), Convert.ToInt32(zone.AreaTableZoneDBCID), zoneMusic.DBCID, zone.DescriptiveName);
-                    zoneMusicDBC.AddRow(zoneMusic.DBCID, zoneMusic.DBCName, zoneMusic.DaySound.Id, zoneMusic.NightSound.Id);
+                    string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".mp3";
+                    soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, musicDirectory);
                 }
 
+                // ZoneMusic
+                foreach (ZoneAreaMusic zoneMusic in zone.ZoneAreaMusics)
+                {
+                    int soundIDDay = 0;
+                    if (zoneMusic.DaySound != null)
+                        soundIDDay = zoneMusic.DaySound.DBCID;
+                    int soundIDNight = 0;
+                    if (zoneMusic.NightSound != null)
+                        soundIDNight = zoneMusic.NightSound.DBCID;
+                    zoneMusicDBC.AddRow(zoneMusic.DBCID, zoneMusic.Name, soundIDDay, soundIDNight);
+                }
             }
 
             // Output them for both patch and server
@@ -548,7 +553,7 @@ namespace EQWOWConverter
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
 
-            if (zone.ZoneProperties.ValidMusicInstanceTrackIndexes.Count == 0)
+            if (zone.ZoneAreaMusics.Count == 0)
             {
                 Logger.WriteDetail("- [" + zone.ShortName + "]: No music found for this zone");
                 return;
@@ -560,17 +565,17 @@ namespace EQWOWConverter
                 FileTool.CreateBlankDirectory(zoneOutputMusicFolder, true);
 
             // Go through every music sound object and put there if needed
-            foreach(var zoneMusicSoundByIndex in zone.ZoneMusicSoundsByIndex)
+            foreach(var musicSoundByFileName in zone.MusicSoundsByFileNameNoExt)
             {
-                string sourceFullPath = Path.Combine(musicInputFolder, zoneMusicSoundByIndex.Value.AudioFileName);
-                string targetFullPath = Path.Combine(zoneOutputMusicFolder, zoneMusicSoundByIndex.Value.AudioFileName);
+                string sourceFullPath = Path.Combine(musicInputFolder, musicSoundByFileName.Value.AudioFileNameNoExt + ".mp3");
+                string targetFullPath = Path.Combine(zoneOutputMusicFolder, musicSoundByFileName.Value.AudioFileNameNoExt + ".mp3");
                 if (File.Exists(sourceFullPath) == false)
                 {
                     Logger.WriteError("Could not copy music file '" + sourceFullPath + "', as it did not exist");
                     continue;
                 }
                 File.Copy(sourceFullPath, targetFullPath, true);
-                Logger.WriteDetail("- [" + zone.ShortName + "]: Music named '" + zoneMusicSoundByIndex.Value.AudioFileName + "' copied");
+                Logger.WriteDetail("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
             Logger.WriteDetail("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
         }

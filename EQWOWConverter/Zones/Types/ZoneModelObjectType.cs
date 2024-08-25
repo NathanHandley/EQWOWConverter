@@ -26,8 +26,7 @@ namespace EQWOWConverter.Zones
     {
         Root,
         Rendered,
-        CollidableMainArea,
-        CollidableSubArea,
+        CollidableArea,
         LiquidVolume,
         LiquidPlane,
         ShadowBox

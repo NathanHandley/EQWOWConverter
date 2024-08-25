@@ -41,13 +41,13 @@ namespace EQWOWConverter.Files.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(Sound sound, string directory)
+        public void AddRow(Sound sound, string fileNameWithExt, string directory)
         {
             Row newRow = new Row();
-            newRow.Id = sound.Id;
+            newRow.Id = sound.DBCID;
             newRow.SoundType = Convert.ToInt32(sound.Type);
             newRow.Name = sound.Name;
-            newRow.FileName = sound.AudioFileName;
+            newRow.FileName = fileNameWithExt;
             newRow.DirectoryBase = directory;
             newRow.Volumefloat = sound.Volume;
             if (sound.Loop == true)
