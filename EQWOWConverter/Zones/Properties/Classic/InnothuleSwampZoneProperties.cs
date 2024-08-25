@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(106, 100, 56, ZoneFogType.Heavy, 1f);
-            AddValidMusicInstanceTrackIndexes(0, 2, 3);
+            //AddValidMusicInstanceTrackIndexes(0, 2, 3);
             DisableSunlight();
             AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f);
             AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West, -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);

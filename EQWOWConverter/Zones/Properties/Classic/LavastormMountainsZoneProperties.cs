@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public LavastormMountainsZoneProperties() : base()
         {
             SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(0, 1);
+            //AddValidMusicInstanceTrackIndexes(0, 1);
             SetZonewideEnvironmentAsOutdoorsWithSky(195, 38, 8, ZoneFogType.Clear, 0.5f, 1f);
             AddZoneLineBox("soltemple", 255.801758f, 55.676472f, -0.999090f, ZoneLineOrientationType.North, 1381.412109f, 336.848877f, 156.155457f, 1356.645630f, 324.494568f, 145.188034f);
             AddZoneLineBox("soldunga", -449.347717f, -524.520508f, 69.968758f, ZoneLineOrientationType.South, 784.385925f, 231.909103f, 139.531494f, 763.337830f, 221.400375f, 126.562843f);

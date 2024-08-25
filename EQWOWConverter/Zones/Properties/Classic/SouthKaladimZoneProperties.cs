@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public SouthKaladimZoneProperties() : base()
         {
             SetBaseZoneProperties("kaladima", "South Kaladim", -2f, -18f, 3.75f, 0, ZoneContinentType.Faydwer);
-            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 7);
+            //AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 7);
             SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("butcher", 3121.1667f, -179.98013f, 0.00088672107f, ZoneLineOrientationType.South, -66.545395f, 47.896313f, 14.469f, -85.64434f, 34.009415f, -0.49999186f);

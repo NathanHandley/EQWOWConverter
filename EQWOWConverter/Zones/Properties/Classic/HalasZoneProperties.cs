@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Boat that goes back and forth
             SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(1, 3, 4, 5, 7, 8, 9);
+            //AddValidMusicInstanceTrackIndexes(1, 3, 4, 5, 7, 8, 9);
             SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);

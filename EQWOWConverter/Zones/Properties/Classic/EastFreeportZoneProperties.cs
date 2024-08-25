@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: There is a boat that goes to ocean of tears (OOT)
             SetBaseZoneProperties("freporte", "East Freeport", -648f, -1097f, -52.2f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 6, 7);
+            //AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 6, 7);
             AddZoneLineBox("nro", 4152.241699f, 905.000000f, -28.031219f, ZoneLineOrientationType.South, -1336.303711f, -98.602051f, 200.000000f, -1366.303711f, -138.602051f, -100.000000f);
             AddZoneLineBox("nro", 4152.241699f, 885.000000f, -28.031000f, ZoneLineOrientationType.South, -1336.303711f, -138.602051f, 200.000000f, -1366.303711f, -158.602051f, -100.000000f);
             AddZoneLineBox("nro", 4152.241699f, 865.000000f, -28.031231f, ZoneLineOrientationType.South, -1336.303711f, -158.602051f, 200.000000f, -1366.303711f, -178.602066f, -100.000000f);

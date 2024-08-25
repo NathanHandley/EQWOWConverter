@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: There's a boat that connects to erudnext and qeynos (south)
             SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinentType.Odus);
-            AddValidMusicInstanceTrackIndexes(0, 1);
+            //AddValidMusicInstanceTrackIndexes(0, 1);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500);
         }
     }

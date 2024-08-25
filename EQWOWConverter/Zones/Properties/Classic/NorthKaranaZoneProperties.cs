@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NorthKaranaZoneProperties() : base()
         {
             SetBaseZoneProperties("northkarana", "Northern Plains of Karana", -382f, -284f, -7f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(1);
+            //AddValidMusicInstanceTrackIndexes(1);
             AddZoneLineBox("eastkarana", 13.189000f, 1166.973999f, -37.343681f, ZoneLineOrientationType.East, 38.130348f, -3110.049316f, 42.091228f, -17.969540f, -3238.555908f, -37.988708f);
             AddZoneLineBox("southkarana", 2777.505371f, 906.202576f, -34.406231f, ZoneLineOrientationType.South, -4530.517090f, 1250.382690f, 59.137932f, -4598.474609f, 1171.919800f, -36.060040f);
             AddZoneLineBox("qey2hh1", -4429.286621f, -15935.629883f, -69.124321f, ZoneLineOrientationType.West, -4417.983887f, 3744.417480f, 200.000000f, -5000.983887f, 3714.417480f, -100.000000f);

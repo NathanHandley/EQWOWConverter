@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NagafensLairZoneProperties() : base()
         {
             SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(0, 1, 2, 4, 5, 7);
+            //AddValidMusicInstanceTrackIndexes(0, 1, 2, 4, 5, 7);
             SetZonewideEnvironmentAsIndoors(180, 30, 30, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.3);
             DisableSunlight();

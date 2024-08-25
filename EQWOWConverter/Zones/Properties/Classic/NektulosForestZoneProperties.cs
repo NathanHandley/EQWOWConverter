@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NektulosForestZoneProperties() : base()
         {
             SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(0);
+            //AddValidMusicInstanceTrackIndexes(0);
             SetZonewideEnvironmentAsOutdoorsNoSky(57, 64, 50, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("ecommons", 1569.311157f, 667.254028f, -21.531260f, ZoneLineOrientationType.East, -2666.610596f, -550.025208f, 31.661320f, -2707.922119f, -636.140076f, -22.031050f);

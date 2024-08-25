@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NajenaZoneProperties() : base()
         {
             SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(1, 5, 7);
+            //AddValidMusicInstanceTrackIndexes(1, 5, 7);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             DisableSunlight();
             OverrideVertexColorIntensity(0.4);

@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public LairOfTheSplitpawZoneProperties() : base()
         {
             SetBaseZoneProperties("paw", "Lair of the Splitpaw", -7.9f, -79.3f, 4f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(0, 1, 2);
+            //AddValidMusicInstanceTrackIndexes(0, 1, 2);
             SetZonewideEnvironmentAsIndoors(30, 25, 10, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             DisableSunlight();

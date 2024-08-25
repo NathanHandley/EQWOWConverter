@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public NorthQeynosZoneProperties() : base()
         {
             SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinentType.Antonica);
-            AddValidMusicInstanceTrackIndexes(1, 4);
+            //AddValidMusicInstanceTrackIndexes(1, 4);
             AddZoneLineBox("qcat", 1056.423950f, -48.181938f, 199.885666f, ZoneLineOrientationType.South, 308.068420f, -153.744324f, -87.613121f, 293.681549f, -168.130386f, -126.259743f);
             AddZoneLineBox("qcat", 888.408264f, 216.199905f, 25.632490f, ZoneLineOrientationType.East, 196.099686f, 350.067566f, -106.426399f, 181.744537f, 335.681549f, -137.562592f);
             AddZoneLineBox("qcat", 636.627319f, 98.454399f, -41.968731f, ZoneLineOrientationType.East, 182.129868f, 77.711632f, -29.531000f, 167.744064f, 41.776329f, -42.468739f);

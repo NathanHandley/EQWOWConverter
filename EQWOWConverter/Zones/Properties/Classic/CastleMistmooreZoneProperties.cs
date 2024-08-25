@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public CastleMistmooreZoneProperties() : base()
         {
             SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinentType.Faydwer);
-            AddValidMusicInstanceTrackIndexes(1, 3);
+            //AddValidMusicInstanceTrackIndexes(1, 3);
             SetZonewideEnvironmentAsIndoors(30, 0, 60, ZoneFogType.Heavy);
             DisableSunlight();
             AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East, -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);
