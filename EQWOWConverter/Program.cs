@@ -32,6 +32,9 @@ internal class Program
             Logger.WriteInfo(" [1] - Condition Exported EQ Data");
             Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
             Logger.WriteInfo(" [X] - Exit");
+            Logger.WriteInfo(" ");
+            Logger.WriteInfo(" [9] - Condition only the Music Data");
+            Logger.WriteInfo(" ");
             Logger.WriteInfo("Command (Default: X): ", true);
             string? enteredCommand = Console.ReadLine();
             if (enteredCommand == null)
@@ -41,8 +44,8 @@ internal class Program
             }
             else
             {
-                //try
-                //{
+                try
+                {
                     switch (enteredCommand.ToUpper())
                     {
                         case "X":
@@ -76,6 +79,11 @@ internal class Program
 
                             }
                             break;
+                        case "9":
+                            {
+                                AssetConditioner conditioner = new AssetConditioner();
+                                conditioner.ConditionMusicFiles(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, "music"));
+                            } break;
                         default:
                             {
                                 Logger.WriteInfo("Exiting.");
@@ -83,13 +91,13 @@ internal class Program
                             }
                             break;
                     }
-                //}
-                //catch (Exception ex)
-                //{
-                //    Logger.WriteError("Exception Occurred: " + ex.Message);
-                //    if (ex.StackTrace != null)
-                //        Logger.WriteDetail(ex.StackTrace);
-                //}
+                }
+                catch (Exception ex)
+                {
+                    Logger.WriteError("Exception Occurred: " + ex.Message);
+                    if (ex.StackTrace != null)
+                        Logger.WriteDetail(ex.StackTrace);
+                }
             }
         }
         Console.WriteLine("");
