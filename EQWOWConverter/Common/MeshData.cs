@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Numerics;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
@@ -631,7 +632,7 @@ namespace EQWOWConverter.Common
         public static void GetSplitMeshData(MeshData meshToExtractFrom, BoundingBox extractionArea,
             out MeshData extractedMeshData, out MeshData remainderMeshData)
         {
-            // Divide all triangles into the two groups, those in the sphere and those that are not
+            // Divide all triangles into the two groups, those in the extraction area and those that are not
             List<TriangleFace> extractedFaces = new List<TriangleFace>();
             List<TriangleFace> remainderFaces = new List<TriangleFace>();
             foreach (TriangleFace face in meshToExtractFrom.TriangleFaces)
@@ -656,6 +657,114 @@ namespace EQWOWConverter.Common
             // Create the new mesh objects
             extractedMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(extractedFaces);
             remainderMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(remainderFaces);
+        }
+
+        public static void GetSplitMeshDataWithClipping(MeshData meshToExtractFrom, BoundingBox extractionArea,
+            out MeshData extractedMeshData, out MeshData remainderMeshData)
+        {
+            // Divide all triangles into the two groups, those in the extraction area and those that are not
+            List<TriangleFace> extractedFaces = new List<TriangleFace>();
+            List<TriangleFace> intersectingFaces = new List<TriangleFace>();
+            List<TriangleFace> remainderFaces = new List<TriangleFace>();
+            foreach (TriangleFace face in meshToExtractFrom.TriangleFaces)
+            {
+                // Skip any faces that aren't actually triangles
+                if (face.V1 == face.V2 || face.V2 == face.V3 || face.V1 == face.V3)
+                    continue;
+
+                // Test all 3 points
+                Vector3 faceV1 = meshToExtractFrom.Vertices[face.V1];
+                bool faceV1InExtraction = extractionArea.ContainsPoint(faceV1);
+                Vector3 faceV2 = meshToExtractFrom.Vertices[face.V2];
+                bool faceV2InExtraction = extractionArea.ContainsPoint(faceV2);
+                Vector3 faceV3 = meshToExtractFrom.Vertices[face.V3];
+                bool faceV3InExtraction = extractionArea.ContainsPoint(faceV3);
+
+                // Sort into three buckets based on where the points lay
+                if (faceV1InExtraction && faceV2InExtraction && faceV3InExtraction)
+                    extractedFaces.Add(face);
+                else if (!faceV1InExtraction && !faceV2InExtraction && !faceV3InExtraction)
+                    remainderFaces.Add(face);
+                else
+                    intersectingFaces.Add(face);
+            }
+
+            // Cut up the intersecting faces and create triangles in-and-out of the mesh area, ignoring Z (for now)
+            List<TriangleFace> positiveTriangles = new List<TriangleFace>();
+            List<TriangleFace> negativeTriangles = new List<TriangleFace>();
+            List<Vector3> throwAwayVectors = new List<Vector3>();
+            foreach (TriangleFace intersectingFace in intersectingFaces)
+            {
+                Vector3 faceV1 = meshToExtractFrom.Vertices[intersectingFace.V1];
+                Vector3 faceV2 = meshToExtractFrom.Vertices[intersectingFace.V2];
+                Vector3 faceV3 = meshToExtractFrom.Vertices[intersectingFace.V3];
+                SplitTriangleByX(intersectingFace, faceV1, faceV2, faceV3, extractionArea.BottomCorner.X, ref negativeTriangles,
+                    ref positiveTriangles, ref throwAwayVectors);
+            }
+
+
+
+            // Create the new mesh objects
+            extractedMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(extractedFaces);
+            remainderMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(remainderFaces);
+        }
+
+        private static void SplitTriangleByX(TriangleFace triangle, Vector3 v1, Vector3 v2, Vector3 v3, float xLine,
+            ref List<TriangleFace> negativeTriangles, ref List<TriangleFace> positiveTriangles, ref List<Vector3> vertices)
+        {
+            // Collect the points on each side of the line
+            List<Vector3> negativeVertices = new List<Vector3>();
+            List<Vector3> positiveVertices = new List<Vector3>();
+            if (v1.X >= xLine)
+                positiveVertices.Add(v1);
+            else
+                negativeVertices.Add(v1);
+            if (v2.X >= xLine)
+                positiveVertices.Add(v2);
+            else
+                negativeVertices.Add(v2);
+            if (v3.X >= xLine)
+                positiveVertices.Add(v3);
+            else
+                negativeVertices.Add(v3);
+
+            // Do nothing if this triangle isn't divided by the line
+            if (negativeVertices.Count == 0 || positiveVertices.Count == 0)
+                return;
+
+            // Add the intersection points to the negative and positive lists
+            CheckEdgeAndIntersectWithXPlane(v1, v2, xLine, ref negativeVertices, ref positiveVertices);
+            CheckEdgeAndIntersectWithXPlane(v2, v3, xLine, ref negativeVertices, ref positiveVertices);
+            CheckEdgeAndIntersectWithXPlane(v3, v1, xLine, ref negativeVertices, ref positiveVertices);
+
+            // Generate the triangles
+            CreateTriangles(negativeVertices, ref negativeTriangles, ref vertices);
+            CreateTriangles(positiveVertices, ref positiveTriangles, ref vertices);
+        }
+
+        private static void CheckEdgeAndIntersectWithXPlane(Vector3 v1, Vector3 v2, float xLine, ref List<Vector3> negativeVertices, ref List<Vector3> positiveVertices)
+        {
+            // Do nothing if the verts are on the same side
+            if (v1.X >= xLine && v2.X >= xLine)
+                return;
+            if (v1.X < xLine && v2.X < xLine)
+                return;
+
+            // If intersection occurs, add the verts to the lists
+            float t = (xLine - v1.X) / (v2.X - v1.X);
+            Vector3 intersection = new Vector3(xLine, v1.Y + t * (v2.Y - v1.Y), v1.Z + t * (v2.Z - v1.Z));
+            negativeVertices.Add(intersection);
+            positiveVertices.Add(intersection);
+        }
+
+        private static void CreateTriangles(List<Vector3> newVertices, ref List<TriangleFace> triangles, ref List<Vector3> vertices)
+        {
+            int startIndex = vertices.Count;
+            vertices.AddRange(newVertices);
+            for (int i = 1; i < newVertices.Count - 1; i++)
+            {
+                triangles.Add(new TriangleFace(0, startIndex, startIndex + i, startIndex + i + 1));
+            }
         }
     }
 }

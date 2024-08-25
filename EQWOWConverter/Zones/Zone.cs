@@ -210,7 +210,8 @@ namespace EQWOWConverter.Zones
                     ZoneObjectModel wmo = ZoneObjectModels[i];
                     if (wmo.ZoneMusic != null)
                     {
-                        ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        //ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        ZoneBox zoneBox = new ZoneBox(SubAreas[0].BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
                         GenerateRenderedWorldObjectModel(zoneBox.MeshData.TriangleFaces, zoneBox.MeshData);
                     }
                 }
@@ -282,7 +283,7 @@ namespace EQWOWConverter.Zones
             {
                 MeshData areaMeshData;
                 MeshData remainderMeshData;
-                MeshData.GetSplitMeshData(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
+                MeshData.GetSplitMeshDataWithClipping(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
                 collisionMeshData = remainderMeshData;
                 GenerateWorldObjectModelsForCollidableArea(areaMeshData, subArea);
                 SubAreas.Add(subArea);
