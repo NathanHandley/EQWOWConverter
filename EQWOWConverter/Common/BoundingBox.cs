@@ -163,7 +163,7 @@ namespace EQWOWConverter.Common
                 return false;
             if (point.Y < BottomCorner.Y)
                 return false;
-            if (point.Y < BottomCorner.Y)
+            if (point.Z < BottomCorner.Z)
                 return false;
             if (point.X > TopCorner.X)
                 return false;
