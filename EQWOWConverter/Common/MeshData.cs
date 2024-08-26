@@ -125,6 +125,25 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void AddMeshData(MeshData meshDataToAdd)
+        {
+            // Increase the vertex information for the mesh data being added in since the vertices array will increase
+            int indexValueToAdd = Vertices.Count;
+            foreach(TriangleFace face in meshDataToAdd.TriangleFaces)
+            {
+                face.V1 += indexValueToAdd;
+                face.V2 += indexValueToAdd;
+                face.V3 += indexValueToAdd;
+            }
+
+            // Add the data to the arrays
+            Vertices.AddRange(meshDataToAdd.Vertices);
+            Normals.AddRange(meshDataToAdd.Normals);
+            TextureCoordinates.AddRange(meshDataToAdd.TextureCoordinates);
+            VertexColors.AddRange(meshDataToAdd.VertexColors);
+            TriangleFaces.AddRange(meshDataToAdd.TriangleFaces);
+        }
+
         public MeshData GetMeshDataForMaterials(params Material[] materials)
         {
             // Extract out copies of the geometry data specific to these materials
