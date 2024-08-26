@@ -345,14 +345,14 @@ namespace EQWOWConverter.Zones
                     if (wmo.ZoneMusic != null)
                     {
                         ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
-                        renderMeshData.AddMeshData(zoneBox.MeshData);
+                        staticMeshData.AddMeshData(zoneBox.MeshData);
                     }
                 }
             }
 
             // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = renderMeshData.GetMeshDataChunks(fullBoundingBox, renderMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
+            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            List<MeshData> meshDataChunks = staticMeshData.GetMeshDataChunks(fullBoundingBox, staticMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
