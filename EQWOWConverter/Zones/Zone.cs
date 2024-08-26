@@ -83,7 +83,7 @@ namespace EQWOWConverter.Zones
             rootModel.LoadAsRoot(ZoneProperties);
             ZoneObjectModels.Add(rootModel);
 
-            // Get and convert/translate the mesh data
+            // Get and convert/translate the EverQuest mesh data
             MeshData renderMeshData = new MeshData(EQZoneData.RenderMeshData);
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
             renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties);
@@ -100,8 +100,47 @@ namespace EQWOWConverter.Zones
             if (DefaultArea.MusicFileNameNoExtDay != string.Empty || DefaultArea.MusicFileNameNoExtNight != string.Empty)
                 DefaultArea.AreaMusic = GenerateZoneAreaMusic(DefaultArea.MusicFileNameNoExtDay, DefaultArea.MusicFileNameNoExtNight);
 
-            // Add object instances
-            foreach (ObjectInstance objectInstance in EQZoneData.ObjectInstances)
+            // Build light instances
+            GenerateLightInstances(EQZoneData.LightInstances);
+
+            // Create doodad instances
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData, rootModel);
+
+            // Build liquid wmos
+            GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
+
+            // Create the areas
+            GenerateCollisionWorldObjectModelsAllCollidableAreas(renderMeshData, collisionMeshData, ZoneProperties);
+
+            // Generate the render objects
+            GenerateRenderWorldObjectModels(renderMeshData);
+
+            // Save the loading screen
+            SetLoadingScreen();
+
+            // Rebuild the bounding box
+            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
+            foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
+                allBoundingBoxes.Add(zoneObject.BoundingBox);
+            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+            rootModel.BoundingBox = new BoundingBox(BoundingBox);
+
+            // If set, generate a shadowbox
+            if (ZoneProperties.HasShadowBox == true)
+            {
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
+                ZoneObjectModels.Add(curWorldObjectModel);
+            }
+
+            // Completely loaded
+            IsLoaded = true;
+        }
+
+        private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, MeshData renderMeshData, ZoneObjectModel rootModel)
+        {
+            // Create doodad instances from EQ object instances
+            foreach (ObjectInstance objectInstance in eqObjectInstances)
             {
                 ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
                 doodadInstance.ObjectName = objectInstance.ModelName;
@@ -131,10 +170,33 @@ namespace EQWOWConverter.Zones
                 DoodadInstances.Add(doodadInstance);
             }
 
+            // Determine which materials are animated or transparent and create objects to represent them
+            foreach (Material material in Materials)
+                if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
+                    GenerateAndAddDoodadsForZoneMaterial(material, renderMeshData);
+
+            // If enabled, show light instances as torches for debugging
+            if (Configuration.CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
+            {
+                foreach (LightInstance lightInstance in LightInstances)
+                {
+                    ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
+                    doodadInstance.ObjectName = "torch";
+                    doodadInstance.Position = lightInstance.Position;
+                    DoodadInstances.Add(doodadInstance);
+                }
+            }
+
+            // Attach all doodads to the root
+            rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
+        }
+
+        private void GenerateLightInstances(List<LightInstance> eqLightInstances)
+        {
             // Add light instances
             if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
             {
-                LightInstances = EQZoneData.LightInstances;
+                LightInstances = eqLightInstances;
 
                 // Correct light instance data
                 foreach (LightInstance lightInstance in LightInstances)
@@ -148,85 +210,63 @@ namespace EQWOWConverter.Zones
                     // Also rotate the X and Y positions around Z axis 180 degrees
                     lightInstance.Position.X = -lightInstance.Position.X;
                     lightInstance.Position.Y = -lightInstance.Position.Y;
-
-                    // If enabled, show light instances as torches for debugging
-                    if (Configuration.CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
-                    {
-                        ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
-                        doodadInstance.ObjectName = "torch";
-                        doodadInstance.Position = lightInstance.Position;
-                        DoodadInstances.Add(doodadInstance);
-                    }
                 }
             }
+        }
 
-
-
-            // Build liquid wmos
-            GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
-
-            // Determine which materials are animated or transparent and create objects to represent them
-            foreach (Material material in Materials)
-                if ((material.IsAnimated() || material.HasTransparency()) && material.IsRenderable())
-                    GenerateAndAddObjectInstancesForZoneMaterial(material, renderMeshData);
-
-            // Create the areas
-            GenerateWorldObjectModelsForAllCollidableAreas(renderMeshData, collisionMeshData, ZoneProperties);
-
-            // Attach all doodads to the root
-            rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
-
-            // Generate the render objects
-            GenerateRenderWorldObjectModels(renderMeshData);
-
-            // Save the loading screen
-            switch (ZoneProperties.Continent)
-            {
-                case ZoneContinentType.Antonica:
-                case ZoneContinentType.Faydwer:
-                case ZoneContinentType.Development:
-                case ZoneContinentType.Odus:
-                    {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START;
-                    }
-                    break;
-                case ZoneContinentType.Kunark:
-                    {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1;
-                    }
-                    break;
-                case ZoneContinentType.Velious:
-                    {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2;
-                    }
-                    break;
-                default:
-                    {
-                        Logger.WriteError("Error setting loading screen, as the passed continent was not handled");
-                    }
-                    break;
-            }
-
-            // Rebuild the bounding box
-            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
-            foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
-                allBoundingBoxes.Add(zoneObject.BoundingBox);
-            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
-            rootModel.BoundingBox = new BoundingBox(BoundingBox);
-
-            // If set, generate a shadowbox
-            if (ZoneProperties.HasShadowBox == true)
+        private void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
+        {
+            // Volumes
+            foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-                curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
+                curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
 
-            // Completely loaded
-            IsLoaded = true;
+            // Planes
+            foreach (ZoneLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
+            {
+                Material planeMaterial = new Material();
+                bool materialFound = false;
+                foreach (Material material in Materials)
+                {
+                    if (liquidPlane.MaterialName == material.Name)
+                    {
+                        planeMaterial = material;
+                        materialFound = true;
+                        break;
+                    }
+                }
+                if (materialFound == false)
+                {
+                    Logger.WriteError("In generating liquidplane for wmo '" + ShortName + "', unable to find material named '" + liquidPlane.MaterialName + "'");
+                    if (Materials.Count > 0)
+                        planeMaterial = new Material(Materials[0]);
+                }
+
+                // Create the object, constraining to max size if needed
+                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION ||
+                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION)
+                {
+                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                    foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
+                    {
+                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                        curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
+                        ZoneObjectModels.Add(curWorldObjectModel);
+                    }
+                }
+                else
+                {
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                    curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
+                    ZoneObjectModels.Add(curWorldObjectModel);
+                }
+            }
         }
 
-        private void GenerateWorldObjectModelsForAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
+        private void GenerateCollisionWorldObjectModelsAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
             if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == false)
                 return;
@@ -258,16 +298,16 @@ namespace EQWOWConverter.Zones
                 MeshData remainderMeshData;
                 MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
                 collisionMeshData = remainderMeshData;
-                GenerateWorldObjectModelsForCollidableArea(areaMeshData, subArea);
+                GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshData, subArea);
                 SubAreas.Add(subArea);
             }
 
             // Remainder is the primary area
             DefaultArea.BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            GenerateWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
+            GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
         }
 
-        private void GenerateWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea)
+        private void GenerateCollisionWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea)
         {
             // Create a music if needed
             ZoneAreaMusic? areaMusic = null;
@@ -287,6 +327,39 @@ namespace EQWOWConverter.Zones
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
                 meshDataChunk.CondenseAndRenumberVertexIndices();
                 curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, zoneArea.DBCAreaTableID, zoneArea.DisplayName, areaMusic, ZoneProperties);
+                ZoneObjectModels.Add(curWorldObjectModel);
+            }
+        }
+
+        private void GenerateRenderWorldObjectModels(MeshData renderMeshData)
+        {
+            // Reduce meshdata to what will actually be rendered
+            MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
+
+            // If set, show the area box around music instances
+            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
+            {
+                for (int i = 0; i < ZoneObjectModels.Count; i++)
+                {
+                    ZoneObjectModel wmo = ZoneObjectModels[i];
+                    if (wmo.ZoneMusic != null)
+                    {
+                        ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        renderMeshData.AddMeshData(zoneBox.MeshData);
+                    }
+                }
+            }
+
+            // Break the geometry into as many parts as limited by the system
+            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            List<MeshData> meshDataChunks = renderMeshData.GetMeshDataChunks(fullBoundingBox, renderMeshData.TriangleFaces, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP);
+
+            // Create a group for each chunk
+            foreach (MeshData meshDataChunk in meshDataChunks)
+            {
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                meshDataChunk.CondenseAndRenumberVertexIndices();
+                curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials, LightInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }
@@ -345,92 +418,37 @@ namespace EQWOWConverter.Zones
             return newMusic;
         }
 
-        private void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
+        private void SetLoadingScreen()
         {
-            // Volumes
-            foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            switch (ZoneProperties.Continent)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-                curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
-                ZoneObjectModels.Add(curWorldObjectModel);
-            }
-
-            // Planes
-            foreach (ZoneLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
-            {
-                Material planeMaterial = new Material();
-                bool materialFound = false;
-                foreach (Material material in Materials)
-                {
-                    if (liquidPlane.MaterialName == material.Name)
+                case ZoneContinentType.Antonica:
+                case ZoneContinentType.Faydwer:
+                case ZoneContinentType.Development:
+                case ZoneContinentType.Odus:
                     {
-                        planeMaterial = material;
-                        materialFound = true;
-                        break;
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START;
                     }
-                }
-                if (materialFound == false)
-                {
-                    Logger.WriteError("In generating liquidplane for wmo '" + ShortName + "', unable to find material named '" + liquidPlane.MaterialName + "'");
-                    if (Materials.Count > 0)
-                        planeMaterial = new Material(Materials[0]);
-                }
-
-                // Create the object, constraining to max size if needed
-                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION ||
-                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION)
-                {
-                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
-                    foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
+                    break;
+                case ZoneContinentType.Kunark:
                     {
-                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-                        curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
-                        ZoneObjectModels.Add(curWorldObjectModel);
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1;
                     }
-                }
-                else
-                {
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-                    curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
-                    ZoneObjectModels.Add(curWorldObjectModel);
-                }
+                    break;
+                case ZoneContinentType.Velious:
+                    {
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2;
+                    }
+                    break;
+                default:
+                    {
+                        Logger.WriteError("Error setting loading screen, as the passed continent was not handled");
+                    }
+                    break;
             }
         }
 
-        private void GenerateRenderWorldObjectModels(MeshData renderMeshData)
-        {
-            // Reduce meshdata to what will actually be rendered
-            MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
-
-            // If set, show the area box around music instances
-            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
-            {
-                for (int i = 0; i < ZoneObjectModels.Count; i++)
-                {
-                    ZoneObjectModel wmo = ZoneObjectModels[i];
-                    if (wmo.ZoneMusic != null)
-                    {
-                        ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
-                        renderMeshData.AddMeshData(zoneBox.MeshData);
-                    }
-                }
-            }
-
-            // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = renderMeshData.GetMeshDataChunks(fullBoundingBox, renderMeshData.TriangleFaces, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP);
-
-            // Create a group for each chunk
-            foreach (MeshData meshDataChunk in meshDataChunks)
-            {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-                meshDataChunk.CondenseAndRenumberVertexIndices();
-                curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials, LightInstances, ZoneProperties);
-                ZoneObjectModels.Add(curWorldObjectModel);
-            }
-        }
-
-        private void GenerateAndAddObjectInstancesForZoneMaterial(Material material, MeshData allMeshData)
+        private void GenerateAndAddDoodadsForZoneMaterial(Material material, MeshData allMeshData)
         {
             List<Vector3> meshPositions = new List<Vector3>();
             List<MeshData> meshDatas = new List<MeshData>();
