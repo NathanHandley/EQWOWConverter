@@ -628,36 +628,6 @@ namespace EQWOWConverter.Common
             }
             return returnMeshChunks;
         }
-        
-        public static void GetSplitMeshData(MeshData meshToExtractFrom, BoundingBox extractionArea,
-            out MeshData extractedMeshData, out MeshData remainderMeshData)
-        {
-            // Divide all triangles into the two groups, those in the extraction area and those that are not
-            List<TriangleFace> extractedFaces = new List<TriangleFace>();
-            List<TriangleFace> remainderFaces = new List<TriangleFace>();
-            foreach (TriangleFace face in meshToExtractFrom.TriangleFaces)
-            {
-                // Skip any faces that aren't actually triangles
-                if (face.V1 == face.V2 || face.V2 == face.V3 || face.V1 == face.V3)
-                    continue;
-
-                // Get center point
-                Vector3 faceV1 = meshToExtractFrom.Vertices[face.V1];
-                Vector3 faceV2 = meshToExtractFrom.Vertices[face.V2];
-                Vector3 faceV3 = meshToExtractFrom.Vertices[face.V3];
-                Vector3 faceCenter = new Vector3((faceV1.X + faceV2.X + faceV3.X) / 3, (faceV1.Y + faceV2.Y + faceV3.Y) / 3, (faceV1.Z + faceV2.Z + faceV3.Z) / 3);
-
-                // Determine if it's within the extraction region and split accordingly
-                if (extractionArea.ContainsPoint(faceCenter))
-                    extractedFaces.Add(face);
-                else
-                    remainderFaces.Add(face);
-            }
-
-            // Create the new mesh objects
-            extractedMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(extractedFaces);
-            remainderMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(remainderFaces);
-        }
 
         public static void GetSplitMeshDataWithXYClipping(MeshData meshToExtractFrom, BoundingBox extractionArea,
             out MeshData extractedMeshData, out MeshData remainderMeshData)
@@ -697,28 +667,29 @@ namespace EQWOWConverter.Common
             MeshData intersectingMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(intersectingFaces);
             intersectingMeshData.CondenseAndRenumberVertexIndices();
 
-            foreach (TriangleFace triangleFace in intersectingMeshData.TriangleFaces)
-                SplitTriangleByY(triangleFace, extractionArea.TopCorner.Y, ref remainderMeshData, ref extractedMeshData, intersectingMeshData);
-
-
             // Process known intersecting triangles crossing the high X line
-            //MeshData newWorkingInsideIntersectingMeshDataHighX = new MeshData();
-            //foreach (TriangleFace triangleFace in intersectingMeshData.TriangleFaces)
-            //    SplitTriangleByX(triangleFace, extractionArea.TopCorner.X, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighX, intersectingMeshData);
+            MeshData newWorkingInsideIntersectingMeshDataHighX = new MeshData();
+            foreach (TriangleFace triangleFace in intersectingMeshData.TriangleFaces)
+                SplitTriangleByX(triangleFace, extractionArea.TopCorner.X, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighX, intersectingMeshData);
+            remainderMeshData.CondenseAndRenumberVertexIndices();
 
-            //// Processing triangles crossing the low x line
-            //MeshData newWorkingInsideIntersectingMeshDataLowX = new MeshData();
-            //foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighX.TriangleFaces)
-            //    SplitTriangleByX(triangleFace, extractionArea.BottomCorner.X, ref newWorkingInsideIntersectingMeshDataLowX, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighX);
+            // Processing triangles crossing the low x line
+            MeshData newWorkingInsideIntersectingMeshDataLowX = new MeshData();
+            foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighX.TriangleFaces)
+                SplitTriangleByX(triangleFace, extractionArea.BottomCorner.X, ref newWorkingInsideIntersectingMeshDataLowX, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighX);
+            remainderMeshData.CondenseAndRenumberVertexIndices();
 
-            //// Processing triangles crossing the high y line
-            //MeshData newWorkingInsideIntersectingMeshDataHighY = new MeshData();
-            //foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataLowX.TriangleFaces)
-            //    SplitTriangleByY(triangleFace, extractionArea.TopCorner.Y, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighY, newWorkingInsideIntersectingMeshDataLowX);
+            // Processing triangles crossing the high y line
+            MeshData newWorkingInsideIntersectingMeshDataHighY = new MeshData();
+            foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataLowX.TriangleFaces)
+                SplitTriangleByY(triangleFace, extractionArea.TopCorner.Y, ref remainderMeshData, ref newWorkingInsideIntersectingMeshDataHighY, newWorkingInsideIntersectingMeshDataLowX);
+            remainderMeshData.CondenseAndRenumberVertexIndices();
 
-            //// Processing remaining triangles crossing the low y line
-            //foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataLowX.TriangleFaces)
-            //    SplitTriangleByY(triangleFace, extractionArea.BottomCorner.Y, ref extractedMeshData, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighY);
+            // Processing remaining triangles crossing the low y line
+            foreach (TriangleFace triangleFace in newWorkingInsideIntersectingMeshDataHighY.TriangleFaces)
+                SplitTriangleByY(triangleFace, extractionArea.BottomCorner.Y, ref extractedMeshData, ref remainderMeshData, newWorkingInsideIntersectingMeshDataHighY);
+            remainderMeshData.CondenseAndRenumberVertexIndices();
+            extractedMeshData.CondenseAndRenumberVertexIndices();
         }
 
         private static void SplitTriangleByX(TriangleFace triangle, float xLine, ref MeshData positiveMeshData, 
@@ -738,9 +709,11 @@ namespace EQWOWConverter.Common
             ColorRGBA c2 = sourceMeshData.VertexColors[triangle.V2];
             ColorRGBA c3 = sourceMeshData.VertexColors[triangle.V3];
 
-            // Collect the points on each side of the line
             MeshData newPositiveMeshData = new MeshData();
             MeshData newNegativeMeshData = new MeshData();
+
+            // Starting clockwise, check for intersections and ensure all verticies are added in order
+            // V1
             if (v1.X >= xLine)
             {
                 newPositiveMeshData.Vertices.Add(v1);
@@ -755,6 +728,10 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t1);
                 newNegativeMeshData.VertexColors.Add(c1);
             }
+            // V1->V2 Intersection Test
+            if (v1.X >= xLine && v2.X < xLine || v1.X < xLine && v2.X >= xLine)
+                CheckIntersectWithXPlaneAndGenerateVertData(v1, v2, n1, n2, t1, t2, c1, c2, xLine, ref newPositiveMeshData, ref newNegativeMeshData);
+            // V2
             if (v2.X >= xLine)
             {
                 newPositiveMeshData.Vertices.Add(v2);
@@ -769,6 +746,10 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t2);
                 newNegativeMeshData.VertexColors.Add(c2);
             }
+            // V2->V3 Intersection Test
+            if (v2.X >= xLine && v3.X < xLine || v2.X < xLine && v3.X >= xLine)
+                CheckIntersectWithXPlaneAndGenerateVertData(v2, v3, n2, n3, t2, t3, c2, c3, xLine, ref newPositiveMeshData, ref newNegativeMeshData);
+            // V3
             if (v3.X >= xLine)
             {
                 newPositiveMeshData.Vertices.Add(v3);
@@ -783,14 +764,9 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t3);
                 newNegativeMeshData.VertexColors.Add(c3);
             }
-
-            // Add intersection data if the verts didn't all fall on one line
-            if (newNegativeMeshData.Vertices.Count != 0 && newPositiveMeshData.Vertices.Count != 0)
-            {
-                CheckIntersectWithXPlaneAndGenerateVertData(v1, v2, n1, n2, t1, t2, c1, c2, xLine, ref newPositiveMeshData, ref newNegativeMeshData);
-                CheckIntersectWithXPlaneAndGenerateVertData(v2, v3, n2, n3, t2, t3, c2, c3, xLine, ref newPositiveMeshData, ref newNegativeMeshData);
+            // V3->V1 Intersection Test
+            if (v3.X >= xLine && v1.X < xLine || v3.X < xLine && v1.X >= xLine)
                 CheckIntersectWithXPlaneAndGenerateVertData(v3, v1, n3, n1, t3, t1, c3, c1, xLine, ref newPositiveMeshData, ref newNegativeMeshData);
-            }           
 
             // Generate the triangles
             CreateTrianglesAndSaveData(triangle.MaterialIndex, newNegativeMeshData, ref negativeMeshData);
@@ -851,9 +827,11 @@ namespace EQWOWConverter.Common
             ColorRGBA c2 = sourceMeshData.VertexColors[triangle.V2];
             ColorRGBA c3 = sourceMeshData.VertexColors[triangle.V3];
 
-            // Collect the points on each side of the line
             MeshData newPositiveMeshData = new MeshData();
             MeshData newNegativeMeshData = new MeshData();
+
+            // Starting clockwise, check for intersections and ensure all verticies are added in order
+            // V1
             if (v1.Y >= yLine)
             {
                 newPositiveMeshData.Vertices.Add(v1);
@@ -868,6 +846,10 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t1);
                 newNegativeMeshData.VertexColors.Add(c1);
             }
+            // V1->V2 Intersection Test
+            if (v1.Y >= yLine && v2.Y < yLine || v1.Y < yLine && v2.Y >= yLine)
+                CheckIntersectWithYPlaneAndGenerateVertData(v1, v2, n1, n2, t1, t2, c1, c2, yLine, ref newPositiveMeshData, ref newNegativeMeshData);         
+            // V2
             if (v2.Y >= yLine)
             {
                 newPositiveMeshData.Vertices.Add(v2);
@@ -882,6 +864,10 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t2);
                 newNegativeMeshData.VertexColors.Add(c2);
             }
+            // V2->V3 Intersection Test
+            if (v2.Y >= yLine && v3.Y < yLine || v2.Y < yLine && v3.Y >= yLine)
+                CheckIntersectWithYPlaneAndGenerateVertData(v2, v3, n2, n3, t2, t3, c2, c3, yLine, ref newPositiveMeshData, ref newNegativeMeshData);
+            // V3
             if (v3.Y >= yLine)
             {
                 newPositiveMeshData.Vertices.Add(v3);
@@ -896,14 +882,9 @@ namespace EQWOWConverter.Common
                 newNegativeMeshData.TextureCoordinates.Add(t3);
                 newNegativeMeshData.VertexColors.Add(c3);
             }
-
-            // Add intersection data if the verts didn't all fall on one line
-            if (newNegativeMeshData.Vertices.Count != 0 && newPositiveMeshData.Vertices.Count != 0)
-            {
-                CheckIntersectWithYPlaneAndGenerateVertData(v1, v2, n1, n2, t1, t2, c1, c2, yLine, ref newPositiveMeshData, ref newNegativeMeshData);
-                CheckIntersectWithYPlaneAndGenerateVertData(v2, v3, n2, n3, t2, t3, c2, c3, yLine, ref newPositiveMeshData, ref newNegativeMeshData);
+            // V3->V1 Intersection Test
+            if (v3.Y >= yLine && v1.Y < yLine || v3.Y < yLine && v1.Y >= yLine)
                 CheckIntersectWithYPlaneAndGenerateVertData(v3, v1, n3, n1, t3, t1, c3, c1, yLine, ref newPositiveMeshData, ref newNegativeMeshData);
-            }
 
             // Generate the triangles
             CreateTrianglesAndSaveData(triangle.MaterialIndex, newNegativeMeshData, ref negativeMeshData);
@@ -950,8 +931,23 @@ namespace EQWOWConverter.Common
         private static void CreateTrianglesAndSaveData(int materialIndex, MeshData newMeshData, ref MeshData workingMeshData)
         {
             int startIndex = workingMeshData.Vertices.Count;
-            for (int i = 0; i < newMeshData.Vertices.Count-2; i++)
-                workingMeshData.TriangleFaces.Add(new TriangleFace(materialIndex, startIndex + i, startIndex + i + 1, startIndex + i + 2));
+
+            // If zero, then nothing to do
+            if (newMeshData.Vertices.Count == 0)
+                return;
+            // If there are 3 verts, then it's one triangle in order
+            if (newMeshData.Vertices.Count == 3)
+                workingMeshData.TriangleFaces.Add(new TriangleFace(materialIndex, startIndex, startIndex + 1, startIndex + 2));
+            // Otherwise, it's 4 and two triangles are to be spawned
+            else if (newMeshData.Vertices.Count == 4)
+            {
+                workingMeshData.TriangleFaces.Add(new TriangleFace(materialIndex, startIndex, startIndex + 1, startIndex + 2));
+                workingMeshData.TriangleFaces.Add(new TriangleFace(materialIndex, startIndex + 2, startIndex + 3, startIndex));
+            }
+            else
+            {
+                throw new Exception("MeshData CreateTrianglesAndSaveData had a vertices count of '" + newMeshData.Vertices.Count + "'");
+            }
             workingMeshData.Vertices.AddRange(newMeshData.Vertices);
             workingMeshData.Normals.AddRange(newMeshData.Normals);
             workingMeshData.TextureCoordinates.AddRange(newMeshData.TextureCoordinates);
