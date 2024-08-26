@@ -211,8 +211,21 @@ namespace EQWOWConverter.Zones
                     if (wmo.ZoneMusic != null)
                     {
                         //ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
-                        ZoneBox zoneBox = new ZoneBox(SubAreas[0].BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        //ZoneBox zoneBox = new ZoneBox(SubAreas[0].BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                        ZoneBox zoneBox = new ZoneBox(new BoundingBox(0, 0, 0, 0.1f, 0.1f, 0.1f), Materials, ShortName, 0, ZoneBoxRenderType.Both);
                         GenerateRenderedWorldObjectModel(zoneBox.MeshData.TriangleFaces, zoneBox.MeshData);
+                    }
+                }
+            }
+
+            // TEMP: Generate render boxes for the collsion sub areas
+            for (int i = 0; i < ZoneObjectModels.Count; i++)
+            {
+                ZoneObjectModel wmo = ZoneObjectModels[i];
+                {
+                    if (wmo.WMOType == ZoneObjectModelType.CollidableArea && wmo.ZoneMusic != null)
+                    {
+                        GenerateRenderWorldObjectModels(wmo.MeshData, Materials);
                     }
                 }
             }
