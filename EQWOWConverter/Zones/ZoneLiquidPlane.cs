@@ -60,17 +60,17 @@ namespace EQWOWConverter.Zones
             MaterialName = materialName;
 
             // Add additional height for ripple rendering
-            highZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            lowZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            highZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            lowZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
 
             // Scale and save the coordinates, rotated
-            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            highZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            lowZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            nwCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            seCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            seCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            highZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            lowZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            minDepth *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
             MinDepth = minDepth;           
             HighZ = highZ;
@@ -94,15 +94,15 @@ namespace EQWOWConverter.Zones
             MaterialName = materialName;
 
             // Add additional height for ripple rendering
-            allCornersZ += Configuration.CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            allCornersZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
             
             // Scale and save the coordinates, rotated
-            nwCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            nwCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerX *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            seCornerY *= -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            allCornersZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            minDepth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            nwCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            nwCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            seCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            seCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            allCornersZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            minDepth *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
             MinDepth = minDepth;
             HighZ = allCornersZ;

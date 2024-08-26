@@ -43,15 +43,15 @@ namespace EQWOWConverter.Zones
             AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
 
             // Scale input values
-            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxTopNorthwestZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            boxBottomSoutheastZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionX *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxTopNorthwestX *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxTopNorthwestY *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxTopNorthwestZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxBottomSoutheastX *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxBottomSoutheastY *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            boxBottomSoutheastZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
             // Create the box base values
             TargetZoneShortName = targetZoneShortName;
@@ -81,13 +81,13 @@ namespace EQWOWConverter.Zones
             AreaTriggerID = AreaTriggerDBC.GetGeneratedAreaTriggerID();
 
             // Scale input values
-            targetZonePositionX *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionY *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            targetZonePositionZ *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterXPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterYPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padBottomCenterZPosition *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            padWidth *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            targetZonePositionX *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            targetZonePositionY *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            targetZonePositionZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            padBottomCenterXPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            padBottomCenterYPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            padBottomCenterZPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            padWidth *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
             // Create the box base values
             TargetZoneShortName = targetZoneShortName;
@@ -104,10 +104,10 @@ namespace EQWOWConverter.Zones
             // Calculate the dimensions in the form needed by a wow trigger zone
             float boxBottomSoutheastX = padBottomCenterXPosition - (padWidth / 2);
             float boxBottomSoutheastY = padBottomCenterYPosition - (padWidth / 2);
-            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            float boxBottomSoutheastZ = padBottomCenterZPosition - (0.25f * Configuration.CONFIG_GENERATE_WORLD_SCALE);
             float boxTopNorthwestX = boxBottomSoutheastX + padWidth;
             float boxTopNorthwestY = boxBottomSoutheastY + padWidth;
-            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.CONFIG_EQTOWOW_WORLD_SCALE);
+            float boxTopNorthwestZ = padBottomCenterZPosition + (5.0f * Configuration.CONFIG_GENERATE_WORLD_SCALE);
             BoundingBox zoneLineBoxBounding = new BoundingBox(boxBottomSoutheastX, boxBottomSoutheastY, boxBottomSoutheastZ,
                 boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ);
             BoxPosition = zoneLineBoxBounding.GetCenter();

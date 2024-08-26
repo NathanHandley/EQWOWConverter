@@ -285,7 +285,7 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
@@ -323,7 +323,7 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
@@ -389,7 +389,7 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
@@ -398,7 +398,7 @@ namespace EQWOWConverter.Zones
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
         {
             AddQuadrilateralLiquidShapeZLevel(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
-                eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+                eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.CONFIG_LIQUID_QUADGEN_EDGE_WALK_SIZE);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -406,7 +406,7 @@ namespace EQWOWConverter.Zones
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth)
         {
             AddOctagonLiquidShape(liquidType, materialName, northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX,
-                westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+                westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.CONFIG_LIQUID_QUADGEN_EDGE_WALK_SIZE);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -473,7 +473,7 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 

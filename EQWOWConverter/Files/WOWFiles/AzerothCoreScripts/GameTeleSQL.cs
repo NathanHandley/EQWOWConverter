@@ -10,7 +10,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            private static int CURRENT_ROWID = Configuration.CONFIG_GAMETELE_ROWID_START;
+            private static int CURRENT_ROWID = Configuration.CONFIG_SQL_GAMETELE_ROWID_START;
 
             public int ID;
             public float XPosition = 10;
@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_GAMETELE_ROWID_START + rows.Count) + ";");
+            stringBuilder.AppendLine("DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_SQL_GAMETELE_ROWID_START + rows.Count) + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (");

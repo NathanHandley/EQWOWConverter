@@ -43,12 +43,12 @@ namespace EQWOWConverter.Zones
             MusicFileNameNoExtNight = musicFileNameNight;
 
             // Scale and rotate
-            BoundingBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-            BoundingBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+            BoundingBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
         }
     }
 }

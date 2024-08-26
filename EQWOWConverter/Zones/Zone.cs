@@ -144,10 +144,10 @@ namespace EQWOWConverter.Zones
             {
                 ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
                 doodadInstance.ObjectName = objectInstance.ModelName;
-                doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 // Invert Z and Y because of mapping differences
-                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                 // Also rotate the X and Y positions around Z axis 180 degrees
                 doodadInstance.Position.X = -doodadInstance.Position.X;
@@ -202,10 +202,10 @@ namespace EQWOWConverter.Zones
                 foreach (LightInstance lightInstance in LightInstances)
                 {
                     Vector3 originalPosition = new Vector3(lightInstance.Position);
-                    lightInstance.Position.X = originalPosition.X * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    lightInstance.Position.X = originalPosition.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                     // Invert Z and Y because of mapping differences
-                    lightInstance.Position.Z = originalPosition.Y * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                    lightInstance.Position.Y = originalPosition.Z * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                    lightInstance.Position.Z = originalPosition.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                    lightInstance.Position.Y = originalPosition.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                     // Also rotate the X and Y positions around Z axis 180 degrees
                     lightInstance.Position.X = -lightInstance.Position.X;
@@ -246,10 +246,10 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Create the object, constraining to max size if needed
-                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION ||
-                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION)
+                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION ||
+                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION)
                 {
-                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
                     foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
                         ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
@@ -268,7 +268,7 @@ namespace EQWOWConverter.Zones
 
         private void GenerateCollisionWorldObjectModelsAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
-            if (Configuration.CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED == false)
+            if (Configuration.CONFIG_ZONE_COLLISION_AND_MUSIC_ENABLED == false)
                 return;
 
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
@@ -303,7 +303,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Remainder is the primary area
-            DefaultArea.BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            DefaultArea.BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
         }
 
@@ -318,8 +318,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP);
+            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach(MeshData meshDataChunk in meshDataChunks)
@@ -351,8 +351,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = renderMeshData.GetMeshDataChunks(fullBoundingBox, renderMeshData.TriangleFaces, Configuration.CONFIG_WOW_MAX_FACES_PER_WMOGROUP);
+            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            List<MeshData> meshDataChunks = renderMeshData.GetMeshDataChunks(fullBoundingBox, renderMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)

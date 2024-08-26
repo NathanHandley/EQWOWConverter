@@ -158,7 +158,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Save the geometry data
-            if (Configuration.CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION == true && isFromRawEQObject == true)
+            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && isFromRawEQObject == true)
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -219,8 +219,8 @@ namespace EQWOWConverter.ObjectModels
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
                         // Control for world scaling
-                        float extendDistance = Configuration.CONFIG_STATIC_OBJECT_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                        float stepDistance = Configuration.CONFIG_STATIC_OBJECT_LADDER_STEP_DISTANCE * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                         // Purge the existing collision data
                         collisionVertices.Clear();
@@ -492,9 +492,9 @@ namespace EQWOWConverter.ObjectModels
 
         private void CalculateBoundingBoxesAndRadii()
         {
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.CONFIG_OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
-            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
         }
 

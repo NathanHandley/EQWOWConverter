@@ -88,7 +88,7 @@ namespace EQWOWConverter.WOWFiles
             // Liquid type (zero causes whole WMO to be underwater, but 15 seems to fix that)
             if (worldObjectModel.LiquidType != ZoneLiquidType.None)
             {
-                if (Configuration.CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE == true)
+                if (Configuration.CONFIG_LIQUID_SHOW_TRUE_SURFACE == true)
                 {
                     // If set, show the 'actual' water surface
                     switch (worldObjectModel.LiquidType)

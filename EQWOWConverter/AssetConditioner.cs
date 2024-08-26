@@ -93,9 +93,9 @@ namespace EQWOWConverter
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
                 // Skip any disabled expansions
-                if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == false && Configuration.CONFIG_LOOKUP_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == false && Configuration.CONFIG_GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
-                if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
 
                 // Bring in the objects of this directory

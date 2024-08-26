@@ -53,59 +53,73 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
-        public static readonly float CONFIG_EQTOWOW_WORLD_SCALE = 0.3f;
-
-        // Maximum number of faces that fit into a WMO group before it subdivides (true max is 21,840)
-        public static readonly int CONFIG_WOW_MAX_FACES_PER_WMOGROUP = 21000;
-
-        // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
-        public static readonly float CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT = 0.01f;
-
-        // Maximum size of any zone-to-material-object creation along the X and Y axis
-        public static readonly float CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
-
-        // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
-        // for debugging as it very visually unpleasant
-        public static readonly bool CONFIG_EQTOWOW_ZONE_LIQUID_SHOW_TRUE_SURFACE = false;
-
-        // Any surface liquid that has an x or y dimension larger than this will be cut down in size
-        public static readonly int CONFIG_EQTOWOW_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
-
-        // How much 'height' to add to liquid surface, helps with rendering the waves
-        public static readonly float CONFIG_EQTOTWOW_LIQUID_SURFACE_ADD_Z_HEIGHT = 0.001f;
-
-        // How much to 'walk' the x value when generating an irregular quad of liquid for each plane
-        public static readonly float CONFIG_EQTOWOW_LIQUID_QUADGEN_EDGE_WALK_SIZE = 0.2f;
-
-        // How much to overlap the planes when generating an irregular quad of liquid
-        public static readonly float CONFIG_EQTOWOW_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE = 0.0001f; 
-
-        // Maxinum number of triangle faces that can be in any zone-to-material-object
-        public static readonly int CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
-
-        // How much bigger to make the box which causes the shadow in a shadowbox
-        public static readonly float CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
-
-        // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
-        public static readonly bool CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY = true;
+        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.3f;
 
         // If true, then objects are generated
         public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
+         
+        // Kunark zone shortnames
+        public static readonly List<string> CONFIG_GENERATE_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
+            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
+            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
+            "trakanon", "veeshan", "wakening", "warslikswood" };
 
         // If true, zones for Velious are generated
         public static readonly bool CONFIG_GENERATE_VELIOUS_ZONES = false;
 
+        // Velious zone shortnames
+        public static readonly List<string> CONFIG_GENERATE_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
+            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
+            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
+
+        // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
+        public static readonly float CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
+
         //=====================================================================
-        // Collision
+        // Zone General
         //=====================================================================
+        // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
+        public static readonly bool CONFIG_ZONE_SHOW_STATIC_GEOMETRY = true;
+
+        // Maximum number of faces that fit into a WMO group before it subdivides (true max is 21,840)
+        public static readonly int CONFIG_ZONE_MAX_FACES_PER_WMOGROUP = 21000;
+
+        // Maximum size of any zone-to-material-object creation along the X and Y axis
+        public static readonly float CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
+
+        // Maxinum number of triangle faces that can be in any zone-to-material-object
+        public static readonly int CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
+
+        // How much bigger to make the box which causes the shadow in a shadowbox
+        public static readonly float CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
+
         // If true, allow collision with world model objects
-        public static readonly bool CONFIG_WORLD_MODEL_OBJECT_COLLISION_AND_MUSIC_ENABLED = true;
+        public static readonly bool CONFIG_ZONE_COLLISION_AND_MUSIC_ENABLED = true;
         
         // Maximum number of BTREE faces that fit into a WMO group before it subdivides
-        public static readonly int CONFIG_WOW_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
+        public static readonly int CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
+
+        //=====================================================================
+        // Liquid
+        //=====================================================================
+        // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
+        // for debugging as it very visually unpleasant
+        public static readonly bool CONFIG_LIQUID_SHOW_TRUE_SURFACE = false;
+
+        // Any surface liquid that has an x or y dimension larger than this will be cut down in size
+        public static readonly int CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
+
+        // How much 'height' to add to liquid surface, helps with rendering the waves
+        public static readonly float CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT = 0.001f;
+
+        // How much to 'walk' the x value when generating an irregular quad of liquid for each plane
+        public static readonly float CONFIG_LIQUID_QUADGEN_EDGE_WALK_SIZE = 0.2f;
+
+        // How much to overlap the planes when generating an irregular quad of liquid
+        public static readonly float CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE = 0.0001f;
 
         //=====================================================================
         // Lighting and Coloring
@@ -151,17 +165,17 @@ namespace EQWOWConverter
         // Objects
         //=====================================================================
         // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
-        public static readonly float CONFIG_STATIC_OBJECT_MIN_BOUNDING_BOX_SIZE = 25.1f;
+        public static readonly float CONFIG_OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE = 25.1f;
 
         // If set to true, the collision is rendered and not the actual render geometry. Leave false unless debugging.
         // TODO: Add a custom material for this purpose, as some boundary boxes don't show
-        public static readonly bool CONFIG_STATIC_OBJECT_RENDER_AS_COLLISION = false;
+        public static readonly bool CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION = false;
 
         // For ladders, this is how far to extend out the steppable area in front and back of it (value is before world scaling)
-        public static readonly float CONFIG_STATIC_OBJECT_LADDER_EXTEND_DISTANCE = 1.0f;
+        public static readonly float CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE = 1.0f;
 
         // How much space between each step of a ladder along the Z axis (value is before world scaling)
-        public static readonly float CONFIG_STATIC_OBJECT_LADDER_STEP_DISTANCE = 0.5f;
+        public static readonly float CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE = 0.5f;
 
         // ====================================================================
         // WOW DBC/File IDs
@@ -207,21 +221,9 @@ namespace EQWOWConverter
         public static readonly int CONFIG_DBCID_SOUNDENTRIES_START = 22000;
 
         // ====================================================================
-        // AzerothCore Database IDs
+        // SQL Scripts (AzerothCore)
         // ====================================================================
         // Start row for `game_tele` records. (~2000-2200)
-        public static readonly int CONFIG_GAMETELE_ROWID_START = 2000;
-
-        // ====================================================================
-        // Lookups
-        // ====================================================================
-        public static readonly List<string> CONFIG_LOOKUP_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
-            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
-            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
-
-        public static readonly List<string> CONFIG_LOOKUP_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
-            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
-            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
-            "trakanon", "veeshan", "wakening", "warslikswood" };
+        public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
     }
 }

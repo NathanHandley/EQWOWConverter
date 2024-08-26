@@ -98,9 +98,9 @@ namespace EQWOWConverter.Common
             // Perform vertex world scaling and 180 Z-Axis degree rotation
             foreach (Vector3 vertex in Vertices)
             {
-                vertex.X *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                vertex.Y *= -1 * Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
-                vertex.Z *= Configuration.CONFIG_EQTOWOW_WORLD_SCALE;
+                vertex.X *= -1 * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                vertex.Y *= -1 * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                vertex.Z *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
             }
             // Flip Y on the texture coordinates
             foreach (TextureCoordinates textureCoordinate in TextureCoordinates)
@@ -533,9 +533,9 @@ namespace EQWOWConverter.Common
             int finalTriangleCount = curTriangleFaces.Count * curMaterial.NumOfAnimationFrames();
 
             // If the box is too big, cut it up
-            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || finalTriangleCount >= Configuration.CONFIG_EQTOWOW_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT)
+            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || finalTriangleCount >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT)
             {
                 // Create two new bounding boxes based on the longest edge
                 SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(curBoundingBox);

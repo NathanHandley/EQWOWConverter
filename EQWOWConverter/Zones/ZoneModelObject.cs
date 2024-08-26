@@ -90,7 +90,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.Rendered;
             MeshData = meshData;
             Materials = materials;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials, zoneProperties);
             if (zoneProperties.IsCompletelyInLiquid)
             {
@@ -109,7 +109,7 @@ namespace EQWOWConverter.Zones
             AreaTableID = areaTableID;
             DisplayName = displayName;
             MeshData = collisionMeshData;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_EQTOWOW_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
@@ -128,7 +128,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
-            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_EQTOWOW_ZONE_SHADOW_BOX_ADDED_SIZE, ZoneBoxRenderType.Outward);
+            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE, ZoneBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
             IsLoaded = true;
@@ -137,7 +137,7 @@ namespace EQWOWConverter.Zones
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties)
         {
             // Don't make a render batch if static rendering is disabled
-            if (Configuration.CONFIG_EQTOWOW_ZONE_GENERATE_STATIC_GEOMETRY == false)
+            if (Configuration.CONFIG_ZONE_SHOW_STATIC_GEOMETRY == false)
                 return;
 
             // Reorder the faces and related objects
