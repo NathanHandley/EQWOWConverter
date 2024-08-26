@@ -89,7 +89,7 @@ namespace EQWOWConverter
             Directory.CreateDirectory(targetDirectory);
         }
 
-        public static bool CopyDirectoryAndContents(string sourceDirectory, string targetDirectory, bool deleteTargetContents, bool recursive)
+        public static bool CopyDirectoryAndContents(string sourceDirectory, string targetDirectory, bool deleteTargetContents, bool recursive, string searchPattern = "*.*")
         {
             // Create the folder if it doesn't exist, or recreate if the contents should be deleted
             if (Directory.Exists(targetDirectory) == false)
@@ -105,7 +105,7 @@ namespace EQWOWConverter
             DirectoryInfo[] sourceDirectoryInfos = sourceDirectoryInfo.GetDirectories();
 
             // Copy files from source directory into destination directory
-            foreach (FileInfo file in sourceDirectoryInfo.GetFiles())
+            foreach (FileInfo file in sourceDirectoryInfo.GetFiles(searchPattern))
             {
                 string targetFilePath = Path.Combine(targetDirectory, file.Name);
                 file.CopyTo(targetFilePath, true);

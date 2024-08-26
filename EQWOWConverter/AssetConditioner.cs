@@ -351,7 +351,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Performing texture replacements with any custom textures...");
             
             // Objects
-            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "texcustom", "object");
+            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "object");
             if (Directory.Exists(objectTexturesFolder) == false)
             {
                 Logger.WriteError("Failed to perform object texture replacements, as '" + objectTexturesFolder + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");

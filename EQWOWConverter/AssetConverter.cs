@@ -291,7 +291,7 @@ namespace EQWOWConverter
             string sourceTextureFolder = Path.Combine(eqExportsConditionedPath, "liquidsurfaces");
             string targetTextureFolder = Path.Combine(exportMPQRootFolder, "XTEXTURES", "everquest");
             Directory.CreateDirectory(targetTextureFolder);
-            FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true);
+            FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
         public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)

@@ -40,6 +40,9 @@ namespace EQWOWConverter
         // The root of the tools directory (included in this source repository)
         public static readonly string CONFIG_PATH_TOOLS_FOLDER = "E:\\Development\\EQWOW\\Tools";
 
+        // The root of the assets directory (included in this source repository)
+        public static readonly string CONFIG_PATH_ASSETS_FOLDER = "E:\\Development\\EQWOW\\Assets";
+
         // ====================================================================
         // Logging
         // ====================================================================
