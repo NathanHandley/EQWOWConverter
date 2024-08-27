@@ -29,6 +29,7 @@ using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Files.WOWFiles;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace EQWOWConverter
 {
@@ -156,6 +157,9 @@ namespace EQWOWConverter
             // Load shared environment settings
             ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
 
+            // Extract DBC files
+            ExtractClientDBCFiles(wowExportPath);
+
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
@@ -200,10 +204,6 @@ namespace EQWOWConverter
             // Create the Azeroth Core Scripts
             CreateAzerothCoreScripts(zones, wowExportPath);
 
-            // Extract DBC files
-
-
-
             return true;
         }
 
@@ -216,17 +216,13 @@ namespace EQWOWConverter
             if (Directory.Exists(wowPatchesFolder) == false)
                 throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER?");
 
-            // Delete the old patch file, if it exists
-            string outputPatchFileName = Path.Combine(wowPatchesFolder, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
-            if (File.Exists(outputPatchFileName) == true)
-                File.Delete(outputPatchFileName);
-
-            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right)
+            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
             List<string> patchFileNames = new List<string>();
             patchFileNames.Add(Path.Combine(wowPatchesFolder, "patch-enUS.MPQ"));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                patchFileNames.Add(existingPatchName);
+                if (existingPatchName.Contains(Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT) == false)
+                    patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
             foreach (string patchFileName in patchFileNames)
@@ -245,7 +241,6 @@ namespace EQWOWConverter
             StringBuilder dbcExtractScriptText = new StringBuilder();
             foreach (string patchFileName in patchFileNames)
                 dbcExtractScriptText.AppendLine("extract \"" + patchFileName + "\" DBFilesClient\\* \"" + exportedDBCFolder + "\"");
-            string temp = dbcExtractScriptText.ToString();
             string dbcExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "dbcextract.txt");
             using (var dbcExtractionScriptFile = new StreamWriter(dbcExtractionScriptFileName))
                 dbcExtractionScriptFile.WriteLine(dbcExtractScriptText.ToString());
@@ -264,6 +259,51 @@ namespace EQWOWConverter
             process.WaitForExit();
 
             Logger.WriteInfo("Extracting client DBC files complete");
+        }
+
+        public static void CreateAndReplaceGeneratedPatchMPQ(string wowExportPath)
+        {
+            Logger.WriteInfo("Building patch MPQ...");
+
+            // Make sure the patches folder is correct
+            string wowPatchesFolder = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
+            if (Directory.Exists(wowPatchesFolder) == false)
+                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER?");
+
+            // Delete the old patch file, if it exists
+            Logger.WriteDetail("Deleting old patch file if it exists");
+            string outputPatchFileName = Path.Combine(wowPatchesFolder, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            if (File.Exists(outputPatchFileName) == true)
+                File.Delete(outputPatchFileName);
+
+            // Generate a script to generate the mpq file
+            Logger.WriteDetail("Generating script to generate MPQ file");
+            string mpqReadyFolder = Path.Combine(wowExportPath, "MPQReady");
+            if (Directory.Exists(mpqReadyFolder) == false)
+                throw new Exception("There was no MPQReady folder inside of '" + wowExportPath + "'");
+            string workingGeneratedScriptsFolder = Path.Combine(wowExportPath, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder mpqCreateScriptText = new StringBuilder();
+            mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" 65536");
+            mpqCreateScriptText.AppendLine("add \"" + outputPatchFileName + "\" \"" + mpqReadyFolder + "\\*\" /auto /r");
+            string mpqNewScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqnew.txt");
+            using (var mpqNewScriptFile = new StreamWriter(mpqNewScriptFileName))
+                mpqNewScriptFile.WriteLine(mpqCreateScriptText.ToString());
+
+            // Generate the new MPQ using the script
+            Logger.WriteDetail("Generating MPQ file");
+            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + mpqNewScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
+            Logger.WriteInfo("Building patch MPQ complete");
         }
 
         public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
