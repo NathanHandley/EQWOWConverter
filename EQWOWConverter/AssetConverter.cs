@@ -35,7 +35,7 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
-        public static bool ConvertEQDataToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQDataToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteInfo("Converting from EQ to WoW...");
 
@@ -65,7 +65,7 @@ namespace EQWOWConverter
         }
 
         // TODO: Condense above
-        public static bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteInfo("Converting EQ objects to WOW objects...");
 
@@ -123,7 +123,7 @@ namespace EQWOWConverter
         }
 
         // TODO: Condense above
-        public static bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
         {
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
@@ -207,7 +207,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void ExtractClientDBCFiles(string wowExportPath)
+        public void ExtractClientDBCFiles(string wowExportPath)
         {
             Logger.WriteInfo("Extracting client DBC files...");
 
@@ -261,7 +261,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Extracting client DBC files complete");
         }
 
-        public static void CreateAndReplaceGeneratedPatchMPQ(string wowExportPath)
+        public void CreateAndReplaceGeneratedPatchMPQ(string wowExportPath)
         {
             Logger.WriteInfo("Building patch MPQ...");
 
@@ -306,7 +306,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Building patch MPQ complete");
         }
 
-        public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
+        public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
@@ -343,7 +343,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
-        public static void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
+        public void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
         {
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
 
@@ -357,7 +357,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
         }
 
-        public static void CreateLoadingScreens(string eqExportsConditionedPath, string exportMPQRootFolder)
+        public void CreateLoadingScreens(string eqExportsConditionedPath, string exportMPQRootFolder)
         {
             Logger.WriteInfo("Copying loading screens");
             string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
@@ -388,7 +388,7 @@ namespace EQWOWConverter
                 File.Copy(veliousInputFile, veliousOutputFile);
         }
 
-        public static void CreateLiquidMaterials(string eqExportsConditionedPath, string exportMPQRootFolder)
+        public void CreateLiquidMaterials(string eqExportsConditionedPath, string exportMPQRootFolder)
         {
             Logger.WriteInfo("Copying liquid material textures");
 
@@ -398,7 +398,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public static void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
+        public void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteInfo("Creating DBC Update Scripts...");
 
@@ -553,7 +553,7 @@ namespace EQWOWConverter
             zoneMusicDBC.WriteToDisk(dbcServerUpdateScriptFolder);
         }
 
-        public static void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
+        public void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
@@ -607,7 +607,7 @@ namespace EQWOWConverter
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
         }
 
-        public static void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string objectExportPath)
+        public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string objectExportPath)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
 
@@ -653,7 +653,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
         }
 
-        public static void ExportMusicForZone(Zone zone, string musicInputFolder, string wowExportPath)
+        public void ExportMusicForZone(Zone zone, string musicInputFolder, string wowExportPath)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
 
@@ -684,7 +684,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
         }
 
-        public static void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
+        public void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
         {
             Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
 

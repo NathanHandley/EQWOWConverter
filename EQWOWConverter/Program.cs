@@ -58,7 +58,7 @@ internal class Program
                             {
                                 Logger.WriteInfo("Conditioning Exported EQ Data...");
                                 AssetConditioner conditioner = new AssetConditioner();
-                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED);
+                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
                                 if (condenseResult == false)
                                 {
                                     Logger.WriteInfo("Exported EQ Data Conditioning Failed.");
@@ -70,7 +70,7 @@ internal class Program
                         case "5":
                             {
                                 AssetConverter converter = new AssetConverter();
-                                bool conversionResult = AssetConverter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, Configuration.CONFIG_PATH_EXPORT_FOLDER);
+                                bool conversionResult = converter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, Configuration.CONFIG_PATH_EXPORT_FOLDER);
                                 if (conversionResult == false)
                                 {
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
