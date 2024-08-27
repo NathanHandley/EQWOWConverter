@@ -20,6 +20,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - WDBX Editor (or other DBC editor)
 - Ladik's MPQ Editor (or other MPQ editor)
 - Installed and unpatched client of the EverQuest Trilogy
+- Installed 3.3.5 WoW client, US version
 
 # Instructions
 **Extracting Everquest Assets** 
@@ -39,7 +40,7 @@ Use LaternExtractor (https://github.com/NathanHandley/LanternExtractor)
 
 **Configure and build EQWOWConverter**
 
-Before building, set your Paths propertly in Configuration.cs.  There are 5 paths to set there (all 5 in "Paths" section)
+Before building, set all of your paths propertly in Configuration.cs ("Paths" section)
 
 **Condition the EQ objects** 
 

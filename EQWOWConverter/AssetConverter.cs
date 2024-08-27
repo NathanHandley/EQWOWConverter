@@ -199,7 +199,71 @@ namespace EQWOWConverter
 
             // Create the Azeroth Core Scripts
             CreateAzerothCoreScripts(zones, wowExportPath);
+
+            // Extract DBC files
+
+
+
             return true;
+        }
+
+        public static void ExtractClientDBCFiles(string wowExportPath)
+        {
+            Logger.WriteInfo("Extracting client DBC files...");
+
+            // Make sure the patches folder is correct
+            string wowPatchesFolder = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
+            if (Directory.Exists(wowPatchesFolder) == false)
+                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER?");
+
+            // Delete the old patch file, if it exists
+            string outputPatchFileName = Path.Combine(wowPatchesFolder, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            if (File.Exists(outputPatchFileName) == true)
+                File.Delete(outputPatchFileName);
+
+            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right)
+            List<string> patchFileNames = new List<string>();
+            patchFileNames.Add(Path.Combine(wowPatchesFolder, "patch-enUS.MPQ"));
+            string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
+            foreach (string existingPatchName in existingPatchFiles)
+                patchFileNames.Add(existingPatchName);
+
+            // Make sure all of the files are not locked
+            foreach (string patchFileName in patchFileNames)
+                if (FileTool.IsFileLocked(patchFileName))
+                    throw new Exception("Patch file named '" + patchFileName + "' was locked and in use by another application");
+
+            // Clear out any previously extracted DBC files
+            Logger.WriteDetail("Deleting previously extracted DBC files");
+            string exportedDBCFolder = Path.Combine(wowExportPath, "ExportedDBCFiles");
+            FileTool.CreateBlankDirectory(exportedDBCFolder, false);
+
+            // Generate a script to extract the DBC files
+            Logger.WriteDetail("Generating script to extract DBC files");
+            string workingGeneratedScriptsFolder = Path.Combine(wowExportPath, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder dbcExtractScriptText = new StringBuilder();
+            foreach (string patchFileName in patchFileNames)
+                dbcExtractScriptText.AppendLine("extract \"" + patchFileName + "\" DBFilesClient\\* \"" + exportedDBCFolder + "\"");
+            string temp = dbcExtractScriptText.ToString();
+            string dbcExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "dbcextract.txt");
+            using (var dbcExtractionScriptFile = new StreamWriter(dbcExtractionScriptFileName))
+                dbcExtractionScriptFile.WriteLine(dbcExtractScriptText.ToString());
+
+            // Extract the files using the script
+            Logger.WriteDetail("Extracting DBC files");
+            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to extract DBC files. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + dbcExtractionScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
+            Logger.WriteInfo("Extracting client DBC files complete");
         }
 
         public static void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)

@@ -26,15 +26,18 @@ namespace EQWOWConverter
     internal class Configuration
     {
         // ====================================================================
-        // Paths
+        // Paths and Files
         // ====================================================================
         // Location of eq data exports before conditioning (from LaternExtractor)
-        public static readonly string CONFIG_PATH_EQEXPORTSRAW = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
+        public static readonly string CONFIG_PATH_EQEXPORTSRAW_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExports-Int";
+
+        // Location of your enUS World of Warcaft client, where your wow.exe is (such as C:\WorldOfWarcraft)
+        public static readonly string CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER = "E:\\Development\\azerothcore-wotlk\\Client\\";
 
         // Where the "conditioned" eq data export files go
-        public static readonly string CONFIG_PATH_EQEXPORTSCONDITIONED = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
+        public static readonly string CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQExportsConditioned";
 
-        // Where the generated WOW files go
+        // Where the intermediate generated WOW files go
         public static readonly string CONFIG_PATH_EXPORT_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
 
         // The root of the tools directory (included in this source repository)
@@ -42,6 +45,9 @@ namespace EQWOWConverter
 
         // The root of the assets directory (included in this source repository)
         public static readonly string CONFIG_PATH_ASSETS_FOLDER = "E:\\Development\\EQWOW\\Assets";
+
+        // Name of the newely generated patch file, without the extension. Note: Will be deleted when extracting DBC data, so make sure it's the last and new
+        public static readonly string CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT = "patch-enUS-5";
 
         // ====================================================================
         // Logging
