@@ -14,88 +14,45 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.Files.WOWFiles
 {
-    internal class LightDBC
+    internal class LightDBC : DBCFile
     {
-        public class Row
-        {
-            public int Id;
-            public int MapId;
-            public float PositionX;
-            public float PositionY;
-            public float PositionZ;
-            public float FalloffStart;
-            public float FalloffEnd;
-            public int ParamsClearID;
-            public int ParamsClearWaterID;
-            public int ParamsStormID;
-            public int ParamsStormWaterID;
-
-            // DBCIDs
-            private static int CURRENT_LIGHTID = Configuration.CONFIG_DBCID_LIGHT_START;
-
-            public Row()
-            {
-                Id = CURRENT_LIGHTID;
-                CURRENT_LIGHTID++;
-            }
-        }
-
-        private List<Row> rows = new List<Row>();
+        // DBCIDs
+        private static int CURRENT_LIGHTID = Configuration.CONFIG_DBCID_LIGHT_START;
 
         public void AddRow(int mapId, ZoneEnvironmentSettings zoneEnvironmentSettings)
         {
-            Row newRow = new Row();
-            newRow.MapId = mapId;
-            newRow.PositionX = zoneEnvironmentSettings.PositionX;
-            newRow.PositionY = zoneEnvironmentSettings.PositionY;
-            newRow.PositionZ = zoneEnvironmentSettings.PositionZ;
-            newRow.FalloffStart = zoneEnvironmentSettings.FalloffStart;
-            newRow.FalloffEnd = zoneEnvironmentSettings.FalloffEnd;
-            newRow.ParamsClearID = zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID;
-            newRow.ParamsClearWaterID = zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID;
-            newRow.ParamsStormID = zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID;
-            newRow.ParamsStormWaterID = zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater.DBCLightParamsID;
-            rows.Add(newRow);
-        }
+            // Generate unique Light ID
+            int lightID = CURRENT_LIGHTID;
+            CURRENT_LIGHTID++;
 
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "LightDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"ContinentID\",\"X\",\"Y\",\"Z\",\"FalloffStart\",\"FalloffEnd\",\"LightParamsID_1\",\"LightParamsID_2\",\"LightParamsID_3\",\"LightParamsID_4\",\"LightParamsID_5\",\"LightParamsID_6\",\"LightParamsID_7\",\"LightParamsID_8\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.MapId.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionX.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionY.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionZ.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.FalloffStart.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.FalloffEnd.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.ParamsClearID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.ParamsClearWaterID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.ParamsStormID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.ParamsStormWaterID.ToString() + "\"");
-                stringBuilder.Append(",\"4\"");
-                stringBuilder.Append(",\"0\"");
-                stringBuilder.Append(",\"0\"");
-                stringBuilder.AppendLine(",\"0\"");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(lightID);
+            newRow.AddInt32(mapId);
+            newRow.AddFloat(zoneEnvironmentSettings.PositionX);
+            newRow.AddFloat(zoneEnvironmentSettings.PositionY);
+            newRow.AddFloat(zoneEnvironmentSettings.PositionZ);
+            newRow.AddFloat(zoneEnvironmentSettings.FalloffStart);
+            newRow.AddFloat(zoneEnvironmentSettings.FalloffEnd);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater.DBCLightParamsID);
+            newRow.AddInt32(4); // Death Parameters ID
+            newRow.AddInt32(0); // Unknown 1
+            newRow.AddInt32(0); // Unknown 2
+            newRow.AddInt32(0); // Unknown 3
+            Rows.Add(newRow);
         }
     }
 }

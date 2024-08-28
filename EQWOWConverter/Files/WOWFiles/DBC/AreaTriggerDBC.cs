@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class AreaTriggerDBC
+    internal class AreaTriggerDBC : DBCFile
     {
         private static int CURRENT_AREATRIGGER_ID = Configuration.CONFIG_DBCID_AREATRIGGERID_START;
         public static int GetGeneratedAreaTriggerID()
@@ -32,61 +32,21 @@ namespace EQWOWConverter.WOWFiles
             return generatedID;
         }
 
-        public class Row
-        {
-            public int ID;
-            public int MapID;
-            public float PositionX;
-            public float PositionY;
-            public float PositionZ;
-            public float BoxLength;
-            public float BoxWidth;
-            public float BoxHeight;
-            public float BoxOrientation;
-        }
-
-        private List<Row> rows = new List<Row>();
-
         public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ, 
             float boxLength, float boxWidth, float boxHeight, float boxOrientation)
         {
-            Row newRow = new Row();
-            newRow.ID = areaTriggerID;
-            newRow.MapID = mapID;
-            newRow.PositionX = positionX;
-            newRow.PositionY = positionY;    
-            newRow.PositionZ = positionZ;
-            newRow.BoxLength = boxLength;
-            newRow.BoxWidth = boxWidth;
-            newRow.BoxHeight = boxHeight;
-            newRow.BoxOrientation = boxOrientation;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "AreaTriggerDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"ContinentID\",\"X\",\"Y\",\"Z\",\"Radius\",\"Box_Length\",\"Box_Width\",\"Box_Height\",\"Box_Yaw\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.ID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.MapID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionX.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionY.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.PositionZ.ToString() + "\"");
-                stringBuilder.Append(",\"0\""); // Radius
-                stringBuilder.Append(",\"" + row.BoxLength.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.BoxWidth.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.BoxHeight.ToString() + "\"");
-                stringBuilder.AppendLine(",\"" + row.BoxOrientation.ToString() + "\"");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(areaTriggerID);
+            newRow.AddInt32(mapID);
+            newRow.AddFloat(positionX);
+            newRow.AddFloat(positionY);
+            newRow.AddFloat(positionZ);
+            newRow.AddFloat(0); // Radius
+            newRow.AddFloat(boxLength);
+            newRow.AddFloat(boxWidth);
+            newRow.AddFloat(boxHeight);
+            newRow.AddFloat(boxOrientation);
+            Rows.Add(newRow);
         }
     }
 }

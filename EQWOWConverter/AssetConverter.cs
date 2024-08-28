@@ -422,9 +422,6 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
             // Create the map-level DBC update scripts
-            AreaTableDBC areaTableDBC = new AreaTableDBC();
-            AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
-            LightDBC lightDBC = new LightDBC();
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
             LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
             LightParamsDBC lightParamsDBC = new LightParamsDBC();
@@ -457,8 +454,6 @@ namespace EQWOWConverter
                 {
                     ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
 
-                    lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
-
                     lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
                     lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
                     lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
@@ -475,21 +470,12 @@ namespace EQWOWConverter
                     lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
                     lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
                 }
-                else
-                {
-                    lightDBC.AddRow(zoneProperties.DBCMapID, ZoneProperties.CommonOutdoorEnvironmentProperties);
-                }
             }
 
             // Zone-specific records
             foreach (Zone zone in zones)
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
-
-                // AreaTable
-                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.DisplayName);
-                foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
-                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.DisplayName);
 
                 // Map & Map Difficulty
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
@@ -498,11 +484,6 @@ namespace EQWOWConverter
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
                 foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(wmo.AreaTableID), wmo.DisplayName);
-
-                // AreaTrigger
-                foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
-                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
-                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // SoundEntries
                 string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
@@ -526,16 +507,10 @@ namespace EQWOWConverter
             }
 
             // Output them for both patch and server
-            areaTableDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            areaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            areaTriggerDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            areaTriggerDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             mapDifficultyDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             mapDifficultyDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             liquidTypeDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             liquidTypeDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            lightDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            lightDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             lightFloatBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             lightFloatBandDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             lightIntBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
@@ -575,6 +550,12 @@ namespace EQWOWConverter
             Directory.CreateDirectory(dbcOutputServerFolder);
 
             // Load the files
+            AreaTableDBC areaTableDBC = new AreaTableDBC();
+            areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
+            AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
+            areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
+            LightDBC lightDBC = new LightDBC();
+            lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             MapDBC mapDBCClient = new MapDBC();
             mapDBCClient.LoadFromDisk(dbcInputFolder, "Map.dbc");
             MapDBC mapDBCServer = new MapDBC();
@@ -585,12 +566,40 @@ namespace EQWOWConverter
             {
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
+                // AreaTable
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.DisplayName);
+                foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.DisplayName);
+
+                // AreaTrigger
+                foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
+                    areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+
+                // Light Tables
+                if (zoneProperties.CustomZonewideEnvironmentProperties != null)
+                {
+                    ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
+
+                    lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
+                }
+                else
+                {
+                    lightDBC.AddRow(zoneProperties.DBCMapID, ZoneProperties.CommonOutdoorEnvironmentProperties);
+                }
+
                 // Map
                 mapDBCClient.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
                 mapDBCServer.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
             }
 
             // Save the files
+            areaTableDBC.SaveToDisk(dbcOutputClientFolder);
+            areaTableDBC.SaveToDisk(dbcOutputServerFolder);
+            areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
+            areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
+            lightDBC.SaveToDisk(dbcOutputClientFolder);
+            lightDBC.SaveToDisk(dbcOutputServerFolder);
             mapDBCClient.SaveToDisk(dbcOutputClientFolder);
             mapDBCServer.SaveToDisk(dbcOutputServerFolder);
 
