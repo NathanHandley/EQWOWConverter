@@ -47,6 +47,9 @@ namespace EQWOWConverter
                 return false;
             }
 
+            // Extract DBC files
+            ExtractClientDBCFiles(wowExportPath);
+
             // Convert the data
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
             {
@@ -157,9 +160,6 @@ namespace EQWOWConverter
             // Load shared environment settings
             ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
 
-            // Extract DBC files
-            ExtractClientDBCFiles(wowExportPath);
-
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
@@ -200,6 +200,9 @@ namespace EQWOWConverter
 
             // Create the DBC update scripts
             CreateDBCUpdateScripts(zones, wowExportPath);
+
+            // Create the DBC files
+            CreateDBCFiles(zones, wowExportPath);
 
             // Create the Azeroth Core Scripts
             CreateAzerothCoreScripts(zones, wowExportPath);
@@ -426,7 +429,6 @@ namespace EQWOWConverter
             LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
             LightParamsDBC lightParamsDBC = new LightParamsDBC();
             LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
-            MapDBC mapDBC = new MapDBC();
             MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -490,7 +492,6 @@ namespace EQWOWConverter
                     areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.DisplayName);
 
                 // Map & Map Difficulty
-                mapDBC.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
                 
                 // WMOAreaTable (Header than groups)
@@ -529,8 +530,6 @@ namespace EQWOWConverter
             areaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             areaTriggerDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             areaTriggerDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            mapDBC.WriteToDiskForPatch(dbcPatchUpdateScriptFolder);
-            mapDBC.WriteToDiskForServer(dbcServerUpdateScriptFolder);
             mapDifficultyDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             mapDifficultyDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             liquidTypeDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
@@ -551,6 +550,51 @@ namespace EQWOWConverter
             wmoAreaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
             zoneMusicDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
             zoneMusicDBC.WriteToDisk(dbcServerUpdateScriptFolder);
+        }
+
+        public void CreateDBCFiles(List<Zone> zones, string wowExportPath)
+        {
+            Logger.WriteInfo("Creating DBC Files...");
+
+            // Make sure there is a folder of files
+            string dbcInputFolder = Path.Combine(wowExportPath, "ExportedDBCFiles");
+            if (Directory.Exists(dbcInputFolder) == false)
+            {
+                Logger.WriteError("Failed to create DBC files, as '" + dbcInputFolder + "' did not exist");
+                return;
+            }
+
+            // Clear prior folders
+            string dbcOutputClientFolder = Path.Combine(wowExportPath, "MPQReady", "DBFilesClient");
+            if (Directory.Exists(dbcOutputClientFolder) == true)
+                Directory.Delete(dbcOutputClientFolder, true);
+            Directory.CreateDirectory(dbcOutputClientFolder);
+            string dbcOutputServerFolder = Path.Combine(wowExportPath, "DBCFilesServer");
+            if (Directory.Exists(dbcOutputServerFolder) == true)
+                Directory.Delete(dbcOutputServerFolder, true);
+            Directory.CreateDirectory(dbcOutputServerFolder);
+
+            // Load the files
+            MapDBC mapDBCClient = new MapDBC();
+            mapDBCClient.LoadFromDisk(dbcInputFolder, "Map.dbc");
+            MapDBC mapDBCServer = new MapDBC();
+            mapDBCServer.LoadFromDisk(dbcInputFolder, "Map.dbc");
+
+            // Zone-specific records
+            foreach (Zone zone in zones)
+            {
+                ZoneProperties zoneProperties = zone.ZoneProperties;
+
+                // Map
+                mapDBCClient.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
+                mapDBCServer.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
+            }
+
+            // Save the files
+            mapDBCClient.SaveToDisk(dbcOutputClientFolder);
+            mapDBCServer.SaveToDisk(dbcOutputServerFolder);
+
+            Logger.WriteInfo("Creating DBC Files complete");
         }
 
         public void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
