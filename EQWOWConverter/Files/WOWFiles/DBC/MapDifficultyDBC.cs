@@ -19,59 +19,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class MapDifficultyDBC
+    internal class MapDifficultyDBC : DBCFile
     {
-        public class Row
-        {
-            public int Id;
-            public int MapID;
-            public int Diffculty = 0; // Not sure 100%
-            public string RejectionMessage = string.Empty;
-            public int RaidDuration = 0; // Most raids are 86400 or 604800
-            public int MaxPlayers = 0;
-            public string Diffcultystring = string.Empty;
-
-            public Row()
-            {
-
-            }
-        }
-
-        List<Row> rows = new List<Row>();
-
         public void AddRow(int mapID, int mapDifficultyID)
         {
-            Row newRow = new Row();
-            newRow.MapID = mapID;
-            newRow.Id = mapDifficultyID;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "MapDifficultyDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"MapID\",\"Difficulty\",\"Message_Lang_enUS\",\"Message_Lang_enGB\",\"Message_Lang_koKR\",\"Message_Lang_frFR\",\"Message_Lang_deDE\",\"Message_Lang_enCN\",\"Message_Lang_zhCN\",\"Message_Lang_enTW\",\"Message_Lang_zhTW\",\"Message_Lang_esES\",\"Message_Lang_esMX\",\"Message_Lang_ruRU\",\"Message_Lang_ptPT\",\"Message_Lang_ptBR\",\"Message_Lang_itIT\",\"Message_Lang_Unk\",\"Message_Lang_Mask\",\"RaidDuration\",\"MaxPlayers\",\"Difficultystring\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.MapID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.Diffculty.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.RejectionMessage + "\"");
-                stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\"");
-                stringBuilder.Append(",\"" + row.RaidDuration.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.MaxPlayers.ToString() + "\"");
-                stringBuilder.AppendLine(",\"" + row.Diffcultystring + "\"");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(mapDifficultyID);
+            newRow.AddInt(mapID);
+            newRow.AddInt(0); // Difficulty, not 100% sure what this should be
+            newRow.AddStringLang(""); // Rejection Message
+            newRow.AddInt(0); // Raid Duration
+            newRow.AddInt(0); // Max Players
+            newRow.AddString(""); // Difficulty String (?)
+            Rows.Add(newRow);
         }
     }
 }

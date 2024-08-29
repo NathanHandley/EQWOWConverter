@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
     internal enum WMOLiquidFlags : byte
     {

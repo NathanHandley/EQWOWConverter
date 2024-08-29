@@ -22,68 +22,30 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class WMOAreaTableDBC
+    internal class WMOAreaTableDBC : DBCFile
     {
-        public class Row
-        {
-            private static int CURRENT_ID = Configuration.CONFIG_DBCID_WMOAREATABLEID_START;
-
-            public int ID;
-            public int WMOID;
-            public int WMOGroupID;
-            public int AmbienceID = 0;
-            public int ZoneMusic = 0;
-            public int IntroSound = 0;
-            public int Flags = 0;
-            public int AreaTableID = 0;
-            public string AreaName = string.Empty;
-
-            public Row()
-            {
-                ID = CURRENT_ID;
-                CURRENT_ID++;
-            }
-        }
-
-        List<Row> rows = new List<Row>();
+        private static int CURRENT_ID = Configuration.CONFIG_DBCID_WMOAREATABLEID_START;
 
         public void AddRow(int wmoID, int wmoGroupID, int zoneMusic, int areaTableID, string areaName)
         {
-            Row newRow = new Row();
-            newRow.WMOID = wmoID;
-            newRow.WMOGroupID = wmoGroupID;
-            newRow.AreaTableID = areaTableID;
-            newRow.ZoneMusic = zoneMusic;
-            newRow.AreaName = areaName;
-            rows.Add(newRow);
-        }
+            // Generate a new ID
+            int ID = CURRENT_ID;
+            CURRENT_ID++;
 
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "WMOAreaTableDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"WMOID\",\"NameSetID\",\"WMOGroupID\",\"SoundProviderPref\",\"SoundProviderPrefUnderwater\",\"AmbienceID\",\"ZoneMusic\",\"IntroSound\",\"Flags\",\"AreaTableID\",\"AreaName_Lang_enUS\",\"AreaName_Lang_enGB\",\"AreaName_Lang_koKR\",\"AreaName_Lang_frFR\",\"AreaName_Lang_deDE\",\"AreaName_Lang_enCN\",\"AreaName_Lang_zhCN\",\"AreaName_Lang_enTW\",\"AreaName_Lang_zhTW\",\"AreaName_Lang_esES\",\"AreaName_Lang_esMX\",\"AreaName_Lang_ruRU\",\"AreaName_Lang_ptPT\",\"AreaName_Lang_ptBR\",\"AreaName_Lang_itIT\",\"AreaName_Lang_Unk\",\"AreaName_Lang_Mask\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.ID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.WMOID.ToString() + "\"");
-                stringBuilder.Append(",\"0\"");
-                stringBuilder.Append(",\"" + row.WMOGroupID.ToString() + "\"");
-                stringBuilder.Append(",\"0\",\"0\"");
-                stringBuilder.Append(",\"" + row.AmbienceID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.ZoneMusic.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.IntroSound.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.Flags.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.AreaTableID.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.AreaName + "\"");
-                stringBuilder.AppendLine(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"16712190\"");              
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
-        }               
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(ID);
+            newRow.AddInt(wmoID);
+            newRow.AddInt(0); // NameSetID
+            newRow.AddInt(wmoGroupID);
+            newRow.AddInt(0); // SoundProviderPref
+            newRow.AddInt(0); // SoundProviderPref - Underwater
+            newRow.AddInt(0); // AmbienceID
+            newRow.AddInt(zoneMusic);
+            newRow.AddInt(0); // Intro Sound
+            newRow.AddPackedFlags(0); // Flags
+            newRow.AddInt(areaTableID);
+            newRow.AddStringLang(areaName);            
+            Rows.Add(newRow);
+        }      
     }
 }

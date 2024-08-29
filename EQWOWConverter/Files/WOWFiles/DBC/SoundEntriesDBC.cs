@@ -21,10 +21,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
+using System.Xml.Linq;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
-    internal class SoundEntriesDBC
+    internal class SoundEntriesDBC : DBCFile
     {
         public class Row
         {
@@ -39,51 +41,43 @@ namespace EQWOWConverter.Files.WOWFiles
             public float DistanceCutoff = 0f;
         }
 
-        List<Row> rows = new List<Row>();
-
         public void AddRow(Sound sound, string fileNameWithExt, string directory)
         {
-            Row newRow = new Row();
-            newRow.Id = sound.DBCID;
-            newRow.SoundType = Convert.ToInt32(sound.Type);
-            newRow.Name = sound.Name;
-            newRow.FileName = fileNameWithExt;
-            newRow.DirectoryBase = directory;
-            newRow.Volumefloat = sound.Volume;
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(sound.DBCID);
+            newRow.AddInt(Convert.ToInt32(sound.Type));
+            newRow.AddString(sound.Name);
+            newRow.AddString(fileNameWithExt);
+            newRow.AddString(string.Empty); // FileName 2
+            newRow.AddString(string.Empty); // FileName 3
+            newRow.AddString(string.Empty); // FileName 4
+            newRow.AddString(string.Empty); // FileName 5
+            newRow.AddString(string.Empty); // FileName 6
+            newRow.AddString(string.Empty); // FileName 7
+            newRow.AddString(string.Empty); // FileName 8
+            newRow.AddString(string.Empty); // FileName 9
+            newRow.AddString(string.Empty); // FileName 10
+            newRow.AddInt(1); // Frequency 1
+            newRow.AddInt(1); // Frequency 2
+            newRow.AddInt(1); // Frequency 3
+            newRow.AddInt(1); // Frequency 4
+            newRow.AddInt(1); // Frequency 5
+            newRow.AddInt(1); // Frequency 6
+            newRow.AddInt(1); // Frequency 7
+            newRow.AddInt(1); // Frequency 8
+            newRow.AddInt(1); // Frequency 9
+            newRow.AddInt(1); // Frequency 10
+            newRow.AddString(directory);
+            newRow.AddFloat(sound.Volume);
             if (sound.Loop == true)
-                newRow.Flags = 0x02000;
+                newRow.AddPackedFlags(0x02000);
             else
-                newRow.Flags = 0;
-            newRow.MinDistance = sound.MinDistance;
-            newRow.DistanceCutoff = sound.DistanceCutoff;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "SoundEntriesDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"SoundType\",\"Name\",\"File_1\",\"File_2\",\"File_3\",\"File_4\",\"File_5\",\"File_6\",\"File_7\",\"File_8\",\"File_9\",\"File_10\",\"Freq_1\",\"Freq_2\",\"Freq_3\",\"Freq_4\",\"Freq_5\",\"Freq_6\",\"Freq_7\",\"Freq_8\",\"Freq_9\",\"Freq_10\",\"DirectoryBase\",\"Volumefloat\",\"Flags\",\"MinDistance\",\"DistanceCutoff\",\"EAXDef\",\"SoundEntriesAdvancedID\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SoundType.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.Name + "\"");
-                stringBuilder.Append(",\"" + row.FileName + "\"");
-                stringBuilder.Append(",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"1\",\"1\",\"1\",\"1\",\"1\",\"1\",\"1\",\"1\",\"1\",\"1\"");
-                stringBuilder.Append(",\"" + row.DirectoryBase + "\"");
-                stringBuilder.Append(",\"" + row.Volumefloat.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.Flags.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.MinDistance.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DistanceCutoff.ToString() + "\"");
-                stringBuilder.AppendLine(",\"2\",\"0\"");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+                newRow.AddPackedFlags(0);
+            newRow.AddFloat(sound.MinDistance);
+            newRow.AddFloat(sound.DistanceCutoff);
+            newRow.AddInt(2); // EAXDef
+            newRow.AddInt(0); // SoundEntriesAdvancedID
+            Rows.Add(newRow);
         }
     }
 }

@@ -21,25 +21,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
-    internal class LightIntBandDBC
+    internal class LightIntBandDBC : DBCFile
     {
-        public class Row
+        public class LightRow
         {
             public int Id;
             public int NumOfTimeSlices;
             public int[] TimeValues = new int[16]; // Defaults to zero
             public int[] DataValues = new int[16]; // Defaults to zero
 
-            public Row(int id, int numOfTimeSlices)
+            public LightRow(int id, int numOfTimeSlices)
             {
                 Id = id;
                 NumOfTimeSlices = numOfTimeSlices;
             }
         }
 
-        private List<Row> rows = new List<Row>();
+        private List<LightRow> rows = new List<LightRow>();
 
         public void AddRows(ZoneEnvironmentSettings.ZoneEnvironmentParameters environmentParameters)
         {
@@ -47,135 +47,106 @@ namespace EQWOWConverter.Files.WOWFiles
             int startID = (environmentParameters.DBCLightParamsID * 18) - 17;
 
             // Create rows
-            Row skyCastDiffuseLightRow = new Row(startID, numOfTimeSlices);
-            Row ambientLightRow = new Row(startID + 1, numOfTimeSlices);
-            Row skyTopColorRow = new Row(startID + 2, numOfTimeSlices);
-            Row skyMiddleColorRow = new Row(startID + 3, numOfTimeSlices);
-            Row skyMiddleToHorizonColorRow = new Row(startID + 4, numOfTimeSlices);
-            Row skyAboveHorizonColorRow = new Row(startID + 5, numOfTimeSlices);
-            Row skyHorizonColorRow = new Row(startID + 6, numOfTimeSlices);
-            Row fogColorRow = new Row(startID + 7, numOfTimeSlices);
-            Row unknown1Row = new Row(startID + 8, numOfTimeSlices);
-            Row sunColorRow = new Row(startID + 9, numOfTimeSlices);
-            Row sunLargeHaloColorRow = new Row(startID + 10, numOfTimeSlices);
-            Row cloudEdgeColorRow = new Row(startID + 11, numOfTimeSlices);
-            Row cloudColorRow = new Row(startID + 12, numOfTimeSlices);
-            Row unknown2Row = new Row(startID + 13, numOfTimeSlices);
-            Row oceanShallowColorRow = new Row(startID + 14, numOfTimeSlices);
-            Row oceanDeepColorRow = new Row(startID + 15, numOfTimeSlices);
-            Row riverShallowColorRow = new Row(startID + 16, numOfTimeSlices);
-            Row riverDeepColorRow = new Row(startID + 17, numOfTimeSlices);
+            List<LightRow> lightRows = new List<LightRow>();
+            lightRows.Add(new LightRow(startID, numOfTimeSlices)); // Sky Cast Diffuse Light
+            lightRows.Add(new LightRow(startID + 1, numOfTimeSlices)); // Ambient Light
+            lightRows.Add(new LightRow(startID + 2, numOfTimeSlices)); // Sky Top Color
+            lightRows.Add(new LightRow(startID + 3, numOfTimeSlices)); // Sky Middle Color
+            lightRows.Add(new LightRow(startID + 4, numOfTimeSlices)); // Sky Middle-to-Horizon Color
+            lightRows.Add(new LightRow(startID + 5, numOfTimeSlices)); // Sky Above Horizon Color
+            lightRows.Add(new LightRow(startID + 6, numOfTimeSlices)); // Sky Horizon Color
+            lightRows.Add(new LightRow(startID + 7, numOfTimeSlices)); // Fog Color
+            lightRows.Add(new LightRow(startID + 8, numOfTimeSlices)); // Unknown 1
+            lightRows.Add(new LightRow(startID + 9, numOfTimeSlices)); // Sun Color
+            lightRows.Add(new LightRow(startID + 10, numOfTimeSlices)); // Sun Large Halo Color
+            lightRows.Add(new LightRow(startID + 11, numOfTimeSlices)); // Cloud Edge Color
+            lightRows.Add(new LightRow(startID + 12, numOfTimeSlices)); // Cloud Color
+            lightRows.Add(new LightRow(startID + 13, numOfTimeSlices)); // Unknown 2
+            lightRows.Add(new LightRow(startID + 14, numOfTimeSlices)); // Ocean Shallow Color
+            lightRows.Add(new LightRow(startID + 15, numOfTimeSlices)); // Ocean Deep Color
+            lightRows.Add(new LightRow(startID + 16, numOfTimeSlices)); // River Shallow Color
+            lightRows.Add(new LightRow(startID + 17, numOfTimeSlices)); // River Deep Color
 
             // Fill data in the rows
             for (int i = 0; i < numOfTimeSlices; i++)
             {
-                skyCastDiffuseLightRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyCastDiffuseLightRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyCastDiffuseLightColor.ToDecimalNoAlpha();
-                ambientLightRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                ambientLightRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].AmbientLightColor.ToDecimalNoAlpha();
-                skyTopColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyTopColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyTopColor.ToDecimalNoAlpha();
-                skyMiddleColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyMiddleColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyMiddleColor.ToDecimalNoAlpha();
-                skyMiddleToHorizonColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyMiddleToHorizonColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyMiddleToHorizonColor.ToDecimalNoAlpha();
-                skyAboveHorizonColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyAboveHorizonColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyAboveHorizonColor.ToDecimalNoAlpha();
-                skyHorizonColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                skyHorizonColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyHorizonColor.ToDecimalNoAlpha();
-                fogColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                fogColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogColor.ToDecimalNoAlpha();
-                unknown1Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown1Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown1Color.ToDecimalNoAlpha();
-                sunColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                sunColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SunColor.ToDecimalNoAlpha();
-                sunLargeHaloColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                sunLargeHaloColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].SunLargeHaloColor.ToDecimalNoAlpha();
-                cloudEdgeColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                cloudEdgeColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudEdgeColor.ToDecimalNoAlpha();
-                cloudColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                cloudColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudColor.ToDecimalNoAlpha();
-                unknown2Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown2Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown2Color.ToDecimalNoAlpha();
-                oceanShallowColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                oceanShallowColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].OceanShallowColor.ToDecimalNoAlpha();
-                oceanDeepColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                oceanDeepColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].OceanDeepColor.ToDecimalNoAlpha();
-                riverShallowColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                riverShallowColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].RiverShallowColor.ToDecimalNoAlpha();
-                riverDeepColorRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                riverDeepColorRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].RiverDeepColor.ToDecimalNoAlpha();
+                lightRows[0].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[0].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyCastDiffuseLightColor.ToDecimalNoAlpha();
+                lightRows[1].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[1].DataValues[i] = environmentParameters.ParametersTimeSlices[i].AmbientLightColor.ToDecimalNoAlpha();
+                lightRows[2].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[2].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyTopColor.ToDecimalNoAlpha();
+                lightRows[3].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[3].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyMiddleColor.ToDecimalNoAlpha();
+                lightRows[4].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[4].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyMiddleToHorizonColor.ToDecimalNoAlpha();
+                lightRows[5].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[5].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyAboveHorizonColor.ToDecimalNoAlpha();
+                lightRows[6].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[6].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SkyHorizonColor.ToDecimalNoAlpha();
+                lightRows[7].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[7].DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogColor.ToDecimalNoAlpha();
+                lightRows[8].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[8].DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown1Color.ToDecimalNoAlpha();
+                lightRows[9].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[9].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SunColor.ToDecimalNoAlpha();
+                lightRows[10].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[10].DataValues[i] = environmentParameters.ParametersTimeSlices[i].SunLargeHaloColor.ToDecimalNoAlpha();
+                lightRows[11].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[11].DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudEdgeColor.ToDecimalNoAlpha();
+                lightRows[12].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[12].DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudColor.ToDecimalNoAlpha();
+                lightRows[13].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[13].DataValues[i] = environmentParameters.ParametersTimeSlices[i].Unknown2Color.ToDecimalNoAlpha();
+                lightRows[14].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[14].DataValues[i] = environmentParameters.ParametersTimeSlices[i].OceanShallowColor.ToDecimalNoAlpha();
+                lightRows[15].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[15].DataValues[i] = environmentParameters.ParametersTimeSlices[i].OceanDeepColor.ToDecimalNoAlpha();
+                lightRows[16].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[16].DataValues[i] = environmentParameters.ParametersTimeSlices[i].RiverShallowColor.ToDecimalNoAlpha();
+                lightRows[17].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[17].DataValues[i] = environmentParameters.ParametersTimeSlices[i].RiverDeepColor.ToDecimalNoAlpha();
             }
 
-            // Save rows
-            rows.Add(skyCastDiffuseLightRow);
-            rows.Add(ambientLightRow);
-            rows.Add(skyTopColorRow);
-            rows.Add(skyMiddleColorRow);
-            rows.Add(skyMiddleToHorizonColorRow);
-            rows.Add(skyAboveHorizonColorRow);
-            rows.Add(skyHorizonColorRow);
-            rows.Add(fogColorRow);
-            rows.Add(unknown1Row);
-            rows.Add(sunColorRow);
-            rows.Add(sunLargeHaloColorRow);
-            rows.Add(cloudEdgeColorRow);
-            rows.Add(cloudColorRow);
-            rows.Add(unknown2Row);
-            rows.Add(oceanShallowColorRow);
-            rows.Add(oceanDeepColorRow);
-            rows.Add(riverShallowColorRow);
-            rows.Add(riverDeepColorRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "LightIntBandDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"Num\",\"Time_1\",\"Time_2\",\"Time_3\",\"Time_4\",\"Time_5\",\"Time_6\",\"Time_7\",\"Time_8\",\"Time_9\",\"Time_10\",\"Time_11\",\"Time_12\",\"Time_13\",\"Time_14\",\"Time_15\",\"Time_16\",\"Data_1\",\"Data_2\",\"Data_3\",\"Data_4\",\"Data_5\",\"Data_6\",\"Data_7\",\"Data_8\",\"Data_9\",\"Data_10\",\"Data_11\",\"Data_12\",\"Data_13\",\"Data_14\",\"Data_15\",\"Data_16\"");
-            foreach (Row row in rows)
+            foreach (LightRow lightRow in lightRows)
             {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.NumOfTimeSlices.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[0].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[1].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[2].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[3].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[4].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[5].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[6].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[7].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[8].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[9].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[10].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[11].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[12].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[13].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[14].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[15].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[0].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[1].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[2].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[3].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[4].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[5].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[6].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[7].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[8].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[9].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[10].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[11].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[12].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[13].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[14].ToString() + "\"");
-                stringBuilder.AppendLine(",\"" + row.DataValues[15].ToString() + "\"");
+                DBCRow newRow = new DBCRow();
+                newRow.AddInt(lightRow.Id);
+                newRow.AddInt(lightRow.NumOfTimeSlices);
+                newRow.AddInt(lightRow.TimeValues[0]);
+                newRow.AddInt(lightRow.TimeValues[1]);
+                newRow.AddInt(lightRow.TimeValues[2]);
+                newRow.AddInt(lightRow.TimeValues[3]);
+                newRow.AddInt(lightRow.TimeValues[4]);
+                newRow.AddInt(lightRow.TimeValues[5]);
+                newRow.AddInt(lightRow.TimeValues[6]);
+                newRow.AddInt(lightRow.TimeValues[7]);
+                newRow.AddInt(lightRow.TimeValues[8]);
+                newRow.AddInt(lightRow.TimeValues[9]);
+                newRow.AddInt(lightRow.TimeValues[10]);
+                newRow.AddInt(lightRow.TimeValues[11]);
+                newRow.AddInt(lightRow.TimeValues[12]);
+                newRow.AddInt(lightRow.TimeValues[13]);
+                newRow.AddInt(lightRow.TimeValues[14]);
+                newRow.AddInt(lightRow.TimeValues[15]);
+                newRow.AddInt(lightRow.DataValues[0]);
+                newRow.AddInt(lightRow.DataValues[1]);
+                newRow.AddInt(lightRow.DataValues[2]);
+                newRow.AddInt(lightRow.DataValues[3]);
+                newRow.AddInt(lightRow.DataValues[4]);
+                newRow.AddInt(lightRow.DataValues[5]);
+                newRow.AddInt(lightRow.DataValues[6]);
+                newRow.AddInt(lightRow.DataValues[7]);
+                newRow.AddInt(lightRow.DataValues[8]);
+                newRow.AddInt(lightRow.DataValues[9]);
+                newRow.AddInt(lightRow.DataValues[10]);
+                newRow.AddInt(lightRow.DataValues[11]);
+                newRow.AddInt(lightRow.DataValues[12]);
+                newRow.AddInt(lightRow.DataValues[13]);
+                newRow.AddInt(lightRow.DataValues[14]);
+                newRow.AddInt(lightRow.DataValues[15]);
+                Rows.Add(newRow);
             }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
         }
     }
 }

@@ -21,52 +21,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
-    internal class LightParamsDBC
+    internal class LightParamsDBC : DBCFile
     {
-        public class Row
-        {
-            public int Id;
-            public int LightSkyboxID = 0;
-            public int HighlightSky;
-            public float Glow;
-        }
-
-        private List<Row> rows = new List<Row>();
-
         public void AddRow(ZoneEnvironmentSettings.ZoneEnvironmentParameters environmentParameters)
         {
-            Row newRow = new Row();
-            newRow.Id = environmentParameters.DBCLightParamsID;
-            newRow.Glow = environmentParameters.Glow;
-            newRow.HighlightSky = environmentParameters.HighlightSky;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "LightParamsDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"HighlightSky\",\"LightSkyboxID\",\"CloudTypeID\",\"Glow\",\"WaterShallowAlpha\",\"WaterDeepAlpha\",\"OceanShallowAlpha\",\"OceanDeepAlpha\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.HighlightSky.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.LightSkyboxID.ToString() + "\"");
-                stringBuilder.Append(",\"0\""); // CloudTypeID (always 0)
-                stringBuilder.Append(",\"" + row.Glow.ToString() + "\"");
-                stringBuilder.Append(",\"0.5\""); // Water Shallow Alpha
-                stringBuilder.Append(",\"1\""); // Water Deep Alpha
-                stringBuilder.Append(",\"0.75\""); // Ocean Shallow Alpha
-                stringBuilder.AppendLine(",\"1\""); // Ocean Deep Alpha
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(environmentParameters.DBCLightParamsID);
+            newRow.AddInt(environmentParameters.HighlightSky);
+            newRow.AddInt(0); // Light Skybox ID
+            newRow.AddInt(0); // Cloud Type ID
+            newRow.AddFloat(environmentParameters.Glow);
+            newRow.AddFloat(0.5f); // Water Shallow Alpha
+            newRow.AddFloat(1f); // Water Deep Alpha
+            newRow.AddFloat(0.75f); // Ocean Shallow Alpha
+            newRow.AddFloat(1f); // Ocean Deep Alpha
+            Rows.Add(newRow);
         }
     }
 }

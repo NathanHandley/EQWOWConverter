@@ -22,7 +22,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
     internal class WMOLiquid
     {

@@ -28,7 +28,6 @@ using EQWOWConverter.ObjectModels;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.Files.WOWFiles;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace EQWOWConverter
@@ -198,9 +197,6 @@ namespace EQWOWConverter
             // Copy the liquid material textures
             CreateLiquidMaterials(eqExportsConditionedPath, exportMPQRootFolder);
 
-            // Create the DBC update scripts
-            CreateDBCUpdateScripts(zones, wowExportPath);
-
             // Create the DBC files
             CreateDBCFiles(zones, wowExportPath);
 
@@ -261,7 +257,7 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteInfo("Extracting client DBC files complete");
+            Logger.WriteDetail("Extracting client DBC files complete");
         }
 
         public void CreateAndReplaceGeneratedPatchMPQ(string wowExportPath)
@@ -401,132 +397,6 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void CreateDBCUpdateScripts(List<Zone> zones, string wowExportPath)
-        {
-            Logger.WriteInfo("Creating DBC Update Scripts...");
-
-            // Clear prior folders
-            string dbcPatchUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts-Patch");
-            if (Directory.Exists(dbcPatchUpdateScriptFolder) == true)
-                Directory.Delete(dbcPatchUpdateScriptFolder, true);
-            Directory.CreateDirectory(dbcPatchUpdateScriptFolder);
-            string dbcServerUpdateScriptFolder = Path.Combine(wowExportPath, "DBCUpdateScripts-Server");
-            if (Directory.Exists(dbcServerUpdateScriptFolder) == true)
-                Directory.Delete(dbcServerUpdateScriptFolder, true);
-            Directory.CreateDirectory(dbcServerUpdateScriptFolder);
-
-            // Populate the loading screens script
-            LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
-
-            // Create the map-level DBC update scripts
-            LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
-            LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
-            LightParamsDBC lightParamsDBC = new LightParamsDBC();
-            LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
-            MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
-            SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
-            WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
-            ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
-
-            // Save the common outdoor properties
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
-            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
-
-            // Output the zonewide light properties for all possible known zones
-            foreach (var zonePropertiesByShortname in ZoneProperties.ZonePropertyListByShortName)
-            {
-                // Default to the outdoor one
-                ZoneProperties zoneProperties = zonePropertiesByShortname.Value;                
-                if (zoneProperties.CustomZonewideEnvironmentProperties != null)
-                {
-                    ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
-
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
-
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
-
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
-
-                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
-                }
-            }
-
-            // Zone-specific records
-            foreach (Zone zone in zones)
-            {
-                ZoneProperties zoneProperties = zone.ZoneProperties;
-
-                // Map & Map Difficulty
-                mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
-                
-                // WMOAreaTable (Header than groups)
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
-                foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(wmo.AreaTableID), wmo.DisplayName);
-
-                // SoundEntries
-                string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
-                foreach (var sound in zone.MusicSoundsByFileNameNoExt)
-                {
-                    string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".mp3";
-                    soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, musicDirectory);
-                }
-
-                // ZoneMusic
-                foreach (ZoneAreaMusic zoneMusic in zone.ZoneAreaMusics)
-                {
-                    int soundIDDay = 0;
-                    if (zoneMusic.DaySound != null)
-                        soundIDDay = zoneMusic.DaySound.DBCID;
-                    int soundIDNight = 0;
-                    if (zoneMusic.NightSound != null)
-                        soundIDNight = zoneMusic.NightSound.DBCID;
-                    zoneMusicDBC.AddRow(zoneMusic.DBCID, zoneMusic.Name, soundIDDay, soundIDNight);
-                }
-            }
-
-            // Output them for both patch and server
-            mapDifficultyDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            mapDifficultyDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            liquidTypeDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            liquidTypeDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            lightFloatBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            lightFloatBandDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            lightIntBandDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            lightIntBandDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            lightParamsDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            lightParamsDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            loadingScreensDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            loadingScreensDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            soundEntriesDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            soundEntriesDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            wmoAreaTableDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            wmoAreaTableDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-            zoneMusicDBC.WriteToDisk(dbcPatchUpdateScriptFolder);
-            zoneMusicDBC.WriteToDisk(dbcServerUpdateScriptFolder);
-        }
-
         public void CreateDBCFiles(List<Zone> zones, string wowExportPath)
         {
             Logger.WriteInfo("Creating DBC Files...");
@@ -556,10 +426,50 @@ namespace EQWOWConverter
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
+            LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
+            lightFloatBandDBC.LoadFromDisk(dbcInputFolder, "LightFloatBand.dbc");
+            LightIntBandDBC lightIntBandDBC = new LightIntBandDBC();
+            lightIntBandDBC.LoadFromDisk(dbcInputFolder, "LightIntBand.dbc");
+            LightParamsDBC lightParamsDBC = new LightParamsDBC();
+            lightParamsDBC.LoadFromDisk(dbcInputFolder, "LightParams.dbc");
+            LiquidTypeDBC liquidTypeDBC = new LiquidTypeDBC();
+            liquidTypeDBC.LoadFromDisk(dbcInputFolder, "LiquidType.dbc");
+            LoadingScreensDBC loadingScreensDBC = new LoadingScreensDBC();
+            loadingScreensDBC.LoadFromDisk(dbcInputFolder, "LoadingScreens.dbc");
             MapDBC mapDBCClient = new MapDBC();
             mapDBCClient.LoadFromDisk(dbcInputFolder, "Map.dbc");
             MapDBC mapDBCServer = new MapDBC();
             mapDBCServer.LoadFromDisk(dbcInputFolder, "Map.dbc");
+            MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
+            mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
+            SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
+            soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
+            WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
+            wmoAreaTableDBC.LoadFromDisk(dbcInputFolder, "WMOAreaTable.dbc");
+            ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
+            zoneMusicDBC.LoadFromDisk(dbcInputFolder, "ZoneMusic.dbc");
+
+            // Save common light parameters
+            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
+            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
+            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
+            lightFloatBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
+            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
+            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
+            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
+            lightIntBandDBC.AddRows(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
+            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeather);
+            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersClearWeatherUnderwater);
+            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeather);
+            lightParamsDBC.AddRow(ZoneProperties.CommonOutdoorEnvironmentProperties.ParamatersStormyWeatherUnderwater);
+
+            // Liquid is common
+            liquidTypeDBC.AddRows();
+
+            // LoadingScreens is common
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
+            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
             // Zone-specific records
             foreach (Zone zone in zones)
@@ -582,6 +492,21 @@ namespace EQWOWConverter
                     ZoneEnvironmentSettings curZoneEnvironmentSettings = zoneProperties.CustomZonewideEnvironmentProperties;
 
                     lightDBC.AddRow(zoneProperties.DBCMapID, curZoneEnvironmentSettings);
+
+                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
+                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                    lightFloatBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+
+                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeather);
+                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                    lightIntBandDBC.AddRows(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
+
+                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeather);
+                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersClearWeatherUnderwater);
+                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeather);
+                    lightParamsDBC.AddRow(curZoneEnvironmentSettings.ParamatersStormyWeatherUnderwater);
                 }
                 else
                 {
@@ -591,6 +516,34 @@ namespace EQWOWConverter
                 // Map
                 mapDBCClient.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, 0, zone.LoadingScreenID);
                 mapDBCServer.AddRow(zoneProperties.DBCMapID, "EQ_" + zone.ShortName, zone.DescriptiveName, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.LoadingScreenID);
+
+                // Map Difficulty
+                mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
+
+                // SoundEntries
+                string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
+                foreach (var sound in zone.MusicSoundsByFileNameNoExt)
+                {
+                    string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".mp3";
+                    soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, musicDirectory);
+                }
+
+                // WMOAreaTable (Header than groups)
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
+                foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(wmo.AreaTableID), wmo.DisplayName);
+
+                // ZoneMusic
+                foreach (ZoneAreaMusic zoneMusic in zone.ZoneAreaMusics)
+                {
+                    int soundIDDay = 0;
+                    if (zoneMusic.DaySound != null)
+                        soundIDDay = zoneMusic.DaySound.DBCID;
+                    int soundIDNight = 0;
+                    if (zoneMusic.NightSound != null)
+                        soundIDNight = zoneMusic.NightSound.DBCID;
+                    zoneMusicDBC.AddRow(zoneMusic.DBCID, zoneMusic.Name, soundIDDay, soundIDNight);
+                }
             }
 
             // Save the files
@@ -600,10 +553,28 @@ namespace EQWOWConverter
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
+            lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
+            lightFloatBandDBC.SaveToDisk(dbcOutputServerFolder);
+            lightIntBandDBC.SaveToDisk(dbcOutputClientFolder);
+            lightIntBandDBC.SaveToDisk(dbcOutputServerFolder);
+            lightParamsDBC.SaveToDisk(dbcOutputClientFolder);
+            lightParamsDBC.SaveToDisk(dbcOutputServerFolder);
+            liquidTypeDBC.SaveToDisk(dbcOutputClientFolder);
+            liquidTypeDBC.SaveToDisk(dbcOutputServerFolder);
+            loadingScreensDBC.SaveToDisk(dbcOutputClientFolder);
+            loadingScreensDBC.SaveToDisk(dbcOutputServerFolder);
             mapDBCClient.SaveToDisk(dbcOutputClientFolder);
             mapDBCServer.SaveToDisk(dbcOutputServerFolder);
+            mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
+            mapDifficultyDBC.SaveToDisk(dbcOutputServerFolder);
+            soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);
+            soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
+            wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
+            wmoAreaTableDBC.SaveToDisk(dbcOutputServerFolder);
+            zoneMusicDBC.SaveToDisk(dbcOutputClientFolder);
+            zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
-            Logger.WriteInfo("Creating DBC Files complete");
+            Logger.WriteDetail("Creating DBC Files complete");
         }
 
         public void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)

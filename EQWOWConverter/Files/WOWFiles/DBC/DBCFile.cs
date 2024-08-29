@@ -65,20 +65,20 @@ namespace EQWOWConverter.WOWFiles
             {
             }
 
-            public class DBCFieldInt32 : DBCField
+            public class DBCFieldInt : DBCField
             {
-                public DBCFieldInt32(Int32 value) { Value = value; }
+                public DBCFieldInt(Int32 value) { Value = value; }
                 public Int32 Value;
             }
 
-            public void AddInt32(Int32 value)
+            public void AddInt(Int32 value)
             {
-                AddedFields.Add(new DBCFieldInt32(value));
+                AddedFields.Add(new DBCFieldInt(value));
             }
 
             public void AddPackedFlags(Int32 value)
             {
-                AddedFields.Add(new DBCFieldInt32(value));
+                AddedFields.Add(new DBCFieldInt(value));
             }
 
             public class DBCFieldFloat : DBCField
@@ -209,9 +209,9 @@ namespace EQWOWConverter.WOWFiles
                 {
                     foreach(var addedField in row.AddedFields)
                     {
-                        if (addedField.GetType() == typeof(DBCRow.DBCFieldInt32))
+                        if (addedField.GetType() == typeof(DBCRow.DBCFieldInt))
                         {
-                            DBCRow.DBCFieldInt32 rowField = (DBCRow.DBCFieldInt32)addedField;
+                            DBCRow.DBCFieldInt rowField = (DBCRow.DBCFieldInt)addedField;
                             outputBytes.AddRange(BitConverter.GetBytes(rowField.Value));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldFloat))

@@ -21,25 +21,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
-    internal class LightFloatBandDBC
+    internal class LightFloatBandDBC : DBCFile
     {
-        public class Row
+        public class LightRow
         {
             public int Id;
             public int NumOfTimeSlices;
             public int[] TimeValues = new int[16]; // Defaults to zero
             public float[] DataValues = new float[16]; // Defaults to zero
 
-            public Row(int id, int numOfTimeSlices)
+            public LightRow(int id, int numOfTimeSlices)
             {
                 Id = id;
                 NumOfTimeSlices = numOfTimeSlices;
             }
         }
-
-        private List<Row> rows = new List<Row>();
 
         public void AddRows(ZoneEnvironmentSettings.ZoneEnvironmentParameters environmentParameters)
         {
@@ -47,87 +45,70 @@ namespace EQWOWConverter.Files.WOWFiles
             int startID = (environmentParameters.DBCLightParamsID * 6) - 5;
 
             // Create rows
-            Row fogDistanceRow = new Row(startID, numOfTimeSlices);
-            Row fogMultiplierRow = new Row(startID + 1, numOfTimeSlices);
-            Row celestialGlowThroughRow = new Row(startID + 2, numOfTimeSlices);
-            Row cloudDensityRow = new Row(startID + 3, numOfTimeSlices);
-            Row unknown1Row = new Row(startID + 4, numOfTimeSlices);
-            Row unknown2Row = new Row(startID + 5, numOfTimeSlices);
+            List<LightRow> lightRows = new List<LightRow>();
+            lightRows.Add(new LightRow(startID, numOfTimeSlices)); // Fog Distance
+            lightRows.Add(new LightRow(startID + 1, numOfTimeSlices)); // Fog Multiplier
+            lightRows.Add(new LightRow(startID + 2, numOfTimeSlices)); // Celestial Glow Through
+            lightRows.Add(new LightRow(startID + 3, numOfTimeSlices)); // Cloud Density
+            lightRows.Add(new LightRow(startID + 4, numOfTimeSlices)); // Unknown 1
+            lightRows.Add(new LightRow(startID + 5, numOfTimeSlices)); // Unknown 2
 
             // Fill data in the rows
-            for(int i = 0; i < numOfTimeSlices; i++)
+            for (int i = 0; i < numOfTimeSlices; i++)
             {
-                fogDistanceRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                fogDistanceRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogDistance * 36f; // Yards -> Inches
-                fogMultiplierRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                fogMultiplierRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogMultiplier;
-                celestialGlowThroughRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                celestialGlowThroughRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CelestialGlowThrough;
-                cloudDensityRow.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                cloudDensityRow.DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudDensity;
-                unknown1Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown1Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat1;
-                unknown2Row.TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
-                unknown2Row.DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat2;
+                lightRows[0].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[0].DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogDistance * 36f; // Yards -> Inches
+                lightRows[1].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[1].DataValues[i] = environmentParameters.ParametersTimeSlices[i].FogMultiplier;
+                lightRows[2].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[2].DataValues[i] = environmentParameters.ParametersTimeSlices[i].CelestialGlowThrough;
+                lightRows[3].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[3].DataValues[i] = environmentParameters.ParametersTimeSlices[i].CloudDensity;
+                lightRows[4].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[4].DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat1;
+                lightRows[5].TimeValues[i] = environmentParameters.ParametersTimeSlices[i].HourTimestamp * 120; // Hours -> Half Minutes
+                lightRows[5].DataValues[i] = environmentParameters.ParametersTimeSlices[i].UnknownFloat2;
             }
 
-            // Save rows
-            rows.Add(fogDistanceRow);
-            rows.Add(fogMultiplierRow);
-            rows.Add(celestialGlowThroughRow);
-            rows.Add(cloudDensityRow);
-            rows.Add(unknown1Row);
-            rows.Add(unknown2Row);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "LightFloatBandDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"Num\",\"Time_1\",\"Time_2\",\"Time_3\",\"Time_4\",\"Time_5\",\"Time_6\",\"Time_7\",\"Time_8\",\"Time_9\",\"Time_10\",\"Time_11\",\"Time_12\",\"Time_13\",\"Time_14\",\"Time_15\",\"Time_16\",\"Data_1\",\"Data_2\",\"Data_3\",\"Data_4\",\"Data_5\",\"Data_6\",\"Data_7\",\"Data_8\",\"Data_9\",\"Data_10\",\"Data_11\",\"Data_12\",\"Data_13\",\"Data_14\",\"Data_15\",\"Data_16\"");
-            foreach (Row row in rows)
+            foreach (LightRow lightRow in lightRows)
             {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.NumOfTimeSlices.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[0].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[1].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[2].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[3].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[4].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[5].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[6].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[7].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[8].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[9].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[10].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[11].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[12].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[13].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[14].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.TimeValues[15].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[0].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[1].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[2].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[3].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[4].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[5].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[6].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[7].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[8].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[9].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[10].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[11].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[12].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[13].ToString() + "\"");
-                stringBuilder.Append(",\"" + row.DataValues[14].ToString() + "\"");
-                stringBuilder.AppendLine(",\"" + row.DataValues[15].ToString() + "\"");
+                DBCRow newRow = new DBCRow();
+                newRow.AddInt(lightRow.Id);
+                newRow.AddInt(lightRow.NumOfTimeSlices);
+                newRow.AddInt(lightRow.TimeValues[0]);
+                newRow.AddInt(lightRow.TimeValues[1]);
+                newRow.AddInt(lightRow.TimeValues[2]);
+                newRow.AddInt(lightRow.TimeValues[3]);
+                newRow.AddInt(lightRow.TimeValues[4]);
+                newRow.AddInt(lightRow.TimeValues[5]);
+                newRow.AddInt(lightRow.TimeValues[6]);
+                newRow.AddInt(lightRow.TimeValues[7]);
+                newRow.AddInt(lightRow.TimeValues[8]);
+                newRow.AddInt(lightRow.TimeValues[9]);
+                newRow.AddInt(lightRow.TimeValues[10]);
+                newRow.AddInt(lightRow.TimeValues[11]);
+                newRow.AddInt(lightRow.TimeValues[12]);
+                newRow.AddInt(lightRow.TimeValues[13]);
+                newRow.AddInt(lightRow.TimeValues[14]);
+                newRow.AddInt(lightRow.TimeValues[15]);
+                newRow.AddFloat(lightRow.DataValues[0]);
+                newRow.AddFloat(lightRow.DataValues[1]);
+                newRow.AddFloat(lightRow.DataValues[2]);
+                newRow.AddFloat(lightRow.DataValues[3]);
+                newRow.AddFloat(lightRow.DataValues[4]);
+                newRow.AddFloat(lightRow.DataValues[5]);
+                newRow.AddFloat(lightRow.DataValues[6]);
+                newRow.AddFloat(lightRow.DataValues[7]);
+                newRow.AddFloat(lightRow.DataValues[8]);
+                newRow.AddFloat(lightRow.DataValues[9]);
+                newRow.AddFloat(lightRow.DataValues[10]);
+                newRow.AddFloat(lightRow.DataValues[11]);
+                newRow.AddFloat(lightRow.DataValues[12]);
+                newRow.AddFloat(lightRow.DataValues[13]);
+                newRow.AddFloat(lightRow.DataValues[14]);
+                newRow.AddFloat(lightRow.DataValues[15]);
+                Rows.Add(newRow);
             }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
         }
     }
 }

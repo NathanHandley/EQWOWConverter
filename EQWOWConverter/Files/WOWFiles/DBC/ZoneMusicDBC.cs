@@ -21,56 +21,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles
+namespace EQWOWConverter.WOWFiles
 {
-    internal class ZoneMusicDBC
+    internal class ZoneMusicDBC : DBCFile
     {
-        public class Row
-        {
-            public int Id;
-            public string SetName = string.Empty;
-            public int SilenceIntervalMinDay = 180000; // Default (common in file)
-            public int SilenceIntervalMinNight = 180000; // Default (common in file)
-            public int SilenceIntervalMaxDay = 300000;  // Default (common in file)
-            public int SilenceIntervalMaxNight = 300000; // Default (common in file)
-            public int SoundEntryIDDay = 0;
-            public int SoundEntryIDNight = 0;
-        }
-
-        List<Row> rows = new List<Row>();
-
         public void AddRow(int Id, string setName, int soundIDDay, int soundIDNight)
         {
-            Row newRow = new Row();
-            newRow.Id = Id;
-            newRow.SetName = setName;
-            newRow.SoundEntryIDDay = soundIDDay;
-            newRow.SoundEntryIDNight = soundIDNight;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "ZoneMusicDBC.csv");
-
-            // Add each row of data (and header)
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("\"ID\",\"SetName\",\"SilenceintervalMin_1\",\"SilenceintervalMin_2\",\"SilenceintervalMax_1\",\"SilenceintervalMax_2\",\"Sounds_1\",\"Sounds_2\"");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("\"" + row.Id.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SetName + "\"");
-                stringBuilder.Append(",\"" + row.SilenceIntervalMinDay.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SilenceIntervalMinNight.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SilenceIntervalMaxDay.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SilenceIntervalMaxNight.ToString() + "\"");
-                stringBuilder.Append(",\"" + row.SoundEntryIDDay.ToString() + "\"");
-                stringBuilder.AppendLine(",\"" + row.SoundEntryIDNight.ToString() + "\"");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(Id);
+            newRow.AddString(setName);
+            newRow.AddInt(180000); // Silence Interval Min - Day
+            newRow.AddInt(180000); // Silence Interval Min - Night
+            newRow.AddInt(300000); // Silence Interval Max - Day
+            newRow.AddInt(300000); // Silence Interval Max - Night
+            newRow.AddInt(soundIDDay);
+            newRow.AddInt(soundIDNight);
+            Rows.Add(newRow);
         }
     }
 }
