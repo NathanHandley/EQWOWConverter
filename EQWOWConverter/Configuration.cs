@@ -26,6 +26,14 @@ namespace EQWOWConverter
     internal class Configuration
     {
         // ====================================================================
+        // Logging
+        // ====================================================================
+        // Level of logs to write to the console and log file.
+        // 1 = Error, 2 = Info, 3 = Detail
+        public static readonly int CONFIG_LOGGING_CONSOLE_MIN_LEVEL = 2;
+        public static readonly int CONFIG_LOGGING_FILE_MIN_LEVEL = 3;
+
+        // ====================================================================
         // Paths and Files
         // ====================================================================
         // Location of eq data exports before conditioning (from LaternExtractor)
@@ -50,12 +58,10 @@ namespace EQWOWConverter
         public static readonly string CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT = "patch-enUS-5";
 
         // ====================================================================
-        // Logging
+        // Deployment Rules
         // ====================================================================
-        // Level of logs to write to the console and log file.
-        // 1 = Error, 2 = Info, 3 = Detail
-        public static readonly int CONFIG_LOGGING_CONSOLE_MIN_LEVEL = 2;
-        public static readonly int CONFIG_LOGGING_FILE_MIN_LEVEL = 3;
+        // If true, deploy the client file (patch mpq) after building it
+        public static readonly bool CONFIG_DEPLOY_CLIENT = true;
 
         // ====================================================================
         // Generator Rules

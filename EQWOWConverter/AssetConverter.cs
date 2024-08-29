@@ -62,6 +62,11 @@ namespace EQWOWConverter
             if (ConvertEQZonesToWOW(eqExportsConditionedPath, wowExportPath) == false)
                 return false;
 
+            if (Configuration.CONFIG_DEPLOY_CLIENT == true)
+            {
+                DeployClient();
+            }
+
             Logger.WriteInfo("Conversion of data complete");
             return true;
         }
@@ -260,27 +265,26 @@ namespace EQWOWConverter
             Logger.WriteDetail("Extracting client DBC files complete");
         }
 
-        public void CreateAndReplaceGeneratedPatchMPQ(string wowExportPath)
+        public void CreatePatchMPQ()
         {
             Logger.WriteInfo("Building patch MPQ...");
 
-            // Make sure the patches folder is correct
-            string wowPatchesFolder = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
-            if (Directory.Exists(wowPatchesFolder) == false)
-                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER?");
+            // Make sure the output folder exists
+            if (Directory.Exists(Configuration.CONFIG_PATH_EXPORT_FOLDER) == false)
+                throw new Exception("Export folder '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "' did not exist, make sure you set CONFIG_PATH_EXPORT_FOLDER");
 
             // Delete the old patch file, if it exists
             Logger.WriteDetail("Deleting old patch file if it exists");
-            string outputPatchFileName = Path.Combine(wowPatchesFolder, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
             // Generate a script to generate the mpq file
             Logger.WriteDetail("Generating script to generate MPQ file");
-            string mpqReadyFolder = Path.Combine(wowExportPath, "MPQReady");
+            string mpqReadyFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(mpqReadyFolder) == false)
-                throw new Exception("There was no MPQReady folder inside of '" + wowExportPath + "'");
-            string workingGeneratedScriptsFolder = Path.Combine(wowExportPath, "GeneratedWorkingScripts");
+                throw new Exception("There was no MPQReady folder inside of '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "'");
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder mpqCreateScriptText = new StringBuilder();
             mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" 65536");
@@ -302,7 +306,39 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteInfo("Building patch MPQ complete");
+            Logger.WriteDetail("Building patch MPQ complete");
+        }
+
+        public void DeployClient()
+        {
+            Logger.WriteInfo("Deploying to client...");
+
+            // Make sure a patch was created
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            if (File.Exists(sourcePatchFileNameAndPath) == false)
+            {
+                Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
+                return;
+            }
+
+            // Delete the old one if it's already deployed on the client
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS", Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            if (File.Exists(targetPatchFileNameAndPath) == true)
+            {
+                try
+                {
+                    File.Delete(targetPatchFileNameAndPath);
+                }
+                catch
+                {
+                    Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                    return;
+                }
+            }
+
+            // Copy it
+            File.Copy(sourcePatchFileNameAndPath, targetPatchFileNameAndPath, true);
+            Logger.WriteDetail("Deploying to client complete");
         }
 
         public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
