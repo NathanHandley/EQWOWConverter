@@ -17,8 +17,6 @@ It is currently still in heavy development and things are changing daily.  Curre
 - AzerothCore based WoW 3.3.5 server
 - LaternExtractor fork (https://github.com/NathanHandley/LanternExtractor)
 - BLPNG Converter (or other PNG -> BLP conversion software)
-- WDBX Editor (or other DBC editor)
-- Ladik's MPQ Editor (or other MPQ editor)
 - Installed and unpatched client of the EverQuest Trilogy
 - Installed 3.3.5 WoW client, US version
 
@@ -40,7 +38,7 @@ Use LaternExtractor (https://github.com/NathanHandley/LanternExtractor)
 
 **Configure and build EQWOWConverter**
 
-Before building, set all of your paths propertly in Configuration.cs ("Paths" section)
+Before building, set all of your paths propertly in Configuration.cs ("Paths and Files" section)
 
 **Condition the EQ objects** 
 
@@ -54,16 +52,6 @@ Use BLPNG Converter.  Use option BLP > Choose Folder  (select the conditioned as
 
 Use EQWOWConverter
 - Run command "Convert EQ Data to WOW"
-
-**Update related DBC files**
-
-Use WDBX Editor and go into the exports directory and import the csv script files in \DBCUpdateScripts\.
-
-IMPORTANT: Make sure to load these in the proper order. With WDBX, select "Import New" and "Take Newest" as the options (leave "Has Header Row?" checked)
-
-**Package everything up**
-
-Copy all of the output files from EQWOWConverter and the DBC changes into a MPQ and deploy.  Important: Make sure the max file count inside the MPQ is set to something quite large (65536) preferrably (In Ladik's MPQ Editor, Operations > Set Max File Count)
 
 **Update the AzerothCore Database**
 

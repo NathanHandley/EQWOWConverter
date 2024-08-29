@@ -194,18 +194,13 @@ namespace EQWOWConverter.WOWFiles
                 Logger.WriteDetail("File already exists, so deleting");
             }
 
-            // Set the header data
-            Header.RecordCount = Convert.ToUInt32(Rows.Count);
-            Header.StringBlockSize = Convert.ToUInt32(StringBlock.Count);
-
             // Build the output file payload
-            List<byte> outputBytes = new List<byte>();
-            outputBytes.AddRange(Header.ToBytes());
+            List<byte> contentBytes = new List<byte>();
             foreach (DBCRow row in Rows)
             {
                 // Use raw data if there are no added fields, otherwise use the added fields
                 if (row.AddedFields.Count == 0)
-                    outputBytes.AddRange(row.SourceRawBytes);
+                    contentBytes.AddRange(row.SourceRawBytes);
                 else
                 {
                     foreach (var addedField in row.AddedFields)
@@ -213,36 +208,36 @@ namespace EQWOWConverter.WOWFiles
                         if (addedField.GetType() == typeof(DBCRow.DBCFieldInt))
                         {
                             DBCRow.DBCFieldInt rowField = (DBCRow.DBCFieldInt)addedField;
-                            outputBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                            contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldFloat))
                         {
                             DBCRow.DBCFieldFloat rowField = (DBCRow.DBCFieldFloat)addedField;
-                            outputBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                            contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldString))
                         {
                             // Strings store by offset
                             DBCRow.DBCFieldString rowField = (DBCRow.DBCFieldString)addedField;
-                            string value = rowField.Value + "\0";
-                            outputBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
-                            StringBlock.AddRange(value);
+                            string value = rowField.Value;
+
+                            contentBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldStringLang))
                         {
                             // Language strings are 16 string columns and a flags field (17 total), with 0 (first) being english
                             DBCRow.DBCFieldStringLang rowField = (DBCRow.DBCFieldStringLang)addedField;
-                            string value = rowField.Value + "\0";
+                            string value = rowField.Value;
 
                             // English string
-                            outputBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
+                            contentBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
 
                             // 15 blank strings
                             for (int i = 0; i < 15; i++)
-                                outputBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
+                                contentBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(string.Empty)));
 
                             // Flags (language mask)
-                            outputBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(16712190)));
+                            contentBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(16712190)));
                         }
                         else
                         {
@@ -251,7 +246,16 @@ namespace EQWOWConverter.WOWFiles
                     }
                 }
             }
-            outputBytes.AddRange(Encoding.ASCII.GetBytes(StringBlock.ToArray()));
+            contentBytes.AddRange(Encoding.ASCII.GetBytes(StringBlock.ToArray()));
+
+            // Fill the header
+            Header.RecordCount = Convert.ToUInt32(Rows.Count);
+            Header.StringBlockSize = Convert.ToUInt32(StringBlock.Count);
+
+            // Build the full payload
+            List<byte> outputBytes = new List<byte>();
+            outputBytes.AddRange(Header.ToBytes());
+            outputBytes.AddRange(contentBytes);
 
             // Write it
             File.WriteAllBytes(fullFilePath, outputBytes.ToArray());
@@ -261,6 +265,9 @@ namespace EQWOWConverter.WOWFiles
 
         private int PutStringInStringBlockAndGetOffset(string stringToInsert)
         {
+            // Append the null at the end
+            stringToInsert = stringToInsert + "\0";
+
             // Re-use a known index if it exists
             if (StringBlockStringOffsets.ContainsKey(stringToInsert))
                 return StringBlockStringOffsets[stringToInsert];

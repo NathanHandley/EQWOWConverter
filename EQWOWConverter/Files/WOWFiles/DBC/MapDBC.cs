@@ -40,8 +40,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(loadingScreenID);
             newRow.AddFloat(1f); // Minimap Icon Scaling
             newRow.AddInt(1); // Corpse Map ID (references first column, or -1 for none. 0 is eastern kingdoms (westfall))
-            newRow.AddInt(0); // CorpseX - "This is listed as the x-coordinate of the instance entrance" on wowdev... why?
-            newRow.AddInt(0); // CorpseY - "This is listed as the y-coordinate of the instance entrance" on wowdev... why?
+            newRow.AddFloat(0); // CorpseX - "This is listed as the x-coordinate of the instance entrance" on wowdev... why?
+            newRow.AddFloat(0); // CorpseY - "This is listed as the y-coordinate of the instance entrance" on wowdev... why?
             newRow.AddInt(-1); // TimeOfDayOverride - This is -1 for everywhere except Orgimmar and Dalaran
             newRow.AddInt(2); // ExpansionID (0 - Vanilla, 1 - BC, 2 - WOTLK)
             newRow.AddInt(0); // RaidOffset (?)
