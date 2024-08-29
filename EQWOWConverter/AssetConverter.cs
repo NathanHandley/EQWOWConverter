@@ -62,10 +62,11 @@ namespace EQWOWConverter
             if (ConvertEQZonesToWOW(eqExportsConditionedPath, wowExportPath) == false)
                 return false;
 
+            // Deploy if configured
             if (Configuration.CONFIG_DEPLOY_CLIENT == true)
-            {
                 DeployClient();
-            }
+            if (Configuration.CONFIG_DEPLOY_SERVER == true)
+                DeployServer();
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
@@ -338,7 +339,38 @@ namespace EQWOWConverter
 
             // Copy it
             File.Copy(sourcePatchFileNameAndPath, targetPatchFileNameAndPath, true);
+
             Logger.WriteDetail("Deploying to client complete");
+        }
+
+        public void DeployServer()
+        {
+            Logger.WriteInfo("Deploying to server...");
+
+            // Make sure source and target paths are good for DBC files
+            string sourceServerDBCFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "DBCFilesServer");
+            if (Directory.Exists(sourceServerDBCFolder) == false)
+            {
+                Logger.WriteError("Could not deploy DBC files to the server, no folder existed at '" + sourceServerDBCFolder + "'");
+                return;
+            }
+            if (Directory.Exists(Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER) == false)
+            {
+                Logger.WriteError("Could not deploy DBC files to the server, no target folder existed at '" + Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER + "'. Check that you set Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER properly");
+                return;
+            }
+
+            // Deploy the DBC files
+            Logger.WriteDetail("Deploying DBC files to the server...");
+            string[] dbcFiles = Directory.GetFiles(sourceServerDBCFolder);
+            foreach (string dbcFile in dbcFiles)
+            {
+                string targetFileName = Path.Combine(Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER, Path.GetFileName(dbcFile));
+                File.Copy(dbcFile, targetFileName, true);
+            }
+
+
+            Logger.WriteDetail("Deploying to server complete");
         }
 
         public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)

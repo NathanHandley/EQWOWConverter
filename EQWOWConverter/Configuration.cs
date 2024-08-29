@@ -57,11 +57,17 @@ namespace EQWOWConverter
         // Name of the newely generated patch file, without the extension. Note: Will be deleted when extracting DBC data, so make sure it's the last and new
         public static readonly string CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT = "patch-enUS-5";
 
+        // Location of where the server DBC files would be deployed to if set to deploy
+        public static readonly string CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER = "E:\\Development\\azerothcore-wotlk\\Build\\bin\\RelWithDebInfo\\data\\dbc";
+
         // ====================================================================
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
         public static readonly bool CONFIG_DEPLOY_CLIENT = true;
+
+        // If true, deploy to the server files/data after building
+        public static readonly bool CONFIG_DEPLOY_SERVER = true;
 
         // ====================================================================
         // Generator Rules
