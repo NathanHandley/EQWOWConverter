@@ -122,6 +122,7 @@ namespace EQWOWConverter.WOWFiles
         protected DBCHeader Header = new DBCHeader();
         protected List<DBCRow> Rows = new List<DBCRow>();
         protected List<char> StringBlock = new List<char>();
+        protected Dictionary<string, int> StringBlockStringOffsets = new Dictionary<string, int>();
         protected bool IsLoaded = false;
 
         public void LoadFromDisk(string fileFolder, string fileName)
@@ -201,13 +202,13 @@ namespace EQWOWConverter.WOWFiles
             List<byte> outputBytes = new List<byte>();
             outputBytes.AddRange(Header.ToBytes());
             foreach (DBCRow row in Rows)
-            { 
+            {
                 // Use raw data if there are no added fields, otherwise use the added fields
                 if (row.AddedFields.Count == 0)
                     outputBytes.AddRange(row.SourceRawBytes);
                 else
                 {
-                    foreach(var addedField in row.AddedFields)
+                    foreach (var addedField in row.AddedFields)
                     {
                         if (addedField.GetType() == typeof(DBCRow.DBCFieldInt))
                         {
@@ -224,7 +225,7 @@ namespace EQWOWConverter.WOWFiles
                             // Strings store by offset
                             DBCRow.DBCFieldString rowField = (DBCRow.DBCFieldString)addedField;
                             string value = rowField.Value + "\0";
-                            outputBytes.AddRange(BitConverter.GetBytes(StringBlock.Count)); 
+                            outputBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
                             StringBlock.AddRange(value);
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldStringLang))
@@ -234,8 +235,7 @@ namespace EQWOWConverter.WOWFiles
                             string value = rowField.Value + "\0";
 
                             // English string
-                            outputBytes.AddRange(BitConverter.GetBytes(StringBlock.Count));
-                            StringBlock.AddRange(value);
+                            outputBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
 
                             // 15 blank strings
                             for (int i = 0; i < 15; i++)
@@ -257,6 +257,23 @@ namespace EQWOWConverter.WOWFiles
             File.WriteAllBytes(fullFilePath, outputBytes.ToArray());
 
             Logger.WriteDetail("Saving dbc at '" + FileName + "' completed");
+        }
+
+        private int PutStringInStringBlockAndGetOffset(string stringToInsert)
+        {
+            // Re-use a known index if it exists
+            if (StringBlockStringOffsets.ContainsKey(stringToInsert))
+                return StringBlockStringOffsets[stringToInsert];
+
+            // Add to the string block
+            int newIndex = StringBlock.Count;
+            StringBlock.AddRange(stringToInsert);
+
+            // Create an index lookup for it
+            StringBlockStringOffsets.Add(stringToInsert, newIndex);
+
+            // Return the index
+            return newIndex;
         }
     }
 }
