@@ -220,7 +220,6 @@ namespace EQWOWConverter.WOWFiles
                             // Strings store by offset
                             DBCRow.DBCFieldString rowField = (DBCRow.DBCFieldString)addedField;
                             string value = rowField.Value;
-
                             contentBytes.AddRange(BitConverter.GetBytes(PutStringInStringBlockAndGetOffset(value)));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldStringLang))

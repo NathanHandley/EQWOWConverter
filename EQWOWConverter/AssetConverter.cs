@@ -209,6 +209,9 @@ namespace EQWOWConverter
             // Create the Azeroth Core Scripts
             CreateAzerothCoreScripts(zones, wowExportPath);
 
+            // Create the MPQ
+            CreatePatchMPQ();
+
             return true;
         }
 
