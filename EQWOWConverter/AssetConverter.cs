@@ -208,7 +208,7 @@ namespace EQWOWConverter
             // Create the DBC files
             CreateDBCFiles(zones, wowExportPath);
 
-            // Create the Azeroth Core Scripts
+            // Create the Azeroth Core Scripts (note: this must always be after DBC files)
             CreateAzerothCoreScripts(zones, wowExportPath);
 
             // Create the MPQ

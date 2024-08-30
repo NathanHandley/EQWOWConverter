@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `instance_template` WHERE `map` >= " + Configuration.CONFIG_DBCID_MAPID_START + " AND `map` <= " + (Configuration.CONFIG_DBCID_MAPID_START + rows.Count) + ";");
+            stringBuilder.AppendLine("DELETE FROM `instance_template` WHERE `map` >= " + Configuration.CONFIG_DBCID_MAPID_START + " AND `map` <= " + (ZoneProperties.CURRENT_MAPID) + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `instance_template` (`map`, `parent`, `script`, `allowMount`) VALUES (");

@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
         public string ZonewideMusicFileNameNight = string.Empty;
 
         // DBCIDs
-        private static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
+        public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
         private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
         private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;        
         private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
