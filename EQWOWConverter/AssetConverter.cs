@@ -28,7 +28,7 @@ using EQWOWConverter.ObjectModels;
 using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ObjectModels.Properties;
-using static System.Net.Mime.MediaTypeNames;
+using MySql.Data.MySqlClient;
 
 namespace EQWOWConverter
 {
@@ -63,10 +63,12 @@ namespace EQWOWConverter
                 return false;
 
             // Deploy if configured
-            if (Configuration.CONFIG_DEPLOY_CLIENT == true)
+            if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
                 DeployClient();
-            if (Configuration.CONFIG_DEPLOY_SERVER == true)
-                DeployServer();
+            if (Configuration.CONFIG_DEPLOY_SERVER_FILES == true)
+                DeployServerFiles();
+            if (Configuration.CONFIG_DEPLOY_SERVER_SQL == true)
+                DeployServerSQL();
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
@@ -333,9 +335,12 @@ namespace EQWOWConverter
                 {
                     File.Delete(targetPatchFileNameAndPath);
                 }
-                catch
+                catch (Exception ex)
                 {
                     Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
+                    if (ex.StackTrace != null)
+                        Logger.WriteDetail(ex.StackTrace.ToString());
+                    Logger.WriteError("Deploying to client failed");
                     return;
                 }
             }
@@ -346,9 +351,9 @@ namespace EQWOWConverter
             Logger.WriteDetail("Deploying to client complete");
         }
 
-        public void DeployServer()
+        public void DeployServerFiles()
         {
-            Logger.WriteInfo("Deploying to server...");
+            Logger.WriteInfo("Deploying files to server...");
 
             // Make sure source and target paths are good for DBC files
             string sourceServerDBCFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "DBCFilesServer");
@@ -373,7 +378,47 @@ namespace EQWOWConverter
             }
 
 
-            Logger.WriteDetail("Deploying to server complete");
+            Logger.WriteDetail("Deploying files to server complete");
+        }
+        
+        public void DeployServerSQL()
+        {
+            Logger.WriteInfo("Deploying sql to server...");
+
+            // Verify there is a scripts folder
+            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
+            if (Directory.Exists(sqlScriptFolder) == false)
+            {
+                Logger.WriteError("Could not deploy SQL scripts to server. Path '" + sqlScriptFolder + "' did not exist");
+                return;
+            }
+
+            // Deploy all of the scripts
+            try
+            {
+                using (MySqlConnection connection = new MySqlConnection(Configuration.CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD))
+                {
+                    connection.Open();
+                    string[] sqlFiles = Directory.GetFiles(sqlScriptFolder);
+                    foreach(string sqlFile in sqlFiles)
+                    {
+                        MySqlCommand command = new MySqlCommand();
+                        command.Connection = connection;
+                        command.CommandText = File.ReadAllText(sqlFile);
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Error occurred when executing a script: '" + ex.Message + "'");
+                if (ex.StackTrace != null)
+                    Logger.WriteDetail(ex.StackTrace.ToString());
+                Logger.WriteError("Deploying sql to server failed.");
+            }
+
+            Logger.WriteDetail("Deploying sql to server complete");
         }
 
         public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)

@@ -64,10 +64,16 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool CONFIG_DEPLOY_CLIENT = true;
+        public static readonly bool CONFIG_DEPLOY_CLIENT_FILES = true;
 
         // If true, deploy to the server files/data after building
-        public static readonly bool CONFIG_DEPLOY_SERVER = true;
+        public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
+
+        // If true, deploy to the SQL to the server
+        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
+
+        // If deploying to SQL, you need to set this to something real that points to your world database
+        public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // ====================================================================
         // Generator Rules
