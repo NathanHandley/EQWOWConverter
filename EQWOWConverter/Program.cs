@@ -76,13 +76,12 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                                     break;
                                 }
-
                             }
                             break;
                         case "9":
                             {
                                 AssetConditioner conditioner = new AssetConditioner();
-                                conditioner.ConditionMusicFiles(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED, "music"));
+                                conditioner.ConditionMusicFiles(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music"));
                             } break;
                         default:
                             {
