@@ -34,35 +34,35 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
-        public bool ConvertEQDataToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQDataToWOW()
         {
             Logger.WriteInfo("Converting from EQ to WoW...");
 
-            // Make sure the root path exists
-            if (Directory.Exists(eqExportsConditionedPath) == false)
+            // Verify Input Path
+            if (Directory.Exists(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER) == false)
             {
-                Logger.WriteError("Error - Conditioned path of '" + eqExportsConditionedPath + "' does not exist.");
+                Logger.WriteError("Error - Conditioned path of '" + Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER + "' does not exist.");
                 Logger.WriteError("Conversion Failed!");
                 return false;
             }
 
-            // Extract DBC files
-            ExtractClientDBCFiles(wowExportPath);
+            // Extract
+            ExtractClientDBCFiles();
 
-            // Convert the data
+            // Convert
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
             {
-                if (ConvertEQObjectsToWOW(eqExportsConditionedPath, wowExportPath) == false)
+                if (ConvertEQObjectsToWOW() == false)
                     return false;
             }
             else
             {
                 Logger.WriteInfo("Note: Object generation is set to false in the Configuration");
             }
-            if (ConvertEQZonesToWOW(eqExportsConditionedPath, wowExportPath) == false)
+            if (ConvertEQZonesToWOW() == false)
                 return false;
 
-            // Deploy if configured
+            // Deploy 
             if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
                 DeployClient();
             if (Configuration.CONFIG_DEPLOY_SERVER_FILES == true)
@@ -74,9 +74,11 @@ namespace EQWOWConverter
             return true;
         }
 
-        // TODO: Condense above
-        public bool ConvertEQObjectsToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQObjectsToWOW()
         {
+            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Converting EQ objects to WOW objects...");
 
             // Make sure the object folder path exists
@@ -86,7 +88,7 @@ namespace EQWOWConverter
 
             // Clean out the objects folder
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
-            string exportObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Objects");
+            string exportObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "StaticDoodads");
             if (Directory.Exists(exportObjectsFolder))
                 Directory.Delete(exportObjectsFolder, true);
 
@@ -112,7 +114,7 @@ namespace EQWOWConverter
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 // Covert to WOW static object
-                string relativeMPQPath = Path.Combine("World", "Everquest", "Objects", staticObjectMeshNameNoExt);
+                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
                 CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
 
                 // Place the related textures
@@ -133,8 +135,11 @@ namespace EQWOWConverter
         }
 
         // TODO: Condense above
-        public bool ConvertEQZonesToWOW(string eqExportsConditionedPath, string wowExportPath)
+        public bool ConvertEQZonesToWOW()
         {
+            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
             // Make sure the zone folder path exists
@@ -162,7 +167,7 @@ namespace EQWOWConverter
                 Directory.Delete(exportMusicFolder, true);
 
             // Generate folder name for objects
-            string exportObjectsFolderRelative = Path.Combine("World", "Everquest", "Objects");
+            string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Load shared environment settings
             ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
@@ -180,6 +185,7 @@ namespace EQWOWConverter
                     continue;
 
                 // Load the EQ zone
+                string relativeZoneMaterialDoodadsPath = Path.Combine("World", "Everquest", "ZoneMaterialDoodads", zoneDirectory.Name);
                 ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
                 Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
@@ -188,10 +194,10 @@ namespace EQWOWConverter
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
-                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, exportObjectsFolderRelative);
+                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, relativeStaticDoodadsPath, relativeZoneMaterialDoodadsPath);
 
                 // Place the related textures
-                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, exportObjectsFolderRelative);
+                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneMaterialDoodadsPath);
 
                 // Place the related music files
                 ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
@@ -217,8 +223,10 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void ExtractClientDBCFiles(string wowExportPath)
+        public void ExtractClientDBCFiles()
         {
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Extracting client DBC files...");
 
             // Make sure the patches folder is correct
@@ -421,7 +429,8 @@ namespace EQWOWConverter
             Logger.WriteDetail("Deploying sql to server complete");
         }
 
-        public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeExportObjectsFolder)
+        public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeStaticDoodadsFolder,
+            string relativeZoneMaterialDoodadsFolder)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
@@ -429,7 +438,7 @@ namespace EQWOWConverter
             zone.LoadFromEQZone();
 
             // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeExportObjectsFolder);
+            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
             zoneWMO.WriteToDisk(exportMPQRootFolder);
 
             // Create the WDT
@@ -444,7 +453,7 @@ namespace EQWOWConverter
             foreach(ObjectModel zoneObject in zone.GeneratedZoneObjects)
             {
                 // Recreate the folder if needed
-                string curZoneObjectRelativePath = Path.Combine(relativeExportObjectsFolder, zoneObject.Name);
+                string curZoneObjectRelativePath = Path.Combine(relativeZoneMaterialDoodadsFolder, zoneObject.Name);
                 string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
                 if (Directory.Exists(curZoneObjectFolder))
                     Directory.Delete(curZoneObjectFolder, true);
@@ -747,7 +756,7 @@ namespace EQWOWConverter
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
         }
 
-        public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string objectExportPath)
+        public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
 
@@ -779,7 +788,7 @@ namespace EQWOWConverter
                 foreach(ObjectModelTexture texture in zoneObject.ModelTextures)
                 {
                     string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", texture.TextureName + ".blp");
-                    string outputTextureFullPath = Path.Combine(wowExportPath, objectExportPath, zoneObject.Name, texture.TextureName + ".blp");
+                    string outputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, texture.TextureName + ".blp");
                     if (File.Exists(sourceTextureFullPath) == false)
                     {
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");

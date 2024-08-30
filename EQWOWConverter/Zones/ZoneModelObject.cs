@@ -17,7 +17,6 @@
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
-using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;

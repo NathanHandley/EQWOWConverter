@@ -75,11 +75,11 @@ namespace EQWOWConverter.WOWFiles
             // Populate the M2 Data objects
             Name = new M2StringByOffset(wowObjectModel.Name);
             Textures = new M2TextureArrayByOffset(mpqObjectFolder);
-            PopulateElements(wowObjectModel, mpqObjectFolder);
+            PopulateElements(wowObjectModel);
             Skin = new M2Skin(wowObjectModel);
         }
 
-        private void PopulateElements(ObjectModel wowObjectModel, string mpqObjectFolder)
+        private void PopulateElements(ObjectModel wowObjectModel)
         {
             // Global Loop Timestamps
             foreach (UInt32 timestamp in wowObjectModel.GlobalLoopSequenceLimits)

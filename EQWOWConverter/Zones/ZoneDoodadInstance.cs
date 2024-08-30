@@ -22,10 +22,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Zones.WOW
+namespace EQWOWConverter.Zones
 {
     internal class ZoneDoodadInstance
     {
+        public ZoneDoodadInstanceType DoodadType;
         public string ObjectName = string.Empty;
         public UInt32 ObjectNameOffset = 0;
         public ZoneDoodadInstanceFlags Flags = ZoneDoodadInstanceFlags.AcceptProjectedTexture;
@@ -33,6 +34,11 @@ namespace EQWOWConverter.Zones.WOW
         public Quaternion Orientation = new Quaternion();
         public float Scale = 1.0f;
         public ColorRGBA Color = new ColorRGBA();
+
+        public ZoneDoodadInstance(ZoneDoodadInstanceType type)
+        {
+            DoodadType = type;
+        }
 
         public List<byte> ToBytes()
         {

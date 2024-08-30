@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EQWOWConverter.Zones.WOW;
 using System.Security.AccessControl;
 
 namespace EQWOWConverter.WOWFiles
@@ -31,16 +30,17 @@ namespace EQWOWConverter.WOWFiles
     {
         public List<byte> RootBytes = new List<byte>();
         public Dictionary<string, UInt32> TextureNameOffsets = new Dictionary<string, UInt32>();
-        public Dictionary<string, UInt32> DoodadNameOffsets = new Dictionary<string, UInt32>();
+        public Dictionary<string, UInt32> DoodadPathOffsetsByName = new Dictionary<string, UInt32>();
+        public List<string> DoodadPathStrings = new List<string>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
         public ZoneProperties ZoneProperties;
 
-        public WMORoot(Zone zone, string exportObjectsFolder)
+        public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneMaterialDoodadsFolder)
         {
             ZoneProperties = zone.ZoneProperties;
 
-            PopulateDoodadNameOffsets(zone, exportObjectsFolder);
+            PopulateDoodadPathStringOffsets(zone, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
             RootBytes.AddRange(GenerateMVERChunk());
@@ -85,7 +85,7 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMODSChunk(zone));
 
             // MODN (List of M2s) -----------------------------------------------------------------
-            RootBytes.AddRange(GenerateMODNChunk(exportObjectsFolder));
+            RootBytes.AddRange(GenerateMODNChunk());
 
             // MODD (Doodad Instance Information) -------------------------------------------------
             RootBytes.AddRange(GenerateMODDChunk(zone));
@@ -127,7 +127,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count())));
 
             // Number of Doodad Names
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(DoodadNameOffsets.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(DoodadPathOffsetsByName.Count())));
 
             // Number of Doodad Definitions
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.DoodadInstances.Count())));
@@ -447,14 +447,11 @@ namespace EQWOWConverter.WOWFiles
         /// MODN (List of M2s)
         ///  NOTE: M2 files must be reference as MDX in the WMO, regardless of real name
         /// </summary>
-        private List<byte> GenerateMODNChunk(string exportObjectsFolder)
+        private List<byte> GenerateMODNChunk()
         {
             List<byte> doodadNameBuffer = new List<byte>();
-            foreach (var doodadNameOffset in DoodadNameOffsets)
-            {
-                string objectFullPath = Path.Combine(exportObjectsFolder, doodadNameOffset.Key, doodadNameOffset.Key + ".MDX" + "\0").ToUpper();
-                doodadNameBuffer.AddRange(Encoding.ASCII.GetBytes(objectFullPath));
-            }
+            foreach (string doodadFullPath in DoodadPathStrings)
+                doodadNameBuffer.AddRange(Encoding.ASCII.GetBytes(doodadFullPath));
             return WrapInChunk("MODN", doodadNameBuffer.ToArray());
         }
 
@@ -467,7 +464,7 @@ namespace EQWOWConverter.WOWFiles
 
             foreach (ZoneDoodadInstance doodadInstance in zone.DoodadInstances)
             {
-                doodadInstance.ObjectNameOffset = DoodadNameOffsets[doodadInstance.ObjectName];
+                doodadInstance.ObjectNameOffset = DoodadPathOffsetsByName[doodadInstance.ObjectName];
                 chunkBytes.AddRange(doodadInstance.ToBytes());
             }
 
@@ -494,17 +491,25 @@ namespace EQWOWConverter.WOWFiles
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 
-        private void PopulateDoodadNameOffsets(Zone zone, string exportObjectsFolder)
+        private void PopulateDoodadPathStringOffsets(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneMaterialDoodadsFolder)
         {
-            int curNameOffset = 0;
+            int curPathOffset = 0;
             foreach (ZoneDoodadInstance objectInstance in zone.DoodadInstances)
             {
                 string objectName = objectInstance.ObjectName;
-                string objectFullPath = Path.Combine(exportObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
-                if (DoodadNameOffsets.ContainsKey(objectName) == false)
+                string objectFullPath = string.Empty;
+                if (objectInstance.DoodadType == ZoneDoodadInstanceType.StaticObject)
+                    objectFullPath = Path.Combine(relativeStaticDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+                else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial)
+                    objectFullPath = Path.Combine(relativeZoneMaterialDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+                else
+                    Logger.WriteError("Unhandled type of doodad instance '" + objectInstance.DoodadType.ToString() + "' for doodad name '" + objectInstance.ObjectName + "'");
+                
+                if (DoodadPathOffsetsByName.ContainsKey(objectName) == false)
                 {
-                    DoodadNameOffsets.Add(objectName, Convert.ToUInt32(curNameOffset));
-                    curNameOffset += objectFullPath.Length;
+                    DoodadPathOffsetsByName.Add(objectName, Convert.ToUInt32(curPathOffset));
+                    DoodadPathStrings.Add(objectFullPath);
+                    curPathOffset += objectFullPath.Length;
                 }
             }
         }

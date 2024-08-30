@@ -18,7 +18,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
-using EQWOWConverter.Zones.WOW;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -142,7 +141,7 @@ namespace EQWOWConverter.Zones
             // Create doodad instances from EQ object instances
             foreach (ObjectInstance objectInstance in eqObjectInstances)
             {
-                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
+                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
                 doodadInstance.ObjectName = objectInstance.ModelName;
                 doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 // Invert Z and Y because of mapping differences
@@ -180,7 +179,7 @@ namespace EQWOWConverter.Zones
             {
                 foreach (LightInstance lightInstance in LightInstances)
                 {
-                    ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
+                    ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
                     doodadInstance.ObjectName = "torch";
                     doodadInstance.Position = lightInstance.Position;
                     DoodadInstances.Add(doodadInstance);
@@ -479,7 +478,7 @@ namespace EQWOWConverter.Zones
                 List<Vector3> collisionVertices = new List<Vector3>();
 
                 // Generate the object
-                string name = "ZO_" + ShortName + "_" + material.UniqueName + "_" + i.ToString();
+                string name = material.UniqueName + "_" + i.ToString();
                 ObjectModel newObject = new ObjectModel(name, ObjectModelProperties.GetObjectPropertiesForObject(""));
                 newObject.Load(name, new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
                 GeneratedZoneObjects.Add(newObject);
@@ -502,7 +501,7 @@ namespace EQWOWConverter.Zones
                 //vertexColorAverage.A = 0; // Alpha 0 keeps directional, alpha 255 is from center
 
                 // Add as a doodad
-                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance();
+                ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.ZoneMaterial);
                 doodadInstance.ObjectName = name;
                 doodadInstance.Position = curPosition;
                 //doodadInstance.Color = vertexColorAverage; // Not yet working

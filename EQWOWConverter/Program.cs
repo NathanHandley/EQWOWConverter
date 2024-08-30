@@ -70,7 +70,7 @@ internal class Program
                         case "5":
                             {
                                 AssetConverter converter = new AssetConverter();
-                                bool conversionResult = converter.ConvertEQDataToWOW(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, Configuration.CONFIG_PATH_EXPORT_FOLDER);
+                                bool conversionResult = converter.ConvertEQDataToWOW();
                                 if (conversionResult == false)
                                 {
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");

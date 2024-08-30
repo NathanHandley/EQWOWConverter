@@ -14,17 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones
 {
-    internal enum ZoneDoodadInstanceFlags : byte
+    internal enum ZoneDoodadInstanceType
     {
-        AcceptProjectedTexture  = 0x1,
-        UseInteriorLighting     = 0x2
+        StaticObject,
+        ZoneMaterial
     }
 }
