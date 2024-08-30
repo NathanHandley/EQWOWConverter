@@ -294,16 +294,23 @@ namespace EQWOWConverter.Zones
             // Generate sub-areas
             foreach(ZoneArea subArea in zoneProperties.ZoneAreas)
             {
-                MeshData areaMeshData;
-                MeshData remainderMeshData;
-                MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, subArea.BoundingBox, out areaMeshData, out remainderMeshData);
-                collisionMeshData = remainderMeshData;
-                GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshData, subArea);
+                // Areas can have multiple boxes, so merge them up
+                MeshData areaMeshDataFull = new MeshData();
+                foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
+                {
+                    MeshData areaMeshDataBox;
+                    MeshData remainderMeshData;
+                    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, areaSubBoundingBox, out areaMeshDataBox, out remainderMeshData);
+                    collisionMeshData = remainderMeshData;
+                    areaMeshDataFull.AddMeshData(areaMeshDataBox);
+                }
+                GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea);
                 SubAreas.Add(subArea);
             }
 
             // Remainder is the primary area
-            DefaultArea.BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            DefaultArea.BoundingBoxes.Clear();
+            DefaultArea.BoundingBoxes.Add(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT));
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
         }
 

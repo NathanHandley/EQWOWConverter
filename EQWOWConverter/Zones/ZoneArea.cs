@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones
 
         public UInt32 DBCAreaTableID;
         public string DisplayName = string.Empty;
-        public BoundingBox BoundingBox = new BoundingBox();
+        public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
         public ZoneAreaMusic? AreaMusic = null;
@@ -41,14 +41,20 @@ namespace EQWOWConverter.Zones
             DisplayName = displayName;
             MusicFileNameNoExtDay = musicFileNameDay;
             MusicFileNameNoExtNight = musicFileNameNight;
+            AddBoundingBox(boundingBox);
+        }
 
+        public void AddBoundingBox(BoundingBox boundingBox)
+        {
             // Scale and rotate
-            BoundingBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBox newBox = new BoundingBox();
+            newBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            newBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            newBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            newBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            BoundingBoxes.Add(newBox);
         }
     }
 }

@@ -143,6 +143,20 @@ namespace EQWOWConverter.Zones
             string musicFileNameNoExtensionDay, string musicFileNameNoExtensionNight)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
+
+            // Add to an existing zone area if there's a match
+            foreach (ZoneArea zoneArea in ZoneAreas)
+            {
+                if (zoneArea.DisplayName == displayName)
+                {
+                    if (zoneArea.MusicFileNameNoExtDay != musicFileNameNoExtensionDay || zoneArea.MusicFileNameNoExtNight != musicFileNameNoExtensionNight)
+                        Logger.WriteError("Making zone area named '" + displayName + "' in zone '" + ShortName + "', but the name already existed but the musics are different");
+                    zoneArea.AddBoundingBox(boundingBox);
+                    return;
+                }
+            }
+
+            // Otherwise, add new
             ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight);
             ZoneAreas.Add(newZoneArea);
         }
