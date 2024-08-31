@@ -57,7 +57,7 @@ namespace EQWOWConverter
             }
             else
             {
-                Logger.WriteInfo("Note: Object generation is set to false in the Configuration");
+                Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
             }
 
             // Zones
@@ -156,7 +156,7 @@ namespace EQWOWConverter
 
             if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
             {
-                Logger.WriteInfo("Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
+                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
                 foreach (string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
                     Logger.WriteInfo(zoneShortName + " ", true, false);
                 Logger.WriteInfo(string.Empty, false, false);

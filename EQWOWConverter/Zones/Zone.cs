@@ -345,13 +345,15 @@ namespace EQWOWConverter.Zones
             // If set, show the area box around music instances
             if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
             {
-                for (int i = 0; i < ZoneObjectModels.Count; i++)
+                foreach(ZoneArea zoneArea in SubAreas)
                 {
-                    ZoneObjectModel wmo = ZoneObjectModels[i];
-                    if (wmo.ZoneMusic != null)
+                    if (zoneArea.AreaMusic != null)
                     {
-                        ZoneBox zoneBox = new ZoneBox(wmo.BoundingBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
-                        staticMeshData.AddMeshData(zoneBox.MeshData);
+                        foreach(BoundingBox areaBox in zoneArea.BoundingBoxes)
+                        {
+                            ZoneBox zoneBox = new ZoneBox(areaBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                            staticMeshData.AddMeshData(zoneBox.MeshData);
+                        }
                     }
                 }
             }
