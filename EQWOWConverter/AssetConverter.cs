@@ -137,43 +137,54 @@ namespace EQWOWConverter
         // TODO: Condense above
         public bool ConvertEQZonesToWOW()
         {
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
-
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
-            // Make sure the zone folder path exists
-            string zoneFolderRoot = Path.Combine(eqExportsConditionedPath, "zones");
-            if (Directory.Exists(zoneFolderRoot) == false)
-                Directory.CreateDirectory(zoneFolderRoot);
-            string inputMusicFolderRoot = Path.Combine(eqExportsConditionedPath, "music");
-
-            // Clean out the zone and interface folders
-            string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
+            // Build paths
+            string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
+            string inputMusicFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
+            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
             string exportMapsFolder = Path.Combine(exportMPQRootFolder, "World", "Maps");
-            if (Directory.Exists(exportMapsFolder))
-                Directory.Delete(exportMapsFolder, true);
             string exportWMOFolder = Path.Combine(exportMPQRootFolder, "World", "wmo");
-            if (Directory.Exists(exportWMOFolder))
-                Directory.Delete(exportWMOFolder, true);
-            string zoneTexturesFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneTextures");
-            if (Directory.Exists(zoneTexturesFolder))
-                Directory.Delete(zoneTexturesFolder, true);
+            string exportZonesTexturesFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneTextures");
+            string exportZonesMaterialDoodadFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneMaterialDoodads");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
-            if (Directory.Exists(exportInterfaceFolder))
-                Directory.Delete(exportInterfaceFolder, true);
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            if (Directory.Exists(exportMusicFolder))
-                Directory.Delete(exportMusicFolder, true);
-
-            // Generate folder name for objects
+            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
+
+            // Clear folders if it's a fresh build
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0
+                || File.Exists(exportMPQFileName) == false)
+            {
+                if (Directory.Exists(exportMapsFolder))
+                    Directory.Delete(exportMapsFolder, true);
+                if (Directory.Exists(exportWMOFolder))
+                    Directory.Delete(exportWMOFolder, true);
+                if (Directory.Exists(exportZonesTexturesFolder))
+                    Directory.Delete(exportZonesTexturesFolder, true);
+                if (Directory.Exists(exportZonesMaterialDoodadFolder))
+                    Directory.Delete(exportZonesMaterialDoodadFolder, true);
+                if (Directory.Exists(exportMusicFolder))
+                    Directory.Delete(exportMusicFolder, true);
+            }
+
+            // Generate folders
+            if (Directory.Exists(exportMapsFolder) == false)
+                Directory.CreateDirectory(exportMapsFolder);
+            if (Directory.Exists(exportWMOFolder) == false)
+                Directory.CreateDirectory(exportWMOFolder);
+            if (Directory.Exists(exportZonesTexturesFolder) == false)
+                Directory.CreateDirectory(exportZonesTexturesFolder);
+            if (Directory.Exists(exportZonesMaterialDoodadFolder) == false)
+                Directory.CreateDirectory(exportZonesMaterialDoodadFolder);
+            if (Directory.Exists(exportMusicFolder) == false)
+                Directory.CreateDirectory(exportMusicFolder);
 
             // Load shared environment settings
             ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
 
             // Go through the subfolders for each zone and convert to wow zone
-            DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(zoneFolderRoot);
+            DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
             List<Zone> zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
@@ -189,7 +200,7 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
                 Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
-                string curZoneDirectory = Path.Combine(zoneFolderRoot, zoneDirectory.Name);
+                string curZoneDirectory = Path.Combine(inputZoneFolder, zoneDirectory.Name);
                 curZone.LoadEQZoneData(zoneDirectory.Name, curZoneDirectory);
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
@@ -206,16 +217,16 @@ namespace EQWOWConverter
             }
 
             // Copy the loading screens
-            CreateLoadingScreens(eqExportsConditionedPath, exportMPQRootFolder);
+            CreateLoadingScreens();
 
             // Copy the liquid material textures
-            CreateLiquidMaterials(eqExportsConditionedPath, exportMPQRootFolder);
+            CreateLiquidMaterials();
 
             // Create the DBC files
-            CreateDBCFiles(zones, wowExportPath);
+            CreateDBCFiles(zones);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones, wowExportPath);
+            CreateAzerothCoreScripts(zones);
 
             // Create the MPQ
             CreatePatchMPQ();
@@ -481,8 +492,11 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
         }
 
-        public void CreateLoadingScreens(string eqExportsConditionedPath, string exportMPQRootFolder)
+        public void CreateLoadingScreens()
         {
+            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Copying loading screens");
             string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
             Directory.CreateDirectory(loadingScreensTextureFolder);
@@ -512,8 +526,11 @@ namespace EQWOWConverter
                 File.Copy(veliousInputFile, veliousOutputFile);
         }
 
-        public void CreateLiquidMaterials(string eqExportsConditionedPath, string exportMPQRootFolder)
+        public void CreateLiquidMaterials()
         {
+            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Copying liquid material textures");
 
             string sourceTextureFolder = Path.Combine(eqExportsConditionedPath, "liquidsurfaces");
@@ -522,8 +539,10 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void CreateDBCFiles(List<Zone> zones, string wowExportPath)
+        public void CreateDBCFiles(List<Zone> zones)
         {
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
             Logger.WriteInfo("Creating DBC Files...");
 
             // Make sure there is a folder of files
@@ -702,10 +721,11 @@ namespace EQWOWConverter
             Logger.WriteDetail("Creating DBC Files complete");
         }
 
-        public void CreateAzerothCoreScripts(List<Zone> zones, string wowExportPath)
+        public void CreateAzerothCoreScripts(List<Zone> zones)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
             string sqlScriptFolder = Path.Combine(wowExportPath, "AzerothCoreSQLScripts");
 
             // Create the SQL Scripts
