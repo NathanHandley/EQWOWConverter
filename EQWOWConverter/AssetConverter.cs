@@ -61,13 +61,6 @@ namespace EQWOWConverter
             }
 
             // Zones
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
-            {
-                Logger.WriteInfo("Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
-                foreach(string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
-                    Logger.WriteInfo(zoneShortName + " ", true, false);
-                Logger.WriteInfo(string.Empty, false, false);
-            }
             List<Zone> zones;
             if (ConvertEQZonesToWOW(out zones) == false)
                 return false;
@@ -84,8 +77,12 @@ namespace EQWOWConverter
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
             CreateAzerothCoreScripts(zones);
 
-            // Create the MPQ
-            CreatePatchMPQ();
+            // Create or update the MPQ
+            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
+                CreatePatchMPQ();
+            else
+                UpdatePatchMPQ();
 
             // Deploy 
             if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
@@ -156,6 +153,14 @@ namespace EQWOWConverter
         public bool ConvertEQZonesToWOW(out List<Zone> zones)
         {
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
+
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
+            {
+                Logger.WriteInfo("Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
+                foreach (string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+                    Logger.WriteInfo(zoneShortName + " ", true, false);
+                Logger.WriteInfo(string.Empty, false, false);
+            }
 
             // Build paths
             string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
@@ -333,6 +338,100 @@ namespace EQWOWConverter
             if (File.Exists(mpqEditorFullPath) == false)
                 throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
             string args = "console \"" + mpqNewScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
+            Logger.WriteDetail("Building patch MPQ complete");
+        }
+
+        public void UpdatePatchMPQ()
+        {
+            Logger.WriteInfo("Updating patch MPQ...");
+            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            if (File.Exists(exportMPQFileName) == false)
+            {
+                Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
+                return;
+            }
+
+            // Generate a script to update the new MPQ
+            Logger.WriteDetail("Generating script to update the MPQ file");
+            string mpqReadyFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            if (Directory.Exists(mpqReadyFolder) == false)
+                throw new Exception("There was no MPQReady folder inside of '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "'");
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder mpqUpdateScriptText = new StringBuilder();
+            
+            // Zones
+            foreach(string zoneName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+            {
+                // Add zone-specific folders
+                // ZoneMaterialDoodads
+                string relativeZoneMaterialDoodadsPath = Path.Combine("World", "Everquest", "ZoneMaterialDoodads", zoneName);
+                string fullZoneMaterialDoodadsPath = Path.Combine(mpqReadyFolder, relativeZoneMaterialDoodadsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMaterialDoodadsPath + "\" \"" + relativeZoneMaterialDoodadsPath + "\" /r");
+
+                // ZoneTextures
+                string relativeZoneTexturesPath = Path.Combine("World", "Everquest", "ZoneTextures", zoneName);
+                string fullZoneZoneTexturesPath = Path.Combine(mpqReadyFolder, relativeZoneTexturesPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneZoneTexturesPath + "\" \"" + relativeZoneTexturesPath + "\" /r");
+
+                // Maps
+                string relativeZoneMapsPath = Path.Combine("World", "Maps", "EQ_" + zoneName);
+                string fullZoneMapsPath = Path.Combine(mpqReadyFolder, relativeZoneMapsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMapsPath + "\" \"" + relativeZoneMapsPath + "\" /r");
+
+                // WMO
+                string relativeZoneWmoPath = Path.Combine("World", "wmo", "Everquest", zoneName);
+                string fullZoneWmoPath = Path.Combine(mpqReadyFolder, relativeZoneWmoPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneWmoPath + "\" \"" + relativeZoneWmoPath + "\" /r");
+
+                // Music
+                string relativeZoneMusicPath = Path.Combine("Sound", "Music", "Everquest", zoneName);
+                string fullZoneMusicPath = Path.Combine(mpqReadyFolder, relativeZoneMusicPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMusicPath + "\" \"" + relativeZoneMusicPath + "\" /r");
+            }
+
+            // Objects
+            if (Configuration.CONFIG_GENERATE_OBJECTS == true)
+            {
+                // Static Doodads
+                string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
+                string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
+            }
+
+            // Loading Screens
+            string relativeLoadingScreensPath = Path.Combine("Interface", "Glues", "LoadingScreens");
+            string fullLoadingScreensPath = Path.Combine(mpqReadyFolder, relativeLoadingScreensPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullLoadingScreensPath + "\" \"" + relativeLoadingScreensPath + "\" /r");
+
+            // Liquid Materials
+            string relativeLiquidMaterialsPath = Path.Combine("XTEXTURES", "everquest");
+            string fullLiquidMaterialsPath = Path.Combine(mpqReadyFolder, relativeLiquidMaterialsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullLiquidMaterialsPath + "\" \"" + relativeLiquidMaterialsPath + "\" /r");
+
+            // DBC Files
+            string relativeDBCClientPath = Path.Combine("DBFilesClient");
+            string fullDBCClientPath = Path.Combine(mpqReadyFolder, relativeDBCClientPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullDBCClientPath + "\" \"" + relativeDBCClientPath + "\" /r");
+            
+            // Output the script to disk
+            string mpqUpdateScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqupdate.txt");
+            using (var mpqUpdateScriptFile = new StreamWriter(mpqUpdateScriptFileName))
+                mpqUpdateScriptFile.WriteLine(mpqUpdateScriptText.ToString());
+
+            // Update the MPQ using the script
+            Logger.WriteDetail("Updating MPQ file");
+            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to update MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + mpqUpdateScriptFileName + "\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.Arguments = args;
