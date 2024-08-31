@@ -49,7 +49,7 @@ namespace EQWOWConverter
             // Extract
             ExtractClientDBCFiles();
 
-            // Convert
+            // Objects
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
             {
                 if (ConvertEQObjectsToWOW() == false)
@@ -59,8 +59,33 @@ namespace EQWOWConverter
             {
                 Logger.WriteInfo("Note: Object generation is set to false in the Configuration");
             }
-            if (ConvertEQZonesToWOW() == false)
+
+            // Zones
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
+            {
+                Logger.WriteInfo("Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
+                foreach(string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+                    Logger.WriteInfo(zoneShortName + " ", true, false);
+                Logger.WriteInfo(string.Empty, false, false);
+            }
+            List<Zone> zones;
+            if (ConvertEQZonesToWOW(out zones) == false)
                 return false;
+
+            // Copy the loading screens
+            CreateLoadingScreens();
+
+            // Copy the liquid material textures
+            CreateLiquidMaterials();
+
+            // Create the DBC files
+            CreateDBCFiles(zones);
+
+            // Create the Azeroth Core Scripts (note: this must always be after DBC files)
+            CreateAzerothCoreScripts(zones);
+
+            // Create the MPQ
+            CreatePatchMPQ();
 
             // Deploy 
             if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
@@ -124,18 +149,11 @@ namespace EQWOWConverter
                 // Save the object
                 staticObjects.Add(curObject);
             }
-
-            // Create the DBC update scripts
-            // TODO
-
-            // Create the Azeroth Core Scripts
-            // TODO?
-
             return true;
         }
 
         // TODO: Condense above
-        public bool ConvertEQZonesToWOW()
+        public bool ConvertEQZonesToWOW(out List<Zone> zones)
         {
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
@@ -186,7 +204,7 @@ namespace EQWOWConverter
             // Go through the subfolders for each zone and convert to wow zone
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
-            List<Zone> zones = new List<Zone>();
+            zones = new List<Zone>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Skip any disabled expansions
@@ -207,30 +225,21 @@ namespace EQWOWConverter
                 // Convert to WOW zone
                 CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, relativeStaticDoodadsPath, relativeZoneMaterialDoodadsPath);
 
-                // Place the related textures
-                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneMaterialDoodadsPath);
+                // Copy/move files if needed
+                if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
+                    Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                {
+                    // Place the related textures
+                    ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneMaterialDoodadsPath);
 
-                // Place the related music files
-                ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
+                    // Place the related music files
+                    ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
+                }
+                else
+                    Logger.WriteDetail("For zone '" + zoneDirectory.Name + "', skipped texture and music copy since it wasn't in CONFIG_GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
 
                 zones.Add(curZone);
             }
-
-            // Copy the loading screens
-            CreateLoadingScreens();
-
-            // Copy the liquid material textures
-            CreateLiquidMaterials();
-
-            // Create the DBC files
-            CreateDBCFiles(zones);
-
-            // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones);
-
-            // Create the MPQ
-            CreatePatchMPQ();
-
             return true;
         }
 
@@ -445,35 +454,41 @@ namespace EQWOWConverter
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
-            // Generate the WOW zone data first
+            // Generate the WOW zone data first, always do it since IDs are based on it
             zone.LoadFromEQZone();
 
-            // Create the zone WMO objects
-            WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
-            zoneWMO.WriteToDisk(exportMPQRootFolder);
-
-            // Create the WDT
-            WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
-            zoneWDT.WriteToDisk(exportMPQRootFolder);
-
-            // Create the WDL
-            WDL zoneWDL = new WDL(zone);
-            zoneWDL.WriteToDisk(exportMPQRootFolder);
-
-            // Create the zone-specific object files
-            foreach(ObjectModel zoneObject in zone.GeneratedZoneObjects)
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
+                Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zone.ShortName))
             {
-                // Recreate the folder if needed
-                string curZoneObjectRelativePath = Path.Combine(relativeZoneMaterialDoodadsFolder, zoneObject.Name);
-                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
-                if (Directory.Exists(curZoneObjectFolder))
-                    Directory.Delete(curZoneObjectFolder, true);
-                Directory.CreateDirectory(curZoneObjectFolder);
+                // Create the zone WMO objects
+                WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
+                zoneWMO.WriteToDisk(exportMPQRootFolder);
 
-                // Build this zone object M2 Data
-                M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
-                objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+                // Create the WDT
+                WDT zoneWDT = new WDT(zone, zoneWMO.RootFileRelativePathWithFileName);
+                zoneWDT.WriteToDisk(exportMPQRootFolder);
+
+                // Create the WDL
+                WDL zoneWDL = new WDL(zone);
+                zoneWDL.WriteToDisk(exportMPQRootFolder);
+
+                // Create the zone-specific object files
+                foreach (ObjectModel zoneObject in zone.GeneratedZoneObjects)
+                {
+                    // Recreate the folder if needed
+                    string curZoneObjectRelativePath = Path.Combine(relativeZoneMaterialDoodadsFolder, zoneObject.Name);
+                    string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
+                    if (Directory.Exists(curZoneObjectFolder))
+                        Directory.Delete(curZoneObjectFolder, true);
+                    Directory.CreateDirectory(curZoneObjectFolder);
+
+                    // Build this zone object M2 Data
+                    M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
+                    objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+                }
             }
+            else
+                Logger.WriteDetail("For zone '" + zone.ShortName + "', skipped wow file generation since it wasn't in CONFIG_GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
 
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
@@ -499,6 +514,8 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Copying loading screens");
             string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
+            if (Directory.Exists(loadingScreensTextureFolder) == true)
+                Directory.Delete(loadingScreensTextureFolder, true);
             Directory.CreateDirectory(loadingScreensTextureFolder);
 
             // Classic
@@ -535,6 +552,8 @@ namespace EQWOWConverter
 
             string sourceTextureFolder = Path.Combine(eqExportsConditionedPath, "liquidsurfaces");
             string targetTextureFolder = Path.Combine(exportMPQRootFolder, "XTEXTURES", "everquest");
+            if (Directory.Exists(targetTextureFolder) == true)
+                Directory.Delete(targetTextureFolder, true);
             Directory.CreateDirectory(targetTextureFolder);
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
