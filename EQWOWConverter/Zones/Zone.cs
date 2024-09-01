@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -46,6 +45,8 @@ namespace EQWOWConverter.Zones
         public Vector3 SafePosition = new Vector3();
         public Dictionary<string, Sound> MusicSoundsByFileNameNoExt = new Dictionary<string, Sound>();
         public List<ZoneAreaMusic> ZoneAreaMusics = new List<ZoneAreaMusic>();
+        public Dictionary<string, Sound> AmbientSoundsByFileNameNoExt = new Dictionary<string, Sound>();
+        public List<ZoneAreaAmbientSound> ZoneAreaAmbientSounds = new List<ZoneAreaAmbientSound>();
         public ZoneArea DefaultArea;
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
 
@@ -57,7 +58,7 @@ namespace EQWOWConverter.Zones
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             else
                 DescriptiveNameOnlyLetters = shortName;
-            DefaultArea = new ZoneArea(DescriptiveName, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight);
+            DefaultArea = new ZoneArea(DescriptiveName, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight, "", "");
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -323,6 +324,14 @@ namespace EQWOWConverter.Zones
                 zoneArea.AreaMusic = areaMusic;
             }
 
+            // Create sound ambience if needed
+            ZoneAreaAmbientSound? areaAmbientSound = null;
+            if (zoneArea.AmbientSoundFileNameNoExtDay != string.Empty || zoneArea.AmbientSoundFileNameNoExtNight != string.Empty)
+            {
+                areaAmbientSound = GenerateZoneAreaAmbientSound(zoneArea.AmbientSoundFileNameNoExtDay, zoneArea.AmbientSoundFileNameNoExtNight);
+                zoneArea.AreaAmbientSound = areaAmbientSound;
+            }
+
             // Break the geometry into as many parts as limited by the system
             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP);
@@ -388,30 +397,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate new sounds if needed
-            Sound? daySound = null;
-            if (musicFileNameDay != string.Empty)
-            {
-                if (MusicSoundsByFileNameNoExt.ContainsKey(musicFileNameDay))
-                    daySound = MusicSoundsByFileNameNoExt[musicFileNameDay];
-                else
-                {
-                    string curSoundName = "EQ Music " + musicFileNameDay;
-                    daySound = new Sound(curSoundName, musicFileNameDay, SoundType.ZoneMusic);
-                    MusicSoundsByFileNameNoExt.Add(musicFileNameDay, daySound);
-                }
-            }
-            Sound? nightSound = null;
-            if (musicFileNameNight != string.Empty)
-            {
-                if (MusicSoundsByFileNameNoExt.ContainsKey(musicFileNameNight))
-                    nightSound = MusicSoundsByFileNameNoExt[musicFileNameNight];
-                else
-                {
-                    string curSoundName = "EQ Music " + musicFileNameNight;
-                    nightSound = new Sound(curSoundName, musicFileNameNight, SoundType.ZoneMusic);
-                    MusicSoundsByFileNameNoExt.Add(musicFileNameNight, nightSound);
-                }
-            }
+            Sound? daySound = GenerateOrGetSound(musicFileNameDay, ref MusicSoundsByFileNameNoExt, "EQ Music ", SoundType.ZoneMusic);
+            Sound? nightSound = GenerateOrGetSound(musicFileNameNight, ref MusicSoundsByFileNameNoExt, "EQ Music ", SoundType.ZoneMusic);
 
             // Generate the music
             string musicName = "Zone-" + ShortName;
@@ -426,6 +413,50 @@ namespace EQWOWConverter.Zones
             return newMusic;
         }
 
+        private ZoneAreaAmbientSound GenerateZoneAreaAmbientSound(string soundFileNameDay, string soundFileNameNight)
+        {
+            // Reuse if exists
+            foreach (ZoneAreaAmbientSound areaAmbientSound in ZoneAreaAmbientSounds)
+                if (areaAmbientSound.FileNameNoExtDay == soundFileNameDay && areaAmbientSound.FileNameNoExtNight == soundFileNameNight)
+                    return areaAmbientSound;
+
+            // Error if both are blank names
+            if (soundFileNameDay == string.Empty && soundFileNameNight == string.Empty)
+            {
+                string errorMessage = "GenerateAmbientSound failed for '" + ShortName + "' because both the day and night file names were blank";
+                Logger.WriteError(errorMessage);
+                throw new Exception(errorMessage);
+            }
+
+            // Generate new sounds if needed
+            Sound? daySound = GenerateOrGetSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, "EQ Ambient ", SoundType.ZoneAmbience);
+            Sound? nightSound = GenerateOrGetSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, "EQ Ambient ", SoundType.ZoneAmbience);
+
+            // Generate the ambient sounds
+            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight);
+            ZoneAreaAmbientSounds.Add(newAmbientSound);
+
+            // Return it
+            return newAmbientSound;
+        }
+
+        private Sound? GenerateOrGetSound(string soundFileName, ref Dictionary<string, Sound> existingLookup, string soundNamePrefix, SoundType soundType)
+        {
+            Sound? returnSound = null;
+            if (soundFileName != string.Empty)
+            {
+                if (existingLookup.ContainsKey(soundFileName))
+                    returnSound = existingLookup[soundFileName];
+                else
+                {
+                    string curSoundName = soundNamePrefix + soundFileName;
+                    returnSound = new Sound(curSoundName, soundFileName, soundType);
+                    existingLookup.Add(soundFileName, returnSound);
+                }
+            }
+            return returnSound;
+        }
+
         private void SetLoadingScreen()
         {
             switch (ZoneProperties.Continent)
@@ -435,17 +466,17 @@ namespace EQWOWConverter.Zones
                 case ZoneContinentType.Development:
                 case ZoneContinentType.Odus:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START;
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START;
                     }
                     break;
                 case ZoneContinentType.Kunark:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 1;
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 1;
                     }
                     break;
                 case ZoneContinentType.Velious:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREENID_START + 2;
+                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2;
                     }
                     break;
                 default:

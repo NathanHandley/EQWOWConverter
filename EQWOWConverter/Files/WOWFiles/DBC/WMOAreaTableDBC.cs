@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class WMOAreaTableDBC : DBCFile
     {
-        private static int CURRENT_ID = Configuration.CONFIG_DBCID_WMOAREATABLEID_START;
+        private static int CURRENT_ID = Configuration.CONFIG_DBCID_WMOAREATABLE_ID_START;
 
         public void AddRow(int wmoID, int wmoGroupID, int zoneMusic, int areaTableID, string areaName)
         {

@@ -49,10 +49,10 @@ namespace EQWOWConverter.Zones
         public string ZonewideMusicFileNameNight = string.Empty;
 
         // DBCIDs
-        public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAPID_START;
-        private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOID_START;
-        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTYID_START;        
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
+        public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAP_ID_START;
+        private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOID_START;
+        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTY_ID_START;        
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
         public UInt32 DBCWMOID;
@@ -140,7 +140,8 @@ namespace EQWOWConverter.Zones
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
         protected void AddZoneArea(string displayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
-            string musicFileNameNoExtensionDay, string musicFileNameNoExtensionNight)
+            string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", string ambientSoundNoExtensionDay = "", 
+            string ambientSoundNoExtensionNight = "")
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
 
@@ -157,7 +158,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Otherwise, add new
-            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight);
+            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, ambientSoundNoExtensionDay, ambientSoundNoExtensionDay);
             ZoneAreas.Add(newZoneArea);
         }
 

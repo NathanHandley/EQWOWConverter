@@ -92,7 +92,7 @@ namespace EQWOWConverter.Zones
             }
 
             // DBCIDs
-            private static int CURRENT_LIGHTPARAMSID = Configuration.CONFIG_DBCID_LIGHTPARAMS_START;
+            private static int CURRENT_LIGHTPARAMSID = Configuration.CONFIG_DBCID_LIGHTPARAMS_ID_START;
             public int DBCLightParamsID;
             public float Glow = 0.5f;
             public int HighlightSky = 0; // Boolean, 1 or 0

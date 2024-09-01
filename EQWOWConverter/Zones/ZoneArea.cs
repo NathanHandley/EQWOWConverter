@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneArea
     {
-        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_START;
+        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_ID_START;
 
         public UInt32 DBCAreaTableID;
         public string DisplayName = string.Empty;
@@ -33,14 +33,20 @@ namespace EQWOWConverter.Zones
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
         public ZoneAreaMusic? AreaMusic = null;
+        public string AmbientSoundFileNameNoExtDay = string.Empty;
+        public string AmbientSoundFileNameNoExtNight = string.Empty;
+        public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
-        public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileNameDay, string musicFileNameNight)
+        public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
+            string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight)
         {
             DBCAreaTableID = CURRENT_AREATABLEID;
             CURRENT_AREATABLEID++;
             DisplayName = displayName;
-            MusicFileNameNoExtDay = musicFileNameDay;
-            MusicFileNameNoExtNight = musicFileNameNight;
+            MusicFileNameNoExtDay = musicFileNameNoExtDay;
+            MusicFileNameNoExtNight = musicFileNameNoExtNight;
+            AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;
+            AmbientSoundFileNameNoExtNight = ambientSoundFileNameNoExtNight;
             AddBoundingBox(boundingBox);
         }
 

@@ -70,7 +70,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
 
         // If true, deploy to the SQL to the server
-        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
+        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = false;
 
         // If deploying to SQL, you need to set this to something real that points to your world database
         public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
@@ -80,14 +80,14 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
-        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.3f;
+        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 1f;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first
-        public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { };
+        public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { "freportw" };
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
@@ -211,45 +211,48 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
-        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files
-        public static readonly UInt32 CONFIG_DBCID_WMOGROUPID_START = 30000;
-
-        // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc
-        public static readonly UInt32 CONFIG_DBCID_WMOID_START = 7000;
-
-        // Specific rows in WMOAreaTable.dbc
-        public static readonly int CONFIG_DBCID_WMOAREATABLEID_START = 52000;
-
-        // Identifies Area rows in AreaTable.dbc
-        public static readonly UInt32 CONFIG_DBCID_AREATABLE_START = 5100;
-
-        // Identifies Maps in Map.dbc and MapDifficulty.dbc
-        public static readonly int CONFIG_DBCID_MAPID_START = 750;
-
-        // Specific rows in MapDifficulty.dbc. (~800-922)
-        public static readonly int CONFIG_DBCID_MAPDIFFICULTYID_START = 800;
-
-        // IDs for the loading screen
-        public static readonly int CONFIG_DBCID_LOADINGSCREENID_START = 255;
-
         // IDs for AreaBit used in AreaTable, should be unique (max of 4091)
         public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_START = 3800;
 
+        // Identifies Area rows in AreaTable.dbc
+        public static readonly UInt32 CONFIG_DBCID_AREATABLE_ID_START = 5100;
+
         // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in AzerothCore scripts
         // for teleports as well any other area-based triggers
-        public static readonly int CONFIG_DBCID_AREATRIGGERID_START = 6500;
+        public static readonly int CONFIG_DBCID_AREATRIGGER_ID_START = 6500;
+
+        // Identifies Maps in Map.dbc and MapDifficulty.dbc
+        public static readonly int CONFIG_DBCID_MAP_ID_START = 750;
+
+        // Specific rows in MapDifficulty.dbc. (~800-922)
+        public static readonly int CONFIG_DBCID_MAPDIFFICULTY_ID_START = 800;
 
         // Identifies the Light.DBC row, used for environmental properties
-        public static readonly int CONFIG_DBCID_LIGHT_START = 3500;
+        public static readonly int CONFIG_DBCID_LIGHT_ID_START = 3500;
 
         // Identifies the LightParams.dbc, used for detailed values related to a Light.DBC row
-        public static readonly int CONFIG_DBCID_LIGHTPARAMS_START = 1050;
+        public static readonly int CONFIG_DBCID_LIGHTPARAMS_ID_START = 1050;
 
-        // ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis
-        public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;        
+        // IDs for the loading screen
+        public static readonly int CONFIG_DBCID_LOADINGSCREEN_ID_START = 255;
 
         // ID for sounds found in SoundEntries.dbc
-        public static readonly int CONFIG_DBCID_SOUNDENTRIES_START = 22000;
+        public static readonly int CONFIG_DBCID_SOUNDENTRIES_ID_START = 22000;
+
+        // ID for sounds found in SoundAmbience.dbc
+        public static readonly int CONFIG_DBCID_SOUNDAMBIENCE_ID_START = 600;
+
+        // Specific rows in WMOAreaTable.dbc
+        public static readonly int CONFIG_DBCID_WMOAREATABLE_ID_START = 52000;
+
+        // Identifies WMO Roots.  Found in WMOAreaTable.dbc and AreaTable.dbc
+        public static readonly UInt32 CONFIG_DBCID_WMOAREATABLE_WMOID_START = 7000;
+
+        // Identifies WMO Groups. Found in WMOAreaTable.dbc and the .wmo files
+        public static readonly UInt32 CONFIG_DBCID_WMOAREATABLE_WMOGROUPID_START = 30000;        
+
+        // ID for music in ZoneMusic.dbc, and how many IDs to reserve on a per-zone basis
+        public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;
 
         // ====================================================================
         // SQL Scripts (AzerothCore)

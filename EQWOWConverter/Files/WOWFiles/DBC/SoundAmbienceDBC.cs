@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,30 +23,14 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class AreaTriggerDBC : DBCFile
+    internal class SoundAmbienceDBC : DBCFile
     {
-        public static int CURRENT_AREATRIGGER_ID = Configuration.CONFIG_DBCID_AREATRIGGER_ID_START;
-        public static int GetGeneratedAreaTriggerID()
-        {
-            int generatedID = CURRENT_AREATRIGGER_ID;
-            CURRENT_AREATRIGGER_ID++;
-            return generatedID;
-        }
-
-        public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ, 
-            float boxLength, float boxWidth, float boxHeight, float boxOrientation)
+        public void AddRow(int Id, int daySoundAmbienceID, int nightSoundAmbienceID)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(areaTriggerID);
-            newRow.AddInt(mapID);
-            newRow.AddFloat(positionX);
-            newRow.AddFloat(positionY);
-            newRow.AddFloat(positionZ);
-            newRow.AddFloat(0); // Radius
-            newRow.AddFloat(boxLength);
-            newRow.AddFloat(boxWidth);
-            newRow.AddFloat(boxHeight);
-            newRow.AddFloat(boxOrientation);
+            newRow.AddInt(Id);
+            newRow.AddInt(daySoundAmbienceID);
+            newRow.AddInt(nightSoundAmbienceID);
             Rows.Add(newRow);
         }
     }

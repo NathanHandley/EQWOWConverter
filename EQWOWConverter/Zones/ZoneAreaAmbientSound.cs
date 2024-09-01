@@ -14,34 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Common
+namespace EQWOWConverter.Zones
 {
-    internal class Sound
+    internal class ZoneAreaAmbientSound
     {
-        private static int CURRENT_SOUNDENTRY_ZONEMUSICID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ID_START;
+        private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.CONFIG_DBCID_SOUNDAMBIENCE_ID_START;
 
-        public int DBCID;
-        public string Name = string.Empty;
-        public string AudioFileNameNoExt = string.Empty;
-        public SoundType Type = SoundType.None;
-        public float Volume = 1f;
-        public bool Loop = false;
-        public float MinDistance = 8f; // Default for zone music
-        public float DistanceCutoff = 45f; // Default for zone music
+        protected int DBCID;
+        public string FileNameNoExtDay = string.Empty;
+        public string FileNameNoExtNight = string.Empty;
+        public Sound? DaySound;
+        public Sound? NightSound;
 
-        public Sound(string name, string audioFileName, SoundType type)
+        public ZoneAreaAmbientSound(Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
         {
-            DBCID = CURRENT_SOUNDENTRY_ZONEMUSICID;
-            CURRENT_SOUNDENTRY_ZONEMUSICID++;
-            Name = name;
-            AudioFileNameNoExt = audioFileName;
-            Type = type;
+            DBCID = CURRENT_SOUNDAMBIENCE_ID;
+            CURRENT_SOUNDAMBIENCE_ID++;
+            DaySound = daySound;
+            NightSound = nightSound;
+            FileNameNoExtDay = fileNameNoExtDay;
+            FileNameNoExtNight = fileNameNoExtNight;
         }
     }
 }

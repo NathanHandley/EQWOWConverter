@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneObjectModel
     {
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOGROUPID_START;
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
         public string DisplayName = string.Empty;
