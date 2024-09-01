@@ -70,7 +70,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
 
         // If true, deploy to the SQL to the server
-        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = false;
+        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
 
         // If deploying to SQL, you need to set this to something real that points to your world database
         public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
@@ -80,14 +80,14 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.25 seems to be 1:1 with EQ. 0.3 allows most races to enter small doors. 0.4 allows taurens through rivervale bank door
-        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 1f;
+        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.3f;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first
-        public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { "freportw" };
+        public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { };
 
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;

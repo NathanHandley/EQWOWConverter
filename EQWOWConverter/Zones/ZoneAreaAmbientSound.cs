@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones
     {
         private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.CONFIG_DBCID_SOUNDAMBIENCE_ID_START;
 
-        protected int DBCID;
+        public int DBCID;
         public string FileNameNoExtDay = string.Empty;
         public string FileNameNoExtNight = string.Empty;
         public Sound? DaySound;

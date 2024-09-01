@@ -158,7 +158,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Otherwise, add new
-            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, ambientSoundNoExtensionDay, ambientSoundNoExtensionDay);
+            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight);
             ZoneAreas.Add(newZoneArea);
         }
 

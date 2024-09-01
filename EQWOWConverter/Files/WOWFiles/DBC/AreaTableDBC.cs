@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CURRENT_AREABIT = Configuration.CONFIG_DBCID_AREATABLE_AREABIT_START;
 
-        public void AddRow(int id, int parentAreaID, ZoneAreaMusic? areaMusic, string areaName)
+        public void AddRow(int id, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName)
         {
             // AreaBit must always be unique
             int areaBit = CURRENT_AREABIT;
@@ -42,6 +42,11 @@ namespace EQWOWConverter.WOWFiles
             if (areaMusic != null)
                 zoneMusicID = areaMusic.DBCID;
 
+            // Ambience
+            int ambienceID = 0;
+            if (areaSound != null)
+                ambienceID = areaSound.DBCID;
+
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id);
             newRow.AddInt(724); // Continent ID
@@ -50,7 +55,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddPackedFlags(0); // Flags
             newRow.AddInt(0); // Sound Provider Preferences
             newRow.AddInt(0); // Sound Provider Preferences - Underwater
-            newRow.AddInt(0); // Ambience ID
+            newRow.AddInt(ambienceID);
             newRow.AddInt(zoneMusicID);
             newRow.AddInt(0); // IntroSound
             newRow.AddInt(0); // Exploration Level

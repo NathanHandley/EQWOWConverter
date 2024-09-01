@@ -164,6 +164,7 @@ namespace EQWOWConverter
 
             // Build paths
             string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
+            string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
             string inputMusicFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
             string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
             string exportMapsFolder = Path.Combine(exportMPQRootFolder, "World", "Maps");
@@ -239,6 +240,9 @@ namespace EQWOWConverter
 
                     // Place the related music files
                     ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
+
+                    // Place the related ambience files
+                    ExportAmbientSoundForZone(curZone, inputSoundFolderRoot, exportMPQRootFolder);
                 }
                 else
                     Logger.WriteDetail("For zone '" + zoneDirectory.Name + "', skipped texture and music copy since it wasn't in CONFIG_GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
@@ -405,6 +409,11 @@ namespace EQWOWConverter
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
             }
+
+            // Ambient Sounds
+            string relativeAmbientSoundsPath = Path.Combine("Sound", "Ambience", "Everquest");
+            string fullAmbientSoundsPath = Path.Combine(mpqReadyFolder, relativeAmbientSoundsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullAmbientSoundsPath + "\" \"" + relativeAmbientSoundsPath + "\" /r");
 
             // Loading Screens
             string relativeLoadingScreensPath = Path.Combine("Interface", "Glues", "LoadingScreens");
@@ -704,6 +713,8 @@ namespace EQWOWConverter
             mapDBCServer.LoadFromDisk(dbcInputFolder, "Map.dbc");
             MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
+            SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
+            soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -739,9 +750,9 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
                 // AreaTable
-                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.DisplayName);
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName);
                 foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
-                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.DisplayName);
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName);
 
                 // AreaTrigger
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
@@ -782,12 +793,30 @@ namespace EQWOWConverter
                 // Map Difficulty
                 mapDifficultyDBC.AddRow(zoneProperties.DBCMapID, zoneProperties.DBCMapDifficultyID);
 
+                // Sound Ambience
+                foreach (ZoneAreaAmbientSound zoneAreaAmbient in zone.ZoneAreaAmbientSounds)
+                {
+                    int soundIDDay = 0;
+                    if (zoneAreaAmbient.DaySound != null)
+                        soundIDDay = zoneAreaAmbient.DaySound.DBCID;
+                    int soundIDNight = 0;
+                    if (zoneAreaAmbient.NightSound != null)
+                        soundIDNight = zoneAreaAmbient.NightSound.DBCID;
+                    soundAmbienceDBC.AddRow(zoneAreaAmbient.DBCID, soundIDDay, soundIDNight);
+                }
+
                 // SoundEntries
                 string musicDirectory = "Sound\\Music\\Everquest\\" + zoneProperties.ShortName;
                 foreach (var sound in zone.MusicSoundsByFileNameNoExt)
                 {
                     string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".mp3";
                     soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, musicDirectory);
+                }
+                string ambientSoundsDirectory = "Sound\\Ambience\\Everquest";
+                foreach (var sound in zone.AmbientSoundsByFileNameNoExt)
+                {
+                    string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".wav";
+                    soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, ambientSoundsDirectory);
                 }
 
                 // WMOAreaTable (Header than groups)
@@ -829,6 +858,8 @@ namespace EQWOWConverter
             mapDBCServer.SaveToDisk(dbcOutputServerFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputServerFolder);
+            soundAmbienceDBC.SaveToDisk(dbcOutputClientFolder);
+            soundAmbienceDBC.SaveToDisk(dbcOutputServerFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
@@ -969,6 +1000,37 @@ namespace EQWOWConverter
                 Logger.WriteDetail("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
             Logger.WriteDetail("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
+        }
+
+        public void ExportAmbientSoundForZone(Zone zone, string soundInputFolder, string wowExportPath)
+        {
+            Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting ambient sound for zone '" + zone.ShortName + "'...");
+
+            if (zone.ZoneAreaAmbientSounds.Count == 0)
+            {
+                Logger.WriteDetail("- [" + zone.ShortName + "]: No ambient sound found for this zone");
+                return;
+            }
+
+            // Create the folder to output
+            string zoneOutputAmbienceFolder = Path.Combine(wowExportPath, "Sound", "Ambience", "Everquest");
+            if (Directory.Exists(zoneOutputAmbienceFolder) == false)
+                FileTool.CreateBlankDirectory(zoneOutputAmbienceFolder, true);
+
+            // Go through every sound object and put there if needed
+            foreach (var ambientSoundByFileName in zone.AmbientSoundsByFileNameNoExt)
+            {
+                string sourceFullPath = Path.Combine(soundInputFolder, ambientSoundByFileName.Value.AudioFileNameNoExt + ".wav");
+                string targetFullPath = Path.Combine(zoneOutputAmbienceFolder, ambientSoundByFileName.Value.AudioFileNameNoExt + ".wav");
+                if (File.Exists(sourceFullPath) == false)
+                {
+                    Logger.WriteError("Could not copy ambient sound file '" + sourceFullPath + "', as it did not exist");
+                    continue;
+                }
+                File.Copy(sourceFullPath, targetFullPath, true);
+                Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
+            }
+            Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
         }
 
         public void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
