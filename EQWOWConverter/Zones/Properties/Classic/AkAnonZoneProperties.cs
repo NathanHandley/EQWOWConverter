@@ -45,6 +45,11 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Abbey of Deep Musing", 1163.014404f, -498.962433f, 1000, 1144.748413f, -605.672791f, -1000f, "akanon-01", "akanon-01");
             AddZoneArea("Abbey of Deep Musing", 1252.234985f, -483.473602f, 1000, 1165.459839f, -497.916351f, -1000f, "akanon-01", "akanon-01");
             AddZoneArea("Abbey of Deep Musing", 1272.996582f, -505.813477f, 1000, 1250.005127f, -619.286072f, -1000f, "akanon-01", "akanon-01");
+            AddZoneArea("The Falls", 1722.807495f, -91.651901f, 1000, 1223.065186f, -608.332092f, -1000);
+            AddZoneArea("The Turbine", 2036.529297f, -170.345245f, 1000, 1718.003540f, -462.474243f, -156.969238f);
+            AddZoneArea("Lower Tunnels", 2110.136230f, -366.787415f, -160.268997f, 2016.313599f, -436.065186f, -1000);
+            AddZoneArea("Lower Tunnels", 2263.394287f, -344.190277f, -160.268997f, 2079.037109f, -653.487427f, -1000);
+            AddZoneArea("Lower Tunnels", 2261.485596f, -419.654907f, -160.268997f, 1961.612183f, -647.920593f, -1000);
             SetZonewideEnvironmentAsIndoors(0, 30, 0, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("steamfont", -2059.579834f, 528.815857f, -111.126549f, ZoneLineOrientationType.North, 70.830750f, -69.220848f, 12.469000f, 60.770279f, -84.162193f, -0.500000f);
