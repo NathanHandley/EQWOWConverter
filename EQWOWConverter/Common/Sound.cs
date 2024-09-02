@@ -30,17 +30,18 @@ namespace EQWOWConverter.Common
         public string Name = string.Empty;
         public string AudioFileNameNoExt = string.Empty;
         public SoundType Type = SoundType.None;
-        public float Volume = 1f;
+        public float Volume;
         public bool Loop = false;
         public float MinDistance = 8f; // Default for zone music
         public float DistanceCutoff = 45f; // Default for zone music
 
-        public Sound(string name, string audioFileName, SoundType type)
+        public Sound(string name, string audioFileName, float volume, SoundType type)
         {
             DBCID = CURRENT_SOUNDENTRY_ZONEMUSICID;
             CURRENT_SOUNDENTRY_ZONEMUSICID++;
             Name = name;
             AudioFileNameNoExt = audioFileName;
+            Volume = volume;
             Type = type;
         }
     }

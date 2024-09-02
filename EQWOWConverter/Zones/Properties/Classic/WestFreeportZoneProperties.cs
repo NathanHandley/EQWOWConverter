@@ -31,12 +31,10 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Make Arena PVP
             // TODO: Tunnels should have a low rumble
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
-            AddZoneArea("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f, "freportw-00", "freportw-00");
-            AddZoneArea("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f, "freportw-00", "freportw-00");
-
-            AddZoneArea("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f, "", "", "", "night");
-            AddZoneArea("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f, "", "", "", "night");
-
+            AddZoneArea("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f, "", "", 0f, "", "night", 0.2786121f);
+            AddZoneArea("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f, "", "", 0f, "", "night", 0.2786121f);
             AddZoneArea("Freeport Militia Yard", -139.712616f, 84.463814f, 100, -210.361160f, -140.239700f, -28.500000f, "freportw-01", "freportw-01");
             AddZoneArea("Freeport Militia Yard", -94.151672f, 20.980240f, 100, -139.781982f, -98.206734f, -28.500000f, "freportw-01", "freportw-01");
             AddZoneArea("Freeport Militia House", 90.813148f, -97.030060f, 100, -141.064972f, -266.007446f, -100, "freportw-02", "freportw-02");            
@@ -51,10 +49,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Freeport Arena", -264.012329f, -128.457397f, 100f, -281.182404f, -319.069641f, -100f, "freportw-03", "freportw-03");
             AddZoneArea("Freeport Arena", -276.247406f, -123.487968f, 100f, -418.271881f, -322.377777f, -100f, "freportw-03", "freportw-03");
             AddZoneArea("Freeport Arena", -416.380676f, -134.564438f, 100f, -429.425812f, -310.739227f, -100f, "freportw-03", "freportw-03");
-
-            AddZoneArea("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -200f, "", "", "caveloop", "caveloop");
-
-
+            AddZoneArea("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -200f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);
             AddZoneLineBox("ecommons", 577.000000f, -1580.000000f, -54.468632f, ZoneLineOrientationType.West, 587.772156f, 841.873230f, 200.000000f, 567.772156f, 811.873230f, -100.000000f);
             AddZoneLineBox("ecommons", 557.000000f, -1580.000000f, -54.468632f, ZoneLineOrientationType.West, 567.772156f, 841.873230f, 200.000000f, 547.772156f, 811.873230f, -100.000000f);
             AddZoneLineBox("ecommons", 537.000000f, -1580.000000f, -54.468670f, ZoneLineOrientationType.West, 547.772156f, 841.873230f, 200.000000f, 527.772156f, 811.873230f, -100.000000f);

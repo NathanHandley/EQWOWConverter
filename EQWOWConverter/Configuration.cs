@@ -192,6 +192,10 @@ namespace EQWOWConverter
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
+        // Default volumes
+        public static readonly float CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME = 0.8f;
+        public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME = 1.0f;
+
         //=====================================================================
         // Objects
         //=====================================================================

@@ -32,13 +32,15 @@ namespace EQWOWConverter.Zones
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
-        public ZoneAreaMusic? AreaMusic = null;
+        public float MusicVolume;
+        public ZoneAreaMusic? AreaMusic = null;        
         public string AmbientSoundFileNameNoExtDay = string.Empty;
         public string AmbientSoundFileNameNoExtNight = string.Empty;
+        public float AmbientSoundVolume;
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
         public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
-            string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight)
+            float musicVolume, string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolume)
         {
             DBCAreaTableID = CURRENT_AREATABLEID;
             CURRENT_AREATABLEID++;
@@ -47,6 +49,8 @@ namespace EQWOWConverter.Zones
             MusicFileNameNoExtNight = musicFileNameNoExtNight;
             AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;
             AmbientSoundFileNameNoExtNight = ambientSoundFileNameNoExtNight;
+            MusicVolume = musicVolume;
+            AmbientSoundVolume = ambientVolume;
             AddBoundingBox(boundingBox);
         }
 
