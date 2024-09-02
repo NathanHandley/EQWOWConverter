@@ -141,7 +141,7 @@ namespace EQWOWConverter.Zones
         // Blank "musicFileName" will be an area without music
         protected void AddZoneArea(string displayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
             string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", 
-            string ambientSoundNoExtensionNight = "", float ambientVolume = 0f)
+            string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
 

@@ -36,6 +36,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("South Block", -102.995468f, 426.914612f, 1000f, -245.911804f, 151.320679f, -1000f, "freportn-07", "freportn-07");
             AddZoneArea("South Block", -0.161060f, 278.291382f, 1000f, -229.072342f, 139.537857f, -1000f, "freportn-07", "freportn-07");
             AddZoneArea("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 428.469452f, -1000f, "freportn-09", "freportn-13");
+            AddZoneArea("Hall of Truth", 349.568451f, 169.072479f, 1000f, 126.620598f, 15.954200f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+            AddZoneArea("Hall of Truth", 349.568451f, 27.683069f, 1000f, 98.723747f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+            AddZoneArea("Hall of Truth", 349.568451f, -124.064507f, 1000f, 85.137863f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+            AddZoneArea("Hall of Truth", 349.568451f, -170.485733f, 1000f, 44.162498f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
             AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
             AddZoneLineBox("freportw", 728.335388f, -581.244812f, -20.999701f, ZoneLineOrientationType.South, -15.071440f, -433.618988f, -11.531000f, -34.966301f, -454.098175f, -50f);
             AddZoneLineBox("freportw", 211.309326f, -124.670799f, -14.000000f, ZoneLineOrientationType.South, -429.537323f, 504.799438f, 14.500150f, -490.004974f, 475.620117f, -14.500010f);
