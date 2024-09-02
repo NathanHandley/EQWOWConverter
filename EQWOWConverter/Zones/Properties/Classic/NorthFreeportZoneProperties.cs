@@ -29,6 +29,13 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinentType.Antonica);
             //AddValidMusicInstanceTrackIndexes(5, 7, 8, 9, 10, 12, 13);
+            AddZoneArea("Temple of Marr", 154.301849f, 404.686890f, 1000f, 117.155739f, 294.509674f, -1000f, "freportn-12", "freportn-12");
+            AddZoneArea("Temple of Marr", 137.158463f, 420.520691f, 1000f, -110.719597f, 279.679901f, -1000f, "freportn-12", "freportn-12");
+            AddZoneArea("Temple of Marr", 121.776512f, 437.634430f, 1000f, 15.115140f, 265.146179f, -1000f, "freportn-12", "freportn-12");
+            AddZoneArea("Temple of Marr", 111.346077f, 447.850525f, 1000f, 28.500401f, 251.722656f, -1000f, "freportn-12", "freportn-12");
+            AddZoneArea("South Block", -102.995468f, 426.914612f, 1000f, -245.911804f, 151.320679f, -1000f, "freportn-07", "freportn-07");
+            AddZoneArea("South Block", -0.161060f, 278.291382f, 1000f, -229.072342f, 139.537857f, -1000f, "freportn-07", "freportn-07");
+            AddZoneArea("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 428.469452f, -1000f, "freportn-09", "freportn-13");
             AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
             AddZoneLineBox("freportw", 728.335388f, -581.244812f, -20.999701f, ZoneLineOrientationType.South, -15.071440f, -433.618988f, -11.531000f, -34.966301f, -454.098175f, -50f);
             AddZoneLineBox("freportw", 211.309326f, -124.670799f, -14.000000f, ZoneLineOrientationType.South, -429.537323f, 504.799438f, 14.500150f, -490.004974f, 475.620117f, -14.500010f);
