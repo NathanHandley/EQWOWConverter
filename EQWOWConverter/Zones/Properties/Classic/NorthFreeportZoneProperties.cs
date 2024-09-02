@@ -35,11 +35,40 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Temple of Marr", 111.346077f, 447.850525f, 1000f, 28.500401f, 251.722656f, -1000f, "freportn-12", "freportn-12");
             AddZoneArea("South Block", -102.995468f, 426.914612f, 1000f, -245.911804f, 151.320679f, -1000f, "freportn-07", "freportn-07");
             AddZoneArea("South Block", -0.161060f, 278.291382f, 1000f, -229.072342f, 139.537857f, -1000f, "freportn-07", "freportn-07");
-            AddZoneArea("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 428.469452f, -1000f, "freportn-09", "freportn-13");
-            AddZoneArea("Hall of Truth", 349.568451f, 169.072479f, 1000f, 126.620598f, 15.954200f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
-            AddZoneArea("Hall of Truth", 349.568451f, 27.683069f, 1000f, 98.723747f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
-            AddZoneArea("Hall of Truth", 349.568451f, -124.064507f, 1000f, 85.137863f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
-            AddZoneArea("Hall of Truth", 349.568451f, -170.485733f, 1000f, 44.162498f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+            AddZoneArea("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 426.265411f, -1000f, "freportn-09", "freportn-13");
+            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            {
+                AddZoneArea("Hall of Truth", 349.568451f, 174.375458f, 1000f, 126.620598f, 15.954200f, -1000f, "freportn-14", "freportn-14");
+                AddZoneArea("Hall of Truth", 349.568451f, 27.683069f, 1000f, 98.723747f, -230.993713f, -1000f, "freportn-14", "freportn-14");
+                AddZoneArea("Hall of Truth", 349.568451f, -124.064507f, 1000f, 85.137863f, -230.993713f, -1000f, "freportn-14", "freportn-14");
+                AddZoneArea("Hall of Truth", 349.568451f, -170.485733f, 1000f, 44.162498f, -230.993713f, -1000f, "freportn-14", "freportn-14");
+                AddZoneArea("Office of the People", 349.867615f, 504.611694f, 1000f, 196.286224f, 174.142166f, -1000f, "freportn-04", "freportn-04");
+                AddZoneArea("Office of the People", 349.867615f, 297.895874f, 1000f, 186.657715f, 174.142166f, -1000f, "freportn-04", "freportn-04");
+                AddZoneArea("Office of the People", 349.867615f, 284.342682f, 1000f, 172.777039f, 174.142166f, -1000f, "freportn-04", "freportn-04");
+                AddZoneArea("Office of the People", 349.867615f, 272.726349f, 1000f, 161.496704f, 184.404633f, -1000f, "freportn-04", "freportn-04");
+                AddZoneArea("The Jade Tiger's Den", 127.223984f, 111.681374f, 1000f, 0.377760f, 28.328440f, -1000f, "freportn-01", "freportn-01");
+            }
+            else
+            {
+                AddZoneArea("Hall of Truth", 349.568451f, 169.072479f, 1000f, 126.620598f, 15.954200f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+                AddZoneArea("Hall of Truth", 349.568451f, 27.683069f, 1000f, 98.723747f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+                AddZoneArea("Hall of Truth", 349.568451f, -124.064507f, 1000f, 85.137863f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+                AddZoneArea("Hall of Truth", 349.568451f, -170.485733f, 1000f, 44.162498f, -230.993713f, -1000f, "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", 0f, false);
+                AddZoneArea("Office of the People", 349.867615f, 504.611694f, 1000f, 196.286224f, 174.142166f, -1000f);
+                AddZoneArea("Office of the People", 349.867615f, 297.895874f, 1000f, 186.657715f, 174.142166f, -1000f);
+                AddZoneArea("Office of the People", 349.867615f, 284.342682f, 1000f, 172.777039f, 174.142166f, -1000f);
+                AddZoneArea("Office of the People", 349.867615f, 272.726349f, 1000f, 161.496704f, 184.404633f, -1000f);
+                AddZoneArea("The Jade Tiger's Den", 127.223984f, 111.681374f, 1000f, 0.377760f, 28.328440f, -1000f);
+            }
+            AddZoneArea("Bank of Freeport", 52.053120f, -167.295944f, 1000f, -53.982609f, -251.720886f, -1000f, "freportn-05", "freportn-05");
+            AddZoneArea("The Emporium", 98.126373f, -70.289772f, 1000f, 14.231530f, -167.680298f, -1000f);
+            AddZoneArea("Tassel's Tavern", 97.693863f, 27.693460f, 1000f, 42.200272f, -69.864670f, -1000f, "freportn-08", "freportn-08");
+            AddZoneArea("Tassel's Tavern", 97.693863f, 27.693460f, 1000f, 27.387091f, -27.503710f, -1000f, "freportn-08", "freportn-08");
+            AddZoneArea("Palola's Inn", -140.083038f, 27.932680f, 1000f, -184.513947f, -29.577450f, -1000f, "freportn-07", "freportn-07");
+            AddZoneArea("Palola's Inn", -140.166840f, -28.005939f, 1000f, -209.660217f, -97.695213f, -1000f, "freportn-07", "freportn-07");
+            AddZoneArea("North Tunnels", 498.394409f, 765.014404f, 100, 304.263275f, 576.443298f, -300f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);
+            AddZoneArea("Northeast Tunnels", 142.614716f, -229.190308f, 100, 38.626499f, -309.047577f, -300f);
+            AddZoneArea("Northeast Tunnels", 185.648834f, -264.480988f, 100, -86.916962f, -540.348816f, -300f);
             AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
             AddZoneLineBox("freportw", 728.335388f, -581.244812f, -20.999701f, ZoneLineOrientationType.South, -15.071440f, -433.618988f, -11.531000f, -34.966301f, -454.098175f, -50f);
             AddZoneLineBox("freportw", 211.309326f, -124.670799f, -14.000000f, ZoneLineOrientationType.South, -429.537323f, 504.799438f, 14.500150f, -490.004974f, 475.620117f, -14.500010f);
