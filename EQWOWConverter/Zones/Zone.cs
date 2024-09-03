@@ -352,12 +352,12 @@ namespace EQWOWConverter.Zones
             // Reduce meshdata to what will actually be rendered
             MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
 
-            // If set, show the area box around music instances
-            if (Configuration.CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES == true)
+            // If set, show the area box
+            if (Configuration.CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES == true)
             {
                 foreach(ZoneArea zoneArea in SubAreas)
                 {
-                    if (zoneArea.AreaMusic != null)
+                    if (zoneArea.DisplayName != ZoneProperties.DescriptiveName)
                     {
                         foreach(BoundingBox areaBox in zoneArea.BoundingBoxes)
                         {

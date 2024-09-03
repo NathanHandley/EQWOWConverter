@@ -133,6 +133,8 @@ namespace EQWOWConverter
         // Maximum number of BTREE faces that fit into a WMO group before it subdivides
         public static readonly int CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
 
+        // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
+        public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
         //=====================================================================
         // Liquid
         //=====================================================================
@@ -185,10 +187,6 @@ namespace EQWOWConverter
 
         //=====================================================================
         // Audio
-        //=====================================================================
-        // If set to 'true', show a box where the music zones are. This is for debugging only
-        public static readonly bool CONFIG_AUDIO_MUSIC_DRAW_MUSIC_AREAS_AS_BOXES = false;
-        
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
@@ -196,6 +194,8 @@ namespace EQWOWConverter
         public static readonly float CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME = 0.8f;
         public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME = 1.0f;
 
+        // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
+        public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
         //=====================================================================
         // Objects
         //=====================================================================

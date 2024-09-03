@@ -33,6 +33,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
             AddZoneArea("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("West Gate", 156.815201f, 98.281792f, 100, -126.790573f, 27.274071f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f, "", "", 0f, "", "night", 0.2786121f);
             AddZoneArea("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f, "", "", 0f, "", "night", 0.2786121f);
             AddZoneArea("Freeport Militia Yard", -139.712616f, 84.463814f, 100, -210.361160f, -140.239700f, -28.500000f, "freportw-01", "freportw-01");
