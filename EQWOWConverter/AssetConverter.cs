@@ -218,6 +218,9 @@ namespace EQWOWConverter
                     continue;
                 if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
+                if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true &&
+                    Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
+                    continue;
 
                 // Load the EQ zone
                 string relativeZoneMaterialDoodadsPath = Path.Combine("World", "Everquest", "ZoneMaterialDoodads", zoneDirectory.Name);

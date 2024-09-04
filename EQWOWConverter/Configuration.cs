@@ -89,6 +89,10 @@ namespace EQWOWConverter
         // built patch mpq, it will be forced to do a complete build first
         public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { };
 
+        // If this is true and you do an update build, only the zones in the CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES will be functional
+        // Allows for much faster builds when debugging
+        public static readonly bool CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL = true;
+
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
          
