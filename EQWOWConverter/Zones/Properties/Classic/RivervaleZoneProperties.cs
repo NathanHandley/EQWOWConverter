@@ -43,6 +43,8 @@ namespace EQWOWConverter.Zones.Properties
             AddOctagonChildZoneArea("Fool's Gold", "", -25.015270f, -94.932991f, -156.925949f, -226.882187f, -179.992004f, -203.906723f, -179.962494f,
                 -203.859238f, -48.034370f, -72.003288f, -48.034370f, -72.003288f, 150f, -50f);
 
+            AddZoneArea("Bank of Rivervale", 99.532059f, -118.852730f, 150f, 24.082541f, -199.351913f, -50f);
+
 
 
             //AddValidMusicInstanceTrackIndexes(0);
