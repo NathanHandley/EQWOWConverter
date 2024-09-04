@@ -180,6 +180,85 @@ namespace EQWOWConverter.Zones
             ZoneAreas.Add(newZoneArea);
         }
 
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Blank "musicFileName" will be an area without music
+        // IMPORTANT: These must be defined before the parent area if they share geometry
+        protected void AddOctagonChildZoneArea(string displayName, string parentAreaDisplayName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+            float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ, string musicFileNameNoExtensionDay = "", 
+            string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
+        {
+            // TODO: Consider moving this to a config
+            float stepSize = 0.2f;
+            float boxOverlapAmount = 0.0001f;
+
+            // Boundary Control (very limited)
+            if (northEdgeX < southEdgeX)
+            {
+                Logger.WriteError("AddOctagonChildZoneArea error for zone '" + ShortName + "' as north x < south x");
+                return;
+            }
+            if (westEdgeY < eastEdgeY)
+            {
+                Logger.WriteError("AddOctagonChildZoneArea error for zone '" + ShortName + "' as west x < east x");
+                return;
+            }
+
+            // Start at the north X and walk down to the south X
+            float curXTop = northEdgeX;
+            bool moreXToWalk = true;
+            while (moreXToWalk == true)
+            {
+                // If in the middle block, fill it in
+                if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
+                {
+                    float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
+                    AddChildZoneArea(displayName, string.Empty, curXTop, westEdgeY, topZ, highestSouthEastX, eastEdgeY, bottomZ, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume,
+                        ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume, loopMusic);
+                    curXTop = highestSouthEastX;
+                }
+
+                // Calculate the bottom edge, and align bottom edge if extends
+                float curXBottom = curXTop - stepSize;
+                if (curXBottom < southEdgeX)
+                {
+                    curXBottom = southEdgeX;
+                    moreXToWalk = false;
+                }
+
+                // Determine NW position
+                float nwX = curXTop;
+                float nwY = 0;
+                if (curXTop > westNorthX)
+                    nwY = GetYOnLineAtX(northEdgeX, northWestY, westNorthX, westEdgeY, curXTop);
+                else
+                    nwY = GetYOnLineAtX(southEdgeX, southWestY, westSouthX, westEdgeY, curXTop);
+
+                // Determine SE position
+                float seX = curXBottom;
+                float seY = 0;
+                if (curXBottom > eastNorthX)
+                    seY = GetYOnLineAtX(northEdgeX, northEastY, eastNorthX, eastEdgeY, curXBottom);
+                else
+                    seY = GetYOnLineAtX(southEdgeX, southEastY, eastSouthX, eastEdgeY, curXBottom);
+
+                // Constrain in bounds
+                nwX = MathF.Min(nwX, northEdgeX);
+                nwY = MathF.Min(nwY, westEdgeY);
+                seX = MathF.Max(seX, southEdgeX);
+                seY = MathF.Max(seY, eastEdgeY);
+
+                // Add the box if the bounds are good
+                if (nwX > seX && nwY > seY)
+                {
+                    AddChildZoneArea(displayName, string.Empty, nwX, nwY, topZ, seX, seY, bottomZ, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume,
+                        ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume, loopMusic);
+                }
+
+                // Set new top factoring for overlap
+                curXTop = curXBottom; /*-= boxOverlapAmount;*/
+            }
+        }
+
         protected void SetZonewideMusicFileNames(string musicFileNameDay, string musicFileNameNight)
         {
             ZonewideMusicFileNameDay = musicFileNameDay;
