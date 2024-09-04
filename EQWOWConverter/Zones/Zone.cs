@@ -549,10 +549,6 @@ namespace EQWOWConverter.Zones
 
         private void SetAreaParentRelationships()
         {
-            if (ShortName != "freportn")
-            {
-                return;
-            }
             // For any parent matches, set the parent ID.  Otherwise, set the default id
             foreach(ZoneArea zoneAreaToSet in SubAreas)
             {
