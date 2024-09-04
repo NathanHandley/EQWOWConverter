@@ -29,6 +29,22 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Bug - You can fall through the waterfall base
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinentType.Antonica);
+            SetZonewideMusicFileNames("rivervale-00", "rivervale-00");
+            AddZoneArea("Bank of Rivervale", 134.691025f, -143.286545f, 150f, 67.445671f, -214.820267f, -50f);
+            AddZoneArea("Bank of Rivervale", 122.784729f, -133.233475f, 150f, 67.445671f, -214.820267f, -50f);
+            AddZoneArea("Bank of Rivervale", 99.532059f, -118.852730f, 150f, 24.082541f, -199.351913f, -50f);
+            AddZoneArea("Fiddy's Fishing Dock", 48.544201f, -308.484436f, 150f, -24.710560f, -412.258972f, -50f);
+            AddZoneArea("Fiddy's Fishing Dock", 48.544201f, -308.484436f, 150f, -23.273870f, -442.484894f, -50f);
+            AddZoneArea("Fiddy's Fishing Dock", 64.205719f, -353.372650f, 150f, -23.273870f, -442.484894f, -50f);
+            AddZoneArea("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 120.088417f, -59.832321f, -50f);
+            AddZoneArea("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 143.445099f, -84.469452f, -50f);
+            AddZoneArea("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 155.618820f, -108.269447f, -50f);
+            AddZoneArea("Weary Foot Rest Inn", 252.633408f, 17.621901f, -8.470640f, 68.737541f, -156.572906f, -50f);
+            AddOctagonChildZoneArea("Fool's Gold", "", -25.015270f, -94.932991f, -156.925949f, -226.882187f, -179.992004f, -203.906723f, -179.962494f,
+                -203.859238f, -48.034370f, -72.003288f, -48.034370f, -72.003288f, 150f, -50f);
+
+
+
             //AddValidMusicInstanceTrackIndexes(0);
             SetZonewideEnvironmentAsOutdoorsWithSky(144, 151, 144, ZoneFogType.Heavy, 0.5f, 1f);
             AddZoneLineBox("kithicor", 2012.985229f, 3825.189209f, 462.250427f, ZoneLineOrientationType.South, -384.065887f, -275.682556f, 22.469000f, -396.650330f, -290.013977f, -0.499910f);
