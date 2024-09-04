@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,7 +29,9 @@ namespace EQWOWConverter.Zones
         private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_ID_START;
 
         public UInt32 DBCAreaTableID;
+        public UInt32 DBCParentAreaTableID = 0; // Zero is no parent
         public string DisplayName = string.Empty;
+        public string ParentAreaDisplayName = string.Empty;
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
@@ -39,12 +42,13 @@ namespace EQWOWConverter.Zones
         public float AmbientSoundVolume;
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
-        public ZoneArea(string displayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
+        public ZoneArea(string displayName, string parentAreaDisplayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
             float musicVolume, string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolume)
         {
             DBCAreaTableID = CURRENT_AREATABLEID;
             CURRENT_AREATABLEID++;
             DisplayName = displayName;
+            ParentAreaDisplayName = parentAreaDisplayName;
             MusicFileNameNoExtDay = musicFileNameNoExtDay;
             MusicFileNameNoExtNight = musicFileNameNoExtNight;
             AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;

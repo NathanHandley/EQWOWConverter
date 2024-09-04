@@ -34,7 +34,16 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Temple of Marr", 111.346077f, 447.850525f, 1000f, 28.500401f, 251.722656f, -1000f, "freportn-12", "freportn-12");
             AddZoneArea("South Block", -102.995468f, 426.914612f, 1000f, -245.911804f, 151.320679f, -1000f, "freportn-07", "freportn-07");
             AddZoneArea("South Block", -0.161060f, 278.291382f, 1000f, -229.072342f, 139.537857f, -1000f, "freportn-07", "freportn-07");
+
+            AddChildZoneArea("Marsheart's Chords", "West Block", -70.163483f, 587.442444f, 100f, -153.691833f, 532.022095f, -100);
+            AddChildZoneArea("City Hall", "West Block", -126.164543f, 503.603455f, 100f, -265.648254f, 462.070038f, -100);
+            AddChildZoneArea("City Hall", "West Block", -210.213806f, 559.525208f, 100f, -265.648254f, 462.070038f, -100);
+            AddChildZoneArea("Groflah's Forge", "West Block", -0.228160f, 545.561951f, 100f, -41.827419f, 447.947174f, -100);
+            AddChildZoneArea("Groflah's Forge", "West Block", -0.228160f, 489.711792f, 100f, -97.880783f, 447.947174f, -100);
+
             AddZoneArea("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 426.265411f, -1000f, "freportn-09", "freportn-13");
+            
+            
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
             {
                 AddZoneArea("Hall of Truth", 349.568451f, 174.375458f, 1000f, 126.620598f, 15.954200f, -1000f, "freportn-14", "freportn-14");
@@ -59,7 +68,7 @@ namespace EQWOWConverter.Zones.Properties
                 AddZoneArea("Office of the People", 349.867615f, 272.726349f, 1000f, 161.496704f, 184.404633f, -1000f);
                 AddZoneArea("The Jade Tiger's Den", 127.223984f, 111.681374f, 1000f, 0.377760f, 28.328440f, -1000f);
             }
-            AddZoneArea("Bank of Freeport", 52.053120f, -167.295944f, 1000f, -53.982609f, -251.720886f, -1000f, "freportn-05", "freportn-05");
+            AddZoneArea("Bank of Freeport", 52.053120f, -167.295944f, 1000f, -69.702911f, -251.599686f, -1000f, "freportn-05", "freportn-05");
             AddZoneArea("The Emporium", 98.126373f, -70.289772f, 1000f, 14.231530f, -167.680298f, -1000f);
             AddZoneArea("Tassel's Tavern", 97.693863f, 27.693460f, 1000f, 42.200272f, -69.864670f, -1000f, "freportn-08", "freportn-08");
             AddZoneArea("Tassel's Tavern", 97.693863f, 27.693460f, 1000f, 27.387091f, -27.503710f, -1000f, "freportn-08", "freportn-08");

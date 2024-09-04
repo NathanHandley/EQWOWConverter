@@ -139,8 +139,20 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
+        // These areas must be made in descending priority order, as every area will isolate its own geometry
         protected void AddZoneArea(string displayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
             string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", 
+            string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
+        {
+            AddChildZoneArea(displayName, string.Empty, nwCornerX, nwCornerY, nwCornerZ, seCornerX, seCornerY, seCornerZ, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume,
+                ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume, loopMusic);
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Blank "musicFileName" will be an area without music
+        // IMPORTANT: These must be defined before the parent area if they share geometry
+        protected void AddChildZoneArea(string displayName, string parentAreaDisplayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
+            string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "",
             string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
@@ -161,10 +173,10 @@ namespace EQWOWConverter.Zones
             if (musicVolume == 0f && (musicFileNameNoExtensionDay != "" || musicFileNameNoExtensionNight != ""))
                 musicVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
             if (ambientVolume == 0f && (ambientSoundNoExtensionDay != "" || musicFileNameNoExtensionNight != ""))
-                ambientVolume = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;            
+                ambientVolume = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
 
             // Otherwise, add new
-            ZoneArea newZoneArea = new ZoneArea(displayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume);
+            ZoneArea newZoneArea = new ZoneArea(displayName, parentAreaDisplayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume);
             ZoneAreas.Add(newZoneArea);
         }
 

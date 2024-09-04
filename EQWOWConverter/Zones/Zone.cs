@@ -58,7 +58,7 @@ namespace EQWOWConverter.Zones
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             else
                 DescriptiveNameOnlyLetters = shortName;
-            DefaultArea = new ZoneArea(DescriptiveName, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight, 
+            DefaultArea = new ZoneArea(DescriptiveName, string.Empty, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight, 
                 Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME);
         }
 
@@ -125,6 +125,9 @@ namespace EQWOWConverter.Zones
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
             BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
             rootModel.BoundingBox = new BoundingBox(BoundingBox);
+
+            // Set any area parent relationships
+            SetAreaParentRelationships();
 
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
@@ -541,6 +544,33 @@ namespace EQWOWConverter.Zones
                 //doodadInstance.Color = vertexColorAverage; // Not yet working
                 //doodadInstance.Flags |= DoodadInstanceFlags.UseInteriorLighting; // Not yet working
                 DoodadInstances.Add(doodadInstance);
+            }
+        }
+
+        private void SetAreaParentRelationships()
+        {
+            if (ShortName != "freportn")
+            {
+                return;
+            }
+            // For any parent matches, set the parent ID.  Otherwise, set the default id
+            foreach(ZoneArea zoneAreaToSet in SubAreas)
+            {
+                bool matchFound = false;
+                foreach (ZoneArea zoneAreaToCheck in SubAreas)
+                {
+                    if (zoneAreaToSet.ParentAreaDisplayName == zoneAreaToCheck.DisplayName)
+                    {
+                        zoneAreaToSet.DBCParentAreaTableID = zoneAreaToCheck.DBCAreaTableID;
+                        matchFound = true;
+                        continue;
+                    }
+                }
+                if (matchFound == false)
+                {
+                    zoneAreaToSet.DBCParentAreaTableID = DefaultArea.DBCAreaTableID;
+                    zoneAreaToSet.ParentAreaDisplayName = DefaultArea.ParentAreaDisplayName;
+                }
             }
         }
 

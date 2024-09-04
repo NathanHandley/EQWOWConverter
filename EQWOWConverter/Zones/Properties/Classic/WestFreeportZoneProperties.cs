@@ -50,6 +50,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Freeport Arena", -264.012329f, -128.457397f, 100f, -281.182404f, -319.069641f, -100f, "freportw-03", "freportw-03");
             AddZoneArea("Freeport Arena", -276.247406f, -123.487968f, 100f, -418.271881f, -322.377777f, -100f, "freportw-03", "freportw-03");
             AddZoneArea("Freeport Arena", -416.380676f, -134.564438f, 100f, -429.425812f, -310.739227f, -100f, "freportw-03", "freportw-03");
+            AddZoneArea("Torlig's Herbs and Medicines", 125.658623f, -881.936829f, 100f, 56.296940f, -937.272888f, -100f);
             AddZoneArea("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -300f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);
             AddZoneArea("South Tunnels", -587.823914f, 206.370499f, 100, -720.200073f, -71.983810f, -300f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);
             AddZoneArea("South Tunnels", -508.746826f, 81.513832f, 100, -718.713013f, -518.627869f, -300f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);

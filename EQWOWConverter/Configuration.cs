@@ -135,6 +135,7 @@ namespace EQWOWConverter
 
         // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
         public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
+
         //=====================================================================
         // Liquid
         //=====================================================================
@@ -187,6 +188,7 @@ namespace EQWOWConverter
 
         //=====================================================================
         // Audio
+        //=====================================================================       
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
@@ -196,6 +198,7 @@ namespace EQWOWConverter
 
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
+
         //=====================================================================
         // Objects
         //=====================================================================
