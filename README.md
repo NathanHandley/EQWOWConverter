@@ -9,7 +9,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Ladders
 - Water/Lava
 - Zone Lines
-- Fog / Environment Lighting
+- Fog / Exterior Environment Lighting
 - Vertex Colors (on WMOs)
 
 # Requirements
