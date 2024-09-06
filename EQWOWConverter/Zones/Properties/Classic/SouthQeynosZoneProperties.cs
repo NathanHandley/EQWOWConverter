@@ -27,9 +27,23 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SouthQeynosZoneProperties() : base()
         {
+            // TODO: Port Authority lamp is missing
             // TODO: Boat to Erudes Crossing
             SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(0, 1, 4, 5, 7, 8, 9, 11, 12);
+            //AddValidMusicInstanceTrackIndexes(0, 1, 4, 5, 7, 8, 9, 11, 12);                      
+            AddZoneArea("Mermaid's Lure", 55.699829f, -28.153431f, 110f, -27.963150f, -69.853050f, -1.5f, "qeynos-07", "qeynos-07");
+            AddZoneArea("Mermaid's Lure", 27.911350f, -28.153431f, 110f, -27.963150f, -111.824409f, -1.5f, "qeynos-07", "qeynos-07");
+            AddChildZoneArea("Port Authority", "Qeynos Port", -112.286743f, -14.296410f, 110f, -181.730515f, -41.458660f, -1.5f);
+            AddChildZoneArea("Port Authority", "Qeynos Port", -140.093994f, -14.296410f, 110f, -181.730515f, -69.877022f, -1.5f);
+            AddZoneArea("Qeynos Port", 603.145630f, 1178.116821f, 110f, -818.473145f, -27.126450f, -200, "qeynos-11", "qeynos-11");
+            AddZoneArea("Qeynos Port", 68.179031f, 1178.116821f, 110f, -818.473145f, -161.125412f, -200, "qeynos-11", "qeynos-11");
+            AddZoneArea("Qeynos Port", 125.205193f, 1178.116821f, 110f, -818.473145f, -110.587914f, -200, "qeynos-11", "qeynos-11");
+            AddZoneArea("Lion's Mane Tavern", 320.800293f, -138.393097f, 12.885730f, 238.945557f, -209.187393f, -3.097620f, "qeynos-08", "qeynos-08");
+            AddChildZoneArea("Fhara's Leather and Thread", "Portside Market", 419.278473f, -70.400070f, 110f, 392.324066f, -97.543221f, -1.5f);
+            AddChildZoneArea("Lion's Mane Inn", "Portside Market", 376.389526f, -56.460201f, 110f, 224.466034f, -139.712448f, -1.5f);
+            AddChildZoneArea("Lion's Mane Inn", "Portside Market", 321.789978f, -138.242661f, 110f, 238.646545f, -208.137894f, -1.5f);
+            AddZoneArea("Portside Market", 451.076477f, -24.364201f, 110f, 42.974331f, -115.627251f, -2.5f, "qeynos-01", "qeynos-01");
+            AddZoneArea("Portside Market", 392.009552f, -24.364201f, 110f, 55.030651f, -253.412476f, -2.5f, "qeynos-01", "qeynos-01");
             AddZoneLineBox("qcat", 342.931549f, -174.301727f, 20.630989f, ZoneLineOrientationType.South, 280.068512f, -545.588013f, -130.403152f, 265.713104f, -559.974731f, -173.822586f);
             AddZoneLineBox("qcat", 215.878342f, -307.922394f, -41.968761f, ZoneLineOrientationType.East, -139.744003f, -621.613892f, -15.531000f, -156.270111f, -644.556519f, -28.499399f);
             AddZoneLineBox("qcat", 231.812836f, -63.370232f, 37.164181f, ZoneLineOrientationType.South, 182.130966f, -475.619812f, -112.237106f, 167.745056f, -490.005890f, -150.894775f);

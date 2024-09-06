@@ -64,6 +64,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Leather and Hide", 97.780190f, -532.112793f, 2.793000f, 28.198851f, -587.479797f, -100f);
             AddZoneArea("Hallard's Resales", -14.271970f, -434.044525f, 50f, -125.575272f, -503.412567f, -150f);
             AddZoneArea("Hallard's Resales", -14.271970f, -434.044525f, 50f, -153.549210f, -475.407990f, -150f);
+            AddChildZoneArea("Port Authority", "Freeport Port", 111.771873f, -797.825439f, -11.962730f, 42.381168f, -909.340637f, -57.018581f);
             AddZoneArea("Freeport Port", 1064.131104f, -810.813171f, 100f, 118.151123f, -3000f, -200f, "freporte-00", "freporte-00");
             AddZoneArea("Freeport Port", 172.718567f, -810.813171f, 100f, 109.435837f, -3000f, -200f, "freporte-00", "freporte-00");
             AddZoneArea("Freeport Port", 114.289108f, -775.425415f, 100f, -264.093933f, -3000f, -200f, "freporte-00", "freporte-00");

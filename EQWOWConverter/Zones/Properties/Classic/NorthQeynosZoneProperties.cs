@@ -33,8 +33,16 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("North Field", 2004.056274f, 1189.263184f, 100f, 383.942444f, -1105.253418f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("North Field", 2004.056274f, 1189.263184f, 100f, 156.620407f, 409.904510f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("North Field", 489.984772f, -106.924026f, 100f, 141.125656f, -660.864868f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("North Underbelly", 239.557587f, 269.499146f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
-            AddZoneArea("North Underbelly", 156.623184f, 295.676483f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
+            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            {
+                AddZoneArea("Qeynos Underbelly", 239.557587f, 269.499146f, -1.580140f, -4.889460f, 7.821560f, -74.407204f, "qeynos2-03", "qeynos2-03");
+                AddZoneArea("Qeynos Underbelly", 156.623184f, 295.676483f, -1.580140f, -4.889460f, 7.821560f, -74.407204f, "qeynos2-03", "qeynos2-03");
+            }
+            else
+            {
+                AddZoneArea("Qeynos Underbelly", 239.557587f, 269.499146f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
+                AddZoneArea("Qeynos Underbelly", 156.623184f, 295.676483f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
+            }   
             AddChildZoneArea("Reflecting Pond", "North Qeynos", 225.163986f, 392.702484f, -4.225650f, 167.449249f, 279.318115f, -500f);
             AddChildZoneArea("The Cobbler", "North Qeynos", -53.441002f, 27.927370f, 100f, -83.798622f, -27.942450f, -1.547380f);
             AddChildZoneArea("The Cobbler", "North Qeynos", -53.441002f, 1.972830f, 100f, -97.868210f, -27.942450f, -1.547380f);

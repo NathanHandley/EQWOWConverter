@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Gaps in the geometry at -325.65 -797.158 -32
             // TODO: Make Arena PVP
-            // TODO: Tunnels should have a low rumble
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
             AddZoneArea("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
