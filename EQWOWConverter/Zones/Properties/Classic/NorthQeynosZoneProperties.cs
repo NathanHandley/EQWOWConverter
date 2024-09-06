@@ -28,7 +28,28 @@ namespace EQWOWConverter.Zones.Properties
         public NorthQeynosZoneProperties() : base()
         {
             SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(1, 4);
+            AddZoneArea("Kliknik Tunnel", 334.274689f, -136.490662f, 100f, 277.038788f, -184.821274f, -500f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddChildZoneArea("North Gate", "North Qeynos", 418.604004f, 230.328903f, 100f, 251.545822f, 7.306570f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("North Field", 2004.056274f, 1189.263184f, 100f, 383.942444f, -1105.253418f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("North Field", 2004.056274f, 1189.263184f, 100f, 156.620407f, 409.904510f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("North Field", 489.984772f, -106.924026f, 100f, 141.125656f, -660.864868f, -2f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("North Underbelly", 239.557587f, 269.499146f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
+            AddZoneArea("North Underbelly", 156.623184f, 295.676483f, -1.580140f, -4.889460f, 7.821560f, -74.407204f);
+            AddChildZoneArea("Reflecting Pond", "North Qeynos", 225.163986f, 392.702484f, -4.225650f, 167.449249f, 279.318115f, -500f);
+            AddChildZoneArea("The Cobbler", "North Qeynos", -53.441002f, 27.927370f, 100f, -83.798622f, -27.942450f, -1.547380f);
+            AddChildZoneArea("The Cobbler", "North Qeynos", -53.441002f, 1.972830f, 100f, -97.868210f, -27.942450f, -1.547380f);
+            AddChildZoneArea("Order of the Silent Fist", "North Qeynos", 387.976227f, 417.667633f, 100f, 252.011978f, 245.211823f, -1.547380f);
+            AddZoneArea("Crows Pub and Casino", 125.749100f, 377.678131f, 100f, 28.148331f, 308.012634f, -100f);
+            AddZoneArea("Crows Pub and Casino", 69.783287f, 377.678131f, 100f, 28.148331f, 280.053406f, -100f);
+            AddChildZoneArea("Sneed Galliway's Trading Post", "North Qeynos", 153.636826f, 279.677948f, 100f, 98.028473f, 182.072983f, -1.547380f);
+            AddChildZoneArea("Sneed Galliway's Trading Post", "North Qeynos", 153.636826f, 223.864426f, 100f, 84.053848f, 182.072983f, -1.547380f);
+            AddChildZoneArea("Ironforge Estate", "North Qeynos", 157.945709f, 49.223141f, 100f, 40.169628f, -28.157061f, -1.547380f);
+            AddChildZoneArea("Ironforge Estate", "North Qeynos", 157.945709f, 49.223141f, 100f, 69.815872f, -105.258453f, -1.547380f);
+            AddChildZoneArea("Ironforge Estate", "North Qeynos", 157.945709f, 97.868721f, 100f, 14.391950f, 42.199970f, -1.547380f);
+            AddChildZoneArea("Ironforge Estate", "North Qeynos", 144.467056f, 128.472595f, 100f, 35.919418f, 42.199970f, -1.547380f);
+            AddZoneArea("North Qeynos", 383.006805f, 421.212250f, 100f, -210.144882f, -111.267601f, -320.804321f, "qeynos2-01", "qeynos2-01");
+            AddChildZoneArea("Shrine of the Prime Healer", "Temple of Life", 16.545980f, -263.407410f, 100f, -263.607483f, -760.173279f, -400, "qeynos2-04", "qeynos2-04", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "space", "space", 0.25f);
+            AddZoneArea("Temple of Life", 16.545980f, -107.728653f, 100f, -263.607483f, -760.173279f, -400, "qeynos2-04", "qeynos2-04");
             AddZoneLineBox("qcat", 1056.423950f, -48.181938f, 199.885666f, ZoneLineOrientationType.South, 308.068420f, -153.744324f, -87.613121f, 293.681549f, -168.130386f, -126.259743f);
             AddZoneLineBox("qcat", 888.408264f, 216.199905f, 25.632490f, ZoneLineOrientationType.East, 196.099686f, 350.067566f, -106.426399f, 181.744537f, 335.681549f, -137.562592f);
             AddZoneLineBox("qcat", 636.627319f, 98.454399f, -41.968731f, ZoneLineOrientationType.East, 182.129868f, 77.711632f, -29.531000f, 167.744064f, 41.776329f, -42.468739f);

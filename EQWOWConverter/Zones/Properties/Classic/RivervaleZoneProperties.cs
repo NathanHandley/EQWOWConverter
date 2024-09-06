@@ -40,14 +40,9 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 143.445099f, -84.469452f, -50f);
             AddZoneArea("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 155.618820f, -108.269447f, -50f);
             AddZoneArea("Weary Foot Rest Inn", 252.633408f, 17.621901f, -8.470640f, 68.737541f, -156.572906f, -50f);
+            AddZoneArea("Bristlebane's Hall", -204.553574f, -335.878082f, -15.653620f, -253.162643f, -432.098236f, -50f);
             AddOctagonChildZoneArea("Fool's Gold", "", -25.015270f, -94.932991f, -156.925949f, -226.882187f, -179.992004f, -203.906723f, -179.962494f,
                 -203.859238f, -48.034370f, -72.003288f, -48.034370f, -72.003288f, 150f, -50f);
-
-            AddZoneArea("Bank of Rivervale", 99.532059f, -118.852730f, 150f, 24.082541f, -199.351913f, -50f);
-
-
-
-            //AddValidMusicInstanceTrackIndexes(0);
             SetZonewideEnvironmentAsOutdoorsWithSky(144, 151, 144, ZoneFogType.Heavy, 0.5f, 1f);
             AddZoneLineBox("kithicor", 2012.985229f, 3825.189209f, 462.250427f, ZoneLineOrientationType.South, -384.065887f, -275.682556f, 22.469000f, -396.650330f, -290.013977f, -0.499910f);
             AddZoneLineBox("misty", 407.486847f, -2571.641357f, -10.749720f, ZoneLineOrientationType.West, -69.729698f, 134.790482f, 22.466999f, -96.162209f, 113.427109f, -0.500000f);
