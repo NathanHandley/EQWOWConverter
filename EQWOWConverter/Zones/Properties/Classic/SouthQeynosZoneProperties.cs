@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Port Authority lamp is missing
             // TODO: Boat to Erudes Crossing
             // TODO: Make arena PVP
+            // TODO: Night sounds
             SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinentType.Antonica);
             //AddValidMusicInstanceTrackIndexes(0, 1, 4, 5, 7, 8, 9, 11, 12);                      
             AddZoneArea("Mermaid's Lure", 55.699829f, -28.153431f, 110f, -27.963150f, -69.853050f, -1.5f, "qeynos-07", "qeynos-07");
@@ -45,11 +46,15 @@ namespace EQWOWConverter.Zones.Properties
             AddChildZoneArea("Lion's Mane Inn", "Portside Market", 321.789978f, -138.242661f, 110f, 238.646545f, -208.137894f, -1.5f);
             AddZoneArea("Portside Market", 451.076477f, -24.364201f, 110f, 42.974331f, -115.627251f, -2.5f, "qeynos-01", "qeynos-01");
             AddZoneArea("Portside Market", 392.009552f, -24.364201f, 110f, 55.030651f, -253.412476f, -2.5f, "qeynos-01", "qeynos-01");
-
             AddZoneArea("The Wind Spirit's Song", 561.063110f, -97.356247f, 68.774757f, 458.601990f, -191.984634f, -3.556920f, "qeynos-05", "qeynos-01");
             AddZoneArea("The Tin Soldier", 544.479919f, -29.543560f, 68.774757f, 491.071747f, -68.705101f, -3.556920f);
             AddZoneArea("The Tin Soldier", 544.479919f, -29.543560f, 68.774757f, 505.489563f, -96.758728f, -3.556920f);
 
+
+            AddZoneArea("Shrine of The Burning Prince", 363.724792f, -573.181641f, 57.943581f, 272.187714f, -711.572693f, -4.857540f, "qeynos-04", "qeynos-04");
+            AddZoneArea("The Herb Jar", 334.422058f, -547.265747f, 41.242401f, 295.249237f, -574.166077f, -3.855790f);
+            AddZoneArea("Office of the People", 337.030853f, -476.784546f, 36.715111f, 309.043182f, -516.782898f, -1.584190f);
+            AddZoneArea("Qeynos Hold", 350.490814f, -412.891876f, 53.599510f, 306.851196f, -460.808105f, -5.409760f);
 
 
 
