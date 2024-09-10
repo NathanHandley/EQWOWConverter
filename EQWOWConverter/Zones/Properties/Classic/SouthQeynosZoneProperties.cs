@@ -49,24 +49,29 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("The Wind Spirit's Song", 561.063110f, -97.356247f, 68.774757f, 458.601990f, -191.984634f, -3.556920f, "qeynos-05", "qeynos-01");
             AddZoneArea("The Tin Soldier", 544.479919f, -29.543560f, 68.774757f, 491.071747f, -68.705101f, -3.556920f);
             AddZoneArea("The Tin Soldier", 544.479919f, -29.543560f, 68.774757f, 505.489563f, -96.758728f, -3.556920f);
-
-
             AddZoneArea("Shrine of The Burning Prince", 363.724792f, -573.181641f, 57.943581f, 272.187714f, -711.572693f, -4.857540f, "qeynos-04", "qeynos-04");
             AddZoneArea("The Herb Jar", 334.422058f, -547.265747f, 41.242401f, 295.249237f, -574.166077f, -3.855790f);
             AddZoneArea("Office of the People", 337.030853f, -476.784546f, 36.715111f, 309.043182f, -516.782898f, -1.584190f);
             AddZoneArea("Qeynos Hold", 350.490814f, -412.891876f, 53.599510f, 306.851196f, -460.808105f, -5.409760f);
-
-
-
-
-
-
-
-
-
-
-
-
+            AddZoneArea("Bag n' Barrel", 562.496643f, -252.200607f, 71.627792f, 476.343475f, -321.393921f, -5.413460f);
+            AddZoneArea("Bag n' Barrel", 531.038025f, -238.285355f, 71.627792f, 476.343475f, -321.393921f, -5.413460f);
+            AddZoneArea("Nesiff's Wooden Weapons", 447.380798f, -210.351166f, 66.664619f, 406.044312f, -250.949615f, -1.559990f);
+            AddZoneArea("Nesiff's Wooden Weapons", 447.380798f, -210.351166f, 66.664619f, 420.274292f, -279.394531f, -1.559990f);
+            AddZoneArea("Clock Courtyard", 569.401672f, -182.048767f, 70.141357f, 380.760284f, -447.747253f, -10.476990f);
+            AddZoneArea("Clock Courtyard", 569.401672f, -259.214325f, 70.141357f, 323.221985f, -385.469788f, -10.476990f);
+            AddZoneArea("Fish's Ale", -280.547913f, -169.131500f, 56.448940f, -336.281158f, -307.060181f, -2.322260f, "qeynos-09", "qeynos-09");
+            AddZoneArea("Fish's Ale", -252.148865f, -224.208115f, 56.448940f, -336.281158f, -307.060181f, -2.322260f, "qeynos-09", "qeynos-09");
+            AddZoneArea("Fish's Ale", -224.567474f, -252.511566f, 56.448940f, -336.281158f, -293.653809f, -2.322260f, "qeynos-09", "qeynos-09");
+            AddZoneArea("Voleen's Bakery", -140.921677f, -211.165161f, 42.354980f, -167.438248f, -293.413452f, -1.721730f);
+            AddZoneArea("Voleen's Bakery", -140.921677f, -238.401276f, 42.354980f, -181.387054f, -293.243408f, -1.721730f);
+            AddZoneArea("Voleen's Bakery", -140.921677f, -252.298645f, 42.354980f, -209.284286f, -279.059906f, -1.721730f);
+            AddZoneArea("Fireprides", 209.430557f, -280.486755f, 39.982899f, 182.535782f, -334.981110f, -2.427080f);
+            AddZoneArea("Fireprides", 209.430557f, -308.239471f, 39.982899f, 154.301147f, -334.981110f, -2.427080f);
+            AddChildZoneArea("Undertunnels", "Grounds of Fate", 139.291824f, -279.012146f, -1.288000f, -207.066986f, -706.057861f, -35.639881f);
+            AddZoneArea("Grounds of Fate", 125.663292f, -336.601654f, 75.374138f, -12.293800f, -617.040649f, -32.360279f, "qeynos-00", "qeynos-00");
+            AddZoneArea("Grounds of Fate", 62.942261f, -306.013184f, 75.374138f, -12.293800f, -617.040649f, -32.360279f, "qeynos-00", "qeynos-00");
+            AddZoneArea("Grounds of Fate", 62.942261f, -376.961395f, 75.374138f, -72.102081f, -522.417786f, -32.360279f, "qeynos-00", "qeynos-00");
+            AddZoneArea("Arena Market", 55.192371f, -155.732590f, 86.829102f, -121.360130f, -363.168396f, -1.889700f, "qeynos-07", "qeynos-07");
             AddZoneLineBox("qcat", 342.931549f, -174.301727f, 20.630989f, ZoneLineOrientationType.South, 280.068512f, -545.588013f, -130.403152f, 265.713104f, -559.974731f, -173.822586f);
             AddZoneLineBox("qcat", 215.878342f, -307.922394f, -41.968761f, ZoneLineOrientationType.East, -139.744003f, -621.613892f, -15.531000f, -156.270111f, -644.556519f, -28.499399f);
             AddZoneLineBox("qcat", 231.812836f, -63.370232f, 37.164181f, ZoneLineOrientationType.South, 182.130966f, -475.619812f, -112.237106f, 167.745056f, -490.005890f, -150.894775f);
