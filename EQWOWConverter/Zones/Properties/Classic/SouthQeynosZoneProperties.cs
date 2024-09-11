@@ -31,15 +31,15 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Boat to Erudes Crossing
             // TODO: Make arena PVP
             // TODO: Night sounds
+            // TODO: Junk geometry in the sky near a zone line
             SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(0, 1, 4, 5, 7, 8, 9, 11, 12);                      
             AddZoneArea("Mermaid's Lure", 55.699829f, -28.153431f, 110f, -27.963150f, -69.853050f, -1.5f, "qeynos-07", "qeynos-07");
             AddZoneArea("Mermaid's Lure", 27.911350f, -28.153431f, 110f, -27.963150f, -111.824409f, -1.5f, "qeynos-07", "qeynos-07");
-            AddChildZoneArea("Port Authority", "Qeynos Port", -112.286743f, -14.296410f, 110f, -181.730515f, -41.458660f, -1.5f);
-            AddChildZoneArea("Port Authority", "Qeynos Port", -140.093994f, -14.296410f, 110f, -181.730515f, -69.877022f, -1.5f);
-            AddZoneArea("Qeynos Port", 603.145630f, 1178.116821f, 110f, -818.473145f, -27.126450f, -200, "qeynos-11", "qeynos-11");
-            AddZoneArea("Qeynos Port", 68.179031f, 1178.116821f, 110f, -818.473145f, -161.125412f, -200, "qeynos-11", "qeynos-11");
-            AddZoneArea("Qeynos Port", 125.205193f, 1178.116821f, 110f, -818.473145f, -110.587914f, -200, "qeynos-11", "qeynos-11");
+            AddChildZoneArea("Port Authority", "Qeynos Port", -112.286743f, -14.296410f, 110f, -181.730515f, -41.458660f, -1.5f, "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "silence", 0.2786121f);
+            AddChildZoneArea("Port Authority", "Qeynos Port", -140.093994f, -14.296410f, 110f, -181.730515f, -69.877022f, -1.5f, "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "silence", 0.2786121f);
+            AddZoneArea("Qeynos Port", 603.145630f, 1178.116821f, 110f, -818.473145f, -27.126450f, -200, "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("Qeynos Port", 68.179031f, 1178.116821f, 110f, -818.473145f, -161.125412f, -200, "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
+            AddZoneArea("Qeynos Port", 125.205193f, 1178.116821f, 110f, -818.473145f, -110.587914f, -200, "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
             AddZoneArea("Lion's Mane Tavern", 320.800293f, -138.393097f, 12.885730f, 238.945557f, -209.187393f, -3.097620f, "qeynos-08", "qeynos-08");
             AddChildZoneArea("Fhara's Leather and Thread", "Portside Market", 419.278473f, -70.400070f, 110f, 392.324066f, -97.543221f, -1.5f);
             AddChildZoneArea("Lion's Mane Inn", "Portside Market", 376.389526f, -56.460201f, 110f, 224.466034f, -139.712448f, -1.5f);
@@ -67,6 +67,8 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Voleen's Bakery", -140.921677f, -252.298645f, 42.354980f, -209.284286f, -279.059906f, -1.721730f);
             AddZoneArea("Fireprides", 209.430557f, -280.486755f, 39.982899f, 182.535782f, -334.981110f, -2.427080f);
             AddZoneArea("Fireprides", 209.430557f, -308.239471f, 39.982899f, 154.301147f, -334.981110f, -2.427080f);
+            AddChildZoneArea("Alter of the Rainbringer", "The Rainbringers", -140.244034f, -420.151825f, 83.494362f, -209.648987f, -461.539398f, -3.4f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "thunder1", "thunder2", 0.15f);
+            AddZoneArea("The Rainbringers", -130.331329f, -405.833374f, 83.494362f, -303.870270f, -581.760681f, -2.345650f);
             AddChildZoneArea("Undertunnels", "Grounds of Fate", 139.291824f, -279.012146f, -1.288000f, -207.066986f, -706.057861f, -35.639881f);
             AddZoneArea("Grounds of Fate", 125.663292f, -336.601654f, 75.374138f, -12.293800f, -617.040649f, -32.360279f, "qeynos-00", "qeynos-00");
             AddZoneArea("Grounds of Fate", 62.942261f, -306.013184f, 75.374138f, -12.293800f, -617.040649f, -32.360279f, "qeynos-00", "qeynos-00");

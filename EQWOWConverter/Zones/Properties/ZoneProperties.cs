@@ -139,6 +139,7 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
+        // Ambient sound of "silence" will override a parent's ambience with no sound
         // These areas must be made in descending priority order, as every area will isolate its own geometry
         protected void AddZoneArea(string displayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
             string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", 
@@ -150,6 +151,7 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
+        // Ambient sound of "silence" will override a parent's ambience with no sound
         // IMPORTANT: These must be defined before the parent area if they share geometry
         protected void AddChildZoneArea(string displayName, string parentAreaDisplayName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ,
             string musicFileNameNoExtensionDay = "", string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "",
@@ -182,6 +184,7 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         // Blank "musicFileName" will be an area without music
+        // Ambient sound of "silence" will override a parent's ambience with no sound
         // IMPORTANT: These must be defined before the parent area if they share geometry
         protected void AddOctagonChildZoneArea(string displayName, string parentAreaDisplayName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ, string musicFileNameNoExtensionDay = "", 
@@ -189,7 +192,6 @@ namespace EQWOWConverter.Zones
         {
             // TODO: Consider moving this to a config
             float stepSize = 0.2f;
-            float boxOverlapAmount = 0.0001f;
 
             // Boundary Control (very limited)
             if (northEdgeX < southEdgeX)
@@ -255,7 +257,7 @@ namespace EQWOWConverter.Zones
                 }
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom; /*-= boxOverlapAmount;*/
+                curXTop = curXBottom;
             }
         }
 

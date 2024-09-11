@@ -1023,6 +1023,12 @@ namespace EQWOWConverter
             // Go through every sound object and put there if needed
             foreach (var ambientSoundByFileName in zone.AmbientSoundsByFileNameNoExt)
             {
+                // Skip the sound file for silence
+                if (ambientSoundByFileName.Key.ToUpper() == "SILENCE")
+                {
+                    Logger.WriteDetail("Skipping sound file named '" + ambientSoundByFileName + "' since it is just silence");
+                    continue;
+                }
                 string sourceFullPath = Path.Combine(soundInputFolder, ambientSoundByFileName.Value.AudioFileNameNoExt + ".wav");
                 string targetFullPath = Path.Combine(zoneOutputAmbienceFolder, ambientSoundByFileName.Value.AudioFileNameNoExt + ".wav");
                 if (File.Exists(sourceFullPath) == false)

@@ -26,6 +26,8 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BefallenZoneProperties() : base()
         {
+            // Make the vertex color light stronger
+
             SetBaseZoneProperties("befallen", "Befallen", 35.22f, -75.27f, 2.19f, 0, ZoneContinentType.Antonica);
             //AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 6, 7);
             SetZonewideEnvironmentAsIndoors(0, 0, 60, ZoneFogType.Heavy);
