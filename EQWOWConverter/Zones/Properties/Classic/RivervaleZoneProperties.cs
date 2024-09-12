@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Bug - You can fall through the waterfall base
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinentType.Antonica);
-            SetZonewideMusicFileNames("rivervale-00", "rivervale-00");
+            SetZonewideMusic("rivervale-00", "rivervale-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME);
             AddZoneArea("Bank of Rivervale", 134.691025f, -143.286545f, 150f, 67.445671f, -214.820267f, -50f);
             AddZoneArea("Bank of Rivervale", 122.784729f, -133.233475f, 150f, 67.445671f, -214.820267f, -50f);
             AddZoneArea("Bank of Rivervale", 99.532059f, -118.852730f, 150f, 24.082541f, -199.351913f, -50f);

@@ -45,8 +45,9 @@ namespace EQWOWConverter.Zones
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public double VertexColorIntensityOverride = -1;
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
-        public string ZonewideMusicFileNameDay = string.Empty;
-        public string ZonewideMusicFileNameNight = string.Empty;
+        public string ZonewideMusicFileNameNoExtDay = string.Empty;
+        public string ZonewideMusicFileNameNoExtNight = string.Empty;
+        public float ZonewideMusicVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
         public string ZonewideAmbienceFileNameNoExtDay = string.Empty;
         public string ZonewideAmbienceFileNameNoExtNight = string.Empty;
         public float ZonewideAmbienceVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
@@ -264,10 +265,13 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        protected void SetZonewideMusicFileNames(string musicFileNameDay, string musicFileNameNight)
+        protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, float volume)
         {
-            ZonewideMusicFileNameDay = musicFileNameDay;
-            ZonewideMusicFileNameNight = musicFileNameNight;
+            ZonewideMusicFileNameNoExtDay = musicFileNameNoExtDay;
+            ZonewideMusicFileNameNoExtNight = musicFileNameNoExtNight;
+            ZonewideMusicVolume = volume;
+        }
+
         protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight, float volume)
         {
             ZonewideAmbienceFileNameNoExtDay = ambienceFileNameNoExtDay;
