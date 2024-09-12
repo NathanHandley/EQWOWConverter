@@ -58,8 +58,8 @@ namespace EQWOWConverter.Zones
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             else
                 DescriptiveNameOnlyLetters = shortName;
-            DefaultArea = new ZoneArea(DescriptiveName, string.Empty, new BoundingBox(), zoneProperties.ZonewideMusicFileNameDay, zoneProperties.ZonewideMusicFileNameNight, 
-                Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME);
+            DefaultArea = new ZoneArea(DescriptiveName, string.Empty, new BoundingBox(), zoneProperties.ZonewideMusicFileNameNoExtDay, zoneProperties.ZonewideMusicFileNameNoExtNight,
+                zoneProperties.ZonewideMusicVolume, zoneProperties.ZonewideAmbienceFileNameNoExtDay, zoneProperties.ZonewideAmbienceFileNameNoExtNight, zoneProperties.ZonewideAmbienceVolume);
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)

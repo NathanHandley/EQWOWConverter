@@ -162,6 +162,9 @@ namespace EQWOWConverter
                 Logger.WriteInfo(string.Empty, false, false);
             }
 
+            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true)
+                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL is TRUE");
+
             // Build paths
             string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");

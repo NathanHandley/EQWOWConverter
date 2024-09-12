@@ -30,12 +30,9 @@ namespace EQWOWConverter.Zones.Properties
             // Cave Sound - Zone Wide
             SetBaseZoneProperties("befallen", "Befallen", 35.22f, -75.27f, 2.19f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(0, 0, 60, ZoneFogType.Heavy, 130, 130, 130);
+            SetZonewideAmbienceSound("caveloop", "caveloop", 0.1f);
             OverrideVertexColorIntensity(0.6);
-            //AddValidMusicInstanceTrackIndexes(0, 1, 2, 3, 4, 5, 6, 7);
             AddZoneArea("Entry", 54.481789f, 55.857861f, 37.370251f, -124.496246f, -144.035538f, -5.204370f, "befallen-06", "befallen-06");
-
-
-
             AddZoneArea("Entry", 26.557690f, 11.077470f, 20.215931f, -203.251007f, -90.467781f, -4.588550f, "befallen-06", "befallen-06");
             AddZoneArea("Well", -262.989471f, 98.996452f, 7.501510f, -346.584534f, 69.684769f, -16.758711f, "befallen-00", "befallen-00");
             AddZoneArea("Well", -337.689789f, 116.707527f, 7.654700f, -406.665894f, 54.447369f, -15.360780f, "befallen-00", "befallen-00");

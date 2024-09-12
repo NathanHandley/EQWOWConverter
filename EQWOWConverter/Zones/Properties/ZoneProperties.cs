@@ -47,6 +47,9 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public string ZonewideMusicFileNameDay = string.Empty;
         public string ZonewideMusicFileNameNight = string.Empty;
+        public string ZonewideAmbienceFileNameNoExtDay = string.Empty;
+        public string ZonewideAmbienceFileNameNoExtNight = string.Empty;
+        public float ZonewideAmbienceVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
 
         // DBCIDs
         public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAP_ID_START;
@@ -265,6 +268,11 @@ namespace EQWOWConverter.Zones
         {
             ZonewideMusicFileNameDay = musicFileNameDay;
             ZonewideMusicFileNameNight = musicFileNameNight;
+        protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight, float volume)
+        {
+            ZonewideAmbienceFileNameNoExtDay = ambienceFileNameNoExtDay;
+            ZonewideAmbienceFileNameNoExtNight = ambienceFileNameNoExtNight;
+            ZonewideAmbienceVolume = volume;
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)
