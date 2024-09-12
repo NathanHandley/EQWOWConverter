@@ -70,7 +70,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Tassel's Tavern", 97.693863f, 27.693460f, 1000f, 27.387091f, -27.503710f, -1000f, "freportn-08", "freportn-08");
             AddZoneArea("Palola's Inn", -140.083038f, 27.932680f, 1000f, -184.513947f, -29.577450f, -1000f, "freportn-07", "freportn-07");
             AddZoneArea("Palola's Inn", -140.166840f, -28.005939f, 1000f, -209.660217f, -97.695213f, -1000f, "freportn-07", "freportn-07");
-            AddZoneArea("North Tunnels", 498.394409f, 765.014404f, 100, 304.263275f, 576.443298f, -300f, "", "", 0f, "caveloop", "caveloop", 0.23442288f);
+            AddZoneArea("North Tunnels", 498.394409f, 765.014404f, 100, 304.263275f, 576.443298f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
             AddZoneArea("Northeast Tunnels", 142.614716f, -229.190308f, 100, 38.626499f, -309.047577f, -300f);
             AddZoneArea("Northeast Tunnels", 185.648834f, -264.480988f, 100, -86.916962f, -540.348816f, -300f);
             AddZoneLineBox("freportw", 1588.414673f, -278.419495f, 0.000050f, ZoneLineOrientationType.East, 378.034851f, 718.198425f, -1.531000f, 361.772491f, 697.030884f, -14.499990f);
