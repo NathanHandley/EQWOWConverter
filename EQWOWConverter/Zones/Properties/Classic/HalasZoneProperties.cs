@@ -29,8 +29,8 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Boat that goes back and forth
             // TODO: PVP in Pit of Doom
+            // TODO: Perhaps add Mac's Kilts as a zone area
             SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(1, 3, 4, 5, 7, 8, 9);
             AddZoneArea("Entry Tunnel", -461.854279f, 79.028740f, 114.175423f, -817.487427f, -169.417740f, -163.384399f, "halas-01", "halas-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "", Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME, false);
             AddZoneArea("The Bound Mermaid", 33.998589f, 86.185371f, 75.345596f, -40.758659f, 28.691170f, -7.556500f);
             AddZoneArea("Halas Hold", 217.330765f, 193.336746f, 58.821468f, 169.907166f, 103.222847f, -2.061110f);
@@ -42,12 +42,17 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("The Golden Torc", 238.510223f, 465.643677f, 80.789131f, 95.977081f, 328.518524f, -5.839420f, "halas-08", "halas-08");
             AddZoneArea("Shaman's Den", 370.562469f, 500f, 100.831596f, 263.427856f, 332.662781f, -45.514370f);
             AddZoneArea("Pit of Doom", 662.088928f, -279.314606f, 140.809998f, 397.346771f, -567.676392f, -45.514370f, "halas-03", "halas-03");
-            AddZoneArea("Smokes and Spirits", 365.038849f, -239.789658f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
-            AddZoneArea("Smokes and Spirits", 375.009552f, -267.997650f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
-            AddZoneArea("Smokes and Spirits", 378.899475f, -275.038940f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
-            AddZoneArea("Smokes and Spirits", 384.345398f, -236.876526f, 92.159866f, 307.601257f, -352.602509f, 11.183750f, "halas-07", "halas-07");
-
-
+            AddZoneArea("McDaniel's Smokes and Spirits", 365.038849f, -239.789658f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
+            AddZoneArea("McDaniel's Smokes and Spirits", 375.009552f, -267.997650f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
+            AddZoneArea("McDaniel's Smokes and Spirits", 378.899475f, -275.038940f, 92.159866f, 307.601257f, -352.602509f, -3.201780f, "halas-07", "halas-07");
+            AddZoneArea("McDaniel's Smokes and Spirits", 384.345398f, -236.876526f, 92.159866f, 307.601257f, -352.602509f, 11.183750f, "halas-07", "halas-07");
+            AddOctagonZoneArea("McQuaid's Dark Stout", 129.972458f, 82.012718f, -183.867081f, -273.888367f, -189.872543f, -268.952698f, -194.811661f, -266.338409f,
+                110.081520f, 100.430153f, 109.239693f, 97.214653f, 37.773350f, -2.628820f, "halas-04", "halas-04");
+            AddZoneArea("McDonald's Fire Cider", 247.267914f, -134.631378f, 38.144821f, 175.779739f, -180.837265f, -2.174550f, "halas-05", "halas-05");
+            AddZoneArea("Yee Majik", 145.826874f, -307.438782f, 26.357410f, 102.788857f, -359.476654f, -4.376070f, "halas-09", "halas-09");
+            AddZoneArea("Yee Majik", 160.033524f, -339.226288f, 26.357410f, 86.067749f, -399.233185f, -4.376070f, "halas-09", "halas-09");
+            AddOctagonZoneArea("McPherson's Bloody Blades", 232.164093f, 165.558990f, -265.482086f, -340.089294f, -286.648346f, -302.833740f,
+                -286.727203f, -301.972076f, 219.922913f, 179.911942f, 219.197540f, 180.743759f, 30.383160f, -5.666800f);
             SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             AddZoneLineBox("everfrost", 3682.792725f, 372.904633f, 0.000240f, ZoneLineOrientationType.South, -664.463196f, -50.776440f, 37.469002f, -744.483093f, -101.162247f, -0.499990f);

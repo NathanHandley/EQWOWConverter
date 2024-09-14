@@ -190,6 +190,18 @@ namespace EQWOWConverter.Zones
         // Blank "musicFileName" will be an area without music
         // Ambient sound of "silence" will override a parent's ambience with no sound
         // IMPORTANT: These must be defined before the parent area if they share geometry
+        protected void AddOctagonZoneArea(string displayName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
+            float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ, string musicFileNameNoExtensionDay = "",
+            string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
+        {
+            AddOctagonChildZoneArea(displayName, "", northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX, westSouthX, eastNorthX, eastSouthX,
+                topZ, bottomZ, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume, loopMusic);
+        }
+
+        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Blank "musicFileName" will be an area without music
+        // Ambient sound of "silence" will override a parent's ambience with no sound
+        // IMPORTANT: These must be defined before the parent area if they share geometry
         protected void AddOctagonChildZoneArea(string displayName, string parentAreaDisplayName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ, string musicFileNameNoExtensionDay = "", 
             string musicFileNameNoExtensionNight = "", float musicVolume = 0f, string ambientSoundNoExtensionDay = "", string ambientSoundNoExtensionNight = "", float ambientVolume = 0f, bool loopMusic = true)
