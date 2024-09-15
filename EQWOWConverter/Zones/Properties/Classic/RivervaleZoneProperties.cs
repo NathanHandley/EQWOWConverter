@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public RivervaleZoneProperties() : base()
         {
             // TODO: Bug - You can fall through the waterfall base
+            // TODO: 2D Ambience (night, wind)
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinentType.Antonica);
             SetZonewideMusic("rivervale-00", "rivervale-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME);
             AddZoneArea("Bank of Rivervale", 134.691025f, -143.286545f, 150f, 67.445671f, -214.820267f, -50f);

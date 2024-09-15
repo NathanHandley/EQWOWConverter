@@ -40,13 +40,13 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Staff and Spear", 154.675690f, 247.826767f, 28.332060f, 132.570541f, 204.328674f, -2.261180f);
             AddChildZoneArea("Gem Room", "Kaladim Castle", -177.571320f, -339.534027f, 25.729700f, -219.530533f, -380.677124f, 2.961010f, "kaladima-03", "kaladima-03");
             AddZoneArea("Kaladim Castle", 140.091827f, -267.974731f, 104.200493f, -204.232773f, -444.398071f, -89.694290f, "kaladima-07", "kaladima-07");
-            AddZoneArea("Castle Tunnel", 268.912476f, -276.845337f, 51.524540f, 225.391342f, -375.978149f, -13.769460f, "", "", 0f, "wind_lp2", "wind_lp2", 0.08f);
-            AddZoneArea("Castle Tunnel", 269.257782f, -301.463318f, 51.524540f, 137.570175f, -389.579071f, -2.326460f, "", "", 0f, "wind_lp2", "wind_lp2", 0.08f);
-            AddZoneArea("East Tunnel", 249.309692f, -29.441420f, 53.632401f, 127.378166f, -117.933983f, -4.708280f, "", "", 0f, "wind_lp3", "wind_lp3", 0.08f);
-            AddZoneArea("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 129.096695f, 24.601440f, -7.553070f, "", "", 0f, "wind_lp2", "wind_lp2", 0.08f);
-            AddZoneArea("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 73.621208f, 51.615170f, -7.553070f, "", "", 0f, "wind_lp2", "wind_lp2", 0.08f);
-            AddZoneArea("Northwest Tunnel", 499.900879f, 362.115509f, 64.797981f, 240.681122f, 219.488556f, -29.046940f, "", "", 0f, "wind_lp4", "wind_lp4", 0.08f);
-            AddZoneArea("Northeast Tunnel", 464.164642f, -184.274612f, 113.766930f, 270.746704f, -287.887421f, -15.605070f, "", "", 0f, "wind_lp4", "wind_lp4", 0.08f);
+            AddZoneArea("Castle Tunnel", 268.912476f, -276.845337f, 51.524540f, 225.391342f, -375.978149f, -13.769460f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
+            AddZoneArea("Castle Tunnel", 269.257782f, -301.463318f, 51.524540f, 137.570175f, -389.579071f, -2.326460f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
+            AddZoneArea("East Tunnel", 249.309692f, -29.441420f, 53.632401f, 127.378166f, -117.933983f, -4.708280f, "", "", 0f, "wind_lp3", "wind_lp3", 0.13931568f);
+            AddZoneArea("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 129.096695f, 24.601440f, -7.553070f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
+            AddZoneArea("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 73.621208f, 51.615170f, -7.553070f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
+            AddZoneArea("Northwest Tunnel", 499.900879f, 362.115509f, 64.797981f, 240.681122f, 219.488556f, -29.046940f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
+            AddZoneArea("Northeast Tunnel", 464.164642f, -184.274612f, 113.766930f, 270.746704f, -287.887421f, -15.605070f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
             AddOctagonZoneArea("Kaladim Arena", 153.392624f, 73.905548f, 345.278442f, 266.113373f, 320.122925f, 292.471558f, 317.966187f, 293.934387f,
                 126.058197f, 101.773773f, 126.058197f, 101.773773f, 31.041071f, -21.248930f, "kaladima-01", "kaladima-01");
             AddZoneArea("Warrior's Hall", 98.731529f, 547.754944f, 68.954941f, -115.038628f, 321.714050f, -17.766130f, "kaladima-02", "kaladima-02");
