@@ -63,7 +63,7 @@ namespace EQWOWConverter.EQFiles
                     newSoundInstance.Position.X = float.Parse(blocks[0]);
                     newSoundInstance.Position.Y = float.Parse(blocks[1]);
                     newSoundInstance.Position.Z = float.Parse(blocks[2]);
-                    newSoundInstance.Radius = float.Parse(blocks[3]);
+                    newSoundInstance.Radius = int.Parse(blocks[3]);
                     newSoundInstance.SoundNameDay = blocks[4];
                     newSoundInstance.SoundNameNight = blocks[5];
                     newSoundInstance.CooldownInMSDay = int.Parse(blocks[6]);
@@ -71,6 +71,7 @@ namespace EQWOWConverter.EQFiles
                     newSoundInstance.CooldownInMSRandom = int.Parse(blocks[8]);
                     newSoundInstance.VolumeDay = float.Parse(blocks[9]);
                     newSoundInstance.VolumeNight = float.Parse(blocks[10]);
+                    newSoundInstance.Is2DSound = true;
                     SoundInstances.Add(newSoundInstance);
                 }
             }

@@ -25,7 +25,8 @@ namespace EQWOWConverter.Common
     internal class SoundInstance
     {
         public Vector3 Position = new Vector3();
-        public float Radius = 0f;
+        public bool Is2DSound = false;
+        public int Radius = 0;
         public string SoundNameDay = string.Empty;
         public string SoundNameNight = string.Empty;
         public float VolumeDay = 0f;

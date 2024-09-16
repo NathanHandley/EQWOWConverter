@@ -30,8 +30,6 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            public int Id;
-            public int SoundType;
             public string Name = string.Empty;
             public string FileName = string.Empty;
             public string DirectoryBase = string.Empty;

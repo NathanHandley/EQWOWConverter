@@ -49,6 +49,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneAreaAmbientSound> ZoneAreaAmbientSounds = new List<ZoneAreaAmbientSound>();
         public ZoneArea DefaultArea;
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
+        public List<SoundInstance> SoundInstances = new List<SoundInstance>();
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
@@ -136,6 +137,9 @@ namespace EQWOWConverter.Zones
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
+
+            // Process Sound Instances
+            ProcessSoundInstances();
 
             // Completely loaded
             IsLoaded = true;
@@ -567,6 +571,27 @@ namespace EQWOWConverter.Zones
                     zoneAreaToSet.DBCParentAreaTableID = DefaultArea.DBCAreaTableID;
                     zoneAreaToSet.ParentAreaDisplayName = DefaultArea.ParentAreaDisplayName;
                 }
+            }
+        }
+
+        private void ProcessSoundInstances()
+        {
+            // 2D Sounds
+            foreach (SoundInstance soundInstance2D in EQZoneData.Sound2DInstances)
+            {
+                if (soundInstance2D.SoundNameDay != soundInstance2D.SoundNameNight || soundInstance2D.VolumeDay != soundInstance2D.VolumeNight)
+                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 2D sound instance which has mismatched day and night of '" + soundInstance2D.SoundNameDay + "' and '" + soundInstance2D.SoundNameNight + "'");
+                else
+                    SoundInstances.Add(soundInstance2D);
+            }
+
+            // 3D Sounds
+            foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
+            {
+                if (soundInstance3D.SoundNameDay != soundInstance3D.SoundNameNight || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
+                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundNameDay + "' and '" + soundInstance3D.SoundNameNight + "'");
+                else
+                    SoundInstances.Add(soundInstance3D);
             }
         }
 
