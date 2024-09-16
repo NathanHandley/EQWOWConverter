@@ -37,6 +37,8 @@ namespace EQWOWConverter.Zones
         public List<LightInstance> LightInstances = new List<LightInstance>();
         //public List<MusicInstance> MusicInstances = new List<MusicInstance>();
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
+        public List<SoundInstance> Sound2DInstances = new List<SoundInstance>();
+        public List<SoundInstance> Sound3DInstances = new List<SoundInstance>();
 
         private string MaterialListName = string.Empty;
 
@@ -56,6 +58,8 @@ namespace EQWOWConverter.Zones
             LoadCollisionMeshData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadAmbientLightData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadSound2DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
+            LoadSound3DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             //LoadMusicInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             IsLoaded = true;
@@ -165,6 +169,44 @@ namespace EQWOWConverter.Zones
                     return;
                 }
                 LightInstances = lightInstances.LightInstances;
+            }
+        }
+
+        private void LoadSound2DInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
+        {
+            // Get the 2D sound instances
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading 2D sound instances...");
+            string sound2DInstancesFileName = Path.Combine(inputZoneFolderFullPath, "sound2d_instances.txt");
+            if (File.Exists(sound2DInstancesFileName) == false)
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No 2D sound instance data found.");
+            else
+            {
+                EQSound2DInstances sound2DInstances = new EQSound2DInstances();
+                if (sound2DInstances.LoadFromDisk(sound2DInstancesFileName) == false)
+                {
+                    Logger.WriteError("- [" + inputZoneFolder + "]: Error loading 2D sound instances at '" + sound2DInstancesFileName + "'");
+                    return;
+                }
+                Sound2DInstances = sound2DInstances.SoundInstances;
+            }
+        }
+
+        private void LoadSound3DInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
+        {
+            // Get the 3D sound instances
+            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading 3D sound instances...");
+            string sound3DInstancesFileName = Path.Combine(inputZoneFolderFullPath, "sound3d_instances.txt");
+            if (File.Exists(sound3DInstancesFileName) == false)
+                Logger.WriteDetail("- [" + inputZoneFolder + "]: No 3D sound instance data found.");
+            else
+            {
+                EQSound3DInstances sound3DInstances = new EQSound3DInstances();
+                if (sound3DInstances.LoadFromDisk(sound3DInstancesFileName) == false)
+                {
+                    Logger.WriteError("- [" + inputZoneFolder + "]: Error loading 3D sound instances at '" + sound3DInstancesFileName + "'");
+                    return;
+                }
+                Sound3DInstances = sound3DInstances.SoundInstances;
             }
         }
 
