@@ -36,6 +36,7 @@ namespace EQWOWConverter.Zones
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
         public float MusicVolume;
+        public bool MusicLoop = false;
         public ZoneAreaMusic? AreaMusic = null;        
         public string AmbientSoundFileNameNoExtDay = string.Empty;
         public string AmbientSoundFileNameNoExtNight = string.Empty;
@@ -56,6 +57,7 @@ namespace EQWOWConverter.Zones
             MusicVolume = musicVolume;
             AmbientSoundVolume = ambientVolume;
             AddBoundingBox(boundingBox);
+            loopMusic = true;
         }
 
         public void AddBoundingBox(BoundingBox boundingBox)

@@ -35,5 +35,45 @@ namespace EQWOWConverter.Common
         public int CooldownInMSNight = 0;
         public int CooldownInMSRandom = 0;
         // public Multiplier -- Unsure what this is
+
+        public Sound? Sound = null;
+
+        public string GenerateDBCName(string zoneName, int instanceID)
+        {
+            // Instance ID
+            string instanceIDPart;
+            if (instanceID < 10)
+                instanceIDPart = "00" + instanceID.ToString();
+            else if (instanceID < 100)
+                instanceIDPart = "0" + instanceID.ToString();
+            else
+                instanceIDPart = instanceID.ToString();
+
+            // FileName
+            string fileNamePart = string.Empty;
+            if (SoundFileNameDayNoExt == SoundFileNameNightNoExt)
+                fileNamePart = SoundFileNameDayNoExt;
+            else
+            {
+                if (SoundFileNameDayNoExt == string.Empty)
+                    fileNamePart = SoundFileNameDayNoExt;
+                else if (SoundFileNameNightNoExt == string.Empty)
+                    fileNamePart = SoundFileNameNightNoExt;
+                else
+                {
+                    Logger.WriteError("Could not generate name for sound instance for zone '" + zoneName + "' with file names '" + SoundFileNameDayNoExt + "' and '" + SoundFileNameNightNoExt + "'");
+                    return "Invalid Name";
+                }
+            }
+
+            // Dimension
+            string dimensionPart = "3D";
+            if (Is2DSound == true)
+                dimensionPart = "2D";
+
+            // Form the name
+            string generatedName = "EQ_" + zoneName + "_SoundInstance" + dimensionPart + "_"+ instanceIDPart + "_" + fileNamePart;
+            return generatedName;
+        }
     }
 }

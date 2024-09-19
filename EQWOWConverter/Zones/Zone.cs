@@ -580,19 +580,27 @@ namespace EQWOWConverter.Zones
             // 2D Sounds
             foreach (SoundInstance soundInstance2D in EQZoneData.Sound2DInstances)
             {
-                if (soundInstance2D.SoundNameDay != soundInstance2D.SoundNameNight || soundInstance2D.VolumeDay != soundInstance2D.VolumeNight)
-                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 2D sound instance which has mismatched day and night of '" + soundInstance2D.SoundNameDay + "' and '" + soundInstance2D.SoundNameNight + "'");
+                if (soundInstance2D.SoundFileNameDayNoExt != soundInstance2D.SoundFileNameNightNoExt || soundInstance2D.VolumeDay != soundInstance2D.VolumeNight)
+                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 2D sound instance which has mismatched day and night of '" + soundInstance2D.SoundFileNameDayNoExt + "' and '" + soundInstance2D.SoundFileNameNightNoExt + "'");
                 else
+                {
+                    soundInstance2D.Sound = new Sound(soundInstance2D.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance2D.SoundFileNameDayNoExt, 
+                        soundInstance2D.VolumeDay, SoundType.GameObject, 8f, soundInstance2D.Radius, true);
                     SoundInstances.Add(soundInstance2D);
+                }   
             }
 
             // 3D Sounds
             foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
             {
-                if (soundInstance3D.SoundNameDay != soundInstance3D.SoundNameNight || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
-                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundNameDay + "' and '" + soundInstance3D.SoundNameNight + "'");
+                if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
+                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
+                {
+                    soundInstance3D.Sound = new Sound(soundInstance3D.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance3D.SoundFileNameDayNoExt,
+                        soundInstance3D.VolumeDay, SoundType.GameObject, 8f, soundInstance3D.Radius, true);
                     SoundInstances.Add(soundInstance3D);
+                }
             }
         }
 
