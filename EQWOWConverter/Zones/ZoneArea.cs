@@ -43,7 +43,7 @@ namespace EQWOWConverter.Zones
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
         public ZoneArea(string displayName, string parentAreaDisplayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
-            float musicVolume, string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolume)
+            float musicVolume, string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolume, bool loopMusic)
         {
             DBCAreaTableID = CURRENT_AREATABLEID;
             CURRENT_AREATABLEID++;

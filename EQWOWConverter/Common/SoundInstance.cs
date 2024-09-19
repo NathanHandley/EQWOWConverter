@@ -27,8 +27,8 @@ namespace EQWOWConverter.Common
         public Vector3 Position = new Vector3();
         public bool Is2DSound = false;
         public int Radius = 0;
-        public string SoundNameDay = string.Empty;
-        public string SoundNameNight = string.Empty;
+        public string SoundFileNameDayNoExt = string.Empty;
+        public string SoundFileNameNightNoExt = string.Empty;
         public float VolumeDay = 0f;
         public float VolumeNight = 0f;
         public int CooldownInMSDay = 0;

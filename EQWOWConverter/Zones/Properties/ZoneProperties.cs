@@ -182,7 +182,7 @@ namespace EQWOWConverter.Zones
                 ambientVolume = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
 
             // Otherwise, add new
-            ZoneArea newZoneArea = new ZoneArea(displayName, parentAreaDisplayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume);
+            ZoneArea newZoneArea = new ZoneArea(displayName, parentAreaDisplayName, boundingBox, musicFileNameNoExtensionDay, musicFileNameNoExtensionNight, musicVolume, ambientSoundNoExtensionDay, ambientSoundNoExtensionNight, ambientVolume, loopMusic);
             ZoneAreas.Add(newZoneArea);
         }
 

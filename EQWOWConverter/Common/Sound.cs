@@ -24,7 +24,7 @@ namespace EQWOWConverter.Common
 {
     internal class Sound
     {
-        private static int CURRENT_SOUNDENTRY_ZONEMUSICID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ID_START;
+        private static int CURRENT_SOUNDENTRY_ID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ID_START;
 
         public int DBCID;
         public string Name = string.Empty;
@@ -32,17 +32,20 @@ namespace EQWOWConverter.Common
         public SoundType Type = SoundType.None;
         public float Volume;
         public bool Loop = false;
-        public float MinDistance = 8f; // Default for zone music
-        public float DistanceCutoff = 45f; // Default for zone music
+        public float MinDistance;
+        public float DistanceCutoff;
 
-        public Sound(string name, string audioFileName, float volume, SoundType type)
+        public Sound(string name, string audioFileName, float volume, SoundType type, float minDistance, float distanceCutoff, bool loop)
         {
-            DBCID = CURRENT_SOUNDENTRY_ZONEMUSICID;
-            CURRENT_SOUNDENTRY_ZONEMUSICID++;
+            DBCID = CURRENT_SOUNDENTRY_ID;
+            CURRENT_SOUNDENTRY_ID++;
             Name = name;
             AudioFileNameNoExt = audioFileName;
             Volume = volume;
             Type = type;
+            MinDistance = minDistance;
+            DistanceCutoff = distanceCutoff;
+            Loop = loop;
         }
     }
 }
