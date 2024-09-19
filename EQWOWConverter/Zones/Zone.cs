@@ -583,11 +583,7 @@ namespace EQWOWConverter.Zones
                 if (soundInstance2D.SoundFileNameDayNoExt != soundInstance2D.SoundFileNameNightNoExt || soundInstance2D.VolumeDay != soundInstance2D.VolumeNight)
                     Logger.WriteInfo("For zone '" + ShortName + "', skipping 2D sound instance which has mismatched day and night of '" + soundInstance2D.SoundFileNameDayNoExt + "' and '" + soundInstance2D.SoundFileNameNightNoExt + "'");
                 else
-                {
-                    soundInstance2D.Sound = new Sound(soundInstance2D.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance2D.SoundFileNameDayNoExt, 
-                        soundInstance2D.VolumeDay, SoundType.GameObject, 8f, soundInstance2D.Radius, true);
-                    SoundInstances.Add(soundInstance2D);
-                }   
+                    ProcessSoundInstance(soundInstance2D);
             }
 
             // 3D Sounds
@@ -596,12 +592,23 @@ namespace EQWOWConverter.Zones
                 if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
                     Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
-                {
-                    soundInstance3D.Sound = new Sound(soundInstance3D.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance3D.SoundFileNameDayNoExt,
-                        soundInstance3D.VolumeDay, SoundType.GameObject, 8f, soundInstance3D.Radius, true);
-                    SoundInstances.Add(soundInstance3D);
-                }
+                    ProcessSoundInstance(soundInstance3D);
             }
+        }
+
+        private void ProcessSoundInstance(SoundInstance soundInstance)
+        {
+            // Create the sound
+            soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
+                soundInstance.VolumeDay, SoundType.GameObject, 8f, soundInstance.Radius, true);
+
+            // Translate and rotate the position to match the map coordinates
+            soundInstance.Position.X = soundInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE * -1;
+            soundInstance.Position.Y = soundInstance.Position.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE * -1;
+            soundInstance.Position.Z = soundInstance.Position.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+
+            // Add it
+            SoundInstances.Add(soundInstance);
         }
 
         public void SetDescriptiveName(string name)
