@@ -701,6 +701,8 @@ namespace EQWOWConverter
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
+            CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
+            creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -848,6 +850,8 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);

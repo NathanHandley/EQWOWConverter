@@ -232,11 +232,8 @@ namespace EQWOWConverter
         // for teleports as well any other area-based triggers
         public static readonly int CONFIG_DBCID_AREATRIGGER_ID_START = 6500;
 
-        // Identifies Maps in Map.dbc and MapDifficulty.dbc
-        public static readonly int CONFIG_DBCID_MAP_ID_START = 750;
-
-        // Specific rows in MapDifficulty.dbc. (~800-922)
-        public static readonly int CONFIG_DBCID_MAPDIFFICULTY_ID_START = 800;
+        // Identifies the CreatureSoundData.dbc row, used for attaching sounds to creatures
+        public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3200;
 
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int CONFIG_DBCID_LIGHT_ID_START = 3500;
@@ -246,6 +243,12 @@ namespace EQWOWConverter
 
         // IDs for the loading screen
         public static readonly int CONFIG_DBCID_LOADINGSCREEN_ID_START = 255;
+
+        // Identifies Maps in Map.dbc and MapDifficulty.dbc
+        public static readonly int CONFIG_DBCID_MAP_ID_START = 750;
+
+        // Specific rows in MapDifficulty.dbc. (~800-922)
+        public static readonly int CONFIG_DBCID_MAPDIFFICULTY_ID_START = 800;
 
         // ID for sounds found in SoundEntries.dbc
         public static readonly int CONFIG_DBCID_SOUNDENTRIES_ID_START = 22000;
