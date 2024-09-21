@@ -897,6 +897,8 @@ namespace EQWOWConverter
             //CreatureSQL creatureSQL = new CreatureSQL();
             //CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             //CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+            GameObjectSQL gameObjectSQL = new GameObjectSQL();
+            GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
@@ -941,6 +943,8 @@ namespace EQWOWConverter
             //creatureSQL.WriteToDisk(sqlScriptFolder);
             //creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
             //creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
+            gameObjectSQL.WriteToDisk(sqlScriptFolder);
+            gameObjectTemplateSQL.WriteToDisk(sqlScriptFolder);
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }
