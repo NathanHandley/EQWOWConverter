@@ -235,6 +235,9 @@ namespace EQWOWConverter
         // Identifies the CreatureSoundData.dbc row, used for attaching sounds to creatures
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3200;
 
+        // IDs for GameObjects found in GameObjectDisplayInfo.dbc (and related SQL tables)
+        public static readonly int CONFIG_GAMEOBJECT_ID_START = 11000;
+
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int CONFIG_DBCID_LIGHT_ID_START = 3500;
 
@@ -276,6 +279,10 @@ namespace EQWOWConverter
 
         // Record identifier for the creature sql table, range is 40k
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
-        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 350000;
+        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 349999;
+
+        // Record identifier for the creature template SQL table, range is 10k
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 210000;
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 219999;
     }
 }

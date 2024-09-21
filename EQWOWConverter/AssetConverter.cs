@@ -701,8 +701,10 @@ namespace EQWOWConverter
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
-            CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
-            creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
+            //CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
+            //creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
+            GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+            gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -850,8 +852,10 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
-            creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
-            creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
+            //creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
+            //creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
+            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
@@ -890,8 +894,9 @@ namespace EQWOWConverter
             // Create the SQL Scripts
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
-            CreatureSQL creatureSQL = new CreatureSQL();
-            CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
+            //CreatureSQL creatureSQL = new CreatureSQL();
+            //CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
+            //CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
@@ -933,8 +938,9 @@ namespace EQWOWConverter
             // Output them
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
-            creatureSQL.WriteToDisk(sqlScriptFolder);
-            creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
+            //creatureSQL.WriteToDisk(sqlScriptFolder);
+            //creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
+            //creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }
