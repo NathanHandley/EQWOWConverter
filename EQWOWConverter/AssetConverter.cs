@@ -888,10 +888,12 @@ namespace EQWOWConverter
             string sqlScriptFolder = Path.Combine(wowExportPath, "AzerothCoreSQLScripts");
 
             // Create the SQL Scripts
-            GameTeleSQL gameTeleSQL = new GameTeleSQL();
-            InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
+            CreatureSQL creatureSQL = new CreatureSQL();
+            CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
+            GameTeleSQL gameTeleSQL = new GameTeleSQL();
+            InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
             foreach (Zone zone in zones)
             {
@@ -929,10 +931,12 @@ namespace EQWOWConverter
             }
 
             // Output them
-            gameTeleSQL.WriteToDisk(sqlScriptFolder);
-            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
+            creatureSQL.WriteToDisk(sqlScriptFolder);
+            creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
+            gameTeleSQL.WriteToDisk(sqlScriptFolder);
+            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath)
