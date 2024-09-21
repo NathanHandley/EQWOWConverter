@@ -273,5 +273,9 @@ namespace EQWOWConverter
         // ====================================================================
         // Start row for `game_tele` records. (~2000-2200)
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
+
+        // Record identifier for the creature sql table, range is 40k
+        public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
+        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 350000;
     }
 }
