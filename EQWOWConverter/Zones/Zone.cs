@@ -602,10 +602,13 @@ namespace EQWOWConverter.Zones
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
                 soundInstance.VolumeDay, SoundType.GameObject, 8f, soundInstance.Radius, true);
 
-            // Translate and rotate the position to match the map coordinates
-            soundInstance.Position.X = soundInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE * -1;
-            soundInstance.Position.Y = soundInstance.Position.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE * -1;
-            soundInstance.Position.Z = soundInstance.Position.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            //  Flip Y and Z
+            float yPosition = soundInstance.Position.Z;
+            soundInstance.Position.Z = soundInstance.Position.Y;
+            soundInstance.Position.Y = yPosition;
+
+            // Generate a unique ID
+            soundInstance.GenerateGameObjectIDs();
 
             // Add it
             SoundInstances.Add(soundInstance);
