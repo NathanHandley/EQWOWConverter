@@ -25,6 +25,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectSQL
     {
+        // Row GUID
+        private static int CURRENT_GUIDID = Configuration.CONFIG_SQL_GAMEOBJECT_GUID_START;
+
         public class Row
         {
             public int GUID;
@@ -42,7 +45,7 @@ namespace EQWOWConverter.WOWFiles
             public float Rotation1;
             public float Rotation2;
             public float Rotation3;
-            public int SpawnTimeInSec;
+            public int SpawnTimeInSec = 900;
             public int AnimProgress;
             public int State = 1;
             public string ScriptName = string.Empty;
@@ -52,11 +55,15 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int guid, int gameObjectEntryID, int mapID, int parentAreaID, int areaID, Vector3 position)
+        public void AddRow(int gameObjectID, int mapID, int parentAreaID, int areaID, Vector3 position)
         {
+            // Generate the unique GUID
+            int rowGUID = CURRENT_GUIDID;
+            CURRENT_GUIDID++;
+
             Row newRow = new Row();
-            newRow.GUID = guid;
-            newRow.GameObjectEntryID = gameObjectEntryID;
+            newRow.GUID = rowGUID;
+            newRow.GameObjectEntryID = gameObjectID;
             newRow.MapID = mapID;
             newRow.ZoneID = parentAreaID;
             newRow.AreaID = areaID;
@@ -73,10 +80,11 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM gameobject WHERE `id` >= " + Configuration.CONFIG_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.CONFIG_GAMEOBJECT_ID_START + ";");
+            stringBuilder.AppendLine("DELETE FROM gameobject WHERE `id` >= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES (");
+                stringBuilder.Append(row.GUID.ToString() + ", ");
                 stringBuilder.Append(row.GameObjectEntryID.ToString() + ", ");
                 stringBuilder.Append(row.MapID.ToString() + ", ");
                 stringBuilder.Append(row.ZoneID.ToString() + ", ");

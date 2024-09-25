@@ -33,9 +33,9 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id);
             newRow.AddString(modelNameAndRelativePath);
-            newRow.AddInt(0); // Stand SoundEntries.ID
+            newRow.AddInt(loopSoundEntryID); // Stand SoundEntries.ID
             newRow.AddInt(0); // Open SoundEntries.ID
-            newRow.AddInt(loopSoundEntryID); // Loop SoundEntries.ID
+            newRow.AddInt(0); // Loop SoundEntries.ID
             newRow.AddInt(0); // Close SoundEntries.ID
             newRow.AddInt(0); // Destroy SoundEntries.ID
             newRow.AddInt(0); // Opened SoundEntries.ID
@@ -43,12 +43,20 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Custom1 SoundEntries.ID
             newRow.AddInt(0); // Custom2 SoundEntries.ID
             newRow.AddInt(0); // Custom3 SoundEntries.ID
+            /*
             newRow.AddFloat(geoBoundingBox.BottomCorner.X); // GeoBox Min X
             newRow.AddFloat(geoBoundingBox.BottomCorner.Y); // GeoBox Min Y
             newRow.AddFloat(geoBoundingBox.BottomCorner.Z); // GeoBox Min Z
             newRow.AddFloat(geoBoundingBox.TopCorner.X); // GeoBox Max X
             newRow.AddFloat(geoBoundingBox.TopCorner.Y); // GeoBox Max Y
             newRow.AddFloat(geoBoundingBox.TopCorner.Z); // GeoBox Max Z
+            */
+            newRow.AddFloat(-0.260733f); // GeoBox Min X
+            newRow.AddFloat(-0.451229f); // GeoBox Min Y
+            newRow.AddFloat(0.007418f); // GeoBox Min Z
+            newRow.AddFloat(0.260617f); // GeoBox Max X
+            newRow.AddFloat(0.44936f); // GeoBox Max Y
+            newRow.AddFloat(0.686414f); // GeoBox Max Z
             newRow.AddInt(0); // ObjectEffectPackageID (?)
             Rows.Add(newRow);
         }

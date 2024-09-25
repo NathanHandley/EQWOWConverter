@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
         public class Row
         {
             public int EntryID;
-            public GameObjectType Type = GameObjectType.MAP_OBJECT;
+            public GameObjectType Type = GameObjectType.GENERIC;
             public int DisplayID;
             public string Name = string.Empty; // 100 char max
             public string IconName = string.Empty; // 100 char max
@@ -88,12 +88,12 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the row data
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.CONFIG_GAMEOBJECT_ID_START.ToString() + " AND `entry` <= " + Configuration.CONFIG_GAMEOBJECT_ID_START + ";");
+            stringBuilder.AppendLine("DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START.ToString() + " AND `entry` <= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END + ";");
             foreach (Row row in rows)
             {
                 stringBuilder.Append("INSERT INTO `gameobject_template` (`entry`, `type`, `displayId`, `name`, `IconName`, `castBarCaption`, `unk1`, `size`, `Data0`, `Data1`, `Data2`, `Data3`, `Data4`, `Data5`, `Data6`, `Data7`, `Data8`, `Data9`, `Data10`, `Data11`, `Data12`, `Data13`, `Data14`, `Data15`, `Data16`, `Data17`, `Data18`, `Data19`, `Data20`, `Data21`, `Data22`, `Data23`, `AIName`, `ScriptName`, `VerifiedBuild`) VALUES (");
                 stringBuilder.Append(row.EntryID.ToString() + ", ");
-                stringBuilder.Append(row.Type.ToString() + ", ");
+                stringBuilder.Append(Convert.ToInt32(row.Type) + ", ");
                 stringBuilder.Append(row.DisplayID.ToString() + ", ");
                 stringBuilder.Append("'" + row.Name.ToString() + "', ");
                 stringBuilder.Append("'" + row.IconName.ToString() + "', ");
