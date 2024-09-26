@@ -68,12 +68,15 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString(directory);
             newRow.AddFloat(sound.Volume);
             if (sound.Loop == true)
-                newRow.AddPackedFlags(0x02000);
+                newRow.AddPackedFlags(0x200);
             else
                 newRow.AddPackedFlags(0);
             newRow.AddFloat(sound.MinDistance);
             newRow.AddFloat(sound.DistanceCutoff);
-            newRow.AddInt(2); // EAXDef
+            if (sound.Type == SoundType.GameObject)
+                newRow.AddInt(0); // EAXDef
+            else
+                newRow.AddInt(2);
             newRow.AddInt(0); // SoundEntriesAdvancedID
             Rows.Add(newRow);
         }

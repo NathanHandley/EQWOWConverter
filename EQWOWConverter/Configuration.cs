@@ -235,8 +235,12 @@ namespace EQWOWConverter
         // Identifies the CreatureSoundData.dbc row, used for attaching sounds to creatures
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3200;
 
-        // IDs for GameObjects found in GameObjectDisplayInfo.dbc (and related SQL tables)
-        public static readonly int CONFIG_GAMEOBJECT_ID_START = 11000;
+        // IDs for GameObjects found in GameObject.dbc (Reserving 10k)
+        public static readonly int CONFIG_DBCID_GAMEOBJECT_ID_START = 270000;
+        public static readonly int CONFIG_DBCID_GAMEOBJECT_ID_END = 279999;
+
+        // IDs for rows inside GameObjectDisplayInfo.dbc
+        public static readonly int CONFIG_DBCID_GAMEOBJECTDISPLAYINFO_ID_START = 11000;
 
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int CONFIG_DBCID_LIGHT_ID_START = 3500;
@@ -274,9 +278,6 @@ namespace EQWOWConverter
         // ====================================================================
         // SQL Scripts (AzerothCore)
         // ====================================================================
-        // Start row for `game_tele` records. (~2000-2200)
-        public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
-
         // Record identifier for the creature sql table, range is 40k
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
         public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 349999;
@@ -284,5 +285,11 @@ namespace EQWOWConverter
         // Record identifier for the creature template SQL table, range is 10k
         public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 210000;
         public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 219999;
+
+        // Start GUIDs for gameobjects
+        public static readonly int CONFIG_SQL_GAMEOBJECT_GUID_START = 310000;
+
+        // Start row for `game_tele` records. (~2000-2200)
+        public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
     }
 }

@@ -769,6 +769,19 @@ namespace EQWOWConverter
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
+                // Game Object Display Infos
+                foreach(SoundInstance soundInstance in zone.SoundInstances)
+                {
+                    if (soundInstance.Sound == null)
+                        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + soundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
+                    else
+                    {
+                        BoundingBox newBoundingBox = new BoundingBox(-251, -251, -251, 251, 251, 251);
+                        //gameObjectDisplayInfoDBC.AddRow(soundInstance.GameObjectDisplayInfoID, "World\\Expansion01\\Doodads\\ZulAman\\Doors\\ZulAman_TorchFire.mdx", soundInstance.Sound.DBCID, newBoundingBox);
+                        gameObjectDisplayInfoDBC.AddRow(soundInstance.GameObjectDisplayInfoID, "World\\Generic\\ActiveDoodads\\Chest02\\Chest02.mdx", soundInstance.Sound.DBCID, newBoundingBox);
+                    }
+                }
+
                 // Light Tables
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
                 {
@@ -827,6 +840,16 @@ namespace EQWOWConverter
                 {
                     string fileNameWithExt = sound.Value.AudioFileNameNoExt + ".wav";
                     soundEntriesDBC.AddRow(sound.Value, fileNameWithExt, ambientSoundsDirectory);
+                }
+                foreach (SoundInstance soundInstance in zone.SoundInstances)
+                {
+                    if (soundInstance.Sound == null)
+                        Logger.WriteError("Could not create SoundEntry.dbc record for sound instance '" + soundInstance.SoundFileNameDayNoExt + "' since the Sound was null");
+                    else
+                    {
+                        string fileNameWithExt = soundInstance.Sound.AudioFileNameNoExt + ".wav";
+                        soundEntriesDBC.AddRow(soundInstance.Sound, fileNameWithExt, ambientSoundsDirectory);
+                    }
                 }
 
                 // WMOAreaTable (Header than groups)
@@ -904,22 +927,41 @@ namespace EQWOWConverter
 
             foreach (Zone zone in zones)
             {
+                // Instance list
+                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
+
                 // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
                 gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
                     gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
 
-                // Instance list
-                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
+                // Sound Instances
+                foreach(SoundInstance soundInstance in zone.SoundInstances)
+                {
+                    if (soundInstance.Sound == null)
+                        Logger.WriteError("Could not create GameObject SQL records for sound instance '" + soundInstance.SoundFileNameDayNoExt + "' since the Sound was null");
+                    else
+                    {
+                        // GameObject Template
+                        gameObjectTemplateSQL.AddRow(soundInstance.GameObjectID, soundInstance.GameObjectDisplayInfoID, soundInstance.Sound.Name);
+
+                        // GameObject
+                        gameObjectSQL.AddRow(soundInstance.GameObjectID, zone.ZoneProperties.DBCMapID, Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), soundInstance.Position);
+                    }
+                }
 
                 // Zone lines
-                foreach(ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
                     if (ZoneProperties.ZonePropertyListByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
                     {
                         Logger.WriteError("Error!  When attempting to map a zone line, there was no zone with short name '" + zoneLine.TargetZoneShortName + "'");
                         continue;
                     }
+
+                    // Area Trigger
+                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                     // Area Trigger Teleport
                     int areaTriggerID = zoneLine.AreaTriggerID;
@@ -930,10 +972,6 @@ namespace EQWOWConverter
                     float targetPositionZ = zoneLine.TargetZonePosition.Z;
                     float targetOrientation = zoneLine.TargetZoneOrientation;
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
-
-                    // Area Trigger
-                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
-                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
                 }
             }
 
@@ -1060,6 +1098,26 @@ namespace EQWOWConverter
                 File.Copy(sourceFullPath, targetFullPath, true);
                 Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
+            foreach (SoundInstance soundInstance in zone.SoundInstances)
+            {
+                Sound? curSound = soundInstance.Sound;
+                if (curSound == null)
+                    Logger.WriteError("Could not copy sound file for '" + soundInstance.SoundFileNameDayNoExt + "' since the Sound object was null");
+                else
+                {
+                    string sourceFullPath = Path.Combine(soundInputFolder, curSound.AudioFileNameNoExt + ".wav");
+                    string targetFullPath = Path.Combine(zoneOutputAmbienceFolder, curSound.AudioFileNameNoExt + ".wav");
+                    if (File.Exists(sourceFullPath) == false)
+                    {
+                        Logger.WriteError("Could not copy sound instance sound file '" + sourceFullPath + "', as it did not exist");
+                        continue;
+                    }
+                    File.Copy(sourceFullPath, targetFullPath, true);
+                    Logger.WriteDetail("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
+
+                }
+            }
+
             Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
         }
 

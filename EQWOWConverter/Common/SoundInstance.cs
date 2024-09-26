@@ -24,6 +24,9 @@ namespace EQWOWConverter.Common
 {
     internal class SoundInstance
     {
+        protected static int CURRENT_GAMEOBJECTID = Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START;
+        protected static int CURRENT_GAMEOBJECTDISPLAYINFOID = Configuration.CONFIG_DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
+
         public Vector3 Position = new Vector3();
         public bool Is2DSound = false;
         public int Radius = 0;
@@ -37,6 +40,8 @@ namespace EQWOWConverter.Common
         // public Multiplier -- Unsure what this is
 
         public Sound? Sound = null;
+        public int GameObjectID = 0;
+        public int GameObjectDisplayInfoID = 0;
 
         public string GenerateDBCName(string zoneName, int instanceID)
         {
@@ -74,6 +79,16 @@ namespace EQWOWConverter.Common
             // Form the name
             string generatedName = "EQ_" + zoneName + "_SoundInstance" + dimensionPart + "_"+ instanceIDPart + "_" + fileNamePart;
             return generatedName;
+        }
+
+        public void GenerateGameObjectIDs()
+        {
+            GameObjectID = CURRENT_GAMEOBJECTID;
+            CURRENT_GAMEOBJECTID++;
+            if (CURRENT_GAMEOBJECTID > Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END)
+                throw new Exception("CURRENT_GAMEOBJECTID has extended the maximum set in Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END");
+            GameObjectDisplayInfoID = CURRENT_GAMEOBJECTDISPLAYINFOID;
+            CURRENT_GAMEOBJECTDISPLAYINFOID++;
         }
     }
 }
