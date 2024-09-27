@@ -369,7 +369,7 @@ namespace EQWOWConverter.Zones
                     {
                         foreach(BoundingBox areaBox in zoneArea.BoundingBoxes)
                         {
-                            ZoneBox zoneBox = new ZoneBox(areaBox, Materials, ShortName, 0, ZoneBoxRenderType.Both);
+                            ZoneBox zoneBox = new ZoneBox(areaBox, Materials, ShortName, 0, MeshBoxRenderType.Both);
                             staticMeshData.AddMeshData(zoneBox.MeshData);
                         }
                     }

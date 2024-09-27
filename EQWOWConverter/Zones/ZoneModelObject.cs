@@ -16,7 +16,6 @@
 
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Common;
-using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
@@ -127,7 +126,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
-            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE, ZoneBoxRenderType.Outward);
+            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE, MeshBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
             IsLoaded = true;
