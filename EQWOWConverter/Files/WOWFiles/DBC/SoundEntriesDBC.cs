@@ -56,15 +56,15 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString(string.Empty); // FileName 9
             newRow.AddString(string.Empty); // FileName 10
             newRow.AddInt(1); // Frequency 1
-            newRow.AddInt(1); // Frequency 2
-            newRow.AddInt(1); // Frequency 3
-            newRow.AddInt(1); // Frequency 4
-            newRow.AddInt(1); // Frequency 5
-            newRow.AddInt(1); // Frequency 6
-            newRow.AddInt(1); // Frequency 7
-            newRow.AddInt(1); // Frequency 8
-            newRow.AddInt(1); // Frequency 9
-            newRow.AddInt(1); // Frequency 10
+            newRow.AddInt(0); // Frequency 2
+            newRow.AddInt(0); // Frequency 3
+            newRow.AddInt(0); // Frequency 4
+            newRow.AddInt(0); // Frequency 5
+            newRow.AddInt(0); // Frequency 6
+            newRow.AddInt(0); // Frequency 7
+            newRow.AddInt(0); // Frequency 8
+            newRow.AddInt(0); // Frequency 9
+            newRow.AddInt(0); // Frequency 10
             newRow.AddString(directory);
             newRow.AddFloat(sound.Volume);
             if (sound.Loop == true)
@@ -73,10 +73,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddPackedFlags(0);
             newRow.AddFloat(sound.MinDistance);
             newRow.AddFloat(sound.DistanceCutoff);
-            if (sound.Type == SoundType.GameObject)
-                newRow.AddInt(0); // EAXDef
-            else
-                newRow.AddInt(2);
+            newRow.AddInt(2);
             newRow.AddInt(0); // SoundEntriesAdvancedID
             Rows.Add(newRow);
         }
