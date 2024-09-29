@@ -587,7 +587,7 @@ namespace EQWOWConverter
                 WDL zoneWDL = new WDL(zone);
                 zoneWDL.WriteToDisk(exportMPQRootFolder);
 
-                // Create the zone-specific object files
+                // Create the zone-specific generated object files
                 foreach (ObjectModel zoneObject in zone.GeneratedZoneObjects)
                 {
                     // Recreate the folder if needed
@@ -786,15 +786,17 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Game Object Display Infos
-                foreach(SoundInstance soundInstance in zone.SoundInstances)
+                for(int i = 0; i < zone.SoundInstances.Count; i++)
                 {
-                    if (soundInstance.Sound == null)
-                        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + soundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
+                    SoundInstance curSoundInstance = zone.SoundInstances[i];
+                    if (curSoundInstance.Sound == null)
+                        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + curSoundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
                     else
                     {
+                        ObjectModel curSoundModelObject = zone.SoundInstanceObjectModels[i];
+                        string objectModelRelativePath = Path.Combine("World", "Everquest", "ZoneObjects", zone.ShortName, curSoundModelObject.Name, curSoundModelObject.Name + ".mdx");
                         BoundingBox newBoundingBox = new BoundingBox(-251, -251, -251, 251, 251, 251);
-                        //gameObjectDisplayInfoDBC.AddRow(soundInstance.GameObjectDisplayInfoID, "World\\Expansion01\\Doodads\\ZulAman\\Doors\\ZulAman_TorchFire.mdx", soundInstance.Sound.DBCID, newBoundingBox);
-                        gameObjectDisplayInfoDBC.AddRow(soundInstance.GameObjectDisplayInfoID, "World\\Generic\\ActiveDoodads\\Chest02\\Chest02.mdx", soundInstance.Sound.DBCID, newBoundingBox);
+                        gameObjectDisplayInfoDBC.AddRow(curSoundInstance.GameObjectDisplayInfoID, objectModelRelativePath, curSoundInstance.Sound.DBCID, newBoundingBox);
                     }
                 }
 
