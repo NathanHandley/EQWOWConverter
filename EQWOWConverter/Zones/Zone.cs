@@ -50,6 +50,7 @@ namespace EQWOWConverter.Zones
         public ZoneArea DefaultArea;
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
+        public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
 
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
@@ -612,6 +613,16 @@ namespace EQWOWConverter.Zones
 
             // Add it
             SoundInstances.Add(soundInstance);
+
+            // Generate a model to represent it for emitting
+            string objectModelName = soundInstance.GenerateModelName(ShortName, SoundInstances.Count);
+            Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true);
+            MeshData objectModelMesh = new MeshData();
+            BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
+            objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
+            ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"));
+            soundInstanceObjectModel.Load(objectModelName, new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>(), false);
+            SoundInstanceObjectModels.Add(soundInstanceObjectModel);
         }
 
         public void SetDescriptiveName(string name)

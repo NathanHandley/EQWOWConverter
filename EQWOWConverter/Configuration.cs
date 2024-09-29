@@ -203,6 +203,12 @@ namespace EQWOWConverter
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
 
+        // Size of the box when rendering a sound instance (Note: It's 1/2 the in-game size)
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE = 1f;
+
+        // Name of the object material that is used when rendering the soundinstance object
+        public static readonly string CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME = "akafloorgrate";
+
         //=====================================================================
         // Objects
         //=====================================================================

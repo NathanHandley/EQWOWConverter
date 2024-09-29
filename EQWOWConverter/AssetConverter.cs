@@ -169,11 +169,12 @@ namespace EQWOWConverter
             string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
             string inputMusicFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
+            string inputObjectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
             string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
             string exportMapsFolder = Path.Combine(exportMPQRootFolder, "World", "Maps");
             string exportWMOFolder = Path.Combine(exportMPQRootFolder, "World", "wmo");
             string exportZonesTexturesFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneTextures");
-            string exportZonesMaterialDoodadFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneMaterialDoodads");
+            string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -189,8 +190,8 @@ namespace EQWOWConverter
                     Directory.Delete(exportWMOFolder, true);
                 if (Directory.Exists(exportZonesTexturesFolder))
                     Directory.Delete(exportZonesTexturesFolder, true);
-                if (Directory.Exists(exportZonesMaterialDoodadFolder))
-                    Directory.Delete(exportZonesMaterialDoodadFolder, true);
+                if (Directory.Exists(exportZonesObjectsFolder))
+                    Directory.Delete(exportZonesObjectsFolder, true);
                 if (Directory.Exists(exportMusicFolder))
                     Directory.Delete(exportMusicFolder, true);
             }
@@ -202,8 +203,8 @@ namespace EQWOWConverter
                 Directory.CreateDirectory(exportWMOFolder);
             if (Directory.Exists(exportZonesTexturesFolder) == false)
                 Directory.CreateDirectory(exportZonesTexturesFolder);
-            if (Directory.Exists(exportZonesMaterialDoodadFolder) == false)
-                Directory.CreateDirectory(exportZonesMaterialDoodadFolder);
+            if (Directory.Exists(exportZonesObjectsFolder) == false)
+                Directory.CreateDirectory(exportZonesObjectsFolder);
             if (Directory.Exists(exportMusicFolder) == false)
                 Directory.CreateDirectory(exportMusicFolder);
 
@@ -226,7 +227,7 @@ namespace EQWOWConverter
                     continue;
 
                 // Load the EQ zone
-                string relativeZoneMaterialDoodadsPath = Path.Combine("World", "Everquest", "ZoneMaterialDoodads", zoneDirectory.Name);
+                string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneDirectory.Name);
                 ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
                 Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing EQ zone '" + zoneDirectory.Name);
@@ -235,14 +236,14 @@ namespace EQWOWConverter
                 Logger.WriteDetail("- [" + zoneDirectory.Name + "]: Importing of EQ zone '" + zoneDirectory.Name + "' complete");
 
                 // Convert to WOW zone
-                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, relativeStaticDoodadsPath, relativeZoneMaterialDoodadsPath);
+                CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, relativeStaticDoodadsPath, relativeZoneObjectsPath);
 
                 // Copy/move files if needed
                 if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
                     Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                 {
                     // Place the related textures
-                    ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneMaterialDoodadsPath);
+                    ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneObjectsPath, inputObjectTexturesFolder);
 
                     // Place the related music files
                     ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
@@ -381,10 +382,10 @@ namespace EQWOWConverter
             foreach(string zoneName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
             {
                 // Add zone-specific folders
-                // ZoneMaterialDoodads
-                string relativeZoneMaterialDoodadsPath = Path.Combine("World", "Everquest", "ZoneMaterialDoodads", zoneName);
-                string fullZoneMaterialDoodadsPath = Path.Combine(mpqReadyFolder, relativeZoneMaterialDoodadsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMaterialDoodadsPath + "\" \"" + relativeZoneMaterialDoodadsPath + "\" /r");
+                // ZoneObjects
+                string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneName);
+                string fullZoneObjectsPath = Path.Combine(mpqReadyFolder, relativeZoneObjectsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneObjectsPath + "\" \"" + relativeZoneObjectsPath + "\" /r");
 
                 // ZoneTextures
                 string relativeZoneTexturesPath = Path.Combine("World", "Everquest", "ZoneTextures", zoneName);
@@ -564,7 +565,7 @@ namespace EQWOWConverter
         }
 
         public void CreateWoWZoneFromEQZone(Zone zone, string exportMPQRootFolder, string relativeStaticDoodadsFolder,
-            string relativeZoneMaterialDoodadsFolder)
+            string relativeZoneObjectsFolder)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting zone '" + zone.ShortName + "' into a wow zone...");
 
@@ -575,7 +576,7 @@ namespace EQWOWConverter
                 Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zone.ShortName))
             {
                 // Create the zone WMO objects
-                WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
+                WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
                 zoneWMO.WriteToDisk(exportMPQRootFolder);
 
                 // Create the WDT
@@ -590,7 +591,7 @@ namespace EQWOWConverter
                 foreach (ObjectModel zoneObject in zone.GeneratedZoneObjects)
                 {
                     // Recreate the folder if needed
-                    string curZoneObjectRelativePath = Path.Combine(relativeZoneMaterialDoodadsFolder, zoneObject.Name);
+                    string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsFolder, zoneObject.Name);
                     string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
                     if (Directory.Exists(curZoneObjectFolder))
                         Directory.Delete(curZoneObjectFolder, true);
@@ -599,6 +600,21 @@ namespace EQWOWConverter
                     // Build this zone object M2 Data
                     M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
                     objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+                }
+
+                // Create the zone-specific sound instance objects
+                foreach (ObjectModel zoneSoundInstanceObject in zone.SoundInstanceObjectModels)
+                {
+                    // Recreate the folder if needed
+                    string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsFolder, zoneSoundInstanceObject.Name);
+                    string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
+                    if (Directory.Exists(curZoneObjectFolder))
+                        Directory.Delete(curZoneObjectFolder, true);
+                    Directory.CreateDirectory(curZoneObjectFolder);
+
+                    // Build this zone object M2 Data
+                    M2 objectM2 = new M2(zoneSoundInstanceObject, curZoneObjectRelativePath);
+                    objectM2.WriteToDisk(zoneSoundInstanceObject.Name, curZoneObjectFolder);
                 }
             }
             else
@@ -987,7 +1003,8 @@ namespace EQWOWConverter
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }
 
-        public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath)
+        public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
+            string inputObjectTextureFolder)
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
 
@@ -1028,6 +1045,19 @@ namespace EQWOWConverter
                     File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
                     Logger.WriteDetail("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
                 }
+            }
+
+            // Finally copy the textures for any sound instance objects
+            string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+            foreach (ObjectModel zoneObject in zone.SoundInstanceObjectModels)
+            {
+                string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+                if (File.Exists(soundInstanceInputTextureFullPath) == false)
+                {
+                    Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
+                    continue;
+                }
+                File.Copy(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath, true);
             }
 
             Logger.WriteDetail("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
