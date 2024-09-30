@@ -60,7 +60,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<Vector3> CollisionFaceNormals = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<M2Attachment> Attachments = new M2GenericArrayByOffset<M2Attachment>();
         private M2GenericArrayByOffset<M2Int16> AttachmentIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2GenericArrayByOffset<M2Dummy> Events = new M2GenericArrayByOffset<M2Dummy>();
+        private M2EventArrayByOffset Events = new M2EventArrayByOffset();
         private M2GenericArrayByOffset<M2Dummy> Lights = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> Cameras = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Int16> CamerasIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
@@ -173,7 +173,8 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Events
-            // none for now
+            if (wowObjectModel.SoundIdleLoop != null)
+                Events.AddIdleSoundEvent(wowObjectModel.SoundIdleLoop);
 
             // Lights
             // none for now

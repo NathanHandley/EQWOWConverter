@@ -51,6 +51,7 @@ namespace EQWOWConverter.ObjectModels
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
+        public Sound? SoundIdleLoop = null;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();

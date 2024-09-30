@@ -622,6 +622,7 @@ namespace EQWOWConverter.Zones
             objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
             ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"));
             soundInstanceObjectModel.Load(objectModelName, new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>(), false);
+            soundInstanceObjectModel.SoundIdleLoop = soundInstance.Sound;
             SoundInstanceObjectModels.Add(soundInstanceObjectModel);
         }
 
