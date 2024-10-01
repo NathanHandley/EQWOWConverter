@@ -26,6 +26,12 @@ namespace EQWOWConverter
     internal class Configuration
     {
         // ====================================================================
+        // Console
+        // ====================================================================
+        // Plays a beep sound when the generate completes if set to true
+        public static readonly bool CONFIG_CONSOLE_BEEP_ON_COMPLETE = true;
+
+        // ====================================================================
         // Logging
         // ====================================================================
         // Level of logs to write to the console and log file.

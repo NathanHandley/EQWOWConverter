@@ -65,7 +65,8 @@ internal class Program
                                     break;
                                 }
                                 Logger.WriteInfo("Exported EQ Data Conditioning Succeeded.");
-                                Console.Beep();
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
                             }
                             break;
                         case "5":
@@ -77,7 +78,8 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                                     break;
                                 }
-                                Console.Beep();
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
                             }
                             break;
                         case "9":
@@ -99,7 +101,8 @@ internal class Program
                     Logger.WriteError("Exception Occurred: " + ex.Message);
                     if (ex.StackTrace != null)
                         Logger.WriteDetail(ex.StackTrace);
-                    Console.Beep();
+                    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                        Console.Beep();
                 }
             }
         }
