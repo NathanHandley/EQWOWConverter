@@ -600,8 +600,10 @@ namespace EQWOWConverter.Zones
         private void ProcessSoundInstance(SoundInstance soundInstance)
         {
             // Create the sound
+            float volume = soundInstance.VolumeDay * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD;
+            float minDistance = soundInstance.Radius * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
-                soundInstance.VolumeDay, SoundType.GameObject, 8f, soundInstance.Radius, true);
+                volume, SoundType.GameObject, minDistance, soundInstance.Radius, true);
 
             //  Flip Y and Z
             float yPosition = soundInstance.Position.Z;
