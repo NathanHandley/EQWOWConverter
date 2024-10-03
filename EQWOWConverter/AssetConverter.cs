@@ -1100,12 +1100,6 @@ namespace EQWOWConverter
         {
             Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting ambient sound for zone '" + zone.ShortName + "'...");
 
-            if (zone.ZoneAreaAmbientSounds.Count == 0)
-            {
-                Logger.WriteDetail("- [" + zone.ShortName + "]: No ambient sound found for this zone");
-                return;
-            }
-
             // Create the folder to output
             string zoneOutputAmbienceFolder = Path.Combine(wowExportPath, "Sound", "Ambience", "Everquest");
             if (Directory.Exists(zoneOutputAmbienceFolder) == false)

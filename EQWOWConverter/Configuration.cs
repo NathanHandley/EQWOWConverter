@@ -210,10 +210,10 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
 
         // How much to multiply the volumes of sound instances. They are typically too loud for a 1:1 translation from EQ to WoW
-        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD = 0.5f;
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD = 0.15f;
 
         // The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume
-        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.25f;
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.4f;
 
         // Size of the box when rendering a sound instance (Note: It's 1/2 the in-game size)
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE = 1f;
