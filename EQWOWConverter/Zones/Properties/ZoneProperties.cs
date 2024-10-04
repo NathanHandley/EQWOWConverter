@@ -51,6 +51,7 @@ namespace EQWOWConverter.Zones
         public string ZonewideAmbienceFileNameNoExtDay = string.Empty;
         public string ZonewideAmbienceFileNameNoExtNight = string.Empty;
         public float ZonewideAmbienceVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
+        public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
 
         // DBCIDs
         public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAP_ID_START;
@@ -90,6 +91,15 @@ namespace EQWOWConverter.Zones
         protected void DisableSunlight()
         {
             HasShadowBox = true;
+        }
+
+        protected void Enable2DSoundInstances(params string[] daySoundNames)
+        {
+            foreach(string daySoundName in daySoundNames)
+            {
+                if (Enabled2DSoundInstancesByDaySoundName.Contains(daySoundName) == false)
+                    Enabled2DSoundInstancesByDaySoundName.Add(daySoundName);
+            }
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)

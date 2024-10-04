@@ -578,15 +578,6 @@ namespace EQWOWConverter.Zones
 
         private void ProcessSoundInstances()
         {
-            // 2D Sounds
-            //foreach (SoundInstance soundInstance2D in EQZoneData.Sound2DInstances)
-            //{
-            //    if (soundInstance2D.SoundFileNameDayNoExt != soundInstance2D.SoundFileNameNightNoExt || soundInstance2D.VolumeDay != soundInstance2D.VolumeNight)
-            //        Logger.WriteInfo("For zone '" + ShortName + "', skipping 2D sound instance which has mismatched day and night of '" + soundInstance2D.SoundFileNameDayNoExt + "' and '" + soundInstance2D.SoundFileNameNightNoExt + "'");
-            //    else
-            //        ProcessSoundInstance(soundInstance2D);
-            //}
-
             // 3D Sounds
             foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
             {
@@ -594,6 +585,14 @@ namespace EQWOWConverter.Zones
                     Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
                     ProcessSoundInstance(soundInstance3D);
+            }
+
+            // 2D Sounds
+            // TODO: Make these non-directional...?
+            foreach (SoundInstance soundInstance2D in EQZoneData.Sound2DInstances)
+            {
+                if (ZoneProperties.Enabled2DSoundInstancesByDaySoundName.Contains(soundInstance2D.SoundFileNameDayNoExt))
+                    ProcessSoundInstance(soundInstance2D);
             }
         }
 
