@@ -640,7 +640,7 @@ namespace EQWOWConverter
         public void CreateLoadingScreens()
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string exportMPQRootFolder = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
 
             Logger.WriteInfo("Copying loading screens");
             string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
@@ -676,7 +676,7 @@ namespace EQWOWConverter
         public void CreateLiquidMaterials()
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string exportMPQRootFolder = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
 
             Logger.WriteInfo("Copying liquid material textures");
 
