@@ -209,6 +209,9 @@ namespace EQWOWConverter
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
 
+        // If this is 'true', draw any sound instances in a zone as a little box
+        public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = false;
+
         // How much to multiply the volumes of sound instances. They are typically too loud for a 1:1 translation from EQ to WoW
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD = 0.10f;
 

@@ -626,7 +626,8 @@ namespace EQWOWConverter.Zones
             Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true);
             MeshData objectModelMesh = new MeshData();
             BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
-            objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
+            if (Configuration.CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
+                objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
             ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"), ObjectModelType.SoundInstance);
             soundInstanceObjectModel.Load(objectModelName, new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>(), false);
             soundInstanceObjectModel.SoundIdleLoop = soundInstance.Sound;
