@@ -268,15 +268,24 @@ namespace EQWOWConverter.Common
             // Enforce a min size if needed
             if (minSize > 0)
             {
-                float amountToAddX = (boundingBox.TopCorner.X - boundingBox.BottomCorner.X);
-                boundingBox.TopCorner.X += amountToAddX;
-                boundingBox.BottomCorner.X -= amountToAddX;
-                float amountToAddY = (boundingBox.TopCorner.Y - boundingBox.BottomCorner.Y);
-                boundingBox.TopCorner.Y += amountToAddY;
-                boundingBox.BottomCorner.Y -= amountToAddY;
-                float amountToAddZ = (boundingBox.TopCorner.Z - boundingBox.BottomCorner.Z);
-                boundingBox.TopCorner.Z += amountToAddZ;
-                boundingBox.BottomCorner.Z -= amountToAddZ;
+                if (boundingBox.GetXDistance() < minSize)
+                {
+                    float amountToAdd = (minSize - boundingBox.GetXDistance()) * 0.5f;
+                    boundingBox.TopCorner.X += amountToAdd;
+                    boundingBox.BottomCorner.X -= amountToAdd;
+                }
+                if (boundingBox.GetYDistance() < minSize)
+                {
+                    float amountToAdd = (minSize - boundingBox.GetYDistance()) * 0.5f;
+                    boundingBox.TopCorner.Y += amountToAdd;
+                    boundingBox.BottomCorner.Y -= amountToAdd;
+                }
+                if (boundingBox.GetZDistance() < minSize)
+                {
+                    float amountToAdd = (minSize - boundingBox.GetZDistance()) * 0.5f;
+                    boundingBox.TopCorner.Z += amountToAdd;
+                    boundingBox.BottomCorner.Z -= amountToAdd;
+                }
             }
 
             return boundingBox;
