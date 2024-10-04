@@ -29,6 +29,7 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModel
     {
         public string Name = string.Empty;
+        public ObjectModelType ModelType;
         public ObjectModelEQData EQObjectModelData = new ObjectModelEQData();
         public ObjectModelProperties Properties = new ObjectModelProperties();
         public List<UInt32> GlobalLoopSequenceLimits = new List<UInt32>();
@@ -59,10 +60,11 @@ namespace EQWOWConverter.ObjectModels
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
 
-        public ObjectModel(string name, ObjectModelProperties objectProperties)
+        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType)
         {
             Name = name;
             Properties = objectProperties;
+            ModelType = modelType;
         }
 
         public void LoadEQObjectData(string inputObjectFolder)

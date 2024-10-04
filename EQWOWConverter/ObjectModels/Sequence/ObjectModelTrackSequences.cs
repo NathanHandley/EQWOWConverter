@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ObjectModels.WOW;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

@@ -130,7 +130,7 @@ namespace EQWOWConverter
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
-                ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties);
+                ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
                 curObject.LoadEQObjectData(objectFolderRoot);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
@@ -719,8 +719,8 @@ namespace EQWOWConverter
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
             //CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
             //creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
-            GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
-            gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
+            //GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+            //gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -786,19 +786,19 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Game Object Display Infos
-                for(int i = 0; i < zone.SoundInstances.Count; i++)
-                {
-                    SoundInstance curSoundInstance = zone.SoundInstances[i];
-                    if (curSoundInstance.Sound == null)
-                        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + curSoundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
-                    else
-                    {
-                        ObjectModel curSoundModelObject = zone.SoundInstanceObjectModels[i];
-                        string objectModelRelativePath = Path.Combine("World", "Everquest", "ZoneObjects", zone.ShortName, curSoundModelObject.Name, curSoundModelObject.Name + ".mdx");
-                        BoundingBox newBoundingBox = new BoundingBox(-251, -251, -251, 251, 251, 251);
-                        gameObjectDisplayInfoDBC.AddRow(curSoundInstance.GameObjectDisplayInfoID, objectModelRelativePath, curSoundInstance.Sound.DBCID, newBoundingBox);
-                    }
-                }
+                //for(int i = 0; i < zone.SoundInstances.Count; i++)
+                //{
+                //    SoundInstance curSoundInstance = zone.SoundInstances[i];
+                //    if (curSoundInstance.Sound == null)
+                //        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + curSoundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
+                //    else
+                //    {
+                //        ObjectModel curSoundModelObject = zone.SoundInstanceObjectModels[i];
+                //        string objectModelRelativePath = Path.Combine("World", "Everquest", "ZoneObjects", zone.ShortName, curSoundModelObject.Name, curSoundModelObject.Name + ".mdx");
+                //        BoundingBox newBoundingBox = new BoundingBox(-251, -251, -251, 251, 251, 251);
+                //        gameObjectDisplayInfoDBC.AddRow(curSoundInstance.GameObjectDisplayInfoID, objectModelRelativePath, curSoundInstance.Sound.DBCID, newBoundingBox);
+                //    }
+                //}
 
                 // Light Tables
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
@@ -895,8 +895,8 @@ namespace EQWOWConverter
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
             //creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
             //creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
-            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
-            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            //gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            //gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
@@ -938,8 +938,8 @@ namespace EQWOWConverter
             //CreatureSQL creatureSQL = new CreatureSQL();
             //CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             //CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
-            GameObjectSQL gameObjectSQL = new GameObjectSQL();
-            GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
+            //GameObjectSQL gameObjectSQL = new GameObjectSQL();
+            //GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
@@ -961,10 +961,10 @@ namespace EQWOWConverter
                     else
                     {
                         // GameObject Template
-                        gameObjectTemplateSQL.AddRow(soundInstance.GameObjectID, soundInstance.GameObjectDisplayInfoID, soundInstance.Sound.Name);
+                        //gameObjectTemplateSQL.AddRow(soundInstance.GameObjectID, soundInstance.GameObjectDisplayInfoID, soundInstance.Sound.Name);
 
                         // GameObject
-                        gameObjectSQL.AddRow(soundInstance.GameObjectID, zone.ZoneProperties.DBCMapID, Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), soundInstance.Position);
+                        //gameObjectSQL.AddRow(soundInstance.GameObjectID, zone.ZoneProperties.DBCMapID, Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), soundInstance.Position);
                     }
                 }
 
@@ -999,8 +999,8 @@ namespace EQWOWConverter
             //creatureSQL.WriteToDisk(sqlScriptFolder);
             //creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
             //creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
-            gameObjectSQL.WriteToDisk(sqlScriptFolder);
-            gameObjectTemplateSQL.WriteToDisk(sqlScriptFolder);
+            //gameObjectSQL.WriteToDisk(sqlScriptFolder);
+            //gameObjectTemplateSQL.WriteToDisk(sqlScriptFolder);
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }

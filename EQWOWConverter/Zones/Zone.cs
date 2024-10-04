@@ -107,6 +107,9 @@ namespace EQWOWConverter.Zones
             // Build light instances
             GenerateLightInstances(EQZoneData.LightInstances);
 
+            // Process Sound Instances
+            ProcessSoundInstances();
+
             // Create doodad instances
             GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData, rootModel);
 
@@ -139,9 +142,6 @@ namespace EQWOWConverter.Zones
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
-
-            // Process Sound Instances
-            ProcessSoundInstances();
 
             // Completely loaded
             IsLoaded = true;
@@ -522,7 +522,7 @@ namespace EQWOWConverter.Zones
 
                 // Generate the object
                 string name = material.UniqueName + "_" + i.ToString();
-                ObjectModel newObject = new ObjectModel(name, ObjectModelProperties.GetObjectPropertiesForObject(""));
+                ObjectModel newObject = new ObjectModel(name, ObjectModelProperties.GetObjectPropertiesForObject(""), ObjectModelType.ZoneModel);
                 newObject.Load(name, new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>(), false);
                 GeneratedZoneObjects.Add(newObject);
 
@@ -610,6 +610,11 @@ namespace EQWOWConverter.Zones
             soundInstance.Position.Z = soundInstance.Position.Y;
             soundInstance.Position.Y = yPosition;
 
+            // Apply world scale
+            soundInstance.Position.X *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            soundInstance.Position.Y *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            soundInstance.Position.Z *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+
             // Generate a unique ID
             soundInstance.GenerateGameObjectIDs();
 
@@ -622,10 +627,20 @@ namespace EQWOWConverter.Zones
             MeshData objectModelMesh = new MeshData();
             BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
             objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
-            ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"));
+            ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"), ObjectModelType.SoundInstance);
             soundInstanceObjectModel.Load(objectModelName, new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>(), false);
             soundInstanceObjectModel.SoundIdleLoop = soundInstance.Sound;
             SoundInstanceObjectModels.Add(soundInstanceObjectModel);
+
+            // Make it a doodad
+            ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.SoundInstance);
+            doodadInstance.ObjectName = objectModelName;
+            doodadInstance.Position.X = soundInstance.Position.X;
+            doodadInstance.Position.Z = soundInstance.Position.Z;
+            doodadInstance.Position.Y = soundInstance.Position.Y;
+            doodadInstance.Position.X = -doodadInstance.Position.X; // Rotate around Z axis 180 degrees
+            doodadInstance.Position.Y = -doodadInstance.Position.Y; // Rotate around Z axis 180 degrees
+            DoodadInstances.Add(doodadInstance);
         }
 
         public void SetDescriptiveName(string name)

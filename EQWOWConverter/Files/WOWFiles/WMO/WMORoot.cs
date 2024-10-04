@@ -36,11 +36,11 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 GroupNameDescriptiveOffset = 0;
         public ZoneProperties ZoneProperties;
 
-        public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneMaterialDoodadsFolder)
+        public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
             ZoneProperties = zone.ZoneProperties;
 
-            PopulateDoodadPathStringOffsets(zone, relativeStaticDoodadsFolder, relativeZoneMaterialDoodadsFolder);
+            PopulateDoodadPathStringOffsets(zone, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
             RootBytes.AddRange(GenerateMVERChunk());
@@ -491,7 +491,7 @@ namespace EQWOWConverter.WOWFiles
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 
-        private void PopulateDoodadPathStringOffsets(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneMaterialDoodadsFolder)
+        private void PopulateDoodadPathStringOffsets(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
             int curPathOffset = 0;
             foreach (ZoneDoodadInstance objectInstance in zone.DoodadInstances)
@@ -500,8 +500,8 @@ namespace EQWOWConverter.WOWFiles
                 string objectFullPath = string.Empty;
                 if (objectInstance.DoodadType == ZoneDoodadInstanceType.StaticObject)
                     objectFullPath = Path.Combine(relativeStaticDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
-                else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial)
-                    objectFullPath = Path.Combine(relativeZoneMaterialDoodadsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
+                else if (objectInstance.DoodadType == ZoneDoodadInstanceType.ZoneMaterial || objectInstance.DoodadType == ZoneDoodadInstanceType.SoundInstance)
+                    objectFullPath = Path.Combine(relativeZoneObjectsFolder, objectName, objectName + ".MDX" + "\0").ToUpper();
                 else
                     Logger.WriteError("Unhandled type of doodad instance '" + objectInstance.DoodadType.ToString() + "' for doodad name '" + objectInstance.ObjectName + "'");
                 

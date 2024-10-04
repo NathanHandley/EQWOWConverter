@@ -19,6 +19,7 @@ namespace EQWOWConverter.Zones
     internal enum ZoneDoodadInstanceType
     {
         StaticObject,
-        ZoneMaterial
+        ZoneMaterial,
+        SoundInstance
     }
 }

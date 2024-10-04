@@ -33,12 +33,12 @@ namespace EQWOWConverter.WOWFiles
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
 
-        public WMO(Zone zone, string baseFolderPath, string exportStaticDoodadsFolder, string exportZoneMaterialDoodadsFolder)
+        public WMO(Zone zone, string baseFolderPath, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
         {
             BaseFileName = zone.ShortName;
 
             // Create root object
-            RootObject = new WMORoot(zone, exportStaticDoodadsFolder, exportZoneMaterialDoodadsFolder);
+            RootObject = new WMORoot(zone, exportStaticDoodadsFolder, exportZoneObjectsFolder);
 
             // Create the groups
             foreach(ZoneObjectModel curWorldObjectModel in zone.ZoneObjectModels)
