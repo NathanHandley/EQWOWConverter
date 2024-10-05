@@ -60,9 +60,9 @@ namespace EQWOWConverter.Common
                 fileNamePart = SoundFileNameDayNoExt;
             else
             {
-                if (SoundFileNameDayNoExt == string.Empty)
+                if (SoundFileNameDayNoExt != string.Empty)
                     fileNamePart = SoundFileNameDayNoExt;
-                else if (SoundFileNameNightNoExt == string.Empty)
+                else if (SoundFileNameNightNoExt != string.Empty)
                     fileNamePart = SoundFileNameNightNoExt;
                 else
                 {
@@ -98,9 +98,9 @@ namespace EQWOWConverter.Common
                 fileNamePart = SoundFileNameDayNoExt;
             else
             {
-                if (SoundFileNameDayNoExt == string.Empty)
+                if (SoundFileNameDayNoExt != string.Empty)
                     fileNamePart = SoundFileNameDayNoExt;
-                else if (SoundFileNameNightNoExt == string.Empty)
+                else if (SoundFileNameNightNoExt != string.Empty)
                     fileNamePart = SoundFileNameNightNoExt;
                 else
                 {
