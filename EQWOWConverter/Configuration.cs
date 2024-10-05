@@ -217,6 +217,7 @@ namespace EQWOWConverter
 
         // The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.4f;
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD = 0.8f;
 
         // Size of the box when rendering a sound instance (Note: It's 1/2 the in-game size)
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE = 1f;

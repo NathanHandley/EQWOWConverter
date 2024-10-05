@@ -601,7 +601,11 @@ namespace EQWOWConverter.Zones
             // Create the sound
             float volume = soundInstance.VolumeDay * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD;
             float radius = soundInstance.Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            float minDistance = radius * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
+            float minDistance = radius;
+            if (soundInstance.Is2DSound)
+                minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD;
+            else
+                minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
                 volume, SoundType.GameObject, minDistance, radius, true);
 
