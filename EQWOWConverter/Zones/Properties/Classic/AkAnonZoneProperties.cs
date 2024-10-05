@@ -32,6 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Make an area for the zoo (near market)
             // TODO: Waterwheel in the deepest water room
             SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinentType.Faydwer);
+            Enable2DSoundInstances("spinnrlp");
             AddZoneArea("Entry", 257.142761f, 118.389160f, 1000, -131.215698f, -96.817497f, -1000f, "akanon-00", "akanon-00");
             AddZoneArea("Command ", 840.922852f, -97.088692f, 1000, 713.662292f, -224.234146f, -1000f, "akanon-00", "akanon-00");
             AddZoneArea("Supply Area", 1082.224976f, 231.194824f, 1000, 470.762787f, -420.297241f, -1000f, "akanon-04", "akanon-04");

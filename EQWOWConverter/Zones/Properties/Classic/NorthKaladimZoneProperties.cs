@@ -40,9 +40,9 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Southwest Tunnel", 473.453552f, 358.147095f, 24.729561f, 336.825073f, 256.194977f, -27.863100f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
             AddZoneArea("Southeast Tunnel", 454.195770f, -214.330215f, 44.012981f, 316.785950f, -288.690063f, -27.863100f, "", "", 0f, "wind_lp2", "wind_lp2", 0.13931568f);
             AddZoneArea("Central Tunnel", 562.377991f, 182.709274f, 32.009251f, 392.926910f, -35.701130f, -35.316898f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
-            AddZoneArea("Northwest Tunnel", 715.138184f, 313.482269f, 102.215286f, 626.388977f, -8.161750f, -38.159229f, "", "", 0f, "wind_lp4", "wind_lp4");
-            AddZoneArea("Northwest Tunnel", 715.138184f, 177.230865f, 102.215286f, 557.901489f, -8.161750f, -38.159229f, "", "", 0f, "wind_lp4", "wind_lp4");
-            AddZoneArea("Northeast Tunnel", 646.349792f, -178.952515f, 73.669640f, 471.682922f, -286.248322f, -9.044160f, "", "", 0f, "wind_lp4", "wind_lp4");
+            AddZoneArea("Northwest Tunnel", 715.138184f, 313.482269f, 102.215286f, 626.388977f, -8.161750f, -38.159229f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
+            AddZoneArea("Northwest Tunnel", 715.138184f, 177.230865f, 102.215286f, 557.901489f, -8.161750f, -38.159229f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
+            AddZoneArea("Northeast Tunnel", 646.349792f, -178.952515f, 73.669640f, 471.682922f, -286.248322f, -9.044160f, "", "", 0f, "wind_lp4", "wind_lp4", 0.13931568f);
             AddZoneLineBox("kaladima", 306.093964f, 231.490326f, 0.020500f, ZoneLineOrientationType.South, 394.649292f, 346.066956f, -1.531000f, 397.138519f, 312.694366f, -24.499941f);
             AddZoneLineBox("kaladima", 393.919128f, -263.472565f, 0.000040f, ZoneLineOrientationType.South, 384.053192f, -259.715820f, 22.414330f, 373.654907f, -272.101318f, -0.499970f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_agua1", 789.445374f, 379.175079f, 736.143677f, 226.058517f, -75.968742f, 50f); // NW Rail Pool
