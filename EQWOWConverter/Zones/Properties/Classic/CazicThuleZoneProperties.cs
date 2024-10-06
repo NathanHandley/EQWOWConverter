@@ -31,6 +31,17 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Bug: Near the entry pools, the textures collide on the surface
             SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsWithSky(40, 65, 16, ZoneFogType.Heavy, 0.5f, 1.0f);
+            Enable2DSoundInstances("slmestrm", "wind_lp2", "lakelap1", "torch_lp");
+            AddZoneArea("Archon Pyramid", 1224.566162f, -26.975229f, 213.322754f, 711.677063f, -519.299316f, 26.708981f);
+            AddZoneArea("Archon Pools", 1097.259155f, -132.695816f, 43.793690f, 807.896057f, -424.505066f, -174.853439f);
+            AddZoneArea("Avatar of Fear Shrine", 1450.210083f, 773.020630f, 84.898651f, 828.155518f, 345.046356f, -8.928060f);
+            AddZoneArea("Avatar of Fear Shrine", 1203.429443f, 691.566345f, -4.095730f, 993.050110f, 484.290924f, -120f);
+            AddZoneArea("Sewers", 838.692871f, 616.776123f, -36.019669f, 455.754242f, 119.732773f, -89f);
+            AddZoneArea("Sewers", 1037.522583f, 401.439331f, -14.377440f, 604.456482f, 71.858856f, -146.028687f);
+            AddZoneArea("Gator Pit", 257.812225f, -51.112339f, -154.093826f, -144.449753f, -653.038757f, -311.966217f);
+            AddZoneArea("High Throne", 403.826721f, 418.116028f, 72.933083f, 208.478760f, 167.585373f, -1.137330f);
+            AddZoneArea("The Maze", 656.258179f, -73.121597f, 108.121300f, 85.339203f, -534.369446f, -19.916740f);
+            AddZoneArea("The Maze", 203.535263f, -91.370308f, 108.121300f, -127.016510f, -534.369446f, -19.916740f);
             AddZoneLineBox("feerrott", -1460.633545f, -109.760483f, 47.935600f, ZoneLineOrientationType.North, 42.322739f, -55.775299f, 10.469000f, -0.193150f, -84.162201f, -0.500000f);
             AddLiquidPlaneZLevel(ZoneLiquidType.GreenWater, "t50_grnwtr1", 219.559280f, -267.584229f, 118.939217f, -513.355408f, -209.916219f, 100f); // Bottom southmost east green pool
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_water1", 205.585724f, -62.912350f, 7.619390f, -261.991211f, -209.916235f, 150f); // Bottom southmost west blue pool
