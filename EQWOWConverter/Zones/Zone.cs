@@ -278,7 +278,7 @@ namespace EQWOWConverter.Zones
 
         private void GenerateCollisionWorldObjectModelsAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
         {
-            if (Configuration.CONFIG_ZONE_COLLISION_AND_MUSIC_ENABLED == false)
+            if (Configuration.CONFIG_ZONE_COLLISION_ENABLED == false)
                 return;
 
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it

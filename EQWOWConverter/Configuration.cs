@@ -137,8 +137,8 @@ namespace EQWOWConverter
         // How much bigger to make the box which causes the shadow in a shadowbox
         public static readonly float CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
 
-        // If true, allow collision with world model objects
-        public static readonly bool CONFIG_ZONE_COLLISION_AND_MUSIC_ENABLED = true;
+        // If true, allow collision with world model objects. This will also impact music and ambient sounds, since they align to areas which require collision detection
+        public static readonly bool CONFIG_ZONE_COLLISION_ENABLED = true;
         
         // Maximum number of BTREE faces that fit into a WMO group before it subdivides
         public static readonly int CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
