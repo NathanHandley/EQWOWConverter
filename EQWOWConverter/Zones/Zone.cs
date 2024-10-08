@@ -60,9 +60,7 @@ namespace EQWOWConverter.Zones
                 SetDescriptiveName(zoneProperties.DescriptiveName);
             else
                 DescriptiveNameOnlyLetters = shortName;
-            DefaultArea = new ZoneArea(DescriptiveName, string.Empty, new BoundingBox(), zoneProperties.ZonewideMusicFileNameNoExtDay, zoneProperties.ZonewideMusicFileNameNoExtNight,
-                zoneProperties.ZonewideMusicVolume, zoneProperties.ZonewideAmbienceFileNameNoExtDay, zoneProperties.ZonewideAmbienceFileNameNoExtNight, zoneProperties.ZonewideAmbienceVolume,
-                true);
+            DefaultArea = zoneProperties.DefaultZoneArea;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -338,7 +336,7 @@ namespace EQWOWConverter.Zones
             ZoneAreaAmbientSound? areaAmbientSound = null;
             if (zoneArea.AmbientSoundFileNameNoExtDay != string.Empty || zoneArea.AmbientSoundFileNameNoExtNight != string.Empty)
             {
-                areaAmbientSound = GenerateZoneAreaAmbientSound(zoneArea.AmbientSoundFileNameNoExtDay, zoneArea.AmbientSoundFileNameNoExtNight, zoneArea.AmbientSoundVolume);
+                areaAmbientSound = GenerateZoneAreaAmbientSound(zoneArea.AmbientSoundFileNameNoExtDay, zoneArea.AmbientSoundFileNameNoExtNight, zoneArea.AmbientSoundVolumeDay, zoneArea.AmbientSoundVolumeNight);
                 zoneArea.AreaAmbientSound = areaAmbientSound;
             }
 
@@ -423,7 +421,7 @@ namespace EQWOWConverter.Zones
             return newMusic;
         }
 
-        private ZoneAreaAmbientSound GenerateZoneAreaAmbientSound(string soundFileNameDay, string soundFileNameNight, float volume)
+        private ZoneAreaAmbientSound GenerateZoneAreaAmbientSound(string soundFileNameDay, string soundFileNameNight, float volumeDay, float volumeNight)
         {
             // Reuse if exists
             foreach (ZoneAreaAmbientSound areaAmbientSound in ZoneAreaAmbientSounds)
@@ -439,11 +437,11 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate new sounds if needed
-            Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, volume, "EQ Ambient ", SoundType.ZoneAmbience, true);
-            Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, volume, "EQ Ambient ", SoundType.ZoneAmbience, true);
+            Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, volumeDay, "EQ Ambient ", SoundType.ZoneAmbience, true);
+            Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, volumeNight, "EQ Ambient ", SoundType.ZoneAmbience, true);
 
             // Generate the ambient sounds
-            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight, volume);
+            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight, volumeDay, volumeNight);
             ZoneAreaAmbientSounds.Add(newAmbientSound);
 
             // Return it

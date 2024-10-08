@@ -30,33 +30,62 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Gaps in the geometry at -325.65 -797.158 -32
             // TODO: Make Arena PVP
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
-            AddZoneArea("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("West Gate", 156.815201f, 98.281792f, 100, -126.790573f, 27.274071f, -100f, "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f, "", "", 0f, "", "night", 0.2786121f);
-            AddZoneArea("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f, "", "", 0f, "", "night", 0.2786121f);
-            AddZoneArea("Freeport Militia Yard", -139.712616f, 84.463814f, 100, -210.361160f, -140.239700f, -28.500000f, "freportw-01", "freportw-01");
-            AddZoneArea("Freeport Militia Yard", -94.151672f, 20.980240f, 100, -139.781982f, -98.206734f, -28.500000f, "freportw-01", "freportw-01");
-            AddZoneArea("Freeport Militia House", 90.813148f, -97.030060f, 100, -141.064972f, -266.007446f, -100, "freportw-02", "freportw-02");            
-            AddZoneArea("The Gallows", 143.055725f, -440.022919f, 100f, -49.547218f, -553.406067f, -100f, "freportw-03", "freportw-03");
-            AddZoneArea("Hogcallers' Inn", -96.421593f, -378.040375f, 100f, -298.335754f, -564.087341f, -100f, "freportw-01", "freportw-01");
-            AddZoneArea("The Ashen Order", -138.615540f, -768.678894f, 100f, -294.179565f, -839.970825f, -100f, "freportw-02", "freportw-02");
-            AddZoneArea("Threater of the Tranquil", -6.980780f, -610.792603f, 100f, -222.904678f, -742.893433f, -100f, "freportw-01", "freportw-01");
-            AddZoneArea("Threater of the Tranquil", -6.980780f, -731.319275f, 100f, -124.952957f, -840.417603f, -28.4f, "freportw-01", "freportw-01");
-            AddZoneArea("Academy of Arcane Science", 215.711105f, -623.623474f, 100f, -2.824860f, -841.170471f, -100f, "freportw-06", "freportw-06");
-            AddZoneArea("Academy of Arcane Science", 116.100754f, -554.498047f, 100f, -2.748800f, -634.602539f, -100f, "freportw-06", "freportw-06");
-            AddZoneArea("Freeport Arena", -143.287521f, -141.545456f, 100f, -270.071503f, -307.235840f, -100f, "freportw-03", "freportw-03");
-            AddZoneArea("Freeport Arena", -264.012329f, -128.457397f, 100f, -281.182404f, -319.069641f, -100f, "freportw-03", "freportw-03");
-            AddZoneArea("Freeport Arena", -276.247406f, -123.487968f, 100f, -418.271881f, -322.377777f, -100f, "freportw-03", "freportw-03");
-            AddZoneArea("Freeport Arena", -416.380676f, -134.564438f, 100f, -429.425812f, -310.739227f, -100f, "freportw-03", "freportw-03");
-            AddZoneArea("Torlig's Herbs and Medicines", 125.658623f, -881.936829f, 100f, 56.296940f, -937.272888f, -100f);
-            AddZoneArea("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
-            AddZoneArea("South Tunnels", -587.823914f, 206.370499f, 100, -720.200073f, -71.983810f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
-            AddZoneArea("South Tunnels", -508.746826f, 81.513832f, 100, -718.713013f, -518.627869f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
-            AddZoneArea("South Tunnels", -474.193146f, -498.684174f, 100, -832.249023f, -1836.546265f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
-            AddZoneArea("South Tunnels", -300.155060f, -739.184387f, 100, -551.545410f, -1160.680908f, -300f, "", "", 0f, "caveloop", "caveloop", 0.1f);
-            AddZoneArea("Northeast Tunnels", 871.004883f, -438.928467f, 100, 361.183655f, -892.926697f, -300f);
-            AddZoneArea("Northeast Tunnels", 379.189270f, -720.951660f, 100, 232.854614f, -894.192627f, -300f);
+            
+            AddZoneArea("West Gate", "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f);
+            AddZoneAreaBox("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f);
+            AddZoneAreaBox("West Gate", 156.815201f, 98.281792f, 100, -126.790573f, 27.274071f, -100f);
+            
+            AddZoneArea("West Field", "", "", 0f, false, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f);
+            AddZoneAreaBox("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f);
+            
+            AddZoneArea("Freeport Militia Yard", "freportw-01", "freportw-01");
+            AddZoneAreaBox("Freeport Militia Yard", -139.712616f, 84.463814f, 100, -210.361160f, -140.239700f, -28.500000f);
+            AddZoneAreaBox("Freeport Militia Yard", -94.151672f, 20.980240f, 100, -139.781982f, -98.206734f, -28.500000f);
+            
+            AddZoneArea("Freeport Militia House", "freportw-02", "freportw-02");
+            AddZoneAreaBox("Freeport Militia House", 90.813148f, -97.030060f, 100, -141.064972f, -266.007446f, -100);
+            
+            AddZoneArea("The Gallows", "freportw-03", "freportw-03");
+            AddZoneAreaBox("The Gallows", 143.055725f, -440.022919f, 100f, -49.547218f, -553.406067f, -100f);
+            
+            AddZoneArea("Hogcallers' Inn", "freportw-01", "freportw-01");
+            AddZoneAreaBox("Hogcallers' Inn", -96.421593f, -378.040375f, 100f, -298.335754f, -564.087341f, -100f);
+            
+            AddZoneArea("The Ashen Order", "freportw-02", "freportw-02");
+            AddZoneAreaBox("The Ashen Order", -138.615540f, -768.678894f, 100f, -294.179565f, -839.970825f, -100f);
+            
+            AddZoneArea("Threater of the Tranquil", "freportw-01", "freportw-01");
+            AddZoneAreaBox("Threater of the Tranquil", -6.980780f, -610.792603f, 100f, -222.904678f, -742.893433f, -100f);
+            AddZoneAreaBox("Threater of the Tranquil", -6.980780f, -731.319275f, 100f, -124.952957f, -840.417603f, -28.4f);
+            
+            AddZoneArea("Academy of Arcane Science", "freportw-06", "freportw-06");
+            AddZoneAreaBox("Academy of Arcane Science", 215.711105f, -623.623474f, 100f, -2.824860f, -841.170471f, -100f);
+            AddZoneAreaBox("Academy of Arcane Science", 116.100754f, -554.498047f, 100f, -2.748800f, -634.602539f, -100f);
+            
+            AddZoneArea("Freeport Arena", "freportw-03", "freportw-03");
+            AddZoneAreaBox("Freeport Arena", -143.287521f, -141.545456f, 100f, -270.071503f, -307.235840f, -100f);
+            AddZoneAreaBox("Freeport Arena", -264.012329f, -128.457397f, 100f, -281.182404f, -319.069641f, -100f);
+            AddZoneAreaBox("Freeport Arena", -276.247406f, -123.487968f, 100f, -418.271881f, -322.377777f, -100f);
+            AddZoneAreaBox("Freeport Arena", -416.380676f, -134.564438f, 100f, -429.425812f, -310.739227f, -100f);
+            
+            AddZoneArea("Torlig's Herbs and Medicines");
+            AddZoneAreaBox("Torlig's Herbs and Medicines", 125.658623f, -881.936829f, 100f, 56.296940f, -937.272888f, -100f);
+            
+            AddZoneArea("North Tunnels", "", "", 0f, false, "caveloop", "caveloop", 0.1f, 0.1f);
+            AddZoneAreaBox("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -300f);
+            
+            AddZoneArea("South Tunnels", "", "", 0f, false, "caveloop", "caveloop", 0.1f, 0.1f);
+            AddZoneAreaBox("South Tunnels", -587.823914f, 206.370499f, 100, -720.200073f, -71.983810f, -300f);
+            AddZoneAreaBox("South Tunnels", -508.746826f, 81.513832f, 100, -718.713013f, -518.627869f, -300f);
+            AddZoneAreaBox("South Tunnels", -474.193146f, -498.684174f, 100, -832.249023f, -1836.546265f, -300f);
+            AddZoneAreaBox("South Tunnels", -300.155060f, -739.184387f, 100, -551.545410f, -1160.680908f, -300f);
+            
+            AddZoneArea("Northeast Tunnels");
+            AddZoneAreaBox("Northeast Tunnels", 871.004883f, -438.928467f, 100, 361.183655f, -892.926697f, -300f);
+            AddZoneAreaBox("Northeast Tunnels", 379.189270f, -720.951660f, 100, 232.854614f, -894.192627f, -300f);
+            
             AddZoneLineBox("ecommons", 577.000000f, -1580.000000f, -54.468632f, ZoneLineOrientationType.West, 587.772156f, 841.873230f, 200.000000f, 567.772156f, 811.873230f, -100.000000f);
             AddZoneLineBox("ecommons", 557.000000f, -1580.000000f, -54.468632f, ZoneLineOrientationType.West, 567.772156f, 841.873230f, 200.000000f, 547.772156f, 811.873230f, -100.000000f);
             AddZoneLineBox("ecommons", 537.000000f, -1580.000000f, -54.468670f, ZoneLineOrientationType.West, 547.772156f, 841.873230f, 200.000000f, 527.772156f, 811.873230f, -100.000000f);

@@ -29,29 +29,56 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Lift in "The Tower"
             SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinentType.Faydwer);
-            AddZoneArea("Main Entryway", 52.558922f, 64.554611f, -168.251938f, -54.312000f, -70.595573f, -204.147720f, "mistmoore-03", "mistmoore-03");
-            AddZoneArea("Main Entryway", -26.757799f, 55.103039f, -166.467682f, -73.198334f, -57.687698f, -195.256317f, "mistmoore-03", "mistmoore-03");
-            AddZoneArea("Castle Front", 324.605652f, 280.881042f, -95.237747f, 38.168800f, -204.299667f, -290f, "mistmoore-01", "mistmoore-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Tomb", 9.834270f, 399.232208f, -222.168137f, -36.118179f, 356.207245f, -240.511887f);
-            AddZoneArea("Graveyard", 161.105804f, 480.375092f, -140.617172f, -61.580879f, 328.872833f, -239.916077f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Graveyard", 161.105804f, 480.375092f, -140.617172f, 20.498360f, 310.267181f, -239.916077f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Graveyard", 161.105804f, 480.375092f, -140.617172f, -71.843201f, 336.520477f, -239.916077f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("The Tower", -173.731277f, 401.491638f, -39.359699f, -290.964081f, 275.052490f, -177.201447f);
-            AddZoneArea("Outer Pass", 328.328461f, 661.384521f, -45.296520f, 7.925330f, 217.048187f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", 328.328461f, 661.384521f, -45.296520f, -469.359589f, 422.729919f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", -93.997177f, 613.809998f, -49.347141f, -469.359589f, 326.295868f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", -105.815468f, 613.809998f, -49.347141f, -469.359589f, 298.835388f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", -140.026962f, 613.809998f, -205.869247f, -469.359589f, 262.462738f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", -277.957703f, 613.809998f, -177.411514f, -469.359589f, 102.643059f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Outer Pass", -288.164612f, 613.809998f, -172.534561f, -469.359589f, 94.337547f, -280.445526f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Courtyard", 35.284790f, 205.371857f, -148.481659f, -199.885864f, 109.646828f, -198.810364f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Courtyard", 35.284790f, 205.371857f, -148.481659f, -30.348749f, 61.634281f, -201.658279f, "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, "", "night", 0.2786121f);
-            AddZoneArea("Crypt", -288.638336f, 80.434486f, -152.270264f, -365.138214f, 6.775110f, -204.384033f);
-            AddZoneArea("Kitchen", -224.878784f, -75.612762f, -137.195847f, -289.675049f, -141.804581f, -193);
-            AddZoneArea("Throne Room", -94.612473f, 48.470699f, -132.045151f, -168.778702f, -48.582161f, -164.867599f);
-            AddZoneArea("Drawing Room", -95.448441f, 49.007591f, -171.129974f, -192.991455f, -48.696281f, -200.231613f);
-            AddZoneArea("Library", -48.864670f, 101.219513f, -133.596344f, -99.474808f, 63.765011f, -165.961929f);
-            AddZoneArea("Dining Hall", -95.846069f, -69.394127f, -167.270004f, -181.243073f, -156.531387f, -194.436142f);
+
+            AddZoneArea("Main Entryway", "mistmoore-03", "mistmoore-03", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneAreaBox("Main Entryway", 52.558922f, 64.554611f, -168.251938f, -54.312000f, -70.595573f, -204.147720f);
+            AddZoneAreaBox("Main Entryway", -26.757799f, 55.103039f, -166.467682f, -73.198334f, -57.687698f, -195.256317f);
+            
+            AddZoneArea("Castle Front", "mistmoore-01", "mistmoore-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("Castle Front", 324.605652f, 280.881042f, -95.237747f, 38.168800f, -204.299667f, -290f);
+            
+            AddZoneArea("Tomb");
+            AddZoneAreaBox("Tomb", 9.834270f, 399.232208f, -222.168137f, -36.118179f, 356.207245f, -240.511887f);
+            
+            AddZoneArea("Graveyard", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, -61.580879f, 328.872833f, -239.916077f);
+            AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, 20.498360f, 310.267181f, -239.916077f);
+            AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, -71.843201f, 336.520477f, -239.916077f);
+            
+            AddZoneArea("The Tower");
+            AddZoneAreaBox("The Tower", -173.731277f, 401.491638f, -39.359699f, -290.964081f, 275.052490f, -177.201447f);
+            
+            AddZoneArea("Outer Pass", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("Outer Pass", 328.328461f, 661.384521f, -45.296520f, 7.925330f, 217.048187f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", 328.328461f, 661.384521f, -45.296520f, -469.359589f, 422.729919f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", -93.997177f, 613.809998f, -49.347141f, -469.359589f, 326.295868f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", -105.815468f, 613.809998f, -49.347141f, -469.359589f, 298.835388f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", -140.026962f, 613.809998f, -205.869247f, -469.359589f, 262.462738f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", -277.957703f, 613.809998f, -177.411514f, -469.359589f, 102.643059f, -280.445526f);
+            AddZoneAreaBox("Outer Pass", -288.164612f, 613.809998f, -172.534561f, -469.359589f, 94.337547f, -280.445526f);
+            
+            AddZoneArea("Courtyard", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneAreaBox("Courtyard", 35.284790f, 205.371857f, -148.481659f, -199.885864f, 109.646828f, -198.810364f);
+            AddZoneAreaBox("Courtyard", 35.284790f, 205.371857f, -148.481659f, -30.348749f, 61.634281f, -201.658279f);
+            
+            AddZoneArea("Crypt");
+            AddZoneAreaBox("Crypt", -288.638336f, 80.434486f, -152.270264f, -365.138214f, 6.775110f, -204.384033f);
+            
+            AddZoneArea("Kitchen");
+            AddZoneAreaBox("Kitchen", -224.878784f, -75.612762f, -137.195847f, -289.675049f, -141.804581f, -193);
+            
+            AddZoneArea("Throne Room");
+            AddZoneAreaBox("Throne Room", -94.612473f, 48.470699f, -132.045151f, -168.778702f, -48.582161f, -164.867599f);
+            
+            AddZoneArea("Drawing Room");
+            AddZoneAreaBox("Drawing Room", -95.448441f, 49.007591f, -171.129974f, -192.991455f, -48.696281f, -200.231613f);
+            
+            AddZoneArea("Library");
+            AddZoneAreaBox("Library", -48.864670f, 101.219513f, -133.596344f, -99.474808f, 63.765011f, -165.961929f);
+            
+            AddZoneArea("Dining Hall");
+            AddZoneAreaBox("Dining Hall", -95.846069f, -69.394127f, -167.270004f, -181.243073f, -156.531387f, -194.436142f);
+            
             SetZonewideEnvironmentAsIndoors(30, 0, 60, ZoneFogType.Heavy);
             DisableSunlight();
             AddZoneLineBox("lfaydark", -1166.805908f, 3263.892578f, 0.000850f, ZoneLineOrientationType.East, -279.682556f, 141.644180f, -78.362358f, -339.412628f, 108.218033f, -182.437500f);

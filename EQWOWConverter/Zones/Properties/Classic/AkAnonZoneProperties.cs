@@ -29,30 +29,52 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Improve the angle water room water surfaces
             // TODO: Swimming up the entry waterfall will allow you to exit the map
-            // TODO: Make an area for the zoo (near market)
             // TODO: Waterwheel in the deepest water room
             SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinentType.Faydwer);
             Enable2DSoundInstances("spinnrlp");
-            AddZoneArea("Entry", 257.142761f, 118.389160f, 1000, -131.215698f, -96.817497f, -1000f, "akanon-00", "akanon-00");
-            AddZoneArea("Command ", 840.922852f, -97.088692f, 1000, 713.662292f, -224.234146f, -1000f, "akanon-00", "akanon-00");
-            AddZoneArea("Supply Area", 1082.224976f, 231.194824f, 1000, 470.762787f, -420.297241f, -1000f, "akanon-04", "akanon-04");
-            AddZoneArea("Supply Area", 799.755920f, 231.194824f, 1000, 785.969543f, -381.862274f, -1000f, "akanon-04", "akanon-04");
-            AddZoneArea("Supply Area", 806.287354f, -415.003998f, 1000, 668.925293f, -447.226532f, -1000f, "akanon-04", "akanon-04");
-            AddZoneArea("Barracks", 858.116882f, -422.322205f, 1000, 818.958008f, -483.524323f, -1000f, "akanon-06", "akanon-06");
-            AddZoneArea("Barracks", 1005.345703f, -438.836975f, 1000, 816.749207f, -507.056915f, -1000f, "akanon-06", "akanon-06");
-            AddZoneArea("Market", 1394.073242f, -625.999939f, 1000, 1127.415894f, -837.516541f, -28.327950f, "akanon-07", "akanon-07");
-            AddZoneArea("Library Mechanamagica", 1149.214355f, -928.644714f, 1000, 1002.033630f, -1066.362427f, -1000f, "akanon-02", "akanon-02");
-            AddZoneArea("Abbey of Deep Musing", 1260.580566f, -492.048706f, 1000, 1159.140259f, -624.095093f, -1000f, "akanon-01", "akanon-01"); 
-            AddZoneArea("Abbey of Deep Musing", 1163.014404f, -498.962433f, 1000, 1144.748413f, -605.672791f, -1000f, "akanon-01", "akanon-01");
-            AddZoneArea("Abbey of Deep Musing", 1252.234985f, -483.473602f, 1000, 1165.459839f, -497.916351f, -1000f, "akanon-01", "akanon-01");
-            AddZoneArea("Abbey of Deep Musing", 1272.996582f, -505.813477f, 1000, 1250.005127f, -619.286072f, -1000f, "akanon-01", "akanon-01");
-            AddZoneArea("The Falls", 1722.807495f, -91.651901f, 1000, 1223.065186f, -608.332092f, -1000);
-            AddZoneArea("Lower Tunnels", 2110.136230f, -366.787415f, -160.268997f, 2016.313599f, -436.065186f, -1000, "akanon-07", "akanon-07");
-            AddZoneArea("Lower Tunnels", 2263.394287f, -344.190277f, -160.268997f, 2079.037109f, -653.487427f, -1000, "akanon-07", "akanon-07");
-            AddZoneArea("Lower Tunnels", 2261.485596f, -419.654907f, -160.268997f, 1961.612183f, -647.920593f, -1000, "akanon-07", "akanon-07");
-            AddZoneArea("The Turbine", 2036.529297f, -170.345245f, 1000, 1718.003540f, -462.474243f, -156.969238f, "", "", 0f, "spinnrlp", "spinnrlp", 0.3f);
-            AddZoneArea("The Turbine", 2097.180176f, -162.135498f, -16.548880f, 1947.567261f, -444.580750f, -1000f, "", "", 0f, "spinnrlp", "spinnrlp", 0.3f);
-            AddZoneArea("Zoo", 1375.437500f, -726.707092f, -28.450760f, 1228.063110f, -839.659973f, -300, "akanon-06", "akanon-06");            
+
+            AddZoneArea("Entry", "akanon-00", "akanon-00");
+            AddZoneAreaBox("Entry", 257.142761f, 118.389160f, 1000, -131.215698f, -96.817497f, -1000f);
+            
+            AddZoneArea("Command", "akanon-00", "akanon-00");
+            AddZoneAreaBox("Command", 840.922852f, -97.088692f, 1000, 713.662292f, -224.234146f, -1000f);
+            
+            AddZoneArea("Supply Area", "akanon-04", "akanon-04");
+            AddZoneAreaBox("Supply Area", 1082.224976f, 231.194824f, 1000, 470.762787f, -420.297241f, -1000f);
+            AddZoneAreaBox("Supply Area", 799.755920f, 231.194824f, 1000, 785.969543f, -381.862274f, -1000f);
+            AddZoneAreaBox("Supply Area", 806.287354f, -415.003998f, 1000, 668.925293f, -447.226532f, -1000f);
+            
+            AddZoneArea("Barracks", "akanon-06", "akanon-06");
+            AddZoneAreaBox("Barracks", 858.116882f, -422.322205f, 1000, 818.958008f, -483.524323f, -1000f);
+            AddZoneAreaBox("Barracks", 1005.345703f, -438.836975f, 1000, 816.749207f, -507.056915f, -1000f);
+            
+            AddZoneArea("Market", "akanon-07", "akanon-07");
+            AddZoneAreaBox("Market", 1394.073242f, -625.999939f, 1000, 1127.415894f, -837.516541f, -28.327950f);
+            
+            AddZoneArea("Library Mechanamagica", "akanon-02", "akanon-02");
+            AddZoneAreaBox("Library Mechanamagica", 1149.214355f, -928.644714f, 1000, 1002.033630f, -1066.362427f, -1000f);
+            
+            AddZoneArea("Abbey of Deep Musing", "akanon-01", "akanon-01"); 
+            AddZoneAreaBox("Abbey of Deep Musing", 1260.580566f, -492.048706f, 1000, 1159.140259f, -624.095093f, -1000f);
+            AddZoneAreaBox("Abbey of Deep Musing", 1163.014404f, -498.962433f, 1000, 1144.748413f, -605.672791f, -1000f);
+            AddZoneAreaBox("Abbey of Deep Musing", 1252.234985f, -483.473602f, 1000, 1165.459839f, -497.916351f, -1000f);
+            AddZoneAreaBox("Abbey of Deep Musing", 1272.996582f, -505.813477f, 1000, 1250.005127f, -619.286072f, -1000f);
+            
+            AddZoneArea("The Falls");
+            AddZoneAreaBox("The Falls", 1722.807495f, -91.651901f, 1000, 1223.065186f, -608.332092f, -1000);
+            
+            AddZoneArea("Lower Tunnels", "akanon-07", "akanon-07");
+            AddZoneAreaBox("Lower Tunnels", 2110.136230f, -366.787415f, -160.268997f, 2016.313599f, -436.065186f, -1000);
+            AddZoneAreaBox("Lower Tunnels", 2263.394287f, -344.190277f, -160.268997f, 2079.037109f, -653.487427f, -1000);
+            AddZoneAreaBox("Lower Tunnels", 2261.485596f, -419.654907f, -160.268997f, 1961.612183f, -647.920593f, -1000);
+            
+            AddZoneArea("The Turbine", "", "", 0, false, "spinnrlp", "spinnrlp", 0.3f, 0.3f);
+            AddZoneAreaBox("The Turbine", 2036.529297f, -170.345245f, 1000, 1718.003540f, -462.474243f, -156.969238f);
+            AddZoneAreaBox("The Turbine", 2097.180176f, -162.135498f, -16.548880f, 1947.567261f, -444.580750f, -1000f);
+            
+            AddZoneArea("Zoo", "akanon-06", "akanon-06");
+            AddZoneAreaBox("Zoo", 1375.437500f, -726.707092f, -28.450760f, 1228.063110f, -839.659973f, -300);
+            
             SetZonewideEnvironmentAsIndoors(0, 30, 0, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             AddZoneLineBox("steamfont", -2059.579834f, 528.815857f, -111.126549f, ZoneLineOrientationType.North, 70.830750f, -69.220848f, 12.469000f, 60.770279f, -84.162193f, -0.500000f);

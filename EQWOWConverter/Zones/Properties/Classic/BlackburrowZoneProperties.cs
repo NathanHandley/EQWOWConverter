@@ -30,16 +30,23 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
             // TODO: Indoor Lighting / Make darker
             SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinentType.Antonica);
-            AddZoneArea("Dark Path", -69.372070f, -207.378036f, 48.338322f, -271.918854f, -267.815552f, -4.489510f, "blackburrow-01", "blackburrow-00");
-            AddZoneArea("Dark Path", -194.507523f, -13.117310f, 26.550440f, -275.522034f, -214.835419f, -25.327290f, "blackburrow-01", "blackburrow-00");
-            AddZoneArea("Dark Path", -215.533218f, -9.538600f, -6.027390f, -270.721893f, -78.147690f, -33.920792f, "blackburrow-01", "blackburrow-00");
-            AddZoneArea("Dark Path", -184.850327f, -4.687770f, -27.929489f, -266.113281f, -61.797112f, -58.166561f, "blackburrow-01", "blackburrow-00");
-            AddZoneArea("Dark Path", -144.522385f, 170.331726f, -38.458519f, -276.562500f, -22.843130f, -123.589470f, "blackburrow-01", "blackburrow-00");
-            AddZoneArea("Rear Depths", 303.851135f, 615.511658f, -91.830963f, -375.896332f, 62.760670f, -200f, "blackburrow-05", "blackburrow-00");
-            AddZoneArea("Rear Depths", 76.108299f, 442.138794f, -54.500061f, 9.008450f, 312.706177f, -108.125603f, "blackburrow-05", "blackburrow-00");
-            AddZoneArea("Upper Pass", 378.725403f, 138.364380f, 119.655243f, -275.939972f, -269.857056f, -9.376960f, "blackburrow-10", "blackburrow-10");
-            AddZoneArea("Upper Pass", -12.067100f, 218.226166f, 137.255905f, -188.310562f, 82.957489f, -2.601680f, "blackburrow-10", "blackburrow-10");
-            AddZoneArea("Upper Pass", 259.061310f, -155.000031f, 128.912827f, 1.519120f, -358.437653f, -1.126700f, "blackburrow-10", "blackburrow-10");
+
+            AddZoneArea("Dark Path", "blackburrow-01", "blackburrow-00");
+            AddZoneAreaBox("Dark Path", -69.372070f, -207.378036f, 48.338322f, -271.918854f, -267.815552f, -4.489510f);
+            AddZoneAreaBox("Dark Path", -194.507523f, -13.117310f, 26.550440f, -275.522034f, -214.835419f, -25.327290f);
+            AddZoneAreaBox("Dark Path", -215.533218f, -9.538600f, -6.027390f, -270.721893f, -78.147690f, -33.920792f);
+            AddZoneAreaBox("Dark Path", -184.850327f, -4.687770f, -27.929489f, -266.113281f, -61.797112f, -58.166561f);
+            AddZoneAreaBox("Dark Path", -144.522385f, 170.331726f, -38.458519f, -276.562500f, -22.843130f, -123.589470f);
+            
+            AddZoneArea("Rear Depths", "blackburrow-05", "blackburrow-00");
+            AddZoneAreaBox("Rear Depths", 303.851135f, 615.511658f, -91.830963f, -375.896332f, 62.760670f, -200f);
+            AddZoneAreaBox("Rear Depths", 76.108299f, 442.138794f, -54.500061f, 9.008450f, 312.706177f, -108.125603f);
+            
+            AddZoneArea("Upper Pass", "blackburrow-10", "blackburrow-10");
+            AddZoneAreaBox("Upper Pass", 378.725403f, 138.364380f, 119.655243f, -275.939972f, -269.857056f, -9.376960f);
+            AddZoneAreaBox("Upper Pass", -12.067100f, 218.226166f, 137.255905f, -188.310562f, 82.957489f, -2.601680f);
+            AddZoneAreaBox("Upper Pass", 259.061310f, -155.000031f, 128.912827f, 1.519120f, -358.437653f, -1.126700f);
+            
             SetZonewideEnvironmentAsOutdoorsWithSky(35, 69, 62, ZoneFogType.Heavy, 0.5f, 1.0f);
             AddZoneLineBox("everfrost", -3027.1943f, -532.2794f, -113.18725f, ZoneLineOrientationType.North, 106.64458f, -329.8163f, 13.469f, 80.88026f, -358.2026f, -0.49926078f);
             AddZoneLineBox("qeytoqrg", 3432.621094f, -1142.645020f, 0.000010f, ZoneLineOrientationType.East, -154.74507f, 20.123898f, 10.469f, -174.6326f, 10.831751f, -0.49996006f);

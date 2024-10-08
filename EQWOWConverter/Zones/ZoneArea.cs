@@ -40,24 +40,19 @@ namespace EQWOWConverter.Zones
         public ZoneAreaMusic? AreaMusic = null;        
         public string AmbientSoundFileNameNoExtDay = string.Empty;
         public string AmbientSoundFileNameNoExtNight = string.Empty;
-        public float AmbientSoundVolume;
+        public float AmbientSoundVolumeDay;
+        public float AmbientSoundVolumeNight;
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
-        public ZoneArea(string displayName, string parentAreaDisplayName, BoundingBox boundingBox, string musicFileNameNoExtDay, string musicFileNameNoExtNight,
-            float musicVolume, string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolume, bool loopMusic)
+        public ZoneArea(string displayName, string parentAreaDisplayName)
         {
             DBCAreaTableID = CURRENT_AREATABLEID;
             CURRENT_AREATABLEID++;
             DisplayName = displayName;
             ParentAreaDisplayName = parentAreaDisplayName;
-            MusicFileNameNoExtDay = musicFileNameNoExtDay;
-            MusicFileNameNoExtNight = musicFileNameNoExtNight;
-            AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;
-            AmbientSoundFileNameNoExtNight = ambientSoundFileNameNoExtNight;
-            MusicVolume = musicVolume;
-            AmbientSoundVolume = ambientVolume;
-            AddBoundingBox(boundingBox);
-            loopMusic = true;
+            MusicVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
+            AmbientSoundVolumeDay = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
+            AmbientSoundVolumeNight = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
         }
 
         public void AddBoundingBox(BoundingBox boundingBox)
@@ -71,6 +66,22 @@ namespace EQWOWConverter.Zones
             newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
             newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
             BoundingBoxes.Add(newBox);
+        }
+
+        public void SetAmbientSound(string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolumeDay, float ambientVolumeNight)
+        {            
+            AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;
+            AmbientSoundFileNameNoExtNight = ambientSoundFileNameNoExtNight;
+            AmbientSoundVolumeDay = ambientVolumeDay;
+            AmbientSoundVolumeNight = ambientVolumeNight;
+        }
+
+        public void SetMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, float musicVolume, bool loopMusic)
+        {
+            MusicFileNameNoExtDay = musicFileNameNoExtDay;
+            MusicFileNameNoExtNight = musicFileNameNoExtNight;
+            MusicVolume = musicVolume;
+            loopMusic = true;
         }
     }
 }
