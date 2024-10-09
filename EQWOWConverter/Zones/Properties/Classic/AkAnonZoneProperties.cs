@@ -68,7 +68,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Lower Tunnels", 2263.394287f, -344.190277f, -160.268997f, 2079.037109f, -653.487427f, -1000);
             AddZoneAreaBox("Lower Tunnels", 2261.485596f, -419.654907f, -160.268997f, 1961.612183f, -647.920593f, -1000);
             
-            AddZoneArea("The Turbine", "", "", 0, false, "spinnrlp", "spinnrlp", 0.3f, 0.3f);
+            AddZoneArea("The Turbine", "", "", 0, false, "spinnrlp", "spinnrlp", 0.36f, 0.36f);
             AddZoneAreaBox("The Turbine", 2036.529297f, -170.345245f, 1000, 1718.003540f, -462.474243f, -156.969238f);
             AddZoneAreaBox("The Turbine", 2097.180176f, -162.135498f, -16.548880f, 1947.567261f, -444.580750f, -1000f);
             

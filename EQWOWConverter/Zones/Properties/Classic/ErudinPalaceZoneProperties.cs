@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ErudinPalaceZoneProperties() : base()
         {
+            // TODO: Add more zone areas
             // TODO: Lots of 'garbage' zone material to delete
             SetBaseZoneProperties("erudnint", "Erudin Palace", 807f, 712f, 22f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsIndoors(192, 192, 192, ZoneFogType.Clear, 192, 192, 192);

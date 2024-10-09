@@ -27,8 +27,22 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EastKaranaZoneProperties() : base()
         {
+            // TODO: Add more zone areas
             SetBaseZoneProperties("eastkarana", "Eastern Plains of Karana", 0f, 0f, 3.5f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(1);
+
+            SetZonewideAmbienceSound("silence", "darkwds2", 0, 0.098401114f);
+            Enable2DSoundInstances("wind_lp3");
+
+            AddZoneArea("North-East Karana Bridge", "eastkarana-01", "eastkarana-01");
+            AddZoneAreaBox("North-East Karana Bridge", 447.861389f, 1756.020508f, 338.753632f, -259.226746f, 225.282013f, -307.166260f);
+
+            AddZoneArea("High Hold Gorge", "", "", 0f, false, "wind_lp4", "wind_lp4", 0.098401114f, 0.098401114f);
+            AddZoneAreaBox("High Hold Gorge", 199.264359f, -3199.790283f, 527.914368f, -3156.146973f, -8060.119141f, -151.800049f);
+            AddZoneAreaBox("High Hold Gorge", -2822.352539f, -3329.555420f, 850.699219f, -3373.271240f, -8467.166992f, -126.344742f);
+
+            AddZoneArea("Gorge of King Xorbb Entry", "", "", 0f, false, "wind_lp2", "wind_lp2", 0.13931568f, 0.13931568f);
+            AddZoneAreaBox("Gorge of King Xorbb Entry", 5282.254395f, -1306.117920f, 699.679443f, 2186.515137f, -2606.609863f, -105.504097f);
+
             AddZoneLineBox("beholder", -1385.247f, -659.5757f, 60.639446f, ZoneLineOrientationType.North, 3388.710449f, -2134.555420f, 322.495361f, 3160.392090f, -2401.121826f, -100);
             AddZoneLineBox("northkarana", 10.664860f, -3093.490234f, -37.343510f, ZoneLineOrientationType.West, 38.202431f, 1198.431396f, 32.241810f, -13.265930f, 1182.535156f, -37.843681f);
             AddZoneLineBox("highpass", -1014.530701f, 112.901894f, -0.000030f, ZoneLineOrientationType.East, -3062.753662f, -8301.240234f, 737.270081f, -3082.371826f, -8324.481445f, 689.406372f);

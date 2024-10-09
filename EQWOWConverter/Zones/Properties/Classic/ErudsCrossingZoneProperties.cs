@@ -29,7 +29,20 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: There's a boat that connects to erudnext and qeynos (south)
             SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinentType.Odus);
-            //AddValidMusicInstanceTrackIndexes(0, 1);
+            SetZonewideAmbienceSound("ocean", "ocean", 0.24445728f, 0.24445728f); // Reduced a bit from EQ (-0.15)
+
+            AddZoneArea("Fishing Camp", "erudsxing-01", "erudsxing-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME * 0.8f);
+            AddZoneAreaBox("Fishing Camp", -1387.844849f, 1039.357910f, 99.225990f, - 1675.524048f, 651.345337f, -107.792427f);
+
+            AddZoneArea("Shipwreck");
+            AddZoneAreaBox("Shipwreck", -1022.513428f, 2311.508545f, 169.701233f, -1509.418091f, 1992.726685f, -313.425903f);
+
+            AddZoneArea("Island West", "erudsxing-00", "erudsxing-00");
+            AddZoneAreaBox("Island West", -624.765015f, 1917.588013f, 213.023804f, -1934.694458f, 1432.076538f, -111.334282f);
+
+            AddZoneArea("Island");
+            AddZoneAreaBox("Island", -356.611389f, 2056.785889f, 388.188568f, -2012.822754f, 514.036499f, -340.110535f);
+            
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500);
         }
     }

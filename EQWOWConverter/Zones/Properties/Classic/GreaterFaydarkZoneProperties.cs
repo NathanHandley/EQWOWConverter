@@ -27,10 +27,27 @@ namespace EQWOWConverter.Zones.Properties
         public GreaterFaydarkZoneProperties() : base()
         {
             // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
+            // TODO: Add more zone areas / child areas
             SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinentType.Faydwer);
-            //AddValidMusicInstanceTrackIndexes(0, 2, 3, 4, 5);
             SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
             DisableSunlight();
+            SetZonewideAmbienceSound("wind_lp2", "darkwds1", 0.13931568f, 0.13931568f);
+            
+            AddZoneArea("Kelethin", "gfaydark-04", "gfaydark-04", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "silence", "silence", 0f, 0f);
+            AddZoneAreaBox("Kelethin", 1218.981567f, 858.808472f, 486.386993f, -736.565674f, -711.635437f, -136.266785f);
+
+            AddZoneArea("Felwithe", "", "", 0f, false, "silence", "silence", 0f, 0f);
+            AddZoneAreaBox("Felwithe", -1901.312500f, -2402.857666f, 39.048130f, -2122.025879f, -2712.875732f, 9.969560f);
+
+            AddZoneArea("Outside Felwithe", "gfaydark-02", "gfaydark-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneAreaBox("Outside Felwithe", -1760.329102f, -2114.716309f, 302.008179f, -2357.157959f, -2723.451904f, 4.988010f);
+
+            AddZoneArea("Wizard Spires", "gfaydark-00", "gfaydark-03", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneAreaBox("Wizard Spires", -1776.816528f, -325.939972f, 328.057770f, -2292.352051f, -551.731445f, -38.319908f);
+
+            AddZoneArea("Crushbone", "gfaydark-05", "gfaydark-05");
+            AddZoneAreaBox("Crushbone", 2734.106934f, 276.152039f, 186.932007f, 2227.108154f, -127.627853f, -46.127869f);
+            
             AddZoneLineBox("butcher", -1164.1454f, -3082.1367f, 0.00028176606f, ZoneLineOrientationType.North, -1636.052856f, 2614.448242f, 80.942001f, -1604.046753f, 2657.645264f, -0.499690f);
             AddZoneLineBox("crushbone", -625.626038f, 163.201843f, 0.000070f, ZoneLineOrientationType.North, 2670.067139f, -28.324280f, 56.295769f, 2579.850830f, -75.045639f, 15.343880f);
             AddZoneLineBox("felwithea", 41.148460f, 183.167984f, 0.000000f, ZoneLineOrientationType.East, -1917.227173f, -2623.463623f, 46.844002f, -1945.600464f, -2663.089355f, 19.906750f);

@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public GorgeOfKingXorbbZoneProperties() : base()
         {
+            // TODO: Add zone areas
             SetBaseZoneProperties("beholder", "Gorge of King Xorbb", -21.44f, -512.23f, 45.13f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsWithSky(194, 146, 121, ZoneFogType.Medium, 0.75f, 1f);
             SetZonewideAmbienceSound("wind_lp4", "wind_lp4", 0.098401114f, 0.098401114f);
