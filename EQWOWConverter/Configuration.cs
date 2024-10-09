@@ -203,8 +203,11 @@ namespace EQWOWConverter
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
         // Default volumes
-        public static readonly float CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME = 0.8f;
+        public static readonly float CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME = 0.7f;
         public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME = 1.0f;
+
+        // Mod / multiplier to apply to non-instance sounds
+        public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD = 0.8f;
 
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
@@ -213,7 +216,11 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = false;
 
         // How much to multiply the volumes of sound instances. They are typically too loud for a 1:1 translation from EQ to WoW
-        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD = 0.10f;
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_2D_VOLUME_MOD = 0.1f;
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_VOLUME_MOD = 1f;
+
+        // After any scaling, this is the loudest any sound instance can be
+        public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_MAX_VOLUME = 0.25f;
 
         // The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.4f;

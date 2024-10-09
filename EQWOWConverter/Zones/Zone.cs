@@ -436,6 +436,10 @@ namespace EQWOWConverter.Zones
                 throw new Exception(errorMessage);
             }
 
+            // Adjsut the volumes
+            volumeDay *= Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
+            volumeNight *= Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
+
             // Generate new sounds if needed
             Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, volumeDay, "EQ Ambient ", SoundType.ZoneAmbience, true);
             Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, volumeNight, "EQ Ambient ", SoundType.ZoneAmbience, true);
@@ -597,13 +601,22 @@ namespace EQWOWConverter.Zones
         private void ProcessSoundInstance(SoundInstance soundInstance)
         {
             // Create the sound
-            float volume = soundInstance.VolumeDay * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD;
+            float volume = soundInstance.VolumeDay;
             float radius = soundInstance.Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
             float minDistance = radius;
             if (soundInstance.Is2DSound)
+            {
+                volume *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_VOLUME_MOD;
                 minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD;
+            }
             else
+            {
+                volume *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_VOLUME_MOD;
                 minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
+            }
+            if (volume > Configuration.CONFIG_AUDIO_SOUNDINSTANCE_MAX_VOLUME)
+                volume = Configuration.CONFIG_AUDIO_SOUNDINSTANCE_MAX_VOLUME;
+
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
                 volume, SoundType.GameObject, minDistance, radius, true);
 
