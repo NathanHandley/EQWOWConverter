@@ -27,9 +27,11 @@ namespace EQWOWConverter.Zones.Properties
     {
         public KedgeKeepZoneProperties() : base()
         {
+            // TODO: Zone Areas
             SetBaseZoneProperties("kedge", "Kedge Keep", 99.96f, 14.02f, 31.75f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsIndoors(66, 101, 134, ZoneFogType.Heavy, 170, 248, 248);
             OverrideVertexColorIntensity(0.4);
+            SetZonewideMusic("gl-08", "gl-08", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true); // Underwater music sound
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
             SetIsCompletelyInLiquid(ZoneLiquidType.Water);
         }
