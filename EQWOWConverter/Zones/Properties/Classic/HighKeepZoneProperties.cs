@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public HighKeepZoneProperties() : base()
         {
+            // Add zone areas
             // TODO: Disabled outdoors when inside the keep
             SetBaseZoneProperties("highkeep", "High Keep", 88f, -16f, 4f, 0, ZoneContinentType.Antonica);
             AddZoneLineBox("highpass", 62.824429f, -112.595383f, 0.000000f, ZoneLineOrientationType.West, 70.162773f, 126.130470f, 12.469000f, 55.775291f, 104.252892f, -0.499970f);
