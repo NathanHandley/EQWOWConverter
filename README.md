@@ -11,6 +11,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Zone Lines
 - Fog / Exterior Environment Lighting
 - Vertex Colors (on WMOs)
+- Point Sounds (campfires, running water, etc)
 
 # Requirements
 - Windows build environment
