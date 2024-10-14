@@ -31,7 +31,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: More zone areas
             // TODO: BUG: Missing block at 2522.321289f, 677.535767f, -8.108790f, see reference
             SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(0);
             SetZonewideEnvironmentAsOutdoorsNoSky(57, 64, 50, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("wind_lp4", "darkwds2", 0.098401114f, 0.098401114f);

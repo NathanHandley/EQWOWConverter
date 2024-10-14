@@ -31,8 +31,10 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: 2D Ambience (night, wind)
             SetBaseZoneProperties("rivervale", "Rivervale", 45.3f, 1.6f, 3.8f, 0, ZoneContinentType.Antonica);
             SetZonewideMusic("rivervale-00", "rivervale-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true);
+            SetZonewideAmbienceSound("", "night", 0f, 0.2786121f);
+            Enable2DSoundInstances("wind_lp4", "wind_lp2");
 
-            AddZoneArea("Bank of Rivervale");
+            AddZoneArea("Bank of Rivervale", "", "", 0, false, "", "silence");
             AddZoneAreaBox("Bank of Rivervale", 134.691025f, -143.286545f, 150f, 67.445671f, -214.820267f, -50f);
             AddZoneAreaBox("Bank of Rivervale", 122.784729f, -133.233475f, 150f, 67.445671f, -214.820267f, -50f);
             AddZoneAreaBox("Bank of Rivervale", 99.532059f, -118.852730f, 150f, 24.082541f, -199.351913f, -50f);
@@ -42,16 +44,16 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Fiddy's Fishing Dock", 48.544201f, -308.484436f, 150f, -23.273870f, -442.484894f, -50f);
             AddZoneAreaBox("Fiddy's Fishing Dock", 64.205719f, -353.372650f, 150f, -23.273870f, -442.484894f, -50f);
 
-            AddZoneArea("Weary Foot Rest Inn");
+            AddZoneArea("Weary Foot Rest Inn", "", "", 0, false, "", "silence");
             AddZoneAreaBox("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 120.088417f, -59.832321f, -50f);
             AddZoneAreaBox("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 143.445099f, -84.469452f, -50f);
             AddZoneAreaBox("Weary Foot Rest Inn", 227.600006f, 17.621901f, 150f, 155.618820f, -108.269447f, -50f);
             AddZoneAreaBox("Weary Foot Rest Inn", 252.633408f, 17.621901f, -8.470640f, 68.737541f, -156.572906f, -50f);
 
-            AddZoneArea("Bristlebane's Hall");
+            AddZoneArea("Bristlebane's Hall", "", "", 0, false, "", "silence");
             AddZoneAreaBox("Bristlebane's Hall", -204.553574f, -335.878082f, -15.653620f, -253.162643f, -432.098236f, -50f);
 
-            AddZoneArea("Fool's Gold");
+            AddZoneArea("Fool's Gold", "", "", 0, false, "", "silence");
             AddZoneAreaOctagonBox("Fool's Gold", -25.015270f, -94.932991f, -156.925949f, -226.882187f, -179.992004f, -203.906723f, -179.962494f, -203.859238f, -48.034370f, -72.003288f, -48.034370f, -72.003288f, 150f, -50f);
 
             SetZonewideEnvironmentAsOutdoorsWithSky(144, 151, 144, ZoneFogType.Heavy, 0.5f, 1f);

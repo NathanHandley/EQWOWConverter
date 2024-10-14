@@ -27,11 +27,27 @@ namespace EQWOWConverter.Zones.Properties
     {
         public QeynosAqueductsZoneProperties() : base()
         {
+            // TODO: Add more zone areas
             // TODO: Secret pot to Tox
             SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(0, 1, 2);
             SetZonewideEnvironmentAsIndoors(11, 36, 28, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
+            SetZonewideMusic("qcat-00", "qcat-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true);
+
+            AddZoneArea("Plague Bringer Tunnels", "qcat-01", "qcat-01");
+            AddZoneAreaBox("Plague Bringer Tunnels", 489.128876f, -212.308807f, 196.282455f, 144.117630f, -698.131470f, -43.918282f);
+            AddZoneAreaBox("Plague Bringer Tunnels", 517.676575f, 51.978771f, -18.997459f, 346.800323f, -256.628723f, -43.918282f);
+            AddZoneAreaBox("Plague Bringer Tunnels", 478.528412f, 69.817322f, -26.608040f, 338.702545f, -2.257140f, -43.966591f);
+            AddZoneAreaBox("Plague Bringer Tunnels", 409.858490f, 83.903488f, -21.663639f, 338.558014f, -66.726021f, -43.301041f);
+            AddZoneAreaBox("Plague Bringer Tunnels", 347.182587f, 55.822350f, -22.146070f, 308.153931f, -62.604069f, -43.623081f);
+            AddZoneAreaBox("Plague Bringer Tunnels", 398.436371f, -549.158813f, -41.968761f, 319.451172f, -620.778687f, -60.968689f);
+
+            AddZoneArea("Crow's Way", "qcat-02", "qcat-02");
+            AddZoneAreaBox("Crow's Way", 769.653625f, 82.470329f, -23.267820f, 610.306030f, 8.595240f, -48.048168f);
+            AddZoneAreaBox("Crow's Way", 763.063782f, 85.606148f, -28.013861f, 610.306030f, 8.595240f, -48.048168f);
+            AddZoneAreaBox("Crow's Way", 703.082947f, 101.457939f, -25.315540f, 610.306030f, 8.595240f, -48.048168f);
+            AddZoneAreaBox("Crow's Way", 663.495361f, 160.923462f, -30.006010f, 610.306030f, 8.595240f, -48.048168f);
+
             AddZoneLineBox("qeynos2", 301.114655f, -161.613953f, -63.449379f, ZoneLineOrientationType.North, 1063.755981f, -41.776192f, 262.653015f, 1049.400269f, -56.161572f, 215f);
             AddZoneLineBox("qeynos2", 187.834518f, 341.638733f, -87.992813f, ZoneLineOrientationType.West, 895.849731f, 224.099167f, 61.134998f, 881.462830f, 209.713654f, 39.701309f);
             AddZoneLineBox("qeynos2", 175.706985f, 97.447029f, -41.968739f, ZoneLineOrientationType.West, 645.282104f, 140.744995f, -29.533369f, 629.556519f, 111.476059f, -42.468731f);
