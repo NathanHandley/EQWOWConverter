@@ -27,8 +27,18 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PaineelZoneProperties() : base()
         {
+            // TODO: Add zone areas
             // TODO: "Lift" near the hole that goes up and down
             SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinentType.Odus);
+            Enable2DSoundInstances("wind_lp2");
+
+            AddZoneArea("Upper Field", "", "", 0, false, "", "darkwds1", 0, 0.13931568f);
+            AddZoneAreaBox("Upper Field", 1673.565552f, -19.627020f, 190.996979f, 951.911377f, -1130.305054f, -42.332539f);
+            AddZoneAreaBox("Upper Field", 1673.565552f, -140.071136f, 190.996979f, 628.185669f, -727.651978f, -42.332539f);
+            AddZoneAreaBox("Upper Field", 961.053589f, -63.011539f, 14.449840f, 880.081909f, -169.192917f, -0.737270f);
+            AddZoneAreaBox("Upper Field", 912.605835f, -85.521851f, 12.667250f, 797.670532f, -175.398865f, -0.737270f);
+            AddZoneAreaBox("Upper Field", 1072.081299f, -687.429260f, 41.841881f, 746.888733f, -832.499817f, -1.271540f);
+            
             AddZoneLineBox("hole", 633.865723f, -942.076172f, -93.062523f, ZoneLineOrientationType.North, 640.945190f, -935.434082f, -87.500748f, 605.060547f, -947.819336f, -98.468681f);
             AddZoneLineBox("hole", 645.839417f, 246.516739f, -327.142517f, ZoneLineOrientationType.North, 932.554138f, 434.162994f, -151.438705f, 242.766006f, 88.558594f, -332.241425f);
             AddZoneLineBox("tox", -2592.465576f, -418.976410f, -45.092499f, ZoneLineOrientationType.North, 872.845337f, 187.732834f, 17.467010f, 831.879700f, 133.200150f, -1.499920f);

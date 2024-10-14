@@ -26,6 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PlaneOfHateZoneProperties() : base()
         {
+            // TODO: Add zone areas
             // TODO: Need to identify a new zone in / zone out for this zone
             SetBaseZoneProperties("hateplane", "Plane of Hate", -353.08f, -374.8f, 3.75f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
