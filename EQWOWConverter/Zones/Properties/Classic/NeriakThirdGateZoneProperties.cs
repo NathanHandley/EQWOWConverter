@@ -27,9 +27,40 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NeriakThirdGateZoneProperties() : base()
         {
+            // TODO: Could add a few more zone areas
             SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinentType.Antonica);
-            //AddValidMusicInstanceTrackIndexes(12, 13, 14, 16, 17);
             SetZonewideEnvironmentAsIndoors(35, 22, 59, ZoneFogType.Heavy);
+            Enable2DSoundInstances("wfall_md", "streamsm");
+
+            AddZoneArea("The Dark Guilds", "neriakc-12", "neriakc-12");
+            AddZoneAreaBox("The Dark Guilds", 1447.035645f, -1021.734131f, 65.887840f, 1072.562500f, -1394.093628f, -135.926941f);
+
+            AddZoneArea("Temple of Innoruuk");
+            AddZoneAreaBox("Temple of Innoruuk", 635.404297f, -593.267822f, 77.995178f, 75.160461f, -1013.400696f, -146.977188f);
+
+            AddZoneArea("X'Lottl Mansion");
+            AddZoneAreaBox("X'Lottl Mansion", 1447.134399f, -1518.965820f, 17.849911f, 1160.043335f, -1763.738525f, -127.327591f);
+
+            AddZoneArea("J'Narus Mansion");
+            AddZoneAreaBox("J'Narus Mansion", 761.017334f, -1705.232056f, -13.764690f, 615.919312f, -1864.478271f, -123.288406f);
+
+            AddZoneArea("The Maiden's Fancy", "neriakc-17", "neriakc-17");
+            AddZoneAreaBox("The Maiden's Fancy", 923.143921f, -1387.442505f, -70.754478f, 840.072510f, -1469.176147f, -121.476334f);
+            AddZoneAreaBox("The Maiden's Fancy", 926.799988f, -1449.552124f, -89.113022f, 871.702271f, -1521.265015f, -127.761612f);
+
+            AddZoneArea("Cuisine Excelsior", "neriakc-16", "neriakc-16");
+            AddZoneAreaBox("Cuisine Excelsior", 768.136658f, -1428.902832f, -68.976028f, 724.789490f, -1467.512939f, -91.280327f);
+            AddZoneAreaOctagonBox("Cuisine Excelsior", 741.784424f, 671.026428f, -1412.849609f, -1481.451172f, -1428.819580f,
+                -1467.942749f, -1417.076050f, -1480.375854f, 723.335754f, 683.918091f, 723.335754f, 683.918091f, -55.910679f, -92.870682f);
+
+            AddZoneArea("Neriak Library", "neriakc-13", "neriakc-13");
+            AddZoneAreaBox("Neriak Library", 926.853333f, -1232.932983f, -43.868290f, 853.560181f, -1376.938232f, -94.752899f);
+            AddZoneAreaBox("Neriak Library", 874.126953f, -1267.283691f, -47.716518f, 806.239868f, -1376.938232f, -87.556213f);
+            AddZoneAreaBox("Neriak Library", 811.665222f, -1281.955688f, -71.130661f, 786.915833f, -1374.174561f, -96.223640f);
+
+            AddZoneArea("Nobles' Quarter", "neriakc-14", "neriakc-14");
+            AddZoneAreaBox("Nobles' Quarter", 1237.439575f, -1154.926270f, 83.389381f, 503.791931f, -1982.517090f, -227.392380f);
+
             AddZoneLineBox("neriakb", 196.809433f, -853.183411f, -41.968700f, ZoneLineOrientationType.South, 203.418655f, -846.463745f, -31.531000f, 181.745132f, -860.847778f, -42.468739f);
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 564.595459f, -695.657227f, 331.376404f, -930.340698f, -69.968529f, 30f); // South area, water moat (bottom)
             AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType.Water, "t50_w1", 515.853943f, -757.694885f, 501.844330f, -743.636108f,
