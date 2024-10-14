@@ -33,8 +33,8 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideAmbienceSound("silence", "darkwds2", 0, 0.098401114f);
             Enable2DSoundInstances("wind_lp3");
 
-            AddZoneArea("North-East Karana Bridge", "eastkarana-01", "eastkarana-01");
-            AddZoneAreaBox("North-East Karana Bridge", 447.861389f, 1756.020508f, 338.753632f, -259.226746f, 225.282013f, -307.166260f);
+            AddZoneArea("North Karana Bridge", "eastkarana-01", "eastkarana-01");
+            AddZoneAreaBox("North Karana Bridge", 447.861389f, 1756.020508f, 338.753632f, -259.226746f, 225.282013f, -307.166260f);
 
             AddZoneArea("High Hold Gorge", "", "", 0f, false, "wind_lp4", "wind_lp4", 0.098401114f, 0.098401114f);
             AddZoneAreaBox("High Hold Gorge", 199.264359f, -3199.790283f, 527.914368f, -3156.146973f, -8060.119141f, -151.800049f);
