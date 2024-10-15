@@ -226,7 +226,7 @@ namespace EQWOWConverter
                     Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
                     continue;
 
-                Logger.WriteInfo(" - Processing zone '" + zoneDirectory.Name + "'...");
+                Logger.WriteInfo(" - Processing zone '" + zoneDirectory.Name + "'");
 
                 // Load the EQ zone
                 string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneDirectory.Name);

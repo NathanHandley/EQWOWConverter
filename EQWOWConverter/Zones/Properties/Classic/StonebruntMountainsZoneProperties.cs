@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public StonebruntMountainsZoneProperties() : base()
         {
+            // TODO: Zone Areas
             // TODO: Bad objects in map (scaled to 0.3, -1316 587 -17 orientation 4.5)
             SetBaseZoneProperties("stonebrunt", "Stonebrunt Mountains", -1643.01f, -3427.84f, -6.57f, 0, ZoneContinentType.Odus);
             AddZoneLineBox("warrens", -100.582893f, 1145.348877f, -110.968758f, ZoneLineOrientationType.North, -3674.369385f, 2932.535400f, -22.218500f, -3707.896240f, 2908.150146f, -40.187389f);
