@@ -27,10 +27,25 @@ namespace EQWOWConverter.Zones.Properties
     {
         public ToxxuliaForestZoneProperties() : base()
         {
+            // TODO: Is there a boat to Kerra?
             SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinentType.Odus);
-            //AddValidMusicInstanceTrackIndexes(0, 1, 3);
             SetZonewideEnvironmentAsOutdoorsNoSky(138, 125, 19, ZoneFogType.Heavy, 1f);
             DisableSunlight();
+            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideMusic("tox-01", "tox-01", Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME, true);
+
+            AddZoneArea("Wizard Spires", "tox-00", "tox-00");
+            AddZoneAreaBox("Wizard Spires", -1226.949219f, -589.685974f, 301.723328f, -1772.627075f, -1188.614136f, -150.917084f);
+
+            AddZoneArea("Paineel", "tox-03", "tox-03");
+            AddZoneAreaBox("Paineel", -2125.333984f, -44.737011f, 247.615356f, -2861.701660f, -557.116699f, -197.873016f);
+
+            AddZoneArea("Erudin", "", "");
+            AddZoneAreaBox("Erudin", 2724.206299f, 375.032715f, 106.457878f, 2125.337158f, 58.903641f, -149.535950f);
+
+            AddZoneArea("Kerra Isle");
+            AddZoneAreaBox("Kerra Isle", -259.649689f, 2762.966797f, 346.926971f, -634.237793f, 2341.275391f, -312.548462f);
+
             AddZoneLineBox("erudnext", -1552.149292f, -184.036606f, -47.968700f, ZoneLineOrientationType.North, 2574.356934f, 305.599121f, -33.937248f, 2550.955078f, 289.213013f, -48.907711f);
             AddZoneLineBox("kerraridge", 416.010834f, -930.879211f, 20.000179f, ZoneLineOrientationType.West, -495.140961f, 2684.400635f, -19.784010f, -527.409973f, 2655.238281f, -38.749310f);
             AddZoneLineBox("paineel", 852.573181f, 196.109207f, 0.000050f, ZoneLineOrientationType.West, -2613.365479f, -417.686676f, -26.624750f, -2628.005371f, -470f, -45.593510f);
