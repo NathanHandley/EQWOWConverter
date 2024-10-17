@@ -36,11 +36,11 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Entry", 117.707916f, 462.981293f, 186.264618f, -86.893219f, 30.036381f, -100f);
 
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == false)
-            {
                 AddZoneArea("Water Outlook", "felwithea-02", "felwithea-02");
-                AddZoneAreaBox("Water Outlook", 392.955811f, -536.260681f, 44.567032f, 74.084091f, -926.284851f, -77.346931f);
-                AddZoneAreaBox("Water Outlook", 122.281776f, -638.404175f, 3.277470f, -162.649353f, -939.232300f, -119.733437f);
-            }
+            else
+                AddZoneArea("Water Outlook");
+            AddZoneAreaBox("Water Outlook", 392.955811f, -536.260681f, 44.567032f, 74.084091f, -926.284851f, -77.346931f);
+            AddZoneAreaBox("Water Outlook", 122.281776f, -638.404175f, 3.277470f, -162.649353f, -939.232300f, -119.733437f);
 
             SetZonewideEnvironmentAsOutdoorsWithSky(58, 75, 58, ZoneFogType.Medium, 0.5f, 1f);
             AddZoneLineBox("felwitheb", 251.268646f, -832.815125f, -13.999020f, ZoneLineOrientationType.North, 364.650452f, -711.921509f, -1.531000f, 342.316345f, -727.911865f, -14.499750f);
