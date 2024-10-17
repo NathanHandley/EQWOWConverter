@@ -414,7 +414,7 @@ namespace EQWOWConverter.Zones
                 musicName += ZoneAreaMusics.Count.ToString();
             else
                 musicName += "0" + ZoneAreaMusics.Count.ToString();
-            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight, volume);
+            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight);
             ZoneAreaMusics.Add(newMusic);
 
             // Return it

@@ -25,14 +25,14 @@ namespace EQWOWConverter.Common
     internal enum SoundType
     {
         None = 0,
-        Spell = 1,
-        CombatImpact = 4,
-        CombatSwing = 6,
-        Casting = 8,
+        //Spell = 1,
+        //CombatImpact = 4,
+        //CombatSwing = 6,
+        //Casting = 8,
         GameObject = 25,
-        CreatureLoop = 27,
+        //CreatureLoop = 27,
         ZoneMusic = 28,
         ZoneAmbience = 50,
-        SoundEmitter = 52
+        //SoundEmitter = 52
     }
 }

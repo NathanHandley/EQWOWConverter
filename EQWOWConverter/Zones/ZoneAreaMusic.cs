@@ -33,9 +33,8 @@ namespace EQWOWConverter.Zones
         public string FileNameNoExtNight = string.Empty;
         public Sound? DaySound;
         public Sound? NightSound;
-        public float Volume;
 
-        public ZoneAreaMusic(string zoneDBCName, Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight, float volume)
+        public ZoneAreaMusic(string zoneDBCName, Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
         {
             DBCID = CURRENT_ZONEMUSICSTARTID;
             CURRENT_ZONEMUSICSTARTID++;
@@ -44,7 +43,6 @@ namespace EQWOWConverter.Zones
             NightSound = nightSound;
             FileNameNoExtDay = fileNameNoExtDay;
             FileNameNoExtNight = fileNameNoExtNight;
-            Volume = volume;
         }
     }
 }
