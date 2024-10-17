@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BlackburrowZoneProperties() : base()
         {
+            // TODO: Consider making more zone areas
             // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
             // TODO: Indoor Lighting / Make darker
             SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinentType.Antonica);

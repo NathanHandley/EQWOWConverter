@@ -28,6 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public EverfrostZoneProperties() : base()
         {
             // TODO: Add zone areas
+            // TODO: Add cold breath
             SetBaseZoneProperties("everfrost", "Everfrost", 682.74f, 3139.01f, -60.16f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(144, 165, 183, ZoneFogType.Heavy, 1f);
             DisableSunlight();

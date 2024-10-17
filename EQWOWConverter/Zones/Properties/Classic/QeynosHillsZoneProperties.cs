@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public QeynosHillsZoneProperties() : base()
         {
+            // TODO: Add a few more zone areas
             SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             SetZonewideAmbienceSound("", "darkwds2", 0, 0.098401114f);

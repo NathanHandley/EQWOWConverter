@@ -30,6 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Boat that goes back and forth
             // TODO: PVP in Pit of Doom
             // TODO: Perhaps add Mac's Kilts as a zone area
+            // TODO: Add breath
             SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
             
             AddZoneArea("Entry Tunnel", "halas-01", "halas-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);

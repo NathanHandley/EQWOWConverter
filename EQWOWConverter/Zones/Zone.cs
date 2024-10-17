@@ -583,7 +583,9 @@ namespace EQWOWConverter.Zones
             // 3D Sounds
             foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
             {
-                if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
+                if (soundInstance3D.SoundFileNameDayNoExt.Trim() == string.Empty)
+                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
+                else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
                     Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
                     ProcessSoundInstance(soundInstance3D);
