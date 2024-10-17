@@ -1142,7 +1142,6 @@ namespace EQWOWConverter
                     }
                     File.Copy(sourceFullPath, targetFullPath, true);
                     Logger.WriteDetail("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
-
                 }
             }
 

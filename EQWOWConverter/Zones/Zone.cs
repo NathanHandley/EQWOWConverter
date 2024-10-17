@@ -436,16 +436,12 @@ namespace EQWOWConverter.Zones
                 throw new Exception(errorMessage);
             }
 
-            // Adjsut the volumes
-            volumeDay *= Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
-            volumeNight *= Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
-
             // Generate new sounds if needed
             Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, volumeDay, "EQ Ambient ", SoundType.ZoneAmbience, true);
             Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, volumeNight, "EQ Ambient ", SoundType.ZoneAmbience, true);
 
             // Generate the ambient sounds
-            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight, volumeDay, volumeNight);
+            ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight);
             ZoneAreaAmbientSounds.Add(newAmbientSound);
 
             // Return it
@@ -584,9 +580,9 @@ namespace EQWOWConverter.Zones
             foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
             {
                 if (soundInstance3D.SoundFileNameDayNoExt.Trim() == string.Empty)
-                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
+                    Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
                 else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
-                    Logger.WriteInfo("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
+                    Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
                     ProcessSoundInstance(soundInstance3D);
             }
@@ -607,17 +603,9 @@ namespace EQWOWConverter.Zones
             float radius = soundInstance.Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
             float minDistance = radius;
             if (soundInstance.Is2DSound)
-            {
-                volume *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_VOLUME_MOD;
                 minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD;
-            }
             else
-            {
-                volume *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_VOLUME_MOD;
                 minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
-            }
-            if (volume > Configuration.CONFIG_AUDIO_SOUNDINSTANCE_MAX_VOLUME)
-                volume = Configuration.CONFIG_AUDIO_SOUNDINSTANCE_MAX_VOLUME;
 
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
                 volume, SoundType.GameObject, minDistance, radius, true);

@@ -66,7 +66,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Frequency 9
             newRow.AddInt(0); // Frequency 10
             newRow.AddString(directory);
-            newRow.AddFloat(sound.Volume);
+            newRow.AddFloat(sound.GetVolume());
             if (sound.Loop == true)
                 newRow.AddPackedFlags(0x200);
             else
