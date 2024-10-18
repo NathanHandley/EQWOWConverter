@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthKaladimZoneProperties() : base()
         {
+            // TODO: BUG: Bug in the northwest tunnel (some of it doesn't trigger)
             SetBaseZoneProperties("kaladimb", "North Kaladim", -267f, 414f, 3.75f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
