@@ -89,7 +89,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.3f;
 
         // If true, then objects are generated
-        public static readonly bool CONFIG_GENERATE_OBJECTS = true;
+        public static readonly bool CONFIG_GENERATE_OBJECTS = false;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first
@@ -212,7 +212,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_AUDIO_MUSIC_VOLUME_MOD = 1f;
         
         // If this is 'true', draw any sound instances in a zone as a little box
-        public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = true;
+        public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = false;
 
         // The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.4f;
