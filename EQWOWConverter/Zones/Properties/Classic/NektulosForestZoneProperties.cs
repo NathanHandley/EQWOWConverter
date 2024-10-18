@@ -33,12 +33,12 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("nektulos", "Nektulos Forest", -259f, -1201f, -5f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(57, 64, 50, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("wind_lp4", "darkwds2", 0.098401114f, 0.098401114f);
+            SetZonewideAmbienceSound("wind_lp4", "darkwds2");
 
             AddZoneArea("Neriak");
             AddZoneAreaBox("Neriak", 2539.906494f, -707.843018f, 120.655533f, 2091.832031f, -1205.748169f, -28.141399f);
 
-            AddZoneArea("Lavastorm Path", "nektulos-00", "nektulos-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "wind_lp2", "wind_lp2", 0.13931568f, 0.13931568f);
+            AddZoneArea("Lavastorm Path", "nektulos-00", "nektulos-00", true, "wind_lp2", "wind_lp2", 0.75f); // Lowered music volume a bit
             AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2433.607910f, 437.545807f, -117.007523f);
             AddZoneAreaBox("Lavastorm Path", 3581.946777f, 863.359070f, 281.967194f, 2675.020264f, 170.838821f, -162.906296f);
 

@@ -32,18 +32,18 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(106, 100, 56, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("swmp1", "swmp1", 0.3f, 0.3f);
+            SetZonewideAmbienceSound("swmp1", "swmp1");
             Enable2DSoundInstances("slmestrm", "streammd", "darkwds2", "darkwds1");
             AddZoneArea("Guk");
             AddZoneAreaBox("Guk", 305.515717f, -560.334473f, 68.895988f, 51.747478f, -913.086060f, -65.152344f);
 
-            AddZoneArea("North Hand", "innothule-00", "innothule-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("North Hand", "innothule-00", "innothule-00", false);
             AddZoneAreaBox("North Hand", 1428.922607f, 653.495667f, 93.938110f, 1056.201538f, 361.576935f, -81.741661f);
 
-            AddZoneArea("South Hand", "innothule-03", "innothule-03", 1f);
+            AddZoneArea("South Hand", "innothule-03", "innothule-03");
             AddZoneAreaBox("South Hand", -277.917664f, 1091.021240f, 100.433762f, -642.524719f, 847.547546f, -88.879128f);
 
-            AddZoneArea("Dead Tower", "innothule-02", "innothule-02", 1f);
+            AddZoneArea("Dead Tower", "innothule-02", "innothule-02");
             AddZoneAreaBox("Dead Tower", 2077.336914f, -37.029652f, 23.242470f, 1716.803101f, -277.183929f, -79.665352f);
 
             AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f);

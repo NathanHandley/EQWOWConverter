@@ -30,7 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add a few more zone areas
             SetBaseZoneProperties("qeytoqrg", "Qeynos Hills", 196.7f, 5100.9f, -1f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
-            SetZonewideAmbienceSound("", "darkwds2", 0, 0.098401114f);
+            SetZonewideAmbienceSound("", "darkwds2");
 
             AddZoneArea("Haunted Ruins", "qeytoqrg-03", "qeytoqrg-03");
             AddZoneAreaBox("Haunted Ruins", 4967.319824f, -563.435852f, 276.213654f, 4375.154297f, -1166.364746f, -71.360802f);

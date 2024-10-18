@@ -31,12 +31,12 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Make Arena PVP
             SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
             
-            AddZoneArea("West Gate", "freportw-00", "freportw-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneArea("West Gate", "freportw-00", "freportw-00", false, "", "night");
             AddZoneAreaBox("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f);
             AddZoneAreaBox("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f);
             AddZoneAreaBox("West Gate", 156.815201f, 98.281792f, 100, -126.790573f, 27.274071f, -100f);
             
-            AddZoneArea("West Field", "", "", 0f, false, "", "night", 0f, 0.2786121f);
+            AddZoneArea("West Field", "", "", false, "", "night");
             AddZoneAreaBox("West Field", 580.592529f, 1398.983521f, 100, -588.455200f, 146.414780f, -100f);
             AddZoneAreaBox("West Field", -101.473518f, 309.197571f, 100, -587.705139f, 91.183113f, -100f);
             
@@ -73,10 +73,10 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Torlig's Herbs and Medicines");
             AddZoneAreaBox("Torlig's Herbs and Medicines", 125.658623f, -881.936829f, 100f, 56.296940f, -937.272888f, -100f);
             
-            AddZoneArea("North Tunnels", "", "", 0f, false, "caveloop", "caveloop", 0.1f, 0.1f);
+            AddZoneArea("North Tunnels", "", "", false, "caveloop", "caveloop");
             AddZoneAreaBox("North Tunnels", 1670.669067f, 413.714905f, 100, 580.255798f, -399.795013f, -300f);
             
-            AddZoneArea("South Tunnels", "", "", 0f, false, "caveloop", "caveloop", 0.1f, 0.1f);
+            AddZoneArea("South Tunnels", "", "", false, "caveloop", "caveloop");
             AddZoneAreaBox("South Tunnels", -587.823914f, 206.370499f, 100, -720.200073f, -71.983810f, -300f);
             AddZoneAreaBox("South Tunnels", -508.746826f, 81.513832f, 100, -718.713013f, -518.627869f, -300f);
             AddZoneAreaBox("South Tunnels", -474.193146f, -498.684174f, 100, -832.249023f, -1836.546265f, -300f);

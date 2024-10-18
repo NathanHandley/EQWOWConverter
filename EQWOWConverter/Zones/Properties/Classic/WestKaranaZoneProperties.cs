@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             SetBaseZoneProperties("qey2hh1", "Western Plains of Karana", -638f, 12f, -4f, 0, ZoneContinentType.Antonica);
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp2", "wind_lp4", "wind_lp3");
 
             AddZoneArea("Northwest Hamlet", "qey2hh1-00", "qey2hh1-00");

@@ -29,9 +29,9 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: There's a boat that connects to erudnext and qeynos (south)
             SetBaseZoneProperties("erudsxing", "Erud's Crossing", 795f, -1766.9f, 12.36f, 0, ZoneContinentType.Odus);
-            SetZonewideAmbienceSound("ocean", "ocean", 0.24445728f, 0.24445728f); // Reduced a bit from EQ (-0.15)
+            SetZonewideAmbienceSound("ocean", "ocean");
 
-            AddZoneArea("Fishing Camp", "erudsxing-01", "erudsxing-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME * 0.8f);
+            AddZoneArea("Fishing Camp", "erudsxing-01", "erudsxing-01", true, "", "", 0.8f); // Music was too loud
             AddZoneAreaBox("Fishing Camp", -1387.844849f, 1039.357910f, 99.225990f, - 1675.524048f, 651.345337f, -107.792427f);
 
             AddZoneArea("Shipwreck");

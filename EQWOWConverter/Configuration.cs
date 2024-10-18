@@ -205,19 +205,14 @@ namespace EQWOWConverter
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
 
-        // Default volumes
-        public static readonly float CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME = 0.7f;
-        public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME = 1.0f;
-
-        // Mod / multiplier to apply to non-instance sounds
+        // Mod / multiplier to volumes (multiplies the volume by this value)
         // NOTE: Sound Instance volumes can be found in Sound.GetVolume
         public static readonly float CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD = 1f;
-
-        // How much to multiply the volumes of sound instances.
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD = 1f;
+        public static readonly float CONFIG_AUDIO_MUSIC_VOLUME_MOD = 1f;
         
         // If this is 'true', draw any sound instances in a zone as a little box
-        public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = false;
+        public static readonly bool CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX = true;
 
         // The radius of a sound instance is multiplied by this to get the min distance, which is the range which the sound is 100% volume
         public static readonly float CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD = 0.4f;

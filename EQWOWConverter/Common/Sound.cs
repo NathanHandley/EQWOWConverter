@@ -30,29 +30,29 @@ namespace EQWOWConverter.Common
         public string Name = string.Empty;
         public string AudioFileNameNoExt = string.Empty;
         public SoundType Type = SoundType.None;
-        public float Volume;
         public bool Loop = false;
+        private float Volume;
         public float MinDistance;
         public float DistanceCutoff;
 
-        public Sound(string name, string audioFileName, float volume, SoundType type, float minDistance, float distanceCutoff, bool loop)
+        public Sound(string name, string audioFileName, SoundType type, float minDistance, float distanceCutoff, bool loop, float volume = 1f)
         {
             DBCID = CURRENT_SOUNDENTRY_ID;
             CURRENT_SOUNDENTRY_ID++;
             Name = name;
             AudioFileNameNoExt = audioFileName;
-            Volume = volume;
             Type = type;
             MinDistance = minDistance;
             DistanceCutoff = distanceCutoff;
             Loop = loop;
+            Volume = volume;
         }
 
         public float GetVolume()
         {
+            float volume = Volume;
             if (Type == SoundType.GameObject || Type == SoundType.ZoneAmbience)
             {
-                float volume = Volume;
                 switch (AudioFileNameNoExt.ToLower().Trim())
                 {
                     case "bigbell": volume = 0.2f; break;
@@ -107,8 +107,13 @@ namespace EQWOWConverter.Common
                 else
                     return volume * Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
             }
+            else if (Type == SoundType.ZoneMusic)
+            {
+                return volume * Configuration.CONFIG_AUDIO_MUSIC_VOLUME_MOD;
+            }
 
-            return Volume;
+            Logger.WriteError("Type of SoundType is not handled, so volume will be 1");
+            return volume;
         }
     }
 }

@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add breath
             SetBaseZoneProperties("halas", "Halas", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
             
-            AddZoneArea("Entry Tunnel", "halas-01", "halas-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Entry Tunnel", "halas-01", "halas-01", false);
             AddZoneAreaBox("Entry Tunnel", -461.854279f, 79.028740f, 114.175423f, -817.487427f, -169.417740f, -163.384399f);
 
             AddZoneArea("The Bound Mermaid");

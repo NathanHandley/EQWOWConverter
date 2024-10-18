@@ -29,13 +29,13 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinentType.Antonica);
 
-            AddZoneArea("Kliknik Tunnel", "", "", 0f, false, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("Kliknik Tunnel", "", "", false, "", "night");
             AddZoneAreaBox("Kliknik Tunnel", 334.274689f, -136.490662f, 100f, 277.038788f, -184.821274f, -500f);
 
-            AddChildZoneArea("North Gate", "North Qeynos", "", "", 0, false, "", "night", 0.2786121f, 0.2786121f);
+            AddChildZoneArea("North Gate", "North Qeynos", "", "", false, "", "night");
             AddZoneAreaBox("North Gate", 418.604004f, 230.328903f, 100f, 251.545822f, 7.306570f, -2f);
 
-            AddZoneArea("North Field", "", "", 0f, false, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("North Field", "", "", false, "", "night");
             AddZoneAreaBox("North Field", 2004.056274f, 1189.263184f, 100f, 383.942444f, -1105.253418f, -2f);
             AddZoneAreaBox("North Field", 2004.056274f, 1189.263184f, 100f, 156.620407f, 409.904510f, -2f);
             AddZoneAreaBox("North Field", 489.984772f, -106.924026f, 100f, 141.125656f, -660.864868f, -2f);
@@ -74,7 +74,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("North Qeynos", "qeynos2-01", "qeynos2-01");
             AddZoneAreaBox("North Qeynos", 383.006805f, 421.212250f, 100f, -210.144882f, -111.267601f, -320.804321f);
             
-            AddChildZoneArea("Shrine of the Prime Healer", "Temple of Life", "qeynos2-04", "qeynos2-04", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "space", "space", 0.25f, 0.25f);
+            AddChildZoneArea("Shrine of the Prime Healer", "Temple of Life", "qeynos2-04", "qeynos2-04", true, "space", "space");
             AddZoneAreaBox("Shrine of the Prime Healer", 16.545980f, -263.407410f, 100f, -263.607483f, -760.173279f, -400);
 
             AddZoneArea("Temple of Life", "qeynos2-04", "qeynos2-04");

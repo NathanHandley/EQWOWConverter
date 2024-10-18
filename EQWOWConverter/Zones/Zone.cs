@@ -100,7 +100,7 @@ namespace EQWOWConverter.Zones
 
             // Make the zonewide music if needed
             if (DefaultArea.MusicFileNameNoExtDay != string.Empty || DefaultArea.MusicFileNameNoExtNight != string.Empty)
-                DefaultArea.AreaMusic = GenerateZoneAreaMusic(DefaultArea.MusicFileNameNoExtDay, DefaultArea.MusicFileNameNoExtNight, DefaultArea.MusicVolume, DefaultArea.MusicLoop);
+                DefaultArea.AreaMusic = GenerateZoneAreaMusic(DefaultArea.MusicFileNameNoExtDay, DefaultArea.MusicFileNameNoExtNight, DefaultArea.MusicLoop, DefaultArea.MusicVolume);
 
             // Build light instances
             GenerateLightInstances(EQZoneData.LightInstances);
@@ -328,7 +328,7 @@ namespace EQWOWConverter.Zones
             ZoneAreaMusic? areaMusic = null;
             if (zoneArea.MusicFileNameNoExtDay != string.Empty || zoneArea.MusicFileNameNoExtNight != string.Empty)
             {
-                areaMusic = GenerateZoneAreaMusic(zoneArea.MusicFileNameNoExtDay, zoneArea.MusicFileNameNoExtNight, zoneArea.MusicVolume, zoneArea.MusicLoop);
+                areaMusic = GenerateZoneAreaMusic(zoneArea.MusicFileNameNoExtDay, zoneArea.MusicFileNameNoExtNight, zoneArea.MusicLoop, zoneArea.MusicVolume);
                 zoneArea.AreaMusic = areaMusic;
             }
 
@@ -336,7 +336,7 @@ namespace EQWOWConverter.Zones
             ZoneAreaAmbientSound? areaAmbientSound = null;
             if (zoneArea.AmbientSoundFileNameNoExtDay != string.Empty || zoneArea.AmbientSoundFileNameNoExtNight != string.Empty)
             {
-                areaAmbientSound = GenerateZoneAreaAmbientSound(zoneArea.AmbientSoundFileNameNoExtDay, zoneArea.AmbientSoundFileNameNoExtNight, zoneArea.AmbientSoundVolumeDay, zoneArea.AmbientSoundVolumeNight);
+                areaAmbientSound = GenerateZoneAreaAmbientSound(zoneArea.AmbientSoundFileNameNoExtDay, zoneArea.AmbientSoundFileNameNoExtNight);
                 zoneArea.AreaAmbientSound = areaAmbientSound;
             }
 
@@ -389,7 +389,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private ZoneAreaMusic GenerateZoneAreaMusic(string musicFileNameDay, string musicFileNameNight, float volume, bool loop)
+        private ZoneAreaMusic GenerateZoneAreaMusic(string musicFileNameDay, string musicFileNameNight, bool loop, float volume)
         {
             // Reuse if exists
             foreach (ZoneAreaMusic areaMusic in ZoneAreaMusics)
@@ -405,8 +405,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate new sounds if needed
-            Sound? daySound = GenerateOrGetAreaSound(musicFileNameDay, ref MusicSoundsByFileNameNoExt, volume, "EQ Music ", SoundType.ZoneMusic, loop);
-            Sound? nightSound = GenerateOrGetAreaSound(musicFileNameNight, ref MusicSoundsByFileNameNoExt, volume, "EQ Music ", SoundType.ZoneMusic, loop);
+            Sound? daySound = GenerateOrGetAreaSound(musicFileNameDay, ref MusicSoundsByFileNameNoExt, "EQ Music ", SoundType.ZoneMusic, loop, volume);
+            Sound? nightSound = GenerateOrGetAreaSound(musicFileNameNight, ref MusicSoundsByFileNameNoExt, "EQ Music ", SoundType.ZoneMusic, loop, volume);
 
             // Generate the music
             string musicName = "Zone-" + ShortName;
@@ -414,14 +414,14 @@ namespace EQWOWConverter.Zones
                 musicName += ZoneAreaMusics.Count.ToString();
             else
                 musicName += "0" + ZoneAreaMusics.Count.ToString();
-            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight, volume);
+            ZoneAreaMusic newMusic = new ZoneAreaMusic(musicName, daySound, nightSound, musicFileNameDay, musicFileNameNight);
             ZoneAreaMusics.Add(newMusic);
 
             // Return it
             return newMusic;
         }
 
-        private ZoneAreaAmbientSound GenerateZoneAreaAmbientSound(string soundFileNameDay, string soundFileNameNight, float volumeDay, float volumeNight)
+        private ZoneAreaAmbientSound GenerateZoneAreaAmbientSound(string soundFileNameDay, string soundFileNameNight)
         {
             // Reuse if exists
             foreach (ZoneAreaAmbientSound areaAmbientSound in ZoneAreaAmbientSounds)
@@ -437,8 +437,8 @@ namespace EQWOWConverter.Zones
             }
 
             // Generate new sounds if needed
-            Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, volumeDay, "EQ Ambient ", SoundType.ZoneAmbience, true);
-            Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, volumeNight, "EQ Ambient ", SoundType.ZoneAmbience, true);
+            Sound? daySound = GenerateOrGetAreaSound(soundFileNameDay, ref AmbientSoundsByFileNameNoExt, "EQ Ambient ", SoundType.ZoneAmbience, true);
+            Sound? nightSound = GenerateOrGetAreaSound(soundFileNameNight, ref AmbientSoundsByFileNameNoExt, "EQ Ambient ", SoundType.ZoneAmbience, true);
 
             // Generate the ambient sounds
             ZoneAreaAmbientSound newAmbientSound = new ZoneAreaAmbientSound(daySound, nightSound, soundFileNameDay, soundFileNameNight);
@@ -448,7 +448,7 @@ namespace EQWOWConverter.Zones
             return newAmbientSound;
         }
 
-        private Sound? GenerateOrGetAreaSound(string soundFileName, ref Dictionary<string, Sound> existingLookup, float volume, string soundNamePrefix, SoundType soundType, bool loop)
+        private Sound? GenerateOrGetAreaSound(string soundFileName, ref Dictionary<string, Sound> existingLookup, string soundNamePrefix, SoundType soundType, bool loop, float volume = 1f)
         {
             Sound? returnSound = null;
             if (soundFileName != string.Empty)
@@ -458,7 +458,7 @@ namespace EQWOWConverter.Zones
                 else
                 {
                     string curSoundName = soundNamePrefix + soundFileName;
-                    returnSound = new Sound(curSoundName, soundFileName, volume, soundType, 8, 45, loop); // 8 and 45 are default values for music and ambience in the DBCs
+                    returnSound = new Sound(curSoundName, soundFileName, soundType, 8, 45, loop, volume); // 8 and 45 are default values for music and ambience in the DBCs
                     existingLookup.Add(soundFileName, returnSound);
                 }
             }
@@ -581,7 +581,7 @@ namespace EQWOWConverter.Zones
             {
                 if (soundInstance3D.SoundFileNameDayNoExt.Trim() == string.Empty)
                     Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
-                else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt || soundInstance3D.VolumeDay != soundInstance3D.VolumeNight)
+                else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt)
                     Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
                     ProcessSoundInstance(soundInstance3D);
@@ -599,7 +599,6 @@ namespace EQWOWConverter.Zones
         private void ProcessSoundInstance(SoundInstance soundInstance)
         {
             // Create the sound
-            float volume = soundInstance.VolumeDay;
             float radius = soundInstance.Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
             float minDistance = radius;
             if (soundInstance.Is2DSound)
@@ -608,7 +607,7 @@ namespace EQWOWConverter.Zones
                 minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
 
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
-                volume, SoundType.GameObject, minDistance, radius, true);
+                SoundType.GameObject, minDistance, radius, true);
 
             //  Flip Y and Z
             float yPosition = soundInstance.Position.Z;

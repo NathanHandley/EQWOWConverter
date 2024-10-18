@@ -141,18 +141,18 @@ namespace EQWOWConverter.Zones
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
         // Ambient sound of "silence" will override a parent's ambience with no sound
-        protected void AddZoneArea(string name, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", float musicVolume = 0f, bool loopMusic = true, 
-            string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float ambientVolumeDay = 0f, float ambientVolumeNight = 0f)
+        protected void AddZoneArea(string name, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
+            string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
         {
-            AddChildZoneArea(name, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, musicVolume, loopMusic, ambientSoundFileNameNoExtDay, 
-                ambientSoundFileNameNoExtNight, ambientVolumeDay, ambientVolumeNight);
+            AddChildZoneArea(name, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, ambientSoundFileNameNoExtDay, 
+                ambientSoundFileNameNoExtNight, musicVolume);
         }
 
         // These areas must be made in descending priority order, as every area will isolate its own geometry
         // IMPORTANT: These must be defined before the parent area if they share geometry
         // Ambient sound of "silence" will override a parent's ambience with no sound
-        protected void AddChildZoneArea(string name, string parentName, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", float musicVolume = 0f, bool loopMusic = true,
-            string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float ambientVolumeDay = 0f, float ambientVolumeNight = 0f)
+        protected void AddChildZoneArea(string name, string parentName, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
+            string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
         {
             // Create it
             ZoneArea newZoneArea = new ZoneArea(name, parentName);
@@ -160,25 +160,11 @@ namespace EQWOWConverter.Zones
 
             // Music
             if (musicFileNameNoExtDay != "" || musicFileNameNoExtNight != "")
-            {
-                // Set default volume if needed
-                if (musicVolume == 0f)
-                    musicVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
-                newZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, musicVolume, loopMusic);
-            }
+                newZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, musicVolume);
 
             // Ambient Sounds
             if (ambientSoundFileNameNoExtDay != "" || ambientSoundFileNameNoExtNight != "")
-            {
-                // Set default volumes if needed
-                if (ambientVolumeDay == 0f)
-                    ambientVolumeDay = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
-                if (ambientVolumeNight == 0f)
-                    ambientVolumeNight = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
-
-                // Set it
-                newZoneArea.SetAmbientSound(ambientSoundFileNameNoExtDay, ambientSoundFileNameNoExtNight, ambientVolumeDay, ambientVolumeNight);            
-            }
+                newZoneArea.SetAmbientSound(ambientSoundFileNameNoExtDay, ambientSoundFileNameNoExtNight);            
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
@@ -270,14 +256,14 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, float volume, bool loop)
+        protected void SetZonewideMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, bool loop = true, float musicVolume = 1f)
         {
-            DefaultZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, volume, loop);
+            DefaultZoneArea.SetMusic(musicFileNameNoExtDay, musicFileNameNoExtNight, loop, musicVolume);
         }
 
-        protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight, float dayVolume, float nightVolume)
+        protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight)
         {
-            DefaultZoneArea.SetAmbientSound(ambienceFileNameNoExtDay, ambienceFileNameNoExtNight, dayVolume, nightVolume);
+            DefaultZoneArea.SetAmbientSound(ambienceFileNameNoExtDay, ambienceFileNameNoExtNight);
         }
 
         protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)

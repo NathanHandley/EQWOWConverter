@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("kithicor", "Kithicor Forest", 3828f, 1889f, 459f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(72, 84, 60, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wtr_pool", "wind_lp1", "wind_lp2", "wind_lp4");
             AddZoneLineBox("commons", 1032.412720f, 4154.744629f, -52.093071f, ZoneLineOrientationType.North, 1408.693237f, -1098.195190f, 55.470139f, 1378.633545f, -1153.891724f, -52.593639f);
             AddZoneLineBox("highpass", -980.394165f, 90.663696f, -0.000010f, ZoneLineOrientationType.North, 569.884521f, 4903.054199f, 742.436829f, 558.181274f, 4885.024414f, 689.404907f);

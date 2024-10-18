@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add zone areas
             SetBaseZoneProperties("beholder", "Gorge of King Xorbb", -21.44f, -512.23f, 45.13f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsWithSky(194, 146, 121, ZoneFogType.Medium, 0.75f, 1f);
-            SetZonewideAmbienceSound("wind_lp4", "wind_lp4", 0.098401114f, 0.098401114f);
+            SetZonewideAmbienceSound("wind_lp4", "wind_lp4");
             AddZoneLineBox("runnyeye", -111.2879f, -12.021315f, 0.000001f, ZoneLineOrientationType.East, 911.07355f, -1858.2123f, 15.469f, 894.673f, -1878.7317f, 0.50007594f);
             AddZoneLineBox("eastkarana", 3094.991f, -2315.8328f, 23.849806f, ZoneLineOrientationType.South, -1443.1708f, -542.2266f, 423.58218f, -1665.6155f, -747.2683f, 13f);
         }

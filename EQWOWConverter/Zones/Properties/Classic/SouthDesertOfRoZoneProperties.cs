@@ -28,10 +28,10 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinentType.Antonica);
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp3", "wind_lp2", "wind_lp4");
 
-            AddZoneArea("Desert", "", "", 0, false, "", "silence");
+            AddZoneArea("Desert", "", "", false, "", "silence");
             AddZoneAreaBox("Desert", 2655.683594f, 1829.046021f, 396.438385f, -924.193787f, -1038.153442f, -238.829483f);
 
             AddZoneLineBox("innothule", 2537.843262f, 1157.335449f, -28.670191f, ZoneLineOrientationType.South, -3172.916504f, 1030f, 38.835121f, -3225.501709f, 1057.282593f, -30f);

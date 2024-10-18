@@ -34,7 +34,7 @@ namespace EQWOWConverter.Zones.Properties
 
             // This track normally plays in north felwithe
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
-                SetZonewideMusic("felwithea-02", "felwithea-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true);
+                SetZonewideMusic("felwithea-02", "felwithea-02", true);
 
             AddZoneLineBox("felwithea", 336.521210f, -720.996582f, -13.999750f, ZoneLineOrientationType.South, 245.892227f, -825.463867f, -1.531000f, 218.101257f, -839.849731f, -14.500020f);
             AddTeleportPad("felwitheb", 503.797028f, -496.463074f, -5.001940f, ZoneLineOrientationType.West, 435.755615f, -584.819824f, 31.000059f, 6.0f);

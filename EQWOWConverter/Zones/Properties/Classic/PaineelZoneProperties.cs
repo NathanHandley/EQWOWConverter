@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinentType.Odus);
             Enable2DSoundInstances("wind_lp2");
 
-            AddZoneArea("Upper Field", "", "", 0, false, "", "darkwds1", 0, 0.13931568f);
+            AddZoneArea("Upper Field", "", "", false, "", "darkwds1");
             AddZoneAreaBox("Upper Field", 1673.565552f, -19.627020f, 190.996979f, 951.911377f, -1130.305054f, -42.332539f);
             AddZoneAreaBox("Upper Field", 1673.565552f, -140.071136f, 190.996979f, 628.185669f, -727.651978f, -42.332539f);
             AddZoneAreaBox("Upper Field", 961.053589f, -63.011539f, 14.449840f, 880.081909f, -169.192917f, -0.737270f);

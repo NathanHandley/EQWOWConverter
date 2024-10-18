@@ -29,10 +29,10 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Look into possibly more zone areas
             // TODO: Darken the Minotaur Caves
             SetBaseZoneProperties("steamfont", "Steamfont Mountains", -272.86f, 159.86f, -21.4f, 0, ZoneContinentType.Faydwer);
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp4", "steamlp");
 
-            AddZoneArea("The Windmills", "steamfont-02", "steamfont-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("The Windmills", "steamfont-02", "steamfont-02", false);
             AddZoneAreaBox("The Windmills", 668.587585f, -75.615662f, 409.540710f, -391.177246f, -1247.875854f, -228.816513f);
 
             AddZoneArea("Minotaur Caves", "steamfont-00", "steamfont-00");
@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("South Kobold Camp", "steamfont-05", "steamfont-05");
             AddZoneAreaBox("South Kobold Camp", -550.745239f, 1970.254395f, -17.606470f, -1025.218872f, 1508.614502f, -245.629196f);
 
-            AddZoneArea("Dragon Skeleton", "steamfont-06", "steamfont-06", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Dragon Skeleton", "steamfont-06", "steamfont-06", false);
             AddZoneAreaBox("Dragon Skeleton", -905.103760f, -333.562561f, 43.232040f, -1528.842773f, -1015.249390f, -195.124466f);
 
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)

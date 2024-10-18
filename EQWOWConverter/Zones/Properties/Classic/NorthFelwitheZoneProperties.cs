@@ -30,9 +30,9 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: More zone areas
             SetBaseZoneProperties("felwithea", "Northern Felwithe", 94f, -25f, 3.75f, 0, ZoneContinentType.Faydwer);
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
-            SetZonewideMusic("felwithea-00", "felwithea-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true);
+            SetZonewideMusic("felwithea-00", "felwithea-00", true);
 
-            AddZoneArea("Entry", "felwithea-01", "felwithea-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Entry", "felwithea-01", "felwithea-01", false);
             AddZoneAreaBox("Entry", 117.707916f, 462.981293f, 186.264618f, -86.893219f, 30.036381f, -100f);
 
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == false)

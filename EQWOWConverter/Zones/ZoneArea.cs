@@ -35,13 +35,11 @@ namespace EQWOWConverter.Zones
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
-        public float MusicVolume;
         public bool MusicLoop = false;
+        public float MusicVolume = 1f;
         public ZoneAreaMusic? AreaMusic = null;        
         public string AmbientSoundFileNameNoExtDay = string.Empty;
         public string AmbientSoundFileNameNoExtNight = string.Empty;
-        public float AmbientSoundVolumeDay;
-        public float AmbientSoundVolumeNight;
         public ZoneAreaAmbientSound? AreaAmbientSound = null;
 
         public ZoneArea(string displayName, string parentAreaDisplayName)
@@ -50,9 +48,6 @@ namespace EQWOWConverter.Zones
             CURRENT_AREATABLEID++;
             DisplayName = displayName;
             ParentAreaDisplayName = parentAreaDisplayName;
-            MusicVolume = Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME;
-            AmbientSoundVolumeDay = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
-            AmbientSoundVolumeNight = Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME;
         }
 
         public void AddBoundingBox(BoundingBox boundingBox)
@@ -68,20 +63,18 @@ namespace EQWOWConverter.Zones
             BoundingBoxes.Add(newBox);
         }
 
-        public void SetAmbientSound(string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight, float ambientVolumeDay, float ambientVolumeNight)
+        public void SetAmbientSound(string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight)
         {            
             AmbientSoundFileNameNoExtDay = ambientSoundFileNameNoExtDay;
             AmbientSoundFileNameNoExtNight = ambientSoundFileNameNoExtNight;
-            AmbientSoundVolumeDay = ambientVolumeDay;
-            AmbientSoundVolumeNight = ambientVolumeNight;
         }
 
-        public void SetMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, float musicVolume, bool loopMusic)
+        public void SetMusic(string musicFileNameNoExtDay, string musicFileNameNoExtNight, bool loopMusic, float musicVolume = 1f)
         {
             MusicFileNameNoExtDay = musicFileNameNoExtDay;
             MusicFileNameNoExtNight = musicFileNameNoExtNight;
-            MusicVolume = musicVolume;
             loopMusic = true;
+            MusicVolume = musicVolume;
         }
     }
 }

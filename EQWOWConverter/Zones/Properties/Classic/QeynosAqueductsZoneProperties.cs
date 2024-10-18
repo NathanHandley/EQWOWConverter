@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(11, 36, 28, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
-            SetZonewideMusic("qcat-00", "qcat-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true);
+            SetZonewideMusic("qcat-00", "qcat-00", true);
 
             AddZoneArea("Plague Bringer Tunnels", "qcat-01", "qcat-01");
             AddZoneAreaBox("Plague Bringer Tunnels", 489.128876f, -212.308807f, 196.282455f, 144.117630f, -698.131470f, -43.918282f);

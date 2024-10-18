@@ -30,17 +30,17 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Lift in "The Tower"
             SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinentType.Faydwer);
 
-            AddZoneArea("Main Entryway", "mistmoore-03", "mistmoore-03", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Main Entryway", "mistmoore-03", "mistmoore-03", false);
             AddZoneAreaBox("Main Entryway", 52.558922f, 64.554611f, -168.251938f, -54.312000f, -70.595573f, -204.147720f);
             AddZoneAreaBox("Main Entryway", -26.757799f, 55.103039f, -166.467682f, -73.198334f, -57.687698f, -195.256317f);
             
-            AddZoneArea("Castle Front", "mistmoore-01", "mistmoore-01", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "night", 0f, 0.2786121f);
+            AddZoneArea("Castle Front", "mistmoore-01", "mistmoore-01", true, "", "night");
             AddZoneAreaBox("Castle Front", 324.605652f, 280.881042f, -95.237747f, 38.168800f, -204.299667f, -290f);
             
             AddZoneArea("Tomb");
             AddZoneAreaBox("Tomb", 9.834270f, 399.232208f, -222.168137f, -36.118179f, 356.207245f, -240.511887f);
             
-            AddZoneArea("Graveyard", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneArea("Graveyard", "", "", false, "", "night");
             AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, -61.580879f, 328.872833f, -239.916077f);
             AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, 20.498360f, 310.267181f, -239.916077f);
             AddZoneAreaBox("Graveyard", 161.105804f, 480.375092f, -140.617172f, -71.843201f, 336.520477f, -239.916077f);
@@ -48,7 +48,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("The Tower");
             AddZoneAreaBox("The Tower", -173.731277f, 401.491638f, -39.359699f, -290.964081f, 275.052490f, -177.201447f);
             
-            AddZoneArea("Outer Pass", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneArea("Outer Pass", "", "", false, "", "night");
             AddZoneAreaBox("Outer Pass", 328.328461f, 661.384521f, -45.296520f, 7.925330f, 217.048187f, -280.445526f);
             AddZoneAreaBox("Outer Pass", 328.328461f, 661.384521f, -45.296520f, -469.359589f, 422.729919f, -280.445526f);
             AddZoneAreaBox("Outer Pass", -93.997177f, 613.809998f, -49.347141f, -469.359589f, 326.295868f, -280.445526f);
@@ -57,7 +57,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Outer Pass", -277.957703f, 613.809998f, -177.411514f, -469.359589f, 102.643059f, -280.445526f);
             AddZoneAreaBox("Outer Pass", -288.164612f, 613.809998f, -172.534561f, -469.359589f, 94.337547f, -280.445526f);
             
-            AddZoneArea("Courtyard", "", "", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false, "", "night", 0f, 0.2786121f);
+            AddZoneArea("Courtyard", "", "", false, "", "night");
             AddZoneAreaBox("Courtyard", 35.284790f, 205.371857f, -148.481659f, -199.885864f, 109.646828f, -198.810364f);
             AddZoneAreaBox("Courtyard", 35.284790f, 205.371857f, -148.481659f, -30.348749f, 61.634281f, -201.658279f);
             

@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NajenaZoneProperties() : base()
         {
             // TODO: Add a key system
-            // TODO: Check Najena's room volume, fire may be too loud
             SetBaseZoneProperties("najena", "Najena", -22.6f, 229.1f, -41.8f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             DisableSunlight();

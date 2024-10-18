@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: More zone areas
             SetBaseZoneProperties("rathemtn", "Rathe Mountains", 1831f, 3825f, 29.03f, 0, ZoneContinentType.Antonica);
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp2", "wind_lp4");
 
             AddZoneArea("Gypsy Camp", "rathemtn-02", "rathemtn-02");

@@ -28,10 +28,10 @@ namespace EQWOWConverter.Zones.Properties
         public SouthKaranaZoneProperties() : base()
         {
             SetBaseZoneProperties("southkarana", "Southern Plains of Karana", 1293.66f, 2346.69f, -5.77f, 0, ZoneContinentType.Antonica);
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
+            SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp3", "wind_lp4", "wind_lp2");
 
-            AddZoneArea("The Well", "southkarana-00", "southkarana-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("The Well", "southkarana-00", "southkarana-00", false);
             AddZoneAreaBox("The Well", 115.009888f, 21.298410f, 42.651821f, -204.788803f, -257.898560f, -18.088860f);
 
             AddZoneArea("North Bridge", "southkarana-01", "southkarana-01");

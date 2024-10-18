@@ -30,7 +30,7 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add zone areas
             SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("steamlp");
-            SetZonewideMusic("lavastorm-00", "lavastorm-00", 0.3f, true); // Lower volume, it's pretty strong
+            SetZonewideMusic("lavastorm-00", "lavastorm-00", true, 0.5f); // Lowered volume, as it was pretty loud
             
             AddZoneArea("Druid Ring", "lavastorm-01", "lavastorm-01");
             AddZoneAreaBox("Druid Ring", 1133.413452f, 1478.240601f, 250.740173f, 778.254822f, 1252.916504f, -11.904970f);

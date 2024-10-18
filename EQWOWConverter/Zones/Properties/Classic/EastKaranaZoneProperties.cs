@@ -30,17 +30,17 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add more zone areas
             SetBaseZoneProperties("eastkarana", "Eastern Plains of Karana", 0f, 0f, 3.5f, 0, ZoneContinentType.Antonica);
 
-            SetZonewideAmbienceSound("silence", "darkwds2", 0, 0.098401114f);
+            SetZonewideAmbienceSound("silence", "darkwds2");
             Enable2DSoundInstances("wind_lp3");
 
             AddZoneArea("North Karana Bridge", "eastkarana-01", "eastkarana-01");
             AddZoneAreaBox("North Karana Bridge", 447.861389f, 1756.020508f, 338.753632f, -259.226746f, 225.282013f, -307.166260f);
 
-            AddZoneArea("High Hold Gorge", "", "", 0f, false, "wind_lp4", "wind_lp4", 0.098401114f, 0.098401114f);
+            AddZoneArea("High Hold Gorge", "", "", false, "wind_lp4", "wind_lp4");
             AddZoneAreaBox("High Hold Gorge", 199.264359f, -3199.790283f, 527.914368f, -3156.146973f, -8060.119141f, -151.800049f);
             AddZoneAreaBox("High Hold Gorge", -2822.352539f, -3329.555420f, 850.699219f, -3373.271240f, -8467.166992f, -126.344742f);
 
-            AddZoneArea("Gorge of King Xorbb Entry", "", "", 0f, false, "wind_lp2", "wind_lp2", 0.13931568f, 0.13931568f);
+            AddZoneArea("Gorge of King Xorbb Entry", "", "", false, "wind_lp2", "wind_lp2");
             AddZoneAreaBox("Gorge of King Xorbb Entry", 5282.254395f, -1306.117920f, 699.679443f, 2186.515137f, -2606.609863f, -105.504097f);
 
             AddZoneLineBox("beholder", -1385.247f, -659.5757f, 60.639446f, ZoneLineOrientationType.North, 3388.710449f, -2134.555420f, 322.495361f, 3160.392090f, -2401.121826f, -100);

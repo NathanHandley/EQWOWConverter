@@ -31,8 +31,8 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsOutdoorsNoSky(138, 125, 19, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("", "darkwds1", 0, 0.13931568f);
-            SetZonewideMusic("tox-01", "tox-01", Configuration.CONFIG_AUDIO_AMBIENT_SOUND_DEFAULT_VOLUME, true);
+            SetZonewideAmbienceSound("", "darkwds1");
+            SetZonewideMusic("tox-01", "tox-01", true);
 
             AddZoneArea("Wizard Spires", "tox-00", "tox-00");
             AddZoneAreaBox("Wizard Spires", -1226.949219f, -589.685974f, 301.723328f, -1772.627075f, -1188.614136f, -150.917084f);

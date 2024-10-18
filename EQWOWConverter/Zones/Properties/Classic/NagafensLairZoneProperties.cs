@@ -53,7 +53,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Throne of King Tranix", -1408.245117f, -370.650482f, 9.384310f, -1428.008057f, -401.037292f, -5.5f);
             AddZoneAreaBox("Throne of King Tranix", -1391.465454f, -314.153931f, 44.355862f, -1431.244019f, -354.326691f, 5.5f);
 
-            AddZoneArea("The Fire Throne", "soldungb-02", "soldungb-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("The Fire Throne", "soldungb-02", "soldungb-02", false);
             AddZoneAreaBox("The Fire Throne", -1169.901123f, -658.686951f, 259.537445f, -1612.063477f, -1034.010498f, 50.566200f);
 
             AddZoneArea("Giant's Way", "soldungb-07", "soldungb-07");
@@ -61,7 +61,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Giant's Way", -1345.837402f, -92.634537f, 3.491110f, -1430.996948f, -359.219788f, -111.393219f);
             AddZoneAreaBox("Giant's Way", -1316.308105f, -414.373993f, -8.087370f, -1352.504639f, -423.421906f, -111f);
 
-            AddZoneArea("Spider Nest", "soldungb-02", "soldungb-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Spider Nest", "soldungb-02", "soldungb-02", false);
             AddZoneAreaBox("Spider Nest", -850.344666f, -159.938919f, -76.230370f, -981.864624f, -273.035370f, -102.008614f);
             AddZoneAreaBox("Spider Nest", -908.719421f, -117.953796f, -55.930199f, -982.007629f, -270.992645f, -94.869087f);
             AddZoneAreaBox("Spider Nest", -912.183899f, -219.328934f, -56.561481f, -987.776001f, -279.686646f, -96.371910f);

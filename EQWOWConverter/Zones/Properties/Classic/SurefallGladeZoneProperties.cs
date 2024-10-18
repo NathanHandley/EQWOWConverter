@@ -30,18 +30,18 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(114, 111, 116, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("", "night", 0, 0.2786121f);
+            SetZonewideAmbienceSound("", "night");
             Enable2DSoundInstances("wind_lp2");
 
-            AddZoneArea("Ranger's Guild", "qrg-03", "qrg-03", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "silence", 0, 0);
+            AddZoneArea("Ranger's Guild", "qrg-03", "qrg-03", true, "", "silence");
             AddZoneAreaBox("Ranger's Guild", 194.394394f, -1.289240f, 13.855110f, 113.035820f, -70.200150f, -1.086660f);
             AddZoneAreaBox("Ranger's Guild", 152.741501f, -68.650978f, 13.855110f, 99.090302f, -124.775002f, -1.086660f);
 
-            AddZoneArea("Jaggedpine Treefolk", "", "", 0, false, "", "silence", 0, 0);
+            AddZoneArea("Jaggedpine Treefolk", "", "", false, "", "silence");
             AddZoneAreaBox("Jaggedpine Treefolk", -98.646744f, -252.945007f, 12.863730f, -140.132202f, -306.914001f, -3.714090f);
             AddZoneAreaBox("Jaggedpine Treefolk", -98.646744f, -280.769897f, 12.863730f, -167.112549f, -306.914001f, -3.714090f);
 
-            AddZoneArea("Caves", "", "", 0, false, "", "silence", 0, 0);
+            AddZoneArea("Caves", "", "", false, "", "silence");
             AddZoneAreaBox("Caves", 910.847656f, -108.553413f, 242.904266f, 360.003510f, -739.231506f, -58.258690f);
             AddZoneAreaBox("Caves", 405.905792f, -566.127319f, 183.168060f, 0f, -555.211792f, -77.976501f);
             AddZoneAreaBox("Caves", 247.178406f, -299.769897f, 99.795021f, 0f, -458.985809f, -58.291248f);
@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Caves", 283.257782f, -314.457947f, 215.515167f, 52.706509f, -616.138977f, -93.161430f);
             AddZoneAreaBox("Caves", 729.727783f, -457.031494f, 140.861191f, 26.656240f, -577.515198f, -34.857800f);
 
-            AddZoneArea("Shrine of Tunare", "qrg-02", "qrg-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "silence", 0, 0);
+            AddZoneArea("Shrine of Tunare", "qrg-02", "qrg-02", true, "", "silence");
             AddZoneAreaBox("Shrine of Tunare", -171.097961f, -367.069092f, 1.313080f, -248.541733f, -444.171204f, -0.831980f);
             AddZoneAreaBox("Shrine of Tunare", -181.442581f, -409.380524f, 4f, -238.635086f, -446.004974f, -0.831980f);
             AddZoneAreaBox("Shrine of Tunare", -200.574402f, -443.506012f, 10.636270f, -219.384384f, -446.005951f, 9.609200f);

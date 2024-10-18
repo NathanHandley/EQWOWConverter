@@ -62,7 +62,7 @@ namespace EQWOWConverter.Zones.Properties
             }
             else
             {
-                AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+                AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", false);
                 AddZoneArea("Office of the People");     
                 AddZoneArea("The Jade Tiger's Den");
             }
@@ -90,7 +90,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Palola's Inn", -140.083038f, 27.932680f, 1000f, -184.513947f, -29.577450f, -1000f);
             AddZoneAreaBox("Palola's Inn", -140.166840f, -28.005939f, 1000f, -209.660217f, -97.695213f, -1000f);
             
-            AddZoneArea("North Tunnels", "", "", 0f, false, "caveloop", "caveloop", 0.1f, 0.1f);
+            AddZoneArea("North Tunnels", "", "", false, "caveloop", "caveloop");
             AddZoneAreaBox("North Tunnels", 498.394409f, 765.014404f, 100, 304.263275f, 576.443298f, -300f);
             
             AddZoneArea("Northeast Tunnels");

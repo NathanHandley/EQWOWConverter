@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones.Properties
         {
             SetBaseZoneProperties("befallen", "Befallen", 35.22f, -75.27f, 2.19f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(0, 0, 60, ZoneFogType.Heavy, 130, 130, 130);
-            SetZonewideAmbienceSound("caveloop", "caveloop", 0.1f, 0.1f);
+            SetZonewideAmbienceSound("caveloop", "caveloop");
             OverrideVertexColorIntensity(0.6);
 
             AddZoneArea("Entry", "befallen-06", "befallen-06");

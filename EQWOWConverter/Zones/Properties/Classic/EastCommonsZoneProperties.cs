@@ -28,10 +28,10 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinentType.Antonica);
-            SetZonewideAmbienceSound("", "darkwds2", 0, 0.098401114f);
+            SetZonewideAmbienceSound("", "darkwds2");
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
 
-            AddZoneArea("Commons Tunnel", "", "", 0, false, "silence", "silence");
+            AddZoneArea("Commons Tunnel", "", "", false, "silence", "silence");
             AddZoneAreaBox("Commons Tunnel", -1174.802734f, 917.358459f, 66.066406f, -3512.139893f, -1800.614136f, -49.265629f);
 
             AddZoneLineBox("nro", 2033.690186f, 1875.838257f, 0.000120f, ZoneLineOrientationType.East, -3004.062744f, -1183.421265f, 28.469000f, -3087.551270f, -1212.701660f, -0.499900f);

@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             
-            AddZoneArea("Main Gate", "kaladima-00", "kaladima-00", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("Main Gate", "kaladima-00", "kaladima-00", false);
             AddZoneAreaBox("Main Gate", 146.431183f, 62.509140f, 70.454086f, -109.933128f, -110.416473f, -10.129540f);
 
             AddZoneArea("Pub Kal", "kaladima-04", "kaladima-04");
@@ -57,18 +57,18 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Kaladim Castle", "kaladima-07", "kaladima-07");
             AddZoneAreaBox("Kaladim Castle", 140.091827f, -267.974731f, 104.200493f, -204.232773f, -444.398071f, -89.694290f);
 
-            AddZoneArea("Castle Tunnel", "", "", 0f, false, "wind_lp2", "wind_lp2", 0.13931568f, 0.13931568f);
+            AddZoneArea("Castle Tunnel", "", "", false, "wind_lp2", "wind_lp2");
             AddZoneAreaBox("Castle Tunnel", 268.912476f, -276.845337f, 51.524540f, 225.391342f, -375.978149f, -13.769460f);
             AddZoneAreaBox("Castle Tunnel", 269.257782f, -301.463318f, 51.524540f, 137.570175f, -389.579071f, -2.326460f);
 
-            AddZoneArea("East Tunnel", "", "", 0f, false, "wind_lp3", "wind_lp3", 0.13931568f, 0.13931568f);
+            AddZoneArea("East Tunnel", "", "", false, "wind_lp3", "wind_lp3");
             AddZoneAreaBox("East Tunnel", 249.309692f, -29.441420f, 53.632401f, 127.378166f, -117.933983f, -4.708280f);
 
-            AddZoneArea("West Tunnel", "", "", 0f, false, "wind_lp2", "wind_lp2", 0.13931568f, 0.13931568f);
+            AddZoneArea("West Tunnel", "", "", false, "wind_lp2", "wind_lp2");
             AddZoneAreaBox("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 129.096695f, 24.601440f, -7.553070f);
             AddZoneAreaBox("West Tunnel", 231.041077f, 191.201447f, 67.094452f, 73.621208f, 51.615170f, -7.553070f);
 
-            AddZoneArea("Northwest Tunnel", "", "", 0f, false, "wind_lp4", "wind_lp4", 0.13931568f, 0.13931568f);
+            AddZoneArea("Northwest Tunnel", "", "", false, "wind_lp4", "wind_lp4");
             AddZoneAreaBox("Northeast Tunnel", 499.900879f, 362.115509f, 64.797981f, 240.681122f, 219.488556f, -29.046940f);
             AddZoneAreaBox("Northeast Tunnel", 464.164642f, -184.274612f, 113.766930f, 270.746704f, -287.887421f, -15.605070f);
 

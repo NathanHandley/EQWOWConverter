@@ -30,14 +30,14 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: There is a boat that goes to ocean of tears (OOT)
             SetBaseZoneProperties("freporte", "East Freeport", -648f, -1097f, -52.2f, 0, ZoneContinentType.Antonica);
 
-            AddZoneArea("Field North Camp", "freporte-04", "freporte-04", 0f, true, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("Field North Camp", "freporte-04", "freporte-04", true, "", "night");
             AddZoneAreaBox("Field North Camp", -341.816437f, -60.168308f, 200, -540.543701f, -266.745239f, -60f);
 
-            AddZoneArea("South Gate", "", "", 0f, false, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("South Gate", "", "", false, "", "night");
             AddZoneAreaBox("South Gate", -342.407654f, -411.425812f, 100f, -564.648193f, -887.039978f, -60f);
             AddZoneAreaBox("South Gate", -280.112610f, -560.106567f, 100f, -350.181793f, -770.032776f, -60f);
 
-            AddZoneArea("South Field", "", "", 0f, false, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("South Field", "", "", false, "", "night");
             AddZoneAreaBox("South Field", -342.360107f, -65.000290f, -55f, -2010.536743f, -966.472961f, -56.5f);
             AddZoneAreaBox("South Field", -348.634613f, -926.667175f, -55f, -2010.536743f, -990.134460f, -56.5f);
             AddZoneAreaBox("South Field", -412.658569f, -990.025208f, -55f, -2010.536743f, -1281.146729f, -56.5f);

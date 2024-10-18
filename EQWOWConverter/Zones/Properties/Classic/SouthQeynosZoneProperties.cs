@@ -37,11 +37,11 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Mermaid's Lure", 55.699829f, -28.153431f, 110f, -27.963150f, -69.853050f, -1.5f);
             AddZoneAreaBox("Mermaid's Lure", 27.911350f, -28.153431f, 110f, -27.963150f, -111.824409f, -1.5f);
 
-            AddChildZoneArea("Port Authority", "Qeynos Port", "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "silence", 0.2786121f, 0.2786121f);
+            AddChildZoneArea("Port Authority", "Qeynos Port", "qeynos-11", "qeynos-11", true, "", "silence");
             AddZoneAreaBox("Port Authority", -112.286743f, -14.296410f, 110f, -181.730515f, -41.458660f, -1.5f);
             AddZoneAreaBox("Port Authority", -140.093994f, -14.296410f, 110f, -181.730515f, -69.877022f, -1.5f);
 
-            AddZoneArea("Qeynos Port", "qeynos-11", "qeynos-11", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "night", 0.2786121f, 0.2786121f);
+            AddZoneArea("Qeynos Port", "qeynos-11", "qeynos-11", true, "", "night");
             AddZoneAreaBox("Qeynos Port", 603.145630f, 1178.116821f, 110f, -818.473145f, -27.126450f, -200);
             AddZoneAreaBox("Qeynos Port", 68.179031f, 1178.116821f, 110f, -818.473145f, -161.125412f, -200);
             AddZoneAreaBox("Qeynos Port", 125.205193f, 1178.116821f, 110f, -818.473145f, -110.587914f, -200);
@@ -105,7 +105,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Fireprides", 209.430557f, -280.486755f, 39.982899f, 182.535782f, -334.981110f, -2.427080f);
             AddZoneAreaBox("Fireprides", 209.430557f, -308.239471f, 39.982899f, 154.301147f, -334.981110f, -2.427080f);
 
-            AddChildZoneArea("Alter of the Rainbringer", "The Rainbringers", "", "", 0f, false, "thunder1", "thunder2", 0.15f, 0.15f);
+            AddChildZoneArea("Alter of the Rainbringer", "The Rainbringers", "", "", false, "thunder1", "thunder2");
             AddZoneAreaBox("Alter of the Rainbringer", -140.244034f, -420.151825f, 83.494362f, -209.648987f, -461.539398f, -3.4f);
 
             AddZoneArea("The Rainbringers");

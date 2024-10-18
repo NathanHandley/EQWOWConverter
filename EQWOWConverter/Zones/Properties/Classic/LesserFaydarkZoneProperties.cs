@@ -30,10 +30,10 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("lfaydark", "Lesser Faydark", -1769.93f, -108.08f, -1.11f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
             DisableSunlight();
-            SetZonewideAmbienceSound("", "night", 0, 0.2786121f);
+            SetZonewideAmbienceSound("", "night");
             Enable2DSoundInstances("wind_lp4", "darkwds1");
 
-            AddZoneArea("The Monument", "lfaydark-02", "lfaydark-02", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, false);
+            AddZoneArea("The Monument", "lfaydark-02", "lfaydark-02", false);
             AddZoneAreaBox("The Monument", -233.679443f, -1672.593140f, 200f, -554.176331f, -2018.064331f, -200f);
 
             AddZoneArea("Gnome Camp", "lfaydark-01", "lfaydark-01");

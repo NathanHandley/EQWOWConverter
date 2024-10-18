@@ -31,7 +31,7 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp4", "wind_lp2", "wind_lp3");
 
-            AddZoneArea("Field Camp", "nro-03", "nro-03", Configuration.CONFIG_AUDIO_MUSIC_DEFAULT_VOLUME, true, "", "night", 0, 0.2786121f);
+            AddZoneArea("Field Camp", "nro-03", "nro-03", true, "", "night");
             AddZoneAreaBox("Field Camp", 3560.148438f, 583.294373f, 43.290260f, 3067.353516f, -159.970612f, -61.339088f);
 
             AddZoneArea("Fishing Village", "nro-02", "nro-02");
@@ -40,7 +40,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Haunted Ruins", "nro-04", "nro-04");
             AddZoneAreaBox("Haunted Ruins", 547.317871f, 569.168884f, 90.754204f, 285.208160f, 296.018585f, -77.585022f);
 
-            AddZoneArea("Freeport Field", "", "", 0, false, "", "night", 0, 0.2786121f);
+            AddZoneArea("Freeport Field", "", "", false, "", "night");
             AddZoneAreaBox("Freeport Field", 4867.109375f, 1739.585815f, 415.479492f, 2493.980713f, -1006.311584f, -119.600151f);
 
             AddZoneArea("Commons Tunnel");

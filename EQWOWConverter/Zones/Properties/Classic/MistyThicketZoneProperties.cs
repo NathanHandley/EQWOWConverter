@@ -31,8 +31,8 @@ namespace EQWOWConverter.Zones.Properties
             SetBaseZoneProperties("misty", "Misty Thicket", 0f, 0f, 2.43f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(67, 81, 34, ZoneFogType.Heavy, 1.0f);
             DisableSunlight();
-            SetZonewideAmbienceSound("", "night", 0, 0.2786121f);
-            AddZoneArea("West Misty Thicket", "", "", 0, false, "", "darkwds1", 0.13931568f);
+            SetZonewideAmbienceSound("", "night");
+            AddZoneArea("West Misty Thicket", "", "", false, "", "darkwds1");
             AddZoneAreaBox("West Misty Thicket", 1299.867676f, 1559.016846f, 466.514893f, -1342.874023f, -28.964359f, -165.042603f); // West from top of wall
             AddZoneAreaBox("West Misty Thicket", -456.799561f, 1559.016846f, 466.514893f, -1342.874023f, -307.651550f, -165.042603f); // West from top of first N-S
             AddZoneAreaBox("West Misty Thicket", -659.713318f, 1559.016846f, 466.514893f, -1342.874023f, -411.677094f, -165.042603f); // West from top of second N-S
