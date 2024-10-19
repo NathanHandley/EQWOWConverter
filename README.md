@@ -13,7 +13,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Vertex Colors (on WMOs)
 - Point Sounds (campfires, running water, etc)
 - Ambient Sounds
-- Music (note: Set CONFIG_AUDIO_USE_ALTERNATE_TRACKS = false to use pure classic music areas)
+- Music
 
 # Requirements
 - Windows build environment

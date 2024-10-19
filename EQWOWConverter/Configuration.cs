@@ -200,7 +200,7 @@ namespace EQWOWConverter
         // Audio
         //=====================================================================       
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
-        public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = true;
+        public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = false;
 
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
