@@ -25,7 +25,7 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQSkeleton
     {
-        public class EQSkeletonBoneStruct
+        public class EQSkeletonBone
         {
             public string BoneName = string.Empty;
             public List<int> Children = new List<int>();
@@ -36,7 +36,7 @@ namespace EQWOWConverter.EQFiles
 
         public List<string> MeshNames = new List<string>();
         public List<string> SecondaryMeshNames = new List<string>();
-        public List<EQSkeletonBoneStruct> BoneStructures = new List<EQSkeletonBoneStruct>();
+        public List<EQSkeletonBone> BoneStructures = new List<EQSkeletonBone>();
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -96,7 +96,7 @@ namespace EQWOWConverter.EQFiles
                     continue;
                 }
 
-                EQSkeletonBoneStruct boneStruct = new EQSkeletonBoneStruct();
+                EQSkeletonBone boneStruct = new EQSkeletonBone();
                 boneStruct.BoneName = blocks[0];
                 string[] children = blocks[1].Split(";");
                 foreach (string child in children)
