@@ -98,6 +98,8 @@ namespace EQWOWConverter.EQFiles
                     {
                         // Some files have an extra section after a semicolon, so control for that
                         string[] subparts = nameAndTextureParts[i].Split(';');
+                        if (subparts.Length > 1)
+                            Logger.WriteInfo("TODO: Need to handle this before animations will work properly (" + fileFullPath + ")");
                         sourceTextureNameArray.Add(subparts[0]);
                     }
 
