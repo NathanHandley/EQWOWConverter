@@ -25,10 +25,18 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQMesh
     {
+        public class BoneReference
+        {
+            public int KeyBoneID = 0;
+            public int VertStart = 0;
+            public int VertCount = 0;        
+        }
+
         public MeshData Meshdata = new MeshData();
         public AnimatedVertices AnimatedVertices = new AnimatedVertices();
-        public string MaterialListFileName = string.Empty;
-        // TODO: Bones
+        public string MaterialListFileName = string.Empty;       
+        public List<BoneReference> Bones = new List<BoneReference>();
+
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -62,11 +70,24 @@ namespace EQWOWConverter.EQFiles
                         continue;
                     }
                     MaterialListFileName = blocks[1];
-                }   
+                }
 
-                // b = Bones (?)
+                // b = Bones
                 else if (inputRow.StartsWith("b"))
-                    continue; // Skip for now
+                {
+                    string[] blocks = inputRow.Split(",");
+                    if (blocks.Length != 4)
+                    {
+                        Logger.WriteError("- Bones block must be 4 components");
+                        continue;
+                    }
+
+                    BoneReference boneReference = new BoneReference();
+                    boneReference.KeyBoneID = int.Parse(blocks[1]);
+                    boneReference.VertStart = int.Parse(blocks[2]);
+                    boneReference.VertCount = int.Parse(blocks[3]);
+                    Bones.Add(boneReference);
+                }
 
                 // v = Vertices
                 else if (inputRow.StartsWith("v"))
