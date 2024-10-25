@@ -103,6 +103,8 @@ namespace EQWOWConverter.ObjectModels
 
             // Sort the geometry
             // TODO: BUG: This will have trouble with multi-material animated objects and bones
+            if (ModelType == ObjectModelType.Skeletal)
+                Logger.WriteError("This sort will cause errors in animations on Skeletal objects");
             meshData.SortDataByMaterial();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object

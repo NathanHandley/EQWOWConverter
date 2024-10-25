@@ -48,8 +48,8 @@ namespace EQWOWConverter.ObjectModels
             if (isSkeletal == true)
             {
                 LoadSkeletonData(inputObjectName, inputObjectFolder);
-                LoadRenderMeshData(MaterialListFileName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
-                LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
+                LoadRenderMeshData(inputObjectName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
+                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadAnimationData(inputObjectName, inputObjectFolder);
             }
             else
