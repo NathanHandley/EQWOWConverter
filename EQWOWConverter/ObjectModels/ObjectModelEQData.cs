@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static EQWOWConverter.EQFiles.EQMesh;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -64,14 +65,32 @@ namespace EQWOWConverter.ObjectModels
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
             string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + ".txt");
-            EQMesh meshData = new EQMesh();
-            if (meshData.LoadFromDisk(renderMeshFileName) == false)
+            EQMesh eqMeshData = new EQMesh();
+            if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
             {
                 Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
                 return;
             }
-            MeshData = meshData.Meshdata;
-            MaterialListFileName = meshData.MaterialListFileName;
+            MeshData = eqMeshData.Meshdata;
+            MaterialListFileName = eqMeshData.MaterialListFileName;
+
+            // Bone references
+            if (eqMeshData.Bones.Count > 0)
+            {
+                for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
+                {
+                    byte curBoneID = 0;
+                    foreach (BoneReference bone in eqMeshData.Bones)
+                    {
+                        if (bone.VertStart <= i && ((bone.VertStart + bone.VertCount) <= i))
+                        {
+                            curBoneID = bone.KeyBoneID;
+                            break;
+                        }
+                    }
+                    eqMeshData.Meshdata.BoneIDs.Add(curBoneID);
+                }
+            }
         }
 
         private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder)

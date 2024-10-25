@@ -34,6 +34,7 @@ namespace EQWOWConverter.Common
         public List<TextureCoordinates> TextureCoordinates = new List<TextureCoordinates>();
         public List<TriangleFace> TriangleFaces = new List<TriangleFace>();
         public List<ColorRGBA> VertexColors = new List<ColorRGBA>();
+        public List<byte> BoneIDs = new List<byte>(); // Note: Only single associations, but WOW can support up to 4 w/weights
 
         public MeshData() { }
 
@@ -49,6 +50,8 @@ namespace EQWOWConverter.Common
                 TriangleFaces.Add(new TriangleFace(triangleFace));
             foreach (ColorRGBA colorRGBA in meshData.VertexColors)
                 VertexColors.Add(new ColorRGBA(colorRGBA));
+            foreach (byte boneID in meshData.BoneIDs)
+                BoneIDs.Add(boneID);
         }
 
         public void GenerateAsBox(BoundingBox boundingBox, int materialIndex, MeshBoxRenderType renderType)
@@ -59,6 +62,7 @@ namespace EQWOWConverter.Common
             TextureCoordinates.Clear();
             TriangleFaces.Clear();
             VertexColors.Clear();
+            BoneIDs.Clear();
 
             // Set temp values
             float highX = boundingBox.TopCorner.X;
@@ -71,21 +75,13 @@ namespace EQWOWConverter.Common
             // Side 1
             int quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(highX, lowY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(highX, lowY, lowZ));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, lowZ));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, highZ));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -100,21 +96,13 @@ namespace EQWOWConverter.Common
             // Side 2
             quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(highX, highY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(lowX, highY, highZ));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(lowX, highY, lowZ));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
-            Normals.Add(new Vector3(0, 0, 0));
             Vertices.Add(new Vector3(highX, highY, lowZ));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -129,21 +117,13 @@ namespace EQWOWConverter.Common
             // Side 3
             quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(highX, highY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(highX, highY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(highX, lowY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(highX, lowY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -158,21 +138,13 @@ namespace EQWOWConverter.Common
             // Side 4
             quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(lowX, highY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, highY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -187,21 +159,13 @@ namespace EQWOWConverter.Common
             // Top
             quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(highX, highY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(highX, lowY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, highY, highZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -216,21 +180,14 @@ namespace EQWOWConverter.Common
             // Bottom
             quadFaceStartVert = Vertices.Count;
             Vertices.Add(new Vector3(highX, highY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, highY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(lowX, lowY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
             Vertices.Add(new Vector3(highX, lowY, lowZ));
-            Normals.Add(new Vector3(0, 0, 0));
             TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            VertexColors.Add(new ColorRGBA(0, 0, 0));
+            
             if (renderType == MeshBoxRenderType.Outward || renderType == MeshBoxRenderType.Both)
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
@@ -240,6 +197,14 @@ namespace EQWOWConverter.Common
             {
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 3, quadFaceStartVert, quadFaceStartVert + 1));
                 TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 2, quadFaceStartVert + 3, quadFaceStartVert + 1));
+            }
+
+            // Fill in the blanks
+            for(int i = 0; i < Vertices.Count; i++)
+            {
+                Normals.Add(new Vector3(0, 0, 0));
+                VertexColors.Add(new ColorRGBA(0, 0, 0));
+                BoneIDs.Add(0);
             }
         }
 
@@ -275,6 +240,7 @@ namespace EQWOWConverter.Common
                 TextureCoordinates = newMeshData.TextureCoordinates;
                 TriangleFaces = newMeshData.TriangleFaces;
                 VertexColors = newMeshData.VertexColors;
+                BoneIDs = newMeshData.BoneIDs;
             }
         }
 
@@ -334,6 +300,7 @@ namespace EQWOWConverter.Common
             TextureCoordinates.AddRange(meshDataToAdd.TextureCoordinates);
             VertexColors.AddRange(meshDataToAdd.VertexColors);
             TriangleFaces.AddRange(meshDataToAdd.TriangleFaces);
+            BoneIDs.AddRange(meshDataToAdd.BoneIDs);
         }
 
         public MeshData GetMeshDataForMaterials(params Material[] materials)
@@ -375,6 +342,8 @@ namespace EQWOWConverter.Common
                     extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -397,6 +366,8 @@ namespace EQWOWConverter.Common
                     extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -419,6 +390,8 @@ namespace EQWOWConverter.Common
                     extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Save this updated triangle
@@ -478,6 +451,8 @@ namespace EQWOWConverter.Common
                         extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -502,6 +477,8 @@ namespace EQWOWConverter.Common
                         extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -526,6 +503,8 @@ namespace EQWOWConverter.Common
                         extractedMeshData.Normals.Add(Normals[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Save this updated triangle
@@ -542,6 +521,7 @@ namespace EQWOWConverter.Common
             List<Vector3> sortedNormals = new List<Vector3>();
             List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            List<byte> sortedBoneIndexes = new List<byte>();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
@@ -571,6 +551,8 @@ namespace EQWOWConverter.Common
                         sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[newVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[newVertIndex]);
                 }
 
                 // Face vertex 2
@@ -593,6 +575,8 @@ namespace EQWOWConverter.Common
                         sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[newVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[newVertIndex]);
                 }
 
                 // Face vertex 3
@@ -615,6 +599,8 @@ namespace EQWOWConverter.Common
                         sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[newVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[newVertIndex]);
                 }
 
                 // Save this updated triangle
@@ -635,6 +621,7 @@ namespace EQWOWConverter.Common
             List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
             List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            List<byte> sortedBoneIndexes = new List<byte>();
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
@@ -660,6 +647,8 @@ namespace EQWOWConverter.Common
                     sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -682,6 +671,8 @@ namespace EQWOWConverter.Common
                     sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -704,6 +695,8 @@ namespace EQWOWConverter.Common
                     sortedTextureCoordinates.Add(TextureCoordinates[oldVertIndex]);
                     if (VertexColors.Count != 0)
                         sortedVertexColors.Add(VertexColors[oldVertIndex]);
+                    if (BoneIDs.Count != 0)
+                        sortedBoneIndexes.Add(BoneIDs[oldVertIndex]);
                 }
 
                 // Save this updated triangle
@@ -716,6 +709,7 @@ namespace EQWOWConverter.Common
             Normals = sortedNormals;
             TextureCoordinates = sortedTextureCoordinates;
             VertexColors = sortedVertexColors;
+            BoneIDs = sortedBoneIndexes;
         }
 
         // TODO: Look into collapsing into the following method since there is a lot of shared code

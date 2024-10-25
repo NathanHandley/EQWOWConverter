@@ -27,7 +27,7 @@ namespace EQWOWConverter.EQFiles
     {
         public class BoneReference
         {
-            public int KeyBoneID = 0;
+            public byte KeyBoneID = 0;
             public int VertStart = 0;
             public int VertCount = 0;        
         }
@@ -83,7 +83,7 @@ namespace EQWOWConverter.EQFiles
                     }
 
                     BoneReference boneReference = new BoneReference();
-                    boneReference.KeyBoneID = int.Parse(blocks[1]);
+                    boneReference.KeyBoneID = byte.Parse(blocks[1]);
                     boneReference.VertStart = int.Parse(blocks[2]);
                     boneReference.VertCount = int.Parse(blocks[3]);
                     Bones.Add(boneReference);
