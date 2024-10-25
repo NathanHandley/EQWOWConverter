@@ -36,7 +36,7 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadStaticObjectDataFromDisk(string inputObjectName, string inputObjectFolder)
+        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, bool isSkeletal)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -45,24 +45,19 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Load the various blocks
-            LoadRenderMeshData(inputObjectName, inputObjectFolder);
-            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
-            LoadCollisionMeshData(inputObjectName, inputObjectFolder);
-        }
-
-        public void LoadSkeletalObjectDataFromDisc(string inputObjectName, string inputObjectFolder)
-        {
-            if (Directory.Exists(inputObjectFolder) == false)
+            if (isSkeletal == true)
             {
-                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
-                return;
+                LoadSkeletonData(inputObjectName, inputObjectFolder);
+                LoadRenderMeshData(MaterialListFileName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
+                LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
+                LoadAnimationData(inputObjectName, inputObjectFolder);
             }
-
-            // Load the blocks
-            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
-            LoadSkeletonData(inputObjectName, inputObjectFolder);
-            LoadRenderMeshData(inputObjectName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
-            LoadAnimationData(inputObjectName, inputObjectFolder);
+            else
+            {
+                LoadRenderMeshData(inputObjectName, inputObjectFolder);
+                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
+                LoadCollisionMeshData(inputObjectName, inputObjectFolder);
+            }            
         }
 
         private void LoadRenderMeshData(string inputObjectName, string inputObjectFolder)
