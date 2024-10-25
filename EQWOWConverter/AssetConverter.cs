@@ -118,7 +118,6 @@ namespace EQWOWConverter
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
             DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
             FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            List<ObjectModel> staticObjects = new List<ObjectModel>();
             foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
@@ -142,9 +141,6 @@ namespace EQWOWConverter
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
                 ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
-
-                // Save the object
-                staticObjects.Add(curObject);
             }
             return true;
         }
@@ -260,6 +256,107 @@ namespace EQWOWConverter
             }
             return true;
         }
+
+        public bool ConvertSkeletalObjects()
+        {
+            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+
+            Logger.WriteInfo("Converting EQ characters (skeletal) to WOW creature objects...");
+
+            // Make sure the source folder path exists
+            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
+            if (Directory.Exists(charactersFolderRoot) == false)
+            {
+                Logger.WriteError("Can not read in EQ character data, because folder did not exist at '" + charactersFolderRoot + "'");
+                return false;
+            }
+
+            // Get the skeletal definition file
+            string skeletonListFilePath = Path.Combine(charactersFolderRoot, "actors_skeletal.txt");
+            if (File.Exists(skeletonListFilePath) == false)
+            {
+                Logger.WriteError("Can not read in EQ character skeletal data file because it didn't exist at '" + charactersFolderRoot + "'");
+                return false;
+            }
+
+            // Recreate the folder to clean it out
+            string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
+            string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
+            if (Directory.Exists(exportAnimatedObjectsFolder))
+                Directory.Delete(exportAnimatedObjectsFolder, true);
+            Directory.CreateDirectory(exportAnimatedObjectsFolder);
+
+            Logger.WriteInfo("Note: Only 'wof' is implemented for loading skeleton objects");
+
+            // The skeletal list file has all of the objects to convert, so iterate through them
+            string skeletonListFileData = File.ReadAllText(skeletonListFilePath);
+            string[] skeletonListDataRows = skeletonListFileData.Split(Environment.NewLine);
+            foreach (string listDataRow in skeletonListDataRows)
+            {
+                string curSkeletonObjectName = listDataRow.Split(',')[0];
+                Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
+
+                // TODO: Make this work for more
+                if (curSkeletonObjectName != "wof")
+                    continue;
+
+                // Init the object
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);
+                ObjectModel curObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
+
+                // Load the EQ data
+                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "'");
+                curObject.LoadEQObjectData(charactersFolderRoot);
+                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "' complete");
+
+                // Convert to a WoW object
+
+                // Place the related textures
+
+
+            }
+
+            //DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
+            //FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles()
+
+
+
+            //// Go through all of the object meshes and process them one at a time
+            //string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
+            //DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
+            //FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
+            //List<ObjectModel> staticObjects = new List<ObjectModel>();
+            //foreach (FileInfo objectMeshFileInfo in objectMeshFileInfos)
+            //{
+            //    string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
+            //    string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectMeshNameNoExt);
+
+            //    // Skip the collision mesh files
+            //    if (objectMeshFileInfo.Name.Contains("_collision"))
+            //        continue;
+
+            //    // Load the EQ object
+            //    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
+            //    ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
+            //    Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
+            //    curObject.LoadEQObjectData(objectFolderRoot);
+            //    Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
+
+            //    // Covert to WOW static object
+            //    string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
+            //    CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
+
+            //    // Place the related textures
+            //    string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
+            //    ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
+
+            //    // Save the object
+            //    staticObjects.Add(curObject);
+            //}
+            return true;
+        }
+
 
         public void ExtractClientDBCFiles()
         {

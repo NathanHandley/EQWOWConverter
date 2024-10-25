@@ -26,6 +26,7 @@ namespace EQWOWConverter.ObjectModels
     {
         SimpleDoodad,
         ZoneModel,
-        SoundInstance
+        SoundInstance,
+        Skeletal
     }
 }

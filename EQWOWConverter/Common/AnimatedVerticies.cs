@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
+    // TODO: May not need.  Consider deleting OR putting in the EQFiles section
     internal class AnimatedVertices
     {
         public List<List<Vector3>> Frames = new List<List<Vector3>>();

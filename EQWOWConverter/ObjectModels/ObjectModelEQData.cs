@@ -28,13 +28,15 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelEQData
     {
         public MeshData MeshData = new MeshData();
-        public AnimatedVertices AnimatedVertices = new AnimatedVertices();
+        public AnimatedVertices AnimatedVertices = new AnimatedVertices(); // TODO: May not be in use, consider deleting
         public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
+        public Dictionary<string, EQAnimation> Animations = new Dictionary<string, EQAnimation>();
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
         private string MaterialListFileName = string.Empty;
+        public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder)
+        public void LoadStaticObjectDataFromDisk(string inputObjectName, string inputObjectFolder)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -46,6 +48,21 @@ namespace EQWOWConverter.ObjectModels
             LoadRenderMeshData(inputObjectName, inputObjectFolder);
             LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
+        }
+
+        public void LoadSkeletalObjectDataFromDisc(string inputObjectName, string inputObjectFolder)
+        {
+            if (Directory.Exists(inputObjectFolder) == false)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
+                return;
+            }
+
+            // Load the blocks
+            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
+            LoadSkeletonData(inputObjectName, inputObjectFolder);
+            LoadRenderMeshData(inputObjectName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
+            LoadAnimationData(inputObjectName, inputObjectFolder);
         }
 
         private void LoadRenderMeshData(string inputObjectName, string inputObjectFolder)
@@ -65,7 +82,7 @@ namespace EQWOWConverter.ObjectModels
         private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading materials...");
-            string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", MaterialListFileName + ".txt");
+            string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
             EQMaterialList materialListData = new EQMaterialList();
             if (materialListData.LoadFromDisk(materialListFileName) == false)
                 Logger.WriteDetail("- [" + inputObjectName + "]: No material data found.");
@@ -74,6 +91,7 @@ namespace EQWOWConverter.ObjectModels
                 Materials = materialListData.Materials;
             }
         }
+
         private void LoadCollisionMeshData(string inputObjectName, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading collision mesh data...");
@@ -91,6 +109,43 @@ namespace EQWOWConverter.ObjectModels
             }
             CollisionTriangleFaces = meshData.Meshdata.TriangleFaces;
             CollisionVertices = meshData.Meshdata.Vertices;
+        }
+
+        private void LoadSkeletonData(string inputObjectName, string inputObjectFolder)
+        {
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading skeleton data...");
+            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
+            SkeletonData = new EQSkeleton();
+            if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
+                return;
+            }
+        }
+
+        private void LoadAnimationData(string inputObjectName, string inputObjectFolder)
+        {
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading animation data...");
+
+            // Animations are split by animation name
+            Animations.Clear();
+            string animationFolder = Path.Combine(inputObjectFolder, "Animations");
+            DirectoryInfo animationDirectoryInfo = new DirectoryInfo(animationFolder);
+            FileInfo[] animationFileInfos = animationDirectoryInfo.GetFiles(inputObjectName + "*.txt");
+            foreach(FileInfo animationFileInfo in animationFileInfos)
+            {
+                string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);
+                EQAnimation curEQAnimation = new EQAnimation();
+                if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
+                {
+                    string animationName = animationFileName.Split("_")[1];
+                    Animations.Add(animationName, curEQAnimation);
+                }
+                else
+                {
+                    Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
+                }
+            }
         }
     }
 }

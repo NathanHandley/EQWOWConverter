@@ -100,10 +100,11 @@ namespace EQWOWConverter.EQFiles
                 boneStruct.BoneName = blocks[0];
                 string[] children = blocks[1].Split(";");
                 foreach (string child in children)
-                    boneStruct.Children.Add(int.Parse(child));
-                boneStruct.MeshName = blocks[1];
-                boneStruct.AlternateMeshName = blocks[2];
-                boneStruct.ParticleCloudName = blocks[3];
+                    if (child != string.Empty)
+                        boneStruct.Children.Add(int.Parse(child));
+                boneStruct.MeshName = blocks[2];
+                boneStruct.AlternateMeshName = blocks[3];
+                boneStruct.ParticleCloudName = blocks[4];
                 BoneStructures.Add(boneStruct);
             }
 

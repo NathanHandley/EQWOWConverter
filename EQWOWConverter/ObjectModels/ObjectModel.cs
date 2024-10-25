@@ -67,11 +67,16 @@ namespace EQWOWConverter.ObjectModels
             ModelType = modelType;
         }
 
-        public void LoadEQObjectData(string inputObjectFolder)
+        public void LoadEQObjectData(string inputRootFolder)
         {
-            // Clear any old data and reload
+            // Clear any old data
             EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadDataFromDisk(Name, inputObjectFolder);
+
+            // Load based on type
+            if (ModelType == ObjectModelType.Skeletal)
+                EQObjectModelData.LoadSkeletalObjectDataFromDisc(Name, inputRootFolder);
+            else
+                EQObjectModelData.LoadStaticObjectDataFromDisk(Name, inputRootFolder);
         }
 
         public void PopulateObjectModelFromEQObjectModelData()

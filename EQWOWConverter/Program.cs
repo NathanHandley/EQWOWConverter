@@ -33,7 +33,7 @@ internal class Program
             Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
             Logger.WriteInfo(" [X] - Exit");
             Logger.WriteInfo(" ");
-            Logger.WriteInfo(" [9] - Condition only the Music Data");
+            Logger.WriteInfo(" [9] - Convert only EQ Skeletal Object Data to Creature WOW Objects");
             Logger.WriteInfo(" ");
             Logger.WriteInfo("Command (Default: X): ", true);
             string? enteredCommand = Console.ReadLine();
@@ -85,7 +85,8 @@ internal class Program
                         case "9":
                             {
                                 AssetConditioner conditioner = new AssetConditioner();
-                                conditioner.ConditionMusicFiles(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music"));
+                                AssetConverter converter = new AssetConverter();
+                                converter.ConvertSkeletalObjects();
                                 Console.Beep();
                             } break;
                         default:
