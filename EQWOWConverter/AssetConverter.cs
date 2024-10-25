@@ -287,7 +287,7 @@ namespace EQWOWConverter
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
-            Logger.WriteInfo("Note: Only 'wof' is implemented for loading skeleton objects");
+            Logger.WriteInfo("Note: Only 'wol' is implemented for loading skeleton objects");
 
             // The skeletal list file has all of the objects to convert, so iterate through them
             string skeletonListFileData = File.ReadAllText(skeletonListFilePath);
@@ -298,7 +298,7 @@ namespace EQWOWConverter
                 Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
 
                 // TODO: Make this work for more
-                if (curSkeletonObjectName != "wof")
+                if (curSkeletonObjectName != "wol")
                     continue;
 
                 // Init the object
@@ -311,10 +311,13 @@ namespace EQWOWConverter
                 Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "' complete");
 
                 // Convert to a WoW object
+                string relativeMPQPath = Path.Combine("Creature", "Everquest", curSkeletonObjectName);
+                string fullMPQPath = Path.Combine(exportAnimatedObjectsFolder, curSkeletonObjectName);
+                CreateWoWObjectFromEQObject(curObject, fullMPQPath, relativeMPQPath);
 
                 // Place the related textures
-
-
+                string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
+                ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
             }
 
             //DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
