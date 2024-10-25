@@ -74,22 +74,22 @@ namespace EQWOWConverter.ObjectModels
 
             // Load based on type
             if (ModelType == ObjectModelType.Skeletal)
-                EQObjectModelData.LoadSkeletalObjectDataFromDisc(Name, inputRootFolder);
+                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, true);
             else
-                EQObjectModelData.LoadStaticObjectDataFromDisk(Name, inputRootFolder);
+                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false);
         }
 
         public void PopulateObjectModelFromEQObjectModelData()
         {
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), true);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, true);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
+            List<TriangleFace> collisionTriangleFaces)
         {
             // Save Name
             Name = name;
@@ -102,10 +102,11 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Sort the geometry
+            // TODO: BUG: This will have trouble with multi-material animated objects and bones
             meshData.SortDataByMaterial();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (isFromRawEQObject == true)
+            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
                 // Regular
                 meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
@@ -123,7 +124,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Collision data
-            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces, isFromRawEQObject);
+            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Process materials
             List<Material> expandedMaterials = new List<Material>();
@@ -166,7 +167,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Save the geometry data
-            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && isFromRawEQObject == true)
+            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -405,7 +406,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces, bool isFromRawEQObject)
+        private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Purge prior data
             CollisionPositions.Clear();
@@ -413,7 +414,7 @@ namespace EQWOWConverter.ObjectModels
             CollisionTriangles.Clear();
 
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && isFromRawEQObject == true)
+            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
             {
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();
