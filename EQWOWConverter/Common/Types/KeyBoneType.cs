@@ -14,27 +14,51 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ObjectModels
+namespace EQWOWConverter.Common
 {
-    internal class ObjectModelBone
+    internal enum KeyBoneType : Int32
     {
-        public string BoneNameEQ = string.Empty;
-        public string ParentBoneNameEQ = string.Empty;
-        public Int32 KeyBoneID = Convert.ToInt32(KeyBoneType.None);
-        public ObjectModelBoneFlags Flags = 0;
-        public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
-        public UInt16 SubMeshID = 0;
-        public UInt32 BoneNameCRC = 0;
-        public ObjectModelTrackSequences<Vector3> TranslationTrack = new ObjectModelTrackSequences<Vector3>();
-        public ObjectModelTrackSequences<Quaternion> RotationTrack = new ObjectModelTrackSequences<Quaternion>();
-        public ObjectModelTrackSequences<Vector3> ScaleTrack = new ObjectModelTrackSequences<Vector3>();
-        public Vector3 PivotPoint = new Vector3();
+        None = -1,
+        ArmL = 0,
+        ArmR = 1,
+        ShoulderL = 2,
+        ShoulderR = 3,
+        SpineLow = 4,
+        Waist = 5,
+        Head = 6,
+        Jaw = 7,
+        IndexFingerR = 8,
+        MiddleFingerR = 9,
+        PinkyFingerR = 10,
+        RingFingerR = 11,
+        ThumbR = 12,
+        IndexFingerL = 13,
+        MiddleFingerL = 14,
+        PinkyFingerL = 15,
+        RingFingerL = 16,
+        ThumbL = 17,
+        BTH = 18, // $BTH
+        CSR = 19, // $CSR
+        CSL = 20, // $CSL
+        _Breath = 21,
+        _Name = 22,
+        _NameMount = 23,
+        CHD = 24, // $CHD
+        CCH = 25, // $CCH
+        Root = 26,
+        Wheel1 = 27,
+        Wheel2 = 28,
+        Wheel3 = 29,
+        Wheel4 = 30,
+        Wheel5 = 31,
+        Wheel6 = 32,
+        Wheel7 = 33,
+        Wheel8 = 34
     }
 }

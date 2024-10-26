@@ -48,6 +48,20 @@ namespace EQWOWConverter.Common
             public float WRotation = 0;
             public float Scale = 0;
             public int FramesMS = 0;
+
+            public string GetBoneName()
+            {
+                string[] nameParts = BoneFullNameInPath.Split('/');
+                return nameParts[nameParts.Length - 1];
+            }
+
+            public string GetParentBoneName()
+            {
+                string[] nameParts = BoneFullNameInPath.Split('/');
+                if (nameParts.Length <= 1)
+                    return string.Empty;
+                return nameParts[nameParts.Length - 2];
+            }
         }
 
         public List<EQBoneAnimationFrame> AnimationFrames = new List<EQBoneAnimationFrame>();

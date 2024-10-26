@@ -146,6 +146,8 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessBonesAndAnimation()
         {
+            ModelBoneKeyLookups.Add(-1);
+
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
             {
@@ -155,7 +157,6 @@ namespace EQWOWConverter.ObjectModels
                 // Create a base bone
                 //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
                 ModelBones.Add(new ObjectModelBone());
-                ModelBoneKeyLookups.Add(-1);
                 ModelBoneLookups.Add(0);
 
                 // Make one animation (standing)
@@ -167,10 +168,38 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
+                // Grab the 'pos' animation, which should be the base pose
+                Animation pickedAnimation = new Animation(AnimationType.Stand, 0, 0);
+                foreach (var animation in EQObjectModelData.Animations)
+                    if (animation.Key == "pos")
+                        pickedAnimation = animation.Value;
+                if (pickedAnimation.AnimationFrames.Count == 0)
+                {
+                    Logger.WriteError("Could not pull skeleton information for object '" + Name + "' as there was no 'pos' animation");
+                    ModelBones.Add(new ObjectModelBone());
+                    ModelBoneLookups.Add(0);
+                    ModelAnimations.Add(new ObjectModelAnimation());
+                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    return;
+                }
+
+                // Create bones by reading this pos animation
+                for(int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
+                {
+                    ObjectModelBone curBone = new ObjectModelBone();
+                    curBone.BoneNameEQ = pickedAnimation.AnimationFrames[i].GetBoneName();
+                    curBone.ParentBoneNameEQ = pickedAnimation.AnimationFrames[i].GetParentBoneName();
+                    for (Int16 j = 0; j < ModelBones.Count; j++)
+                        if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
+                            curBone.ParentBone = j;
+                    ModelBones.Add(curBone);
+                }
+
                 // Create an animation for each
                 foreach (var animation in EQObjectModelData.Animations)
                 {
-                    
+                    Logger.WriteDetail("Adding animation of eq type '" + animation.Key + "' and wow type '" + animation.Value.AnimationType.ToString() + "' to object '" + Name + "'");
 
 
                 }
