@@ -82,7 +82,7 @@ namespace EQWOWConverter.ObjectModels
                     byte curBoneID = 0;
                     foreach (BoneReference bone in eqMeshData.Bones)
                     {
-                        if (bone.VertStart <= i && ((bone.VertStart + bone.VertCount) <= i))
+                        if (i >= bone.VertStart && (i < (bone.VertStart + bone.VertCount)))
                         {
                             curBoneID = bone.KeyBoneID;
                             break;

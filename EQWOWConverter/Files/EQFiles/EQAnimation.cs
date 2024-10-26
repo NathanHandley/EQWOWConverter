@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,25 +26,7 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQAnimation
     {
-        public int FrameCount = 0;
-        public int TotalTimeInMS = 0;
-
-        public class EQBoneAnimationFrame
-        {
-            public string BoneFullNameInPath = string.Empty;
-            public int FrameIndex = 0;
-            public float XPosition = 0;
-            public float YPosition = 0;
-            public float ZPosition = 0;
-            public float XRotation = 0;
-            public float YRotation = 0;
-            public float ZRotation = 0;
-            public float WRotation = 0;
-            public float Scale = 0;
-            public int FramesMS = 0;        
-        }
-
-        public List<EQBoneAnimationFrame> AnimationFrames = new List<EQBoneAnimationFrame>();
+        public Animation Animation = new Animation();
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -55,6 +38,7 @@ namespace EQWOWConverter.EQFiles
             }
 
             // Load the core data
+            Animation = new Animation();
             string inputData = File.ReadAllText(fileFullPath);
             string[] inputRows = inputData.Split(Environment.NewLine);
 
@@ -83,14 +67,14 @@ namespace EQWOWConverter.EQFiles
                 // Number of frames
                 if (blocks[0] == "framecount")
                 {
-                    FrameCount = int.Parse(blocks[1]);
+                    Animation.FrameCount = int.Parse(blocks[1]);
                     continue;
                 }
 
                 // Total time of animation
                 if (blocks[0] == "totalTimeMs")
                 {
-                    TotalTimeInMS = int.Parse(blocks[1]);
+                    Animation.TotalTimeInMS = int.Parse(blocks[1]);
                     continue;
                 }
 
@@ -100,8 +84,8 @@ namespace EQWOWConverter.EQFiles
                     Logger.WriteError("EQ Animation Frame data must be 11 components");
                     continue;
                 }
-                
-                EQBoneAnimationFrame animationFrame = new EQBoneAnimationFrame();
+
+                Animation.EQBoneAnimationFrame animationFrame = new Animation.EQBoneAnimationFrame();
                 animationFrame.BoneFullNameInPath = blocks[0];
                 animationFrame.FrameIndex = int.Parse(blocks[1]);
                 animationFrame.XPosition = float.Parse(blocks[2]);
@@ -113,7 +97,7 @@ namespace EQWOWConverter.EQFiles
                 animationFrame.WRotation = float.Parse(blocks[8]);
                 animationFrame.Scale = float.Parse(blocks[9]);
                 animationFrame.FramesMS = int.Parse(blocks[10]);
-                AnimationFrames.Add(animationFrame);
+                Animation.AnimationFrames.Add(animationFrame);
             }
 
             Logger.WriteDetail(" - Done reading EQ Animation Data from '" + fileFullPath + "'");

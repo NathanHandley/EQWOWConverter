@@ -54,6 +54,8 @@ namespace EQWOWConverter
             {
                 if (ConvertEQObjectsToWOW() == false)
                     return false;
+                if (ConvertSkeletalObjects() == false)
+                    return false;
             }
             else
             {
@@ -319,47 +321,8 @@ namespace EQWOWConverter
                 string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
                 ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
             }
-
-            //DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
-            //FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles()
-
-
-
-            //// Go through all of the object meshes and process them one at a time
-            //string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
-            //DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
-            //FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            //List<ObjectModel> staticObjects = new List<ObjectModel>();
-            //foreach (FileInfo objectMeshFileInfo in objectMeshFileInfos)
-            //{
-            //    string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
-            //    string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectMeshNameNoExt);
-
-            //    // Skip the collision mesh files
-            //    if (objectMeshFileInfo.Name.Contains("_collision"))
-            //        continue;
-
-            //    // Load the EQ object
-            //    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
-            //    ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
-            //    Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-            //    curObject.LoadEQObjectData(objectFolderRoot);
-            //    Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
-
-            //    // Covert to WOW static object
-            //    string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
-            //    CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
-
-            //    // Place the related textures
-            //    string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
-            //    ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
-
-            //    // Save the object
-            //    staticObjects.Add(curObject);
-            //}
             return true;
         }
-
 
         public void ExtractClientDBCFiles()
         {
@@ -517,6 +480,11 @@ namespace EQWOWConverter
                 string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
+
+                // Creatures / Skeletal
+                string relativeCreaturePath = Path.Combine("Creature", "Everquest");
+                string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + relativeCreaturePath + "\" \"" + fullCreaturePath + "\" /r");
             }
 
             // Ambient Sounds
