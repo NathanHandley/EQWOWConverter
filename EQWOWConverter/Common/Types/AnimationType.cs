@@ -20,10 +20,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ObjectModels
+namespace EQWOWConverter.Common
 {
     // Scraped out of wowdev.wiki/M2/AnimationList on 2024/10/20
-    internal enum ObjectModelAnimationType : UInt16
+    internal enum AnimationType : ushort
     {
         Stand = 0, // Idle
         Death = 1, // Death

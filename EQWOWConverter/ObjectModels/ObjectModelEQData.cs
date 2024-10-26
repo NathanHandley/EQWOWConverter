@@ -32,7 +32,7 @@ namespace EQWOWConverter.ObjectModels
         public AnimatedVertices AnimatedVertices = new AnimatedVertices(); // TODO: May not be in use, consider deleting
         public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
-        public Dictionary<string, EQAnimation> Animations = new Dictionary<string, EQAnimation>();
+        public Dictionary<string, Animation> Animations = new Dictionary<string, Animation>();
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
@@ -149,11 +149,11 @@ namespace EQWOWConverter.ObjectModels
             foreach(FileInfo animationFileInfo in animationFileInfos)
             {
                 string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);
+                string animationName = animationFileName.Split("_")[1];
                 EQAnimation curEQAnimation = new EQAnimation();
                 if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
-                {
-                    string animationName = animationFileName.Split("_")[1];
-                    Animations.Add(animationName, curEQAnimation);
+                {                    
+                    Animations.Add(animationName, curEQAnimation.Animation);
                 }
                 else
                 {

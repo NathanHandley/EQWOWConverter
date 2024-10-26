@@ -128,7 +128,57 @@ namespace EQWOWConverter.ObjectModels
             // Process materials
             ProcessMaterials(initialMaterials, ref meshData);
 
-            // Save the geometry data
+            // Create model vertices
+            GenerateModelVertices(meshData, collisionVertices, collisionTriangleFaces);
+
+            // Correct any texture coordinates
+            CorrectTextureCoordinates();
+
+            // Process the rest
+            CalculateBoundingBoxesAndRadii();
+
+            // No texture replacement lookup (yet)
+            ModelReplaceableTextureLookups.Add(-1);
+
+            // Build the bones and animation structures
+            ProcessBonesAndAnimation();
+        }
+
+        private void ProcessBonesAndAnimation()
+        {
+            // Static types
+            if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
+            {
+                if (ModelType == ObjectModelType.Skeletal)
+                    Logger.WriteError("Object named '" + Name + "' is skeletal but has no animations, so loading as static");
+
+                // Create a base bone
+                //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
+                ModelBones.Add(new ObjectModelBone());
+                ModelBoneKeyLookups.Add(-1);
+                ModelBoneLookups.Add(0);
+
+                // Make one animation (standing)
+                ModelAnimations.Add(new ObjectModelAnimation());
+                ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+                ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+            }
+
+            // Skeletal
+            else
+            {
+                // Create an animation for each
+                foreach (var animation in EQObjectModelData.Animations)
+                {
+                    
+
+
+                }
+            }
+        }
+
+        private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
+        {
             if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
@@ -139,6 +189,7 @@ namespace EQWOWConverter.ObjectModels
                     newModelVertex.Position = new Vector3(collisionVertices[i]);
                     newModelVertex.Normal = new Vector3(0, 0, 0);
                     newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
+                    newModelVertex.BoneIndices[0] = 0;
                     ModelVertices.Add(newModelVertex);
                 }
             }
@@ -152,29 +203,11 @@ namespace EQWOWConverter.ObjectModels
                     newModelVertex.Position = new Vector3(meshData.Vertices[i]);
                     newModelVertex.Normal = new Vector3(meshData.Normals[i]);
                     newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
+                    if (meshData.BoneIDs.Count > 0)
+                        newModelVertex.BoneIndices[0] = meshData.BoneIDs[i];
                     ModelVertices.Add(newModelVertex);
                 }
             }
-
-            // Correct any texture coordinates
-            CorrectTextureCoordinates();
-
-            // Process the rest
-            CalculateBoundingBoxesAndRadii();
-
-            // HARD CODED FOR STATIC --------------------------------------------------------------------
-            // Create a base bone
-            //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
-            ModelBones.Add(new ObjectModelBone());
-            ModelBoneKeyLookups.Add(-1);
-            ModelBoneLookups.Add(0);
-            ModelReplaceableTextureLookups.Add(-1); // No replace lookup
-
-            // Make one animation (standing)
-            ModelAnimations.Add(new ObjectModelAnimation());
-            ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-            ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-            //-------------------------------------------------------------------------------------------
         }
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)

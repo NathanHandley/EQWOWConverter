@@ -24,8 +24,16 @@ namespace EQWOWConverter.Common
 {
     internal class Animation
     {
+        public AnimationType AnimationType;
         public int FrameCount = 0;
         public int TotalTimeInMS = 0;
+
+        public Animation(AnimationType animationType, int frameCount, int totalTimeInMS)
+        {
+            AnimationType = animationType;
+            FrameCount = frameCount;
+            TotalTimeInMS = totalTimeInMS;
+        }
 
         public class EQBoneAnimationFrame
         {

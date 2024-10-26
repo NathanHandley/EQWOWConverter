@@ -26,7 +26,7 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelAnimation : IByteSerializable
     {
-        public ObjectModelAnimationType AnimationType = ObjectModelAnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
+        public AnimationType AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         public UInt32 DurationInMS = 10000;
         public float MoveSpeed = 0f;
