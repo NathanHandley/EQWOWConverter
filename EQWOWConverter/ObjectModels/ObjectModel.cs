@@ -126,6 +126,59 @@ namespace EQWOWConverter.ObjectModels
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Process materials
+            ProcessMaterials(initialMaterials, ref meshData);
+
+            // Save the geometry data
+            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
+            {
+                foreach (TriangleFace face in collisionTriangleFaces)
+                    ModelTriangles.Add(new TriangleFace(face));
+                for (int i = 0; i < collisionVertices.Count; i++)
+                {
+                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
+                    newModelVertex.Position = new Vector3(collisionVertices[i]);
+                    newModelVertex.Normal = new Vector3(0, 0, 0);
+                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
+                    ModelVertices.Add(newModelVertex);
+                }
+            }
+            else
+            {
+                foreach (TriangleFace face in meshData.TriangleFaces)
+                    ModelTriangles.Add(new TriangleFace(face));
+                for (int i = 0; i < meshData.Vertices.Count; i++)
+                {
+                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
+                    newModelVertex.Position = new Vector3(meshData.Vertices[i]);
+                    newModelVertex.Normal = new Vector3(meshData.Normals[i]);
+                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
+                    ModelVertices.Add(newModelVertex);
+                }
+            }
+
+            // Correct any texture coordinates
+            CorrectTextureCoordinates();
+
+            // Process the rest
+            CalculateBoundingBoxesAndRadii();
+
+            // HARD CODED FOR STATIC --------------------------------------------------------------------
+            // Create a base bone
+            //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
+            ModelBones.Add(new ObjectModelBone());
+            ModelBoneKeyLookups.Add(-1);
+            ModelBoneLookups.Add(0);
+            ModelReplaceableTextureLookups.Add(-1); // No replace lookup
+
+            // Make one animation (standing)
+            ModelAnimations.Add(new ObjectModelAnimation());
+            ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+            ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+            //-------------------------------------------------------------------------------------------
+        }
+
+        private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
+        {
             List<Material> expandedMaterials = new List<Material>();
             foreach (Material material in initialMaterials)
             {
@@ -165,56 +218,53 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Save the geometry data
-            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
+            // Generate a model material per material
+            Int16 curIndex = 0;
+            foreach (Material material in expandedMaterials)
             {
-                foreach (TriangleFace face in collisionTriangleFaces)
-                    ModelTriangles.Add(new TriangleFace(face));
-                for (int i = 0; i < collisionVertices.Count; i++)
+                if (material.TextureNames.Count > 0)
                 {
-                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
-                    newModelVertex.Position = new Vector3(collisionVertices[i]);
-                    newModelVertex.Normal = new Vector3(0, 0, 0);
-                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
-                    ModelVertices.Add(newModelVertex);
+                    ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                    newModelTexture.TextureName = material.TextureNames[0];
+                    ModelTextures.Add(newModelTexture);
+                    ObjectModelMaterial newModelMaterial;
+                    if (Properties.AlphaBlendMaterialsByname.Contains(material.Name))
+                    {
+                        newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha);
+                    }
+                    else
+                    {
+                        switch (material.MaterialType)
+                        {
+                            case MaterialType.TransparentAdditive:
+                            case MaterialType.TransparentAdditiveUnlit:
+                            case MaterialType.TransparentAdditiveUnlitSkydome:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Add);
+                                }
+                                break;
+                            case MaterialType.Transparent25Percent:
+                            case MaterialType.Transparent75Percent:
+                            case MaterialType.Transparent50Percent:
+                            case MaterialType.TransparentMasked:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha_Key);
+                                }
+                                break;
+                            default:
+                                {
+                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Opaque);
+                                }
+                                break;
+                        }
+                    }
+                    ModelMaterials.Add(newModelMaterial);
+                    ModelTextureAnimationLookup.Add(-1);
+                    ModelTextureLookups.Add(curIndex);
+                    ModelTextureMappingLookups.Add(curIndex);
+                    ++curIndex;
                 }
             }
-            else
-            {
-                foreach (TriangleFace face in meshData.TriangleFaces)
-                    ModelTriangles.Add(new TriangleFace(face));
-                for (int i = 0; i < meshData.Vertices.Count; i++)
-                {
-                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
-                    newModelVertex.Position = new Vector3(meshData.Vertices[i]);
-                    newModelVertex.Normal = new Vector3(meshData.Normals[i]);
-                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
-                    ModelVertices.Add(newModelVertex);
-                }
-            }
-
-            // Process materials
-            BuildModelMaterialsFromMaterials(expandedMaterials.ToArray());
-
-            // Correct any texture coordinates
-            CorrectTextureCoordinates();
-
-            // Process the rest
-            CalculateBoundingBoxesAndRadii();
-
-            // HARD CODED FOR STATIC --------------------------------------------------------------------
-            // Create a base bone
-            //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
-            ModelBones.Add(new ObjectModelBone());
-            ModelBoneKeyLookups.Add(-1);
-            ModelBoneLookups.Add(0);
-            ModelReplaceableTextureLookups.Add(-1); // No replace lookup
-
-            // Make one animation (standing)
-            ModelAnimations.Add(new ObjectModelAnimation());
-            ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-            ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-            //-------------------------------------------------------------------------------------------
         }
 
         private void ApplyCustomCollision(ObjectModelCustomCollisionType customCollisionType, ref List<Vector3> collisionVertices, ref List<TriangleFace> collisionTriangleFaces)
@@ -350,57 +400,6 @@ namespace EQWOWConverter.ObjectModels
                         ModelVertices[triangleFace.V3].Texture1TextureCoordinates.Y = correctedCoordinates.Y;
                         textureCoordRemappedVertexIndices.Add(triangleFace.V3);
                     }
-                }
-            }
-        }
-
-        private void BuildModelMaterialsFromMaterials(params Material[] materials)
-        {
-            // Generate a model material per material
-            Int16 curIndex = 0;
-            foreach (Material material in materials)
-            {
-                if (material.TextureNames.Count > 0)
-                {
-                    ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                    newModelTexture.TextureName = material.TextureNames[0];
-                    ModelTextures.Add(newModelTexture);
-                    ObjectModelMaterial newModelMaterial;
-                    if (Properties.AlphaBlendMaterialsByname.Contains(material.Name))
-                    {
-                        newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha);
-                    }
-                    else
-                    {   
-                        switch (material.MaterialType)
-                        {
-                            case MaterialType.TransparentAdditive:
-                            case MaterialType.TransparentAdditiveUnlit:
-                            case MaterialType.TransparentAdditiveUnlitSkydome:
-                                {
-                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Add);
-                                }
-                                break;
-                            case MaterialType.Transparent25Percent:
-                            case MaterialType.Transparent75Percent:
-                            case MaterialType.Transparent50Percent:
-                            case MaterialType.TransparentMasked:
-                                {
-                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha_Key);
-                                }
-                                break;
-                            default:
-                                {
-                                    newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Opaque);
-                                }
-                                break;
-                        }
-                    }
-                    ModelMaterials.Add(newModelMaterial);
-                    ModelTextureAnimationLookup.Add(-1);
-                    ModelTextureLookups.Add(curIndex);
-                    ModelTextureMappingLookups.Add(curIndex);
-                    ++curIndex;
                 }
             }
         }
