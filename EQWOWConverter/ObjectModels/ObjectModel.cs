@@ -148,6 +148,8 @@ namespace EQWOWConverter.ObjectModels
         {
             ModelBoneKeyLookups.Add(-1);
 
+            // TODO: Animation Lookups
+
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
             {
@@ -194,14 +196,32 @@ namespace EQWOWConverter.ObjectModels
                         if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
                             curBone.ParentBone = j;
                     ModelBones.Add(curBone);
+
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    // TODO: Fix this
+                    ModelBoneLookups.Add(0);
                 }
 
-                // Create an animation for each
+                // Create animations
                 foreach (var animation in EQObjectModelData.Animations)
                 {
                     Logger.WriteDetail("Adding animation of eq type '" + animation.Key + "' and wow type '" + animation.Value.AnimationType.ToString() + "' to object '" + Name + "'");
 
+                    // Create the base animation object
+                    ObjectModelAnimation newAnimation = new ObjectModelAnimation();
+                    newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
+                    newAnimation.AnimationType = animation.Value.AnimationType;
+                    newAnimation.BoundingBox = new BoundingBox(BoundingBox);
+                    newAnimation.BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations.Add(newAnimation);
 
+                    // Add the animation-bone transformations to the bone objects for each frame
+                    foreach(Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
+                    {
+
+
+
+                    }
                 }
             }
         }

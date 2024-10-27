@@ -88,7 +88,7 @@ namespace EQWOWConverter.EQFiles
                     continue;
                 }
 
-                Animation.EQBoneAnimationFrame animationFrame = new Animation.EQBoneAnimationFrame();
+                Animation.BoneAnimationFrame animationFrame = new Animation.BoneAnimationFrame();
                 animationFrame.BoneFullNameInPath = blocks[0];
                 animationFrame.FrameIndex = int.Parse(blocks[1]);
                 animationFrame.XPosition = float.Parse(blocks[2]);

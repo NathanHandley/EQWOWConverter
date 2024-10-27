@@ -35,7 +35,7 @@ namespace EQWOWConverter.Common
             TotalTimeInMS = totalTimeInMS;
         }
 
-        public class EQBoneAnimationFrame
+        public class BoneAnimationFrame
         {
             public string BoneFullNameInPath = string.Empty;
             public int FrameIndex = 0;
@@ -64,6 +64,6 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public List<EQBoneAnimationFrame> AnimationFrames = new List<EQBoneAnimationFrame>();
+        public List<BoneAnimationFrame> AnimationFrames = new List<BoneAnimationFrame>();
     }
 }
