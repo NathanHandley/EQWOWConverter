@@ -52,6 +52,7 @@ namespace EQWOWConverter.ObjectModels
                 LoadRenderMeshData(inputObjectName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadAnimationData(inputObjectName, inputObjectFolder);
+                LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }
             else
             {
