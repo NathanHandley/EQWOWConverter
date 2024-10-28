@@ -41,12 +41,13 @@ namespace EQWOWConverter.WOWFiles
         public Vector3 BoundingBoxCenterPosition = new Vector3(); // Center point from a bounding box wrapped around the vertices
         public float BoundingBoxFurthestVertexDistanceFromCenter = 0;   // Probably too long of a name, but I'll forget it otherwise
 
-        public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount)
+        public M2SkinSubMesh(UInt16 vertexStart, UInt16 vertexCount, UInt16 startTriangleIndex, UInt16 triangleIndexCount, UInt16 boneCount)
         {
             VertexStart = vertexStart;
             VertexCount = vertexCount;
             StartTriangleIndex = startTriangleIndex;
             TriangleIndexCount = triangleIndexCount;
+            BoneCount = boneCount;
         }
 
         public void CalculatePositionAndBoundingData(List<ObjectModelVertex> modelVertices)

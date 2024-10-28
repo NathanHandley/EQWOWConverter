@@ -20,6 +20,7 @@ using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
@@ -195,6 +196,9 @@ namespace EQWOWConverter.ObjectModels
                     for (Int16 j = 0; j < ModelBones.Count; j++)
                         if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
                             curBone.ParentBone = j;
+                    curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones.Add(curBone);
 
                     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -203,6 +207,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Create animations
+                int curSequenceID = -1;
                 foreach (var animation in EQObjectModelData.Animations)
                 {
                     Logger.WriteDetail("Adding animation of eq type '" + animation.Key + "' and wow type '" + animation.Value.AnimationType.ToString() + "' to object '" + Name + "'");
@@ -215,15 +220,67 @@ namespace EQWOWConverter.ObjectModels
                     newAnimation.BoundingRadius = BoundingSphereRadius;
                     ModelAnimations.Add(newAnimation);
 
+                    // Create an animation track sequence for each bone
+                    curSequenceID++;
+                    foreach(ObjectModelBone bone in ModelBones)
+                    {
+                        bone.ScaleTrack.AddSequence();
+                        bone.RotationTrack.AddSequence();
+                        bone.TranslationTrack.AddSequence();
+                    }
+
                     // Add the animation-bone transformations to the bone objects for each frame
+                    bool rootIsRead = false;
                     foreach(Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
                     {
+                        ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
+                        // Root is special, so create no-change bone transformation frames for the root bone for the number of animation frames
+                        if (animationFrame.GetBoneName() == "root" && rootIsRead == false)
+                        {                            
+                            int frameDurationInMS = animationFrame.FramesMS;
+                            UInt32 totalMS = 0;
+                            for (int i = 0; i < animation.Value.FrameCount; i++)
+                            {
+                                curBone.ScaleTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3(1, 1, 1));
+                                curBone.RotationTrack.AddValueToSequence(curSequenceID, totalMS, new Quaternion());
+                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3());
+                                totalMS += Convert.ToUInt32(frameDurationInMS);   
+                            }
+                            rootIsRead = true;
+                            continue;
+                        }
+                        // Regular bones append the animation frame
+                        else if (animationFrame.GetBoneName() != "root")
+                        {
+                            // Format and transform the animation frame values from EQ to WoW
+                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE, 
+                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE, 
+                                                                   animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
+                            Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
+                            Quaternion frameRotation = new Quaternion(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, animationFrame.WRotation);
 
+                            // Calculate the frame duration
+                            UInt32 curTotalMS = curBone.TranslationTrack.Timestamps[curSequenceID].GetHighestTimestamp() + Convert.ToUInt32(animationFrame.FramesMS);
 
+                            // Add the values
+                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTotalMS, frameScale);
+                            curBone.RotationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameRotation);
+                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameTranslation);
+                        }
                     }
                 }
             }
+        }
+        
+        private ObjectModelBone GetBoneWithName(string name)
+        {
+            foreach (ObjectModelBone bone in ModelBones)
+                if (bone.BoneNameEQ == name)
+                    return bone;
+
+            Logger.WriteError("No bone named '" + name + "' for object '" + Name + "'");
+            return new ObjectModelBone();
         }
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)

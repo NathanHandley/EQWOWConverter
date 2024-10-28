@@ -153,7 +153,8 @@ namespace EQWOWConverter.WOWFiles
 
                 // Build the sub mesh
                 M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
-                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3));
+                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), 
+                    Convert.ToUInt16(modelObject.ModelBones.Count));
                 List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
                 foreach (int vertexIndex in countedVertexIndices)
                     subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);

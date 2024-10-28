@@ -31,6 +31,12 @@ namespace EQWOWConverter.ObjectModels
         {
             Timestamps.Add(timestamp);
         }
+
+        public UInt32 GetHighestTimestamp()
+        {
+            if (Timestamps.Count == 0) return 0;
+            else return Timestamps[Timestamps.Count - 1];
+        }
                 
         public UInt32 GetHeaderSize()
         {
