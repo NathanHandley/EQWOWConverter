@@ -484,7 +484,7 @@ namespace EQWOWConverter
                 // Creatures / Skeletal
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + relativeCreaturePath + "\" \"" + fullCreaturePath + "\" /r");
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreaturePath + "\" \"" + relativeCreaturePath + "\" /r");
             }
 
             // Ambient Sounds
