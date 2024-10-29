@@ -147,13 +147,13 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessBonesAndAnimation()
         {
-            ModelBoneKeyLookups.Add(-1);
-
             // TODO: Animation Lookups
 
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
             {
+                ModelBoneKeyLookups.Add(-1);
+
                 if (ModelType == ObjectModelType.Skeletal)
                     Logger.WriteError("Object named '" + Name + "' is skeletal but has no animations, so loading as static");
 
@@ -171,6 +171,11 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
+                // For now, just make 27 empty references
+                // TODO: Make these map by bone name
+                for(int i = 0; i < 27; i++)
+                    ModelBoneKeyLookups.Add(-1);
+
                 // Grab the 'pos' animation, which should be the base pose
                 Animation pickedAnimation = new Animation(AnimationType.Stand, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
@@ -203,7 +208,7 @@ namespace EQWOWConverter.ObjectModels
 
                     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     // TODO: Fix this
-                    ModelBoneLookups.Add(0);
+                    ModelBoneLookups.Add(Convert.ToInt16(i));
                 }
 
                 // Create animations
