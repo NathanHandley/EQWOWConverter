@@ -244,7 +244,7 @@ namespace EQWOWConverter.ObjectModels
                             for (int i = 0; i < animation.Value.FrameCount; i++)
                             {
                                 curBone.ScaleTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3(1, 1, 1));
-                                curBone.RotationTrack.AddValueToSequence(curSequenceID, totalMS, new Quaternion());
+                                curBone.RotationTrack.AddValueToSequence(curSequenceID, totalMS, new QuaternionShort());
                                 curBone.TranslationTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3());
                                 totalMS += Convert.ToUInt32(frameDurationInMS);   
                             }
@@ -259,7 +259,7 @@ namespace EQWOWConverter.ObjectModels
                                                                    animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
                                                                    animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                            Quaternion frameRotation = new Quaternion(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, -1 * animationFrame.WRotation);
+                            QuaternionShort frameRotation = new QuaternionShort(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, -1 * animationFrame.WRotation);
 
                             // Calculate the frame duration
                             UInt32 curTotalMS = curBone.TranslationTrack.Timestamps[curSequenceID].GetHighestTimestamp() + Convert.ToUInt32(animationFrame.FramesMS);

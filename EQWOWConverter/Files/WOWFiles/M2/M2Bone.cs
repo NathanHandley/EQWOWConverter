@@ -28,14 +28,14 @@ namespace EQWOWConverter.WOWFiles
     {
         public ObjectModelBone Bone;
         public M2TrackSequences<Vector3> TranslationTrack;
-        public M2TrackSequences<Quaternion> RotationTrack;
+        public M2TrackSequences<QuaternionShort> RotationTrack;
         public M2TrackSequences<Vector3> ScaleTrack;
 
         public M2Bone(ObjectModelBone modelBone)
         {
             Bone = modelBone;
             TranslationTrack = new M2TrackSequences<Vector3>(modelBone.TranslationTrack);
-            RotationTrack = new M2TrackSequences<Quaternion>(modelBone.RotationTrack);
+            RotationTrack = new M2TrackSequences<QuaternionShort>(modelBone.RotationTrack);
             ScaleTrack = new M2TrackSequences<Vector3>(modelBone.ScaleTrack);
         }
 

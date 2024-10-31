@@ -33,7 +33,7 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 SubMeshID = 0;
         public UInt32 BoneNameCRC = 0;
         public ObjectModelTrackSequences<Vector3> TranslationTrack = new ObjectModelTrackSequences<Vector3>();
-        public ObjectModelTrackSequences<Quaternion> RotationTrack = new ObjectModelTrackSequences<Quaternion>();
+        public ObjectModelTrackSequences<QuaternionShort> RotationTrack = new ObjectModelTrackSequences<QuaternionShort>();
         public ObjectModelTrackSequences<Vector3> ScaleTrack = new ObjectModelTrackSequences<Vector3>();
         public Vector3 PivotPoint = new Vector3();
     }
