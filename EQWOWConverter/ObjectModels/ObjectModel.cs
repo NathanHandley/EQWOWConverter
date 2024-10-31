@@ -40,7 +40,7 @@ namespace EQWOWConverter.ObjectModels
         public List<ObjectModelBone> ModelBones = new List<ObjectModelBone>();
         public List<ObjectModelTextureAnimation> ModelTextureAnimations = new List<ObjectModelTextureAnimation>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
-        public List<Int16> ModelBoneLookups = new List<Int16>();
+        public SortedDictionary<int, SortedSet<Int16>> BoneLookupsByMaterialIndex = new SortedDictionary<int, SortedSet<Int16>>();
         public List<ObjectModelMaterial> ModelMaterials = new List<ObjectModelMaterial>();
         public List<ObjectModelTexture> ModelTextures = new List<ObjectModelTexture>();
         public List<Int16> ModelTextureLookups = new List<Int16>();
@@ -142,11 +142,13 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation();
+            ProcessBonesAndAnimation(ModelMaterials, ModelVertices, ModelTriangles);
         }
 
-        private void ProcessBonesAndAnimation()
+        private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
         {
+            BoneLookupsByMaterialIndex.Clear();
+
             // TODO: Animation Lookups
 
             // Static types
@@ -160,7 +162,6 @@ namespace EQWOWConverter.ObjectModels
                 // Create a base bone
                 //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
                 ModelBones.Add(new ObjectModelBone());
-                ModelBoneLookups.Add(0);
 
                 // Make one animation (standing)
                 ModelAnimations.Add(new ObjectModelAnimation());
@@ -185,7 +186,6 @@ namespace EQWOWConverter.ObjectModels
                 {
                     Logger.WriteError("Could not pull skeleton information for object '" + Name + "' as there was no 'pos' animation");
                     ModelBones.Add(new ObjectModelBone());
-                    ModelBoneLookups.Add(0);
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
@@ -205,10 +205,6 @@ namespace EQWOWConverter.ObjectModels
                     curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones.Add(curBone);
-
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    // TODO: Fix this
-                    ModelBoneLookups.Add(Convert.ToInt16(i));
                 }
 
                 // Create animations
@@ -259,11 +255,11 @@ namespace EQWOWConverter.ObjectModels
                         else if (animationFrame.GetBoneName() != "root")
                         {
                             // Format and transform the animation frame values from EQ to WoW
-                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE, 
-                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE, 
-                                                                   animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
+                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
+                                                                   animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
+                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                            Quaternion frameRotation = new Quaternion(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, animationFrame.WRotation);
+                            Quaternion frameRotation = new Quaternion(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, -1 * animationFrame.WRotation);
 
                             // Calculate the frame duration
                             UInt32 curTotalMS = curBone.TranslationTrack.Timestamps[curSequenceID].GetHighestTimestamp() + Convert.ToUInt32(animationFrame.FramesMS);
@@ -273,6 +269,28 @@ namespace EQWOWConverter.ObjectModels
                             curBone.RotationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameRotation);
                             curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameTranslation);
                         }
+                    }
+                }
+
+                // Create bone lookups on a per submesh basis (which are grouped by material)
+                for (int curMaterialIndex = 0; curMaterialIndex < modelMaterials.Count; curMaterialIndex++)
+                {
+                    SortedSet<Int16> curMaterialBoneIndices = new SortedSet<Int16>();
+                    foreach(TriangleFace modelTriangle in modelTriangles)
+                    {
+                        if (modelTriangle.MaterialIndex == curMaterialIndex)
+                        {
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[0]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[0]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[1]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[1]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[2]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[2]);
+                        }
+                    }
+                    if (curMaterialBoneIndices.Count > 0)
+                    {
+                        BoneLookupsByMaterialIndex.Add(curMaterialIndex, curMaterialBoneIndices);
                     }
                 }
             }

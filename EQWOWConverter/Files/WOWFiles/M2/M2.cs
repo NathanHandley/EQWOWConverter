@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
+using Google.Protobuf.WellKnownTypes;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -126,8 +127,12 @@ namespace EQWOWConverter.WOWFiles
             Materials.AddArray(wowObjectModel.ModelMaterials);
 
             // Bone Lookup
-            foreach (Int16 value in wowObjectModel.ModelBoneLookups)
-                BoneLookup.Add(new M2Int16(value));
+            if (wowObjectModel.BoneLookupsByMaterialIndex.Count == 0)
+                BoneLookup.Add(new M2Int16(0));
+            else
+                foreach(var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
+                    foreach(Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
+                        BoneLookup.Add(new M2Int16(boneIndex));
 
             // Texture Lookup
             foreach (Int16 value in wowObjectModel.ModelTextureLookups)

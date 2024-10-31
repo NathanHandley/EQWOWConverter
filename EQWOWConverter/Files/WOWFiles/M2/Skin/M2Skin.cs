@@ -151,10 +151,28 @@ namespace EQWOWConverter.WOWFiles
                     continue;
                 int numberOfVertices = countedVertexIndices.Count;
 
+                // Calculate bone count and index
+                Int32 materialIndex = Convert.ToInt32(material.Material.Index);
+                UInt16 numOfBones = 1;
+                UInt16 boneStartIndex = 0;
+                if (modelObject.BoneLookupsByMaterialIndex.ContainsKey(materialIndex) == true)
+                {
+                    foreach(var boneLookupByMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
+                    {
+                        if (boneLookupByMaterialIndex.Key == materialIndex)
+                        {
+                            numOfBones = Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
+                            break;
+                        }
+                        else
+                            foreach (var boneLookupInMaterial in boneLookupByMaterialIndex.Value)
+                                ++boneStartIndex;
+                    }
+                }
+
                 // Build the sub mesh
                 M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
-                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), 
-                    Convert.ToUInt16(modelObject.ModelBones.Count));
+                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numOfBones, boneStartIndex);
                 List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
                 foreach (int vertexIndex in countedVertexIndices)
                     subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
