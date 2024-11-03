@@ -260,7 +260,7 @@ namespace EQWOWConverter.ObjectModels
                                                                    animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
                                                                    animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                            QuaternionShort frameRotation = new QuaternionShort(animationFrame.XRotation, animationFrame.YRotation, animationFrame.ZRotation, animationFrame.WRotation);
+                            QuaternionShort frameRotation = new QuaternionShort(animationFrame.XRotation, animationFrame.ZRotation, animationFrame.YRotation, animationFrame.WRotation);
 
                             // Calculate the frame duration
                             UInt32 curTotalMS = curBone.TranslationTrack.Timestamps[curSequenceID].GetHighestTimestamp() + Convert.ToUInt32(animationFrame.FramesMS);
