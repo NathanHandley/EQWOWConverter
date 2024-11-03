@@ -219,6 +219,7 @@ namespace EQWOWConverter.ObjectModels
                     newAnimation.AnimationType = animation.Value.AnimationType;
                     newAnimation.BoundingBox = new BoundingBox(BoundingBox);
                     newAnimation.BoundingRadius = BoundingSphereRadius;
+                    newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop
                     ModelAnimations.Add(newAnimation);
 
                     // Create an animation track sequence for each bone
