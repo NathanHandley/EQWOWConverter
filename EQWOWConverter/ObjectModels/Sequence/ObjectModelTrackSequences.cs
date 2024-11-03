@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -56,6 +57,17 @@ namespace EQWOWConverter.ObjectModels
             }
             Timestamps[sequenceID].AddTimestamp(timestamp);
             Values[sequenceID].AddValue(value);
+        }
+
+        public void ReplicateFirstValueToEnd(int sequenceID, UInt32 timestamp)
+        {
+            if (Timestamps[sequenceID].Timestamps.Count == 0)
+            {
+                Logger.WriteError("Error ReplicateFirstValueToEnd failed because there was no first value");
+                return;
+            }
+            Timestamps[sequenceID].AddTimestamp(timestamp);
+            Values[sequenceID].AddValue(Values[sequenceID].Values[0]);
         }
 
         public UInt32 GetHeaderSize()

@@ -168,6 +168,9 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
+                // TODO: Temp (Delete?)
+                //GlobalLoopSequenceLimits.Add(5000);
+
                 // Grab the 'pos' animation, which should be the base pose
                 Animation pickedAnimation = new Animation(AnimationType.Stand, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
@@ -233,28 +236,27 @@ namespace EQWOWConverter.ObjectModels
                     }
 
                     // Add the animation-bone transformations to the bone objects for each frame
-                    bool rootIsRead = false;
+                    Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
                     foreach(Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
                     {
                         ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
                         // Root is special, so create no-change bone transformation frames for the root bone for the number of animation frames
-                        if (animationFrame.GetBoneName() == "root" && rootIsRead == false)
+                        if (animationFrame.GetBoneName() == "root")
                         {                            
                             int frameDurationInMS = animationFrame.FramesMS;
-                            UInt32 totalMS = 0;
+                            UInt32 curTimestamp = 0;
                             for (int i = 0; i < animation.Value.FrameCount; i++)
                             {
-                                curBone.ScaleTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3(1, 1, 1));
-                                curBone.RotationTrack.AddValueToSequence(curSequenceID, totalMS, new QuaternionShort());
-                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, totalMS, new Vector3());
-                                totalMS += Convert.ToUInt32(frameDurationInMS);   
+                                curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(1, 1, 1));
+                                curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, new QuaternionShort());
+                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3());
+                                curTimestamp += Convert.ToUInt32(frameDurationInMS);   
                             }
-                            rootIsRead = true;
                             continue;
                         }
                         // Regular bones append the animation frame
-                        else if (animationFrame.GetBoneName() != "root")
+                        else
                         {
                             // Format and transform the animation frame values from EQ to WoW
                             Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
@@ -263,14 +265,29 @@ namespace EQWOWConverter.ObjectModels
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                             QuaternionShort frameRotation = new QuaternionShort(animationFrame.XRotation, animationFrame.ZRotation, animationFrame.YRotation, animationFrame.WRotation);
 
-                            // Calculate the frame duration
-                            UInt32 curTotalMS = curBone.TranslationTrack.Timestamps[curSequenceID].GetHighestTimestamp() + Convert.ToUInt32(animationFrame.FramesMS);
+                            // Calculate the frame start time
+                            UInt32 curTimestamp = 0;
+                            if (curTimestampsByBoneName.ContainsKey(animationFrame.GetBoneName()) == false)
+                                curTimestampsByBoneName.Add(animationFrame.GetBoneName(), 0);
+                            else
+                                curTimestamp = Convert.ToUInt32(curTimestampsByBoneName[animationFrame.GetBoneName()]);
 
                             // Add the values
-                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTotalMS, frameScale);
-                            curBone.RotationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameRotation);
-                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTotalMS, frameTranslation);
+                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, frameScale);
+                            curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, frameRotation);
+                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, frameTranslation);
+
+                            // Increment the frame start for next
+                            curTimestampsByBoneName[animationFrame.GetBoneName()] += animationFrame.FramesMS;
                         }
+                    }
+
+                    // Replicate first frame on the last frame so that it smooth repeats
+                    foreach (ObjectModelBone bone in ModelBones)
+                    {
+                        bone.ScaleTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
+                        bone.RotationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
+                        bone.TranslationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
                     }
                 }
 
