@@ -147,8 +147,6 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
         {
-            BoneLookupsByMaterialIndex.Clear();
-
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
             {
@@ -170,11 +168,6 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
-                // For now, just make 27 empty references
-                // TODO: Make these map by bone name
-                for(int i = 0; i < 27; i++)
-                    ModelBoneKeyLookups.Add(-1);
-
                 // Grab the 'pos' animation, which should be the base pose
                 Animation pickedAnimation = new Animation(AnimationType.Stand, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
@@ -190,8 +183,12 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
+                // Block out 27 key bones with blank
+                for (int i = 0; i < 27; i++)
+                    ModelBoneKeyLookups.Add(-1);
+
                 // Create bones by reading this pos animation
-                for(int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
+                for (int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
                 {
                     ObjectModelBone curBone = new ObjectModelBone();
                     curBone.BoneNameEQ = pickedAnimation.AnimationFrames[i].GetBoneName();
@@ -202,6 +199,9 @@ namespace EQWOWConverter.ObjectModels
                     curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.KeyBoneID = Convert.ToInt32(GetKeyBoneTypeForEQBone(curBone.BoneNameEQ));
+                    if (curBone.KeyBoneID != -1)
+                        ModelBoneKeyLookups[curBone.KeyBoneID] = Convert.ToInt16(ModelBones.Count);
                     ModelBones.Add(curBone);
                 }
 
@@ -295,6 +295,17 @@ namespace EQWOWConverter.ObjectModels
                         BoneLookupsByMaterialIndex.Add(curMaterialIndex, curMaterialBoneIndices);
                     }
                 }
+            }
+        }
+
+        private KeyBoneType GetKeyBoneTypeForEQBone(string eqBoneName)
+        {
+            // TODO: Need to add more key bone types
+            switch (eqBoneName)
+            {
+                case "root": return KeyBoneType.Root;
+                case "he": return KeyBoneType.Head;
+                default: return KeyBoneType.None;
             }
         }
 
