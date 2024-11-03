@@ -90,7 +90,7 @@ namespace EQWOWConverter.WOWFiles
             AnimationSequences.AddArray(wowObjectModel.ModelAnimations);
 
             // Animation Sequence ID Lookup
-            foreach (Int16 value in wowObjectModel.AnimationSequenceIDLookups)
+            foreach (Int16 value in wowObjectModel.AnimationLookups)
                 AnimationSequenceLookup.Add(new M2Int16(value));
 
             // Bones

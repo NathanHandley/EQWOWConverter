@@ -35,7 +35,7 @@ namespace EQWOWConverter.ObjectModels
         public ObjectModelProperties Properties = new ObjectModelProperties();
         public List<UInt32> GlobalLoopSequenceLimits = new List<UInt32>();
         public List<ObjectModelAnimation> ModelAnimations = new List<ObjectModelAnimation>();
-        public List<Int16> AnimationSequenceIDLookups = new List<Int16>();
+        public List<Int16> AnimationLookups = new List<Int16>();
         public List<ObjectModelVertex> ModelVertices = new List<ObjectModelVertex>();
         public List<ObjectModelBone> ModelBones = new List<ObjectModelBone>();
         public List<ObjectModelTextureAnimation> ModelTextureAnimations = new List<ObjectModelTextureAnimation>();
@@ -149,8 +149,6 @@ namespace EQWOWConverter.ObjectModels
         {
             BoneLookupsByMaterialIndex.Clear();
 
-            // TODO: Animation Lookups
-
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
             {
@@ -160,7 +158,7 @@ namespace EQWOWConverter.ObjectModels
                     Logger.WriteError("Object named '" + Name + "' is skeletal but has no animations, so loading as static");
 
                 // Create a base bone
-                //AnimationSequenceIDLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
+                AnimationLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
                 ModelBones.Add(new ObjectModelBone());
 
                 // Make one animation (standing)
@@ -221,6 +219,9 @@ namespace EQWOWConverter.ObjectModels
                     newAnimation.BoundingRadius = BoundingSphereRadius;
                     newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop
                     ModelAnimations.Add(newAnimation);
+
+                    // Save the lookup
+                    SetAnimationLookup(newAnimation.AnimationType, Convert.ToInt16(ModelAnimations.Count - 1));
 
                     // Create an animation track sequence for each bone
                     curSequenceID++;
@@ -295,6 +296,18 @@ namespace EQWOWConverter.ObjectModels
                     }
                 }
             }
+        }
+
+        private void SetAnimationLookup(AnimationType animationType, Int16 animationID)
+        {
+            // Expand the list if needed
+            UInt16 curAnimationtypeValue = Convert.ToUInt16(animationType);
+            if (curAnimationtypeValue >= AnimationLookups.Count)
+                for (int i = AnimationLookups.Count; i <= curAnimationtypeValue; i++)
+                    AnimationLookups.Add(-1);
+
+            // Set the reference in the list
+            AnimationLookups[curAnimationtypeValue] = animationID;
         }
         
         private ObjectModelBone GetBoneWithName(string name)
