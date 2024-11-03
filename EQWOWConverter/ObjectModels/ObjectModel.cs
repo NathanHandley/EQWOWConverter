@@ -168,11 +168,8 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
-                // TODO: Temp (Delete?)
-                //GlobalLoopSequenceLimits.Add(5000);
-
                 // Grab the 'pos' animation, which should be the base pose
-                Animation pickedAnimation = new Animation(AnimationType.Stand, 0, 0);
+                Animation pickedAnimation = new Animation("",AnimationType.Stand, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
                     if (animation.Key == "pos")
                         pickedAnimation = animation.Value;
@@ -283,12 +280,12 @@ namespace EQWOWConverter.ObjectModels
                     }
 
                     // Replicate first frame on the last frame so that it smooth repeats
-                    foreach (ObjectModelBone bone in ModelBones)
-                    {
-                        bone.ScaleTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                        bone.RotationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                        bone.TranslationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                    }
+                    //foreach (ObjectModelBone bone in ModelBones)
+                    //{
+                    //    bone.ScaleTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
+                    //    bone.RotationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
+                    //    bone.TranslationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
+                    //}
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)

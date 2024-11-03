@@ -26,7 +26,7 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQAnimation
     {
-        public Animation Animation = new Animation(AnimationType.Stand, 0, 0);
+        public Animation Animation = new Animation("", AnimationType.Stand, 0, 0);
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -39,7 +39,7 @@ namespace EQWOWConverter.EQFiles
 
             string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
             string animationName = animationFileName.Split("_")[1];
-            Animation = new Animation(DetermineAnimationType(animationName), 0, 0);
+            Animation = new Animation(animationName, DetermineAnimationType(animationName), 0, 0);
 
             // Load the core data
             string inputData = File.ReadAllText(fileFullPath);

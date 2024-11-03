@@ -24,12 +24,14 @@ namespace EQWOWConverter.Common
 {
     internal class Animation
     {
+        public string AnimationName = string.Empty;
         public AnimationType AnimationType;
         public int FrameCount = 0;
         public int TotalTimeInMS = 0;
 
-        public Animation(AnimationType animationType, int frameCount, int totalTimeInMS)
+        public Animation(string animationName, AnimationType animationType, int frameCount, int totalTimeInMS)
         {
+            AnimationName = animationName;
             AnimationType = animationType;
             FrameCount = frameCount;
             TotalTimeInMS = totalTimeInMS;
