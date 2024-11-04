@@ -310,6 +310,10 @@ namespace EQWOWConverter.ObjectModels
                     }
                 }
             }
+
+            // TODO: Put this somewhere else / change this
+            if (GlobalLoopSequenceLimits.Count == 0)
+                GlobalLoopSequenceLimits.Add(0);
         }
 
         private KeyBoneType GetKeyBoneTypeForEQBone(string eqBoneName)
