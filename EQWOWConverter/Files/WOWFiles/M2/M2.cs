@@ -274,49 +274,84 @@ namespace EQWOWConverter.WOWFiles
 
             // Add the data bytes
             Name.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             GlobalLoopTimestamps.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             AnimationSequences.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             AnimationSequenceLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Bones.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             BoneKeyLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Vertices.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Colors.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Textures.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureTransparencySequences.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureAnimations.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             ReplaceableTextureLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Materials.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             BoneLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureMappingLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureTransparencyLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             TextureAnimationsLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             CollisionTriangleIndices.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             CollisionVertices.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             CollisionFaceNormals.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Attachments.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             AttachmentIndicesLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Events.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Lights.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             Cameras.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             CamerasIndicesLookup.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             RibbonEmitters.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             ParticleEmitters.AddDataBytes(ref fileBytes);
+            AddBytesToAlign(ref fileBytes, 16);
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))
+            {
                 SecondTextureMaterialOverrides.AddDataBytes(ref fileBytes);
-            // Put an empty byte at the end
-            fileBytes.Add(0);
+                AddBytesToAlign(ref fileBytes, 16);
+            }
 
             // Populate the header section
             List<Byte> headerBytes = GetHeaderBytes();
             for (int i = 0; i < headerSize; ++i)
                 fileBytes[i] = headerBytes[i];
 
-            // Fill out the tail to a multiple of 16 (not actually required?)
-            while (fileBytes.Count() % 16 != 0)
-                fileBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
-
             return fileBytes;
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, int byteAlignMultiplier)
+        {
+            int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesToAdd == byteAlignMultiplier)
+                return;
+            for (int i = 0; i < bytesToAdd; ++i)
+                byteBuffer.Add(0);
         }
 
         private List<Byte> GetHeaderBytes()
