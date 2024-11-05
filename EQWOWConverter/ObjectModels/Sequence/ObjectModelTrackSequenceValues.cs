@@ -38,7 +38,6 @@ namespace EQWOWConverter.ObjectModels
             UInt32 size = 0;
             size += 4; // Number of elements
             size += 4; // Data offset
-            size += 8; // Empty space
             return size;
         }
 
@@ -47,8 +46,6 @@ namespace EQWOWConverter.ObjectModels
             List<byte> bytes = new List<byte>();
             bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Values.Count)));
             bytes.AddRange(BitConverter.GetBytes(DataOffset));
-            for (int i = 0; i < 8; i++)
-                bytes.Add(0);
             return bytes;
         }
 
