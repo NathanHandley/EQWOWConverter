@@ -88,6 +88,9 @@ namespace EQWOWConverter.WOWFiles
             {
                 timestamp.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(timestamp.GetDataBytes());
+
+                // Align memory
+                AddBytesToAlign(ref byteBuffer, 16);
             }
 
             // Add value data
@@ -95,6 +98,9 @@ namespace EQWOWConverter.WOWFiles
             {
                 values.DataOffset = Convert.ToUInt32(byteBuffer.Count);
                 byteBuffer.AddRange(values.GetDataBytes());
+
+                // Align memory
+                AddBytesToAlign(ref byteBuffer, 16);
             }
 
             // Write the track header data
@@ -105,6 +111,15 @@ namespace EQWOWConverter.WOWFiles
                 trackHeaderBytes.AddRange(values.GetHeaderBytes());
             for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
                 byteBuffer[i + Convert.ToInt32(TimestampsOffset)] = trackHeaderBytes[i];
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, int byteAlignMultiplier)
+        {
+            int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesToAdd == byteAlignMultiplier)
+                return;
+            for (int i = 0; i < bytesToAdd; ++i)
+                byteBuffer.Add(0);
         }
     }
 }
