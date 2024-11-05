@@ -28,7 +28,7 @@ namespace EQWOWConverter.Common
         public float X = 0;
         public float Y = 0;
         public float Z = 0;
-        public float W = 0;
+        public float W = 1;
 
         public QuaternionShort() { }
         public QuaternionShort(float x, float y, float z, float w)
