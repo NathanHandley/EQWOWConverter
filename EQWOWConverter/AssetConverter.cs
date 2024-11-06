@@ -49,6 +49,8 @@ namespace EQWOWConverter
             // Extract
             if (Configuration.CONFIG_EXTRACT_DBC_FILES == true)
                 ExtractClientDBCFiles();
+            else
+                Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
             // Objects
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
