@@ -47,7 +47,8 @@ namespace EQWOWConverter
             }
 
             // Extract
-            ExtractClientDBCFiles();
+            if (Configuration.CONFIG_EXTRACT_DBC_FILES == true)
+                ExtractClientDBCFiles();
 
             // Objects
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
