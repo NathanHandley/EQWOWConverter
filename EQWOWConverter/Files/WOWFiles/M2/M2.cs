@@ -130,9 +130,13 @@ namespace EQWOWConverter.WOWFiles
             if (wowObjectModel.BoneLookupsByMaterialIndex.Count == 0)
                 BoneLookup.Add(new M2Int16(0));
             else
-                foreach(var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
-                    foreach(Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
-                        BoneLookup.Add(new M2Int16(boneIndex));
+            {
+                // Make 4 copies of this (reasons unsure)
+                for (int i = 0; i < 4; i++)
+                    foreach (var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
+                        foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
+                            BoneLookup.Add(new M2Int16(boneIndex));
+            }
 
             // Texture Lookup
             foreach (Int16 value in wowObjectModel.ModelTextureLookups)

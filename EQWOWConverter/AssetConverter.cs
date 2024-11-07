@@ -303,7 +303,7 @@ namespace EQWOWConverter
                 Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
 
                 // TODO: Make this work for more
-                if (curSkeletonObjectName != "wil")
+                if (curSkeletonObjectName != "wol")
                     continue;
 
                 // Init the object

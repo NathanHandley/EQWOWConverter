@@ -155,6 +155,7 @@ namespace EQWOWConverter.WOWFiles
                 Int32 materialIndex = Convert.ToInt32(material.Material.Index);
                 UInt16 numOfBones = 1;
                 UInt16 boneStartIndex = 0;
+
                 if (modelObject.BoneLookupsByMaterialIndex.ContainsKey(materialIndex) == true)
                 {
                     foreach(var boneLookupByMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
@@ -169,6 +170,14 @@ namespace EQWOWConverter.WOWFiles
                                 ++boneStartIndex;
                     }
                 }
+
+                // There will be 4 copies of bone lookups and materials will point to the 4th copy, so get the total count
+                UInt16 boneStartIndexOffset = 0;
+                foreach (var boneLookupsPerMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
+                    foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
+                        boneStartIndexOffset++;
+                boneStartIndexOffset *= 3;
+                boneStartIndex += boneStartIndexOffset;
 
                 // Build the sub mesh
                 M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
