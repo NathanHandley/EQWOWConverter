@@ -106,7 +106,7 @@ namespace EQWOWConverter.WOWFiles
             List<byte> blockBytes = new List<byte>();
             foreach(ObjectModelVertex modelVertex in modelObject.ModelVertices)
             {
-                M2SkinBoneIndices curIndices = new M2SkinBoneIndices(modelVertex.BoneIndices);
+                M2SkinBoneIndices curIndices = new M2SkinBoneIndices(modelVertex.BoneIndicesLookup);
                 blockBytes.AddRange(curIndices.ToBytes());
             }
             return blockBytes;

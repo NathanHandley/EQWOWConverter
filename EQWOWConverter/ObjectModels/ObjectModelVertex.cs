@@ -27,8 +27,9 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelVertex : IByteSerializable
     {
         public Vector3 Position = new Vector3();
-        public List<byte> BoneWeights = new List<byte>(new byte[4]);    // Any more than 4 elements will be ignored
-        public List<byte> BoneIndices = new List<byte>(new byte[4]);   // Any more than 4 elements will be ignored
+        public List<byte> BoneWeights = new List<byte>(new byte[4]);        // Any more than 4 elements will be ignored
+        public List<byte> BoneIndicesTrue = new List<byte>(new byte[4]);    // Bone indexes compared to the bone list
+        public List<byte> BoneIndicesLookup = new List<byte>(new byte[4]);  // Bone indexes compared to the bone lookup table
         public Vector3 Normal = new Vector3();
         public TextureCoordinates Texture1TextureCoordinates = new TextureCoordinates();
         public TextureCoordinates Texture2TextureCoordinates = new TextureCoordinates();
@@ -56,7 +57,7 @@ namespace EQWOWConverter.ObjectModels
             List<byte> bytes = new List<byte>();
             bytes.AddRange(Position.ToBytes());
             bytes.AddRange(BoneWeights.ToArray());
-            bytes.AddRange(BoneIndices.ToArray());
+            bytes.AddRange(BoneIndicesTrue.ToArray());
             bytes.AddRange(Normal.ToBytes());
             bytes.AddRange(Texture1TextureCoordinates.ToBytes());
             bytes.AddRange(Texture2TextureCoordinates.ToBytes());

@@ -40,7 +40,7 @@ namespace EQWOWConverter.ObjectModels
         public List<ObjectModelBone> ModelBones = new List<ObjectModelBone>();
         public List<ObjectModelTextureAnimation> ModelTextureAnimations = new List<ObjectModelTextureAnimation>();
         public List<Int16> ModelBoneKeyLookups = new List<Int16>();
-        public SortedDictionary<int, SortedSet<Int16>> BoneLookupsByMaterialIndex = new SortedDictionary<int, SortedSet<Int16>>();
+        public SortedDictionary<int, List<Int16>> BoneLookupsByMaterialIndex = new SortedDictionary<int, List<Int16>>();
         public List<ObjectModelMaterial> ModelMaterials = new List<ObjectModelMaterial>();
         public List<ObjectModelTexture> ModelTextures = new List<ObjectModelTexture>();
         public List<Int16> ModelTextureLookups = new List<Int16>();
@@ -291,23 +291,38 @@ namespace EQWOWConverter.ObjectModels
                 // Create bone lookups on a per submesh basis (which are grouped by material)
                 for (int curMaterialIndex = 0; curMaterialIndex < modelMaterials.Count; curMaterialIndex++)
                 {
-                    SortedSet<Int16> curMaterialBoneIndices = new SortedSet<Int16>();
+                    List<Int16> curMaterialBoneIndices = new List<Int16>();
                     foreach(TriangleFace modelTriangle in modelTriangles)
                     {
                         if (modelTriangle.MaterialIndex == curMaterialIndex)
                         {
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[0]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[0]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[1]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[1]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndices[2]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndices[2]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[1]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[1]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[2]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[2]);
                         }
                     }
                     if (curMaterialBoneIndices.Count > 0)
                     {
                         BoneLookupsByMaterialIndex.Add(curMaterialIndex, curMaterialBoneIndices);
                     }
+                }
+
+                // Update bone indices to reflect the lookup values
+                foreach(TriangleFace modelTriangle in modelTriangles)
+                {
+                    List<Int16> curBoneLookups = BoneLookupsByMaterialIndex[modelTriangle.MaterialIndex];
+                    for (int i = 0; i < curBoneLookups.Count; i++)
+                    {
+                        if (ModelVertices[modelTriangle.V1].BoneIndicesTrue[0] == curBoneLookups[i])
+                            ModelVertices[modelTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(i);
+                        if (ModelVertices[modelTriangle.V2].BoneIndicesTrue[0] == curBoneLookups[i])
+                            ModelVertices[modelTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(i);
+                        if (ModelVertices[modelTriangle.V3].BoneIndicesTrue[0] == curBoneLookups[i])
+                            ModelVertices[modelTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(i);
+                    }                    
                 }
             }
 
@@ -361,7 +376,7 @@ namespace EQWOWConverter.ObjectModels
                     newModelVertex.Position = new Vector3(collisionVertices[i]);
                     newModelVertex.Normal = new Vector3(0, 0, 0);
                     newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
-                    newModelVertex.BoneIndices[0] = 0;
+                    newModelVertex.BoneIndicesTrue[0] = 0;
                     ModelVertices.Add(newModelVertex);
                 }
             }
@@ -376,7 +391,7 @@ namespace EQWOWConverter.ObjectModels
                     newModelVertex.Normal = new Vector3(meshData.Normals[i]);
                     newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
                     if (meshData.BoneIDs.Count > 0)
-                        newModelVertex.BoneIndices[0] = meshData.BoneIDs[i];
+                        newModelVertex.BoneIndicesTrue[0] = meshData.BoneIDs[i];
                     ModelVertices.Add(newModelVertex);
                 }
             }
