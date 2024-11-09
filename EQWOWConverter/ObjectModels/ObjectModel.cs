@@ -197,7 +197,7 @@ namespace EQWOWConverter.ObjectModels
                         if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
                             curBone.ParentBone = j;
                     curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None; // TODO BUG - Linear doesn't work properly
+                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.KeyBoneID = Convert.ToInt32(GetKeyBoneTypeForEQBone(curBone.BoneNameEQ));
                     if (curBone.KeyBoneID != -1)
@@ -270,7 +270,7 @@ namespace EQWOWConverter.ObjectModels
                                                                 animationFrame.ZRotation,
                                                                 animationFrame.YRotation,
                                                                 animationFrame.WRotation);
-                            //frameRotation.ReverseIfInverseIsShorter();
+                            frameRotation.RecalculateToShortest();
 
                             // Calculate the frame start time
                             UInt32 curTimestamp = 0;

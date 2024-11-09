@@ -50,25 +50,18 @@ namespace EQWOWConverter.Common
             return 8;
         }
 
-        // NOTE: BUG: Not quite working right
-        public void ReverseIfInverseIsShorter()
+        public void RecalculateToShortest()
         {
             // Normalize it
             System.Numerics.Quaternion currentRotation = new System.Numerics.Quaternion(X, Y, Z, W);
             System.Numerics.Quaternion.Normalize(currentRotation);
 
-            // Calculate the angle and determine if it will be more than 180 degrees
-            double angle = 2 * Math.Acos(currentRotation.W);
-            double angleDegrees = angle * (180.0 / Math.PI);
-
-            // If the angle is greater than 180 degrees, the inverse is shorter
-            if (angleDegrees > 200.0)
-            {
-                System.Numerics.Quaternion reversedRotation = new System.Numerics.Quaternion(-X, -Y, -Z, W);
-                X = reversedRotation.X;
-                Y = reversedRotation.Y;
-                Z = reversedRotation.Z;
-            }
+            // Use SLEPRT to find shortest
+            System.Numerics.Quaternion shortestRotation = System.Numerics.Quaternion.Slerp(System.Numerics.Quaternion.Identity, currentRotation, 1.0f);
+            X = shortestRotation.X;
+            Y = shortestRotation.Y;
+            Z = shortestRotation.Z;
+            W = shortestRotation.W;
         }
 
         public List<Byte> ToBytes()
