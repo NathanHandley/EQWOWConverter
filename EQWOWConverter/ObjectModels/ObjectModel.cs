@@ -197,7 +197,7 @@ namespace EQWOWConverter.ObjectModels
                         if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
                             curBone.ParentBone = j;
                     curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None; // TODO BUG - Linear doesn't work properly
                     curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     curBone.KeyBoneID = Convert.ToInt32(GetKeyBoneTypeForEQBone(curBone.BoneNameEQ));
                     if (curBone.KeyBoneID != -1)
@@ -220,6 +220,10 @@ namespace EQWOWConverter.ObjectModels
                     newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop
                     ModelAnimations.Add(newAnimation);
 
+                    // If this has more than one frame, reduce the duration by 1 frame to allow for proper looping
+                    if (animation.Value.FrameCount > 1)
+                        newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
+
                     // Save the lookup
                     SetAnimationLookup(newAnimation.AnimationType, Convert.ToInt16(ModelAnimations.Count - 1));
 
@@ -240,7 +244,7 @@ namespace EQWOWConverter.ObjectModels
 
                         // Root is special, so create no-change bone transformation frames for the root bone for the number of animation frames
                         if (animationFrame.GetBoneName() == "root")
-                        {                            
+                        {
                             int frameDurationInMS = animationFrame.FramesMS;
                             UInt32 curTimestamp = 0;
                             for (int i = 0; i < animation.Value.FrameCount; i++)
@@ -248,7 +252,7 @@ namespace EQWOWConverter.ObjectModels
                                 curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(1, 1, 1));
                                 curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, new QuaternionShort());
                                 curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3());
-                                curTimestamp += Convert.ToUInt32(frameDurationInMS);   
+                                curTimestamp += Convert.ToUInt32(frameDurationInMS);
                             }
                             continue;
                         }
@@ -256,11 +260,17 @@ namespace EQWOWConverter.ObjectModels
                         else
                         {
                             // Format and transform the animation frame values from EQ to WoW
-                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
-                                                                   animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE, 
+                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                                                                   animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
                                                                    animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                            QuaternionShort frameRotation = new QuaternionShort(animationFrame.XRotation, animationFrame.ZRotation, animationFrame.YRotation, animationFrame.WRotation);
+
+                            QuaternionShort frameRotation;
+                            frameRotation = new QuaternionShort(animationFrame.XRotation,
+                                                                animationFrame.ZRotation,
+                                                                animationFrame.YRotation,
+                                                                animationFrame.WRotation);
+                            //frameRotation.ReverseIfInverseIsShorter();
 
                             // Calculate the frame start time
                             UInt32 curTimestamp = 0;
@@ -278,14 +288,6 @@ namespace EQWOWConverter.ObjectModels
                             curTimestampsByBoneName[animationFrame.GetBoneName()] += animationFrame.FramesMS;
                         }
                     }
-
-                    // Replicate first frame on the last frame so that it smooth repeats
-                    //foreach (ObjectModelBone bone in ModelBones)
-                    //{
-                    //    bone.ScaleTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                    //    bone.RotationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                    //    bone.TranslationTrack.ReplicateFirstValueToEnd(curSequenceID, Convert.ToUInt32(animation.Value.TotalTimeInMS));
-                    //}
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)

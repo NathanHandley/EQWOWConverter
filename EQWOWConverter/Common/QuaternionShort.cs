@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -47,6 +48,27 @@ namespace EQWOWConverter.Common
         public UInt32 GetBytesSize()
         {
             return 8;
+        }
+
+        // NOTE: BUG: Not quite working right
+        public void ReverseIfInverseIsShorter()
+        {
+            // Normalize it
+            System.Numerics.Quaternion currentRotation = new System.Numerics.Quaternion(X, Y, Z, W);
+            System.Numerics.Quaternion.Normalize(currentRotation);
+
+            // Calculate the angle and determine if it will be more than 180 degrees
+            double angle = 2 * Math.Acos(currentRotation.W);
+            double angleDegrees = angle * (180.0 / Math.PI);
+
+            // If the angle is greater than 180 degrees, the inverse is shorter
+            if (angleDegrees > 200.0)
+            {
+                System.Numerics.Quaternion reversedRotation = new System.Numerics.Quaternion(-X, -Y, -Z, W);
+                X = reversedRotation.X;
+                Y = reversedRotation.Y;
+                Z = reversedRotation.Z;
+            }
         }
 
         public List<Byte> ToBytes()
