@@ -292,8 +292,6 @@ namespace EQWOWConverter
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
-            Logger.WriteInfo("Note: Only 'wol' is implemented for loading skeleton objects");
-
             // The skeletal list file has all of the objects to convert, so iterate through them
             string skeletonListFileData = File.ReadAllText(skeletonListFilePath);
             string[] skeletonListDataRows = skeletonListFileData.Split(Environment.NewLine);
@@ -301,10 +299,6 @@ namespace EQWOWConverter
             {
                 string curSkeletonObjectName = listDataRow.Split(',')[0];
                 Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
-
-                // TODO: Make this work for more
-                if (curSkeletonObjectName != "wol")
-                    continue;
 
                 // Init the object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);

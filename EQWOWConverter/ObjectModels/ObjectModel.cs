@@ -315,6 +315,12 @@ namespace EQWOWConverter.ObjectModels
                 // Update bone indices to reflect the lookup values
                 foreach(TriangleFace modelTriangle in modelTriangles)
                 {
+                    if (BoneLookupsByMaterialIndex.ContainsKey(modelTriangle.MaterialIndex) == false)
+                    {
+                        Logger.WriteError("Object '" + Name + "' could not find BoneLookup by material index of '" + modelTriangle.MaterialIndex + "'");
+                        continue;
+                    }
+
                     List<Int16> curBoneLookups = BoneLookupsByMaterialIndex[modelTriangle.MaterialIndex];
                     for (int i = 0; i < curBoneLookups.Count; i++)
                     {

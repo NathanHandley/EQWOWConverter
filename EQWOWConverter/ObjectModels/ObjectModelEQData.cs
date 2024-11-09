@@ -146,7 +146,7 @@ namespace EQWOWConverter.ObjectModels
             Animations.Clear();
             string animationFolder = Path.Combine(inputObjectFolder, "Animations");
             DirectoryInfo animationDirectoryInfo = new DirectoryInfo(animationFolder);
-            FileInfo[] animationFileInfos = animationDirectoryInfo.GetFiles(inputObjectName + "*.txt");
+            FileInfo[] animationFileInfos = animationDirectoryInfo.GetFiles(inputObjectName + "_*.txt");
             foreach(FileInfo animationFileInfo in animationFileInfos)
             {
                 string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);
