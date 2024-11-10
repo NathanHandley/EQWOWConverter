@@ -111,7 +111,9 @@ namespace EQWOWConverter.Zones
                 Logger.WriteDetail("- [" + inputZoneFolderName + "]: No material data found.");
             else
             {
-                Materials = materialListData.Materials;
+                if (materialListData.MaterialsByTextureVariation.Count > 1)
+                    Logger.WriteError("- [" + inputZoneFolderName + "]: Unhandled number of material texture variations");
+                Materials = materialListData.MaterialsByTextureVariation[0];
             }
         }
 

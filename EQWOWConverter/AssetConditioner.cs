@@ -315,7 +315,7 @@ namespace EQWOWConverter
                     // Grab material details
                     string[] blocks = materialFileRow.Split(",");
                     UInt32 materialIndex = UInt32.Parse(blocks[0]);
-                    Material curMaterial = materialListData.Materials[Convert.ToInt32(materialIndex)];
+                    Material curMaterial = materialListData.MaterialsByTextureVariation[0][Convert.ToInt32(materialIndex)];
 
                     // Get texture dimensions, if there is one
                     if (curMaterial.TextureNames.Count > 0)
@@ -513,7 +513,9 @@ namespace EQWOWConverter
                                 eqMaterialList.LoadFromDisk(objectMaterialFile);
                                 bool materialHasTextureName = false;
                                 string objectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(objectTextureFileNameOnly);
-                                foreach (Material material in eqMaterialList.Materials)
+                                if (eqMaterialList.MaterialsByTextureVariation.Count > 1)
+                                    Logger.WriteError("Unhandled material variation count for copying object textures!");
+                                foreach (Material material in eqMaterialList.MaterialsByTextureVariation[0])
                                 {
                                     if (material.UniqueName == objectTextureFileNameNoExtension)
                                         materialHasTextureName = true;

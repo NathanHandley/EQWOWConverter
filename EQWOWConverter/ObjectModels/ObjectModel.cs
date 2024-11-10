@@ -80,12 +80,12 @@ namespace EQWOWConverter.ObjectModels
                 EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false);
         }
 
-        public void PopulateObjectModelFromEQObjectModelData()
+        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex)
         {
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
         // TODO: Vertex Colors

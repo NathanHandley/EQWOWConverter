@@ -139,9 +139,15 @@ namespace EQWOWConverter
                 curObject.LoadEQObjectData(objectFolderRoot);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
+                if (curObject.EQObjectModelData.MaterialsByTextureVariation.Count > 1)
+                {
+                    Logger.WriteError("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' failed since there was more than 1 texture variation");
+                    continue;
+                }
+
                 // Covert to WOW static object
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
-                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath);
+                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath, 0);
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
@@ -300,23 +306,35 @@ namespace EQWOWConverter
                 string curSkeletonObjectName = listDataRow.Split(',')[0];
                 Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
 
-                // Init the object
-                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);
-                ObjectModel curObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
+                //if (curSkeletonObjectName != "wol")
+                //    continue;
 
-                // Load the EQ data
+                // Init the root object
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);
+                ObjectModel rootObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
+
+                // Load the EQ data for the root
                 Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "'");
-                curObject.LoadEQObjectData(charactersFolderRoot);
+                rootObject.LoadEQObjectData(charactersFolderRoot);
                 Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "' complete");
 
-                // Convert to a WoW object
-                string relativeMPQPath = Path.Combine("Creature", "Everquest", curSkeletonObjectName);
-                string fullMPQPath = Path.Combine(exportAnimatedObjectsFolder, curSkeletonObjectName);
-                CreateWoWObjectFromEQObject(curObject, fullMPQPath, relativeMPQPath);
+                // Generate an object for every variation
+                for (int variationIndex = 0; variationIndex < rootObject.EQObjectModelData.MaterialsByTextureVariation.Count; variationIndex++)
+                {
+                    // Create the object
+                    ObjectModel curObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
+                    curObject.LoadEQObjectData(charactersFolderRoot);
 
-                // Place the related textures
-                string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
-                ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
+                    // Convert to a WoW object
+                    string outputObjectFolder = curSkeletonObjectName + "_" + variationIndex;
+                    string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolder);
+                    string fullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolder);
+                    CreateWoWObjectFromEQObject(curObject, fullMPQPath, relativeMPQPath, variationIndex);
+
+                    // Place the related textures
+                    string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
+                    ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
+                }                
             }
             return true;
         }
@@ -690,12 +708,12 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
-        public void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative)
+        public void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative, int textureVariationIndex)
         {
             Logger.WriteDetail("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
 
             // Generate the object
-            modelObject.PopulateObjectModelFromEQObjectModelData();
+            modelObject.PopulateObjectModelFromEQObjectModelData(textureVariationIndex);
 
             // Create the M2 and Skin
             M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
