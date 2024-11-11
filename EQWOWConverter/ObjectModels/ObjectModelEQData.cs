@@ -49,47 +49,64 @@ namespace EQWOWConverter.ObjectModels
             if (isSkeletal == true)
             {
                 LoadSkeletonData(inputObjectName, inputObjectFolder);
-                LoadRenderMeshData(inputObjectName, inputObjectFolder); // TODO: Need to be able to load multiple meshes
+                List<string> renderMeshInputFiles = new List<string>();
+                foreach(string meshName in SkeletonData.MeshNames)
+                    renderMeshInputFiles.Add(meshName);
+                if (renderMeshInputFiles.Count == 0)
+                    renderMeshInputFiles.Add(inputObjectName);
+                LoadRenderMeshData(inputObjectName, renderMeshInputFiles, inputObjectFolder);
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadAnimationData(inputObjectName, inputObjectFolder);
                 LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }
             else
             {
-                LoadRenderMeshData(inputObjectName, inputObjectFolder);
+                LoadRenderMeshData(inputObjectName, new List<string>() { inputObjectName }, inputObjectFolder);
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }            
         }
 
-        private void LoadRenderMeshData(string inputObjectName, string inputObjectFolder)
+        private void LoadRenderMeshData(string inputObjectName, List<string> inputMeshNames, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
-            string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + ".txt");
-            EQMesh eqMeshData = new EQMesh();
-            if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
+            foreach(string meshName in inputMeshNames)
             {
-                Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
-                return;
-            }
-            MeshData = eqMeshData.Meshdata;
-            MaterialListFileName = eqMeshData.MaterialListFileName;
-
-            // Bone references
-            if (eqMeshData.Bones.Count > 0)
-            {
-                for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
+                string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshName + ".txt");
+                EQMesh eqMeshData = new EQMesh();
+                if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
                 {
-                    byte curBoneID = 0;
-                    foreach (BoneReference bone in eqMeshData.Bones)
+                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                    return;
+                }
+
+                // Bone references
+                if (eqMeshData.Bones.Count > 0)
+                {
+                    for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
                     {
-                        if (i >= bone.VertStart && (i < (bone.VertStart + bone.VertCount)))
+                        byte curBoneID = 0;
+                        foreach (BoneReference bone in eqMeshData.Bones)
                         {
-                            curBoneID = bone.KeyBoneID;
-                            break;
+                            if (i >= bone.VertStart && (i < (bone.VertStart + bone.VertCount)))
+                            {
+                                curBoneID = bone.KeyBoneID;
+                                break;
+                            }
                         }
+                        eqMeshData.Meshdata.BoneIDs.Add(curBoneID);
                     }
-                    eqMeshData.Meshdata.BoneIDs.Add(curBoneID);
+                }
+
+                // Save the mesh data and material list
+                MeshData.AddMeshData(eqMeshData.Meshdata);
+
+                if (MaterialListFileName == string.Empty)
+                    MaterialListFileName = eqMeshData.MaterialListFileName;
+                else if (MaterialListFileName != eqMeshData.MaterialListFileName)
+                {
+                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Mismatch material list file name provided changing '" + MaterialListFileName + "' to '" + eqMeshData.MaterialListFileName + "'");
+                    MaterialListFileName = eqMeshData.MaterialListFileName;
                 }
             }
         }
