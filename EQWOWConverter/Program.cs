@@ -44,8 +44,8 @@ internal class Program
             }
             else
             {
-                try
-                {
+                //try
+                //{
                     switch (enteredCommand.ToUpper())
                     {
                         case "X":
@@ -86,7 +86,7 @@ internal class Program
                             {
                                 AssetConditioner conditioner = new AssetConditioner();
                                 AssetConverter converter = new AssetConverter();
-                                converter.ConvertSkeletalObjects();
+                                converter.ConvertCreatures();
                                 Console.Beep();
                             } break;
                         default:
@@ -96,15 +96,15 @@ internal class Program
                             }
                             break;
                     }
-                }
-                catch (Exception ex)
-                {
-                    Logger.WriteError("Exception Occurred: " + ex.Message);
-                    if (ex.StackTrace != null)
-                        Logger.WriteDetail(ex.StackTrace);
-                    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
-                        Console.Beep();
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    Logger.WriteError("Exception Occurred: " + ex.Message);
+                //    if (ex.StackTrace != null)
+                //        Logger.WriteDetail(ex.StackTrace);
+                //    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                //        Console.Beep();
+                //}
             }
         }
         Console.WriteLine("");

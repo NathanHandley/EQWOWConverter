@@ -29,6 +29,7 @@ using Vector3 = EQWOWConverter.Common.Vector3;
 using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ObjectModels.Properties;
 using MySql.Data.MySqlClient;
+using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter
 {
@@ -57,12 +58,21 @@ namespace EQWOWConverter
             {
                 if (ConvertEQObjectsToWOW() == false)
                     return false;
-                if (ConvertSkeletalObjects() == false)
-                    return false;
             }
             else
             {
                 Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
+            }
+
+            // Creatures
+            if (Configuration.CONFIG_GENERATE_CREATURES == true)
+            {
+                if (ConvertCreatures() == false)
+                    return false;
+            }
+            else
+            {
+                Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
 
             // Zones
@@ -268,18 +278,18 @@ namespace EQWOWConverter
             return true;
         }
 
-        public bool ConvertSkeletalObjects()
+        public bool ConvertCreatures()
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
 
-            Logger.WriteInfo("Converting EQ characters (skeletal) to WOW creature objects...");
+            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
             // Make sure the source folder path exists
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             if (Directory.Exists(charactersFolderRoot) == false)
             {
-                Logger.WriteError("Can not read in EQ character data, because folder did not exist at '" + charactersFolderRoot + "'");
+                Logger.WriteError("Can not read in EQ Creatures (skeletal objects) data, because folder did not exist at '" + charactersFolderRoot + "'");
                 return false;
             }
 
@@ -287,7 +297,7 @@ namespace EQWOWConverter
             string skeletonListFilePath = Path.Combine(charactersFolderRoot, "actors_skeletal.txt");
             if (File.Exists(skeletonListFilePath) == false)
             {
-                Logger.WriteError("Can not read in EQ character skeletal data file because it didn't exist at '" + charactersFolderRoot + "'");
+                Logger.WriteError("Can not read in EQ Creatures (skeletal objects) skeletal data file because it didn't exist at '" + charactersFolderRoot + "'");
                 return false;
             }
 
@@ -304,19 +314,21 @@ namespace EQWOWConverter
             foreach (string listDataRow in skeletonListDataRows)
             {
                 string curSkeletonObjectName = listDataRow.Split(',')[0];
-                Logger.WriteDetail(" - Converting skeleton object '" + curSkeletonObjectName + "'");
+                Logger.WriteDetail(" - Converting EQ Creature (skeletal object) object '" + curSkeletonObjectName + "'");
 
-                //if (curSkeletonObjectName != "wol")
-                //    continue;
+                CreatureRace test = CreatureRace.GetCreatureRaceByID(10);
+.
 
+
+                /*
                 // Init the root object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);
                 ObjectModel rootObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
 
                 // Load the EQ data for the root
-                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "'");
+                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ Creature (skeletal object) '" + curSkeletonObjectName + "'");
                 rootObject.LoadEQObjectData(charactersFolderRoot);
-                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ skeletal object '" + curSkeletonObjectName + "' complete");
+                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ Creature (skeletal object) '" + curSkeletonObjectName + "' complete");
 
                 // Generate an object for every variation
                 for (int variationIndex = 0; variationIndex < rootObject.EQObjectModelData.MaterialsByTextureVariation.Count; variationIndex++)
@@ -335,6 +347,7 @@ namespace EQWOWConverter
                     string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
                     ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
                 }                
+                */
             }
             return true;
         }

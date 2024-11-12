@@ -1,0 +1,1 @@
+"CreatureRaces" and "CreatureRaceSounds" are mappings that originated from files as part of the https://github.com/LanternEQ/LanternUnityTools project and were pulled Nov 2024.  

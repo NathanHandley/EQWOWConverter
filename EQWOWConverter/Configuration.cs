@@ -94,6 +94,9 @@ namespace EQWOWConverter
         // If true, then objects are generated
         public static readonly bool CONFIG_GENERATE_OBJECTS = true;
 
+        // If true, then creatures are generated
+        public static readonly bool CONFIG_GENERATE_CREATURES = true;
+
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first
         public static readonly List<string> CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES = new List<string>() { };
