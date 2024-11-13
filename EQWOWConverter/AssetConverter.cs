@@ -285,70 +285,21 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
-            // Make sure the source folder path exists
-            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
-            if (Directory.Exists(charactersFolderRoot) == false)
-            {
-                Logger.WriteError("Can not read in EQ Creatures (skeletal objects) data, because folder did not exist at '" + charactersFolderRoot + "'");
-                return false;
-            }
-
-            // Get the skeletal definition file
-            string skeletonListFilePath = Path.Combine(charactersFolderRoot, "actors_skeletal.txt");
-            if (File.Exists(skeletonListFilePath) == false)
-            {
-                Logger.WriteError("Can not read in EQ Creatures (skeletal objects) skeletal data file because it didn't exist at '" + charactersFolderRoot + "'");
-                return false;
-            }
-
-            // Recreate the folder to clean it out
+            // Recreate the output folder to clean it out
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
             if (Directory.Exists(exportAnimatedObjectsFolder))
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
-            // The skeletal list file has all of the objects to convert, so iterate through them
-            string skeletonListFileData = File.ReadAllText(skeletonListFilePath);
-            string[] skeletonListDataRows = skeletonListFileData.Split(Environment.NewLine);
-            foreach (string listDataRow in skeletonListDataRows)
+            // Use all the creature race templates
+            foreach(CreatureRace creatureRace in CreatureRace.GetAllCreatureRaces())
             {
-                string curSkeletonObjectName = listDataRow.Split(',')[0];
-                Logger.WriteDetail(" - Converting EQ Creature (skeletal object) object '" + curSkeletonObjectName + "'");
-
-                CreatureRace test = CreatureRace.GetCreatureRaceByID(10);
-.
-
-
-                /*
-                // Init the root object
-                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(curSkeletonObjectName);
-                ObjectModel rootObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
-
-                // Load the EQ data for the root
-                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ Creature (skeletal object) '" + curSkeletonObjectName + "'");
-                rootObject.LoadEQObjectData(charactersFolderRoot);
-                Logger.WriteDetail("- [" + curSkeletonObjectName + "]: Importing EQ Creature (skeletal object) '" + curSkeletonObjectName + "' complete");
-
-                // Generate an object for every variation
-                for (int variationIndex = 0; variationIndex < rootObject.EQObjectModelData.MaterialsByTextureVariation.Count; variationIndex++)
-                {
-                    // Create the object
-                    ObjectModel curObject = new ObjectModel(curSkeletonObjectName, objectProperties, ObjectModelType.Skeletal);
-                    curObject.LoadEQObjectData(charactersFolderRoot);
-
-                    // Convert to a WoW object
-                    string outputObjectFolder = curSkeletonObjectName + "_" + variationIndex;
-                    string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolder);
-                    string fullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolder);
-                    CreateWoWObjectFromEQObject(curObject, fullMPQPath, relativeMPQPath, variationIndex);
-
-                    // Place the related textures
-                    string objectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
-                    ExportTexturesForObject(curObject, objectTextureFolder, fullMPQPath);
-                }                
-                */
+                // Output for each
+                CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace);
+                creatureModelTemplate.CreateModelFiles();
             }
+
             return true;
         }
 

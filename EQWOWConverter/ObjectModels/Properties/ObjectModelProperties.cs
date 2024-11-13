@@ -31,7 +31,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
-        public HashSet<string> AlphaBlendMaterialsByname = new HashSet<string>();
+        public HashSet<string> AlphaBlendMaterialsByName = new HashSet<string>();
 
         public ObjectModelProperties() { }
         protected ObjectModelProperties(string name)
@@ -76,8 +76,8 @@ namespace EQWOWConverter.ObjectModels.Properties
 
         private void PopulateAllMaterialAlphaBlendMaterials()
         {
-            AlphaBlendMaterialsByname.Clear();
-            AlphaBlendMaterialsByname.Add("d_ub5"); // Treetops that should 'fade into the sky'
+            AlphaBlendMaterialsByName.Clear();
+            AlphaBlendMaterialsByName.Add("d_ub5"); // Treetops that should 'fade into the sky'
         }
     }
 }

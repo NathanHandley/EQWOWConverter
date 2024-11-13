@@ -212,14 +212,14 @@ namespace EQWOWConverter.WOWFiles
             return blockBytes;
         }
 
-        public void WriteToDisk(string outputFolderPath)
+        public void WriteToDisk(string fileName, string outputFolderPath)
         {
             // Make the directory
             if (Directory.Exists(outputFolderPath) == false)
                 FileTool.CreateBlankDirectory(outputFolderPath, true);
 
             // Create the skin
-            string skinFileName = Path.Combine(outputFolderPath, Name + "00.skin");
+            string skinFileName = Path.Combine(outputFolderPath, fileName + "00.skin");
             File.WriteAllBytes(skinFileName, SkinBytes.ToArray());
         }
     }

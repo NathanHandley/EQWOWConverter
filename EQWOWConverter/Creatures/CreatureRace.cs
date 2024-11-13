@@ -27,7 +27,7 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureRace
     {
-        static private Dictionary<int, CreatureRace> CreatureRacesByRaceID = new Dictionary<int, CreatureRace>();
+        private static Dictionary<int, CreatureRace> CreatureRacesByRaceID = new Dictionary<int, CreatureRace>();
 
         public int ID;
         public string Name = string.Empty;
@@ -46,12 +46,22 @@ namespace EQWOWConverter.Creatures
                 return CreatureRacesByRaceID[id];
         }
 
+        public static List<CreatureRace> GetAllCreatureRaces()
+        {
+            if (CreatureRacesByRaceID.Count == 0)
+                PopulateCreatureRaceList();
+            List<CreatureRace> creatureRaces = new List<CreatureRace>();
+            foreach(var creatureRace in CreatureRacesByRaceID.Values)
+                creatureRaces.Add(creatureRace);
+            return creatureRaces;
+        }
+
         private static void PopulateCreatureRaceList()
         {
             CreatureRacesByRaceID.Clear();
 
             // Load in base race data
-            string raceDataFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CreatureData", "CreatureRaces.csv");
+            string raceDataFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureRaces.csv");
             Logger.WriteDetail("Populating CreatureRace list via file '" + raceDataFileName + "'");
             string inputData = File.ReadAllText(raceDataFileName);
             string[] inputRows = inputData.Split(Environment.NewLine);

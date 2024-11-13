@@ -1,7 +1,7 @@
 The GNU V3 license herein does not necessarily apply to anything in the
 \Tools\ folder of the original source directory.  Every item inside the 
 \Tools\ folder has its own related copying or license agreements.  Also,
-\Assets\CreatureData has a Credits.txt for those resources.
+\Assets\WorldData has a Credits.txt for those resources.
 					
 					GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007

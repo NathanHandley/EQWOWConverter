@@ -252,19 +252,19 @@ namespace EQWOWConverter.WOWFiles
             return headerSize;
         }
 
-        public void WriteToDisk(string objectName, string outputFolderPath)
+        public void WriteToDisk(string outputName, string outputFolderPath)
         {
             // Make the directory
             if (Directory.Exists(outputFolderPath) == false)
                 FileTool.CreateBlankDirectory(outputFolderPath, true);
 
             // Create the M2
-            string m2FileName = Path.Combine(outputFolderPath, objectName + ".m2");
+            string m2FileName = Path.Combine(outputFolderPath, outputName + ".m2");
             List<Byte> fileData = GetFileData();
             File.WriteAllBytes(m2FileName, fileData.ToArray());
 
             // Create the skin
-            Skin.WriteToDisk(outputFolderPath);
+            Skin.WriteToDisk(outputName, outputFolderPath);
         }
 
         private List<Byte> GetFileData()

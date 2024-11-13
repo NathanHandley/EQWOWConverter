@@ -456,7 +456,7 @@ namespace EQWOWConverter.ObjectModels
                     newModelTexture.TextureName = material.TextureNames[0];
                     ModelTextures.Add(newModelTexture);
                     ObjectModelMaterial newModelMaterial;
-                    if (Properties.AlphaBlendMaterialsByname.Contains(material.Name))
+                    if (Properties.AlphaBlendMaterialsByName.Contains(material.Name))
                     {
                         newModelMaterial = new ObjectModelMaterial(material, ObjectModelMaterialBlendType.Alpha);
                     }
