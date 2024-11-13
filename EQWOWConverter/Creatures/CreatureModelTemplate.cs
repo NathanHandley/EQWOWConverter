@@ -27,8 +27,8 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate
     {
-        CreatureRace Race;
-        List<CreatureModelVariation> ModelVariations = new List<CreatureModelVariation>();
+        public CreatureRace Race;
+        public List<CreatureModelVariation> ModelVariations = new List<CreatureModelVariation>();
 
         public CreatureModelTemplate(CreatureRace creatureRace)
         {
@@ -100,6 +100,7 @@ namespace EQWOWConverter.Creatures
                 M2 objectM2 = new M2(curObject, relativeMPQPath);
                 string outputM2Name = skeletonName + "v" + variationIndex;
                 objectM2.WriteToDisk(outputM2Name, outputFullMPQPath);
+                modelVariation.ModelFileName = outputM2Name;
 
                 // Place the related textures
                 foreach (ObjectModelTexture texture in curObject.ModelTextures)
@@ -124,6 +125,7 @@ namespace EQWOWConverter.Creatures
             string raceName = Race.Name.Trim();
             raceName = raceName.Replace("/", "And");
             raceName = raceName.Replace(" ", "");
+            raceName = raceName.Replace("-", "");
 
             string raceID = string.Empty;
             if (Race.ID < 10)

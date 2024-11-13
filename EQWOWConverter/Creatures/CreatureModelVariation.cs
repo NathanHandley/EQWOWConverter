@@ -29,5 +29,24 @@ namespace EQWOWConverter.Creatures
         public int HeadModelIndex = 0;
         public int BodyTextureIndex = 0;
         public int HeadTextureIndex = 0;
+        public string ModelFileName = string.Empty;
+
+        // IDs
+        private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
+        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START;
+        private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
+        public int DBCCreatureModelDataID;
+        public int DBCCreatureDisplayID;
+        public int SQLCreatureTemplateID;
+
+        public CreatureModelVariation()
+        {
+            DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
+            CURRENT_DBCID_CREATUREMODELDATAID++;
+            DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
+            CURRENT_DBCID_CREATUREDISPLAYINFOID++;
+            SQLCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
+            CURRENT_SQL_CREATURETEMPLATEID++;
+        }
     }
 }

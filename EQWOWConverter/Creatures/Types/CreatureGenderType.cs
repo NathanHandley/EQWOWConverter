@@ -22,10 +22,10 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureGenderType
+    internal enum CreatureGenderType : Int32
     {
-        Male,
-        Female,
-        Neutral
+        Male = 0,
+        Female = 1,
+        Neutral = 2
     }
 }

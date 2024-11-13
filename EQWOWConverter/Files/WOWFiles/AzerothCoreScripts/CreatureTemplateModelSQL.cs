@@ -26,20 +26,20 @@ namespace EQWOWConverter.WOWFiles
     {
         public class Row
         {
-            public int CreatureID;
+            public int CreatureTemplateID;
             public int Idx = 0;
-            public int CreatureDisplayID;
+            public int CreatureDisplayID; // CreatureDisplayInfo.dbc reference
             public int DisplayScale = 1;
             public int Probability = 1;
-            public int VerifiedBuild = 1;
+            public int VerifiedBuild = 12340;
         }
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int creatureID, int creatureDisplayID)
+        public void AddRow(int creatureTemplateID, int creatureDisplayID)
         {
             Row newRow = new Row();
-            newRow.CreatureID = creatureID;
+            newRow.CreatureTemplateID = creatureTemplateID;
             newRow.CreatureDisplayID = creatureDisplayID;
             rows.Add(newRow);
         }
@@ -54,8 +54,8 @@ namespace EQWOWConverter.WOWFiles
             stringBuilder.AppendLine("DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + " ;");
             foreach (Row row in rows)
             {
-                stringBuilder.Append("INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES (190010, 0, 19646, 1, 1, 0);");
-                stringBuilder.Append(row.CreatureID.ToString() + ", ");
+                stringBuilder.Append("INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES (");
+                stringBuilder.Append(row.CreatureTemplateID.ToString() + ", ");
                 stringBuilder.Append(row.Idx.ToString() + ", ");
                 stringBuilder.Append(row.CreatureDisplayID.ToString() + ", ");
                 stringBuilder.Append(row.DisplayScale.ToString() + ", ");

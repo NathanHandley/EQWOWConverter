@@ -65,9 +65,10 @@ namespace EQWOWConverter
             }
 
             // Creatures
+            List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             if (Configuration.CONFIG_GENERATE_CREATURES == true)
             {
-                if (ConvertCreatures() == false)
+                if (ConvertCreatures(ref creatureModelTemplates) == false)
                     return false;
             }
             else
@@ -87,10 +88,10 @@ namespace EQWOWConverter
             CreateLiquidMaterials();
 
             // Create the DBC files
-            CreateDBCFiles(zones);
+            CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones);
+            CreateAzerothCoreScripts(zones, creatureModelTemplates);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -278,7 +279,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        public bool ConvertCreatures()
+        public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates)
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
@@ -298,6 +299,7 @@ namespace EQWOWConverter
                 // Output for each
                 CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace);
                 creatureModelTemplate.CreateModelFiles();
+                creatureModelTemplates.Add(creatureModelTemplate);
             }
 
             return true;
@@ -737,7 +739,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void CreateDBCFiles(List<Zone> zones)
+        public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates)
         {
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
 
@@ -766,10 +768,10 @@ namespace EQWOWConverter
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
-            //CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
-            //creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
-            //GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
-            //gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
+            CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
+            creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
+            CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
+            creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -819,6 +821,17 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
+            // Creatures
+            foreach(CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            {
+                foreach(CreatureModelVariation modelVariation in creatureModelTemplate.ModelVariations)
+                {
+                    creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
+                    string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.ModelFileName + ".mdx";
+                    creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, relativeModelPath);
+                }
+            }
+
             // Zone-specific records
             foreach (Zone zone in zones)
             {
@@ -833,21 +846,6 @@ namespace EQWOWConverter
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
-
-                // Game Object Display Infos
-                //for(int i = 0; i < zone.SoundInstances.Count; i++)
-                //{
-                //    SoundInstance curSoundInstance = zone.SoundInstances[i];
-                //    if (curSoundInstance.Sound == null)
-                //        Logger.WriteError("Could not create GameObjectDisplayInfo.dbc record for sound instance '" + curSoundInstance.SoundFileNameDayNoExt+ "' since the Sound was null");
-                //    else
-                //    {
-                //        ObjectModel curSoundModelObject = zone.SoundInstanceObjectModels[i];
-                //        string objectModelRelativePath = Path.Combine("World", "Everquest", "ZoneObjects", zone.ShortName, curSoundModelObject.Name, curSoundModelObject.Name + ".mdx");
-                //        BoundingBox newBoundingBox = new BoundingBox(-251, -251, -251, 251, 251, 251);
-                //        gameObjectDisplayInfoDBC.AddRow(curSoundInstance.GameObjectDisplayInfoID, objectModelRelativePath, curSoundInstance.Sound.DBCID, newBoundingBox);
-                //    }
-                //}
 
                 // Light Tables
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
@@ -942,10 +940,10 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
-            //creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
-            //creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
-            //gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
-            //gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
@@ -974,7 +972,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("Creating DBC Files complete");
         }
 
-        public void CreateAzerothCoreScripts(List<Zone> zones)
+        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
@@ -984,14 +982,24 @@ namespace EQWOWConverter
             // Create the SQL Scripts
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
-            //CreatureSQL creatureSQL = new CreatureSQL();
-            //CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
-            //CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
-            //GameObjectSQL gameObjectSQL = new GameObjectSQL();
-            //GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
+            CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
+            CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
+            CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
+            // Creatures
+            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            {
+                foreach (CreatureModelVariation modelVariation in creatureModelTemplate.ModelVariations)
+                {
+                    creatureModelInfoSQL.AddRow(modelVariation.DBCCreatureDisplayID, Convert.ToInt32(modelVariation.GenderType));
+                    creatureTemplateModelSQL.AddRow(modelVariation.SQLCreatureTemplateID, modelVariation.DBCCreatureDisplayID);
+                    creatureTemplateSQL.AddRow(modelVariation.SQLCreatureTemplateID, creatureModelTemplate.Race.Name);                    
+                }
+            }
+
+            // Zones
             foreach (Zone zone in zones)
             {
                 // Instance list
@@ -1001,21 +1009,6 @@ namespace EQWOWConverter
                 gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
                     gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
-
-                // Sound Instances
-                foreach(SoundInstance soundInstance in zone.SoundInstances)
-                {
-                    if (soundInstance.Sound == null)
-                        Logger.WriteError("Could not create GameObject SQL records for sound instance '" + soundInstance.SoundFileNameDayNoExt + "' since the Sound was null");
-                    else
-                    {
-                        // GameObject Template
-                        //gameObjectTemplateSQL.AddRow(soundInstance.GameObjectID, soundInstance.GameObjectDisplayInfoID, soundInstance.Sound.Name);
-
-                        // GameObject
-                        //gameObjectSQL.AddRow(soundInstance.GameObjectID, zone.ZoneProperties.DBCMapID, Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), Convert.ToInt32(zone.DefaultArea.DBCParentAreaTableID), soundInstance.Position);
-                    }
-                }
 
                 // Zone lines
                 foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
@@ -1045,11 +1038,9 @@ namespace EQWOWConverter
             // Output them
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
-            //creatureSQL.WriteToDisk(sqlScriptFolder);
-            //creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
-            //creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
-            //gameObjectSQL.WriteToDisk(sqlScriptFolder);
-            //gameObjectTemplateSQL.WriteToDisk(sqlScriptFolder);
+            creatureModelInfoSQL.WriteToDisk(sqlScriptFolder);
+            creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
+            creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
         }

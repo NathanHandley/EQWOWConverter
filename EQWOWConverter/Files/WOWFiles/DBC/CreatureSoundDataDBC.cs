@@ -51,7 +51,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Custom Attack 2 SoundEntriesDBC.ID
             newRow.AddInt(0); // Custom Attack 3 SoundEntriesDBC.ID
             newRow.AddInt(0); // Custom Attack 4 SoundEntriesDBC.ID
-            newRow.AddInt(0); // NPC Sonud SoundEntriesDBC.ID
+            newRow.AddInt(0); // NPC Sound SoundEntriesDBC.ID
             newRow.AddInt(loopSoundID); // Loop Sound (idle?) SoundEntriesDBC.ID
             newRow.AddInt(0); // Creature impact type
             newRow.AddInt(0); // Jump Start ID SoundEntriesDBC.ID

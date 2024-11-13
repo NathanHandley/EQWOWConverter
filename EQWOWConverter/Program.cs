@@ -33,8 +33,6 @@ internal class Program
             Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
             Logger.WriteInfo(" [X] - Exit");
             Logger.WriteInfo(" ");
-            Logger.WriteInfo(" [9] - Convert only EQ Skeletal Object Data to Creature WOW Objects");
-            Logger.WriteInfo(" ");
             Logger.WriteInfo("Command (Default: X): ", true);
             string? enteredCommand = Console.ReadLine();
             if (enteredCommand == null)
@@ -44,8 +42,8 @@ internal class Program
             }
             else
             {
-                //try
-                //{
+                try
+                {
                     switch (enteredCommand.ToUpper())
                     {
                         case "X":
@@ -82,13 +80,6 @@ internal class Program
                                     Console.Beep();
                             }
                             break;
-                        case "9":
-                            {
-                                AssetConditioner conditioner = new AssetConditioner();
-                                AssetConverter converter = new AssetConverter();
-                                converter.ConvertCreatures();
-                                Console.Beep();
-                            } break;
                         default:
                             {
                                 Logger.WriteInfo("Exiting.");
@@ -96,16 +87,16 @@ internal class Program
                             }
                             break;
                     }
-                //}
-                //catch (Exception ex)
-                //{
-                //    Logger.WriteError("Exception Occurred: " + ex.Message);
-                //    if (ex.StackTrace != null)
-                //        Logger.WriteDetail(ex.StackTrace);
-                //    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
-                //        Console.Beep();
-                //}
             }
+                catch (Exception ex)
+                {
+                Logger.WriteError("Exception Occurred: " + ex.Message);
+                if (ex.StackTrace != null)
+                    Logger.WriteDetail(ex.StackTrace);
+                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                    Console.Beep();
+            }
+        }
         }
         Console.WriteLine("");
         Console.WriteLine("Press any key to exit");
