@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private UInt32 Count = 0;
         private UInt32 Offset = 0;
-        private List<T> Elements = new List<T>();
+        public List<T> Elements = new List<T>();
 
         public void Add(T element)
         {
@@ -41,6 +41,14 @@ namespace EQWOWConverter.WOWFiles
         {
             for (int i = 0; i < elementArray.Count; i++)
                 Add(elementArray[i]);
+        }
+
+        public void SetElementValue(int elementIndex, T value)
+        {
+            if (elementIndex >= Elements.Count)
+                Logger.WriteError("Attempted to set an element in a M2GenericArrayByOffset that wasn't in the array");
+            else
+                Elements[elementIndex] = value;
         }
 
         public UInt32 GetHeaderSize()

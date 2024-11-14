@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.Files.WOWFiles.M2.OffsetObjects;
 using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels.Types;
 using EQWOWConverter.Zones;
 using Google.Protobuf.WellKnownTypes;
 
@@ -60,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<TriangleFace> CollisionTriangleIndices = new M2GenericArrayByOffset<TriangleFace>();
         private M2GenericArrayByOffset<Vector3> CollisionVertices = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<Vector3> CollisionFaceNormals = new M2GenericArrayByOffset<Vector3>();
-        private M2GenericArrayByOffset<M2Attachment> Attachments = new M2GenericArrayByOffset<M2Attachment>();
+        private M2ArrayWithTrackedObjectsByOffset<M2Attachment> Attachments = new M2ArrayWithTrackedObjectsByOffset<M2Attachment>();
         private M2GenericArrayByOffset<M2Int16> AttachmentIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2ArrayWithTrackedObjectsByOffset<M2Event> Events = new M2ArrayWithTrackedObjectsByOffset<M2Event>();
         private M2GenericArrayByOffset<M2Dummy> Lights = new M2GenericArrayByOffset<M2Dummy>();
@@ -177,11 +178,14 @@ namespace EQWOWConverter.WOWFiles
             // Collision Face Normals
             CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
 
-            // Attachments
-            // none for now
-
-            // Attachment ID Lookup
-            // none for now
+            // Attachments & Attachment ID
+            if (wowObjectModel.ModelType == ObjectModelType.Skeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)
+            {
+                Attachments.AddElement(new M2Attachment(ObjectModelAttachmentType.PlayerName, Convert.ToUInt32(wowObjectModel.ModelBoneKeyLookups[26])));
+                for (int i = 0; i < 19; i++)
+                    AttachmentIndicesLookup.Add(new M2Int16(-1));
+                AttachmentIndicesLookup.SetElementValue(18, new M2Int16(0));
+            }
 
             // Events
             if (wowObjectModel.SoundIdleLoop != null)
