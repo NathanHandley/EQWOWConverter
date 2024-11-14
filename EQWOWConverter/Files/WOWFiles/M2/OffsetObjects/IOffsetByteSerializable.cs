@@ -25,6 +25,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal interface IOffsetByteSerializable
     {
+        public UInt32 GetHeaderSize();
+
         public List<Byte> GetHeaderBytes();
 
         public void AddDataBytes(ref List<Byte> byteBuffer);

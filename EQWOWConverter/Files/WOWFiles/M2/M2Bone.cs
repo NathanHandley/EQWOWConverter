@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Bone : ITrackedOffsetByteSerializable
+    internal class M2Bone : IOffsetByteSerializable
     {
         public ObjectModelBone Bone;
         public M2TrackSequences<Vector3> TranslationTrack;

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Files.WOWFiles.M2.OffsetObjects
 {
-    internal class M2ArrayWithTrackedObjectsByOffset<T> where T: ITrackedOffsetByteSerializable
+    internal class M2ArrayWithTrackedObjectsByOffset<T> where T: IOffsetByteSerializable
     {
         private UInt32 Count = 0;
         private UInt32 Offset = 0;

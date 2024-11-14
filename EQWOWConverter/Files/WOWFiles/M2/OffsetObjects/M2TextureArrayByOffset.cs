@@ -44,6 +44,13 @@ namespace EQWOWConverter.WOWFiles
             Count = Convert.ToUInt32(Textures.Count);
         }
 
+        public UInt32 GetHeaderSize()
+        {
+            UInt32 size = 4; // Count
+            size += 4; // Offset
+            return size;
+        }
+
         public List<Byte> GetHeaderBytes()
         {
             List<byte> returnBytes = new List<byte>();
