@@ -244,7 +244,7 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public void ApplyEQToWoWGeometryTranslationsAndWorldScale()
+        public void ApplyEQToWoWGeometryTranslationsAndWorldScale(bool rotateZAxis)
         {
             // Change face indices for winding over differences
             foreach (TriangleFace triangleFace in TriangleFaces)
@@ -256,9 +256,14 @@ namespace EQWOWConverter.Common
             // Perform vertex world scaling and 180 Z-Axis degree rotation
             foreach (Vector3 vertex in Vertices)
             {
-                vertex.X *= -1 * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                vertex.Y *= -1 * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                vertex.X *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                vertex.Y *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 vertex.Z *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                if (rotateZAxis == true)
+                {
+                    vertex.X *= -1;
+                    vertex.Y *= -1;
+                }
             }
             // Flip Y on the texture coordinates
             foreach (TextureCoordinates textureCoordinate in TextureCoordinates)

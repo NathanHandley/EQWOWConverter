@@ -109,7 +109,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -117,7 +117,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale();
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -260,17 +260,15 @@ namespace EQWOWConverter.ObjectModels
                         else
                         {
                             // Format and transform the animation frame values from EQ to WoW
-                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                   animationFrame.YPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
                                                                    animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-
                             QuaternionShort frameRotation;
-                            frameRotation = new QuaternionShort(animationFrame.XRotation,
-                                                                animationFrame.YRotation,
+                            frameRotation = new QuaternionShort(-animationFrame.XRotation,
+                                                                -animationFrame.YRotation,
                                                                 -animationFrame.ZRotation,
                                                                 animationFrame.WRotation);
-
                             frameRotation.RecalculateToShortest();
 
                             // Calculate the frame start time
