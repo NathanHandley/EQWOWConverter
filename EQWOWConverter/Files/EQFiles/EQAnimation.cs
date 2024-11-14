@@ -92,11 +92,11 @@ namespace EQWOWConverter.EQFiles
                 animationFrame.BoneFullNameInPath = blocks[0];
                 animationFrame.FrameIndex = int.Parse(blocks[1]);
                 animationFrame.XPosition = float.Parse(blocks[2]);
-                animationFrame.YPosition = float.Parse(blocks[3]);
-                animationFrame.ZPosition = float.Parse(blocks[4]);
+                animationFrame.ZPosition = float.Parse(blocks[3]);
+                animationFrame.YPosition = float.Parse(blocks[4]);
                 animationFrame.XRotation = float.Parse(blocks[5]);
-                animationFrame.YRotation = float.Parse(blocks[6]);
-                animationFrame.ZRotation = float.Parse(blocks[7]);
+                animationFrame.ZRotation = float.Parse(blocks[6]);
+                animationFrame.YRotation = float.Parse(blocks[7]);
                 animationFrame.WRotation = float.Parse(blocks[8]);
                 animationFrame.Scale = float.Parse(blocks[9]);
                 animationFrame.FramesMS = int.Parse(blocks[10]);

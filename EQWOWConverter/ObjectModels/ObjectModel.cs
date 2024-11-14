@@ -261,14 +261,14 @@ namespace EQWOWConverter.ObjectModels
                         {
                             // Format and transform the animation frame values from EQ to WoW
                             Vector3 frameTranslation = new Vector3(animationFrame.XPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                   animationFrame.ZPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
+                                                                   animationFrame.YPosition * -Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                                                                   animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
                             Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
 
                             QuaternionShort frameRotation;
                             frameRotation = new QuaternionShort(animationFrame.XRotation,
-                                                                animationFrame.ZRotation,
-                                                                -animationFrame.YRotation,
+                                                                animationFrame.YRotation,
+                                                                -animationFrame.ZRotation,
                                                                 animationFrame.WRotation);
 
                             frameRotation.RecalculateToShortest();
