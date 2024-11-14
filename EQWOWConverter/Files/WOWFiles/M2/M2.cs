@@ -22,6 +22,7 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
+using EQWOWConverter.Files.WOWFiles.M2.OffsetObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 using Google.Protobuf.WellKnownTypes;
@@ -37,13 +38,13 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Timestamp> GlobalLoopTimestamps = new M2GenericArrayByOffset<M2Timestamp>();
         private M2GenericArrayByOffset<ObjectModelAnimation> AnimationSequences = new M2GenericArrayByOffset<ObjectModelAnimation>();
         private M2GenericArrayByOffset<M2Int16> AnimationSequenceLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2BoneArrayByOffset Bones = new M2BoneArrayByOffset();
+        private M2ArrayWithTrackedObjectsByOffset<M2Bone> Bones = new M2ArrayWithTrackedObjectsByOffset<M2Bone>();
         private M2GenericArrayByOffset<M2Int16> BoneKeyLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<ObjectModelVertex> Vertices = new M2GenericArrayByOffset<ObjectModelVertex>();
         private UInt32 SkinProfileCount = 0;
         private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
-        private M2TrackSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackSequencesArrayByOffset<Fixed16>();
+        private M2TrackedSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackedSequencesArrayByOffset<Fixed16>();
         private M2TextureAnimationArrayByOffset TextureAnimations = new M2TextureAnimationArrayByOffset();
         private M2GenericArrayByOffset<M2Int16> ReplaceableTextureLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<ObjectModelMaterial> Materials = new M2GenericArrayByOffset<ObjectModelMaterial>();
@@ -56,14 +57,14 @@ namespace EQWOWConverter.WOWFiles
         private float BoundingSphereRadius = 0f;
         private BoundingBox CollisionBox = new BoundingBox();
         private float CollisionSphereRadius = 0f;
-        private M2TriangleFacesArrayByOffset CollisionTriangleIndices = new M2TriangleFacesArrayByOffset();
+        private M2GenericArrayByOffset<TriangleFace> CollisionTriangleIndices = new M2GenericArrayByOffset<TriangleFace>();
         private M2GenericArrayByOffset<Vector3> CollisionVertices = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<Vector3> CollisionFaceNormals = new M2GenericArrayByOffset<Vector3>();
         private M2GenericArrayByOffset<M2Attachment> Attachments = new M2GenericArrayByOffset<M2Attachment>();
         private M2GenericArrayByOffset<M2Int16> AttachmentIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
-        private M2EventArrayByOffset Events = new M2EventArrayByOffset();
+        private M2ArrayWithTrackedObjectsByOffset<M2Event> Events = new M2ArrayWithTrackedObjectsByOffset<M2Event>();
         private M2GenericArrayByOffset<M2Dummy> Lights = new M2GenericArrayByOffset<M2Dummy>();
-        private M2CameraArrayByOffset Cameras = new M2CameraArrayByOffset();
+        private M2ArrayWithTrackedObjectsByOffset<M2Camera> Cameras = new M2ArrayWithTrackedObjectsByOffset<M2Camera>();
         private M2GenericArrayByOffset<M2Int16> CamerasIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Dummy> RibbonEmitters = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> ParticleEmitters = new M2GenericArrayByOffset<M2Dummy>();
@@ -94,7 +95,8 @@ namespace EQWOWConverter.WOWFiles
                 AnimationSequenceLookup.Add(new M2Int16(value));
 
             // Bones
-            Bones.AddModelBones(wowObjectModel.ModelBones);
+            foreach (ObjectModelBone bone in wowObjectModel.ModelBones)
+                Bones.AddElement(new M2Bone(bone));
 
             // Key Bone ID Lookup
             foreach (Int16 value in wowObjectModel.ModelBoneKeyLookups)
@@ -183,7 +185,11 @@ namespace EQWOWConverter.WOWFiles
 
             // Events
             if (wowObjectModel.SoundIdleLoop != null)
-                Events.AddIdleSoundEvent(wowObjectModel.SoundIdleLoop);
+            {
+                M2Event newEvent = new M2Event();
+                newEvent.PopulateAsIdleSound(wowObjectModel.SoundIdleLoop);
+                Events.AddElement(newEvent);
+            }
 
             // Lights
             // none for now
@@ -191,7 +197,7 @@ namespace EQWOWConverter.WOWFiles
             // Cameras & ID Lookup
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
             {
-                Cameras.AddCamera(new M2Camera());
+                Cameras.AddElement(new M2Camera());
                 CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
             }
 

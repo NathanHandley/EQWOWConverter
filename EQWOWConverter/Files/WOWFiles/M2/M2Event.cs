@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Event
+    internal class M2Event : ITrackedOffsetByteSerializable
     {
         string Identifier = string.Empty;
         public int Data = 0;

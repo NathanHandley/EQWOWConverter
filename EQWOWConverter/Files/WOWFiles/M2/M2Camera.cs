@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Camera
+    internal class M2Camera : ITrackedOffsetByteSerializable
     {
         private UInt32 CameraType = 0; // 0 = portrait
         private float DiagonalFOV = 0.950022f;

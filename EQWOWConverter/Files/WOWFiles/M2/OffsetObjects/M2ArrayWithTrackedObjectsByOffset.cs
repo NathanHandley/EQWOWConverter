@@ -14,26 +14,25 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ObjectModels;
+using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
-namespace EQWOWConverter.WOWFiles
+namespace EQWOWConverter.Files.WOWFiles.M2.OffsetObjects
 {
-    internal class M2CameraArrayByOffset : IOffsetByteSerializable
+    internal class M2ArrayWithTrackedObjectsByOffset<T> where T: ITrackedOffsetByteSerializable
     {
         private UInt32 Count = 0;
         private UInt32 Offset = 0;
-        private List<M2Camera> Cameras = new List<M2Camera>();
+        private List<T> Elements = new List<T>();
 
-        public void AddCamera(M2Camera camera)
+        public void AddElement(T element)
         {
-            Cameras.Add(camera);
-            Count++;
+            Elements.Add(element);
+            Count = Convert.ToUInt32(Elements.Count); 
         }
 
         public List<Byte> GetHeaderBytes()
@@ -54,23 +53,23 @@ namespace EQWOWConverter.WOWFiles
             }
             Offset = Convert.ToUInt32(byteBuffer.Count);
 
-            // Determine space needed for all camera headers and reserve it
-            UInt32 allCameraSubHeaderSize = 0;
-            foreach (M2Camera camera in Cameras)
-                allCameraSubHeaderSize += camera.GetHeaderSize();
-            for (int i = 0; i < allCameraSubHeaderSize; i++)
+            // Determine space needed for all element headers and reserve it
+            UInt32 allElementSubHeaderSize = 0;
+            foreach (T element in Elements)
+                allElementSubHeaderSize += element.GetHeaderSize();
+            for (int i = 0; i < allElementSubHeaderSize; i++)
                 byteBuffer.Add(0);
             AddBytesToAlign(ref byteBuffer, 16);
 
             // Add all of the data
-            foreach (M2Camera camera in Cameras)
-                camera.AddDataBytes(ref byteBuffer);
+            foreach (T element in Elements)
+                element.AddDataBytes(ref byteBuffer);
 
             // Write the header data
             List<byte> headerBytes = new List<byte>();
-            foreach (M2Camera camera in Cameras)
-                headerBytes.AddRange(camera.GetHeaderBytes());
-            for (int i = 0; i < allCameraSubHeaderSize; i++)
+            foreach (T element in Elements)
+                headerBytes.AddRange(element.GetHeaderBytes());
+            for (int i = 0; i < allElementSubHeaderSize; i++)
                 byteBuffer[i + Convert.ToInt32(Offset)] = headerBytes[i];
         }
 
