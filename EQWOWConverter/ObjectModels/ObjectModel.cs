@@ -268,8 +268,9 @@ namespace EQWOWConverter.ObjectModels
                             QuaternionShort frameRotation;
                             frameRotation = new QuaternionShort(animationFrame.XRotation,
                                                                 animationFrame.ZRotation,
-                                                                animationFrame.YRotation,
+                                                                -animationFrame.YRotation,
                                                                 animationFrame.WRotation);
+
                             frameRotation.RecalculateToShortest();
 
                             // Calculate the frame start time
