@@ -456,13 +456,15 @@ namespace EQWOWConverter
 
             // Objects
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
-            {
-                // Static Doodads
+            {                
                 string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
+            }
 
-                // Creatures / Skeletal
+            // Creatures
+            if (Configuration.CONFIG_GENERATE_CREATURES == true)
+            {   
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreaturePath + "\" \"" + relativeCreaturePath + "\" /r");
