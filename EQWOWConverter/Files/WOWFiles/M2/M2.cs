@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Int16> AttachmentIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2EventArrayByOffset Events = new M2EventArrayByOffset();
         private M2GenericArrayByOffset<M2Dummy> Lights = new M2GenericArrayByOffset<M2Dummy>();
-        private M2GenericArrayByOffset<M2Dummy> Cameras = new M2GenericArrayByOffset<M2Dummy>();
+        private M2CameraArrayByOffset Cameras = new M2CameraArrayByOffset();
         private M2GenericArrayByOffset<M2Int16> CamerasIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Dummy> RibbonEmitters = new M2GenericArrayByOffset<M2Dummy>();
         private M2GenericArrayByOffset<M2Dummy> ParticleEmitters = new M2GenericArrayByOffset<M2Dummy>();
@@ -188,11 +188,12 @@ namespace EQWOWConverter.WOWFiles
             // Lights
             // none for now
 
-            // Cameras
-            // none for now
-
-            // Camera ID Lookup
-            // none for now
+            // Cameras & ID Lookup
+            if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
+            {
+                Cameras.AddCamera(new M2Camera());
+                CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
+            }
 
             // Ribbon Emitters
             // none for now
