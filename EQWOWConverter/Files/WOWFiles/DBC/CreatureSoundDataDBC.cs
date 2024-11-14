@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureSoundDataDBC : DBCFile
     {
-        public void AddRow(int id, int loopSoundID)
+        public void AddRow(int id)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
@@ -52,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Custom Attack 3 SoundEntriesDBC.ID
             newRow.AddInt(0); // Custom Attack 4 SoundEntriesDBC.ID
             newRow.AddInt(0); // NPC Sound SoundEntriesDBC.ID
-            newRow.AddInt(loopSoundID); // Loop Sound (idle?) SoundEntriesDBC.ID
+            newRow.AddInt(0); // Loop Sound (idle?) SoundEntriesDBC.ID
             newRow.AddInt(0); // Creature impact type
             newRow.AddInt(0); // Jump Start ID SoundEntriesDBC.ID
             newRow.AddInt(0); // Jump End ID SoundEntriesDBC.ID

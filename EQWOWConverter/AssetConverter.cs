@@ -772,6 +772,8 @@ namespace EQWOWConverter
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
+            CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
+            creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -829,6 +831,7 @@ namespace EQWOWConverter
                     creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
                     string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.ModelFileName + ".mdx";
                     creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, relativeModelPath);
+                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureModelDataID);
                 }
             }
 
@@ -944,6 +947,8 @@ namespace EQWOWConverter
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
+            creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
+            creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
