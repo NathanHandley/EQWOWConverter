@@ -67,7 +67,7 @@ namespace EQWOWConverter.Creatures
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {
-                Logger.WriteDetail("CreatureRace list via file '" + raceDataFileName + "' did not have enough lines");
+                Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' did not have enough lines");
                 return;
             }
 
@@ -86,7 +86,7 @@ namespace EQWOWConverter.Creatures
                 string[] rowBlocks = row.Split(",");
                 if (rowBlocks.Length != 6)
                 {
-                    Logger.WriteDetail("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 6");
+                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 6");
                     continue;
                 }
 
@@ -100,7 +100,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[5]);
                 if (CreatureRacesByRaceID.ContainsKey(newCreatureRace.ID))
                 {
-                    Logger.WriteDetail("CreatureRace list via file '" + raceDataFileName + "' has an duplicate row with id '" + newCreatureRace.ID + "'");
+                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an duplicate row with id '" + newCreatureRace.ID + "'");
                     continue;
                 }
                 CreatureRacesByRaceID.Add(newCreatureRace.ID, newCreatureRace);
