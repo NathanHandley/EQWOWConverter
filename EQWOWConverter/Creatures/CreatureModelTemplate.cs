@@ -94,7 +94,11 @@ namespace EQWOWConverter.Creatures
                 curObject.LoadEQObjectData(charactersFolderRoot);
 
                 // Convert to a WoW object
-                curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex);
+                float addedLift = Race.LiftMaleAndNeutral;
+                if (gender == CreatureGenderType.Female)
+                    addedLift = Race.LiftFemale;
+                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift);
 
                 // Create the M2 and Skin
                 M2 objectM2 = new M2(curObject, relativeMPQPath);

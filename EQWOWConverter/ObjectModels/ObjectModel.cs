@@ -80,17 +80,17 @@ namespace EQWOWConverter.ObjectModels
                 EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false);
         }
 
-        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex)
+        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0)
         {
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight);
             else
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight);
         }
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces)
+            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0)
         {
             // Save Name
             Name = name;
@@ -142,10 +142,10 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation(ModelMaterials, ModelVertices, ModelTriangles);
+            ProcessBonesAndAnimation(ModelMaterials, ModelVertices, ModelTriangles, skeletonLiftHeight);
         }
 
-        private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles)
+        private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles, float skeletonLiftHeight)
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -251,7 +251,7 @@ namespace EQWOWConverter.ObjectModels
                             {
                                 curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(1, 1, 1));
                                 curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, new QuaternionShort());
-                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3());
+                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(0, 0, skeletonLiftHeight));
                                 curTimestamp += Convert.ToUInt32(frameDurationInMS);
                             }
                             continue;

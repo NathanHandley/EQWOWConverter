@@ -35,6 +35,8 @@ namespace EQWOWConverter.Creatures
         public string FemaleSkeletonName = string.Empty;
         public string NeutralSkeletonName = string.Empty;
         public float BoundaryRadius;
+        public float LiftMaleAndNeutral = 0;
+        public float LiftFemale = 0;
 
         public static CreatureRace GetCreatureRaceByID(int id)
         {
@@ -84,9 +86,9 @@ namespace EQWOWConverter.Creatures
 
                 // Make sure data size is correct
                 string[] rowBlocks = row.Split(",");
-                if (rowBlocks.Length != 6)
+                if (rowBlocks.Length != 8)
                 {
-                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 6");
+                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 8");
                     continue;
                 }
 
@@ -98,6 +100,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.FemaleSkeletonName = rowBlocks[3].Trim();
                 newCreatureRace.NeutralSkeletonName = rowBlocks[4].Trim();
                 newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[5]);
+                newCreatureRace.LiftMaleAndNeutral = float.Parse(rowBlocks[6]);
+                newCreatureRace.LiftFemale = float.Parse(rowBlocks[7]);
                 if (CreatureRacesByRaceID.ContainsKey(newCreatureRace.ID))
                 {
                     Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an duplicate row with id '" + newCreatureRace.ID + "'");
