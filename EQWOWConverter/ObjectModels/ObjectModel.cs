@@ -196,9 +196,18 @@ namespace EQWOWConverter.ObjectModels
                     for (Int16 j = 0; j < ModelBones.Count; j++)
                         if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
                             curBone.ParentBone = j;
-                    curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    if (curBone.BoneNameEQ == "root")
+                    {
+                        curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                        curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                        curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    }
+                    else
+                    {
+                        curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                        curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                        curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    }
                     curBone.KeyBoneID = Convert.ToInt32(GetKeyBoneTypeForEQBone(curBone.BoneNameEQ));
                     if (curBone.KeyBoneID != -1)
                         ModelBoneKeyLookups[curBone.KeyBoneID] = Convert.ToInt16(ModelBones.Count);
@@ -242,19 +251,12 @@ namespace EQWOWConverter.ObjectModels
                     {
                         ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
-                        // Root is special, so create no-change bone transformation frames for the root bone for the number of animation frames
+                        // Root has just one frame
                         if (animationFrame.GetBoneName() == "root")
                         {
-                            int frameDurationInMS = animationFrame.FramesMS;
-                            UInt32 curTimestamp = 0;
-                            for (int i = 0; i < animation.Value.FrameCount; i++)
-                            {
-                                curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(1, 1, 1));
-                                curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, new QuaternionShort());
-                                curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, new Vector3(0, 0, skeletonLiftHeight));
-                                curTimestamp += Convert.ToUInt32(frameDurationInMS);
-                            }
-                            continue;
+                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, 0, new Vector3(1, 1, 1));
+                            curBone.RotationTrack.AddValueToSequence(curSequenceID, 0, new QuaternionShort());
+                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, 0, new Vector3(0, 0, 0));
                         }
                         // Regular bones append the animation frame
                         else
@@ -270,6 +272,10 @@ namespace EQWOWConverter.ObjectModels
                                                                 -animationFrame.ZRotation,
                                                                 animationFrame.WRotation);
                             frameRotation.RecalculateToShortest();
+
+                            // For bones that connect to root, add the height mod
+                            if (curBone.ParentBoneNameEQ == "root")
+                                frameTranslation.Z += skeletonLiftHeight;
 
                             // Calculate the frame start time
                             UInt32 curTimestamp = 0;
