@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.ObjectModels.Types;
 using EQWOWConverter.Zones;
 using Mysqlx.Session;
 using System;
@@ -186,10 +187,6 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                // Block out 27 key bones with blank
-                for (int i = 0; i < 27; i++)
-                    ModelBoneKeyLookups.Add(-1);
-
                 // Block out 37 animation lookups with nothing
                 for (int i = 0; i < 37; i++)
                     AnimationLookups.Add(-1);
@@ -215,11 +212,20 @@ namespace EQWOWConverter.ObjectModels
                         curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                         curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     }
-                    curBone.KeyBoneID = Convert.ToInt32(GetKeyBoneTypeForEQBone(curBone.BoneNameEQ));
-                    if (curBone.KeyBoneID != -1)
-                        ModelBoneKeyLookups[curBone.KeyBoneID] = Convert.ToInt16(ModelBones.Count);
+                    curBone.KeyBoneID = -1;
                     ModelBones.Add(curBone);
                 }
+
+                // Block out 27 key bones with blank
+                for (int i = 0; i < 27; i++)
+                    ModelBoneKeyLookups.Add(-1);
+
+                // Set any key bones
+                SetKeyBone(KeyBoneType.Root);
+                SetKeyBone(KeyBoneType.Jaw);
+                SetKeyBone(KeyBoneType._Breath);
+                SetKeyBone(KeyBoneType._Name);
+                SetKeyBone(KeyBoneType.CCH);
 
                 // Create animations
                 int curSequenceID = -1;
@@ -355,15 +361,118 @@ namespace EQWOWConverter.ObjectModels
                 GlobalLoopSequenceLimits.Add(0);
         }
 
-        private KeyBoneType GetKeyBoneTypeForEQBone(string eqBoneName)
+        private int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
         {
-            // TODO: Need to add more key bone types
-            switch (eqBoneName)
+            foreach (string eqBoneName in eqBoneNames)
             {
-                case "root": return KeyBoneType.Root;
-                case "he": return KeyBoneType.Head;
-                default: return KeyBoneType.None;
+                for (int i = 0; i < ModelBones.Count; i++)
+                {
+                    ObjectModelBone curBone = ModelBones[i];
+                    if (curBone.BoneNameEQ == eqBoneName)
+                        return i;
+                }
             }
+            return -1;
+        }
+
+        public int GetBoneIndexForAttachmentType(ObjectModelAttachmentType attachmentType)
+        {
+            // Default to root bone
+            int returnValue = -1;
+            if (ModelBoneKeyLookups.Count >= 27)
+                returnValue = ModelBoneKeyLookups[26];
+
+            switch (attachmentType)
+            {
+                case ObjectModelAttachmentType.Chest:
+                case ObjectModelAttachmentType.ChestBloodFront:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ch", "pe", "root");
+                    } break;
+                case ObjectModelAttachmentType.ChestBloodBack:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ch", "pe", "root");
+                    } break;
+                case ObjectModelAttachmentType.MouthBreath:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ja", "head_point", "he", "ch", "pe", "root");
+                    } break;
+                case ObjectModelAttachmentType.GroundBase:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("root");
+                    } break;
+                case ObjectModelAttachmentType.PlayerName:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "root");
+                    }
+                    break;
+                case ObjectModelAttachmentType.HeadTop:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "root");
+                    } break;
+                case ObjectModelAttachmentType.HandLeft_ItemVisual2:
+                case ObjectModelAttachmentType.SpellLeftHand:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "root");
+                    } break;
+                case ObjectModelAttachmentType.HandRight_ItemVisual1:
+                case ObjectModelAttachmentType.SpellRightHand:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "root");
+                    } break;
+                default:
+                    {
+                        Logger.WriteError("GetBoneIndexForAttachmentType error - Unhandled attachment type of '" + attachmentType.ToString() + "' for object model '" + Name + "'");
+                    } break;
+            }
+
+            return returnValue;
+        }
+        public int GetBoneIndexForKeyBoneType(KeyBoneType keyBoneType)
+        {
+            // Default to root bone
+            int returnValue = -1;
+            if (ModelBoneKeyLookups.Count >= 27)
+                returnValue = ModelBoneKeyLookups[26];
+
+            switch (keyBoneType)
+            {
+                case KeyBoneType.Root:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("root");
+                    } break;
+                case KeyBoneType.Jaw:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ja", "head_point", "he", "ch", "pe", "root");
+                    } break;
+                case KeyBoneType._Breath:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("ja", "head_point", "he", "ch", "pe", "root");
+                    } break;
+                case KeyBoneType._Name:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "root");
+                    } break;
+                case KeyBoneType.CCH:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "root"); // Complete guess as I don't know what CCH is
+                    } break;
+                default:
+                    {
+                        Logger.WriteError("GetBoneIndexForKeyBoneType error - Unhandled key bone type of '" + keyBoneType.ToString() + "' for object model '" + Name + "'");
+                    }
+                    break;
+            }
+
+            return returnValue;
+        }
+
+        private void SetKeyBone(KeyBoneType keyBoneType)
+        {
+            int boneIndex = GetBoneIndexForKeyBoneType(keyBoneType);
+            ModelBoneKeyLookups[Convert.ToInt32(keyBoneType)] = Convert.ToInt16(boneIndex);
+            if (boneIndex != -1)
+                ModelBones[boneIndex].KeyBoneID = Convert.ToInt32(keyBoneType);
         }
 
         private void SetAnimationLookup(ObjectModelAnimation animation, Int16 animationID)

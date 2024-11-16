@@ -180,12 +180,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Attachments & Attachment ID
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)
-            {
-                Attachments.AddElement(new M2Attachment(ObjectModelAttachmentType.PlayerName, Convert.ToUInt32(wowObjectModel.ModelBoneKeyLookups[26])));
-                for (int i = 0; i < 19; i++)
-                    AttachmentIndicesLookup.Add(new M2Int16(-1));
-                AttachmentIndicesLookup.SetElementValue(18, new M2Int16(0));
-            }
+                SetSkeletonAttachments(wowObjectModel);
 
             // Events
             if (wowObjectModel.SoundIdleLoop != null)
@@ -216,6 +211,33 @@ namespace EQWOWConverter.WOWFiles
             {
                 // Do nothing for now, so this flag can't be set
             }
+        }
+
+        private void SetSkeletonAttachments(ObjectModel wowObjectModel)
+        {
+            // Blank out the attachment list (through 'chest')
+            for (int i = 0; i < 35; i++)
+                AttachmentIndicesLookup.Add(new M2Int16(-1));
+
+            // Add the various attachments
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandRight_ItemVisual1);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HandLeft_ItemVisual2);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodFront);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ChestBloodBack);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.MouthBreath);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.PlayerName);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.GroundBase);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.HeadTop);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellLeftHand);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellRightHand);
+            SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Chest);
+        }
+
+        private void SetSkeletonAttachment(ObjectModel wowObjectModel, ObjectModelAttachmentType attachmentType)
+        {
+            int boneIndex = wowObjectModel.GetBoneIndexForAttachmentType(attachmentType);
+            Attachments.AddElement(new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex)));
+            AttachmentIndicesLookup.SetElementValue(Convert.ToInt32(attachmentType), new M2Int16(Convert.ToInt16(Attachments.Count - 1)));
         }
 
         private UInt32 GetM2HeaderSize()
