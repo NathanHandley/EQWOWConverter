@@ -23,8 +23,9 @@ using System.Threading.Tasks;
 namespace EQWOWConverter.Common
 {
     // Scraped out of wowdev.wiki/M2/AnimationList on 2024/10/20
-    internal enum AnimationType : UInt16
+    internal enum AnimationType : Int16
     {
+        None = -1,
         Stand = 0, // Idle
         Death = 1, // Death
         Spell = 2,

@@ -15,10 +15,12 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -169,7 +171,7 @@ namespace EQWOWConverter.ObjectModels
             else
             {
                 // Grab the 'pos' animation, which should be the base pose
-                Animation pickedAnimation = new Animation("",AnimationType.Stand, 0, 0);
+                Animation pickedAnimation = new Animation("",AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
                     if (animation.Key == "pos")
                         pickedAnimation = animation.Value;
@@ -224,6 +226,7 @@ namespace EQWOWConverter.ObjectModels
                     ObjectModelAnimation newAnimation = new ObjectModelAnimation();
                     newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                     newAnimation.AnimationType = animation.Value.AnimationType;
+                    newAnimation.EQAnimationType = animation.Value.EQAnimationType;
                     newAnimation.BoundingBox = new BoundingBox(BoundingBox);
                     newAnimation.BoundingRadius = BoundingSphereRadius;
                     newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop

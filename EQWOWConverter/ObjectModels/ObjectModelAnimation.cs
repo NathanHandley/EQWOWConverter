@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.EQFiles;
 using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelAnimation : IByteSerializable
     {
         public AnimationType AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
+        public EQAnimationType EQAnimationType = EQAnimationType.Unknown;
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         public UInt32 DurationInMS = 10000;
         public float MoveSpeed = 2.5f;

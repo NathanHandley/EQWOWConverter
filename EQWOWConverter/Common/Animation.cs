@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.EQFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,13 +27,15 @@ namespace EQWOWConverter.Common
     {
         public string AnimationName = string.Empty;
         public AnimationType AnimationType;
+        public EQAnimationType EQAnimationType;
         public int FrameCount = 0;
         public int TotalTimeInMS = 0;
 
-        public Animation(string animationName, AnimationType animationType, int frameCount, int totalTimeInMS)
+        public Animation(string animationName, AnimationType animationType, EQAnimationType eqAnimationType, int frameCount, int totalTimeInMS)
         {
             AnimationName = animationName;
             AnimationType = animationType;
+            EQAnimationType = eqAnimationType;
             FrameCount = frameCount;
             TotalTimeInMS = totalTimeInMS;
         }
