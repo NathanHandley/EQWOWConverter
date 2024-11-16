@@ -80,17 +80,17 @@ namespace EQWOWConverter.ObjectModels
                 EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false);
         }
 
-        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0)
+        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0, float modelScale = 1)
         {
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight, modelScale);
             else
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight, modelScale);
         }
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0)
+            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0, float modelScale = 1)
         {
             // Save Name
             Name = name;
@@ -109,7 +109,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal);
+                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, modelScale);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -117,7 +117,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, modelScale);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }

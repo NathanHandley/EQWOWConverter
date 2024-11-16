@@ -35,8 +35,11 @@ namespace EQWOWConverter.Creatures
         public string FemaleSkeletonName = string.Empty;
         public string NeutralSkeletonName = string.Empty;
         public float BoundaryRadius;
+        public float BoundaryHeight;
         public float LiftMaleAndNeutral = 0;
         public float LiftFemale = 0;
+        public float ModelScale;
+        public float Height;        
 
         public static CreatureRace GetCreatureRaceByID(int id)
         {
@@ -74,21 +77,21 @@ namespace EQWOWConverter.Creatures
             }
 
             // Load all of the data
-            bool firstRow = true;
+            bool headerRow = true;
             foreach(string row in inputRows)
             {
                 // Handle first row
-                if (firstRow == true)
+                if (headerRow == true)
                 {
-                    firstRow = false;
+                    headerRow = false;
                     continue;
                 }
 
                 // Make sure data size is correct
                 string[] rowBlocks = row.Split(",");
-                if (rowBlocks.Length != 8)
+                if (rowBlocks.Length != 11)
                 {
-                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 8");
+                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 11");
                     continue;
                 }
 
@@ -99,9 +102,13 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.MaleSkeletonName = rowBlocks[2].Trim();
                 newCreatureRace.FemaleSkeletonName = rowBlocks[3].Trim();
                 newCreatureRace.NeutralSkeletonName = rowBlocks[4].Trim();
-                newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[5]);
-                newCreatureRace.LiftMaleAndNeutral = float.Parse(rowBlocks[6]);
-                newCreatureRace.LiftFemale = float.Parse(rowBlocks[7]);
+                newCreatureRace.LiftMaleAndNeutral = float.Parse(rowBlocks[5]);
+                newCreatureRace.LiftFemale = float.Parse(rowBlocks[6]);
+                newCreatureRace.ModelScale = float.Parse(rowBlocks[7]);
+                newCreatureRace.Height = float.Parse(rowBlocks[8]);
+                newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[9]);
+                newCreatureRace.BoundaryHeight = float.Parse(rowBlocks[10]);
+
                 if (CreatureRacesByRaceID.ContainsKey(newCreatureRace.ID))
                 {
                     Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an duplicate row with id '" + newCreatureRace.ID + "'");
