@@ -97,7 +97,8 @@ namespace EQWOWConverter.Creatures
                 float addedLift = Race.LiftMaleAndNeutral;
                 if (gender == CreatureGenderType.Female)
                     addedLift = Race.LiftFemale;
-                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                addedLift *= 2 - Race.ModelScale; // Remove lift by model scale amount
+                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE; // Modify scale by world scale
                 curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift, Race.ModelScale);
 
                 // Create the M2 and Skin
