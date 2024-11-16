@@ -43,6 +43,45 @@ namespace EQWOWConverter.ObjectModels
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
 
+        //static public ObjectModelAnimation GetPriorityAnimation(ObjectModelAnimation firstAnimation, ObjectModelAnimation secondAnimation)
+        //{
+        //    // Known by default
+        //    if (firstAnimation.AnimationType == AnimationType.None)
+        //        return secondAnimation;
+        //    else if (secondAnimation.AnimationType == AnimationType.None)
+        //        return firstAnimation;
+
+        //    // Pose is always the lowest priority
+        //    if (firstAnimation.EQAnimationType == EQAnimationType.posStandPose || firstAnimation.EQAnimationType == EQAnimationType.drfStandPose)
+        //        return secondAnimation;
+        //    if (secondAnimation.EQAnimationType == EQAnimationType.posStandPose || secondAnimation.EQAnimationType == EQAnimationType.drfStandPose)
+        //        return firstAnimation;
+
+        //    // Compare 'unlike'
+        //    if (firstAnimation.EQAnimationType != secondAnimation.EQAnimationType)
+        //    {
+        //        // Passive stand over idle stand
+        //        //if (firstAnimation.EQAnimationType == EQAnimationType.o02StandArmsToSide || firstAnimation.EQAnimationType == EQAnimationType.)
+
+        //    }
+
+        //    // Default to first
+        //    return firstAnimation;
+        //}
+
+        public int GetAnimationPriority()
+        {
+            switch (EQAnimationType)
+            {
+                case EQAnimationType.posStandPose: return 0;
+                case EQAnimationType.drfStandPose: return 0;
+                case EQAnimationType.o02StandArmsToSide: return 1;
+                case EQAnimationType.o01StandIdle: return 2;
+                case EQAnimationType.p01StandPassive: return 3;
+                default: return 4;
+            }
+        }
+
         public UInt32 GetBytesSize()
         {
             UInt32 size = 0;

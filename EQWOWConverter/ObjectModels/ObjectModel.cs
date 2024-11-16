@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Zones;
+using Mysqlx.Session;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -189,6 +190,10 @@ namespace EQWOWConverter.ObjectModels
                 for (int i = 0; i < 27; i++)
                     ModelBoneKeyLookups.Add(-1);
 
+                // Block out 37 animation lookups with nothing
+                for (int i = 0; i < 37; i++)
+                    AnimationLookups.Add(-1);
+
                 // Create bones by reading this pos animation
                 for (int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
                 {
@@ -237,7 +242,7 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
 
                     // Save the lookup
-                    SetAnimationLookup(newAnimation.AnimationType, Convert.ToInt16(ModelAnimations.Count - 1));
+                    SetAnimationLookup(newAnimation, Convert.ToInt16(ModelAnimations.Count - 1));
 
                     // Create an animation track sequence for each bone
                     curSequenceID++;
@@ -340,6 +345,9 @@ namespace EQWOWConverter.ObjectModels
                             ModelVertices[modelTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(i);
                     }                    
                 }
+
+                // Set default animations in unfilled animation slots
+                SetDefaultAnimationLookupsForSkeletal();
             }
 
             // TODO: Put this somewhere else / change this
@@ -358,16 +366,38 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void SetAnimationLookup(AnimationType animationType, Int16 animationID)
+        private void SetAnimationLookup(ObjectModelAnimation animation, Int16 animationID)
         {
             // Expand the list if needed
-            UInt16 curAnimationtypeValue = Convert.ToUInt16(animationType);
-            if (curAnimationtypeValue >= AnimationLookups.Count)
-                for (int i = AnimationLookups.Count; i <= curAnimationtypeValue; i++)
+            UInt16 curAnimationTypeValue = Convert.ToUInt16(animation.AnimationType);
+            if (curAnimationTypeValue >= AnimationLookups.Count)
+                for (int i = AnimationLookups.Count; i <= curAnimationTypeValue; i++)
                     AnimationLookups.Add(-1);
 
-            // Set the reference in the list
-            AnimationLookups[curAnimationtypeValue] = animationID;
+            // Skip if this a lower priority animation
+            ObjectModelAnimation curPriorityAnimation = animation;
+            if (AnimationLookups[curAnimationTypeValue] != -1)
+            {
+                ObjectModelAnimation alreadyPlacedAnimation = ModelAnimations[AnimationLookups[curAnimationTypeValue]];
+                if (animation.GetAnimationPriority() <= alreadyPlacedAnimation.GetAnimationPriority())
+                    return;
+            }
+
+            // Set it
+            AnimationLookups[curAnimationTypeValue] = animationID;
+        }
+
+        private void SetDefaultAnimationLookupsForSkeletal()
+        {
+            // Attacks
+
+
+
+            // Walks
+
+            // Runs
+
+            // Stands
         }
         
         private ObjectModelBone GetBoneWithName(string name)
