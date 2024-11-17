@@ -316,10 +316,10 @@ namespace EQWOWConverter.ObjectModels
                         {
                             if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]) == false)
                                 curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[1]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[1]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[2]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[2]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V2].BoneIndicesTrue[0]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V2].BoneIndicesTrue[0]);
+                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V3].BoneIndicesTrue[0]) == false)
+                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V3].BoneIndicesTrue[0]);
                         }
                     }
                     if (curMaterialBoneIndices.Count > 0)
