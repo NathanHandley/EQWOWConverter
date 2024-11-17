@@ -107,6 +107,7 @@ namespace EQWOWConverter.EQFiles
             return true;
         }
 
+        // TODO: Consider deleting this since it mirrors ObjectModel.GetAnimationIndexForAnimationType, kind of
         private AnimationType DetermineAnimationType(string animationName)
         {
             switch (animationName.ToLower())
@@ -141,11 +142,6 @@ namespace EQWOWConverter.EQFiles
                 case "l08r": return AnimationType.StealthWalk; // Crouch walking in reverse
                 case "l09": return AnimationType.SwimIdle; // Swim and Treading Water.  May need forward swimming animation for this 
                 case "o01": return AnimationType.Stand; // Idle
-                case "s01": return AnimationType.EmoteCheer;
-                case "s02": return AnimationType.EmoteCry; // Mourn
-                case "s03": return AnimationType.EmoteWave;
-                case "s04": return AnimationType.EmoteRude;
-                case "s05": return AnimationType.EmoteShy; // This is actually a Yawn.  Could be an issue
                 case "o02": return AnimationType.Stand; // Idle with arms at the sides
                 case "o03": return AnimationType.SitGround; // Idle sitting
                 case "p01": return AnimationType.Stand; // Passive
@@ -160,15 +156,11 @@ namespace EQWOWConverter.EQFiles
                 case "p07": return AnimationType.SitGround;
                 case "p08": return AnimationType.Stand; // Standing with arms at the sides
                 case "pos": return AnimationType.Stand; // "Pose", unsure what this is exactly
-                case "t01": return AnimationType.Stand; // Unknown (unused?)
-                case "t02": return AnimationType.EmoteDance; // Stringed Instrument
-                case "t03": return AnimationType.EmoteDance; // Wind Instrument
-                case "t04": return AnimationType.SpellCastDirected; // Cast Pull Back
-                case "t05": return AnimationType.SpellCastOmni; // Raise and Loop Arms
-                case "t06": return AnimationType.SpellCastArea; // Cast Push Forward
-                case "t07": return AnimationType.Kick; // Flying Kick
-                case "t08": return AnimationType.AttackUnarmed; // Rapid Punches
-                case "t09": return AnimationType.AttackUnarmedOff; // Large Punch
+                case "s01": return AnimationType.EmoteCheer;
+                case "s02": return AnimationType.EmoteCry; // Mourn
+                case "s03": return AnimationType.EmoteWave;
+                case "s04": return AnimationType.EmoteRude;
+                case "s05": return AnimationType.EmoteShy; // This is actually a Yawn.  Could be an issue                
                 case "s06": return AnimationType.Stand; // Nod
                 case "s07": return AnimationType.EmoteCheer; // Amazed
                 case "s08": return AnimationType.EmoteBeg;
@@ -192,6 +184,15 @@ namespace EQWOWConverter.EQFiles
                 case "s26": return AnimationType.Stand; // Shiver
                 case "s27": return AnimationType.Stand; // Tap Foot
                 case "s28": return AnimationType.EmoteBow;
+                case "t01": return AnimationType.Stand; // Unknown (unused?)
+                case "t02": return AnimationType.EmoteDance; // Stringed Instrument
+                case "t03": return AnimationType.EmoteDance; // Wind Instrument
+                case "t04": return AnimationType.SpellCastDirected; // Cast Pull Back
+                case "t05": return AnimationType.SpellCastOmni; // Raise and Loop Arms
+                case "t06": return AnimationType.SpellCastArea; // Cast Push Forward
+                case "t07": return AnimationType.Kick; // Flying Kick
+                case "t08": return AnimationType.AttackUnarmed; // Rapid Punches
+                case "t09": return AnimationType.AttackUnarmedOff; // Large Punch
                 default:
                     {
                         Logger.WriteError("Could not determine animation type with animation name '" + animationName + "'");

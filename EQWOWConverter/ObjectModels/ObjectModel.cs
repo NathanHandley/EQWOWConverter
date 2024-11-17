@@ -187,10 +187,6 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                // Block out 37 animation lookups with nothing
-                for (int i = 0; i < 37; i++)
-                    AnimationLookups.Add(-1);
-
                 // Create bones by reading this pos animation
                 for (int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
                 {
@@ -228,6 +224,7 @@ namespace EQWOWConverter.ObjectModels
                 SetKeyBone(KeyBoneType.CCH);
 
                 // Create animations
+                // TODO: Create "dead" out of the last frame of "death"
                 int curSequenceID = -1;
                 foreach (var animation in EQObjectModelData.Animations)
                 {
@@ -246,9 +243,6 @@ namespace EQWOWConverter.ObjectModels
                     // If this has more than one frame, reduce the duration by 1 frame to allow for proper looping
                     if (animation.Value.FrameCount > 1)
                         newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
-
-                    // Save the lookup
-                    SetAnimationLookup(newAnimation, Convert.ToInt16(ModelAnimations.Count - 1));
 
                     // Create an animation track sequence for each bone
                     curSequenceID++;
@@ -309,6 +303,9 @@ namespace EQWOWConverter.ObjectModels
                     }
                 }
 
+                // Set the animation lookups
+                SetAllAnimationLookups();
+
                 // Create bone lookups on a per submesh basis (which are grouped by material)
                 for (int curMaterialIndex = 0; curMaterialIndex < modelMaterials.Count; curMaterialIndex++)
                 {
@@ -351,9 +348,6 @@ namespace EQWOWConverter.ObjectModels
                             ModelVertices[modelTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(i);
                     }                    
                 }
-
-                // Set default animations in unfilled animation slots
-                SetDefaultAnimationLookupsForSkeletal();
             }
 
             // TODO: Put this somewhere else / change this
@@ -428,6 +422,7 @@ namespace EQWOWConverter.ObjectModels
 
             return returnValue;
         }
+
         public int GetBoneIndexForKeyBoneType(KeyBoneType keyBoneType)
         {
             // Default to root bone
@@ -467,6 +462,33 @@ namespace EQWOWConverter.ObjectModels
             return returnValue;
         }
 
+        private void SetAllAnimationLookups()
+        {
+            // Set the animations through 49 (Attack Rifle)
+            AnimationLookups.Clear();
+            for (int i = 0; i <= 49; i++)
+            {
+                AnimationType curAnimationType = (AnimationType)i;
+                List<EQAnimationType> validEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(curAnimationType);
+                int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
+                AnimationLookups.Add(Convert.ToInt16(firstAnimationIndex));
+            }
+        }
+
+        private int GetFirstAnimationIndexForEQAnimationTypes(params EQAnimationType[] eqAnimationTypes)
+        {
+            foreach (EQAnimationType eqAnimationType in eqAnimationTypes)
+            {
+                for (int i = 0; i < ModelAnimations.Count; i++)
+                {
+                    ObjectModelAnimation curAnimation = ModelAnimations[i];
+                    if (curAnimation.EQAnimationType == eqAnimationType)
+                        return i;
+                }
+            }
+            return -1;
+        }
+
         private void SetKeyBone(KeyBoneType keyBoneType)
         {
             int boneIndex = GetBoneIndexForKeyBoneType(keyBoneType);
@@ -474,41 +496,7 @@ namespace EQWOWConverter.ObjectModels
             if (boneIndex != -1)
                 ModelBones[boneIndex].KeyBoneID = Convert.ToInt32(keyBoneType);
         }
-
-        private void SetAnimationLookup(ObjectModelAnimation animation, Int16 animationID)
-        {
-            // Expand the list if needed
-            UInt16 curAnimationTypeValue = Convert.ToUInt16(animation.AnimationType);
-            if (curAnimationTypeValue >= AnimationLookups.Count)
-                for (int i = AnimationLookups.Count; i <= curAnimationTypeValue; i++)
-                    AnimationLookups.Add(-1);
-
-            // Skip if this a lower priority animation
-            ObjectModelAnimation curPriorityAnimation = animation;
-            if (AnimationLookups[curAnimationTypeValue] != -1)
-            {
-                ObjectModelAnimation alreadyPlacedAnimation = ModelAnimations[AnimationLookups[curAnimationTypeValue]];
-                if (animation.GetAnimationPriority() <= alreadyPlacedAnimation.GetAnimationPriority())
-                    return;
-            }
-
-            // Set it
-            AnimationLookups[curAnimationTypeValue] = animationID;
-        }
-
-        private void SetDefaultAnimationLookupsForSkeletal()
-        {
-            // Attacks
-
-
-
-            // Walks
-
-            // Runs
-
-            // Stands
-        }
-        
+              
         private ObjectModelBone GetBoneWithName(string name)
         {
             foreach (ObjectModelBone bone in ModelBones)
