@@ -420,7 +420,11 @@ namespace EQWOWConverter.WOWFiles
             headerBytes.AddRange(BitConverter.GetBytes(BoundingSphereRadius));
             headerBytes.AddRange(CollisionBox.ToBytesHighRes());
             headerBytes.AddRange(BitConverter.GetBytes(CollisionSphereRadius));
-            headerBytes.AddRange(CollisionTriangleIndices.GetHeaderBytes());
+
+            // Special logic for Collision Indices (seems that the count is individual indices, not blocks)
+            headerBytes.AddRange(BitConverter.GetBytes(CollisionTriangleIndices.Count * 3));
+            headerBytes.AddRange(BitConverter.GetBytes(CollisionTriangleIndices.Offset));
+
             headerBytes.AddRange(CollisionVertices.GetHeaderBytes());
             headerBytes.AddRange(CollisionFaceNormals.GetHeaderBytes());
             headerBytes.AddRange(Attachments.GetHeaderBytes());

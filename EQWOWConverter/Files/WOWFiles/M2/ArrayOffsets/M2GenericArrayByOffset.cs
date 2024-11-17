@@ -27,8 +27,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class M2GenericArrayByOffset<T> : IOffsetByteSerializable where T : IByteSerializable
     {
-        private UInt32 Count = 0;
-        private UInt32 Offset = 0;
+        public UInt32 Count = 0;
+        public UInt32 Offset = 0;
         public List<T> Elements = new List<T>();
 
         public void Add(T element)
