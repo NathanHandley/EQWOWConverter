@@ -68,6 +68,9 @@ namespace EQWOWConverter.WOWFiles
             for (int i = 0; i < allTrackSequenceHeaderBytesCount; i++)
                 byteBuffer.Add(0);
 
+            // Align header
+            AddBytesToAlign(ref byteBuffer, 16);
+
             // Add the data bytes
             foreach (var trackSequence in TrackSequences)
                 trackSequence.AddDataBytes(ref byteBuffer);
@@ -78,6 +81,15 @@ namespace EQWOWConverter.WOWFiles
                 headerBytes.AddRange(trackSequence.GetHeaderBytes());
             for (int i = 0; i < headerBytes.Count; i++)
                 byteBuffer[i + trackSequencesHeaderStartOffset] = headerBytes[i];
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, int byteAlignMultiplier)
+        {
+            int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesToAdd == byteAlignMultiplier)
+                return;
+            for (int i = 0; i < bytesToAdd; ++i)
+                byteBuffer.Add(0);
         }
     }
 }

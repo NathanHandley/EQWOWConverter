@@ -76,6 +76,7 @@ namespace EQWOWConverter.WOWFiles
                 texture.FileNameOffset = curOffset;
                 dataBytes.AddRange(Encoding.ASCII.GetBytes(texture.FullTexturePath.ToUpper()));
                 curOffset += texture.FileNameLength;
+                AddBytesToAlign(ref dataBytes, ref curOffset, 16);
             }
 
             // Generate the headers
@@ -86,6 +87,16 @@ namespace EQWOWConverter.WOWFiles
             // Combine them
             byteBuffer.AddRange(headerBytes);
             byteBuffer.AddRange(dataBytes);
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, ref UInt32 curOffset, int byteAlignMultiplier)
+        {
+            int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesToAdd == byteAlignMultiplier)
+                return;
+            for (int i = 0; i < bytesToAdd; ++i)
+                byteBuffer.Add(0);
+            curOffset += Convert.ToUInt32(bytesToAdd);
         }
     }
 }
