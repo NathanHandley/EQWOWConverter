@@ -70,8 +70,8 @@ RaceID,RaceName,Male,Female,Neutral,LiftMN,LiftF,ModelScale,Height,BoundRadius,B
 69,Will O Wisp,,,WIL,3.75,3.75,1.2,6,20,7.44
 70,Zombie,ZOM,ZOF,,3.75,3.75,1.2,6,5.4499,7.44
 71,Qeynos Citizen,QCM,QCF,,3.75,3.75,1.2,6,5.4499,7.44
-72,Ship,,,SHIP,0.1,0.1,2,6,146.11,1
-73,Launch,,,LAUNCH,0.1,0.1,1,6,73.5643,1
+72,Ship,,,,0.1,0.1,2,6,146.11,1
+73,Launch,,,,0.1,0.1,1,6,73.5643,1
 74,Piranha,,,PIR,3.75,3.75,1.2,6,8.7411,7.44
 75,Elemental,,,ELE,3.75,3.75,1.2,6,5.65334,7.44
 76,Puma,,,PUM,3.75,3.75,1.2,6,5.77437,7.44
@@ -106,13 +106,13 @@ RaceID,RaceName,Male,Female,Neutral,LiftMN,LiftF,ModelScale,Height,BoundRadius,B
 105,Swordfish,,,SWO,3.75,3.75,1.2,6,3.87731,7.44
 106,Felguard,,,FE,3.75,3.75,1.2,6,5.58334,7.44
 107,Mammoth,,,MAM,3.75,3.75,1.2,6,13.9833,7.44
-108,Eye of Zomm,,,EYE,3,3,0.05,6,30,3
+108,Eye of Zomm,,,,3,3,0.05,6,30,3
 109,Wasp,,,WAS,3.75,3.75,1.2,6,12.1309,7.44
 110,Mermaid,,,MER,3.75,3.75,1.2,6,5.77456,7.44
 111,Harpie,,,HAR,3.75,3.75,1.2,6,23.996,7.44
 112,Fayguard,GFM,GFF,,3.125,3.125,1,5,5.08699,6.2
 113,Drixie,,,DRI,3.75,3.75,1.2,6,40,7.44
-114,Ghost Ship,,,GSP,0.1,0.1,1,6,0,1
+114,Ghost Ship,,,,0.1,0.1,1,6,0,1
 115,Clam,,,CLA,3.75,3.75,1.2,6,0,7.44
 116,Sea Horse,,,SEA,3.75,3.75,1.2,6,3.92558,7.44
 117,Ghost Dwarf,,,GD,3.75,3.75,1.2,6,5.25813,7.44
@@ -139,7 +139,7 @@ RaceID,RaceName,Male,Female,Neutral,LiftMN,LiftF,ModelScale,Height,BoundRadius,B
 138,Yeti,,,YET,3.75,3.75,1.2,6,9.57382,7.44
 139,Iksar Citizen,,,IC,3.75,3.75,1.2,6,6.12162,7.44
 140,Forest Giant,,,FGI,3.75,3.75,1.2,6,6.03214,7.44
-141,Boat,,,BOAT,0.1,0.1,1,6,0,1
+141,Boat,,,,0.1,0.1,1,6,0,1
 142,Minor Illusion,,,,0.1,0.1,1,6,0,6
 143,Tree Illusion,,,,0.1,0.1,1,6,0,6
 144,Burynai,,,BRN,3.75,3.75,1.2,6,8.60096,7.44
