@@ -46,18 +46,21 @@ namespace EQWOWConverter.WOWFiles
             Header.Indices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelVertices.Count));
             curOffset += indicesBytes.Count;
             nonHeaderBytes.AddRange(indicesBytes);
+            AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
             // Triangles
             List<byte> triangleBytes = GenerateTrianglesBlock(wowObjectModel);
             Header.TriangleIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelTriangles.Count * 3));
             curOffset += triangleBytes.Count;
             nonHeaderBytes.AddRange(triangleBytes);
+            AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
             // Bone Indices
             List<byte> boneIndicesBytes = GenerateBoneIndicesBlock(wowObjectModel);
             Header.BoneIndices.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(wowObjectModel.ModelVertices.Count));
             curOffset += boneIndicesBytes.Count;
             nonHeaderBytes.AddRange(boneIndicesBytes);
+            AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
             // SubMeshes
             List<M2SkinTextureUnit> textureUnits;
@@ -65,11 +68,13 @@ namespace EQWOWConverter.WOWFiles
             Header.SubMeshes.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(textureUnits.Count));     // 1 sub mesh per texture unit
             curOffset += subMeshesBytes.Count;
             nonHeaderBytes.AddRange(subMeshesBytes);
+            AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
             // Texture Units
             List<byte> textureUnitsBytes = GenerateTextureUnitsBlock(textureUnits);
             Header.TextureUnits.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(textureUnits.Count));
             nonHeaderBytes.AddRange(textureUnitsBytes);
+            AddBytesToAlign(ref nonHeaderBytes, ref curOffset, 16);
 
             // Assemble the byte stream together, header first
             SkinBytes.AddRange(Header.ToBytes());
@@ -221,6 +226,19 @@ namespace EQWOWConverter.WOWFiles
             // Create the skin
             string skinFileName = Path.Combine(outputFolderPath, fileName + "00.skin");
             File.WriteAllBytes(skinFileName, SkinBytes.ToArray());
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, ref int offset, int byteAlignMultiplier)
+        {
+            int bytesModified = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesModified == byteAlignMultiplier)
+            {
+                bytesModified = 0;
+                return;
+            }
+            for (int i = 0; i < bytesModified; ++i)
+                byteBuffer.Add(0);
+            offset += bytesModified;
         }
     }
 }
