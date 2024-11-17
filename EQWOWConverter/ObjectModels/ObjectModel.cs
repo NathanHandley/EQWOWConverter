@@ -107,7 +107,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Sort the geometry
-            meshData.SortDataByMaterial();
+            meshData.SortDataByMaterialAndBones();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
@@ -173,7 +173,7 @@ namespace EQWOWConverter.ObjectModels
             else
             {
                 // Grab the 'pos' animation, which should be the base pose
-                Animation pickedAnimation = new Animation("",AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
+                Animation pickedAnimation = new Animation("", AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
                 foreach (var animation in EQObjectModelData.Animations)
                     if (animation.Key == "pos")
                         pickedAnimation = animation.Value;
@@ -246,7 +246,7 @@ namespace EQWOWConverter.ObjectModels
 
                     // Create an animation track sequence for each bone
                     curSequenceID++;
-                    foreach(ObjectModelBone bone in ModelBones)
+                    foreach (ObjectModelBone bone in ModelBones)
                     {
                         bone.ScaleTrack.AddSequence();
                         bone.RotationTrack.AddSequence();
@@ -255,7 +255,7 @@ namespace EQWOWConverter.ObjectModels
 
                     // Add the animation-bone transformations to the bone objects for each frame
                     Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
-                    foreach(Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
+                    foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
                     {
                         ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
@@ -307,52 +307,35 @@ namespace EQWOWConverter.ObjectModels
                 SetAllAnimationLookups();
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
-                for (int curMaterialIndex = 0; curMaterialIndex < modelMaterials.Count; curMaterialIndex++)
+                // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
+                List<int> vertexMaterialIDs = new List<int>();
+                for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
+                    vertexMaterialIDs.Add(-1);
+                foreach (TriangleFace modelTriangle in ModelTriangles)
                 {
-                    List<Int16> curMaterialBoneIndices = new List<Int16>();
-                    foreach(TriangleFace modelTriangle in modelTriangles)
-                    {
-                        if (modelTriangle.MaterialIndex == curMaterialIndex)
-                        {
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V1].BoneIndicesTrue[0]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V2].BoneIndicesTrue[0]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V2].BoneIndicesTrue[0]);
-                            if (curMaterialBoneIndices.Contains(modelVertices[modelTriangle.V3].BoneIndicesTrue[0]) == false)
-                                curMaterialBoneIndices.Add(modelVertices[modelTriangle.V3].BoneIndicesTrue[0]);
-                        }
-                    }
-                    if (curMaterialBoneIndices.Count > 0)
-                    {
-                        BoneLookupsByMaterialIndex.Add(curMaterialIndex, curMaterialBoneIndices);
-                    }
+                    vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
+                    vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
+                    vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
                 }
-
-                // Update bone indices to reflect the lookup values
-                foreach(TriangleFace modelTriangle in modelTriangles)
+                int currentMaterialID = -1;
+                for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
                 {
-                    if (BoneLookupsByMaterialIndex.ContainsKey(modelTriangle.MaterialIndex) == false)
+                    // Expand list if new material encountered
+                    if (currentMaterialID != vertexMaterialIDs[vertexIndex])
                     {
-                        Logger.WriteError("Object '" + Name + "' could not find BoneLookup by material index of '" + modelTriangle.MaterialIndex + "'");
-                        continue;
+                        currentMaterialID = vertexMaterialIDs[vertexIndex];
+                        BoneLookupsByMaterialIndex.Add(currentMaterialID, new List<short>());
                     }
 
-                    List<Int16> curBoneLookups = BoneLookupsByMaterialIndex[modelTriangle.MaterialIndex];
-                    for (int i = 0; i < curBoneLookups.Count; i++)
-                    {
-                        if (ModelVertices[modelTriangle.V1].BoneIndicesTrue[0] == curBoneLookups[i])
-                            ModelVertices[modelTriangle.V1].BoneIndicesLookup[0] = Convert.ToByte(i);
-                        if (ModelVertices[modelTriangle.V2].BoneIndicesTrue[0] == curBoneLookups[i])
-                            ModelVertices[modelTriangle.V2].BoneIndicesLookup[0] = Convert.ToByte(i);
-                        if (ModelVertices[modelTriangle.V3].BoneIndicesTrue[0] == curBoneLookups[i])
-                            ModelVertices[modelTriangle.V3].BoneIndicesLookup[0] = Convert.ToByte(i);
-                    }                    
+                    // Add lookup if new bone is encountered
+                    byte curBoneIndex = ModelVertices[vertexIndex].BoneIndicesTrue[0];
+                    if (BoneLookupsByMaterialIndex[currentMaterialID].Contains(curBoneIndex) == false)
+                        BoneLookupsByMaterialIndex[currentMaterialID].Add(curBoneIndex);
+
+                    // Add a lookup reference based on the lookup index
+                    ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
                 }
             }
-
-            // TODO: Put this somewhere else / change this
-            if (GlobalLoopSequenceLimits.Count == 0)
-                GlobalLoopSequenceLimits.Add(0);
         }
 
         private int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)

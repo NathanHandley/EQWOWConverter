@@ -64,7 +64,7 @@ namespace EQWOWConverter.WOWFiles
 
             // SubMeshes
             List<M2SkinTextureUnit> textureUnits;
-            List<byte> subMeshesBytes = GenerateSubMeshesBlock(wowObjectModel, out textureUnits);
+            List<byte> subMeshesBytes = GenerateSubMeshesBlockAndTextureUnits(wowObjectModel, out textureUnits);
             Header.SubMeshes.Set(Convert.ToUInt32(curOffset), Convert.ToUInt32(textureUnits.Count));     // 1 sub mesh per texture unit
             curOffset += subMeshesBytes.Count;
             nonHeaderBytes.AddRange(subMeshesBytes);
@@ -120,84 +120,90 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// SubMeshes
         /// </summary>
-        private List<byte> GenerateSubMeshesBlock(ObjectModel modelObject, out List<M2SkinTextureUnit> textureUnits)
+        private List<byte> GenerateSubMeshesBlockAndTextureUnits(ObjectModel modelObject, out List<M2SkinTextureUnit> textureUnits)
         {
             textureUnits = new List<M2SkinTextureUnit>();
+
+            // Build a list of material-to-vertex for later calculations
+            List<int> vertexMaterialIDs = new List<int>();
+            for (int vertexIndex = 0; vertexIndex < modelObject.ModelVertices.Count; vertexIndex++)
+                vertexMaterialIDs.Add(-1);
+            foreach (TriangleFace modelTriangle in modelObject.ModelTriangles)
+            {
+                vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
+                vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
+                vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
+            }
 
             // Each material gets a new sub mesh and texture unit
             // Note: It's expected that triangles and vertices are sorted by texture already
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
-            UInt16 materialIter = 0;
-            foreach (ObjectModelMaterial material in modelObject.ModelMaterials)
+            for (UInt16 materialIter = 0; materialIter < modelObject.ModelMaterials.Count; materialIter++)
             {
-                // Find the geometry offsets related to this material
+                int curMaterialIndex = Convert.ToInt32(modelObject.ModelMaterials[materialIter].Material.Index);
+
+                // Count number of triangles and find starting offset
                 int startTriangleIndex = -1;
                 int numberOfTrianges = 0;
-                int startVertexIndex = -1;
-                HashSet<int> countedVertexIndices = new HashSet<int>();
-                for (int i = 0; i < modelObject.ModelTriangles.Count; i++)
+                for (int triangleIndex = 0; triangleIndex <  modelObject.ModelTriangles.Count; triangleIndex++)
                 {
-                    if (modelObject.ModelTriangles[i].MaterialIndex == material.Material.Index)
+                    TriangleFace curTriangle = modelObject.ModelTriangles[triangleIndex];
+                    if (curTriangle.MaterialIndex == curMaterialIndex)
                     {
                         if (startTriangleIndex == -1)
-                            startTriangleIndex = i;
+                            startTriangleIndex = triangleIndex;
                         numberOfTrianges++;
-                        if (startVertexIndex == -1)
-                            startVertexIndex = modelObject.ModelTriangles[i].GetSmallestIndex();
-                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V1) == false)
-                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V1);
-                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V2) == false)
-                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V2);
-                        if (countedVertexIndices.Contains(modelObject.ModelTriangles[i].V3) == false)
-                            countedVertexIndices.Add(modelObject.ModelTriangles[i].V3);
                     }
                 }
+
+                // If there were no triangles with this material, there there's no reason to make a mesh for it
                 if (startTriangleIndex == -1)
                     continue;
-                int numberOfVertices = countedVertexIndices.Count;
 
-                // Calculate bone count and index
-                Int32 materialIndex = Convert.ToInt32(material.Material.Index);
-                UInt16 numOfBones = 1;
-                UInt16 boneStartIndex = 0;
-
-                if (modelObject.BoneLookupsByMaterialIndex.ContainsKey(materialIndex) == true)
+                // Count the number of vertices and find starting offset, and save them for later
+                int startVertexIndex = -1;
+                int numberOfVertices = 0;
+                List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
+                for (int vertexIndex = 0; vertexIndex < vertexMaterialIDs.Count; vertexIndex++)
                 {
-                    foreach(var boneLookupByMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
+                    int vertexMaterialID = vertexMaterialIDs[vertexIndex];
+                    if (vertexMaterialID == curMaterialIndex)
                     {
-                        if (boneLookupByMaterialIndex.Key == materialIndex)
-                        {
-                            numOfBones = Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
-                            break;
-                        }
-                        else
-                            foreach (var boneLookupInMaterial in boneLookupByMaterialIndex.Value)
-                                ++boneStartIndex;
+                        if (startVertexIndex == -1)
+                            startVertexIndex = vertexIndex;
+                        numberOfVertices++;
+                        subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
                     }
                 }
 
-                // There will be 4 copies of bone lookups and materials will point to the 4th copy, so get the total count
-                UInt16 boneStartIndexOffset = 0;
-                foreach (var boneLookupsPerMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
-                    foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
-                        boneStartIndexOffset++;
-                boneStartIndexOffset *= 3;
-                boneStartIndex += boneStartIndexOffset;
+                // Count the number of bones and find the starting offset
+                UInt16 startBoneIndex = 0;
+                UInt16 numberOfBones = 0;
+                foreach (var boneLookupByMaterialIndex in modelObject.BoneLookupsByMaterialIndex)
+                {
+                    if (boneLookupByMaterialIndex.Key != curMaterialIndex)
+                        startBoneIndex += Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
+                    else
+                    {
+                        numberOfBones = Convert.ToUInt16(boneLookupByMaterialIndex.Value.Count);
+                        break;
+                    }
+                }
+
+                // Some models don't have bones, so control for that
+                if (numberOfBones == 0)
+                    numberOfBones = 1;
 
                 // Build the sub mesh
-                M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices), 
-                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numOfBones, boneStartIndex);
-                List<ObjectModelVertex> subMeshVertices = new List<ObjectModelVertex>();
-                foreach (int vertexIndex in countedVertexIndices)
-                    subMeshVertices.Add(modelObject.ModelVertices[vertexIndex]);
+                M2SkinSubMesh curSubMesh = new M2SkinSubMesh(Convert.ToUInt16(startVertexIndex), Convert.ToUInt16(numberOfVertices),
+                    Convert.ToUInt16(startTriangleIndex * 3), Convert.ToUInt16(numberOfTrianges * 3), numberOfBones, startBoneIndex);
                 curSubMesh.CalculatePositionAndBoundingData(subMeshVertices);
                 subMeshes.Add(curSubMesh);
 
                 // Create a texture unit
-                UInt16 transparencyLookupIndex =modelObject.ModelTextureTransparencyLookups[materialIter];
+                UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[materialIter];
                 M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, transparencyLookupIndex);
                 textureUnits.Add(curTextureUnit);
-                materialIter++;
             }
 
             List<byte> blockBytes = new List<byte>();

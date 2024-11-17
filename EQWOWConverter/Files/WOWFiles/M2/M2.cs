@@ -134,11 +134,9 @@ namespace EQWOWConverter.WOWFiles
                 BoneLookup.Add(new M2Int16(0));
             else
             {
-                // Make 4 copies of this (reasons unsure)
-                for (int i = 0; i < 4; i++)
-                    foreach (var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
-                        foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
-                            BoneLookup.Add(new M2Int16(boneIndex));
+                foreach (var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
+                    foreach (Int16 boneIndex in boneLookupsPerMaterialIndex.Value)
+                        BoneLookup.Add(new M2Int16(boneIndex));
             }
 
             // Texture Lookup

@@ -615,9 +615,106 @@ namespace EQWOWConverter.Common
             Vertices = sortedVertices;
         }
 
-        public void SortDataByMaterial()
+        public void SortDataByMaterialAndBones()
         {
-            // Sort triangles first
+            // Sort triangles by material
+            SortTriangleFacesByMaterial();
+
+            // Stop if no bone IDs
+            if (BoneIDs.Count == 0)
+                return;
+
+            // Determine the material IDs and grab the indices by them
+            SortedDictionary<int, HashSet<int>> VertexIndicesByMaterialID = new SortedDictionary<int, HashSet<int>>();
+            foreach (TriangleFace triangleFace in TriangleFaces)
+            {
+                if (VertexIndicesByMaterialID.ContainsKey(triangleFace.MaterialIndex) == false)
+                    VertexIndicesByMaterialID.Add(triangleFace.MaterialIndex, new HashSet<int>());
+                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V1);
+                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V2);
+                VertexIndicesByMaterialID[triangleFace.MaterialIndex].Add(triangleFace.V3);
+            }
+
+            // Pre-populate the vertex index lookup
+            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+            for (int i = 0; i < Vertices.Count; i++)
+                oldNewVertexIndices.Add(i, i);
+
+            // Begin sorted lists of elements
+            List<Vector3> sortedVertices = new List<Vector3>();
+            List<Vector3> sortedNormals = new List<Vector3>();
+            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
+            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
+            List<byte> sortedBoneIndexes = new List<byte>();
+
+            // Go through vertices on a material-by-material basis
+            foreach (var vertexIndicesForMaterial in VertexIndicesByMaterialID)
+            {
+                // Build the list of boneIDs that can be found for this material
+                int curMaterialIndex = vertexIndicesForMaterial.Key;
+                SortedSet<byte> boneIDsInMaterial = new SortedSet<byte>();
+                foreach(TriangleFace triangleFace in TriangleFaces)
+                {
+                    if (triangleFace.MaterialIndex == curMaterialIndex)
+                    {
+                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V1]) == false)
+                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V1]);
+                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V2]) == false)
+                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V2]);
+                        if (boneIDsInMaterial.Contains(BoneIDs[triangleFace.V3]) == false)
+                            boneIDsInMaterial.Add(BoneIDs[triangleFace.V3]);
+                    }
+                }
+
+                // Look at each bone and update references
+                foreach(byte boneId in boneIDsInMaterial)
+                {
+                    // Iterate through vertices and save off bone matches
+                    foreach(int oldIndex in vertexIndicesForMaterial.Value)
+                    {
+                        if (BoneIDs[oldIndex] == boneId)
+                        {
+                            // Store the lookup map
+                            int newIndex = sortedVertices.Count;
+                            oldNewVertexIndices[oldIndex] = newIndex;
+
+                            // Create copied values
+                            sortedVertices.Add(Vertices[oldIndex]);
+                            sortedNormals.Add(Normals[oldIndex]);
+                            sortedTextureCoordinates.Add(TextureCoordinates[oldIndex]);
+                            if (VertexColors.Count != 0)
+                                sortedVertexColors.Add(VertexColors[oldIndex]);
+                            if (BoneIDs.Count != 0)
+                                sortedBoneIndexes.Add(BoneIDs[oldIndex]);
+                        }
+                    }
+                }
+            }
+
+            // Update the triangle references
+            List<TriangleFace> updatedTriangleFaces = new List<TriangleFace>();
+            foreach (TriangleFace curFace in TriangleFaces)
+            {
+                int materialIndex = curFace.MaterialIndex;
+                int v1 = oldNewVertexIndices[curFace.V1];
+                int v2 = oldNewVertexIndices[curFace.V2];
+                int v3 = oldNewVertexIndices[curFace.V3];
+                TriangleFace newFace = new TriangleFace(materialIndex, v1, v2, v3);
+                updatedTriangleFaces.Add(newFace);
+            }
+
+            // Save everything
+            TriangleFaces = updatedTriangleFaces;
+            Vertices = sortedVertices;
+            Normals = sortedNormals;
+            TextureCoordinates = sortedTextureCoordinates;
+            VertexColors = sortedVertexColors;
+            BoneIDs = sortedBoneIndexes;
+        }
+
+        public void SortTriangleFacesByMaterial()
+        {
+            // Sort triangles first by material
             TriangleFaces.Sort();
 
             // Reorder the vertices / texcoords / normals / to match the sorted triangle faces

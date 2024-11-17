@@ -139,7 +139,7 @@ namespace EQWOWConverter.Zones
                 return;
 
             // Reorder the faces and related objects
-            MeshData.SortDataByMaterial();
+            MeshData.SortDataByMaterialAndBones();
 
             // Build a render batch per material
             Dictionary<int, ZoneRenderBatch> renderBatchesByMaterialID = new Dictionary<int, ZoneRenderBatch>();
