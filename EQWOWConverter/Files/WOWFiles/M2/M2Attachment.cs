@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private ObjectModelAttachmentType AttachmentType;
         private UInt32 ParentBoneID;
-        private Vector3 Position = new Vector3(1.4f, 0f, 0.3f);
+        private Vector3 Position = new Vector3();
         M2TrackSequences<M2Int32> DataTrack;
 
         public M2Attachment(ObjectModelAttachmentType attachmentType, UInt32 parentBoneID)
