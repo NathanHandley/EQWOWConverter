@@ -187,6 +187,14 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
+                // Start by creating the first bone as "main", which every skeletal model will need
+                ObjectModelBone mainBone = new ObjectModelBone();
+                mainBone.BoneNameEQ = "main";
+                mainBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                mainBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                mainBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                ModelBones.Add(mainBone);
+
                 // Create bones by reading this pos animation
                 for (int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
                 {
@@ -201,6 +209,7 @@ namespace EQWOWConverter.ObjectModels
                         curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                         curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
                         curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                        curBone.ParentBone = 0; // "main"
                     }
                     else
                     {
@@ -259,7 +268,7 @@ namespace EQWOWConverter.ObjectModels
                     {
                         ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
-                        // Root has just one frame
+                        // Root always just has one frame
                         if (animationFrame.GetBoneName() == "root")
                         {
                             curBone.ScaleTrack.AddValueToSequence(curSequenceID, 0, new Vector3(1, 1, 1));
@@ -305,6 +314,10 @@ namespace EQWOWConverter.ObjectModels
 
                 // Set the animation lookups
                 SetAllAnimationLookups();
+
+                // Since a 'main' bone was added to the start, all other bone indices needs to be increased by 1
+                foreach (ObjectModelVertex vertex in ModelVertices)
+                    vertex.BoneIndicesTrue[0]++;
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
                 // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
