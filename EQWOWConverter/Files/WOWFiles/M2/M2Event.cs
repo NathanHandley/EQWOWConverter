@@ -36,18 +36,71 @@ namespace EQWOWConverter.WOWFiles
         public List<ObjectModelTrackSequenceTimestamps> Timestamps = new List<ObjectModelTrackSequenceTimestamps>();
         public UInt32 TimestampsOffset = 0;
 
-        public void PopulateAsIdleSound(Sound sound)
+        public void PopulateAsIdleSoundDSL(Sound sound)
         {
             Identifier = "$DSL";
             Data = sound.DBCID;
-            InterpolationType = ObjectModelAnimationInterpolationType.None;
-            ParentBoneID = 0;
-            GlobalSequenceID = 65535;
-            Position.X = 0;
-            Position.Y = 0;
-            Position.Z = 0;
             Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
             Timestamps[0].AddTimestamp(0);
+        }
+
+        public void PopulateAsDeathThudDTH(int boneID)
+        {
+            Identifier = "$DTH";
+            ParentBoneID = Convert.ToUInt32(boneID);
+            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+            // 15 timestamps, all blank.  Copying snake.m2
+            for (int i = 0; i < 15; i++)
+                Timestamps[0].AddTimestamp(0);
+        }
+
+        public void PopulateAsHandleCombatAnimCAH(int boneID)
+        {
+            Identifier = "$CAH";
+            ParentBoneID = Convert.ToUInt32(boneID);
+            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+            // 15 timestamps, all blank except one.  Copying snake.m2
+            for (int i = 0; i < 15; i++)
+            {
+                if (i != 10)
+                    Timestamps[0].AddTimestamp(0);
+                else
+                    Timestamps[0].AddTimestamp(500);
+            }
+        }
+
+        public void PopulateAsPlayWeaponSwooshSoundCSS(int boneID)
+        {
+            Identifier = "$CSS";
+            ParentBoneID = Convert.ToUInt32(boneID);
+            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+            // 15 timestamps, all blank except one.  Copying snake.m2
+            for (int i = 0; i < 15; i++)
+            {
+                if (i != 10)
+                    Timestamps[0].AddTimestamp(0);
+                else
+                    Timestamps[0].AddTimestamp(300);
+            }
+        }
+
+        public void PopulateAsPlayCombatActionAnimKitCPP(int boneID)
+        {
+            Identifier = "$CPP";
+            ParentBoneID = Convert.ToUInt32(boneID);
+            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+            // 15 timestamps, all blank except one.  Copying snake.m2
+            for (int i = 0; i < 15; i++)
+            {
+                if (i != 10)
+                    Timestamps[0].AddTimestamp(0);
+                else
+                    Timestamps[0].AddTimestamp(167);
+            }
         }
 
         public UInt32 GetHeaderSize()

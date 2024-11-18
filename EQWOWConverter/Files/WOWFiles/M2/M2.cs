@@ -181,12 +181,7 @@ namespace EQWOWConverter.WOWFiles
                 SetSkeletonAttachments(wowObjectModel);
 
             // Events
-            if (wowObjectModel.SoundIdleLoop != null)
-            {
-                M2Event newEvent = new M2Event();
-                newEvent.PopulateAsIdleSound(wowObjectModel.SoundIdleLoop);
-                Events.AddElement(newEvent);
-            }
+            SetEvents(wowObjectModel);
 
             // Lights
             // none for now
@@ -236,6 +231,39 @@ namespace EQWOWConverter.WOWFiles
             int boneIndex = wowObjectModel.GetBoneIndexForAttachmentType(attachmentType);
             Attachments.AddElement(new M2Attachment(attachmentType, Convert.ToUInt16(boneIndex)));
             AttachmentIndicesLookup.SetElementValue(Convert.ToInt32(attachmentType), new M2Int16(Convert.ToInt16(Attachments.Count - 1)));
+        }
+
+        private void SetEvents(ObjectModel wowObjectModel)
+        {
+            if (wowObjectModel.SoundIdleLoop != null)
+            {
+                // Idle Sound ($DSL)
+                M2Event newEvent = new M2Event();
+                newEvent.PopulateAsIdleSoundDSL(wowObjectModel.SoundIdleLoop);
+                Events.AddElement(newEvent);
+            }
+            if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
+            {
+                // DeathThud / LootEffect ($DTH)
+                M2Event deathThud = new M2Event();
+                deathThud.PopulateAsDeathThudDTH(wowObjectModel.GetFirstBoneIndexForEQBoneNames("dth"));
+                Events.AddElement(deathThud);
+
+                // HandleCombatAnim ($CAH)
+                M2Event handleCombat = new M2Event();
+                handleCombat.PopulateAsHandleCombatAnimCAH(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cah"));
+                Events.AddElement(handleCombat);
+
+                // HandlePlayWeaponSwooshSound ($CSS)
+                M2Event handleWeaponSwoosh = new M2Event();
+                handleWeaponSwoosh.PopulateAsPlayWeaponSwooshSoundCSS(wowObjectModel.GetFirstBoneIndexForEQBoneNames("css"));
+                Events.AddElement(handleWeaponSwoosh);
+
+                // PlayCombatActionAnimKit ($CPP)
+                M2Event handlePlayCombatAction = new M2Event();
+                handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cpp"));
+                Events.AddElement(handlePlayCombatAction);
+            }
         }
 
         private UInt32 GetM2HeaderSize()

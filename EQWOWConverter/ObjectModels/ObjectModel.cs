@@ -357,7 +357,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
+        public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
         {
             foreach (string eqBoneName in eqBoneNames)
             {
