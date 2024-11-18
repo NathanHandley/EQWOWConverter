@@ -221,6 +221,12 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones.Add(curBone);
                 }
 
+                // Create the bones required for events
+                CreateEventBone("dth"); // DeathThud
+                CreateEventBone("cah"); // HandleCombatAnim
+                CreateEventBone("css"); // PlayWeaponSwoosh
+                CreateEventBone("cpp"); // PlayCombatActionAnim
+
                 // Block out 27 key bones with blank
                 for (int i = 0; i < 27; i++)
                     ModelBoneKeyLookups.Add(-1);
@@ -456,6 +462,28 @@ namespace EQWOWConverter.ObjectModels
             }
 
             return returnValue;
+        }
+
+        private void CreateEventBone(string eventBoneName)
+        {
+            // Get parent bone
+            int parentBoneID = -1;
+            switch (eventBoneName.ToLower())
+            {
+                case "cah":
+                case "css":
+                case "cpp":
+                    {
+                        // For now, let's just use root
+                        // TODO: Use something other than root?
+                        parentBoneID = GetFirstBoneIndexForEQBoneNames("root"); 
+                    } break;
+                default: parentBoneID = -1; break;
+            }
+
+            // Create the bone
+            ObjectModelBone eventBone = new ObjectModelBone(eventBoneName, Convert.ToInt16(parentBoneID));
+            ModelBones.Add(eventBone);
         }
 
         private void SetAllAnimationLookups()

@@ -52,14 +52,26 @@ namespace EQWOWConverter.ObjectModels
         public ObjectModelTrackSequences<Vector3> ScaleTrack = new ObjectModelTrackSequences<Vector3>();
         public Vector3 PivotPoint = new Vector3();
 
+        public ObjectModelBone() { }
+        public ObjectModelBone(string boneNameEQ, Int16 parentBoneID)
+        {
+            BoneNameEQ = boneNameEQ;
+            ParentBone = parentBoneID;
+        }
+
+
         private UInt32 GetCRCValue(string name)
         {
-            switch (name)
+            switch (name.ToLower())
             {
                 case "main":    return 521822810;
                 case "root":    return 3066451557;
                 case "name":    return 2738135331;
                 case "breath":  return 3299126614;
+                case "dth":     return 3747058587; // Used for $DETH event (DeathThud_LootEffect)
+                case "cah":     return 3987563274; // Used for $CAH event (HandleCombatAnimEvent)
+                case "css":     return 524081717;  // Used for $CSS event (PlayWeaponSwooshSound)
+                case "cpp":     return 2904086604; // Used for $CPP event (PlayCombatActionAnimKit)
                 default:        return 0;
             }
         }
