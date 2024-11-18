@@ -147,6 +147,10 @@ namespace EQWOWConverter.ObjectModels
 
             // Build the bones and animation structures
             ProcessBonesAndAnimation(ModelMaterials, ModelVertices, ModelTriangles, skeletonLiftHeight);
+
+            // Create a global sequence if there is none
+            if (GlobalLoopSequenceLimits.Count == 0)
+                GlobalLoopSequenceLimits.Add(0);
         }
 
         private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles, float skeletonLiftHeight)
