@@ -92,12 +92,12 @@ namespace EQWOWConverter.WOWFiles
                     // If set, show the 'actual' water surface
                     switch (worldObjectModel.LiquidType)
                     {
-                        case ZoneLiquidType.Water:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        case ZoneLiquidType.Blood:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case ZoneLiquidType.Water: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case ZoneLiquidType.Blood: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
                         case ZoneLiquidType.GreenWater: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
-                        case ZoneLiquidType.Magma:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
-                        case ZoneLiquidType.Slime:      chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
-                        default:                    chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
+                        case ZoneLiquidType.Magma: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(19))); break;
+                        case ZoneLiquidType.Slime: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(20))); break;
+                        default: chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(13))); break;
                     }
                 }
                 else
@@ -140,7 +140,7 @@ namespace EQWOWConverter.WOWFiles
 
             // MODR (Doodad References) -----------------------------------------------------------
             if (worldObjectModel.DoodadInstances.Count > 0)
-            chunkBytes.AddRange(GenerateMODRChunk(worldObjectModel));
+                chunkBytes.AddRange(GenerateMODRChunk(worldObjectModel));
 
             // MOBN (Nodes of the BSP tree) -------------------------------------------------------
             chunkBytes.AddRange(GenerateMOBNChunk(worldObjectModel));

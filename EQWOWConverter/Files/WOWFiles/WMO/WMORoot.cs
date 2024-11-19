@@ -175,8 +175,7 @@ namespace EQWOWConverter.WOWFiles
             }
             // Add a buffer at the end
             textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
-            while (textureBuffer.Count() % 4 != 0)
-                textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
+            AlignBytesTo4Bytes(ref textureBuffer);
 
             return WrapInChunk("MOTX", textureBuffer.ToArray());
         }
@@ -199,8 +198,6 @@ namespace EQWOWConverter.WOWFiles
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(WMOMaterialFlags.DisableLighting)));
                 else
                     curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
-                //UInt32 materialFlags = GetPackedFlags(Convert.ToUInt32(WMOMaterialFlags.ClampTextureS), Convert.ToUInt32(WMOMaterialFlags.ClampTextureT));
-                //chunkBytes.AddRange(BitConverter.GetBytes(materialFlags));
 
                 // This is the shader, but just use Diffuse for now (0).  1 = Specular, 2 = Metal, 3 = Environment, etc see wowdev
                 curMaterialBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
@@ -303,8 +300,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
 
             // Align the chunk with empty
-            while (chunkBytes.Count() % 4 != 0)
-                chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+            AlignBytesTo4Bytes(ref chunkBytes);
 
             return WrapInChunk("MOGN", chunkBytes.ToArray());
         }
@@ -343,8 +339,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
 
             // Align
-            while (chunkBytes.Count() % 4 != 0)
-                chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0"));
+            AlignBytesTo4Bytes(ref chunkBytes);
 
             return WrapInChunk("MOSB", chunkBytes.ToArray());
         }
@@ -469,6 +464,9 @@ namespace EQWOWConverter.WOWFiles
                 doodadInstance.ObjectNameOffset = DoodadPathOffsetsByName[doodadInstance.ObjectName];
                 chunkBytes.AddRange(doodadInstance.ToBytes());
             }
+
+            // Align
+            AlignBytesTo4Bytes(ref chunkBytes);
 
             return WrapInChunk("MODD", chunkBytes.ToArray());
         }
