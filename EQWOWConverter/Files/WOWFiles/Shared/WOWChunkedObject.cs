@@ -47,5 +47,14 @@ namespace EQWOWConverter.WOWFiles
             }
             return packedFlags;
         }
+    
+        protected void AlignBytesTo4Bytes(ref List<byte> byteBuffer)
+        {
+            int bytesToAdd = 4 - (byteBuffer.Count % 4);
+            if (bytesToAdd == 4)
+                return;
+            for (int i = 0; i < bytesToAdd; ++i)
+                byteBuffer.Add(0);
+        }
     }
 }

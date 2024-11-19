@@ -452,6 +452,8 @@ namespace EQWOWConverter.WOWFiles
             List<byte> doodadNameBuffer = new List<byte>();
             foreach (string doodadFullPath in DoodadPathStrings)
                 doodadNameBuffer.AddRange(Encoding.ASCII.GetBytes(doodadFullPath));
+            if (doodadNameBuffer.Count != 0)
+                AlignBytesTo4Bytes(ref doodadNameBuffer);
             return WrapInChunk("MODN", doodadNameBuffer.ToArray());
         }
 
