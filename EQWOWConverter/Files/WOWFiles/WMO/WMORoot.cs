@@ -114,8 +114,12 @@ namespace EQWOWConverter.WOWFiles
             // Number of Textures
             UInt32 numOfTextures = 0;
             foreach (Material material in zone.Materials)
-                if (material.TextureNames.Count != 0)
+            {
+                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                    continue;
+                if (material.TextureNames.Count > 0)
                     numOfTextures++;
+            }
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
