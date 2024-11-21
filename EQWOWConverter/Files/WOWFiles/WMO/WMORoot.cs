@@ -163,6 +163,10 @@ namespace EQWOWConverter.WOWFiles
             List<byte> textureBuffer = new List<byte>();
             foreach (Material material in zone.Materials)
             {
+                // Don't add the texture if the material won't be used anyway
+                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                    continue;
+
                 if (material.TextureNames.Count > 0)
                 {
                     // TODO: Account for more texture names when texture animation is fully implemented
