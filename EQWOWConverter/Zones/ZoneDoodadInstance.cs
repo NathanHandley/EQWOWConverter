@@ -46,7 +46,8 @@ namespace EQWOWConverter.Zones
 
             // The flags and name offset share a UInt32, effectively making it UInt24 and UInt8
             returnBytes.AddRange(BitConverter.GetBytes(ObjectNameOffset));
-            returnBytes[3] = Convert.ToByte(Flags);
+            if (Configuration.CONFIG_OBJECT_STATIC_ENABLE_FLAGS == true)
+                returnBytes[3] = Convert.ToByte(Flags); // breaks wmomodelviewer 7.0.5
             returnBytes.AddRange(Position.ToBytes());
             returnBytes.AddRange(Orientation.ToBytes());
             returnBytes.AddRange(BitConverter.GetBytes(Scale));

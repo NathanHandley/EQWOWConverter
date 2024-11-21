@@ -246,6 +246,10 @@ namespace EQWOWConverter
         // How much space between each step of a ladder along the Z axis (value is before world scaling)
         public static readonly float CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE = 0.5f;
 
+        // If this is false then flags (like 'accept projected textures' will be disabled on doodad instances.
+        // Note: Leave this on UNLESS you attempting to view WMOs in WoWModelViewer_7.0.5 as it "true" will crash it.
+        public static readonly bool CONFIG_OBJECT_STATIC_ENABLE_FLAGS = true;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
