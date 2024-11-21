@@ -31,6 +31,7 @@ namespace EQWOWConverter.WOWFiles
         public List<byte> RootBytes = new List<byte>();
         public Dictionary<string, UInt32> TextureNameOffsets = new Dictionary<string, UInt32>();
         public Dictionary<string, UInt32> DoodadPathOffsetsByName = new Dictionary<string, UInt32>();
+        public Dictionary<int, int> BatchMaterialIDsByMaterialIndex = new Dictionary<int, int>();
         public List<string> DoodadPathStrings = new List<string>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
@@ -186,8 +187,16 @@ namespace EQWOWConverter.WOWFiles
         private List<byte> GenerateMOMTChunk(Zone zone)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (Material material in zone.Materials)
+            int curBatchMaterialID = 0;
+            for (int i = 0; i < zone.Materials.Count; ++i)
             {
+                Material material = zone.Materials[i];
+
+                // Skip any non-rendered materials
+                if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
+                    continue;
+                BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
+
                 List<byte> curMaterialBytes = new List<byte>();
 
                 bool hasNoTexture = false;
@@ -274,6 +283,8 @@ namespace EQWOWConverter.WOWFiles
 
                 // Add to the bigger container
                 chunkBytes.AddRange(curMaterialBytes.ToArray());
+                
+                curBatchMaterialID++;
             }            
 
             return WrapInChunk("MOMT", chunkBytes.ToArray());

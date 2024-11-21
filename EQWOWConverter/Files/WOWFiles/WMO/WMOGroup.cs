@@ -117,7 +117,7 @@ namespace EQWOWConverter.WOWFiles
             // SUB CHUNKS
             // ------------------------------------------------------------------------------------
             // MOPY (Material info for triangles) -------------------------------------------------
-            chunkBytes.AddRange(GenerateMOPYChunk(worldObjectModel));
+            chunkBytes.AddRange(GenerateMOPYChunk(wmoRoot, worldObjectModel));
 
             // MOVI (MapObject Vertex Indices) ---------------------------------------------------
             chunkBytes.AddRange(GenerateMOVIChunk(worldObjectModel));
@@ -132,7 +132,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(GenerateMOTVChunk(worldObjectModel));
 
             // MOBA (Render Batches) --------------------------------------------------------------
-            chunkBytes.AddRange(GenerateMOBAChunk(worldObjectModel));
+            chunkBytes.AddRange(GenerateMOBAChunk(wmoRoot, worldObjectModel));
 
             // MOLR (Light References) ------------------------------------------------------------
             if (worldObjectModel.LightInstanceIDs.Count > 0)
@@ -165,7 +165,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPY (Material info for triangles)
         /// </summary>
-        private List<byte> GenerateMOPYChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOPYChunk(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -180,7 +180,7 @@ namespace EQWOWConverter.WOWFiles
                     || worldObjectModel.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
                     chunkBytes.Add(Convert.ToByte(0xFF));
                 else
-                    chunkBytes.Add(Convert.ToByte(polyIndexTriangle.MaterialIndex));
+                    chunkBytes.Add(Convert.ToByte(wmoRoot.BatchMaterialIDsByMaterialIndex[polyIndexTriangle.MaterialIndex]));
             }
 
             return WrapInChunk("MOPY", chunkBytes.ToArray());
@@ -241,7 +241,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOBA (Render Batches)
         /// </summary>
-        private List<byte> GenerateMOBAChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOBAChunk(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (ZoneRenderBatch renderBatch in worldObjectModel.RenderBatches)
@@ -265,7 +265,7 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.Add(0);
 
                 // Index of the material
-                chunkBytes.Add(renderBatch.MaterialIndex);
+                chunkBytes.Add(Convert.ToByte(wmoRoot.BatchMaterialIDsByMaterialIndex[renderBatch.MaterialIndex]));
             }
 
             return WrapInChunk("MOBA", chunkBytes.ToArray());
