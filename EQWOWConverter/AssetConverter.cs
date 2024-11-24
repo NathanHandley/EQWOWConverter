@@ -302,6 +302,22 @@ namespace EQWOWConverter
                 creatureModelTemplates.Add(creatureModelTemplate);
             }
 
+            // Copy all of the sound files
+            Logger.WriteInfo("Copying creature sound files...");
+            string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            string exportCreatureSoundsDirectory = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Sound", "Creature", "Everquest");
+            if (Directory.Exists(exportCreatureSoundsDirectory) == true)
+                Directory.Delete(exportCreatureSoundsDirectory, true);
+            FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
+            CreatureRaceSounds.GenerateAllSounds();
+            foreach (var sound in CreatureRaceSounds.SoundsBySoundName)
+            {
+                string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
+                string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
+                if (File.Exists(targetSoundFileName) == false)
+                    File.Copy(sourceSoundFileName, targetSoundFileName, true);
+            }
+
             return true;
         }
 
@@ -468,6 +484,10 @@ namespace EQWOWConverter
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreaturePath + "\" \"" + relativeCreaturePath + "\" /r");
+
+                string relativeCreatureSoundsPath = Path.Combine("Sound", "Creature", "Everquest");
+                string fullCreatureSoundPath = Path.Combine(mpqReadyFolder, relativeCreatureSoundsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreatureSoundPath + "\" \"" + relativeCreatureSoundsPath + "\" /r");
             }
 
             // Ambient Sounds
@@ -826,14 +846,15 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
             // Creatures
-            foreach(CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            CreatureRaceSounds.GenerateAllSounds();
+            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
                 foreach(CreatureModelVariation modelVariation in creatureModelTemplate.ModelVariations)
                 {
                     creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
                     string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.ModelFileName + ".mdx";
                     creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, relativeModelPath);
-                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureModelDataID);
+                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, modelVariation.GenderType));
                 }
             }
 
@@ -921,6 +942,9 @@ namespace EQWOWConverter
                         soundEntriesDBC.AddRow(soundInstance.Sound, fileNameWithExt, ambientSoundsDirectory);
                     }
                 }
+                string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
+                foreach (var sound in CreatureRaceSounds.SoundsBySoundName)
+                    soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
 
                 // WMOAreaTable (Header than groups)
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record

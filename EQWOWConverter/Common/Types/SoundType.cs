@@ -29,6 +29,7 @@ namespace EQWOWConverter.Common
         CombatImpact = 4,
         CombatSwing = 6,
         Casting = 8,
+        NPCCombat = 10,
         GameObject = 25,
         CreatureLoop = 27,
         ZoneMusic = 28,

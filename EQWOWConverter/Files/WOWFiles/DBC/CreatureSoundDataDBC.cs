@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
@@ -25,19 +26,19 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureSoundDataDBC : DBCFile
     {
-        public void AddRow(int id)
+        public void AddRow(int id, CreatureRaceSounds creatureRaceSounds)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
-            newRow.AddInt(0); // Exertion SoundEntriesDBC.ID
-            newRow.AddInt(0); // Exertion Critical SoundEntriesDBC.ID
-            newRow.AddInt(0); // Injury SoundEntriesDBC.ID
-            newRow.AddInt(0); // Injury Critical SoundEntriesDBC.ID
-            newRow.AddInt(0); // Injury Crushing Blow SoundEntriesDBC.ID
-            newRow.AddInt(0); // Death SoundEntriesDBC.ID
-            newRow.AddInt(0); // Stun SoundEntriesDBC.ID
-            newRow.AddInt(0); // Stand SoundEntriesDBC.ID
-            newRow.AddInt(0); // Footstep sound in FootstepTerrainLookupDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundSpecialAttackName)); // Exertion Critical SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit1Name)); // Injury SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit3Name)); // Injury Critical SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit4Name)); // Injury Crushing Blow SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundDeathName)); // Death SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit2Name)); // Stun SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundLoopName)); // Stand SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundWalkingName)); // Footstep sound in FootstepTerrainLookupDBC.ID
             newRow.AddInt(0); // Agro SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Flap SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Glide SoundEntriesDBC.ID
@@ -52,9 +53,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Custom Attack 3 SoundEntriesDBC.ID
             newRow.AddInt(0); // Custom Attack 4 SoundEntriesDBC.ID
             newRow.AddInt(0); // NPC Sound SoundEntriesDBC.ID
-            newRow.AddInt(0); // Loop Sound (idle?) SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundIdle1Name)); // Loop Sound (idle?) SoundEntriesDBC.ID
             newRow.AddInt(0); // Creature impact type
-            newRow.AddInt(0); // Jump Start ID SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundJumpName)); // Jump Start ID SoundEntriesDBC.ID
             newRow.AddInt(0); // Jump End ID SoundEntriesDBC.ID
             newRow.AddInt(0); // Pet Attack ID SoundEntriesDBC.ID
             newRow.AddInt(0); // Pet Order ID SoundEntriesDBC.ID
