@@ -494,14 +494,33 @@ namespace EQWOWConverter.ObjectModels
         {
             // Set the animations through 49 (Attack Rifle)
             AnimationLookups.Clear();
-            for (int i = 0; i <= 49; i++)
-            {
-                AnimationType curAnimationType = (AnimationType)i;
-                List<EQAnimationType> validEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(curAnimationType);
-                int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
-                AnimationLookups.Add(Convert.ToInt16(firstAnimationIndex));
-            }
+            for (Int16 i = 0; i <= 49; i++)
+                AnimationLookups.Add(-1);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Stand);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Walk);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Run);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatWound);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatCritical);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.StandWound);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
+            //SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);  TODO: BUG: This crashes if fighting in the water... why?
         }
+
+        private void SetFirstUnusedAnimationIndexForAnimationType(AnimationType animationType)
+        {
+            List<EQAnimationType> validEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
+            int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
+            if (firstAnimationIndex == -1)
+                return;
+            for (int i = 0; i < AnimationLookups.Count; i++)
+            {
+                if (AnimationLookups[i] == firstAnimationIndex)
+                    return;
+            }
+            AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(firstAnimationIndex);
+        }
+
 
         private int GetFirstAnimationIndexForEQAnimationTypes(params EQAnimationType[] eqAnimationTypes)
         {
