@@ -44,62 +44,61 @@ namespace EQWOWConverter.WOWFiles
             Timestamps[0].AddTimestamp(0);
         }
 
-        public void PopulateAsDeathThudDTH(int boneID)
+        public void PopulateAsDeathThudDTH(ObjectModel wowObjectModel)
         {
             Identifier = "$DTH";
-            ParentBoneID = Convert.ToUInt32(boneID);
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("dth"));
             Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
 
-            // 15 timestamps, all blank.  Copying snake.m2
-            for (int i = 0; i < 15; i++)
-                Timestamps[0].AddTimestamp(0);
+            // TODO: Make this work for more than "disarmed"
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            }
         }
 
-        public void PopulateAsHandleCombatAnimCAH(int boneID)
+        public void PopulateAsHandleCombatAnimCAH(ObjectModel wowObjectModel)
         {
             Identifier = "$CAH";
-            ParentBoneID = Convert.ToUInt32(boneID);
-            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cah"));
 
-            // 15 timestamps, all blank except one.  Copying snake.m2
-            for (int i = 0; i < 15; i++)
+            // TODO: Make this work for more than "unarmed"
+            // TODO: Figure out how to time the strike with the animation
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
-                if (i != 10)
-                    Timestamps[0].AddTimestamp(0);
-                else
-                    Timestamps[0].AddTimestamp(500);
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                    Timestamps[i].AddTimestamp(0);
             }
         }
 
-        public void PopulateAsPlayWeaponSwooshSoundCSS(int boneID)
+        public void PopulateAsPlayWeaponSwooshSoundCSS(ObjectModel wowObjectModel)
         {
             Identifier = "$CSS";
-            ParentBoneID = Convert.ToUInt32(boneID);
-            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("css"));
 
-            // 15 timestamps, all blank except one.  Copying snake.m2
-            for (int i = 0; i < 15; i++)
+            // TODO: Make this work for more than "unarmed"
+            // TODO: Figure out how to time the strike with the animation
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
-                if (i != 10)
-                    Timestamps[0].AddTimestamp(0);
-                else
-                    Timestamps[0].AddTimestamp(300);
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                    Timestamps[i].AddTimestamp(0);
             }
         }
 
-        public void PopulateAsPlayCombatActionAnimKitCPP(int boneID)
+        public void PopulateAsPlayCombatActionAnimKitCPP(ObjectModel wowObjectModel)
         {
             Identifier = "$CPP";
-            ParentBoneID = Convert.ToUInt32(boneID);
-            Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cpp"));
 
-            // 15 timestamps, all blank except one.  Copying snake.m2
-            for (int i = 0; i < 15; i++)
+            // TODO: Make this work for more than "unarmed"
+            // TODO: Figure out how to time the strike with the animation
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
             {
-                if (i != 10)
-                    Timestamps[0].AddTimestamp(0);
-                else
-                    Timestamps[0].AddTimestamp(167);
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (wowObjectModel.AnimationLookups[Convert.ToInt16(AnimationType.AttackUnarmed)] != i)
+                    Timestamps[i].AddTimestamp(0);
             }
         }
 

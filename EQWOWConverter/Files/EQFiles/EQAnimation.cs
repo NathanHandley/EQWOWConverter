@@ -116,7 +116,8 @@ namespace EQWOWConverter.EQFiles
                 case "c02": return AnimationType.Attack1HPierce; // "Piercing" so may be 2h
                 case "c03": return AnimationType.Attack2H; // 2H
                 case "c04": return AnimationType.Attack2HL; // 2H Blunt
-                case "c05": return AnimationType.AttackThrown;
+                //case "c05": return AnimationType.AttackThrown;
+                case "c05": return AnimationType.AttackUnarmed;
                 case "c06": return AnimationType.AttackOff;
                 case "c07": return AnimationType.ShieldBash;
                 case "c08": return AnimationType.AttackUnarmed;

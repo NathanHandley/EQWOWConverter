@@ -246,22 +246,22 @@ namespace EQWOWConverter.WOWFiles
             {
                 // DeathThud / LootEffect ($DTH)
                 M2Event deathThud = new M2Event();
-                deathThud.PopulateAsDeathThudDTH(wowObjectModel.GetFirstBoneIndexForEQBoneNames("dth"));
+                deathThud.PopulateAsDeathThudDTH(wowObjectModel);
                 Events.AddElement(deathThud);
 
                 // HandleCombatAnim ($CAH)
                 M2Event handleCombat = new M2Event();
-                handleCombat.PopulateAsHandleCombatAnimCAH(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cah"));
+                handleCombat.PopulateAsHandleCombatAnimCAH(wowObjectModel);
                 Events.AddElement(handleCombat);
 
                 // HandlePlayWeaponSwooshSound ($CSS)
                 M2Event handleWeaponSwoosh = new M2Event();
-                handleWeaponSwoosh.PopulateAsPlayWeaponSwooshSoundCSS(wowObjectModel.GetFirstBoneIndexForEQBoneNames("css"));
+                handleWeaponSwoosh.PopulateAsPlayWeaponSwooshSoundCSS(wowObjectModel);
                 Events.AddElement(handleWeaponSwoosh);
 
                 // PlayCombatActionAnimKit ($CPP)
                 M2Event handlePlayCombatAction = new M2Event();
-                handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel.GetFirstBoneIndexForEQBoneNames("cpp"));
+                handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel);
                 Events.AddElement(handlePlayCombatAction);
             }
         }
