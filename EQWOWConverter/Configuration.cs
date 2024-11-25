@@ -230,6 +230,9 @@ namespace EQWOWConverter
         // Name of the object material that is used when rendering the soundinstance object
         public static readonly string CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME = "akafloorgrate";
 
+        // Volume of creature sound effects like attacks and being hit
+        public static readonly float CONFIG_AUDIO_CREATURE_SOUND_VOLUME = 0.8f;
+
         //=====================================================================
         // Objects
         //=====================================================================

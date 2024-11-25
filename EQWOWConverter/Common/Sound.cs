@@ -111,6 +111,10 @@ namespace EQWOWConverter.Common
             {
                 return volume * Configuration.CONFIG_AUDIO_MUSIC_VOLUME_MOD;
             }
+            else if (Type == SoundType.NPCCombat)
+            {
+                return Configuration.CONFIG_AUDIO_CREATURE_SOUND_VOLUME;
+            }
 
             Logger.WriteError("Type of SoundType is not handled, so volume will be 1");
             return volume;
