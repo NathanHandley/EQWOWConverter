@@ -853,8 +853,8 @@ namespace EQWOWConverter
                 {
                     creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
                     string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.ModelFileName + ".mdx";
-                    creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, relativeModelPath);
-                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, modelVariation.GenderType));
+                    creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, modelVariation.DBCCreatureSoundDataID, relativeModelPath);
+                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureSoundDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, modelVariation.GenderType));
                 }
             }
 

@@ -34,9 +34,12 @@ namespace EQWOWConverter.Creatures
         // IDs
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
         private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START;
+        private static int CURRENT_DBCID_CREATURESOUNDDATAID = Configuration.CONFIG_DBCID_CREATURESOUNDDATA_ID_START;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
+        
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
+        public int DBCCreatureSoundDataID;
         public int SQLCreatureTemplateID;
 
         public CreatureModelVariation()
@@ -45,6 +48,8 @@ namespace EQWOWConverter.Creatures
             CURRENT_DBCID_CREATUREMODELDATAID++;
             DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
             CURRENT_DBCID_CREATUREDISPLAYINFOID++;
+            DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
+            CURRENT_DBCID_CREATURESOUNDDATAID++;
             SQLCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
             CURRENT_SQL_CREATURETEMPLATEID++;
         }

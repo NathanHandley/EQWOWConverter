@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureModelDataDBC : DBCFile
     {
-        public void AddRow(int id, string modelName)
+        public void AddRow(int id, int soundId, string modelName)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // FoleyMaterialID, always 0
             newRow.AddInt(0); // FootstepShakeSize, references CameraShakes.dbc
             newRow.AddInt(0); // DeathThudShakeSize, references CameraShakes.dbc
-            newRow.AddInt(0); // SoundID, references CreatureSoundData.dbc
+            newRow.AddInt(soundId); // SoundID, references CreatureSoundData.dbc
             newRow.AddFloat(0.6944f); // CollisionWidth, must be > 0.41670012920929
             newRow.AddFloat(2.083f); // CollisionHeight
             newRow.AddFloat(0); // MountHeight

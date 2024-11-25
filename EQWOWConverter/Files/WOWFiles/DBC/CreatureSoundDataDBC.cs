@@ -30,14 +30,14 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
-            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
+            newRow.AddInt(0);// newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundSpecialAttackName)); // Exertion Critical SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit1Name)); // Injury SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit3Name)); // Injury Critical SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit4Name)); // Injury Crushing Blow SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundDeathName)); // Death SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit2Name)); // Stun SoundEntriesDBC.ID
-            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundLoopName)); // Stand SoundEntriesDBC.ID
+            newRow.AddInt(0); // Stand SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundWalkingName)); // Footstep sound in FootstepTerrainLookupDBC.ID
             newRow.AddInt(0); // Agro SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Flap SoundEntriesDBC.ID
@@ -53,7 +53,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Custom Attack 3 SoundEntriesDBC.ID
             newRow.AddInt(0); // Custom Attack 4 SoundEntriesDBC.ID
             newRow.AddInt(0); // NPC Sound SoundEntriesDBC.ID
-            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundIdle1Name)); // Loop Sound (idle?) SoundEntriesDBC.ID
+            newRow.AddInt(0); // Loop Sound (idle?) SoundEntriesDBC.ID
             newRow.AddInt(0); // Creature impact type
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundJumpName)); // Jump Start ID SoundEntriesDBC.ID
             newRow.AddInt(0); // Jump End ID SoundEntriesDBC.ID
