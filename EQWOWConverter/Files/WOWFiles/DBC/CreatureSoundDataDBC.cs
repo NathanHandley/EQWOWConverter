@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
-            newRow.AddInt(0);// newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundSpecialAttackName)); // Exertion Critical SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit1Name)); // Injury SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit3Name)); // Injury Critical SoundEntriesDBC.ID

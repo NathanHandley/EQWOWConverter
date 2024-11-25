@@ -250,9 +250,9 @@ namespace EQWOWConverter.WOWFiles
                 Events.AddElement(deathThud);
 
                 // HandleCombatAnim ($CAH)
-                M2Event handleCombat = new M2Event();
-                handleCombat.PopulateAsHandleCombatAnimCAH(wowObjectModel);
-                Events.AddElement(handleCombat);
+                //M2Event handleCombat = new M2Event();
+                //handleCombat.PopulateAsHandleCombatAnimCAH(wowObjectModel);
+                //Events.AddElement(handleCombat);
 
                 // HandlePlayWeaponSwooshSound ($CSS)
                 M2Event handleWeaponSwoosh = new M2Event();
@@ -260,9 +260,9 @@ namespace EQWOWConverter.WOWFiles
                 Events.AddElement(handleWeaponSwoosh);
 
                 // PlayCombatActionAnimKit ($CPP)
-                M2Event handlePlayCombatAction = new M2Event();
-                handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel);
-                Events.AddElement(handlePlayCombatAction);
+                //M2Event handlePlayCombatAction = new M2Event();
+                //handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel);
+                //Events.AddElement(handlePlayCombatAction);
             }
         }
 
