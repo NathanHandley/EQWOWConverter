@@ -504,7 +504,7 @@ namespace EQWOWConverter.ObjectModels
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.StandWound);
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
-            //SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);  TODO: BUG: This crashes if fighting in the water... why?
+            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);  //TODO: BUG: This crashes if fighting in the water... why?
         }
 
         private void SetFirstUnusedAnimationIndexForAnimationType(AnimationType animationType)
