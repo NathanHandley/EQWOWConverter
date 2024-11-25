@@ -67,6 +67,16 @@ namespace EQWOWConverter.Creatures
                 if (creatureRaceSounds.RaceID == id && creatureRaceSounds.Gender == CreatureGenderType.Neutral)
                     return creatureRaceSounds;
 
+            // Fall back to male
+            foreach (CreatureRaceSounds creatureRaceSounds in CreatureRaceSoundsList)
+                if (creatureRaceSounds.RaceID == id && creatureRaceSounds.Gender == CreatureGenderType.Male)
+                    return creatureRaceSounds;
+
+            // Fall back to female
+            foreach (CreatureRaceSounds creatureRaceSounds in CreatureRaceSoundsList)
+                if (creatureRaceSounds.RaceID == id && creatureRaceSounds.Gender == CreatureGenderType.Female)
+                    return creatureRaceSounds;
+
             // Error if nothing, and return blank record
             Logger.WriteError("Failed to find a CreatureRaceSound record that matches RaceID = '" + id.ToString() + "' and Gender = '" + gender.ToString() + "'");
             return new CreatureRaceSounds();
@@ -143,11 +153,15 @@ namespace EQWOWConverter.Creatures
                     continue;
                 }
 
+                // Skip blank
+                if (row.Trim().Length == 0)
+                    continue;
+
                 // Make sure data size is correct
                 string[] rowBlocks = row.Split(",");
-                if (rowBlocks.Length < 20)
+                if (rowBlocks.Length < 21)
                 {
-                    Logger.WriteError("CreatureRaceSound list via file '" + soundDataFileName + "' has too few rows");
+                    Logger.WriteError("CreatureRaceSound list via file '" + soundDataFileName + "' has too few columns");
                     continue;
                 }
 
