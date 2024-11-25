@@ -31,13 +31,13 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion SoundEntriesDBC.ID
-            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundSpecialAttackName)); // Exertion Critical SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundAttackName)); // Exertion Critical SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit1Name)); // Injury SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit3Name)); // Injury Critical SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit4Name)); // Injury Crushing Blow SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundDeathName)); // Death SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit2Name)); // Stun SoundEntriesDBC.ID
-            newRow.AddInt(0); // Stand SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundLoopName)); // Stand SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundWalkingName)); // Footstep sound in FootstepTerrainLookupDBC.ID
             newRow.AddInt(0); // Agro SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Flap SoundEntriesDBC.ID
@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Fidget Delay Seconds Min (Time / Interval? 30 seconds?)
             newRow.AddFloat(0); // Fidget Delay Seconds Max (Time / Interval? 60 seconds?)
             newRow.AddInt(0); // Birth SoundEntriesDBC.ID
-            newRow.AddInt(0); // Spell Cast Directed SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundSpellAttackName)); // Spell Cast Directed SoundEntriesDBC.ID
             newRow.AddInt(0); // Submerge SoundEntriesDBC.ID
             newRow.AddInt(0); // Submerged SoundEntriesDBC.ID
             newRow.AddInt(0); // Creature Sound Data ID Pet (?) SoundEntriesDBC.ID

@@ -49,7 +49,7 @@ namespace EQWOWConverter.Creatures
         public string SoundWalkingName = string.Empty;
         public string SoundRunningName = string.Empty;
         public string SoundAttackName = string.Empty;
-        public string SoundSpecialAttackName = string.Empty;
+        public string SoundSpellAttackName = string.Empty;
         public string SoundTechnicalAttackName = string.Empty;
 
         public static CreatureRaceSounds GetSoundsByRaceIDAndGender(int id, CreatureGenderType gender)
@@ -93,7 +93,7 @@ namespace EQWOWConverter.Creatures
                 GenerateSoundIfUnique(creatureRaceSounds.SoundWalkingName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundRunningName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundAttackName);
-                GenerateSoundIfUnique(creatureRaceSounds.SoundSpecialAttackName);
+                GenerateSoundIfUnique(creatureRaceSounds.SoundSpellAttackName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundTechnicalAttackName);
             }
         }
@@ -182,7 +182,7 @@ namespace EQWOWConverter.Creatures
                 creatureRaceSounds.SoundWalkingName = rowBlocks[15];
                 creatureRaceSounds.SoundRunningName = rowBlocks[16];
                 creatureRaceSounds.SoundAttackName = rowBlocks[17];
-                creatureRaceSounds.SoundSpecialAttackName = rowBlocks[18];
+                creatureRaceSounds.SoundSpellAttackName = rowBlocks[18];
                 creatureRaceSounds.SoundTechnicalAttackName = rowBlocks[19];
                 CreatureRaceSoundsList.Add(creatureRaceSounds);
             }
