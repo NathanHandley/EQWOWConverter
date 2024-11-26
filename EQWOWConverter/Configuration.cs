@@ -231,7 +231,7 @@ namespace EQWOWConverter
         public static readonly string CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME = "akafloorgrate";
 
         // Volume of creature sound effects like attacks and being hit
-        public static readonly float CONFIG_AUDIO_CREATURE_SOUND_VOLUME = 0.8f;
+        public static readonly float CONFIG_AUDIO_CREATURE_SOUND_VOLUME = 0.4f;
 
         //=====================================================================
         // Objects
@@ -252,6 +252,13 @@ namespace EQWOWConverter
         // If this is false then flags (like 'accept projected textures' will be disabled on doodad instances.
         // Note: Leave this on UNLESS you attempting to view WMOs in WoWModelViewer v0701 r252 as it "true" will crash it.
         public static readonly bool CONFIG_OBJECT_STATIC_ENABLE_FLAGS = true;
+
+        //=====================================================================
+        // Creatures
+        //=====================================================================
+        // This is the percent of the idle time that a 'fidget' occurs (1-100)
+        // Note: There are two fidget animations, 1/2 this number applies to each fidget
+        public static readonly int CONFIG_CREATURE_FIDGET_TIME_PERCENT = 20;
 
         // ====================================================================
         // WOW DBC/File IDs

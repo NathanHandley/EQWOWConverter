@@ -310,6 +310,8 @@ namespace EQWOWConverter.ObjectModels
             //CreateEventBone("cah"); // HandleCombatAnim
             CreateEventBone("css"); // PlayWeaponSwoosh
             //CreateEventBone("cpp"); // PlayCombatActionAnim
+            CreateEventBone("fd1"); // PlayFidgetSound1
+            CreateEventBone("fd2"); // PlayFidgetSound2
 
             // Set bone lookups
             ModelBoneKeyLookups.Clear();
@@ -330,9 +332,10 @@ namespace EQWOWConverter.ObjectModels
 
         public bool CreateAndSetAnimations(float skeletonLiftHeight)
         {
-            // Set the various animations
+            // Set the various animations (note: Do not change the order of the first 4)
             FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 1 / Fidget
+            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight); // Stand mid-idle
+            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
             FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
             FindAndSetAnimationForType(AnimationType.AttackUnarmed, skeletonLiftHeight);
             FindAndSetAnimationForType(AnimationType.Walk, skeletonLiftHeight);
@@ -343,6 +346,28 @@ namespace EQWOWConverter.ObjectModels
             FindAndSetAnimationForType(AnimationType.Death, skeletonLiftHeight);
             FindAndSetAnimationForType(AnimationType.CombatWound, skeletonLiftHeight);
             FindAndSetAnimationForType(AnimationType.CombatCritical, skeletonLiftHeight);
+
+            // Update the stand/fidget animation timers so that there is a fidget sometimes
+            if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+            {
+                // Update timers
+                int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CONFIG_CREATURE_FIDGET_TIME_PERCENT) / 100));
+                int nonFidgetSliceAll = 32767 - fidgetSliceAll;
+                int nonFidgetSlice1 = nonFidgetSliceAll / 2;
+                int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
+                int fidgetSlice1 = fidgetSliceAll / 2;
+                int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
+                ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
+                ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
+                ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
+                ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
+
+                // Link animations
+                ModelAnimations[0].NextAnimation = 2;
+                ModelAnimations[1].NextAnimation = 3;
+                ModelAnimations[2].NextAnimation = 1;
+                ModelAnimations[3].NextAnimation = 0;
+            }
 
             // Set the animation lookups
             SetAllAnimationLookups();
@@ -565,6 +590,8 @@ namespace EQWOWConverter.ObjectModels
                 case "cah":
                 case "css":
                 case "cpp":
+                case "fd1":
+                case "fd2":
                     {
                         // For now, let's just use root
                         // TODO: Use something other than root?

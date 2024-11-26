@@ -102,6 +102,36 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void PopulateAsPlayFidgetSound1(ObjectModel wowObjectModel)
+        {
+            Identifier = "$FD1";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("fd1"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+                // Always animation at index 2
+                if (i == 2)
+                    Timestamps[i].AddTimestamp(0);
+            }
+        }
+
+        public void PopulateAsPlayFidgetSound2(ObjectModel wowObjectModel)
+        {
+            Identifier = "$FD2";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("fd2"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+                // Always animation at index 3
+                if (i == 3)
+                    Timestamps[i].AddTimestamp(0);
+            }
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;

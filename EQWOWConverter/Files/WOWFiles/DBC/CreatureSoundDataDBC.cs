@@ -43,8 +43,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Wing Flap SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Glide SoundEntriesDBC.ID
             newRow.AddInt(0); // Alert SoundEntriesDBC.ID
-            newRow.AddInt(0); // Fidget 1 SoundEntriesDBC.ID
-            newRow.AddInt(0); // Fidget 2 SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundIdle1Name)); // Fidget 1 SoundEntriesDBC.ID
+            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundIdle2Name)); // Fidget 2 SoundEntriesDBC.ID
             newRow.AddInt(0); // Fidget 3 SoundEntriesDBC.ID
             newRow.AddInt(0); // Fidget 4 SoundEntriesDBC.ID
             newRow.AddInt(0); // Fidget 5 SoundEntriesDBC.ID

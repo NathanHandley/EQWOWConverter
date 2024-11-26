@@ -64,14 +64,16 @@ namespace EQWOWConverter.ObjectModels
         {
             switch (name.ToLower())
             {
-                case "main":    return 521822810;
-                case "root":    return 3066451557;
-                case "name":    return 2738135331;
                 case "breath":  return 3299126614;
-                case "dth":     return 3747058587; // Used for $DETH event (DeathThud_LootEffect)
                 case "cah":     return 3987563274; // Used for $CAH event (HandleCombatAnimEvent)
-                case "css":     return 524081717;  // Used for $CSS event (PlayWeaponSwooshSound)
                 case "cpp":     return 2904086604; // Used for $CPP event (PlayCombatActionAnimKit)
+                case "css":     return 524081717;  // Used for $CSS event (PlayWeaponSwooshSound)                
+                case "dth":     return 3747058587; // Used for $DTH event (DeathThud_LootEffect)
+                case "fd1":     return 3217595452; // Used for $FD1 event (PlayFidgetSound 1)
+                case "fd2":     return 650235270;  // Used for $FD2 event (PlayFidgetSound 2)
+                case "main":    return 521822810;
+                case "name":    return 2738135331;
+                case "root":    return 3066451557;
                 default:        return 0;
             }
         }
