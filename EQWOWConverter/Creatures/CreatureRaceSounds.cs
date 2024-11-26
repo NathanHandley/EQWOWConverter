@@ -123,7 +123,7 @@ namespace EQWOWConverter.Creatures
                 return;
             if (soundName == "null24.wav")
                 return;
-            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, 8, 45, false);
+            Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, 8, 20, false);
             SoundsBySoundName[soundName] = newSound;
         }
 

@@ -28,17 +28,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SoundEntriesDBC : DBCFile
     {
-        public class Row
-        {
-            public string Name = string.Empty;
-            public string FileName = string.Empty;
-            public string DirectoryBase = string.Empty;
-            public float Volumefloat = 1f;
-            public int Flags = 0; // For now, only Looping (0x02000) might be used
-            public float MinDistance = 0f;
-            public float DistanceCutoff = 0f;
-        }
-
         public void AddRow(Sound sound, string fileNameWithExt, string directory)
         {
             DBCRow newRow = new DBCRow();
