@@ -16,9 +16,10 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.WOWFiles;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.ObjectModels.Types;
 using EQWOWConverter.Zones;
+using Mysqlx.Resultset;
 using Mysqlx.Session;
 using System;
 using System.Collections.Generic;
@@ -146,14 +147,14 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation(ModelMaterials, ModelVertices, ModelTriangles, skeletonLiftHeight);
+            ProcessBonesAndAnimation(skeletonLiftHeight);
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
                 GlobalLoopSequenceLimits.Add(0);
         }
 
-        private void ProcessBonesAndAnimation(List<ObjectModelMaterial> modelMaterials, List<ObjectModelVertex> modelVertices, List<TriangleFace> modelTriangles, float skeletonLiftHeight)
+        private void ProcessBonesAndAnimation(float skeletonLiftHeight)
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -184,95 +185,24 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+
+                    // Make one animation (standing)
+                    ModelAnimations.Add(new ObjectModelAnimation());
+                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
                     return;
                 }
 
-                // Create animations
-                // TODO: Create "dead" out of the last frame of "death"
-                int curSequenceID = -1;
-                foreach (var animation in EQObjectModelData.Animations)
+                if (CreateAndSetAnimations(skeletonLiftHeight) == false)
                 {
-                    Logger.WriteDetail("Adding animation of eq type '" + animation.Key + "' and wow type '" + animation.Value.AnimationType.ToString() + "' to object '" + Name + "'");
+                    Logger.WriteError("Could not create and set animations for object '" + Name + "'");
 
-                    // Create the base animation object
-                    ObjectModelAnimation newAnimation = new ObjectModelAnimation();
-                    newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
-                    newAnimation.AnimationType = animation.Value.AnimationType;
-                    newAnimation.EQAnimationType = animation.Value.EQAnimationType;
-                    newAnimation.BoundingBox = new BoundingBox(BoundingBox);
-                    newAnimation.BoundingRadius = BoundingSphereRadius;
-                    newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop
-                    ModelAnimations.Add(newAnimation);
-
-                    // If this has more than one frame, reduce the duration by 1 frame to allow for proper looping
-                    if (animation.Value.FrameCount > 1)
-                        newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
-
-                    // Create an animation track sequence for each bone
-                    curSequenceID++;
-                    foreach (ObjectModelBone bone in ModelBones)
-                    {
-                        bone.ScaleTrack.AddSequence();
-                        bone.RotationTrack.AddSequence();
-                        bone.TranslationTrack.AddSequence();
-                    }
-
-                    // Add the animation-bone transformations to the bone objects for each frame
-                    Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
-                    foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
-                    {
-                        ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
-
-                        // Root always just has one frame
-                        if (animationFrame.GetBoneName() == "root")
-                        {
-                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, 0, new Vector3(1, 1, 1));
-                            curBone.RotationTrack.AddValueToSequence(curSequenceID, 0, new QuaternionShort());
-                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, 0, new Vector3(0, 0, 0));
-                        }
-                        // Regular bones append the animation frame
-                        else
-                        {
-                            // Format and transform the animation frame values from EQ to WoW
-                            Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                   animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                   animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
-                            Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                            QuaternionShort frameRotation;
-                            frameRotation = new QuaternionShort(-animationFrame.XRotation,
-                                                                -animationFrame.YRotation,
-                                                                -animationFrame.ZRotation,
-                                                                animationFrame.WRotation);
-                            frameRotation.RecalculateToShortest();
-
-                            // For bones that connect to root, add the height mod
-                            if (curBone.ParentBoneNameEQ == "root")
-                                frameTranslation.Z += skeletonLiftHeight;
-
-                            // Calculate the frame start time
-                            UInt32 curTimestamp = 0;
-                            if (curTimestampsByBoneName.ContainsKey(animationFrame.GetBoneName()) == false)
-                                curTimestampsByBoneName.Add(animationFrame.GetBoneName(), 0);
-                            else
-                                curTimestamp = Convert.ToUInt32(curTimestampsByBoneName[animationFrame.GetBoneName()]);
-
-                            // Add the values
-                            curBone.ScaleTrack.AddValueToSequence(curSequenceID, curTimestamp, frameScale);
-                            curBone.RotationTrack.AddValueToSequence(curSequenceID, curTimestamp, frameRotation);
-                            curBone.TranslationTrack.AddValueToSequence(curSequenceID, curTimestamp, frameTranslation);
-
-                            // Increment the frame start for next
-                            curTimestampsByBoneName[animationFrame.GetBoneName()] += animationFrame.FramesMS;
-                        }
-                    }
+                    // Make one animation (standing)
+                    ModelAnimations.Add(new ObjectModelAnimation());
+                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    return;
                 }
-
-                // Set the animation lookups
-                SetAllAnimationLookups();
-
-                // Since a 'main' bone was added to the start, all other bone indices needs to be increased by 1
-                foreach (ObjectModelVertex vertex in ModelVertices)
-                    vertex.BoneIndicesTrue[0]++;
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
                 // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
@@ -325,6 +255,10 @@ namespace EQWOWConverter.ObjectModels
             mainBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
             ModelBones.Add(mainBone);
 
+            // Since a 'main' bone was added to the start, all other bone indices needs to be increased by 1
+            foreach (ObjectModelVertex vertex in ModelVertices)
+                vertex.BoneIndicesTrue[0]++;
+
             // First block in the bones themselves
             foreach (EQSkeleton.EQSkeletonBone eqBone in EQObjectModelData.SkeletonData.BoneStructures)
             {
@@ -371,8 +305,6 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // TODO: Here, doesn't quite work yet
-
             // Create the bones required for events
             CreateEventBone("dth"); // DeathThud
             //CreateEventBone("cah"); // HandleCombatAnim
@@ -394,6 +326,127 @@ namespace EQWOWConverter.ObjectModels
             SetKeyBone(KeyBoneType.CCH);
 
             return true;
+        }
+
+        public bool CreateAndSetAnimations(float skeletonLiftHeight)
+        {
+            // Set the various animations
+            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 1 / Fidget
+            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
+            FindAndSetAnimationForType(AnimationType.AttackUnarmed, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Walk, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Run, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.ShuffleLeft, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.ShuffleRight, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Swim, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Death, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.CombatWound, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.CombatCritical, skeletonLiftHeight);
+
+            // Set the animation lookups
+            SetAllAnimationLookups();
+            return true;
+        }
+
+        public void FindAndSetAnimationForType(AnimationType animationType, float skeletonLiftHeight, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
+        {
+            Logger.WriteDetail("Seeking animation to build to wow type '" + animationType.ToString() + "' for object '" + Name + "'");
+
+            // Determine what animations can work
+            List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
+            if (overrideEQAnimationType == EQAnimationType.Unknown )
+                compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
+            else
+                compatibleAnimationTypes.Add(overrideEQAnimationType);
+            foreach(EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
+            {
+                // Look for a match, and process it if found
+                foreach(var animation in EQObjectModelData.Animations)
+                {
+                    if (animation.Value.EQAnimationType == compatibleAnimationType)
+                    {
+                        // Capture and set this animation
+                        Logger.WriteDetail("Found usable candidate, setting to eq type '" + animation.Key + "' for object '" + Name + "'");
+
+                        // Create the base animation object
+                        ObjectModelAnimation newAnimation = new ObjectModelAnimation();
+                        newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
+                        newAnimation.AnimationType = animationType;
+                        newAnimation.EQAnimationType = animation.Value.EQAnimationType;
+                        newAnimation.BoundingBox = new BoundingBox(BoundingBox);
+                        newAnimation.BoundingRadius = BoundingSphereRadius;
+                        newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
+                        ModelAnimations.Add(newAnimation);
+
+                        // If this has more than one frame, reduce the duration by 1 frame to allow for proper looping (TODO: Is this really needed?)
+                        if (animation.Value.FrameCount > 1)
+                            newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
+
+                        // Create an animation track sequence for each bone
+                        foreach (ObjectModelBone bone in ModelBones)
+                        {
+                            bone.ScaleTrack.AddSequence();
+                            bone.RotationTrack.AddSequence();
+                            bone.TranslationTrack.AddSequence();
+                        }
+
+                        // Add the animation-bone transformations to the bone objects for each frame
+                        Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
+                        foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
+                        {
+                            ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
+
+                            // Root always just has one frame
+                            if (animationFrame.GetBoneName() == "root")
+                            {
+                                curBone.ScaleTrack.AddValueToLastSequence(0, new Vector3(1, 1, 1));
+                                curBone.RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
+                                curBone.TranslationTrack.AddValueToLastSequence(0, new Vector3(0, 0, 0));
+                            }
+                            // Regular bones append the animation frame
+                            else
+                            {
+                                // Format and transform the animation frame values from EQ to WoW
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
+                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
+                                Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
+                                QuaternionShort frameRotation;
+                                frameRotation = new QuaternionShort(-animationFrame.XRotation,
+                                                                    -animationFrame.YRotation,
+                                                                    -animationFrame.ZRotation,
+                                                                    animationFrame.WRotation);
+                                frameRotation.RecalculateToShortest();
+
+                                // For bones that connect to root, add the height mod
+                                if (curBone.ParentBoneNameEQ == "root")
+                                    frameTranslation.Z += skeletonLiftHeight;
+
+                                // Calculate the frame start time
+                                UInt32 curTimestamp = 0;
+                                if (curTimestampsByBoneName.ContainsKey(animationFrame.GetBoneName()) == false)
+                                    curTimestampsByBoneName.Add(animationFrame.GetBoneName(), 0);
+                                else
+                                    curTimestamp = Convert.ToUInt32(curTimestampsByBoneName[animationFrame.GetBoneName()]);
+
+                                // Add the values
+                                curBone.ScaleTrack.AddValueToLastSequence(curTimestamp, frameScale);
+                                curBone.RotationTrack.AddValueToLastSequence(curTimestamp, frameRotation);
+                                curBone.TranslationTrack.AddValueToLastSequence(curTimestamp, frameTranslation);
+
+                                // Increment the frame start for next
+                                curTimestampsByBoneName[animationFrame.GetBoneName()] += animationFrame.FramesMS;
+                            }
+                        }
+
+                        // Animation set, so exit
+                        return;
+                    }
+                }
+            }
+
+            Logger.WriteDetail("No animation candidate was found for object '" + Name + "'");
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)

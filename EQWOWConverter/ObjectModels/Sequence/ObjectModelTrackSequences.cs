@@ -59,6 +59,17 @@ namespace EQWOWConverter.ObjectModels
             Values[sequenceID].AddValue(value);
         }
 
+        public void AddValueToLastSequence(UInt32 timestamp, T value)
+        {
+            if (Timestamps.Count == 0)
+            {
+                Logger.WriteError("Error AddValueToLastSequence failed because there are no sequences");
+                return;
+            }
+            Timestamps[Timestamps.Count-1].AddTimestamp(timestamp);
+            Values[Timestamps.Count-1].AddValue(value);
+        }
+
         public void ReplicateFirstValueToEnd(int sequenceID, UInt32 timestamp)
         {
             if (Timestamps[sequenceID].Timestamps.Count == 0)

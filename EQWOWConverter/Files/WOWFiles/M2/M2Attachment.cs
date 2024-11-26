@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;

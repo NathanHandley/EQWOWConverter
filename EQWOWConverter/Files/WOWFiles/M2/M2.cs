@@ -24,7 +24,6 @@ using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.Files.WOWFiles.M2.OffsetObjects;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.ObjectModels.Types;
 using EQWOWConverter.Zones;
 using Google.Protobuf.WellKnownTypes;
 

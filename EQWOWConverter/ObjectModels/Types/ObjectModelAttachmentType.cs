@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.ObjectModels.Types
+namespace EQWOWConverter.ObjectModels
 {
     internal enum ObjectModelAttachmentType : UInt16
     {
