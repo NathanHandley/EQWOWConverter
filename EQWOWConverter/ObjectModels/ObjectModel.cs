@@ -176,71 +176,16 @@ namespace EQWOWConverter.ObjectModels
             // Skeletal
             else
             {
-                // Grab the 'pos' animation, which should be the base pose
-                Animation pickedAnimation = new Animation("", AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
-                foreach (var animation in EQObjectModelData.Animations)
-                    if (animation.Key == "pos")
-                        pickedAnimation = animation.Value;
-                if (pickedAnimation.AnimationFrames.Count == 0)
+                // Build the skeleton
+                if (BuildSkeletonBonesAndLookups() == false)
                 {
-                    Logger.WriteError("Could not pull skeleton information for object '" + Name + "' as there was no 'pos' animation");
+                    Logger.WriteError("Could not build skeleton information for object '" + Name + "'");
                     ModelBones.Add(new ObjectModelBone());
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
                     return;
                 }
-
-                // Start by creating the first bone as "main", which every skeletal model will need
-                ObjectModelBone mainBone = new ObjectModelBone();
-                mainBone.BoneNameEQ = "main";
-                mainBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                mainBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                mainBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                ModelBones.Add(mainBone);
-
-                // Create bones by reading this pos animation
-                for (int i = 0; i < pickedAnimation.AnimationFrames.Count; i++)
-                {
-                    ObjectModelBone curBone = new ObjectModelBone();
-                    curBone.BoneNameEQ = pickedAnimation.AnimationFrames[i].GetBoneName();
-                    curBone.ParentBoneNameEQ = pickedAnimation.AnimationFrames[i].GetParentBoneName();
-                    for (Int16 j = 0; j < ModelBones.Count; j++)
-                        if (ModelBones[j].BoneNameEQ == curBone.ParentBoneNameEQ)
-                            curBone.ParentBone = j;
-                    if (curBone.BoneNameEQ == "root")
-                    {
-                        curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                        curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                        curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
-                        curBone.ParentBone = 0; // "main"
-                    }
-                    else
-                    {
-                        curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                        curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                        curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    }
-                    curBone.KeyBoneID = -1;
-                    ModelBones.Add(curBone);
-                }
-
-                // Create the bones required for events
-                CreateEventBone("dth"); // DeathThud
-                CreateEventBone("cah"); // HandleCombatAnim
-                CreateEventBone("css"); // PlayWeaponSwoosh
-                CreateEventBone("cpp"); // PlayCombatActionAnim
-
-                // Block out 27 key bones with blank
-                for (int i = 0; i < 27; i++)
-                    ModelBoneKeyLookups.Add(-1);
-
-                // Set any key bones
-                SetKeyBone(KeyBoneType.Root);
-                SetKeyBone(KeyBoneType.Jaw);
-                SetKeyBone(KeyBoneType._Breath);
-                SetKeyBone(KeyBoneType._Name);
-                SetKeyBone(KeyBoneType.CCH);
 
                 // Create animations
                 // TODO: Create "dead" out of the last frame of "death"
@@ -359,6 +304,96 @@ namespace EQWOWConverter.ObjectModels
                     ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
                 }
             }
+        }
+
+        private bool BuildSkeletonBonesAndLookups()
+        {
+            if (EQObjectModelData.SkeletonData.BoneStructures.Count == 0)
+            {
+                Logger.WriteError("Could not build skeleton information for object '" + Name + "' due to no EQ bone structures found");
+                return false;
+            }
+
+            // Build out bones
+            ModelBones.Clear();
+
+            // Add a "main" bone in the start.  Note, all bone indices will need to increase by 1 as a result
+            ObjectModelBone mainBone = new ObjectModelBone();
+            mainBone.BoneNameEQ = "main";
+            mainBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+            mainBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+            mainBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+            ModelBones.Add(mainBone);
+
+            // First block in the bones themselves
+            foreach (EQSkeleton.EQSkeletonBone eqBone in EQObjectModelData.SkeletonData.BoneStructures)
+            {
+                ObjectModelBone curBone = new ObjectModelBone();
+                curBone.BoneNameEQ = eqBone.BoneName;
+                if (curBone.BoneNameEQ == "root")
+                {
+                    curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.None;
+                    curBone.ParentBone = 0;
+                    curBone.ParentBoneNameEQ = "main";
+                }
+                else
+                {
+                    curBone.ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    curBone.TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                }
+                curBone.KeyBoneID = -1;
+                ModelBones.Add(curBone);
+            }
+
+            // Next assign all children, accounting for main bone
+            foreach (EQSkeleton.EQSkeletonBone eqBone in EQObjectModelData.SkeletonData.BoneStructures)
+            {
+                if (GetFirstBoneIndexForEQBoneNames(eqBone.BoneName) == -1)
+                {
+                    Logger.WriteError("Could not find a bone with name '" + eqBone.BoneName + "' for object '" + Name + "'");
+                    continue;
+                }
+                int parentBoneIndex = GetFirstBoneIndexForEQBoneNames(eqBone.BoneName);
+                for (int childIndex = 0; childIndex < eqBone.Children.Count; childIndex++)
+                {
+                    int modChildIndex = eqBone.Children[childIndex] + 1;
+                    if (modChildIndex >= ModelBones.Count)
+                    {
+                        Logger.WriteError("Invalid bone index when trying to assign children for '" + eqBone.BoneName + "' for object '" + Name + "'");
+                        continue;
+                    }
+                    ObjectModelBone childBone = ModelBones[modChildIndex];
+                    childBone.ParentBone = Convert.ToInt16(parentBoneIndex);
+                    childBone.ParentBoneNameEQ = ModelBones[parentBoneIndex].BoneNameEQ;
+                }
+            }
+
+            // TODO: Here, doesn't quite work yet
+
+            // Create the bones required for events
+            CreateEventBone("dth"); // DeathThud
+            //CreateEventBone("cah"); // HandleCombatAnim
+            CreateEventBone("css"); // PlayWeaponSwoosh
+            //CreateEventBone("cpp"); // PlayCombatActionAnim
+
+            // Set bone lookups
+            ModelBoneKeyLookups.Clear();
+
+            // Block out 27 key bones with blank
+            for (int i = 0; i < 27; i++)
+                ModelBoneKeyLookups.Add(-1);
+
+            // Set any key bones
+            SetKeyBone(KeyBoneType.Root);
+            SetKeyBone(KeyBoneType.Jaw);
+            SetKeyBone(KeyBoneType._Breath);
+            SetKeyBone(KeyBoneType._Name);
+            SetKeyBone(KeyBoneType.CCH);
+
+            return true;
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
