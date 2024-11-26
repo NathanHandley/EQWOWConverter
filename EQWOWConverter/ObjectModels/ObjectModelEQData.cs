@@ -37,7 +37,7 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, bool isSkeletal)
+        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, bool isSkeletal, string animationSupplementalName)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -56,7 +56,7 @@ namespace EQWOWConverter.ObjectModels
                     renderMeshInputFiles.Add(inputObjectName);
                 LoadRenderMeshData(inputObjectName, renderMeshInputFiles, inputObjectFolder);
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
-                LoadAnimationData(inputObjectName, inputObjectFolder);
+                LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplementalName);
                 LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }
             else
@@ -155,7 +155,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void LoadAnimationData(string inputObjectName, string inputObjectFolder)
+        private void LoadAnimationData(string inputObjectName, string inputObjectFolder, string animationSupplementalName)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading animation data...");
 
@@ -176,6 +176,29 @@ namespace EQWOWConverter.ObjectModels
                 else
                 {
                     Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
+                }
+            }
+            if (animationSupplementalName.Length > 0)
+            {
+                animationFileInfos = animationDirectoryInfo.GetFiles(animationSupplementalName + "_*.txt");
+                foreach (FileInfo animationFileInfo in animationFileInfos)
+                {
+                    string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);
+                    string animationName = animationFileName.Split("_")[1];
+
+                    // Skip any already loaded
+                    if (Animations.ContainsKey(animationName))
+                        continue;
+
+                    EQAnimation curEQAnimation = new EQAnimation();
+                    if (curEQAnimation.LoadFromDisk(animationFileInfo.FullName))
+                    {
+                        Animations.Add(animationName, curEQAnimation.Animation);
+                    }
+                    else
+                    {
+                        Logger.WriteError("- [" + inputObjectName + "]: Could not load animation data that should be at '" + animationFileName + "'");
+                    }
                 }
             }
         }

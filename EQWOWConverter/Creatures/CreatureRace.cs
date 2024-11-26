@@ -32,14 +32,28 @@ namespace EQWOWConverter.Creatures
         public int ID;
         public string Name = string.Empty;
         public string MaleSkeletonName = string.Empty;
+        public string MaleAnimationSupplementName = string.Empty;
         public string FemaleSkeletonName = string.Empty;
+        public string FemaleAnimationSupplementName = string.Empty;
         public string NeutralSkeletonName = string.Empty;
+        public string NeutralAnimationSupplementName = string.Empty;
         public float BoundaryRadius;
         public float BoundaryHeight;
         public float LiftMaleAndNeutral = 0;
         public float LiftFemale = 0;
         public float ModelScale;
-        public float Height;        
+        public float Height;
+
+        public string GetAnimationSupplementNameForGender(CreatureGenderType genderType)
+        {
+            switch (genderType)
+            {
+                case CreatureGenderType.Male: return MaleAnimationSupplementName;
+                case CreatureGenderType.Female: return FemaleAnimationSupplementName;
+                case CreatureGenderType.Neutral: return NeutralAnimationSupplementName;
+                default: return string.Empty;
+            }
+        }
 
         public static CreatureRace GetCreatureRaceByID(int id)
         {
@@ -87,15 +101,12 @@ namespace EQWOWConverter.Creatures
                     continue;
                 }
 
-                // Make sure data size is correct
-                string[] rowBlocks = row.Split(",");
-                if (rowBlocks.Length != 11)
-                {
-                    Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' has an invalid row which doesn't have a length of 11");
+                // Skip blank rows
+                if (row.Trim().Length == 0)
                     continue;
-                }
 
                 // Load the row
+                string[] rowBlocks = row.Split(",");
                 CreatureRace newCreatureRace = new CreatureRace();
                 newCreatureRace.ID = int.Parse(rowBlocks[0]);
                 newCreatureRace.Name = rowBlocks[1].Trim();
@@ -108,6 +119,12 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.Height = float.Parse(rowBlocks[8]);
                 newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[9]);
                 newCreatureRace.BoundaryHeight = float.Parse(rowBlocks[10]);
+                if (rowBlocks.Length > 11)
+                    newCreatureRace.MaleAnimationSupplementName = rowBlocks[11].Trim();
+                if (rowBlocks.Length > 12)
+                    newCreatureRace.FemaleAnimationSupplementName = rowBlocks[12].Trim();
+                if (rowBlocks.Length > 13)
+                    newCreatureRace.NeutralAnimationSupplementName = rowBlocks[13].Trim();
 
                 if (CreatureRacesByRaceID.ContainsKey(newCreatureRace.ID))
                 {

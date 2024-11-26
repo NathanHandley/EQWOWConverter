@@ -74,7 +74,7 @@ namespace EQWOWConverter.WOWFiles
 			public int VehicleID = 0;
 			public int MinGold = 0;
 			public int MaxGold = 0;
-			public string AIName = "SmartAI"; // Lots of rows have "SmartAI"
+			public string AIName = string.Empty; // Lots of rows have "SmartAI"
 			public int MovementType = 0; // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
 			public float HoverHeight = 1;
 			public float HealthModifier = 1;

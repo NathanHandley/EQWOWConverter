@@ -89,9 +89,12 @@ namespace EQWOWConverter.Creatures
                 if (modelVariation.GenderType != gender)
                     continue;
 
+                // Get any animation supplement
+                string animationSupplement = Race.GetAnimationSupplementNameForGender(gender);
+
                 // Create the variation object
                 ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal);
-                curObject.LoadEQObjectData(charactersFolderRoot);
+                curObject.LoadEQObjectData(charactersFolderRoot, animationSupplement);
 
                 // Convert to a WoW object
                 float addedLift = Race.LiftMaleAndNeutral;
