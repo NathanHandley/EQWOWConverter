@@ -100,9 +100,15 @@ namespace EQWOWConverter.Creatures
                 float addedLift = Race.LiftMaleAndNeutral;
                 if (gender == CreatureGenderType.Female)
                     addedLift = Race.LiftFemale;
-                //addedLift *= 2 - Race.ModelScale; // Remove lift by model scale amount
-                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;// * Race.ModelScale; // Modify scale by world scale
+                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE; // Modify scale by world scale
                 curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift);
+
+                // Set fidget count for M2
+                CreatureRaceSounds creatureRaceSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(Race.ID, gender);
+                if (creatureRaceSounds.SoundIdle2Name.ToLower() != "null24.wav")
+                    curObject.NumOfFidgetSounds = 2;
+                else if (creatureRaceSounds.SoundIdle1Name.ToLower() != "null24.wav")
+                    curObject.NumOfFidgetSounds = 1;
 
                 // Create the M2 and Skin
                 M2 objectM2 = new M2(curObject, relativeMPQPath);

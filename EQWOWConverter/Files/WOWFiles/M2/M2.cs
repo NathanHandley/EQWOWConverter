@@ -263,15 +263,21 @@ namespace EQWOWConverter.WOWFiles
                 //handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel);
                 //Events.AddElement(handlePlayCombatAction);
 
-                // PlayFidgetSound1 ($FD1)
-                M2Event playFidgetSound1 = new M2Event();
-                playFidgetSound1.PopulateAsPlayFidgetSound1(wowObjectModel);
-                Events.AddElement(playFidgetSound1);
+                if (wowObjectModel.NumOfFidgetSounds > 0)
+                {
+                    // PlayFidgetSound1 ($FD1)
+                    M2Event playFidgetSound1 = new M2Event();
+                    playFidgetSound1.PopulateAsPlayFidgetSound1(wowObjectModel);
+                    Events.AddElement(playFidgetSound1);
+                }
 
-                // PlayFidgetSound2 ($FD2)
-                M2Event playFidgetSound2 = new M2Event();
-                playFidgetSound2.PopulateAsPlayFidgetSound2(wowObjectModel);
-                Events.AddElement(playFidgetSound2);
+                if (wowObjectModel.NumOfFidgetSounds > 1)
+                {
+                    // PlayFidgetSound2 ($FD2)
+                    M2Event playFidgetSound2 = new M2Event();
+                    playFidgetSound2.PopulateAsPlayFidgetSound2(wowObjectModel);
+                    Events.AddElement(playFidgetSound2);
+                }
             }
         }
 

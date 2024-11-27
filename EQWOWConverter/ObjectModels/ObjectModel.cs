@@ -61,6 +61,7 @@ namespace EQWOWConverter.ObjectModels
         public float BoundingSphereRadius = 0f;
         public Sound? SoundIdleLoop = null;
         public float ModelScale = 1f;
+        public int NumOfFidgetSounds = 0;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
