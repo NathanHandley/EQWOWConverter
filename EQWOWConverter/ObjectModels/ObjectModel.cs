@@ -60,6 +60,7 @@ namespace EQWOWConverter.ObjectModels
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
         public Sound? SoundIdleLoop = null;
+        public float ModelScale = 1f;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
@@ -67,11 +68,12 @@ namespace EQWOWConverter.ObjectModels
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
 
-        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType)
+        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1)
         {
             Name = name;
             Properties = objectProperties;
             ModelType = modelType;
+            ModelScale = modelScale;
         }
 
         public void LoadEQObjectData(string inputRootFolder, string animationSupplementName = "")
@@ -86,17 +88,17 @@ namespace EQWOWConverter.ObjectModels
                 EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false, string.Empty);
         }
 
-        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0, float modelScale = 1)
+        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0)
         {
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight, modelScale);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight);
             else
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight, modelScale);
+                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight);
         }
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0, float modelScale = 1)
+            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0)
         {
             // Save Name
             Name = name;
@@ -115,7 +117,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, modelScale);
+                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScale);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -123,7 +125,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, modelScale);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScale);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -440,9 +442,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE,
-                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale,
+                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale,
+                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation;
                                 frameRotation = new QuaternionShort(-animationFrame.XRotation,
@@ -817,8 +819,8 @@ namespace EQWOWConverter.ObjectModels
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
                         // Control for world scaling
-                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale;
+                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale;
 
                         // Purge the existing collision data
                         collisionVertices.Clear();

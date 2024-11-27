@@ -93,16 +93,16 @@ namespace EQWOWConverter.Creatures
                 string animationSupplement = Race.GetAnimationSupplementNameForGender(gender);
 
                 // Create the variation object
-                ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal);
+                ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale);
                 curObject.LoadEQObjectData(charactersFolderRoot, animationSupplement);
 
                 // Convert to a WoW object
                 float addedLift = Race.LiftMaleAndNeutral;
                 if (gender == CreatureGenderType.Female)
                     addedLift = Race.LiftFemale;
-                addedLift *= 2 - Race.ModelScale; // Remove lift by model scale amount
-                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE; // Modify scale by world scale
-                curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift, Race.ModelScale);
+                //addedLift *= 2 - Race.ModelScale; // Remove lift by model scale amount
+                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;// * Race.ModelScale; // Modify scale by world scale
+                curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift);
 
                 // Create the M2 and Skin
                 M2 objectM2 = new M2(curObject, relativeMPQPath);
