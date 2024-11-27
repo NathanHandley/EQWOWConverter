@@ -29,6 +29,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -420,6 +421,12 @@ namespace EQWOWConverter.ObjectModels
                         Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
                         foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
                         {
+                            if (DoesBoneExistForName(animationFrame.GetBoneName()) == false)
+                            {
+                                Logger.WriteDetail("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
+                                continue;
+                            }
+                            
                             ObjectModelBone curBone = GetBoneWithName(animationFrame.GetBoneName());
 
                             // Root always just has one frame
@@ -667,6 +674,14 @@ namespace EQWOWConverter.ObjectModels
 
             Logger.WriteError("No bone named '" + name + "' for object '" + Name + "'");
             return new ObjectModelBone();
+        }
+
+        private bool DoesBoneExistForName(string name)
+        {
+            foreach (ObjectModelBone bone in ModelBones)
+                if (bone.BoneNameEQ == name)
+                    return true;
+            return false;
         }
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
