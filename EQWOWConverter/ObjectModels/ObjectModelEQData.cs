@@ -37,7 +37,7 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, bool isSkeletal, string animationSupplementalName)
+        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, List<string> inputMeshNames, bool isSkeletal, string animationSupplementalName)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -49,22 +49,29 @@ namespace EQWOWConverter.ObjectModels
             if (isSkeletal == true)
             {
                 LoadSkeletonData(inputObjectName, inputObjectFolder);
-                List<string> renderMeshInputFiles = new List<string>();
-                foreach(string meshName in SkeletonData.MeshNames)
-                    renderMeshInputFiles.Add(meshName);
-                if (renderMeshInputFiles.Count == 0)
-                    renderMeshInputFiles.Add(inputObjectName);
-                LoadRenderMeshData(inputObjectName, renderMeshInputFiles, inputObjectFolder);
+                LoadRenderMeshData(inputObjectName, inputMeshNames, inputObjectFolder);
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplementalName);
                 LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }
             else
             {
-                LoadRenderMeshData(inputObjectName, new List<string>() { inputObjectName }, inputObjectFolder);
+                LoadRenderMeshData(inputObjectName, inputMeshNames, inputObjectFolder);
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
                 LoadCollisionMeshData(inputObjectName, inputObjectFolder);
             }            
+        }
+
+        public void LoadSkeletalMetaDataFromDisk(string inputObjectName, string inputObjectFolder)
+        {
+            if (Directory.Exists(inputObjectFolder) == false)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
+                return;
+            }
+
+            LoadSkeletonData(inputObjectName, inputObjectFolder);
+            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
         }
 
         private void LoadRenderMeshData(string inputObjectName, List<string> inputMeshNames, string inputObjectFolder)

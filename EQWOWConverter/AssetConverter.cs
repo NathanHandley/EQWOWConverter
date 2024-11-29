@@ -147,7 +147,7 @@ namespace EQWOWConverter
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
                 ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-                curObject.LoadEQObjectData(objectFolderRoot);
+                curObject.LoadEQObjectData(objectFolderRoot, new List<string>() { staticObjectMeshNameNoExt });
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
                 if (curObject.EQObjectModelData.MaterialsByTextureVariation.Count > 1)

@@ -55,6 +55,17 @@ namespace EQWOWConverter.Creatures
             }
         }
 
+        public string GetSkeletonNameForGender(CreatureGenderType genderType)
+        {
+            switch (genderType)
+            {
+                case CreatureGenderType.Male: return MaleSkeletonName;
+                case CreatureGenderType.Female: return FemaleSkeletonName;
+                case CreatureGenderType.Neutral: return NeutralSkeletonName;
+                default: return string.Empty;
+            }
+        }
+
         public static CreatureRace GetCreatureRaceByID(int id)
         {
             if (CreatureRacesByRaceID.Count == 0)

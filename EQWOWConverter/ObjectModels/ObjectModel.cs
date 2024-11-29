@@ -77,16 +77,16 @@ namespace EQWOWConverter.ObjectModels
             ModelScale = modelScale;
         }
 
-        public void LoadEQObjectData(string inputRootFolder, string animationSupplementName = "")
+        public void LoadEQObjectData(string inputRootFolder, List<string> inputMeshNames, string animationSupplementName = "")
         {
             // Clear any old data
             EQObjectModelData = new ObjectModelEQData();
 
             // Load based on type
             if (ModelType == ObjectModelType.Skeletal)
-                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, true, animationSupplementName);
+                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, inputMeshNames, true, animationSupplementName);
             else
-                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, false, string.Empty);
+                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, inputMeshNames, false, string.Empty);
         }
 
         public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0)

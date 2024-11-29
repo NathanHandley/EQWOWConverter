@@ -24,11 +24,15 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelVariation
     {
+        public string SkeletonName = string.Empty;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
         public int BodyModelIndex = 0;
+        public string BodyModelName = string.Empty;
         public int HeadModelIndex = 0;
+        public string HeadModelName = string.Empty;
         public int BodyTextureIndex = 0;
         public int HeadTextureIndex = 0;
+        public int FaceTextureIndex = 0;
         public string ModelFileName = string.Empty;
 
         // IDs
@@ -52,6 +56,34 @@ namespace EQWOWConverter.Creatures
             CURRENT_DBCID_CREATURESOUNDDATAID++;
             SQLCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
             CURRENT_SQL_CREATURETEMPLATEID++;
+        }
+
+        public List<string> GetMeshNames()
+        {
+            List<string> returnStrings = new List<string>();
+            if (BodyModelName != string.Empty)
+                returnStrings.Add(BodyModelName);
+            if (HeadModelName != string.Empty)
+                returnStrings.Add(HeadModelName);
+            return returnStrings;
+        }
+
+        public string GenerateFileName(string skeletonName)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(skeletonName);
+            switch (GenderType)
+            {
+                case CreatureGenderType.Male: sb.Append("M_"); break;
+                case CreatureGenderType.Female: sb.Append("F_"); break;
+                default: sb.Append("N_"); break;
+            }
+            sb.Append("hm" + HeadModelIndex);
+            sb.Append("ht" + HeadTextureIndex);
+            sb.Append("bm" + BodyModelIndex);
+            sb.Append("bt" + BodyTextureIndex);
+            sb.Append("ft" + FaceTextureIndex);
+            return sb.ToString();
         }
     }
 }
