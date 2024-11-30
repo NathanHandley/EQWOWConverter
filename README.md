@@ -14,6 +14,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Point Sounds (campfires, running water, etc)
 - Ambient Sounds
 - Music
+- Creature Models (limited around playable races)
 
 # Requirements
 - Windows build environment
@@ -75,5 +76,5 @@ Re-run the map_extractor, vmap4_assembler, etc.  Technically this is optional un
 In no particular order...
 - Dan Wilkins/Nick Gal/(others) for Lantern Extractor (https://github.com/LanternEQ/LanternExtractor) - This saved a lot of time trying to get EQ data exported
 - The people behind https://wowdev.wiki - Navigating the WoW file formats would have been near impossible without this documentation
-- WoW Modding Community Discord - For the one-off problem questions I've run into thus far (special callout to Aleist3r and Titi)
+- WoW Modding Community Discord - For the one-off problem questions I've run into thus far (special callout to Aleist3r, Titi, Soup Aura)
 - Jarl Gullberg and team working on libwarcraft (https://github.com/WowDevTools/libwarcraft) - Whenever confused by elements outlined in wowdev.wiki, this code worked as a reference sanity check

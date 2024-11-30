@@ -61,10 +61,17 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
+            // For playable races, expand out the texture list
+            int raceID = creatureModelTemplate.Race.ID;
+            if (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130)
+            {
+                // TODO: Do something unique here for robes and whatnot
+            }
+
             // Load skeleton and material data first
             LoadSkeletonData(inputObjectName, inputObjectFolder);
 
-            // Determine what meshes to use for a given variation
+            // Determine what mesh names to use for a given variation
             List<string> meshNames = new List<string>();
             if (creatureModelVariation.HelmTextureIndex == 0)
             {
@@ -73,26 +80,53 @@ namespace EQWOWConverter.ObjectModels
             }
             else
             {
-                // Skip last primary if helm isn't zero
-                // TODO: Check Fish (race 24) since it doesn't have a body mesh
-                for (int i = 0; i < SkeletonData.MeshNames.Count - 1; i++)
-                    meshNames.Add(SkeletonData.MeshNames[i]);
-                if (meshNames.Count == 0 && SkeletonData.MeshNames.Count > 0)
-                    meshNames.Add(SkeletonData.MeshNames[0]);                    
+                // Collect all of the body and helm textures
+                List<string> bodyTextureNames = new List<string>();
+                List<string> helmTextureNames = new List<string>();
+                foreach (string meshName in SkeletonData.MeshNames)
+                {
+                    if (meshName.Contains("he0"))
+                        helmTextureNames.Add(meshName);
+                    else
+                        bodyTextureNames.Add(meshName);
+                }
+                foreach (string meshName in SkeletonData.SecondaryMeshNames)
+                {
+                    if (meshName.Contains("he0"))
+                        helmTextureNames.Add(meshName);
+                    else
+                        bodyTextureNames.Add(meshName);
+                }
 
-                // Enable the appropriate secondary
-                int subMeshIndex = creatureModelVariation.HelmTextureIndex - 1;
-                if (SkeletonData.SecondaryMeshNames.Count > subMeshIndex)
-                    meshNames.Add(SkeletonData.SecondaryMeshNames[subMeshIndex]);
+                // Handle out-of-bounds
+                if (creatureModelVariation.HelmTextureIndex >= helmTextureNames.Count)
+                {
+                    foreach (string meshName in SkeletonData.MeshNames)
+                        meshNames.Add(meshName);
+                }
                 else
-                    Logger.WriteDetail("For object '" + inputObjectName + "', HelmTextureIndex was '" + creatureModelVariation.HelmTextureIndex + "' and secondarymeshcount was '" + SkeletonData.SecondaryMeshNames.Count + "'");
+                {
+                    if (bodyTextureNames.Count > 0)
+                        meshNames.Add(bodyTextureNames[0]);
+                    meshNames.Add(helmTextureNames[creatureModelVariation.HelmTextureIndex]);
+                }
             }
-            // This is a fix that seems to be required for Coldain's helm
+
+            // Invisible man is special, and it needs to have meshes added to it for animation
+            if (creatureModelTemplate.Race.ID == 127)
+            {
+                // TODO: Fix this error message about material list name
+                meshNames.Add("elm");
+                meshNames.Add("elmhe00");
+            }
+
+            // Fix coldain's helm
             foreach (string meshName in SkeletonData.SecondaryMeshNames)
             {
                 if (meshName == "cokhe01" && meshNames.Contains("cokhe01") == false)
                     meshNames.Add("cokhe01");
             }
+
             LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
 
             // Load the materials
