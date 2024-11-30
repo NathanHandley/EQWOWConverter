@@ -733,6 +733,15 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
         {
+            // Purge any invalid material references
+            // TODO: Look into making this work for non-skeletal
+            if (ModelType == ObjectModelType.Skeletal)
+            {
+                List<Material> updatedMaterialList;
+                meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
+                initialMaterials = updatedMaterialList;
+            }
+
             List<Material> expandedMaterials = new List<Material>();
             foreach (Material material in initialMaterials)
             {

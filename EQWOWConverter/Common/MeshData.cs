@@ -308,6 +308,42 @@ namespace EQWOWConverter.Common
             BoneIDs.AddRange(meshDataToAdd.BoneIDs);
         }
 
+        public void RemoveInvalidMaterialReferences(List<Material> startingMaterialList, out List<Material> newMaterialList)
+        {
+            // Figure out what materials have geometry, and remap
+            Dictionary<int, int> oldNewMaterialMappings = new Dictionary<int, int>();
+            newMaterialList = new List<Material>();
+            for (int i = 0; i <  startingMaterialList.Count; i++)
+            {
+                bool matchFound = false;
+                for (int j = 0; j < TriangleFaces.Count; j++)
+                {
+                    if (TriangleFaces[j].MaterialIndex == startingMaterialList[i].Index)
+                    {
+                        // Match found, keep it
+                        Material materialCopy = new Material(startingMaterialList[i]);
+                        materialCopy.Index = Convert.ToUInt32(newMaterialList.Count);
+                        oldNewMaterialMappings[i] = Convert.ToInt32(materialCopy.Index);
+                        newMaterialList.Add(materialCopy);
+                        matchFound = true;
+                        break;
+                    }
+                }
+                if (matchFound == false)
+                {
+                    // No match found, so delete it
+                    oldNewMaterialMappings[i] = -1;
+                }
+            }
+
+            // Update all of the material mappings in TriangleFaces
+            foreach(TriangleFace face in TriangleFaces)
+            {
+                int curMaterialIndex = face.MaterialIndex;
+                face.MaterialIndex = oldNewMaterialMappings[curMaterialIndex];
+            }
+        }
+
         public MeshData GetMeshDataForMaterials(params Material[] materials)
         {
             // Extract out copies of the geometry data specific to these materials
