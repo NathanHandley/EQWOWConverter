@@ -24,16 +24,9 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelVariation
     {
-        public string SkeletonName = string.Empty;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
-        public int BodyModelIndex = 0;
-        public string BodyModelName = string.Empty;
-        public int HeadModelIndex = 0;
-        public string HeadModelName = string.Empty;
-        public int BodyTextureIndex = 0;
-        public int HeadTextureIndex = 0;
-        public int FaceTextureIndex = 0;
-        public string ModelFileName = string.Empty;
+        public int TextureIndex = 0;
+        public int HelmTextureIndex = 0;
 
         // IDs
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
@@ -58,31 +51,18 @@ namespace EQWOWConverter.Creatures
             CURRENT_SQL_CREATURETEMPLATEID++;
         }
 
-        public List<string> GetMeshNames()
-        {
-            List<string> returnStrings = new List<string>();
-            if (BodyModelName != string.Empty)
-                returnStrings.Add(BodyModelName);
-            if (HeadModelName != string.Empty)
-                returnStrings.Add(HeadModelName);
-            return returnStrings;
-        }
-
         public string GenerateFileName(string skeletonName)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(skeletonName);
             switch (GenderType)
             {
-                case CreatureGenderType.Male: sb.Append("M_"); break;
-                case CreatureGenderType.Female: sb.Append("F_"); break;
-                default: sb.Append("N_"); break;
+                case CreatureGenderType.Male: sb.Append("_M_"); break;
+                case CreatureGenderType.Female: sb.Append("_F_"); break;
+                default: sb.Append("_N_"); break;
             }
-            sb.Append("hm" + HeadModelIndex);
-            sb.Append("ht" + HeadTextureIndex);
-            sb.Append("bm" + BodyModelIndex);
-            sb.Append("bt" + BodyTextureIndex);
-            sb.Append("ft" + FaceTextureIndex);
+            sb.Append("h" + HelmTextureIndex);
+            sb.Append("t" + TextureIndex);
             return sb.ToString();
         }
     }

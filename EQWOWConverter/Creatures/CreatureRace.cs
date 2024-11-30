@@ -57,23 +57,38 @@ namespace EQWOWConverter.Creatures
 
         public string GetSkeletonNameForGender(CreatureGenderType genderType)
         {
-            switch (genderType)
-            {
-                case CreatureGenderType.Male: return MaleSkeletonName;
-                case CreatureGenderType.Female: return FemaleSkeletonName;
-                case CreatureGenderType.Neutral: return NeutralSkeletonName;
-                default: return string.Empty;
-            }
+            if (genderType == CreatureGenderType.Male && MaleSkeletonName != string.Empty)
+                return MaleSkeletonName;
+            if (genderType == CreatureGenderType.Female && FemaleSkeletonName != string.Empty)
+                return FemaleSkeletonName;
+            if (genderType == CreatureGenderType.Neutral && NeutralSkeletonName != string.Empty)
+                return NeutralSkeletonName;
+            if (NeutralSkeletonName != string.Empty)
+                return NeutralSkeletonName;
+            if (MaleSkeletonName != string.Empty)
+                return MaleSkeletonName;
+            else
+                return FemaleSkeletonName;
         }
 
-        public static CreatureRace GetCreatureRaceByID(int id)
+        public bool HasSkeleton()
         {
-            if (CreatureRacesByRaceID.Count == 0)
-                PopulateCreatureRaceList();
-            if (CreatureRacesByRaceID.ContainsKey(id) == false)
-                return new CreatureRace();
-            else
-                return CreatureRacesByRaceID[id];
+            if (MaleSkeletonName.Trim().Length != 0)
+                return true;
+            if (FemaleSkeletonName.Trim().Length != 0)
+                return true;
+            if (NeutralSkeletonName.Trim().Length != 0)
+                return true;
+            return false;
+        }
+
+        public float GetLiftHeightForGender(CreatureGenderType genderType)
+        {
+            switch (genderType)
+            {
+                case CreatureGenderType.Female: return LiftFemale;
+                default: return LiftMaleAndNeutral;
+            }
         }
 
         public static List<CreatureRace> GetAllCreatureRaces()

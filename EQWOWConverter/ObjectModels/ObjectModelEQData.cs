@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.Zones;
 using System;
@@ -30,14 +31,14 @@ namespace EQWOWConverter.ObjectModels
     {
         public MeshData MeshData = new MeshData();
         public AnimatedVertices AnimatedVertices = new AnimatedVertices(); // TODO: May not be in use, consider deleting
-        public List<List<Material>> MaterialsByTextureVariation = new List<List<Material>>();
+        public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
         public Dictionary<string, Animation> Animations = new Dictionary<string, Animation>();
         public List<TriangleFace> CollisionTriangleFaces = new List<TriangleFace>();
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadDataFromDisk(string inputObjectName, string inputObjectFolder, List<string> inputMeshNames, bool isSkeletal, string animationSupplementalName)
+        public void LoadAllStaticObjectDataFromDisk(string inputObjectName, string inputObjectFolder, string inputMeshName)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -46,23 +47,13 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Load the various blocks
-            if (isSkeletal == true)
-            {
-                LoadSkeletonData(inputObjectName, inputObjectFolder);
-                LoadRenderMeshData(inputObjectName, inputMeshNames, inputObjectFolder);
-                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
-                LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplementalName);
-                LoadCollisionMeshData(inputObjectName, inputObjectFolder);
-            }
-            else
-            {
-                LoadRenderMeshData(inputObjectName, inputMeshNames, inputObjectFolder);
-                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder);
-                LoadCollisionMeshData(inputObjectName, inputObjectFolder);
-            }            
+            LoadRenderMeshData(inputObjectName, new List<string>() { inputMeshName }, inputObjectFolder);
+            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
+            LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 
-        public void LoadSkeletalMetaDataFromDisk(string inputObjectName, string inputObjectFolder)
+        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate creatureModelTemplate, 
+            CreatureModelVariation creatureModelVariation)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -70,8 +61,46 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
+            // Load skeleton and material data first
             LoadSkeletonData(inputObjectName, inputObjectFolder);
-            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder);
+
+            // Determine what meshes to use for a given variation
+            List<string> meshNames = new List<string>();
+            if (creatureModelVariation.HelmTextureIndex == 0)
+            {
+                foreach (string meshName in SkeletonData.MeshNames)
+                    meshNames.Add(meshName);
+            }
+            else
+            {
+                // Skip last primary if helm isn't zero
+                // TODO: Check Fish (race 24) since it doesn't have a body mesh
+                for (int i = 0; i < SkeletonData.MeshNames.Count - 1; i++)
+                    meshNames.Add(SkeletonData.MeshNames[i]);
+                if (meshNames.Count == 0 && SkeletonData.MeshNames.Count > 0)
+                    meshNames.Add(SkeletonData.MeshNames[0]);                    
+
+                // Enable the appropriate secondary
+                int subMeshIndex = creatureModelVariation.HelmTextureIndex - 1;
+                if (SkeletonData.SecondaryMeshNames.Count > subMeshIndex)
+                    meshNames.Add(SkeletonData.SecondaryMeshNames[subMeshIndex]);
+                else
+                    Logger.WriteDetail("For object '" + inputObjectName + "', HelmTextureIndex was '" + creatureModelVariation.HelmTextureIndex + "' and secondarymeshcount was '" + SkeletonData.SecondaryMeshNames.Count + "'");
+            }
+            // This is a fix that seems to be required for Coldain's helm
+            foreach (string meshName in SkeletonData.SecondaryMeshNames)
+            {
+                if (meshName == "cokhe01" && meshNames.Contains("cokhe01") == false)
+                    meshNames.Add("cokhe01");
+            }
+            LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
+
+            // Load the materials
+            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelVariation.TextureIndex);
+
+            // Load the rest
+            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelVariation.GenderType));
+            LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 
         private void LoadRenderMeshData(string inputObjectName, List<string> inputMeshNames, string inputObjectFolder)
@@ -118,16 +147,29 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder)
+        private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder, int materialIndex)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
             EQMaterialList materialListData = new EQMaterialList();
             if (materialListData.LoadFromDisk(materialListFileName) == false)
-                Logger.WriteDetail("- [" + inputObjectName + "]: No material data found.");
+                Logger.WriteError("- [" + inputObjectName + "]: No material data found.");
             else
             {
-                MaterialsByTextureVariation = materialListData.MaterialsByTextureVariation;
+                if (materialIndex >= materialListData.MaterialsByTextureVariation.Count)
+                {
+                    if (materialListData.MaterialsByTextureVariation.Count > 0)
+                    {
+                        Materials = materialListData.MaterialsByTextureVariation[0];
+                        Logger.WriteDetail("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "', so fell back to 0.");
+                    }
+                    else
+                        Logger.WriteError("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "'.");
+                }
+                else
+                {
+                    Materials = materialListData.MaterialsByTextureVariation[materialIndex];
+                }
             }
         }
 

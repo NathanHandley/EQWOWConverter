@@ -275,11 +275,11 @@ namespace EQWOWConverter
 
         // IDs for CreatureDisplayInfo.dbc
         public static readonly int CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START = 34000;
-        public static readonly int CONFIG_DBCID_CREATUREDISPLAYINFO_ID_END = 37000;
+        public static readonly int CONFIG_DBCID_CREATUREDISPLAYINFO_ID_END = 35500;
 
         // IDs for CreatureModelData.dbc
         public static readonly int CONFIG_DBCID_CREATUREMODELDATA_ID_START = 3500;
-        public static readonly int CONFIG_DBCID_CREATUREMODELDATA_ID_END = 4500;
+        public static readonly int CONFIG_DBCID_CREATUREMODELDATA_ID_END = 5000;
 
         // IDs for CreatureSoundData.dbc
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3300;

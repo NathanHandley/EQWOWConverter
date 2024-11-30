@@ -29,26 +29,13 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate
     {
-        internal class TemplateMetadata
-        {
-            public List<string> BodyMeshNames = new List<string>();
-            public List<string> HeadMeshNames = new List<string>();
-            public int NumberOfTextures = 0;
-        }
+        private static Dictionary<int, List<CreatureModelVariation>> AllModelVariationsByRaceID = new Dictionary<int, List<CreatureModelVariation>>();
 
         public CreatureRace Race;
-        public TemplateMetadata MaleTemplateMetadata;
-        public TemplateMetadata FemaleTemplateMetadata;
-        public TemplateMetadata NeutralTemplateMetadata;
-        public List<CreatureModelVariation> ModelVariations;
 
         public CreatureModelTemplate(CreatureRace creatureRace)
         {
             Race = creatureRace;
-            LoadTemplateMetadataForGender(Race.MaleSkeletonName, Race.MaleAnimationSupplementName, out MaleTemplateMetadata);
-            LoadTemplateMetadataForGender(Race.FemaleSkeletonName, Race.FemaleAnimationSupplementName, out FemaleTemplateMetadata);
-            LoadTemplateMetadataForGender(Race.NeutralSkeletonName, Race.NeutralAnimationSupplementName, out NeutralTemplateMetadata);
-            ModelVariations = GetModelVariations();
         }
 
         public void CreateModelFiles()
@@ -74,23 +61,20 @@ namespace EQWOWConverter.Creatures
             string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
 
             // Make a model for every variation
-            foreach(CreatureModelVariation modelVariation in ModelVariations)
+            List<CreatureModelVariation> modelVariations = GetModelVariationsForRace(Race.ID);
+            foreach(CreatureModelVariation modelVariation in modelVariations)
             {
+                // Skip everything except bear
+                //if (Race.ID != 43 || modelVariation.HelmTextureIndex != 1 || modelVariation.TextureIndex != 1)
+                //    continue;
+
                 // Get the skeleton names
-                string animationSupplement = Race.GetAnimationSupplementNameForGender(modelVariation.GenderType);
                 string skeletonName = Race.GetSkeletonNameForGender(modelVariation.GenderType);
 
                 // Create the variation object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
                 ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale);
-                curObject.LoadEQObjectData(charactersFolderRoot, modelVariation.GetMeshNames(), animationSupplement);
-
-                // Convert to a WoW object
-                float addedLift = Race.LiftMaleAndNeutral;
-                if (modelVariation.GenderType == CreatureGenderType.Female)
-                    addedLift = Race.LiftFemale;
-                addedLift *= Configuration.CONFIG_GENERATE_WORLD_SCALE; // Modify scale by world scale
-                curObject.PopulateObjectModelFromEQObjectModelData(modelVariation.BodyTextureIndex, addedLift);
+                curObject.LoadAnimateEQObjectFromFile(charactersFolderRoot, this, modelVariation);
 
                 // Set fidget count for M2
                 CreatureRaceSounds creatureRaceSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(Race.ID, modelVariation.GenderType);
@@ -101,8 +85,7 @@ namespace EQWOWConverter.Creatures
 
                 // Create the M2 and Skin
                 M2 objectM2 = new M2(curObject, relativeMPQPath);
-                modelVariation.ModelFileName = modelVariation.GenerateFileName(skeletonName);
-                objectM2.WriteToDisk(modelVariation.ModelFileName, outputFullMPQPath);
+                objectM2.WriteToDisk(modelVariation.GenerateFileName(skeletonName), outputFullMPQPath);
 
                 // Place the related textures
                 foreach (ObjectModelTexture texture in curObject.ModelTextures)
@@ -140,105 +123,66 @@ namespace EQWOWConverter.Creatures
             return raceID + raceName;
         }
 
-        private List<CreatureModelVariation> GetModelVariations()
+        public static List<CreatureModelVariation> GetModelVariationsForRace(int raceID)
         {
-            List<CreatureModelVariation> modelVariations = new List<CreatureModelVariation>();
+            if (AllModelVariationsByRaceID.Count == 0)
+                PopulateAllModelVariations();
 
-            modelVariations.AddRange(GetModelVariationsFromMetadata(MaleTemplateMetadata, CreatureGenderType.Male));
-            modelVariations.AddRange(GetModelVariationsFromMetadata(FemaleTemplateMetadata, CreatureGenderType.Female));
-            modelVariations.AddRange(GetModelVariationsFromMetadata(NeutralTemplateMetadata, CreatureGenderType.Neutral));
-            return modelVariations;
+            if (AllModelVariationsByRaceID.ContainsKey(raceID))
+                return AllModelVariationsByRaceID[raceID];
+            else
+                return new List<CreatureModelVariation>();
         }
 
-        private List<CreatureModelVariation> GetModelVariationsFromMetadata(TemplateMetadata metadata, CreatureGenderType gender)
+        private static void PopulateAllModelVariations()
         {
-            List<CreatureModelVariation> modelVariations = new List<CreatureModelVariation>();
+            AllModelVariationsByRaceID.Clear();
 
-            // Build for every combination of head mesh, body mesh, texture variation.  If there are no head or body meshes,
-            // consider that index 0
-            for (int curTextureIter = 0; curTextureIter < metadata.NumberOfTextures; curTextureIter++)
+            // Load in the file
+            string variationsDataFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureVariations.csv");
+            Logger.WriteDetail("Populating Creature Variations list via file '" + variationsDataFileName + "'");
+            string inputData = File.ReadAllText(variationsDataFileName);
+            string[] inputRows = inputData.Split(Environment.NewLine);
+            if (inputRows.Length < 2)
             {
-                if (metadata.HeadMeshNames.Count == 0)
-                {
-                    for (int bodyMeshIter = 0; bodyMeshIter < metadata.BodyMeshNames.Count; bodyMeshIter++)
-                    {
-                        CreatureModelVariation newVariation = new CreatureModelVariation();
-                        newVariation.GenderType = gender;
-                        newVariation.BodyModelIndex = bodyMeshIter;
-                        newVariation.BodyModelName = metadata.BodyMeshNames[bodyMeshIter];
-                        newVariation.BodyTextureIndex = curTextureIter;
-                        newVariation.HeadTextureIndex = curTextureIter;
-                        newVariation.FaceTextureIndex = curTextureIter;
-                        modelVariations.Add(newVariation);
-                    }
-                }
-                else if (metadata.BodyMeshNames.Count == 0)
-                {
-                    for (int headMeshIter = 0; headMeshIter < metadata.HeadMeshNames.Count; headMeshIter++)
-                    {
-                        CreatureModelVariation newVariation = new CreatureModelVariation();
-                        newVariation.GenderType = gender;
-                        newVariation.HeadModelIndex = headMeshIter;
-                        newVariation.HeadModelName = metadata.HeadMeshNames[headMeshIter];
-                        newVariation.BodyTextureIndex = curTextureIter;
-                        newVariation.HeadTextureIndex = curTextureIter;
-                        newVariation.FaceTextureIndex = curTextureIter;
-                        modelVariations.Add(newVariation);
-                    }
-                }
-                else
-                {
-                    for (int headMeshIter = 0; headMeshIter < metadata.HeadMeshNames.Count; headMeshIter++)
-                    {
-                        for (int bodyMeshIter = 0; bodyMeshIter < metadata.BodyMeshNames.Count; bodyMeshIter++)
-                        {
-                            CreatureModelVariation newVariation = new CreatureModelVariation();
-                            newVariation.GenderType = gender;
-                            newVariation.BodyModelIndex = bodyMeshIter;
-                            newVariation.BodyModelName = metadata.BodyMeshNames[bodyMeshIter];
-                            newVariation.HeadModelIndex = headMeshIter;
-                            newVariation.HeadModelName = metadata.HeadMeshNames[headMeshIter];
-                            newVariation.BodyTextureIndex = curTextureIter;
-                            newVariation.HeadTextureIndex = curTextureIter;
-                            newVariation.FaceTextureIndex = curTextureIter;
-                            modelVariations.Add(newVariation);
-                        }
-                    }
-                }
-            }
-
-            return modelVariations;
-        }
-
-        private void LoadTemplateMetadataForGender(string skeletonName, string skeletonSupplementalName, out TemplateMetadata templateMetadata)
-        {
-            templateMetadata = new TemplateMetadata();
-            if (skeletonName == string.Empty)
+                Logger.WriteError("Creature Variation list via file '" + variationsDataFileName + "' did not have enough lines");
                 return;
-
-            // Load the EQ data
-            ObjectModelEQData eqData = new ObjectModelEQData();
-            string charactersFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters");
-            eqData.LoadSkeletalMetaDataFromDisk(skeletonName, charactersFolderRoot);
-
-            // Mesh Names
-            foreach(string meshName in eqData.SkeletonData.MeshNames)
-            {
-                if (meshName.Contains("he0"))
-                    templateMetadata.HeadMeshNames.Add(meshName);
-                else
-                    templateMetadata.BodyMeshNames.Add(meshName);
-            }
-            foreach(string meshName in eqData.SkeletonData.SecondaryMeshNames)
-            {
-                if (meshName.Contains("he0"))
-                    templateMetadata.HeadMeshNames.Add(meshName);
-                else
-                    templateMetadata.BodyMeshNames.Add(meshName);
             }
 
-            // Textures
-            templateMetadata.NumberOfTextures = eqData.MaterialsByTextureVariation.Count;
+            // Load all of the data
+            bool headerRow = true;
+            foreach (string row in inputRows)
+            {
+                // Handle first row
+                if (headerRow == true)
+                {
+                    headerRow = false;
+                    continue;
+                }
+
+                // Skip blank rows
+                if (row.Trim().Length == 0)
+                    continue;
+
+                // Load the row
+                string[] rowBlocks = row.Split(",");
+                int raceID = int.Parse(rowBlocks[0]);
+                CreatureModelVariation newVariation = new CreatureModelVariation();
+                int genderID = int.Parse(rowBlocks[1]);
+                switch (genderID)
+                {
+                    case 0: newVariation.GenderType = CreatureGenderType.Male; break;
+                    case 1: newVariation.GenderType = CreatureGenderType.Female; break;
+                    default: newVariation.GenderType = CreatureGenderType.Neutral; break;
+                }
+                newVariation.TextureIndex = int.Parse(rowBlocks[2]);
+                newVariation.HelmTextureIndex = int.Parse(rowBlocks[3]);
+                if (AllModelVariationsByRaceID.ContainsKey(raceID) == false)
+                    AllModelVariationsByRaceID.Add(raceID, new List<CreatureModelVariation>());
+                AllModelVariationsByRaceID[raceID].Add(newVariation);
+            }
+
+            Logger.WriteDetail("Populating Creature Variations list via file complete.");
         }
     }
 }

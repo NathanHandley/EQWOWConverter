@@ -30,6 +30,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using System.Reflection.Metadata.Ecma335;
+using EQWOWConverter.Creatures;
+using System.Diagnostics;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -77,24 +79,33 @@ namespace EQWOWConverter.ObjectModels
             ModelScale = modelScale;
         }
 
-        public void LoadEQObjectData(string inputRootFolder, List<string> inputMeshNames, string animationSupplementName = "")
+        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName)
         {
-            // Clear any old data
+            // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
+            EQObjectModelData.LoadAllStaticObjectDataFromDisk(Name, inputRootFolder, meshName);
 
-            // Load based on type
-            if (ModelType == ObjectModelType.Skeletal)
-                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, inputMeshNames, true, animationSupplementName);
+            if (EQObjectModelData.CollisionVertices.Count == 0)
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
             else
-                EQObjectModelData.LoadDataFromDisk(Name, inputRootFolder, inputMeshNames, false, string.Empty);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
-        public void PopulateObjectModelFromEQObjectModelData(int textureVariationIndex, float skeletonLiftHeight = 0)
+        public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate, CreatureModelVariation creatureModelVariation)
         {
+            // Clear any old data and reload it
+            EQObjectModelData = new ObjectModelEQData();
+            EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, creatureModelVariation);
+
+            // Calculate lift
+            float lift = creatureModelTemplate.Race.GetLiftHeightForGender(creatureModelVariation.GenderType);
+            lift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+
+            // Load it
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), skeletonLiftHeight);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), lift);
             else
-                Load(Name, EQObjectModelData.MaterialsByTextureVariation[textureVariationIndex], EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, skeletonLiftHeight);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, lift);
         }
 
         // TODO: Vertex Colors

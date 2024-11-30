@@ -147,18 +147,13 @@ namespace EQWOWConverter
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
                 ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-                curObject.LoadEQObjectData(objectFolderRoot, new List<string>() { staticObjectMeshNameNoExt });
+                curObject.LoadStaticEQObjectFromFile(objectFolderRoot, staticObjectMeshNameNoExt);
                 Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
 
-                if (curObject.EQObjectModelData.MaterialsByTextureVariation.Count > 1)
-                {
-                    Logger.WriteError("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' failed since there was more than 1 texture variation");
-                    continue;
-                }
-
-                // Covert to WOW static object
+                // Create the M2 and Skin
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
-                CreateWoWObjectFromEQObject(curObject, curStaticObjectOutputFolder, relativeMPQPath, 0);
+                M2 objectM2 = new M2(curObject, relativeMPQPath);
+                objectM2.WriteToDisk(curObject.Name, curStaticObjectOutputFolder);
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
@@ -296,6 +291,10 @@ namespace EQWOWConverter
             // Use all the creature race templates
             foreach(CreatureRace creatureRace in CreatureRace.GetAllCreatureRaces())
             {
+                // Skip any without skeletons for now
+                if (creatureRace.HasSkeleton() == false)
+                    continue;
+
                 // Output for each
                 CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace);
                 creatureModelTemplate.CreateModelFiles();
@@ -696,20 +695,6 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
-        public void CreateWoWObjectFromEQObject(ObjectModel modelObject, string exportMPQObjectRootFolder, string mpqObjectPathRelative, int textureVariationIndex)
-        {
-            Logger.WriteDetail("- [" + modelObject.Name + "]: Converting object '" + modelObject.Name + "' into a wow object...");
-
-            // Generate the object
-            modelObject.PopulateObjectModelFromEQObjectModelData(textureVariationIndex);
-
-            // Create the M2 and Skin
-            M2 objectM2 = new M2(modelObject, mpqObjectPathRelative);
-            objectM2.WriteToDisk(modelObject.Name, exportMPQObjectRootFolder);
-
-            Logger.WriteDetail("- [" + modelObject.Name + "]: Converting of object '" + modelObject.Name + "' complete");
-        }
-
         public void CreateLoadingScreens()
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
@@ -849,10 +834,10 @@ namespace EQWOWConverter
             CreatureRaceSounds.GenerateAllSounds();
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
-                foreach(CreatureModelVariation modelVariation in creatureModelTemplate.ModelVariations)
+                foreach(CreatureModelVariation modelVariation in CreatureModelTemplate.GetModelVariationsForRace(creatureModelTemplate.Race.ID))
                 {
                     creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
-                    string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.ModelFileName + ".mdx";
+                    string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.GenerateFileName(creatureModelTemplate.Race.GetSkeletonNameForGender(modelVariation.GenderType)) + ".mdx";
                     creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, modelVariation.DBCCreatureSoundDataID, relativeModelPath);
                     creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureSoundDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, modelVariation.GenderType));
                 }
@@ -1022,11 +1007,11 @@ namespace EQWOWConverter
             // Creatures
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
-                foreach (CreatureModelVariation modelVariation in creatureModelTemplate.ModelVariations)
+                foreach (CreatureModelVariation modelVariation in CreatureModelTemplate.GetModelVariationsForRace(creatureModelTemplate.Race.ID))
                 {
                     creatureModelInfoSQL.AddRow(modelVariation.DBCCreatureDisplayID, Convert.ToInt32(modelVariation.GenderType));
                     creatureTemplateModelSQL.AddRow(modelVariation.SQLCreatureTemplateID, modelVariation.DBCCreatureDisplayID);
-                    creatureTemplateSQL.AddRow(modelVariation.SQLCreatureTemplateID, creatureModelTemplate.Race.Name);                    
+                    creatureTemplateSQL.AddRow(modelVariation.SQLCreatureTemplateID, creatureModelTemplate.Race.Name + " " + modelVariation.GenerateFileName(creatureModelTemplate.Race.GetSkeletonNameForGender(modelVariation.GenderType)));                    
                 }
             }
 
