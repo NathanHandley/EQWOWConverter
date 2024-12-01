@@ -24,7 +24,6 @@ namespace EQWOWConverter.Zones
 {
     internal enum ZoneObjectModelType
     {
-        Root,
         Rendered,
         CollidableArea,
         LiquidVolume,

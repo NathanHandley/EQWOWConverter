@@ -80,11 +80,6 @@ namespace EQWOWConverter.Zones
             // Clear any prior world object model data
             ZoneObjectModels.Clear();
 
-            // Create the root object
-            ZoneObjectModel rootModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
-            rootModel.LoadAsRoot(ZoneProperties);
-            ZoneObjectModels.Add(rootModel);
-
             // Get and convert/translate the EverQuest mesh data
             MeshData renderMeshData = new MeshData(EQZoneData.RenderMeshData);
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(true, 1);
@@ -108,9 +103,6 @@ namespace EQWOWConverter.Zones
             // Process Sound Instances
             ProcessSoundInstances();
 
-            // Create doodad instances
-            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData, rootModel);
-
             // Build liquid wmos
             GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
 
@@ -120,6 +112,9 @@ namespace EQWOWConverter.Zones
             // Generate the render objects
             GenerateRenderWorldObjectModels(renderMeshData);
 
+            // Create doodad instances
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+
             // Save the loading screen
             SetLoadingScreen();
 
@@ -128,7 +123,6 @@ namespace EQWOWConverter.Zones
             foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
             BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
-            rootModel.BoundingBox = new BoundingBox(BoundingBox);
 
             // Set any area parent relationships
             SetAreaParentRelationships();
@@ -145,7 +139,7 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, MeshData renderMeshData, ZoneObjectModel rootModel)
+        private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, MeshData renderMeshData)
         {
             // Create doodad instances from EQ object instances
             foreach (ObjectInstance objectInstance in eqObjectInstances)
@@ -195,8 +189,28 @@ namespace EQWOWConverter.Zones
                 }
             }
 
-            // Attach all doodads to the root
-            rootModel.CreateZoneWideDoodadAssociations(DoodadInstances);
+            // Attach the doodads to the nearest wmo
+            for (int di = 0; di < DoodadInstances.Count; di++)
+            {
+                ZoneDoodadInstance doodadInstance = DoodadInstances[di];
+
+                int curZoneObjectModelIndex = 0;
+                float currentDistance = 1000000;
+                for(int i = 0; i < ZoneObjectModels.Count; i++)
+                {
+                    ZoneObjectModel curZoneObjectModel = ZoneObjectModels[i];
+                    if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered)
+                        continue;
+
+                    float thisDistance = doodadInstance.Position.GetDistance(curZoneObjectModel.BoundingBox.GetCenter());
+                    if (thisDistance < currentDistance)
+                    {
+                        currentDistance = thisDistance;
+                        curZoneObjectModelIndex = i;
+                    }
+                }
+                ZoneObjectModels[curZoneObjectModelIndex].DoodadInstances.Add(di, doodadInstance);
+            }
         }
 
         private void GenerateLightInstances(List<LightInstance> eqLightInstances)

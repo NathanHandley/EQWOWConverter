@@ -57,12 +57,6 @@ namespace EQWOWConverter.Zones
             GroupIndex = groupIndex;
         }
 
-        public void LoadAsRoot(ZoneProperties properties)
-        {
-            WMOType = ZoneObjectModelType.Root;
-            IsLoaded = true;
-        }
-
         public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.LiquidVolume;
@@ -185,16 +179,6 @@ namespace EQWOWConverter.Zones
             {
                 renderBatch.Value.BoundingBox = new BoundingBox(BoundingBox);
                 RenderBatches.Add(renderBatch.Value);
-            }
-        }
-
-        public void CreateZoneWideDoodadAssociations(List<ZoneDoodadInstance> zoneWidedoodadInstances)
-        {
-            // All zonewide doodads should be associated with all WMOs
-            for (int i = 0; i < zoneWidedoodadInstances.Count; i++)
-            {
-                ZoneDoodadInstance doodadInstance = zoneWidedoodadInstances[i];
-                DoodadInstances.Add(i, doodadInstance);
             }
         }
 
