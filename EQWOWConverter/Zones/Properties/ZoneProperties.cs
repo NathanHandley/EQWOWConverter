@@ -441,6 +441,7 @@ namespace EQWOWConverter.Zones
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // TODO: BUG: The plane may be inverted, but seems to work properly in WoW
         protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
         {

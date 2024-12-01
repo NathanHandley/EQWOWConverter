@@ -122,7 +122,11 @@ namespace EQWOWConverter.Zones
         {
             float minZ = LowZ - MinDepth;
             float maxZ = HighZ;
-            BoundingBox = new BoundingBox(SECornerXY.X, SECornerXY.Y, minZ, NWCornerXY.X, NWCornerXY.Y, maxZ);
+            float minX = MathF.Min(SECornerXY.X, NWCornerXY.X);
+            float maxX = MathF.Max(SECornerXY.X, NWCornerXY.X);
+            float minY = MathF.Min(SECornerXY.Y, NWCornerXY.Y);
+            float maxY = MathF.Max(SECornerXY.Y, NWCornerXY.Y);
+            BoundingBox = new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         public List<ZoneLiquidPlane> SplitIntoSizeRestictedChunks(int maximumXYSizePerChunk)
