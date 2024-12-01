@@ -173,6 +173,8 @@ namespace EQWOWConverter.WOWFiles
             foreach (TriangleFace polyIndexTriangle in worldObjectModel.MeshData.TriangleFaces)
             {
                 WMOPolyMaterialFlags flags = 0;
+                if (worldObjectModel.WMOType == ZoneObjectModelType.CollidableArea)
+                    flags = WMOPolyMaterialFlags.NoCollision; // Note:
                 chunkBytes.Add(Convert.ToByte(flags));
 
                 // Set 0xFF for non-renderable materials
