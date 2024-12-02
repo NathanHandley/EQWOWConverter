@@ -29,7 +29,7 @@ namespace EQWOWConverter.Zones
         public ZoneDoodadInstanceType DoodadType;
         public string ObjectName = string.Empty;
         public UInt32 ObjectNameOffset = 0;
-        public ZoneDoodadInstanceFlags Flags = ZoneDoodadInstanceFlags.AcceptProjectedTexture;
+        public ZoneDoodadInstanceFlags Flags = ZoneDoodadInstanceFlags.AcceptProjectedTexture; // Not yet implemented
         public Vector3 Position = new Vector3();
         public Quaternion Orientation = new Quaternion();
         public float Scale = 1.0f;
@@ -46,8 +46,6 @@ namespace EQWOWConverter.Zones
 
             // The flags and name offset share a UInt32, effectively making it UInt24 and UInt8
             returnBytes.AddRange(BitConverter.GetBytes(ObjectNameOffset));
-            if (Configuration.CONFIG_OBJECT_STATIC_ENABLE_FLAGS == true)
-                returnBytes[3] = Convert.ToByte(Flags); // breaks wmomodelviewer v0701 r252
             returnBytes.AddRange(Position.ToBytes());
             returnBytes.AddRange(Orientation.ToBytes());
             returnBytes.AddRange(BitConverter.GetBytes(Scale));
