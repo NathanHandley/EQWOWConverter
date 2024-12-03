@@ -55,7 +55,7 @@ namespace EQWOWConverter.WOWFiles
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id);
-            newRow.AddInt(724); // Continent ID
+            newRow.AddInt(mapID); // Continent ID
             newRow.AddInt(parentAreaID);
             newRow.AddInt(areaBit);
             newRow.AddPackedFlags(0); // Flags
