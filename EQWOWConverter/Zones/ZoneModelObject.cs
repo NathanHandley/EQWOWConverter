@@ -50,11 +50,12 @@ namespace EQWOWConverter.Zones
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
         public ZoneAreaMusic? ZoneMusic = null;
 
-        public ZoneObjectModel(UInt16 groupIndex)
+        public ZoneObjectModel(UInt16 groupIndex, UInt32 areaTableID)
         {
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
             GroupIndex = groupIndex;
+            AreaTableID = areaTableID;
         }
 
         public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
@@ -95,10 +96,9 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollidableArea(MeshData collisionMeshData, UInt32 areaTableID, string displayName, ZoneAreaMusic? zoneMusic, ZoneProperties zoneProperties)
+        public void LoadAsCollidableArea(MeshData collisionMeshData, string displayName, ZoneAreaMusic? zoneMusic, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.CollidableArea;
-            AreaTableID = areaTableID;
             DisplayName = displayName;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);

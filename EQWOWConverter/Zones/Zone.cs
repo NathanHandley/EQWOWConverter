@@ -130,7 +130,7 @@ namespace EQWOWConverter.Zones
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -241,7 +241,7 @@ namespace EQWOWConverter.Zones
             // Volumes
             foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -274,14 +274,14 @@ namespace EQWOWConverter.Zones
                     List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
                     foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
                     {
-                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                         curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneObjectModels.Add(curWorldObjectModel);
                     }
                 }
                 else
                 {
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                     curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
@@ -361,9 +361,9 @@ namespace EQWOWConverter.Zones
             // Create a group for each chunk
             foreach(MeshData meshDataChunk in meshDataChunks)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
-                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, zoneArea.DBCAreaTableID, zoneArea.DisplayName, areaMusic, ZoneProperties);
+                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, zoneArea.DisplayName, areaMusic, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }
@@ -396,7 +396,7 @@ namespace EQWOWConverter.Zones
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count));
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
                 curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials, LightInstances, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
