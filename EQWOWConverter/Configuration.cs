@@ -259,8 +259,13 @@ namespace EQWOWConverter
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
-        // IDs for AreaBit used in AreaTable, should be unique (max of 4091)
-        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_START = 3800;
+        // IDs for AreaBit used in AreaTable, should be unique (max of 4095)
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_1_START = 3092;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_1_END = 3172;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_2_START = 3462;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_2_END = 3616;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_3_START = 3800;
+        public static readonly int CONFIG_DBCID_AREATABLE_AREABIT_BLOCK_3_END = 4095;
 
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_ID_START = 5100;
