@@ -175,8 +175,8 @@ namespace EQWOWConverter.WOWFiles
                 WMOPolyMaterialFlags flags = 0;
 
                 // Note: The following condition isn't needed for WoW to work, but was required for AzerothCore extractors to work
-                if (worldObjectModel.WMOType == ZoneObjectModelType.CollidableArea)
-                    flags = WMOPolyMaterialFlags.NoCollision;
+                //if (worldObjectModel.WMOType == ZoneObjectModelType.CollidableArea)
+                //    flags = WMOPolyMaterialFlags.NoCollision;
                 
                 chunkBytes.Add(Convert.ToByte(flags));
 
