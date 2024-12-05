@@ -66,7 +66,7 @@ namespace EQWOWConverter
 
             // Creatures
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
-            if (Configuration.CONFIG_GENERATE_CREATURES == true)
+            if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
             {
                 if (ConvertCreatures(ref creatureModelTemplates) == false)
                     return false;
@@ -478,7 +478,7 @@ namespace EQWOWConverter
             }
 
             // Creatures
-            if (Configuration.CONFIG_GENERATE_CREATURES == true)
+            if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
             {   
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);

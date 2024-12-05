@@ -14,18 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Spawns
+namespace EQWOWConverter.Creatures
 {
-    internal class SpawnDetail
+    internal class CreatureSpawnDetail
     {
-        private static Dictionary<int, SpawnDetail> SpawnDetailList = new Dictionary<int, SpawnDetail>();
+        private static Dictionary<int, CreatureSpawnDetail> SpawnDetailList = new Dictionary<int, CreatureSpawnDetail>();
 
         public int ID = 0;
         public int SpawnGroupID = 0;
@@ -39,7 +38,7 @@ namespace EQWOWConverter.Spawns
         public int PathGridID = 0;
         public int RoamRange = 0;
 
-        public static Dictionary<int, SpawnDetail> GetSpawnDetailList()
+        public static Dictionary<int, CreatureSpawnDetail> GetSpawnDetailList()
         {
             if (SpawnDetailList.Count == 0)
                 PopulateSpawnDetailList();
@@ -77,7 +76,7 @@ namespace EQWOWConverter.Spawns
 
                 // Load the row
                 string[] rowBlocks = row.Split(",");
-                SpawnDetail newSpawnDetail = new SpawnDetail();
+                CreatureSpawnDetail newSpawnDetail = new CreatureSpawnDetail();
                 newSpawnDetail.ID = int.Parse(rowBlocks[0]);
                 newSpawnDetail.SpawnGroupID = int.Parse(rowBlocks[1]);
                 newSpawnDetail.ZoneShortName = rowBlocks[2];

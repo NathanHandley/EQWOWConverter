@@ -14,24 +14,23 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Spawns
+namespace EQWOWConverter
 {
-    internal class SpawnEntry
+    internal class CreatureSpawnEntry
     {
-        private static List<SpawnEntry> SpawnEntryList = new List<SpawnEntry>();
+        private static List<CreatureSpawnEntry> SpawnEntryList = new List<CreatureSpawnEntry>();
 
         public int SpawnGroupID = 0;
         public int SpawnCreatureDetailID = 0;
         public int Chance = 100;
 
-        public static List<SpawnEntry> GetSpawnEntryList()
+        public static List<CreatureSpawnEntry> GetSpawnEntryList()
         {
             if (SpawnEntryList.Count == 0)
                 PopulateSpawnEntryList();
@@ -69,7 +68,7 @@ namespace EQWOWConverter.Spawns
 
                 // Load the row
                 string[] rowBlocks = row.Split(",");
-                SpawnEntry newSpawnEntry = new SpawnEntry();
+                CreatureSpawnEntry newSpawnEntry = new CreatureSpawnEntry();
                 newSpawnEntry.SpawnGroupID = int.Parse(rowBlocks[0]);
                 newSpawnEntry.SpawnCreatureDetailID = int.Parse(rowBlocks[1]);
                 newSpawnEntry.Chance = int.Parse(rowBlocks[2]);

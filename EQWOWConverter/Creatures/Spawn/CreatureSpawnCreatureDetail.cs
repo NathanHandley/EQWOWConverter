@@ -14,18 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Spawns
+namespace EQWOWConverter.Creatures
 {
-    internal class SpawnCreatureDetail
+    internal class CreatureSpawnCreatureDetail
     {
-        private static Dictionary<int, SpawnCreatureDetail> SpawnCreatureDetailList = new Dictionary<int, SpawnCreatureDetail>();
+        private static Dictionary<int, CreatureSpawnCreatureDetail> SpawnCreatureDetailList = new Dictionary<int, CreatureSpawnCreatureDetail>();
 
         public int ID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
@@ -39,7 +38,7 @@ namespace EQWOWConverter.Spawns
         public int TextureID = 0;
         public int HelmTextureID = 0;
 
-        public static Dictionary<int, SpawnCreatureDetail> GetSpawnCreatureDetailList()
+        public static Dictionary<int, CreatureSpawnCreatureDetail> GetSpawnCreatureDetailList()
         {
             if (SpawnCreatureDetailList.Count == 0)
                 PopulateSpawnCreatureDetailsList();
@@ -77,7 +76,7 @@ namespace EQWOWConverter.Spawns
 
                 // Load the row
                 string[] rowBlocks = row.Split(",");
-                SpawnCreatureDetail newSpawnCreatureDetail = new SpawnCreatureDetail();
+                CreatureSpawnCreatureDetail newSpawnCreatureDetail = new CreatureSpawnCreatureDetail();
                 newSpawnCreatureDetail.ID = int.Parse(rowBlocks[0]);
                 newSpawnCreatureDetail.Name = rowBlocks[1];
                 newSpawnCreatureDetail.SubName = rowBlocks[2];
