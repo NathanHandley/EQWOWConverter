@@ -117,7 +117,7 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append("'" + row.ScriptName + "', ");
                 stringBuilder.Append(row.VerifiedBuild.ToString() + ", ");
                 stringBuilder.Append(row.CreateObject.ToString() + ", ");
-                stringBuilder.Append("'" + row.Comment + "', ");
+                stringBuilder.Append("'" + row.Comment + "'");
                 stringBuilder.AppendLine(");");
             }
 

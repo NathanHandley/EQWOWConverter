@@ -30,6 +30,7 @@ using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.ObjectModels.Properties;
 using MySql.Data.MySqlClient;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Zones.Properties;
 
 namespace EQWOWConverter
 {
@@ -93,7 +94,7 @@ namespace EQWOWConverter
             CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates);
+            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates, creatureInstances);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -307,6 +308,9 @@ namespace EQWOWConverter
                     creatureModelTemplates.Add(modelTemplate);
                 }
             }
+
+            // Grab instances
+            creatureInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
 
             // Copy all of the sound files
             Logger.WriteInfo("Copying creature sound files...");
@@ -991,7 +995,8 @@ namespace EQWOWConverter
             Logger.WriteDetail("Creating DBC Files complete");
         }
 
-        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates)
+        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
+            List<CreatureSpawnInstance> creatureInstances)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
@@ -1001,29 +1006,20 @@ namespace EQWOWConverter
             // Create the SQL Scripts
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
+            CreatureSQL creatureSQL = new CreatureSQL();
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
-            // Creatures
-            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
-            {
-                if (creatureTemplate.ModelTemplate == null)
-                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
-                else
-                {
-                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
-                }
-            }
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
-
             // Zones
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
             foreach (Zone zone in zones)
             {
+                // Save the mapID for a lookup in creatures
+                mapIDsByShortName.Add(zone.ShortName, zone.ZoneProperties.DBCMapID);
+
                 // Instance list
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
 
@@ -1057,9 +1053,55 @@ namespace EQWOWConverter
                 }
             }
 
+            // Creatures
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                if (creatureTemplate.ModelTemplate == null)
+                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
+                else
+                {
+                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
+                }
+            }
+            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
+
+            // TEMP Spawn Instances (need groups)
+            List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
+            Dictionary<int, int> creatureTemplateIDsBySpawnGroupID = new Dictionary<int, int>();
+            foreach(CreatureSpawnEntry spawnEntry in spawnEntries)
+            {
+                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(spawnEntry.SpawnGroupID) == false)
+                    creatureTemplateIDsBySpawnGroupID.Add(spawnEntry.SpawnGroupID, spawnEntry.CreatureTemplateID);
+            }
+            Dictionary<int, CreatureTemplate> creatureTemplateFullList = CreatureTemplate.GetCreatureTemplateList();
+            foreach (CreatureSpawnInstance creatureSpawnInstance in creatureInstances)
+            {
+                if (mapIDsByShortName.ContainsKey(creatureSpawnInstance.ZoneShortName) == false)
+                    continue;
+                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
+                    continue;
+
+                // Convert to orientation (radians)
+                float orientation = creatureSpawnInstance.Heading * Convert.ToSingle(Math.PI / 180);
+
+                // Note: X and Y were reversed when converting the data
+                float spawnX = creatureSpawnInstance.SpawnXPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                float spawnY = creatureSpawnInstance.SpawnYPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                float spawnZ = creatureSpawnInstance.SpawnZPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+
+                //creatureSQL.AddRow(creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]].SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
+                creatureSQL.AddRow(3, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
+            }
+
+            // END TEMP
+
+
             // Output them
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
+            creatureSQL.WriteToDisk(sqlScriptFolder);
             creatureModelInfoSQL.WriteToDisk(sqlScriptFolder);
             creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
             creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
