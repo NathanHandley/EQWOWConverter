@@ -227,7 +227,7 @@ namespace EQWOWConverter
             }
 
             // Replace the custom textures
-            ReplaceCustomTextures(outputObjectsFolderRoot);
+            ReplaceCustomTextures(outputCharactersFolderRoot, outputObjectsFolderRoot);
 
             // Convert music
             ConditionMusicFiles(outputMusicFolderRoot);
@@ -346,10 +346,29 @@ namespace EQWOWConverter
             }
         }
 
-        public void ReplaceCustomTextures(string objectsDirectory)
+        public void ReplaceCustomTextures(string charactersDirectory, string objectsDirectory)
         {
             Logger.WriteInfo("Performing texture replacements with any custom textures...");
-            
+
+            // Characters
+            string characterTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "character");
+            if (Directory.Exists(characterTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to perform character texture replacements, as '" + characterTexturesFolder + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+            }
+            else
+            {
+                Logger.WriteInfo("Performing custom character texture replacements...");
+                string[] customTextures = Directory.GetFiles(characterTexturesFolder);
+                foreach (string customTexture in customTextures)
+                {
+                    string targetFileName = Path.Combine(charactersDirectory, "Textures", Path.GetFileName(customTexture));
+                    Logger.WriteDetail("Replacing or placing character object texture '" + customTexture + "'");
+                    File.Copy(customTexture, targetFileName, true);
+                }
+                Logger.WriteInfo("Character custom texture replacements complete");
+            }
+
             // Objects
             string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "object");
             if (Directory.Exists(objectTexturesFolder) == false)
@@ -363,11 +382,12 @@ namespace EQWOWConverter
                 foreach (string customTexture in customTextures)
                 {
                     string targetFileName = Path.Combine(objectsDirectory, "textures", Path.GetFileName(customTexture));
-                    Logger.WriteDetail("Replacing custom object texture '" + customTexture + "'");
+                    Logger.WriteDetail("Replacing or placing custom object texture '" + customTexture + "'");
                     File.Copy(customTexture, targetFileName, true);
                 }
                 Logger.WriteInfo("Object custom texture replacements complete");
             }
+
             Logger.WriteInfo("Texture replacements complete");
         }
 
