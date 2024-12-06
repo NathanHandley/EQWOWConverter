@@ -71,17 +71,6 @@ namespace EQWOWConverter.Creatures
                 return FemaleSkeletonName;
         }
 
-        public bool HasSkeleton()
-        {
-            if (MaleSkeletonName.Trim().Length != 0)
-                return true;
-            if (FemaleSkeletonName.Trim().Length != 0)
-                return true;
-            if (NeutralSkeletonName.Trim().Length != 0)
-                return true;
-            return false;
-        }
-
         public float GetLiftHeightForGender(CreatureGenderType genderType)
         {
             switch (genderType)
@@ -91,14 +80,11 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        public static List<CreatureRace> GetAllCreatureRaces()
+        public static Dictionary<int, CreatureRace> GetAllCreatureRacesByID()
         {
             if (CreatureRacesByRaceID.Count == 0)
                 PopulateCreatureRaceList();
-            List<CreatureRace> creatureRaces = new List<CreatureRace>();
-            foreach(var creatureRace in CreatureRacesByRaceID.Values)
-                creatureRaces.Add(creatureRace);
-            return creatureRaces;
+            return CreatureRacesByRaceID;
         }
 
         private static void PopulateCreatureRaceList()

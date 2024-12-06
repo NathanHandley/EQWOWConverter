@@ -27,7 +27,7 @@ namespace EQWOWConverter
         private static List<CreatureSpawnEntry> SpawnEntryList = new List<CreatureSpawnEntry>();
 
         public int SpawnGroupID = 0;
-        public int SpawnCreatureDetailID = 0;
+        public int CreatureTemplateID = 0;
         public int Chance = 100;
 
         public static List<CreatureSpawnEntry> GetSpawnEntryList()
@@ -70,7 +70,7 @@ namespace EQWOWConverter
                 string[] rowBlocks = row.Split(",");
                 CreatureSpawnEntry newSpawnEntry = new CreatureSpawnEntry();
                 newSpawnEntry.SpawnGroupID = int.Parse(rowBlocks[0]);
-                newSpawnEntry.SpawnCreatureDetailID = int.Parse(rowBlocks[1]);
+                newSpawnEntry.CreatureTemplateID = int.Parse(rowBlocks[1]);
                 newSpawnEntry.Chance = int.Parse(rowBlocks[2]);
                 SpawnEntryList.Add(newSpawnEntry);
             }

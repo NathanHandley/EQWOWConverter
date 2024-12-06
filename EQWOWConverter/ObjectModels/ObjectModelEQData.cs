@@ -52,8 +52,7 @@ namespace EQWOWConverter.ObjectModels
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 
-        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate creatureModelTemplate, 
-            CreatureModelVariation creatureModelVariation)
+        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate creatureModelTemplate)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -73,7 +72,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Determine what mesh names to use for a given variation
             List<string> meshNames = new List<string>();
-            if (creatureModelVariation.HelmTextureIndex == 0)
+            if (creatureModelTemplate.HelmTextureIndex == 0)
             {
                 foreach (string meshName in SkeletonData.MeshNames)
                     meshNames.Add(meshName);
@@ -99,7 +98,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Handle out-of-bounds
-                if (creatureModelVariation.HelmTextureIndex >= helmTextureNames.Count)
+                if (creatureModelTemplate.HelmTextureIndex >= helmTextureNames.Count)
                 {
                     foreach (string meshName in SkeletonData.MeshNames)
                         meshNames.Add(meshName);
@@ -108,7 +107,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     if (bodyTextureNames.Count > 0)
                         meshNames.Add(bodyTextureNames[0]);
-                    meshNames.Add(helmTextureNames[creatureModelVariation.HelmTextureIndex]);
+                    meshNames.Add(helmTextureNames[creatureModelTemplate.HelmTextureIndex]);
                 }
             }
 
@@ -130,10 +129,10 @@ namespace EQWOWConverter.ObjectModels
             LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
 
             // Load the materials
-            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelVariation.TextureIndex);
+            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
 
             // Load the rest
-            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelVariation.GenderType));
+            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelTemplate.GenderType));
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 

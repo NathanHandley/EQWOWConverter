@@ -91,14 +91,14 @@ namespace EQWOWConverter.ObjectModels
                 Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
-        public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate, CreatureModelVariation creatureModelVariation)
+        public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, creatureModelVariation);
+            EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate);
 
             // Calculate lift
-            float lift = creatureModelTemplate.Race.GetLiftHeightForGender(creatureModelVariation.GenderType);
+            float lift = creatureModelTemplate.Race.GetLiftHeightForGender(creatureModelTemplate.GenderType);
             lift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
             // Load it

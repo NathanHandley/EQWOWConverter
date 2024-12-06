@@ -66,9 +66,11 @@ namespace EQWOWConverter
 
             // Creatures
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
+            List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
+            List<CreatureSpawnInstance> creatureInstances = new List<CreatureSpawnInstance>();
             if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
             {
-                if (ConvertCreatures(ref creatureModelTemplates) == false)
+                if (ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureInstances) == false)
                     return false;
             }
             else
@@ -91,7 +93,7 @@ namespace EQWOWConverter
             CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones, creatureModelTemplates);
+            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -274,7 +276,8 @@ namespace EQWOWConverter
             return true;
         }
 
-        public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates)
+        public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
+            ref List<CreatureSpawnInstance> creatureInstances)
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
@@ -288,17 +291,21 @@ namespace EQWOWConverter
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
-            // Use all the creature race templates
-            foreach(CreatureRace creatureRace in CreatureRace.GetAllCreatureRaces())
-            {
-                // Skip any without skeletons for now
-                if (creatureRace.HasSkeleton() == false)
-                    continue;
+            // Generate templates
+            Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
+            creatureTemplates.Clear();
+            foreach (var creatureTemplateByID in creatureTemplatesByID)
+                creatureTemplates.Add(creatureTemplateByID.Value);
 
-                // Output for each
-                CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace);
-                creatureModelTemplate.CreateModelFiles();
-                creatureModelTemplates.Add(creatureModelTemplate);
+            // Create all of the models and related model files
+            CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
+            foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
+            {
+                foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
+                {
+                    modelTemplate.CreateModelFiles();
+                    creatureModelTemplates.Add(modelTemplate);
+                }
             }
 
             // Copy all of the sound files
@@ -831,16 +838,12 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
             // Creatures
-            CreatureRaceSounds.GenerateAllSounds();
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
-                foreach(CreatureModelVariation modelVariation in CreatureModelTemplate.GetModelVariationsForRace(creatureModelTemplate.Race.ID))
-                {
-                    creatureDisplayInfoDBC.AddRow(modelVariation.DBCCreatureDisplayID, modelVariation.DBCCreatureModelDataID);
-                    string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + modelVariation.GenerateFileName(creatureModelTemplate.Race.GetSkeletonNameForGender(modelVariation.GenderType)) + ".mdx";
-                    creatureModelDataDBC.AddRow(modelVariation.DBCCreatureModelDataID, modelVariation.DBCCreatureSoundDataID, relativeModelPath);
-                    creatureSoundDataDBC.AddRow(modelVariation.DBCCreatureSoundDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, modelVariation.GenderType));
-                }
+                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
+                string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
+                creatureModelDataDBC.AddRow(creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID, relativeModelPath);
+                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, creatureModelTemplate.GenderType));
             }
 
             // Zone-specific records
@@ -988,7 +991,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("Creating DBC Files complete");
         }
 
-        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates)
+        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
@@ -1005,15 +1008,18 @@ namespace EQWOWConverter
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
 
             // Creatures
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                foreach (CreatureModelVariation modelVariation in CreatureModelTemplate.GetModelVariationsForRace(creatureModelTemplate.Race.ID))
+                if (creatureTemplate.ModelTemplate == null)
+                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
+                else
                 {
-                    creatureModelInfoSQL.AddRow(modelVariation.DBCCreatureDisplayID, Convert.ToInt32(modelVariation.GenderType));
-                    creatureTemplateModelSQL.AddRow(modelVariation.SQLCreatureTemplateID, modelVariation.DBCCreatureDisplayID);
-                    creatureTemplateSQL.AddRow(modelVariation.SQLCreatureTemplateID, creatureModelTemplate.Race.Name + " " + modelVariation.GenerateFileName(creatureModelTemplate.Race.GetSkeletonNameForGender(modelVariation.GenderType)));                    
+                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
                 }
             }
+            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
             // Zones
             foreach (Zone zone in zones)
