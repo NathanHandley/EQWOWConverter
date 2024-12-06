@@ -18,14 +18,41 @@ using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.EQFiles
 {
     internal class EQMaterialList
     {
         public List<List<Material>> MaterialsByTextureVariation = new List<List<Material>>();
+
+        // Invisible Man (Race 127) has no textures, so need to create blank ones
+        public void LoadForInvisibleMan()
+        {
+            Logger.WriteDetail(" - Creating EQ Material List Data for Invisible Man (IVM)...");
+            MaterialsByTextureVariation.Add(new List<Material>());
+            MaterialsByTextureVariation[0].Add(new Material("00", "00", 0, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("01", "01", 1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("02", "02", 2, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("03", "03", 3, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("04", "04", 4, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("05", "05", 5, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("06", "06", 6, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("07", "07", 7, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("08", "08", 8, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("09", "09", 9, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("10", "10", 10, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("11", "11", 11, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("12", "12", 12, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("13", "13", 13, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("14", "14", 14, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("15", "15", 15, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            MaterialsByTextureVariation[0].Add(new Material("16", "16", 16, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
+            Logger.WriteDetail(" - Done creating material list data for IVM");
+        }
 
         public bool LoadFromDisk(string fileFullPath)
         {

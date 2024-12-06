@@ -78,6 +78,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         {
             AlphaBlendMaterialsByName.Clear();
             AlphaBlendMaterialsByName.Add("d_ub5"); // Treetops that should 'fade into the sky'
+            AlphaBlendMaterialsByName.Add("clear"); // Transparent should be completely alpha
         }
     }
 }

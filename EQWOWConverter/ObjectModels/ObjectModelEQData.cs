@@ -20,6 +20,7 @@ using EQWOWConverter.EQFiles;
 using EQWOWConverter.Zones;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,7 +68,7 @@ namespace EQWOWConverter.ObjectModels
                 // TODO: Do something unique here for robes and whatnot
             }
 
-            // Load skeleton and material data first
+            // Load skeleton
             LoadSkeletonData(inputObjectName, inputObjectFolder);
 
             // Determine what mesh names to use for a given variation
@@ -111,14 +112,6 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Invisible man is special, and it needs to have meshes added to it for animation
-            if (creatureModelTemplate.Race.ID == 127)
-            {
-                // TODO: Fix this error message about material list name
-                meshNames.Add("elm");
-                meshNames.Add("elmhe00");
-            }
-
             // Fix coldain's helm
             foreach (string meshName in SkeletonData.SecondaryMeshNames)
             {
@@ -128,8 +121,15 @@ namespace EQWOWConverter.ObjectModels
 
             LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
 
-            // Load the materials
-            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
+            // Load the materials, with special logic for invisible man
+            if (creatureModelTemplate.Race.ID == 127)
+            {
+                EQMaterialList materialListData = new EQMaterialList();
+                materialListData.LoadForInvisibleMan();
+                Materials = materialListData.MaterialsByTextureVariation[0];
+            }
+            else
+                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
 
             // Load the rest
             LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelTemplate.GenderType));

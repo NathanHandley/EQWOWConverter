@@ -1091,8 +1091,13 @@ namespace EQWOWConverter
                 float spawnY = creatureSpawnInstance.SpawnYPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 float spawnZ = creatureSpawnInstance.SpawnZPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
-                //creatureSQL.AddRow(creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]].SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
-                creatureSQL.AddRow(3, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
+                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
+                    continue;
+                if (creatureTemplateFullList.ContainsKey(creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]) == false)
+                    continue;
+
+                creatureSQL.AddRow(creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]].SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
+                //creatureSQL.AddRow(3, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
             }
 
             // END TEMP

@@ -125,7 +125,7 @@ RaceID,RaceName,Male,Female,Neutral,LiftMN,LiftF,ModelScale,Height,BoundRadius,B
 124,Unicorn,,,UNI,3.75,3.75,1.2,6,10.3332,7.44,,,,,,,,
 125,Pegasus,,,PEG,3.75,3.75,1.2,6,30.9997,7.44,,,,,,,,
 126,Djinn,,,DJI,3.75,3.75,1.2,6,6.5729,7.44,,,,,,,,
-127,Invisible Man,,,IVM,3.75,3.75,1.2,6,5.81229,7.44,,,,,,,,
+127,Invisible Man,ELM,,ELM,3.75,3.75,1.2,6,5.81229,7.44,,,,,,,,
 128,Iksar,IKM,IKF,IKM,3.75,3.75,1.2,6,6.13797,7.44,,IKM,,,,,,
 129,Scorpion,,,SCR,3.75,3.75,1.2,6,16.9904,7.44,,,,,,,,
 130,Vah Shir,,,,4.375,4.375,1.4,7,5.08699,8.68,,,,"It was ""KE"" for neutral, but unsure what this is exactly",,,,
