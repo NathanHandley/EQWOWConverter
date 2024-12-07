@@ -31,6 +31,7 @@ using EQWOWConverter.ObjectModels.Properties;
 using MySql.Data.MySqlClient;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Zones.Properties;
+using System.Drawing;
 
 namespace EQWOWConverter
 {
@@ -1054,13 +1055,19 @@ namespace EQWOWConverter
             }
 
             // Creatures
+            Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 if (creatureTemplate.ModelTemplate == null)
                     Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
                 else
                 {
-                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name);
+                    // Calculate the scale
+                    float scale = 1f;
+                    if (creatureTemplate.Size > 0)
+                        scale = creatureTemplate.Size / allRaces[creatureTemplate.RaceID].Height;
+
+                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, scale);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
                 }
             }

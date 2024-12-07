@@ -93,11 +93,12 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int entryID, string name)
+        public void AddRow(int entryID, string name, float scale)
         {
             Row newRow = new Row();
             newRow.EntryID = entryID;
             newRow.Name = name;
+            newRow.Scale = scale;
             rows.Add(newRow);
         }
 

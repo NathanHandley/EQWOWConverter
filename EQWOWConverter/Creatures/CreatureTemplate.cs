@@ -34,6 +34,7 @@ namespace EQWOWConverter.Creatures
         public int Class = 1;
         public int BodyType = 24; // This is common for the body type
         public int HP = 1;
+        public float Size = 0f;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
         public int TextureID = 0;
         public int HelmTextureID = 0;
@@ -99,6 +100,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Class = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.BodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[11]);
                 int genderID = int.Parse(rowBlocks[8]);
                 switch (genderID)
                 {
