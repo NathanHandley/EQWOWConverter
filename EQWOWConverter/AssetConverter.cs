@@ -1068,7 +1068,7 @@ namespace EQWOWConverter
                     if (creatureTemplate.Size > 0)
                         scale = creatureTemplate.Size / allRaces[creatureTemplate.RaceID].Height;
 
-                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, scale);
+                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
                 }
             }
