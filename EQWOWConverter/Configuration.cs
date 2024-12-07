@@ -206,8 +206,8 @@ namespace EQWOWConverter
         //=====================================================================
         // Audio
         //=====================================================================       
-        // Set which soundfont to use in the Tools/soundfont folder.  Alternate option is AweROMGM.sf2
-        public static readonly string CONFIG_AUDIO_SOUNDFONT_FILE_NAME = "synthusr_samplefix.sf2";
+        // Set which soundfont to use in the Tools/soundfont folder.  Alternate option is synthusr_samplefix.sf2
+        public static readonly string CONFIG_AUDIO_SOUNDFONT_FILE_NAME = "AweROMGM.sf2";
 
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
         public static readonly bool CONFIG_AUDIO_USE_ALTERNATE_TRACKS = false;
