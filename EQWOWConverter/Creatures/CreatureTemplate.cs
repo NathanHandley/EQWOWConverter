@@ -111,6 +111,10 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.TextureID = int.Parse(rowBlocks[9]);
                 newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[10]);
 
+                // Strip underscores
+                newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
+                newCreatureTemplate.SubName = newCreatureTemplate.SubName.Replace('_', ' ');
+
                 // Fallback on race ID
                 if (allRacesById.ContainsKey(newCreatureTemplate.RaceID) == false)
                 {
