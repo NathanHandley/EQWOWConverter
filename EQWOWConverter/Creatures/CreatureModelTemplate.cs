@@ -143,8 +143,9 @@ namespace EQWOWConverter.Creatures
                 Directory.CreateDirectory(outputFullMPQPath);
 
             // Load in an object
+            float lift = Race.GetLiftHeightForGender(GenderType);
             ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
-            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale);
+            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale, lift);
             curObject.LoadAnimateEQObjectFromFile(charactersFolderRoot, this);
             curObject.Name = Race.Name + " " + GenerateFileName();
 

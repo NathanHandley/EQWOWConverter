@@ -62,7 +62,8 @@ namespace EQWOWConverter.ObjectModels
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
         public Sound? SoundIdleLoop = null;
-        public float ModelScale = 1f;
+        public float ModelScalePreWorldScale = 1f;
+        public float ModelLiftPreWorldScale = 0f;
         public int NumOfFidgetSounds = 0;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
@@ -71,12 +72,13 @@ namespace EQWOWConverter.ObjectModels
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
 
-        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1)
+        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1, float modelLift = 0)
         {
             Name = name;
             Properties = objectProperties;
             ModelType = modelType;
-            ModelScale = modelScale;
+            ModelScalePreWorldScale = modelScale;
+            ModelLiftPreWorldScale = modelLift;
         }
 
         public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName)
@@ -97,20 +99,16 @@ namespace EQWOWConverter.ObjectModels
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate);
 
-            // Calculate lift
-            float lift = creatureModelTemplate.Race.GetLiftHeightForGender(creatureModelTemplate.GenderType);
-            lift *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-
             // Load it
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), lift);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, lift);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
         }
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, float skeletonLiftHeight = 0)
+            List<TriangleFace> collisionTriangleFaces)
         {
             // Save Name
             Name = name;
@@ -129,7 +127,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScale);
+                meshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScalePreWorldScale);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -137,7 +135,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScale);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndWorldScale(ModelType != ObjectModelType.Skeletal, ModelScalePreWorldScale);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -162,14 +160,14 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation(skeletonLiftHeight);
+            ProcessBonesAndAnimation();
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
                 GlobalLoopSequenceLimits.Add(0);
         }
 
-        private void ProcessBonesAndAnimation(float skeletonLiftHeight)
+        private void ProcessBonesAndAnimation()
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -208,7 +206,7 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                if (CreateAndSetAnimations(skeletonLiftHeight) == false)
+                if (CreateAndSetAnimations() == false)
                 {
                     Logger.WriteError("Could not create and set animations for object '" + Name + "'");
 
@@ -345,22 +343,22 @@ namespace EQWOWConverter.ObjectModels
             return true;
         }
 
-        public bool CreateAndSetAnimations(float skeletonLiftHeight)
+        public bool CreateAndSetAnimations()
         {
             // Set the various animations (note: Do not change the order of the first 4)
-            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight); // Stand mid-idle
-            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
-            FindAndSetAnimationForType(AnimationType.Stand, skeletonLiftHeight, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
-            FindAndSetAnimationForType(AnimationType.AttackUnarmed, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Walk, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Run, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.ShuffleLeft, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.ShuffleRight, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Swim, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.Death, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.CombatWound, skeletonLiftHeight);
-            FindAndSetAnimationForType(AnimationType.CombatCritical, skeletonLiftHeight);
+            FindAndSetAnimationForType(AnimationType.Stand);
+            FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
+            FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
+            FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
+            FindAndSetAnimationForType(AnimationType.AttackUnarmed);
+            FindAndSetAnimationForType(AnimationType.Walk);
+            FindAndSetAnimationForType(AnimationType.Run);
+            FindAndSetAnimationForType(AnimationType.ShuffleLeft);
+            FindAndSetAnimationForType(AnimationType.ShuffleRight);
+            FindAndSetAnimationForType(AnimationType.Swim);
+            FindAndSetAnimationForType(AnimationType.Death);
+            FindAndSetAnimationForType(AnimationType.CombatWound);
+            FindAndSetAnimationForType(AnimationType.CombatCritical);
 
             // Update the stand/fidget animation timers so that there is a fidget sometimes
             if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
@@ -389,7 +387,7 @@ namespace EQWOWConverter.ObjectModels
             return true;
         }
 
-        public void FindAndSetAnimationForType(AnimationType animationType, float skeletonLiftHeight, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
+        public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
         {
             Logger.WriteDetail("Seeking animation to build to wow type '" + animationType.ToString() + "' for object '" + Name + "'");
 
@@ -454,9 +452,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale,
-                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale,
-                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation;
                                 frameRotation = new QuaternionShort(-animationFrame.XRotation,
@@ -467,7 +465,7 @@ namespace EQWOWConverter.ObjectModels
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
-                                    frameTranslation.Z += skeletonLiftHeight;
+                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                                 // Calculate the frame start time
                                 UInt32 curTimestamp = 0;
@@ -840,8 +838,8 @@ namespace EQWOWConverter.ObjectModels
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
                         // Control for world scaling
-                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale;
-                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScale;
+                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale;
+                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale;
 
                         // Purge the existing collision data
                         collisionVertices.Clear();
