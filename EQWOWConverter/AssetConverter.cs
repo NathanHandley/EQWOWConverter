@@ -631,6 +631,7 @@ namespace EQWOWConverter
                     {
                         MySqlCommand command = new MySqlCommand();
                         command.Connection = connection;
+                        command.CommandTimeout = 288000;
                         command.CommandText = File.ReadAllText(sqlFile);
                         command.ExecuteNonQuery();
                     }
