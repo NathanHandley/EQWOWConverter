@@ -1017,10 +1017,12 @@ namespace EQWOWConverter
 
             // Zones
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            Dictionary<int, Zone> zonesByMapID = new Dictionary<int, Zone>();
             foreach (Zone zone in zones)
             {
                 // Save the mapID for a lookup in creatures
                 mapIDsByShortName.Add(zone.ShortName, zone.ZoneProperties.DBCMapID);
+                zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
 
                 // Instance list
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
@@ -1107,8 +1109,19 @@ namespace EQWOWConverter
                     continue;
                 if (creatureTemplateFullList.ContainsKey(creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]) == false)
                     continue;
+                CreatureTemplate curCreatureTemplate = creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]];
 
-                creatureSQL.AddRow(creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]].SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
+                // Adjust Z to factor for model lift
+                //CreatureRace curRace = allRaces[curCreatureTemplate.RaceID];
+                //float modelLift = curRace.GetLiftHeightForGender(curCreatureTemplate.GenderType) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                //spawnZ -= modelLift;
+
+                // Grab the zone
+                Zone curZone = zonesByMapID[mapIDsByShortName[creatureSpawnInstance.ZoneShortName]];
+
+                // Add the spawn
+                creatureSQL.AddRow(curCreatureTemplate.SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], Convert.ToInt32(curZone.DefaultArea.DBCAreaTableID),
+                    Convert.ToInt32(curZone.DefaultArea.DBCAreaTableID), spawnX, spawnY, spawnZ, orientation);
             }
             // END TEMP
 

@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int id1, int mapID, float xPosition, float yPosition, float zPosition, float orientation)
+        public void AddRow(int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)
         {
             // Generate unique guid
             int rowGUID = CURRENT_GUIDID;
@@ -77,6 +77,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.PositionY = yPosition;
             newRow.PositionZ = zPosition;
             newRow.Orientation = orientation;
+            newRow.AreaID = areaID;
+            newRow.ZoneID = zoneID;
             rows.Add(newRow);
         }
 
