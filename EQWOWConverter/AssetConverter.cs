@@ -1083,8 +1083,11 @@ namespace EQWOWConverter
                 if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
                     continue;
 
-                // Convert to orientation (radians)
-                float orientation = creatureSpawnInstance.Heading * Convert.ToSingle(Math.PI / 180);
+                // Convert heading (EQ uses 0-256 range, and can be 2x that (512)) so convert to degrees and then radians
+                float modHeading = 0;
+                if (creatureSpawnInstance.Heading != 0)
+                    modHeading = creatureSpawnInstance.Heading / (256f / 360f);
+                float orientation = modHeading * Convert.ToSingle(Math.PI / 180);
 
                 // Note: X and Y were reversed when converting the data
                 float spawnX = creatureSpawnInstance.SpawnXPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
@@ -1097,11 +1100,8 @@ namespace EQWOWConverter
                     continue;
 
                 creatureSQL.AddRow(creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]].SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
-                //creatureSQL.AddRow(3, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], spawnX, spawnY, spawnZ, orientation);
             }
-
             // END TEMP
-
 
             // Output them
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
