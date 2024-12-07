@@ -452,9 +452,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation;
                                 frameRotation = new QuaternionShort(-animationFrame.XRotation,
@@ -465,7 +465,7 @@ namespace EQWOWConverter.ObjectModels
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
-                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
 
                                 // Calculate the frame start time
                                 UInt32 curTimestamp = 0;
