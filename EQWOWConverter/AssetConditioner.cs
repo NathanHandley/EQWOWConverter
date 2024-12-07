@@ -427,7 +427,7 @@ namespace EQWOWConverter
                 Logger.WriteError("Failed to process music files. '" + fluidsynthFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
                 return;
             }
-            string soundfontFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "soundfont", "AweROMGM.sf2");
+            string soundfontFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "soundfont", Configuration.CONFIG_AUDIO_SOUNDFONT_FILE_NAME);
             if (File.Exists(soundfontFileFullPath) == false)
             {
                 Logger.WriteError("Failed to process music files. '" + soundfontFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
