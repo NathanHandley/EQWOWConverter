@@ -1064,12 +1064,12 @@ namespace EQWOWConverter
                 else
                 {
                     // Calculate the scale
-                    float scale = 1f;
-                    if (creatureTemplate.Size > 0)
-                        scale = creatureTemplate.Size / allRaces[creatureTemplate.RaceID].Height;
+                    CreatureRace curRace = allRaces[creatureTemplate.RaceID];
+                    float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
 
+                    // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
                 }
             }
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
@@ -1102,6 +1102,7 @@ namespace EQWOWConverter
                 float spawnY = creatureSpawnInstance.SpawnYPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 float spawnZ = creatureSpawnInstance.SpawnZPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
+                // Skip invalid creatures
                 if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
                     continue;
                 if (creatureTemplateFullList.ContainsKey(creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]) == false)

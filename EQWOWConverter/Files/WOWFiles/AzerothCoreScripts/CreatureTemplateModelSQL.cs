@@ -29,18 +29,19 @@ namespace EQWOWConverter.WOWFiles
             public int CreatureTemplateID;
             public int Idx = 0;
             public int CreatureDisplayID; // CreatureDisplayInfo.dbc reference
-            public int DisplayScale = 1;
+            public float DisplayScale = 1f;
             public int Probability = 1;
             public int VerifiedBuild = 12340;
         }
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int creatureTemplateID, int creatureDisplayID)
+        public void AddRow(int creatureTemplateID, int creatureDisplayID, float displayScale)
         {
             Row newRow = new Row();
             newRow.CreatureTemplateID = creatureTemplateID;
             newRow.CreatureDisplayID = creatureDisplayID;
+            newRow.DisplayScale = displayScale;
             rows.Add(newRow);
         }
 

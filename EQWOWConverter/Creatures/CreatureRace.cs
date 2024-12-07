@@ -41,8 +41,9 @@ namespace EQWOWConverter.Creatures
         public float BoundaryHeight;
         public float LiftMaleAndNeutral = 0;
         public float LiftFemale = 0;
-        public float ModelScale;
-        public float Height;
+        public float ModelScale = 1;
+        public float Height = 1;
+        public float SpawnSizeMod = 0.2f;
 
         public string GetAnimationSupplementNameForGender(CreatureGenderType genderType)
         {
@@ -129,14 +130,15 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.LiftFemale = float.Parse(rowBlocks[6]);
                 newCreatureRace.ModelScale = float.Parse(rowBlocks[7]);
                 newCreatureRace.Height = float.Parse(rowBlocks[8]);
-                newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[9]);
-                newCreatureRace.BoundaryHeight = float.Parse(rowBlocks[10]);
+                newCreatureRace.SpawnSizeMod = float.Parse(rowBlocks[9]);
+                newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[10]);
+                newCreatureRace.BoundaryHeight = float.Parse(rowBlocks[11]);
                 if (rowBlocks.Length > 11)
-                    newCreatureRace.MaleAnimationSupplementName = rowBlocks[11].Trim();
+                    newCreatureRace.MaleAnimationSupplementName = rowBlocks[12].Trim();
                 if (rowBlocks.Length > 12)
-                    newCreatureRace.FemaleAnimationSupplementName = rowBlocks[12].Trim();
+                    newCreatureRace.FemaleAnimationSupplementName = rowBlocks[13].Trim();
                 if (rowBlocks.Length > 13)
-                    newCreatureRace.NeutralAnimationSupplementName = rowBlocks[13].Trim();
+                    newCreatureRace.NeutralAnimationSupplementName = rowBlocks[14].Trim();
 
                 if (CreatureRacesByRaceID.ContainsKey(newCreatureRace.ID))
                 {
