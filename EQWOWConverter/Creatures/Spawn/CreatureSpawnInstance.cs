@@ -32,11 +32,14 @@ namespace EQWOWConverter.Creatures
         public float SpawnXPosition = 0;
         public float SpawnYPosition = 0;
         public float SpawnZPosition = 0;
-        public float Heading = 0;
+        public float Orientation = 0;
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // Unsure what this is
         public int PathGridID = 0;
         public int RoamRange = 0;
+
+        public int MapID = 0;
+        public int AreaID = 0;
 
         public static Dictionary<int, CreatureSpawnInstance> GetSpawnInstanceListByID()
         {
@@ -80,14 +83,26 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.ID = int.Parse(rowBlocks[0]);
                 newSpawnDetail.SpawnGroupID = int.Parse(rowBlocks[1]);
                 newSpawnDetail.ZoneShortName = rowBlocks[2];
-                newSpawnDetail.SpawnXPosition = float.Parse(rowBlocks[3]);
-                newSpawnDetail.SpawnYPosition = float.Parse(rowBlocks[4]);
-                newSpawnDetail.SpawnZPosition = float.Parse(rowBlocks[5]);
-                newSpawnDetail.Heading = float.Parse(rowBlocks[6]);
+                float spawnX = float.Parse(rowBlocks[3]);
+                float spawnY = float.Parse(rowBlocks[4]);
+                float spawnZ = float.Parse(rowBlocks[5]);
+                float heading = float.Parse(rowBlocks[6]);
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(rowBlocks[7]);
                 newSpawnDetail.Variance = int.Parse(rowBlocks[8]);
                 newSpawnDetail.PathGridID = int.Parse(rowBlocks[9]);
                 newSpawnDetail.RoamRange = int.Parse(rowBlocks[10]);
+
+                // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
+                float modHeading = 0;
+                if (heading != 0)
+                    modHeading = heading / (256f / 360f);
+                newSpawnDetail.Orientation = modHeading * Convert.ToSingle(Math.PI / 180);
+
+                // Modify by world scale
+                // Note: X and Y were reversed when converting the data
+                newSpawnDetail.SpawnXPosition = spawnX * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newSpawnDetail.SpawnYPosition = spawnY * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newSpawnDetail.SpawnZPosition = spawnZ * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                 if (SpawnInstanceListByID.ContainsKey(newSpawnDetail.ID))
                 {

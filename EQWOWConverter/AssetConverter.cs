@@ -32,6 +32,7 @@ using MySql.Data.MySqlClient;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Zones.Properties;
 using System.Drawing;
+using EQWOWConverter.Files;
 
 namespace EQWOWConverter
 {
@@ -66,24 +67,24 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
             }
 
+            // Zones
+            List<Zone> zones;
+            if (ConvertEQZonesToWOW(out zones) == false)
+                return false;
+
             // Creatures
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
-            List<CreatureSpawnInstance> creatureInstances = new List<CreatureSpawnInstance>();
+            List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
             {
-                if (ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureInstances) == false)
+                if (ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools, zones) == false)
                     return false;
             }
             else
             {
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
-
-            // Zones
-            List<Zone> zones;
-            if (ConvertEQZonesToWOW(out zones) == false)
-                return false;
 
             // Copy the loading screens
             CreateLoadingScreens();
@@ -95,7 +96,7 @@ namespace EQWOWConverter
             CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates, creatureInstances);
+            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -279,7 +280,7 @@ namespace EQWOWConverter
         }
 
         public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
-            ref List<CreatureSpawnInstance> creatureInstances)
+            ref List<CreatureSpawnPool> creatureSpawnPools, List<Zone> zones)
         {
             string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
@@ -295,9 +296,7 @@ namespace EQWOWConverter
 
             // Generate templates
             Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
-            creatureTemplates.Clear();
-            foreach (var creatureTemplateByID in creatureTemplatesByID)
-                creatureTemplates.Add(creatureTemplateByID.Value);
+            creatureTemplates = creatureTemplatesByID.Values.ToList();
 
             // Create all of the models and related model files
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
@@ -310,8 +309,87 @@ namespace EQWOWConverter
                 }
             }
 
-            // Grab instances
-            creatureInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
+            // Get a list of valid zone names
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            Dictionary<int, Zone> zonesByMapID = new Dictionary<int, Zone>();
+            foreach (Zone zone in zones)
+            {
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+                zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
+            }
+
+            // Group spawn entries (creature template relationships) by group ID
+            List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
+            Dictionary<int, List<CreatureSpawnEntry>> creatureSpawnEntriesByGroupID = new Dictionary<int, List<CreatureSpawnEntry>>();
+            foreach (CreatureSpawnEntry entry in spawnEntries)
+            {
+                if (creatureSpawnEntriesByGroupID.ContainsKey(entry.SpawnGroupID) == false)
+                    creatureSpawnEntriesByGroupID.Add(entry.SpawnGroupID, new List<CreatureSpawnEntry>());
+                creatureSpawnEntriesByGroupID[entry.SpawnGroupID].Add(entry);
+            }
+
+            // Group all spawn instances (locations) by group ID
+            List<CreatureSpawnInstance> creatureSpawnInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
+            Dictionary<int, List<CreatureSpawnInstance>> creatureSpawnInstancesByGroupID = new Dictionary<int, List<CreatureSpawnInstance>>();
+            foreach (CreatureSpawnInstance instance in creatureSpawnInstances)
+            {
+                if (creatureSpawnInstancesByGroupID.ContainsKey(instance.SpawnGroupID) == false)
+                    creatureSpawnInstancesByGroupID.Add(instance.SpawnGroupID, new List<CreatureSpawnInstance>());
+                creatureSpawnInstancesByGroupID[instance.SpawnGroupID].Add(instance);
+            }
+
+            // Go through each spawn group and generate pools
+            Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
+            foreach(int spawnGroupID in creatureSpawnEntriesByGroupID.Keys)
+            {
+                // Confirm there are related instances
+                if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroupID) == false)
+                    continue;
+
+                // Make the new pool
+                CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroupID);
+
+                // Add instances that are valid zones
+                foreach(CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroupID])
+                {
+                    if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
+                    {
+                        spawnInstance.MapID = mapIDsByShortName[spawnInstance.ZoneShortName.ToLower().Trim()];
+                        spawnInstance.AreaID = Convert.ToInt32(zonesByMapID[spawnInstance.MapID].DefaultArea.DBCAreaTableID);
+                        curSpawnPool.AddSpawnInstance(spawnInstance);
+                    }
+                }
+
+                // Add spawns that are valid spawns
+                foreach(CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroupID])
+                {
+                    if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
+                        curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
+                }
+
+                // Make sure there is at least one element
+                if (curSpawnPool.CreatureSpawnInstances.Count == 0)
+                {
+                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as there are no creature spawn instances. Skipping.");
+                    continue;
+                }
+                if (curSpawnPool.CreatureTemplates.Count == 0)
+                {
+                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as there are no valid creature templates. Skipping.");
+                    continue;
+                }
+
+                // Validate the chances
+                if (curSpawnPool.DoChancesAddTo100() == false)
+                {
+                    Logger.WriteError("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as chances did not add to 100. Skipping.");
+                    continue;
+                }
+
+                // Add it
+                spawnPoolsByGroupID.Add(spawnGroupID, curSpawnPool);
+            }
+            creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
 
             // Copy all of the sound files
             Logger.WriteInfo("Copying creature sound files...");
@@ -998,7 +1076,7 @@ namespace EQWOWConverter
         }
 
         public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
-            List<CreatureSpawnInstance> creatureInstances)
+            List<CreatureSpawnPool> creatureSpawnPools)
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
@@ -1014,16 +1092,13 @@ namespace EQWOWConverter
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
+            PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
+            PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
+            PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
 
             // Zones
-            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            Dictionary<int, Zone> zonesByMapID = new Dictionary<int, Zone>();
             foreach (Zone zone in zones)
             {
-                // Save the mapID for a lookup in creatures
-                mapIDsByShortName.Add(zone.ShortName, zone.ZoneProperties.DBCMapID);
-                zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
-
                 // Instance list
                 instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
 
@@ -1057,7 +1132,7 @@ namespace EQWOWConverter
                 }
             }
 
-            // Creatures
+            // Creature Templates
             Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
@@ -1074,56 +1149,92 @@ namespace EQWOWConverter
                     creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
                 }
             }
+
+            // Creature models
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
-            // TEMP Spawn Instances (need groups)
-            List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
-            Dictionary<int, int> creatureTemplateIDsBySpawnGroupID = new Dictionary<int, int>();
-            foreach(CreatureSpawnEntry spawnEntry in spawnEntries)
+            // Creature and Spawn Pools
+            foreach(CreatureSpawnPool spawnPool in creatureSpawnPools)
             {
-                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(spawnEntry.SpawnGroupID) == false)
-                    creatureTemplateIDsBySpawnGroupID.Add(spawnEntry.SpawnGroupID, spawnEntry.CreatureTemplateID);
+                // For single element single location pools, just create a creature record
+                if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count == 1)
+                {
+                    CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
+                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
+                    int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                        spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                }
+
+                // Create a pool pools if there are multiple locations
+                else if (spawnPool.CreatureSpawnInstances.Count > 1)
+                {
+                    // Create the mother pool template
+                    int motherPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                    List<string> motherPoolNames = new List<string>();
+                    foreach(CreatureTemplate template in spawnPool.CreatureTemplates)
+                        if (motherPoolNames.Contains(template.Name) == false)
+                            motherPoolNames.Add(template.Name);
+                    string motherPoolDescription = "(" + spawnPool.GroupID + ")";
+                    foreach (string name in motherPoolNames)
+                        motherPoolDescription += ", " + name;
+                    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool");
+
+                    // Create by instance groups
+                    for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
+                    {
+                        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
+
+                        // Create the pool pool
+                        int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                        string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
+                        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription);
+                        poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
+
+                        // Create the creature records
+                        for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
+                        {
+                            CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
+                            int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
+                            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                            poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
+                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                        }
+                    }
+                }
+
+                // No mother pool needed
+                else if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count > 0)
+                {
+                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
+
+                    // Make the pool description
+                    List<string> poolNames = new List<string>();
+                    foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
+                        if (poolNames.Contains(template.Name) == false)
+                            poolNames.Add(template.Name);
+                    string poolDescription = "(" + spawnPool.GroupID + ")";
+                    foreach (string name in poolNames)
+                        poolDescription += ", " + name;
+                    
+                    // Create the pool template
+                    int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                    poolTemplateSQL.AddRow(poolTemplateID, poolDescription);
+
+                    // Create the creature records
+                    for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
+                    {
+                        CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
+                        int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
+                        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                        poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
+                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                    }
+                }
             }
-            Dictionary<int, CreatureTemplate> creatureTemplateFullList = CreatureTemplate.GetCreatureTemplateList();
-            foreach (CreatureSpawnInstance creatureSpawnInstance in creatureInstances)
-            {
-                if (mapIDsByShortName.ContainsKey(creatureSpawnInstance.ZoneShortName) == false)
-                    continue;
-                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
-                    continue;
-
-                // Convert heading (EQ uses 0-256 range, and can be 2x that (512)) so convert to degrees and then radians
-                float modHeading = 0;
-                if (creatureSpawnInstance.Heading != 0)
-                    modHeading = creatureSpawnInstance.Heading / (256f / 360f);
-                float orientation = modHeading * Convert.ToSingle(Math.PI / 180);
-
-                // Note: X and Y were reversed when converting the data
-                float spawnX = creatureSpawnInstance.SpawnXPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                float spawnY = creatureSpawnInstance.SpawnYPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                float spawnZ = creatureSpawnInstance.SpawnZPosition *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-
-                // Skip invalid creatures
-                if (creatureTemplateIDsBySpawnGroupID.ContainsKey(creatureSpawnInstance.SpawnGroupID) == false)
-                    continue;
-                if (creatureTemplateFullList.ContainsKey(creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]) == false)
-                    continue;
-                CreatureTemplate curCreatureTemplate = creatureTemplateFullList[creatureTemplateIDsBySpawnGroupID[creatureSpawnInstance.SpawnGroupID]];
-
-                // Adjust Z to factor for model lift
-                //CreatureRace curRace = allRaces[curCreatureTemplate.RaceID];
-                //float modelLift = curRace.GetLiftHeightForGender(curCreatureTemplate.GenderType) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
-                //spawnZ -= modelLift;
-
-                // Grab the zone
-                Zone curZone = zonesByMapID[mapIDsByShortName[creatureSpawnInstance.ZoneShortName]];
-
-                // Add the spawn
-                creatureSQL.AddRow(curCreatureTemplate.SQLCreatureTemplateID, mapIDsByShortName[creatureSpawnInstance.ZoneShortName], Convert.ToInt32(curZone.DefaultArea.DBCAreaTableID),
-                    Convert.ToInt32(curZone.DefaultArea.DBCAreaTableID), spawnX, spawnY, spawnZ, orientation);
-            }
-            // END TEMP
 
             // Output them
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
@@ -1133,7 +1244,10 @@ namespace EQWOWConverter
             creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
             creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
             gameTeleSQL.WriteToDisk(sqlScriptFolder);
-            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);            
+            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
+            poolCreatureSQL.WriteToDisk(sqlScriptFolder);
+            poolPoolSQL.WriteToDisk(sqlScriptFolder);
+            poolTemplateSQL.WriteToDisk(sqlScriptFolder);
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,

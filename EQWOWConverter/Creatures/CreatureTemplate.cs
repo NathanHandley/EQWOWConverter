@@ -40,7 +40,7 @@ namespace EQWOWConverter.Creatures
         public int HelmTextureID = 0;
         public CreatureModelTemplate? ModelTemplate = null;
 
-
+        private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
         public int SQLCreatureTemplateID;
 
@@ -55,6 +55,13 @@ namespace EQWOWConverter.Creatures
             if (CreatureTemplateList.Count == 0)
                 PopulateCreatureTemplateList();
             return CreatureTemplateList;
+        }
+
+        public static int GenerateCreatureSQLGUID()
+        {
+            int returnGUID = CURRENT_SQL_CREATURE_GUID;
+            CURRENT_SQL_CREATURE_GUID++;
+            return returnGUID;
         }
 
         private static void PopulateCreatureTemplateList()

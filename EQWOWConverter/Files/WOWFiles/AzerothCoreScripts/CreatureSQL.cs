@@ -27,9 +27,6 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureSQL
     {
-        // Row DBCIDs
-        private static int CURRENT_GUIDID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
-
         private class Row
         {
             public int Guid;
@@ -63,14 +60,10 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)
+        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)
         {
-            // Generate unique guid
-            int rowGUID = CURRENT_GUIDID;
-            CURRENT_GUIDID++;
-
             Row newRow = new Row();
-            newRow.Guid = rowGUID;
+            newRow.Guid = guid;
             newRow.ID1 = id1;
             newRow.MapID = mapID;
             newRow.PositionX = xPosition;
