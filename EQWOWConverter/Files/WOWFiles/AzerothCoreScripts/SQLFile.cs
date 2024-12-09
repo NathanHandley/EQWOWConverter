@@ -96,7 +96,7 @@ namespace EQWOWConverter.WOWFiles
                 {
                     stringBuilder.Append(SQLColumns[i].GetValueForManualOutput());
                     if (i < SQLColumns.Count - 1)
-                        stringBuilder.Append(", ");
+                        stringBuilder.Append(",");
                 }
                 stringBuilder.Append(")");
                 return stringBuilder.ToString();
@@ -171,7 +171,7 @@ namespace EQWOWConverter.WOWFiles
                     if (curInsertRowIter == Configuration.CONFIG_GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE - 1 || rowIter == endRowIter - 1)
                         stringBuilder.AppendLine(";");
                     else
-                        stringBuilder.AppendLine(",");
+                        stringBuilder.Append(",");
 
                     // Add to the insert block iter, and cycle back if the end is hit
                     curInsertRowIter++;
@@ -197,24 +197,10 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append(Rows[0].SQLColumns[i].Name);
                 stringBuilder.Append("`");
                 if (i < firstRow.SQLColumns.Count - 1)
-                    stringBuilder.Append(", ");
+                    stringBuilder.Append(",");
             }
             stringBuilder.Append(")");
             return stringBuilder.ToString();
-
-            //StringBuilder stringBuilder = new StringBuilder();
-            //stringBuilder.Append("INSERT INTO `" + tableName + "` (");
-            //SQLRow firstRow = Rows[0];
-            //for (int i = 0; i < firstRow.SQLColumns.Count; i++)
-            //{
-            //    stringBuilder.Append("`");
-            //    stringBuilder.Append(Rows[0].SQLColumns[i].Name);
-            //    stringBuilder.Append("`");
-            //    if (i < firstRow.SQLColumns.Count - 1)
-            //        stringBuilder.Append(", ");
-            //}
-            //stringBuilder.Append(") VALUES ");
-            //return stringBuilder.ToString();
         }
     }
 }
