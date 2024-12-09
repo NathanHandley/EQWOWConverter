@@ -113,13 +113,6 @@ namespace EQWOWConverter.WOWFiles
         {
             Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' started...");
 
-            // Make sure there are rows
-            if (Rows.Count == 0)
-            {
-                Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' ended since there were no rows");
-                return;
-            }
-
             // Determine the path and create the folder if needed
             string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
             FileTool.CreateBlankDirectory(outputFolder, true);
@@ -188,6 +181,9 @@ namespace EQWOWConverter.WOWFiles
 
         private string GenerateFieldsSegment()
         {
+            if (Rows.Count == 0)
+                return string.Empty;
+
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.Append("(");
             SQLRow firstRow = Rows[0];

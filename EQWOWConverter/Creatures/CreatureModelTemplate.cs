@@ -147,7 +147,11 @@ namespace EQWOWConverter.Creatures
             ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale, lift);
             curObject.LoadAnimateEQObjectFromFile(charactersFolderRoot, this);
-            curObject.Name = Race.Name + " " + GenerateFileName();
+            StringBuilder nameSB = new StringBuilder();
+            nameSB.Append(Race.Name);
+            nameSB.Append(" ");
+            nameSB.Append(GenerateFileName());
+            curObject.Name = nameSB.ToString();
 
             // Set fidget count for M2
             CreatureRaceSounds creatureRaceSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(Race.ID, GenderType);
