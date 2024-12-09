@@ -1121,8 +1121,10 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
 
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
-            string sqlScriptFolder = Path.Combine(wowExportPath, "AzerothCoreSQLScripts");
+            // Clean the folder
+            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
+            if (Directory.Exists(sqlScriptFolder))
+                Directory.Delete(sqlScriptFolder, true);
 
             // Create the SQL Scripts
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
@@ -1211,7 +1213,7 @@ namespace EQWOWConverter
                         int waypointGUID = creatureGUID * 1000;
                         creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                         foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                     }
@@ -1259,7 +1261,7 @@ namespace EQWOWConverter
                                 int waypointGUID = creatureGUID * 1000;
                                 creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                                 foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                             }
@@ -1302,7 +1304,7 @@ namespace EQWOWConverter
                             int waypointGUID = creatureGUID * 1000;
                             creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                             foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                         }
@@ -1328,7 +1330,7 @@ namespace EQWOWConverter
             poolCreatureSQL.WriteToDisk(sqlScriptFolder);
             poolPoolSQL.WriteToDisk(sqlScriptFolder);
             poolTemplateSQL.WriteToDisk(sqlScriptFolder);
-            waypointDataSQL.WriteToDisk(sqlScriptFolder);
+            waypointDataSQL.SaveToDisk("waypoint_data");
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
