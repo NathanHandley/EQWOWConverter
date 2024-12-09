@@ -76,6 +76,7 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
 
         // If true, deploy to the SQL to the server
+        // Note: May not work on remote servers (not tested)
         public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
 
         // If true, DBC files are extracted every time.
@@ -127,7 +128,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
         // How many insert rows to restrict in a manual SQL output file 
-        public static readonly int CONFIG_GENERATE_SQL_FILE_BATCH_SIZE = 50000;
+        public static readonly int CONFIG_GENERATE_SQL_FILE_BATCH_SIZE = 30000;
 
         //=====================================================================
         // Zone General

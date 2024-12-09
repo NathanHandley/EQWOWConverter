@@ -29,8 +29,20 @@ namespace EQWOWConverter.WOWFiles
         {
             public class SQLColumn
             {
+                public bool IsString = false;
+                public bool IsNull = false;
                 public string Name = string.Empty;
                 public string Value = string.Empty;
+
+                public string GetValueForManualOutput()
+                {
+                    if (IsNull == true)
+                        return "NULL";
+                    else if (IsString == true)
+                        return "\"" + Value + "\"";
+                    else
+                        return Value;
+                }
             }
 
             public void AddInt(string columnName, Int32? value)
@@ -40,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
                 if (value.HasValue)
                     newColumn.Value = value.GetValueOrDefault().ToString();
                 else
-                    newColumn.Value = "NULL";
+                    newColumn.IsNull = true;
                 SQLColumns.Add(newColumn);
             }
 
@@ -51,7 +63,23 @@ namespace EQWOWConverter.WOWFiles
                 if (value.HasValue)
                     newColumn.Value = value.GetValueOrDefault().ToString();
                 else
-                    newColumn.Value = "NULL";
+                    newColumn.IsNull = true;
+                SQLColumns.Add(newColumn);
+            }
+
+            public void AddString(string columnName, int maxLength, string? value)
+            {
+                SQLColumn newColumn = new SQLColumn();
+                newColumn.IsString = true;
+                newColumn.Name = columnName;
+                if (value != null)
+                {
+                    if (value.Length > 255)
+                        value = value.Substring(0, maxLength-3) + "...";
+                    newColumn.Value = value;
+                }
+                else
+                    newColumn.IsNull = true;
                 SQLColumns.Add(newColumn);
             }
 
@@ -61,7 +89,7 @@ namespace EQWOWConverter.WOWFiles
                 stringBuilder.Append("(");
                 for (int i = 0; i < SQLColumns.Count; i++)
                 {
-                    stringBuilder.Append(SQLColumns[i].Value);
+                    stringBuilder.Append(SQLColumns[i].GetValueForManualOutput());
                     if (i < SQLColumns.Count - 1)
                         stringBuilder.Append(", ");
                 }

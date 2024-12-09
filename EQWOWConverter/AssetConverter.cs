@@ -1329,7 +1329,7 @@ namespace EQWOWConverter
             instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
             poolCreatureSQL.WriteToDisk(sqlScriptFolder);
             poolPoolSQL.WriteToDisk(sqlScriptFolder);
-            poolTemplateSQL.WriteToDisk(sqlScriptFolder);
+            poolTemplateSQL.SaveToDisk("pool_template");
             waypointDataSQL.SaveToDisk("waypoint_data");
         }
 
