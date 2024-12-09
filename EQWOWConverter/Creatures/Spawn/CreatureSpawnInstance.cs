@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Org.BouncyCastle.Asn1.Mozilla;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,7 @@ namespace EQWOWConverter.Creatures
 
         public int MapID = 0;
         public int AreaID = 0;
+        public List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
 
         public static Dictionary<int, CreatureSpawnInstance> GetSpawnInstanceListByID()
         {

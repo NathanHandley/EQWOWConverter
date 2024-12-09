@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Creatures
 {
-    internal enum CreatureMovementType
+    internal enum CreatureMovementType : Int32
     {
         None = 0,
         Random = 1,

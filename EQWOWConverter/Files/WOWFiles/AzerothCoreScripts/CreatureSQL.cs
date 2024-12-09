@@ -60,7 +60,7 @@ namespace EQWOWConverter.WOWFiles
 
         List<Row> rows = new List<Row>();
 
-        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation)
+        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation, CreatureMovementType movementType)
         {
             Row newRow = new Row();
             newRow.Guid = guid;
@@ -72,6 +72,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.Orientation = orientation;
             newRow.AreaID = areaID;
             newRow.ZoneID = zoneID;
+            newRow.MovementType = movementType;
             rows.Add(newRow);
         }
 

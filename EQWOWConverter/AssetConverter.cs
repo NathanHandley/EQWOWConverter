@@ -340,7 +340,7 @@ namespace EQWOWConverter
 
             // Go through each spawn group and generate pools
             Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
-            foreach(int spawnGroupID in creatureSpawnEntriesByGroupID.Keys)
+            foreach (int spawnGroupID in creatureSpawnEntriesByGroupID.Keys)
             {
                 // Confirm there are related instances
                 if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroupID) == false)
@@ -390,6 +390,47 @@ namespace EQWOWConverter
                 spawnPoolsByGroupID.Add(spawnGroupID, curSpawnPool);
             }
             creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
+
+            // Make a list of path grid entries
+            Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>> creaturePathGridEntriesByIDAndMapID = new Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>>();
+            foreach (CreaturePathGridEntry creaturePathGridEntry in CreaturePathGridEntry.GetPathGridEntries())
+            {
+                // Skip non-viable maps
+                if (mapIDsByShortName.ContainsKey(creaturePathGridEntry.ZoneShortName.ToLower().Trim()) == false)
+                    continue;
+                int mapID = mapIDsByShortName[creaturePathGridEntry.ZoneShortName.ToLower().Trim()];
+
+                // Add it
+                if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creaturePathGridEntry.GridID) == false)
+                    creaturePathGridEntriesByIDAndMapID.Add(creaturePathGridEntry.GridID, new Dictionary<int, List<CreaturePathGridEntry>>());
+                if (creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].ContainsKey(mapID) == false)
+                    creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].Add(mapID, new List<CreaturePathGridEntry>());
+                creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
+            }
+
+            // Associate path grid entries with relevant spawn instances
+            foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
+            {
+                foreach(CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
+                {
+                    if (creatureSpawnInstance.PathGridID != 0)
+                    {
+                        if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)
+                        {
+                            Logger.WriteError("CreatureSpawnInstance with ID '" + creatureSpawnInstance .ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
+                            continue;
+                        }
+                        if (creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID].ContainsKey(creatureSpawnInstance.MapID) == false)
+                        {
+                            Logger.WriteError("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
+                            continue;
+                        }
+
+                        foreach(CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
+                            creatureSpawnInstance.PathGridEntries.Add(creaturePathGridEntry);
+                    }
+                }
+            }
 
             // Copy all of the sound files
             Logger.WriteInfo("Copying creature sound files...");
@@ -1087,6 +1128,7 @@ namespace EQWOWConverter
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
             CreatureSQL creatureSQL = new CreatureSQL();
+            CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
@@ -1095,6 +1137,7 @@ namespace EQWOWConverter
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
+            WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
             // Zones
             foreach (Zone zone in zones)
@@ -1163,8 +1206,20 @@ namespace EQWOWConverter
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                        spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                    if (spawnInstance.PathGridEntries.Count > 0)
+                    {
+                        int waypointGUID = creatureGUID * 1000;
+                        creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                        foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+                    }
+                    else
+                    {
+                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+                    }
                 }
 
                 // Create a pool pools if there are multiple locations
@@ -1199,8 +1254,20 @@ namespace EQWOWConverter
                             int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
                             int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                            if (spawnInstance.PathGridEntries.Count > 0)
+                            {
+                                int waypointGUID = creatureGUID * 1000;
+                                creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                                foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+                            }
+                            else
+                            {
+                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+                            }
                         }
                     }
                 }
@@ -1230,8 +1297,20 @@ namespace EQWOWConverter
                         int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
                         int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                         poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation);
+                        if (spawnInstance.PathGridEntries.Count > 0)
+                        {
+                            int waypointGUID = creatureGUID * 1000;
+                            creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                            foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+                        }
+                        else
+                        {
+                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+                        }
                     }
                 }
             }
@@ -1240,6 +1319,7 @@ namespace EQWOWConverter
             areaTriggerSQL.WriteToDisk(sqlScriptFolder);
             areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
             creatureSQL.WriteToDisk(sqlScriptFolder);
+            creatureAddonSQL.WriteToDisk(sqlScriptFolder);
             creatureModelInfoSQL.WriteToDisk(sqlScriptFolder);
             creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
             creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
@@ -1248,6 +1328,7 @@ namespace EQWOWConverter
             poolCreatureSQL.WriteToDisk(sqlScriptFolder);
             poolPoolSQL.WriteToDisk(sqlScriptFolder);
             poolTemplateSQL.WriteToDisk(sqlScriptFolder);
+            waypointDataSQL.WriteToDisk(sqlScriptFolder);
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
