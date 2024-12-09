@@ -120,34 +120,12 @@ namespace EQWOWConverter.WOWFiles
                 return;
             }
 
-            // Create autodeploys if set to do so
-            if (Configuration.CONFIG_DEPLOY_SERVER_SQL == true)
-                SaveAutoDeployScripts(tableName);
-
-            // Create manual deploys if set to do so
-            SaveManualDeployScripts(tableName);
-            Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' completed");
-        }
-
-        private void SaveAutoDeployScripts(string tableName)
-        {
-            Logger.WriteDetail("Saving Auto Deploy version of SQL Scripts for '" + tableName + "' started...");
-
-            // TODO
-
-            Logger.WriteDetail("Saving Auto Deploy version of SQL Scripts for '" + tableName + "' completed");
-        }
-
-        private void SaveManualDeployScripts(string tableName)
-        {
-            Logger.WriteDetail("Saving Manual Deploy version of SQL Scripts for '" + tableName + "' started...");
-
             // Determine the path and create the folder if needed
             string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
             FileTool.CreateBlankDirectory(outputFolder, true);
 
             // Generate the leading part of the SQL statement
-            string fieldsSegment = GenerateFieldsSegment(tableName);
+            string fieldsSegment = GenerateFieldsSegment();
 
             // Break rows into groups to avoid making SQL files that are too big to import
             int rowsPerBatch = Configuration.CONFIG_GENERATE_SQL_FILE_BATCH_SIZE;
@@ -172,25 +150,46 @@ namespace EQWOWConverter.WOWFiles
                     endRowIter = Rows.Count - 1;
 
                 // Output the rows
+                int curInsertRowIter = 0;
                 for (int rowIter = startRowIter; rowIter < endRowIter; ++rowIter)
                 {
                     SQLRow row = Rows[rowIter];
-                    stringBuilder.Append(fieldsSegment);
+
+                    // Rows are added as value blocks based on configuration, so add until a limit is hit and reset
+                    // Start row insertions with the fields list
+                    if (curInsertRowIter == 0)
+                    {
+                        stringBuilder.Append("INSERT INTO `" + tableName + "` ");
+                        stringBuilder.Append(fieldsSegment);
+                        stringBuilder.Append(" VALUES ");
+                    }
+
+                    // Grab the fields
                     stringBuilder.Append(row.GetValuesStringInSQL());
-                    stringBuilder.AppendLine(";");
+
+                    // Cap off the last rows, otherwise add a comma
+                    if (curInsertRowIter == Configuration.CONFIG_GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE - 1 || rowIter == endRowIter - 1)
+                        stringBuilder.AppendLine(";");
+                    else
+                        stringBuilder.AppendLine(",");
+
+                    // Add to the insert block iter, and cycle back if the end is hit
+                    curInsertRowIter++;
+                    if (curInsertRowIter == Configuration.CONFIG_GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE)
+                        curInsertRowIter = 0;
                 }
 
                 // Output it
                 File.WriteAllText(fullFilePath, stringBuilder.ToString());
             }
 
-            Logger.WriteDetail("Saving Manual Deploy version of SQL Scripts for '" + tableName + "' completed");
+            Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' completed");
         }
 
-        private string GenerateFieldsSegment(string tableName)
+        private string GenerateFieldsSegment()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append("INSERT INTO `" + tableName + "` (");
+            stringBuilder.Append("(");
             SQLRow firstRow = Rows[0];
             for (int i = 0; i < firstRow.SQLColumns.Count; i++)
             {
@@ -200,8 +199,22 @@ namespace EQWOWConverter.WOWFiles
                 if (i < firstRow.SQLColumns.Count - 1)
                     stringBuilder.Append(", ");
             }
-            stringBuilder.Append(") VALUES ");
+            stringBuilder.Append(")");
             return stringBuilder.ToString();
+
+            //StringBuilder stringBuilder = new StringBuilder();
+            //stringBuilder.Append("INSERT INTO `" + tableName + "` (");
+            //SQLRow firstRow = Rows[0];
+            //for (int i = 0; i < firstRow.SQLColumns.Count; i++)
+            //{
+            //    stringBuilder.Append("`");
+            //    stringBuilder.Append(Rows[0].SQLColumns[i].Name);
+            //    stringBuilder.Append("`");
+            //    if (i < firstRow.SQLColumns.Count - 1)
+            //        stringBuilder.Append(", ");
+            //}
+            //stringBuilder.Append(") VALUES ");
+            //return stringBuilder.ToString();
         }
     }
 }

@@ -127,8 +127,9 @@ namespace EQWOWConverter
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
 
-        // How many insert rows to restrict in a manual SQL output file 
-        public static readonly int CONFIG_GENERATE_SQL_FILE_BATCH_SIZE = 30000;
+        // How many insert rows to restrict in a SQL output file
+        public static readonly int CONFIG_GENERATE_SQL_FILE_BATCH_SIZE = 50000;
+        public static readonly int CONFIG_GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 5000;
 
         //=====================================================================
         // Zone General
