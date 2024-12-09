@@ -22,62 +22,30 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class GameTeleSQL
+    internal class GameTeleSQL : SQLFile
     {
-        public class Row
+        private static int CURRENT_ROWID = Configuration.CONFIG_SQL_GAMETELE_ROWID_START;
+
+        public override string DeleteRowSQL()
         {
-            private static int CURRENT_ROWID = Configuration.CONFIG_SQL_GAMETELE_ROWID_START;
-
-            public int ID;
-            public float XPosition = 10;
-            public float YPosition = 10;
-            public float ZPosition = 10;
-            public float Orientation = 0;
-            public int MapID;
-            public string Name = string.Empty;
-
-            public Row()
-            {
-                ID = CURRENT_ROWID;
-                CURRENT_ROWID++;
-            }
+            // TODO: Make this have a high value
+            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_SQL_GAMETELE_ROWID_START + Rows.Count) + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int mapID, string name, float x, float y, float z)
         {
-            Row newRow = new Row();
-            newRow.MapID = mapID;
-            newRow.Name = name;
-            newRow.XPosition = x;
-            newRow.YPosition = y;
-            newRow.ZPosition = z;
-            rows.Add(newRow);
-        }
+            int ID = CURRENT_ROWID;
+            CURRENT_ROWID++;
 
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "UpdateGameTele.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_SQL_GAMETELE_ROWID_START + rows.Count) + ";");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `game_tele` (`id`, `position_x`, `position_y`, `position_z`, `orientation`, `map`, `name`) VALUES (");
-                stringBuilder.Append(row.ID.ToString());
-                stringBuilder.Append(", " + row.XPosition.ToString());
-                stringBuilder.Append(", " + row.YPosition.ToString());
-                stringBuilder.Append(", " + row.ZPosition.ToString());
-                stringBuilder.Append(", " + row.Orientation.ToString());
-                stringBuilder.Append(", " + row.MapID.ToString());
-                stringBuilder.AppendLine(", '" + row.Name + "');");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("id", ID);
+            newRow.AddFloat("position_x", x);
+            newRow.AddFloat("position_y", y);
+            newRow.AddFloat("position_z", z);
+            newRow.AddFloat("orientation", 0);
+            newRow.AddInt("map", mapID);
+            newRow.AddString("name", 100, string.Empty);
+            Rows.Add(newRow);
         }
     }
 }

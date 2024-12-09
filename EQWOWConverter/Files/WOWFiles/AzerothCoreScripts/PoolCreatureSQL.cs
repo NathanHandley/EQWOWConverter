@@ -20,53 +20,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files
+namespace EQWOWConverter.WOWFiles
 {
-    internal class PoolCreatureSQL
+    internal class PoolCreatureSQL : SQLFile
     {
-        private class Row
+        public override string DeleteRowSQL()
         {
-            public int CreatureGUID;
-            public int PoolTemplateEntryID;
-            public float Chance = 0f;
-            public string Description = string.Empty;
+            return "DELETE FROM pool_creature WHERE pool_entry >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_entry <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int creatureGUID, int poolTemplateEntryID, float chance, string description)
         {
-            if (description.Length > 255)
-                description = description.Substring(0, 252) + "...";
-
-            Row newRow = new Row();
-            newRow.CreatureGUID = creatureGUID;
-            newRow.PoolTemplateEntryID = poolTemplateEntryID;
-            newRow.Chance = chance;
-            newRow.Description = description;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "PoolCreature.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM pool_creature WHERE pool_entry >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_entry <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `pool_creature` (`guid`, `pool_entry`, `chance`, `description`) VALUES (");
-                stringBuilder.Append(row.CreatureGUID.ToString() + ", ");
-                stringBuilder.Append(row.PoolTemplateEntryID.ToString() + ", ");
-                stringBuilder.Append(row.Chance.ToString() + ", ");
-                stringBuilder.Append("'" + row.Description + "'");
-                stringBuilder.AppendLine(");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("guid", creatureGUID);
+            newRow.AddInt("pool_entry", poolTemplateEntryID);
+            newRow.AddFloat("chance", chance);
+            newRow.AddString("description", 255, description);
+            Rows.Add(newRow);
         }
     }
 }

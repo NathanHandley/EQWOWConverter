@@ -1318,17 +1318,17 @@ namespace EQWOWConverter
             }
 
             // Output them
-            areaTriggerSQL.WriteToDisk(sqlScriptFolder);
-            areaTriggerTeleportSQL.WriteToDisk(sqlScriptFolder);
-            creatureSQL.WriteToDisk(sqlScriptFolder);
-            creatureAddonSQL.WriteToDisk(sqlScriptFolder);
-            creatureModelInfoSQL.WriteToDisk(sqlScriptFolder);
-            creatureTemplateSQL.WriteToDisk(sqlScriptFolder);
-            creatureTemplateModelSQL.WriteToDisk(sqlScriptFolder);
-            gameTeleSQL.WriteToDisk(sqlScriptFolder);
-            instanceTemplateSQL.WriteToDisk(sqlScriptFolder);
-            poolCreatureSQL.WriteToDisk(sqlScriptFolder);
-            poolPoolSQL.WriteToDisk(sqlScriptFolder);
+            areaTriggerSQL.SaveToDisk("areatrigger");
+            areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport");
+            creatureSQL.SaveToDisk("creature");
+            creatureAddonSQL.SaveToDisk("creature_addon");
+            creatureModelInfoSQL.SaveToDisk("creature_model_info");
+            creatureTemplateSQL.SaveToDisk("creature_template");
+            creatureTemplateModelSQL.SaveToDisk("creature_template_model");
+            gameTeleSQL.SaveToDisk("game_tele");
+            instanceTemplateSQL.SaveToDisk("instance_template");
+            poolCreatureSQL.SaveToDisk("pool_creature");
+            poolPoolSQL.SaveToDisk("pool_pool");
             poolTemplateSQL.SaveToDisk("pool_template");
             waypointDataSQL.SaveToDisk("waypoint_data");
         }

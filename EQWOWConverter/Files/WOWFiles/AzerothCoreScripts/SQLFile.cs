@@ -83,6 +83,11 @@ namespace EQWOWConverter.WOWFiles
                 SQLColumns.Add(newColumn);
             }
 
+            public void AddString(string columnName, string? value)
+            {
+                AddString(columnName, 65535, value);
+            }
+
             public string GetValuesStringInSQL()
             {
                 StringBuilder stringBuilder = new StringBuilder();

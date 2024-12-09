@@ -24,48 +24,22 @@ using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureModelInfoSQL
+    internal class CreatureModelInfoSQL : SQLFile
     {
-        public class Row
+        public override string DeleteRowSQL()
         {
-            public int DisplayID; // Reference to CreatureDisplayInfo.dbc
-            public float BoundingRadius = 0; // Not currently used (?)
-            public float CombatReach = 1.5f; // Lots of 0 as well, consider changing
-            public int Gender = 2; // 0: Male, 1: Female, 2: None/Neutral
-            public int DisplayIDOtherGender = 0; // Record that relates to the 'other' gender ID (if male, this is the female row...)
+            return "DELETE FROM creature_model_info WHERE `DisplayID` >= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START.ToString() + " AND `DisplayID` <= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_END.ToString() + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int displayID, int gender)
         {
-            Row newRow = new Row();
-            newRow.DisplayID = displayID;
-            newRow.Gender = gender;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "CreatureModelInfo.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM creature_model_info WHERE `DisplayID` >= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START.ToString() + " AND `DisplayID` <= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_END.ToString() + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `creature_model_info` (`DisplayID`, `BoundingRadius`, `CombatReach`, `Gender`, `DisplayID_Other_Gender`) VALUES (");
-                stringBuilder.Append(row.DisplayID.ToString());
-                stringBuilder.Append(", " + row.BoundingRadius.ToString());
-                stringBuilder.Append(", " + row.CombatReach.ToString());
-                stringBuilder.Append(", " + row.Gender.ToString());
-                stringBuilder.Append(", " + row.DisplayIDOtherGender.ToString());
-                stringBuilder.AppendLine(");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("DisplayID", displayID); // Reference to CreatureDisplayInfo.dbc
+            newRow.AddFloat("BoundingRadius", 0); // Not currently used (?)
+            newRow.AddFloat("CombatReach", 1.5f); // Lots of 0 as well, consider changing
+            newRow.AddInt("Gender", gender); // 0: Male, 1: Female, 2: None/Neutral
+            newRow.AddInt("DisplayID_Other_Gender", 0); // Record that relates to the 'other' gender ID (if male, this is the female row...)
+            Rows.Add(newRow);
         }
     }
 }

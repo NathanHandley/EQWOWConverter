@@ -22,64 +22,27 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class AreaTriggerSQL
+    internal class AreaTriggerSQL : SQLFile
     {
-        public class Row
+        public override string DeleteRowSQL()
         {
-            public int Entry;
-            public int MapID;
-            public float PositionX;
-            public float PositionY;
-            public float PositionZ;
-            public float BoxLength;
-            public float BoxWidth;
-            public float BoxHeight;
-            public float BoxOrientation;
+            return "DELETE FROM areatrigger WHERE `entry` >= " + Configuration.CONFIG_DBCID_AREATRIGGER_ID_START.ToString() + " AND `entry` <= " + AreaTriggerDBC.CURRENT_AREATRIGGER_ID + " ;";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ,
             float boxLength, float boxWidth, float boxHeight, float boxOrientation)
         {
-            Row newRow = new Row();
-            newRow.Entry = areaTriggerID;
-            newRow.MapID = mapID;
-            newRow.PositionX = positionX;
-            newRow.PositionY = positionY;
-            newRow.PositionZ = positionZ;
-            newRow.BoxLength = boxLength;
-            newRow.BoxWidth = boxWidth;
-            newRow.BoxHeight = boxHeight;
-            newRow.BoxOrientation = boxOrientation;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "UpdateAreaTrigger.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM areatrigger WHERE `entry` >= " + Configuration.CONFIG_DBCID_AREATRIGGER_ID_START.ToString() + " AND `entry` <= " + AreaTriggerDBC.CURRENT_AREATRIGGER_ID + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `areatrigger` (`entry`, `map`, `x`, `y`, `z`, `radius`, `length`, `width`, `height`, `orientation`) VALUES (");
-                stringBuilder.Append(row.Entry.ToString());
-                stringBuilder.Append(", " + row.MapID.ToString());
-                stringBuilder.Append(", " + row.PositionX.ToString());
-                stringBuilder.Append(", " + row.PositionY.ToString());
-                stringBuilder.Append(", " + row.PositionZ.ToString());
-                stringBuilder.Append(", 0"); // Radius
-                stringBuilder.Append(", " + row.BoxLength.ToString());
-                stringBuilder.Append(", " + row.BoxWidth.ToString());
-                stringBuilder.Append(", " + row.BoxHeight.ToString());
-                stringBuilder.AppendLine(", " + row.BoxOrientation.ToString() + ");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("entry", areaTriggerID);
+            newRow.AddInt("map", mapID);
+            newRow.AddFloat("x", positionX);
+            newRow.AddFloat("y", positionY);
+            newRow.AddFloat("z", positionZ);
+            newRow.AddFloat("radius", 0);
+            newRow.AddFloat("length", boxLength);
+            newRow.AddFloat("width", boxWidth);
+            newRow.AddFloat("height", boxHeight);
+            newRow.AddFloat("orientation", boxOrientation);
         }
     }
 }

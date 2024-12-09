@@ -22,56 +22,25 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureAddonSQL
+    internal class CreatureAddonSQL : SQLFile
     {
-        private class Row
+        public override string DeleteRowSQL()
         {
-            public int GUID = 0;
-            public int PathID = 0;
-            public int Mount = 0;
-            public int Bytes1 = 0;
-            public int Bytes2 = 0;
-            public int Emote = 0;
-            public int AIAnimKit = 0;
-            public int MovementAnimKit = 0;
-            public int MeleeAnimKit = 0;
-            public int VisibilityDistanceType = 0;
+            return "DELETE FROM creature_addon WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int guid, int pathID)
         {
-            Row newRow = new Row();
-            newRow.GUID = guid;
-            newRow.PathID = pathID;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "CreatureAddon.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM creature_addon WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `creature_addon` (`guid`, `path_id`, `mount`, `bytes1`, `bytes2`, `emote`, `visibilityDistanceType`, `auras`) VALUES (");
-                stringBuilder.Append(row.GUID.ToString() + ", ");
-                stringBuilder.Append(row.PathID.ToString() + ", ");
-                stringBuilder.Append(row.Mount.ToString() + ", ");
-                stringBuilder.Append(row.Bytes1.ToString() + ", ");
-                stringBuilder.Append(row.Bytes2.ToString() + ", ");
-                stringBuilder.Append(row.Emote.ToString() + ", ");
-                stringBuilder.Append(row.VisibilityDistanceType.ToString() + ", ");
-                stringBuilder.Append("NULL"); // Auras
-                stringBuilder.AppendLine(");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("guid", guid);
+            newRow.AddInt("path_id", pathID);
+            newRow.AddInt("mount", 0);
+            newRow.AddInt("bytes1", 0);
+            newRow.AddInt("bytes2", 0);
+            newRow.AddInt("emote", 0);
+            newRow.AddInt("visibilityDistanceType", 0);
+            newRow.AddString("auras", null);
+            Rows.Add(newRow);
         }
     }
 }

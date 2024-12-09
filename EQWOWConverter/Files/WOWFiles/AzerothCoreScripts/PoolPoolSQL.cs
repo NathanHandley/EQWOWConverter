@@ -20,53 +20,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files
+namespace EQWOWConverter.WOWFiles
 {
-    internal class PoolPoolSQL
+    internal class PoolPoolSQL : SQLFile
     {
-        private class Row
+        public override string DeleteRowSQL()
         {
-            public int PoolPoolTemplateID;
-            public int MotherPoolTemplateID;
-            public float Chance = 0f;
-            public string Description = string.Empty;
+            return "DELETE FROM pool_pool WHERE pool_id >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_id <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int poolPoolTemplateID, int motherPoolTemplateID, float chance, string description)
         {
-            if (description.Length > 255)
-                description = description.Substring(0, 252) + "...";
-
-            Row newRow = new Row();
-            newRow.PoolPoolTemplateID = poolPoolTemplateID;
-            newRow.MotherPoolTemplateID = motherPoolTemplateID;
-            newRow.Chance = chance;
-            newRow.Description = description;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "PoolPool.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM pool_pool WHERE pool_id >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_id <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `pool_pool` (`pool_id`, `mother_pool`, `chance`, `description`) VALUES (");
-                stringBuilder.Append(row.PoolPoolTemplateID.ToString() + ", ");
-                stringBuilder.Append(row.MotherPoolTemplateID.ToString() + ", ");
-                stringBuilder.Append(row.Chance.ToString() + ", ");
-                stringBuilder.Append("'" + row.Description + "'");
-                stringBuilder.AppendLine(");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("pool_id", poolPoolTemplateID);
+            newRow.AddInt("mother_pool", motherPoolTemplateID);
+            newRow.AddFloat("chance", chance);
+            newRow.AddString("description", 255, description);
+            Rows.Add(newRow);
         }
     }
 }

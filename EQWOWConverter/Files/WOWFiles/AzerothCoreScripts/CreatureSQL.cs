@@ -22,103 +22,50 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureSQL
+    internal class CreatureSQL : SQLFile
     {
-        private class Row
+        public override string DeleteRowSQL()
         {
-            public int Guid;
-            public int ID1 = 0;
-            public int ID2 = 0;
-            public int ID3 = 0;
-            public int MapID = 0;
-            public int ZoneID = 0;
-            public int AreaID = 0;
-            public int SpawnMask = 1;
-            public int PhaseMask = 1;
-            public int EquipmentID = 0;
-            public float PositionX = 0;
-            public float PositionY = 0;
-            public float PositionZ = 0;
-            public float Orientation = 0;
-            public int SpawnTimeInSec = 300;
-            public float WanderDistance = 0;
-            public int CurrentWaypoint = 0;
-            public int CurrentHealth = 100;
-            public int CurrentMana = 0;
-            public CreatureMovementType MovementType = CreatureMovementType.None;
-            public int NPCFlags = 0;
-            public int UnitFlags = 0;
-            public int DynamicFlags = 0;
-            public string ScriptName = string.Empty;
-            public int VerifiedBuild = 0;
-            public int CreateObject = 0;
-            public string Comment = string.Empty;
+            return "DELETE FROM creature WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + " ;";
         }
 
-        List<Row> rows = new List<Row>();
-
-        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, float orientation, CreatureMovementType movementType)
+        public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 
+            float orientation, CreatureMovementType movementType)
         {
-            Row newRow = new Row();
-            newRow.Guid = guid;
-            newRow.ID1 = id1;
-            newRow.MapID = mapID;
-            newRow.PositionX = xPosition;
-            newRow.PositionY = yPosition;
-            newRow.PositionZ = zPosition;
-            newRow.Orientation = orientation;
-            newRow.AreaID = areaID;
-            newRow.ZoneID = zoneID;
-            newRow.MovementType = movementType;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "Creature.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM creature WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `creature` (`guid`, `id1`, `id2`, `id3`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `equipment_id`, `position_x`, `position_y`, `position_z`, `orientation`, `spawntimesecs`, `wander_distance`, `currentwaypoint`, `curhealth`, `curmana`, `MovementType`, `npcflag`, `unit_flags`, `dynamicflags`, `ScriptName`, `VerifiedBuild`, `CreateObject`, `Comment`) VALUES (");
-                stringBuilder.Append(row.Guid.ToString() + ", ");
-                stringBuilder.Append(row.ID1.ToString() + ", ");
-                stringBuilder.Append(row.ID2.ToString() + ", ");
-                stringBuilder.Append(row.ID3.ToString() + ", ");
-                stringBuilder.Append(row.MapID.ToString() + ", ");
-                stringBuilder.Append(row.ZoneID.ToString() + ", ");
-                stringBuilder.Append(row.AreaID.ToString() + ", ");
-                stringBuilder.Append(row.SpawnMask.ToString() + ", ");
-                stringBuilder.Append(row.PhaseMask.ToString() + ", ");
-                stringBuilder.Append(row.EquipmentID.ToString() + ", ");
-                stringBuilder.Append(row.PositionX.ToString() + ", ");
-                stringBuilder.Append(row.PositionY.ToString() + ", ");
-                stringBuilder.Append(row.PositionZ.ToString() + ", ");
-                stringBuilder.Append(row.Orientation.ToString() + ", ");
-                stringBuilder.Append(row.SpawnTimeInSec.ToString() + ", ");
-                stringBuilder.Append(row.WanderDistance.ToString() + ", ");
-                stringBuilder.Append(row.CurrentWaypoint.ToString() + ", ");
-                stringBuilder.Append(row.CurrentHealth.ToString() + ", ");
-                stringBuilder.Append(row.CurrentMana.ToString() + ", ");
-                stringBuilder.Append(Convert.ToInt32(row.MovementType).ToString() + ", ");
-                stringBuilder.Append(row.NPCFlags.ToString() + ", ");
-                stringBuilder.Append(row.UnitFlags.ToString() + ", ");
-                stringBuilder.Append(row.DynamicFlags.ToString() + ", ");
-                stringBuilder.Append("'" + row.ScriptName + "', ");
-                stringBuilder.Append(row.VerifiedBuild.ToString() + ", ");
-                stringBuilder.Append(row.CreateObject.ToString() + ", ");
-                stringBuilder.Append("'" + row.Comment + "'");
-                stringBuilder.AppendLine(");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("guid", guid);
+            newRow.AddInt("id1", id1);
+            newRow.AddInt("id2", 0);
+            newRow.AddInt("id3", 0);
+            newRow.AddInt("map", mapID);
+            newRow.AddInt("zoneId", zoneID);
+            newRow.AddInt("areaId", areaID);
+            newRow.AddInt("spawnMask", 1);
+            newRow.AddInt("phaseMask", 1);
+            newRow.AddInt("equipment_id", 0);
+            newRow.AddFloat("position_x", xPosition);
+            newRow.AddFloat("position_y", yPosition);
+            newRow.AddFloat("position_z", zPosition);
+            newRow.AddFloat("orientation", orientation);
+            newRow.AddInt("spawntimesecs", 300);
+            newRow.AddFloat("wander_distance", 0);
+            newRow.AddInt("currentwaypoint", 0);
+            newRow.AddInt("curhealth", 100);
+            newRow.AddInt("curmana", 0);
+            newRow.AddInt("MovementType", Convert.ToInt32(movementType));
+            newRow.AddInt("npcflag", 0);
+            newRow.AddInt("unit_flags", 0);
+            newRow.AddInt("dynamicflags", 0);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddInt("VerifiedBuild", 0);
+            newRow.AddInt("CreateObject", 0);
+            newRow.AddString("Comment", string.Empty);
+            Rows.Add(newRow);
         }
     }
 }

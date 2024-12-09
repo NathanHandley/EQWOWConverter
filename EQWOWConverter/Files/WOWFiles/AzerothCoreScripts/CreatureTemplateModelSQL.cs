@@ -22,50 +22,23 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureTemplateModelSQL
+    internal class CreatureTemplateModelSQL : SQLFile
     {
-        public class Row
+        public override string DeleteRowSQL()
         {
-            public int CreatureTemplateID;
-            public int Idx = 0;
-            public int CreatureDisplayID; // CreatureDisplayInfo.dbc reference
-            public float DisplayScale = 1f;
-            public int Probability = 1;
-            public int VerifiedBuild = 12340;
+            return "DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
-
-        List<Row> rows = new List<Row>();
 
         public void AddRow(int creatureTemplateID, int creatureDisplayID, float displayScale)
         {
-            Row newRow = new Row();
-            newRow.CreatureTemplateID = creatureTemplateID;
-            newRow.CreatureDisplayID = creatureDisplayID;
-            newRow.DisplayScale = displayScale;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "CreatureTemplateModel.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + " ;");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `creature_template_model` (`CreatureID`, `Idx`, `CreatureDisplayID`, `DisplayScale`, `Probability`, `VerifiedBuild`) VALUES (");
-                stringBuilder.Append(row.CreatureTemplateID.ToString() + ", ");
-                stringBuilder.Append(row.Idx.ToString() + ", ");
-                stringBuilder.Append(row.CreatureDisplayID.ToString() + ", ");
-                stringBuilder.Append(row.DisplayScale.ToString() + ", ");
-                stringBuilder.Append(row.Probability.ToString() + ", ");
-                stringBuilder.AppendLine(row.VerifiedBuild.ToString() + ");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("CreatureID", creatureTemplateID);
+            newRow.AddInt("Idx", 0);
+            newRow.AddInt("CreatureDisplayID", creatureDisplayID); // CreatureDisplayInfo.dbc reference
+            newRow.AddFloat("DisplayScale", displayScale);
+            newRow.AddFloat("Probability", 1);
+            newRow.AddInt("VerifiedBuild", 12340);
+            Rows.Add(newRow);
         }
     }
 }

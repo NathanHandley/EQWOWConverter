@@ -22,56 +22,25 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class AreaTriggerTeleportSQL
+    internal class AreaTriggerTeleportSQL : SQLFile
     {
-        public class Row
+        public override string DeleteRowSQL()
         {
-            public int AreaTriggerDBCID;
-            public string DescriptiveName = string.Empty;
-            public int TargetMapID;
-            public float TargetPositionX;
-            public float TargetPositionY;
-            public float TargetPositionZ;
-            public float TargetOrientation;
+            return "DELETE FROM areatrigger_teleport WHERE `Name` LIKE 'EQ %';";
         }
 
-        List<Row> rows = new List<Row>();
-
-        public void AddRow(int areaTriggerDBCID, string descriptiveName, int targetMapID, float targetPositionX, float targetPositionY, float targetPositionZ, float targetOrientation)
+        public void AddRow(int areaTriggerDBCID, string descriptiveName, int targetMapID, float targetPositionX, float targetPositionY, 
+            float targetPositionZ, float targetOrientation)
         {
-            Row row = new Row();
-            row.AreaTriggerDBCID = areaTriggerDBCID;
-            row.DescriptiveName = descriptiveName;
-            row.TargetMapID = targetMapID;
-            row.TargetPositionX = targetPositionX;
-            row.TargetPositionY = targetPositionY;
-            row.TargetPositionZ = targetPositionZ;
-            row.TargetOrientation = targetOrientation;
-            rows.Add(row);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "UpdateAreaTrigger_Teleport.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM areatrigger_teleport WHERE `Name` LIKE 'EQ %';");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `areatrigger_teleport` (`ID`, `Name`, `target_map`, `target_position_x`, `target_position_y`, `target_position_z`, `target_orientation`) VALUES (");
-                stringBuilder.Append(row.AreaTriggerDBCID.ToString());
-                stringBuilder.Append(", '" + row.DescriptiveName + "'");
-                stringBuilder.Append(", " + row.TargetMapID.ToString());
-                stringBuilder.Append(", " + row.TargetPositionX.ToString());
-                stringBuilder.Append(", " + row.TargetPositionY.ToString());
-                stringBuilder.Append(", " + row.TargetPositionZ.ToString());
-                stringBuilder.AppendLine(", " + row.TargetOrientation.ToString() + ");");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("ID", areaTriggerDBCID);
+            newRow.AddString("Name", descriptiveName);
+            newRow.AddInt("target_map", targetMapID);
+            newRow.AddFloat("target_position_x", targetPositionX);
+            newRow.AddFloat("target_position_y", targetPositionY);
+            newRow.AddFloat("target_position_z", targetPositionZ);
+            newRow.AddFloat("target_orientation", targetOrientation);
+            Rows.Add(newRow);
         }
     }
 }

@@ -20,95 +20,50 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
+using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class GameObjectSQL
+    internal class GameObjectSQL : SQLFile
     {
         // Row GUID
         private static int CURRENT_GUIDID = Configuration.CONFIG_SQL_GAMEOBJECT_GUID_START;
 
-        public class Row
+        public override string DeleteRowSQL()
         {
-            public int GUID;
-            public int GameObjectEntryID;
-            public int MapID;
-            public int ZoneID;
-            public int AreaID;
-            public int SpawnMask = 1;
-            public int PhaseMask = 1;
-            public float PositionX;
-            public float PositionY;
-            public float PositionZ;
-            public float Orientation = 0;
-            public float Rotation0 = 0;
-            public float Rotation1 = 0;
-            public float Rotation2 = 0;
-            public float Rotation3 = 0;
-            public int SpawnTimeInSec = 900;
-            public int AnimProgress = 0;
-            public int State = 1;
-            public string ScriptName = string.Empty;
-            public int VerifiedBuild = 0;
-            public string Comment = string.Empty;
+            return "DELETE FROM gameobject WHERE `id` >= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END + ";";
         }
 
-        List<Row> rows = new List<Row>();
-
-        public void AddRow(int gameObjectID, int mapID, int parentAreaID, int areaID, Vector3 position)
+        public void AddRow(int gameObjectID, int mapID, int parentAreaID, int areaID, Vector3 position, float orientation)
         {
             // Generate the unique GUID
             int rowGUID = CURRENT_GUIDID;
             CURRENT_GUIDID++;
 
-            Row newRow = new Row();
-            newRow.GUID = rowGUID;
-            newRow.GameObjectEntryID = gameObjectID;
-            newRow.MapID = mapID;
-            newRow.ZoneID = parentAreaID;
-            newRow.AreaID = areaID;
-            newRow.PositionX = position.X;
-            newRow.PositionY = position.Y;
-            newRow.PositionZ = position.Z;
-            rows.Add(newRow);
-        }
-
-        public void WriteToDisk(string baseFolderPath)
-        {
-            FileTool.CreateBlankDirectory(baseFolderPath, true);
-            string fullFilePath = Path.Combine(baseFolderPath, "GameObjectSQL.sql");
-
-            // Add the row data
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM gameobject WHERE `id` >= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END + ";");
-            foreach (Row row in rows)
-            {
-                stringBuilder.Append("INSERT INTO `gameobject` (`guid`, `id`, `map`, `zoneId`, `areaId`, `spawnMask`, `phaseMask`, `position_x`, `position_y`, `position_z`, `orientation`, `rotation0`, `rotation1`, `rotation2`, `rotation3`, `spawntimesecs`, `animprogress`, `state`, `ScriptName`, `VerifiedBuild`, `Comment`) VALUES (");
-                stringBuilder.Append(row.GUID.ToString() + ", ");
-                stringBuilder.Append(row.GameObjectEntryID.ToString() + ", ");
-                stringBuilder.Append(row.MapID.ToString() + ", ");
-                stringBuilder.Append(row.ZoneID.ToString() + ", ");
-                stringBuilder.Append(row.AreaID.ToString() + ", ");
-                stringBuilder.Append(row.SpawnMask.ToString() + ", ");
-                stringBuilder.Append(row.PhaseMask.ToString() + ", ");
-                stringBuilder.Append(row.PositionX.ToString() + ", ");
-                stringBuilder.Append(row.PositionY.ToString() + ", ");
-                stringBuilder.Append(row.PositionZ.ToString() + ", ");
-                stringBuilder.Append(row.Orientation.ToString() + ", ");
-                stringBuilder.Append(row.Rotation0.ToString() + ", ");
-                stringBuilder.Append(row.Rotation1.ToString() + ", ");
-                stringBuilder.Append(row.Rotation2.ToString() + ", ");
-                stringBuilder.Append(row.Rotation3.ToString() + ", ");
-                stringBuilder.Append(row.SpawnTimeInSec.ToString() + ", ");
-                stringBuilder.Append(row.AnimProgress.ToString() + ", ");
-                stringBuilder.Append(row.State.ToString() + ", ");
-                stringBuilder.Append("'" + row.ScriptName.ToString() + "', ");
-                stringBuilder.Append(row.VerifiedBuild.ToString() + ", ");
-                stringBuilder.AppendLine("'" + row.Comment.ToString() + "');");
-            }
-
-            // Output it
-            File.WriteAllText(fullFilePath, stringBuilder.ToString());
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("guid", rowGUID);
+            newRow.AddInt("id", gameObjectID);
+            newRow.AddInt("map", mapID);
+            newRow.AddInt("zoneId", parentAreaID);
+            newRow.AddInt("areaId", areaID);
+            newRow.AddInt("spawnMask", 1);
+            newRow.AddInt("phaseMask", 1);
+            newRow.AddFloat("position_x", position.X);
+            newRow.AddFloat("position_y", position.Y);
+            newRow.AddFloat("position_z", position.Z);
+            newRow.AddFloat("orientation", orientation);
+            newRow.AddFloat("rotation0", 0);
+            newRow.AddFloat("rotation1", 0);
+            newRow.AddFloat("rotation2", 0);
+            newRow.AddFloat("rotation3", 0);
+            newRow.AddInt("spawntimesecs", 900);
+            newRow.AddInt("animprogress", 0);
+            newRow.AddInt("state", 1);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddInt("VerifiedBuild", 0);
+            newRow.AddString("Comment", string.Empty);
+            Rows.Add(newRow);
         }
     }
 }
