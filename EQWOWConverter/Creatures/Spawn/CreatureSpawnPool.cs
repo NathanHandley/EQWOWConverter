@@ -29,11 +29,11 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpawnInstance> CreatureSpawnInstances = new List<CreatureSpawnInstance>();
         public List<CreatureTemplate> CreatureTemplates = new List<CreatureTemplate>();
         public List<int> CreatureTemplateChances = new List<int>();
-        public int GroupID = 0;
+        public CreatureSpawnGroup CreatureSpawnGroup;
 
-        public CreatureSpawnPool(int groupID)
+        public CreatureSpawnPool(CreatureSpawnGroup creatureSpawnGroup)
         {
-            GroupID = groupID;
+            CreatureSpawnGroup = creatureSpawnGroup;
         }
 
         public void AddCreatureTemplate(CreatureTemplate creatureTemplate, int chance)
@@ -41,6 +41,24 @@ namespace EQWOWConverter.Creatures
             CreatureTemplates.Add(creatureTemplate);
             CreatureTemplateChances.Add(chance);
         }
+
+        public int GetMaxSpawnCount()
+        {
+            if (CreatureSpawnGroup.SpawnLimit == 0)
+                return CreatureSpawnInstances.Count;
+            else
+                return CreatureSpawnGroup.SpawnLimit;
+        }
+
+        //public int GetPoolTemplateSpawnCount()
+        //{
+
+        //}
+
+        //public int GetPoolPoolSpawnCount()
+        //{
+
+        //}
 
         public void AddSpawnInstance(CreatureSpawnInstance creatureSpawnInstance)
         {
