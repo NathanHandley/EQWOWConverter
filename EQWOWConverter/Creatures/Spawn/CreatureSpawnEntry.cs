@@ -72,6 +72,15 @@ namespace EQWOWConverter
                 newSpawnEntry.SpawnGroupID = int.Parse(rowBlocks[0]);
                 newSpawnEntry.CreatureTemplateID = int.Parse(rowBlocks[1]);
                 newSpawnEntry.Chance = int.Parse(rowBlocks[2]);
+
+                // Skip any invalid expansion rows
+                int minExpansion = int.Parse(rowBlocks[5]);
+                int maxExpansion = int.Parse(rowBlocks[6]);
+                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+
                 SpawnEntryList.Add(newSpawnEntry);
             }
         }

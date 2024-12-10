@@ -94,6 +94,14 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.PathGridID = int.Parse(rowBlocks[9]);
                 newSpawnDetail.RoamRange = int.Parse(rowBlocks[10]);
 
+                // Skip any invalid expansion rows
+                int minExpansion = int.Parse(rowBlocks[18]);
+                int maxExpansion = int.Parse(rowBlocks[19]);
+                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;
                 if (heading != 0)
