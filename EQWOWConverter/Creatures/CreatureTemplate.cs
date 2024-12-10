@@ -107,16 +107,21 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Class = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.BodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
-                newCreatureTemplate.Size = float.Parse(rowBlocks[11]);
-                int genderID = int.Parse(rowBlocks[8]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[12]);
+                if (newCreatureTemplate.Size <= 0)
+                {
+                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
+                    newCreatureTemplate.Size = 1;
+                }
+                int genderID = int.Parse(rowBlocks[9]);
                 switch (genderID)
                 {
                     case 0: newCreatureTemplate.GenderType = CreatureGenderType.Male; break;
                     case 1: newCreatureTemplate.GenderType = CreatureGenderType.Female; break;
                     default: newCreatureTemplate.GenderType = CreatureGenderType.Neutral; break;
                 }
-                newCreatureTemplate.TextureID = int.Parse(rowBlocks[9]);
-                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[10]);
+                newCreatureTemplate.TextureID = int.Parse(rowBlocks[10]);
+                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[11]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');

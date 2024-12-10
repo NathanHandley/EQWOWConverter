@@ -32,7 +32,6 @@ namespace EQWOWConverter.Creatures
         public float NodeX = 0;
         public float NodeY = 0;
         public float NodeZ = 0;
-        public float Orientation = 0;
         public int PauseInSec = 0;
 
         public static List<CreaturePathGridEntry> GetPathGridEntries()
@@ -80,14 +79,7 @@ namespace EQWOWConverter.Creatures
                 float nodeX = float.Parse(rowBlocks[3]);
                 float nodeY = float.Parse(rowBlocks[4]);
                 float nodeZ = float.Parse(rowBlocks[5]);
-                float heading = float.Parse(rowBlocks[6]);
-                newPathGridEntry.PauseInSec = int.Parse(rowBlocks[7]);
-
-                // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
-                float modHeading = 0;
-                if (heading != 0)
-                    modHeading = heading / (256f / 360f);
-                newPathGridEntry.Orientation = modHeading * Convert.ToSingle(Math.PI / 180);
+                newPathGridEntry.PauseInSec = int.Parse(rowBlocks[6]);
 
                 // Modify by world scale
                 // Note: X and Y were reversed when converting the data

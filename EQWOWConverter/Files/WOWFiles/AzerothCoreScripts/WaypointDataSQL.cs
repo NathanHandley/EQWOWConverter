@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";";
         }
 
-        public void AddRow(int id, int point, float positionX, float positionY, float positionZ, float orientation, int delayInMS)
+        public void AddRow(int id, int point, float positionX, float positionY, float positionZ, int delayInMS)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("id", id);
@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_x", positionX);
             newRow.AddFloat("position_y", positionY);
             newRow.AddFloat("position_z", positionZ);
-            newRow.AddFloat("orientation", orientation);
+            newRow.AddFloat("orientation", null);
             newRow.AddInt("delay", delayInMS);
             newRow.AddInt("move_type", 0); // 0 = walk, 1 = run, 2 = fly
             newRow.AddInt("action", 0);

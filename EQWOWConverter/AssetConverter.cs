@@ -1213,7 +1213,7 @@ namespace EQWOWConverter
                         int waypointGUID = creatureGUID * 1000;
                         creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                         foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
+                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                     }
@@ -1261,7 +1261,7 @@ namespace EQWOWConverter
                                 int waypointGUID = creatureGUID * 1000;
                                 creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                                 foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
+                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                             }
@@ -1304,7 +1304,7 @@ namespace EQWOWConverter
                             int waypointGUID = creatureGUID * 1000;
                             creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                             foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.Orientation, pathGridEntry.PauseInSec * 1000);
+                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                         }
