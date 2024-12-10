@@ -50,16 +50,6 @@ namespace EQWOWConverter.Creatures
                 return CreatureSpawnGroup.SpawnLimit;
         }
 
-        //public int GetPoolTemplateSpawnCount()
-        //{
-
-        //}
-
-        //public int GetPoolPoolSpawnCount()
-        //{
-
-        //}
-
         public void AddSpawnInstance(CreatureSpawnInstance creatureSpawnInstance)
         {
             CreatureSpawnInstances.Add(creatureSpawnInstance);

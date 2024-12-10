@@ -82,7 +82,7 @@ namespace EQWOWConverter.Creatures
                 newPathGridEntry.PauseInSec = int.Parse(rowBlocks[6]);
 
                 // Modify by world scale
-                // Note: X and Y were reversed when converting the data
+                // IMPORTANT: The X and Y data was swapped in the SpawnInstances.CSV due to orientation differences between EQ and WoW
                 newPathGridEntry.NodeX = nodeX * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 newPathGridEntry.NodeY = nodeY * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 newPathGridEntry.NodeZ = nodeZ * Configuration.CONFIG_GENERATE_WORLD_SCALE;

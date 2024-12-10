@@ -339,18 +339,19 @@ namespace EQWOWConverter
             }
 
             // Go through each spawn group and generate pools
+            Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
             Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
-            foreach (int spawnGroupID in creatureSpawnEntriesByGroupID.Keys)
+            foreach (var spawnGroup in spawnGroupsByGroupID)
             {
                 // Confirm there are related instances
-                if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroupID) == false)
+                if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroup.Key) == false)
                     continue;
 
                 // Make the new pool
-                CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroupID);
+                CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroup.Value);
 
                 // Add instances that are valid zones
-                foreach(CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroupID])
+                foreach (CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroup.Key])
                 {
                     if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
                     {
@@ -361,33 +362,36 @@ namespace EQWOWConverter
                 }
 
                 // Add spawns that are valid spawns
-                foreach(CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroupID])
+                if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
                 {
-                    if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
-                        curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
+                    foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
+                    {
+                        if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
+                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
+                    }
                 }
 
                 // Make sure there is at least one element
                 if (curSpawnPool.CreatureSpawnInstances.Count == 0)
                 {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as there are no creature spawn instances. Skipping.");
+                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
                     continue;
                 }
                 if (curSpawnPool.CreatureTemplates.Count == 0)
                 {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as there are no valid creature templates. Skipping.");
+                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
                     continue;
                 }
 
                 // Validate the chances
                 if (curSpawnPool.DoChancesAddTo100() == false)
                 {
-                    Logger.WriteError("Invalid creature spawn pool with groupID '" + spawnGroupID+ "', as chances did not add to 100. Skipping.");
+                    Logger.WriteError("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Skipping.");
                     continue;
                 }
 
                 // Add it
-                spawnPoolsByGroupID.Add(spawnGroupID, curSpawnPool);
+                spawnPoolsByGroupID.Add(spawnGroup.Key, curSpawnPool);
             }
             creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
 
@@ -411,13 +415,13 @@ namespace EQWOWConverter
             // Associate path grid entries with relevant spawn instances
             foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
             {
-                foreach(CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
+                foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
                 {
                     if (creatureSpawnInstance.PathGridID != 0)
                     {
                         if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)
                         {
-                            Logger.WriteError("CreatureSpawnInstance with ID '" + creatureSpawnInstance .ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
+                            Logger.WriteError("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
                             continue;
                         }
                         if (creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID].ContainsKey(creatureSpawnInstance.MapID) == false)
@@ -426,7 +430,7 @@ namespace EQWOWConverter
                             continue;
                         }
 
-                        foreach(CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
+                        foreach (CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
                             creatureSpawnInstance.PathGridEntries.Add(creaturePathGridEntry);
                     }
                 }
@@ -1233,10 +1237,10 @@ namespace EQWOWConverter
                     foreach(CreatureTemplate template in spawnPool.CreatureTemplates)
                         if (motherPoolNames.Contains(template.Name) == false)
                             motherPoolNames.Add(template.Name);
-                    string motherPoolDescription = "(" + spawnPool.GroupID + ")";
+                    string motherPoolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
                     foreach (string name in motherPoolNames)
                         motherPoolDescription += ", " + name;
-                    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool");
+                    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool", spawnPool.GetMaxSpawnCount());
 
                     // Create by instance groups
                     for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
@@ -1246,7 +1250,7 @@ namespace EQWOWConverter
                         // Create the pool pool
                         int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
                         string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
-                        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription);
+                        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription, 1);
                         poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
 
                         // Create the creature records
@@ -1284,13 +1288,13 @@ namespace EQWOWConverter
                     foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
                         if (poolNames.Contains(template.Name) == false)
                             poolNames.Add(template.Name);
-                    string poolDescription = "(" + spawnPool.GroupID + ")";
+                    string poolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
                     foreach (string name in poolNames)
                         poolDescription += ", " + name;
                     
                     // Create the pool template
                     int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    poolTemplateSQL.AddRow(poolTemplateID, poolDescription);
+                    poolTemplateSQL.AddRow(poolTemplateID, poolDescription, spawnPool.GetMaxSpawnCount());
 
                     // Create the creature records
                     for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)

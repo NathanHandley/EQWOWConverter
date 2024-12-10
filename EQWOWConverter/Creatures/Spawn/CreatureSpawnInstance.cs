@@ -108,6 +108,7 @@ namespace EQWOWConverter.Creatures
                 newSpawnDetail.Orientation = modHeading * Convert.ToSingle(Math.PI / 180);
 
                 // Modify by world scale
+                // IMPORTANT: The X and Y data was swapped in the SpawnInstances.CSV due to orientation differences between EQ and WoW
                 newSpawnDetail.SpawnXPosition = spawnX * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 newSpawnDetail.SpawnYPosition = spawnY * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 newSpawnDetail.SpawnZPosition = spawnZ * Configuration.CONFIG_GENERATE_WORLD_SCALE;

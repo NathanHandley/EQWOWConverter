@@ -124,8 +124,8 @@ namespace EQWOWConverter
             "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
             "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
 
-        // Identifier for what subset of expansion data to work with.  1 = Kunark, 2 = Velious
-        public static readonly int CONFIG_GENERATE_EQ_EXPANSION_ID = 2;
+        // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
+        public static readonly int CONFIG_GENERATE_EQ_EXPANSION_ID = 0;
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
