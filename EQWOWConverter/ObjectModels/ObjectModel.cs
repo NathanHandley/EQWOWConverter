@@ -843,8 +843,8 @@ namespace EQWOWConverter.ObjectModels
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
                         // Control for world scaling
-                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale;
-                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE * ModelScalePreWorldScale;
+                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                         // Purge the existing collision data
                         collisionVertices.Clear();
