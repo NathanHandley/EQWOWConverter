@@ -43,6 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("width", boxWidth);
             newRow.AddFloat("height", boxHeight);
             newRow.AddFloat("orientation", boxOrientation);
+            Rows.Add(newRow);
         }
     }
 }
