@@ -466,7 +466,15 @@ namespace EQWOWConverter.ObjectModels
                                                                     -animationFrame.YRotation,
                                                                     -animationFrame.ZRotation,
                                                                     animationFrame.WRotation);
-                                frameRotation.RecalculateToShortest();
+
+                                // SLERP the rotation to fix it on translation to WoW.  If there's a previous frame, base off that
+                                if (curBone.RotationTrack.Values.Count > 0 && curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count-1].Values.Count > 0)
+                                {
+                                    QuaternionShort priorRotation = curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count - 1].Values[curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count - 1].Values.Count - 1];
+                                    frameRotation.RecalculateToShortestFromOther(priorRotation);
+                                }
+                                else
+                                    frameRotation.RecalculateToShortest();
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
