@@ -263,6 +263,11 @@ namespace EQWOWConverter.WOWFiles
                 //handlePlayCombatAction.PopulateAsPlayCombatActionAnimKitCPP(wowObjectModel);
                 //Events.AddElement(handlePlayCombatAction);
 
+                // PlayWoundAnimKit ($HIT)
+                M2Event playWound = new M2Event();
+                playWound.PopulateAsPlayWoundAnimKitHIT(wowObjectModel);
+                Events.AddElement(playWound);            
+
                 if (wowObjectModel.NumOfFidgetSounds > 0)
                 {
                     // PlayFidgetSound1 ($FD1)

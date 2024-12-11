@@ -102,6 +102,18 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void PopulateAsPlayWoundAnimKitHIT(ObjectModel wowObjectModel)
+        {
+            Identifier = "$HIT";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("hit"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                Timestamps[i].AddTimestamp(0);
+            }
+        }
+
         public void PopulateAsPlayFidgetSound1(ObjectModel wowObjectModel)
         {
             Identifier = "$FD1";

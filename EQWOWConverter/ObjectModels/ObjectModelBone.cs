@@ -71,6 +71,7 @@ namespace EQWOWConverter.ObjectModels
                 case "dth":     return 3747058587; // Used for $DTH event (DeathThud_LootEffect)
                 case "fd1":     return 3217595452; // Used for $FD1 event (PlayFidgetSound 1)
                 case "fd2":     return 650235270;  // Used for $FD2 event (PlayFidgetSound 2)
+                case "hit":     return 1025530540; // Used for $HIT event (PlayWoundAnimKit)
                 case "main":    return 521822810;
                 case "name":    return 2738135331;
                 case "root":    return 3066451557;
