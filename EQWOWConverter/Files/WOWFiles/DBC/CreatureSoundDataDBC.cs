@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class CreatureSoundDataDBC : DBCFile
     {
-        public void AddRow(int id, CreatureRaceSounds creatureRaceSounds)
+        public void AddRow(int id, CreatureRaceSounds creatureRaceSounds, int creatureFootstepSoundID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt(id); // ID
@@ -38,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundDeathName)); // Death SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundHit2Name)); // Stun SoundEntriesDBC.ID
             newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundLoopName)); // Stand SoundEntriesDBC.ID
-            newRow.AddInt(CreatureRaceSounds.GetSoundIDForSound(creatureRaceSounds.SoundWalkingName)); // Footstep sound in FootstepTerrainLookupDBC.ID
+            newRow.AddInt(creatureFootstepSoundID); // Footstep sound in FootstepTerrainLookupDBC.ID
             newRow.AddInt(0); // Agro SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Flap SoundEntriesDBC.ID
             newRow.AddInt(0); // Wing Glide SoundEntriesDBC.ID

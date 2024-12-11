@@ -272,7 +272,7 @@ namespace EQWOWConverter.WOWFiles
                 {
                     // PlayFidgetSound1 ($FD1)
                     M2Event playFidgetSound1 = new M2Event();
-                    playFidgetSound1.PopulateAsPlayFidgetSound1(wowObjectModel);
+                    playFidgetSound1.PopulateAsPlayFidgetSoundFD1(wowObjectModel);
                     Events.AddElement(playFidgetSound1);
                 }
 
@@ -280,9 +280,14 @@ namespace EQWOWConverter.WOWFiles
                 {
                     // PlayFidgetSound2 ($FD2)
                     M2Event playFidgetSound2 = new M2Event();
-                    playFidgetSound2.PopulateAsPlayFidgetSound2(wowObjectModel);
+                    playFidgetSound2.PopulateAsPlayFidgetSoundFD2(wowObjectModel);
                     Events.AddElement(playFidgetSound2);
                 }
+
+                // HandleFootfallAnimEvent ($FSD)
+                M2Event handleFootfallAnimEvent = new M2Event();
+                handleFootfallAnimEvent.PopulateAsHandleFootfallAnimEventFSD(wowObjectModel);
+                Events.AddElement(handleFootfallAnimEvent);
             }
         }
 

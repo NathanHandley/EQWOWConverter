@@ -30,6 +30,9 @@ namespace EQWOWConverter.Creatures
     {
         private static List<CreatureRaceSounds> CreatureRaceSoundsList = new List<CreatureRaceSounds>();
         public static Dictionary<string, Sound> SoundsBySoundName = new Dictionary<string, Sound>();
+        public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
+        public static Dictionary<int, int> FootstepIDBySoundID = new Dictionary<int, int>();
+        private static int CUR_CREATURE_FOOTSTEP_ID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
 
         public int RaceID;
         public int VariantID;
@@ -55,7 +58,7 @@ namespace EQWOWConverter.Creatures
         public static CreatureRaceSounds GetSoundsByRaceIDAndGender(int id, CreatureGenderType gender)
         {
             if (CreatureRaceSoundsList.Count == 0)
-                PopulateCreatureRaceList();
+                PopulateCreatureRaceSoundList();
 
             // Look for gender match
             foreach (CreatureRaceSounds creatureRaceSounds in CreatureRaceSoundsList)
@@ -85,8 +88,14 @@ namespace EQWOWConverter.Creatures
         public static void GenerateAllSounds()
         {
             if (CreatureRaceSoundsList.Count == 0)
-                PopulateCreatureRaceList();
-            foreach(CreatureRaceSounds creatureRaceSounds in CreatureRaceSoundsList)
+            {
+                PopulateCreatureRaceSoundList();
+
+                // Set the default 'blank' sound for footstep
+                FootstepIDBySoundName.Add("null24.wav", 0);
+            }
+
+            foreach (CreatureRaceSounds creatureRaceSounds in CreatureRaceSoundsList)
             {
                 GenerateSoundIfUnique(creatureRaceSounds.SoundLoopName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundIdle1Name);
@@ -101,10 +110,17 @@ namespace EQWOWConverter.Creatures
                 GenerateSoundIfUnique(creatureRaceSounds.SoundDeathName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundDrownName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundWalkingName);
-                GenerateSoundIfUnique(creatureRaceSounds.SoundRunningName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundAttackName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundSpellAttackName);
                 GenerateSoundIfUnique(creatureRaceSounds.SoundTechnicalAttackName);
+                GenerateSoundIfUnique(creatureRaceSounds.SoundRunningName);
+
+                if (FootstepIDBySoundName.ContainsKey(creatureRaceSounds.SoundWalkingName) == false)
+                {
+                    FootstepIDBySoundName.Add(creatureRaceSounds.SoundWalkingName, CUR_CREATURE_FOOTSTEP_ID);
+                    FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRaceSounds.SoundWalkingName), CUR_CREATURE_FOOTSTEP_ID);
+                    CUR_CREATURE_FOOTSTEP_ID++;
+                }
             }
         }
 
@@ -124,10 +140,11 @@ namespace EQWOWConverter.Creatures
             if (soundName == "null24.wav")
                 return;
             Sound newSound = new Sound(soundName, soundName, SoundType.NPCCombat, 8, 20, false);
+            newSound.NoOverlap = true;
             SoundsBySoundName[soundName] = newSound;
         }
 
-        private static void PopulateCreatureRaceList()
+        private static void PopulateCreatureRaceSoundList()
         {
             CreatureRaceSoundsList.Clear();
 

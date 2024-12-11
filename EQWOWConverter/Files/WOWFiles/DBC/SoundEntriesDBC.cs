@@ -56,10 +56,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Frequency 10
             newRow.AddString(directory);
             newRow.AddFloat(sound.GetVolume());
+            int flags = 0;
             if (sound.Loop == true)
-                newRow.AddPackedFlags(0x200);
-            else
-                newRow.AddPackedFlags(0);
+                flags |= 0x200;
+            //if (sound.NoOverlap == true)
+            //    flags |= 0x0020;
+            newRow.AddPackedFlags(flags);
             newRow.AddFloat(sound.MinDistance);
             newRow.AddFloat(sound.DistanceCutoff);
             newRow.AddInt(2);

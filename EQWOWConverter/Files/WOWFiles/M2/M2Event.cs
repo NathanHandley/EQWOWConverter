@@ -114,7 +114,7 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        public void PopulateAsPlayFidgetSound1(ObjectModel wowObjectModel)
+        public void PopulateAsPlayFidgetSoundFD1(ObjectModel wowObjectModel)
         {
             Identifier = "$FD1";
             ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("fd1"));
@@ -129,7 +129,7 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        public void PopulateAsPlayFidgetSound2(ObjectModel wowObjectModel)
+        public void PopulateAsPlayFidgetSoundFD2(ObjectModel wowObjectModel)
         {
             Identifier = "$FD2";
             ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("fd2"));
@@ -144,6 +144,27 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void PopulateAsHandleFootfallAnimEventFSD(ObjectModel wowObjectModel)
+        {
+            Identifier = "$FSD";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("fsd"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+
+                // Set for the movement animations
+                if (wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.Walk ||
+                    wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.Run ||
+                    wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.RunLeft ||
+                    wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.RunRight ||
+                    wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.Walkbackwards)
+                {
+                    Timestamps[i].AddTimestamp(0);
+                }
+            }
+        }
+        
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;

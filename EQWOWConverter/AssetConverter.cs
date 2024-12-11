@@ -917,6 +917,8 @@ namespace EQWOWConverter
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
             CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
+            FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
+            footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -966,14 +968,21 @@ namespace EQWOWConverter
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
             loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
-            // Creatures
+            // Creatures sounds
+            Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
+            int curCreatureFootstepID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
                 creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID, relativeModelPath);
-                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, creatureModelTemplate.GenderType));
+                CreatureRaceSounds curCreatureSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, creatureModelTemplate.GenderType);
+                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, curCreatureSounds, CreatureRaceSounds.FootstepIDBySoundName[curCreatureSounds.SoundWalkingName]);
             }
+
+            // Footstep Terrain Lookup (for creatures)
+            foreach(var footstepIDBySoundID in CreatureRaceSounds.FootstepIDBySoundID)
+                footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
 
             // Zone-specific records
             foreach (Zone zone in zones)
@@ -1061,7 +1070,9 @@ namespace EQWOWConverter
                 }
                 string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
                 foreach (var sound in CreatureRaceSounds.SoundsBySoundName)
+                {
                     soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
+                }
 
                 // WMOAreaTable (Header than groups)
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
@@ -1092,6 +1103,8 @@ namespace EQWOWConverter
             creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
+            footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
+            footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);

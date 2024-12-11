@@ -31,6 +31,7 @@ namespace EQWOWConverter.Common
         public string AudioFileNameNoExt = string.Empty;
         public SoundType Type = SoundType.None;
         public bool Loop = false;
+        public bool NoOverlap = false;
         private float Volume;
         public float MinDistance;
         public float DistanceCutoff;

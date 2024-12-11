@@ -297,6 +297,10 @@ namespace EQWOWConverter
         // IDs for CreatureSoundData.dbc
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3300;
 
+        // IDs for FootstepTerrainLookup.dbc
+        public static readonly int CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = 600;
+        public static readonly int CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START = 250;
+
         // IDs for GameObjects found in GameObject.dbc (Reserving 10k)
         public static readonly int CONFIG_DBCID_GAMEOBJECT_ID_START = 270000;
         public static readonly int CONFIG_DBCID_GAMEOBJECT_ID_END = 279999;

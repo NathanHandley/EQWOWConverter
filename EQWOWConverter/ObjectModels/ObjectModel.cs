@@ -330,6 +330,7 @@ namespace EQWOWConverter.ObjectModels
             //CreateEventBone("cpp"); // PlayCombatActionAnim
             CreateEventBone("fd1"); // PlayFidgetSound1
             CreateEventBone("fd2"); // PlayFidgetSound2
+            CreateEventBone("fsd"); // HandleFootfallAnimEvent
             CreateEventBone("hit"); // PlayWoundAnimKit
 
             // Set bone lookups
@@ -625,6 +626,7 @@ namespace EQWOWConverter.ObjectModels
                 case "cpp":
                 case "fd1":
                 case "fd2":
+                case "fsd":
                 case "hit":
                     {
                         // For now, let's just use root
