@@ -119,6 +119,10 @@ namespace EQWOWConverter.ObjectModels
                     meshNames.Add("cokhe01");
             }
 
+            // Special mesh logic for 'eye'
+            if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
+                meshNames.Add("eye");
+
             LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
 
             // Load the materials, with special logic for invisible man

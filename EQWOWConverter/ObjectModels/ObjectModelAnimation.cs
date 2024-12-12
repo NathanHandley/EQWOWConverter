@@ -68,6 +68,7 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.p01StandPassive);
                         returnTypes.Add(EQAnimationType.o01StandIdle);
                         returnTypes.Add(EQAnimationType.l09SwimIdle);
+                        returnTypes.Add(EQAnimationType.posStandPose);
                     }
                     break;
                 case AnimationType.Death:
