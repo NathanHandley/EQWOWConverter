@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_z", z);
             newRow.AddFloat("orientation", 0);
             newRow.AddInt("map", mapID);
-            newRow.AddString("name", 100, string.Empty);
+            newRow.AddString("name", 100, name);
             Rows.Add(newRow);
         }
     }

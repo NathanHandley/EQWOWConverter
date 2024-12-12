@@ -606,7 +606,6 @@ namespace EQWOWConverter.Zones
 
         private static void PopulateZonePropertiesList()
         {
-            // Classic
             ZonePropertyListByShortName.Add("airplane", new PlaneOfSkyZoneProperties());
             ZonePropertyListByShortName.Add("akanon", new AkAnonZoneProperties());
             ZonePropertyListByShortName.Add("arena", new ArenaZoneProperties());
