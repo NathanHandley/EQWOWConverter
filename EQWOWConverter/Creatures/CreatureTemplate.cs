@@ -131,13 +131,17 @@ namespace EQWOWConverter.Creatures
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
 
-                // Fallback on race ID
+                // Skip invalid races
                 if (allRacesById.ContainsKey(newCreatureTemplate.RaceID) == false)
                 {
-                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' has an invalid race ID of '" + newCreatureTemplate.RaceID + "', so falling back to 1 (human)");
-                    newCreatureTemplate.RaceID = 1;
+                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' has an invalid race ID of '" + newCreatureTemplate.RaceID + "', so skipping");
+                    continue;
                 }
-
+                if (allRacesById[newCreatureTemplate.RaceID].HasSkeletonName() == false)
+                {
+                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + newCreatureTemplate.RaceID + "' has no skeletons, so skipping");
+                    continue;
+                }
                 if (CreatureTemplateList.ContainsKey(newCreatureTemplate.ID))
                 {
                     Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.ID + "'");

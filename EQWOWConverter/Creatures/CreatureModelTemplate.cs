@@ -73,7 +73,7 @@ namespace EQWOWConverter.Creatures
                 // Skip invalid race IDs
                 if (RacesByID.ContainsKey(creatureTemplate.RaceID) == false)
                 {
-                    Logger.WriteDetail("CreatureAllCreatureModelTemplate skipped error. Invalid race ID of '" + creatureTemplate.RaceID + "' from creature template with name '" + creatureTemplate.Name + "'");
+                    Logger.WriteError("CreatureAllCreatureModelTemplate skipped a template. Invalid race ID of '" + creatureTemplate.RaceID + "' from creature template with name '" + creatureTemplate.Name + "'");
                     continue;
                 }
 

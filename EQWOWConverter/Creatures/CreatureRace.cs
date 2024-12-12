@@ -72,6 +72,17 @@ namespace EQWOWConverter.Creatures
                 return FemaleSkeletonName;
         }
 
+        public bool HasSkeletonName()
+        {
+            if (MaleSkeletonName != string.Empty)
+                return true;
+            if (FemaleSkeletonName != string.Empty)
+                return true;
+            if (NeutralSkeletonName != string.Empty)
+                return true;
+            return false;
+        }
+
         public float GetLiftHeightForGender(CreatureGenderType genderType)
         {
             switch (genderType)
