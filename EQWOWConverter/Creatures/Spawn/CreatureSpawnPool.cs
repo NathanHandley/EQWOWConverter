@@ -66,6 +66,30 @@ namespace EQWOWConverter.Creatures
                 return false;
         }
 
+        public void BalanceChancesTo100()
+        {
+            int totalChance = 0;
+            foreach (int chance in CreatureTemplateChances)
+                totalChance += chance;
+            int adjustmentAmount = 100 - totalChance;
+            int adjustmentStep = 1;
+            if (adjustmentAmount < 0)
+                adjustmentStep = -1;
+            while(true)
+            {
+                for (int i = 0; i < CreatureTemplateChances.Count; i++)
+                {
+                    if (CreatureTemplateChances[i] + adjustmentStep > 0)
+                    {
+                        CreatureTemplateChances[i] += adjustmentStep;
+                        adjustmentAmount -= adjustmentStep;
+                        if (adjustmentAmount == 0)
+                            return;
+                    }
+                }
+            }
+        }
+
         public static int GetPoolTemplateSQLID()
         {
             int returnTemplateID = CURRENT_POOL_TEMPLATE_ENTRYID;

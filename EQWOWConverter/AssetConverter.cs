@@ -389,8 +389,8 @@ namespace EQWOWConverter
                 // Validate the chances
                 if (curSpawnPool.DoChancesAddTo100() == false)
                 {
-                    Logger.WriteError("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Skipping.");
-                    continue;
+                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
+                    curSpawnPool.BalanceChancesTo100();
                 }
 
                 // Add it
