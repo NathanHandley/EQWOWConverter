@@ -65,6 +65,7 @@ Run the scripts located into the exports directory subfolder \AzerothCoreSQLScri
 **Regenerate map/vmap files for AzerothCore**
 
 Re-run the map_extractor, vmap4_assembler, etc.
+NOTE: Requires a vmap4_extractor with at least this pull request merged: https://github.com/azerothcore/azerothcore-wotlk/pull/20822
 
 # Special Thanks
 In no particular order...
