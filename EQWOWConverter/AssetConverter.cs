@@ -287,6 +287,9 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
+            if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                Logger.WriteInfo("- Note: CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
+
             // Recreate the output folder to clean it out
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");

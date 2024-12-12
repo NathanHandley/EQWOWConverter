@@ -268,6 +268,9 @@ namespace EQWOWConverter
         // Note: There are two fidget animations, 1/2 this number applies to each fidget
         public static readonly int CONFIG_CREATURE_FIDGET_TIME_PERCENT = 20;
 
+        // If true, the entity name is put in the creature name for easy debugging. Default to false.
+        public static readonly bool CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME = false;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================

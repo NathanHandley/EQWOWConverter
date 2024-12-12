@@ -127,6 +127,10 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
                 newCreatureTemplate.SubName = newCreatureTemplate.SubName.Replace('_', ' ');
 
+                // Add ID if debugging for it is true
+                if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                    newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
+
                 // Fallback on race ID
                 if (allRacesById.ContainsKey(newCreatureTemplate.RaceID) == false)
                 {
