@@ -389,6 +389,9 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations[3].NextAnimation = 0;
             }
 
+            if (ModelAnimations.Count == 0)
+                Logger.WriteError("Zero animations for skeletal model object '" + Name + "', so it will crash if you try to load it");
+
             // Set the animation lookups
             SetAllAnimationLookups();
             return true;
