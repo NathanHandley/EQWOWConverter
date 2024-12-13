@@ -90,8 +90,10 @@ namespace EQWOWConverter
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
         // 0.3 is the default.  A value of 0.245 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door
-        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.29f;
-        public static readonly float CONFIG_GENERATE_CREATURE_SCALE = 0.21f;
+        //public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.29f;
+        public static readonly float CONFIG_GENERATE_WORLD_SCALE = 1f;
+        //public static readonly float CONFIG_GENERATE_CREATURE_SCALE = 0.21f;
+        public static readonly float CONFIG_GENERATE_CREATURE_SCALE = 1f;
 
         // If true, then objects are generated
         public static readonly bool CONFIG_GENERATE_OBJECTS = true;
@@ -349,11 +351,11 @@ namespace EQWOWConverter
         // ====================================================================
         // Record identifier for the creature sql table, need at least 31k
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
-        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 399999;
+        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 610000;
 
         // Record identifier for the creature template SQL table, need at least 25k
         public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 210000;
-        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 249999;
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 510000;
 
         // Start GUIDs for gameobjects
         public static readonly int CONFIG_SQL_GAMEOBJECT_GUID_START = 310000;

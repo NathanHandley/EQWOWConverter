@@ -26,6 +26,8 @@ namespace EQWOWConverter.Creatures
     {
         private static Dictionary<int, CreatureTemplate> CreatureTemplateList = new Dictionary<int, CreatureTemplate>();
 
+        public static List<CreatureTemplate> AllCreatureTemplates = new List<CreatureTemplate>();
+
         public int ID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
         public string SubName = string.Empty; // Restrict to 100 characters
@@ -43,6 +45,11 @@ namespace EQWOWConverter.Creatures
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
         public int SQLCreatureTemplateID;
+
+        public float XPosition;
+        public float YPosition;
+        public float ZPosition;
+        public int MapID;
 
         public CreatureTemplate()
         {
@@ -62,6 +69,26 @@ namespace EQWOWConverter.Creatures
             int returnGUID = CURRENT_SQL_CREATURE_GUID;
             CURRENT_SQL_CREATURE_GUID++;
             return returnGUID;
+        }
+
+        public static void CreateCreatureTemplate(int spawnInstanceID, int gridID, int gridNumber, float xPosition, float yPosition, float zPosition, string zoneShortName, int mapID)
+        {
+            CreatureTemplate newCreatureTemplate = new CreatureTemplate();
+            newCreatureTemplate.ID = 0;
+            newCreatureTemplate.RaceID = 1;
+            newCreatureTemplate.Class = 9;
+            newCreatureTemplate.BodyType = 1;
+            newCreatureTemplate.TextureID = 1;
+            newCreatureTemplate.HelmTextureID = 0;
+            newCreatureTemplate.Size = 6;
+            newCreatureTemplate.Level = 1;
+            newCreatureTemplate.Name = spawnInstanceID.ToString() + "," + gridID + "," + gridNumber;
+            newCreatureTemplate.SubName = zoneShortName + "," + zPosition.ToString();
+            newCreatureTemplate.XPosition = xPosition;
+            newCreatureTemplate.YPosition = yPosition;
+            newCreatureTemplate.ZPosition = zPosition;
+            newCreatureTemplate.MapID = mapID;
+            AllCreatureTemplates.Add(newCreatureTemplate);
         }
 
         private static void PopulateCreatureTemplateList()

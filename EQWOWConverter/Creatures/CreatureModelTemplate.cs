@@ -30,7 +30,9 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate
     {
-        public static Dictionary<int, List<CreatureModelTemplate>> AllTemplatesByRaceID = new Dictionary<int, List<CreatureModelTemplate>>();
+        //public static Dictionary<int, List<CreatureModelTemplate>> AllTemplatesByRaceID = new Dictionary<int, List<CreatureModelTemplate>>();
+
+        public static CreatureModelTemplate? ModelTemplate = null;
 
         public CreatureRace Race;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
@@ -59,51 +61,64 @@ namespace EQWOWConverter.Creatures
             HelmTextureIndex = creatureTemplate.HelmTextureID;
         }
 
-        static public void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
+        static public void CreateForTemplates(List<CreatureTemplate> creatureTemplates)
         {
-            // Clear the old list
-            AllTemplatesByRaceID.Clear();
+            if (creatureTemplates.Count == 0)
+                return;
 
-            // Get the races
             Dictionary<int, CreatureRace> RacesByID = CreatureRace.GetAllCreatureRacesByID();
+            ModelTemplate = new CreatureModelTemplate(RacesByID[1], creatureTemplates[0]);
+            ModelTemplate.CreateModelFiles();
 
-            // Generate model templates in response to creature templates
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
-            {
-                // Skip invalid race IDs
-                if (RacesByID.ContainsKey(creatureTemplate.RaceID) == false)
-                {
-                    Logger.WriteError("CreatureAllCreatureModelTemplate skipped a template. Invalid race ID of '" + creatureTemplate.RaceID + "' from creature template with name '" + creatureTemplate.Name + "'");
-                    continue;
-                }
-
-                // They are grouped by race
-                if (AllTemplatesByRaceID.ContainsKey(creatureTemplate.RaceID) == false)
-                    AllTemplatesByRaceID.Add(creatureTemplate.RaceID, new List<CreatureModelTemplate>());
-
-                // Create for any templates
-                CreatureModelTemplate? existingModel = null;
-                foreach(CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureTemplate.RaceID])
-                {
-                    // Skip if this model template already exists
-                    if (modelTemplate.GenderType == creatureTemplate.GenderType && 
-                        modelTemplate.HelmTextureIndex == creatureTemplate.HelmTextureID &&
-                        modelTemplate.TextureIndex == creatureTemplate.TextureID)
-                    {
-                        existingModel = modelTemplate;
-                        break;
-                    }
-                }
-                creatureTemplate.ModelTemplate = existingModel;
-                if (existingModel != null)
-                    continue;
-
-                // Create the new template
-                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(RacesByID[creatureTemplate.RaceID], creatureTemplate);
-                creatureTemplate.ModelTemplate = newModelTemplate;
-                AllTemplatesByRaceID[creatureTemplate.RaceID].Add(newModelTemplate);
-            }
+                creatureTemplate.ModelTemplate = ModelTemplate;
         }
+
+        //static public void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
+        //{
+        //    // Clear the old list
+        //    AllTemplatesByRaceID.Clear();
+
+        //    // Get the races
+        //    Dictionary<int, CreatureRace> RacesByID = CreatureRace.GetAllCreatureRacesByID();
+
+        //    // Generate model templates in response to creature templates
+        //    foreach(CreatureTemplate creatureTemplate in creatureTemplates)
+        //    {
+        //        // Skip invalid race IDs
+        //        if (RacesByID.ContainsKey(creatureTemplate.RaceID) == false)
+        //        {
+        //            Logger.WriteError("CreatureAllCreatureModelTemplate skipped a template. Invalid race ID of '" + creatureTemplate.RaceID + "' from creature template with name '" + creatureTemplate.Name + "'");
+        //            continue;
+        //        }
+
+        //        // They are grouped by race
+        //        if (AllTemplatesByRaceID.ContainsKey(creatureTemplate.RaceID) == false)
+        //            AllTemplatesByRaceID.Add(creatureTemplate.RaceID, new List<CreatureModelTemplate>());
+
+        //        // Create for any templates
+        //        CreatureModelTemplate? existingModel = null;
+        //        foreach(CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureTemplate.RaceID])
+        //        {
+        //            // Skip if this model template already exists
+        //            if (modelTemplate.GenderType == creatureTemplate.GenderType && 
+        //                modelTemplate.HelmTextureIndex == creatureTemplate.HelmTextureID &&
+        //                modelTemplate.TextureIndex == creatureTemplate.TextureID)
+        //            {
+        //                existingModel = modelTemplate;
+        //                break;
+        //            }
+        //        }
+        //        creatureTemplate.ModelTemplate = existingModel;
+        //        if (existingModel != null)
+        //            continue;
+
+        //        // Create the new template
+        //        CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(RacesByID[creatureTemplate.RaceID], creatureTemplate);
+        //        creatureTemplate.ModelTemplate = newModelTemplate;
+        //        AllTemplatesByRaceID[creatureTemplate.RaceID].Add(newModelTemplate);
+        //    }
+        //}
 
         public void CreateModelFiles()
         {

@@ -297,20 +297,20 @@ namespace EQWOWConverter
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
-            // Generate templates
-            Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
-            creatureTemplates = creatureTemplatesByID.Values.ToList();
+            //// Generate templates
+            //Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
+            //creatureTemplates = creatureTemplatesByID.Values.ToList();
 
-            // Create all of the models and related model files
-            CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
-            foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
-            {
-                foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
-                {
-                    modelTemplate.CreateModelFiles();
-                    creatureModelTemplates.Add(modelTemplate);
-                }
-            }
+            //// Create all of the models and related model files
+            //CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
+            //foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
+            //{
+            //    foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
+            //    {
+            //        modelTemplate.CreateModelFiles();
+            //        creatureModelTemplates.Add(modelTemplate);
+            //    }
+            //}
 
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
@@ -321,141 +321,159 @@ namespace EQWOWConverter
                 zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
             }
 
-            // Group spawn entries (creature template relationships) by group ID
-            List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
-            Dictionary<int, List<CreatureSpawnEntry>> creatureSpawnEntriesByGroupID = new Dictionary<int, List<CreatureSpawnEntry>>();
-            foreach (CreatureSpawnEntry entry in spawnEntries)
-            {
-                if (creatureSpawnEntriesByGroupID.ContainsKey(entry.SpawnGroupID) == false)
-                    creatureSpawnEntriesByGroupID.Add(entry.SpawnGroupID, new List<CreatureSpawnEntry>());
-                creatureSpawnEntriesByGroupID[entry.SpawnGroupID].Add(entry);
-            }
-
-            // Group all spawn instances (locations) by group ID
+            // Generate a creature template for every spawn instance
             List<CreatureSpawnInstance> creatureSpawnInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
-            Dictionary<int, List<CreatureSpawnInstance>> creatureSpawnInstancesByGroupID = new Dictionary<int, List<CreatureSpawnInstance>>();
-            foreach (CreatureSpawnInstance instance in creatureSpawnInstances)
+            foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnInstances)
             {
-                if (creatureSpawnInstancesByGroupID.ContainsKey(instance.SpawnGroupID) == false)
-                    creatureSpawnInstancesByGroupID.Add(instance.SpawnGroupID, new List<CreatureSpawnInstance>());
-                creatureSpawnInstancesByGroupID[instance.SpawnGroupID].Add(instance);
+                if (mapIDsByShortName.ContainsKey(creatureSpawnInstance.ZoneShortName.ToLower().Trim()) == true)
+                    CreatureTemplate.CreateCreatureTemplate(creatureSpawnInstance.ID, 0, 0, creatureSpawnInstance.SpawnXPosition, creatureSpawnInstance.SpawnYPosition, creatureSpawnInstance.SpawnZPosition, creatureSpawnInstance.ZoneShortName);
             }
 
-            // Go through each spawn group and generate pools
-            Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
-            Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
-            foreach (var spawnGroup in spawnGroupsByGroupID)
-            {
-                // Confirm there are related instances
-                if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroup.Key) == false)
-                    continue;
+            // Generate a creature template for every grid entry
+            foreach(CreaturePathGridEntry gridEntry in CreaturePathGridEntry.GetPathGridEntries())
+                if (mapIDsByShortName.ContainsKey(gridEntry.ZoneShortName.ToLower().Trim()) == true)
+                    CreatureTemplate.CreateCreatureTemplate(0, gridEntry.GridID, gridEntry.Number, gridEntry.NodeX, gridEntry.NodeY, gridEntry.NodeZ, gridEntry.ZoneShortName);
 
-                // Make the new pool
-                CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroup.Value);
+            // Create a single model and associate with every template
+            CreatureModelTemplate.CreateForTemplates(CreatureTemplate.AllCreatureTemplates);
 
-                // Add instances that are valid zones
-                foreach (CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroup.Key])
-                {
-                    if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
-                    {
-                        spawnInstance.MapID = mapIDsByShortName[spawnInstance.ZoneShortName.ToLower().Trim()];
-                        spawnInstance.AreaID = Convert.ToInt32(zonesByMapID[spawnInstance.MapID].DefaultArea.DBCAreaTableID);
-                        curSpawnPool.AddSpawnInstance(spawnInstance);
-                    }
-                }
 
-                // Add spawns that are valid spawns
-                if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
-                {
-                    foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
-                    {
-                        if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
-                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
-                    }
-                }
 
-                // Make sure there is at least one element
-                if (curSpawnPool.CreatureSpawnInstances.Count == 0)
-                {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
-                    continue;
-                }
-                if (curSpawnPool.CreatureTemplates.Count == 0)
-                {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
-                    continue;
-                }
+            //// Group spawn entries (creature template relationships) by group ID
+            //List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
+            //Dictionary<int, List<CreatureSpawnEntry>> creatureSpawnEntriesByGroupID = new Dictionary<int, List<CreatureSpawnEntry>>();
+            //foreach (CreatureSpawnEntry entry in spawnEntries)
+            //{
+            //    if (creatureSpawnEntriesByGroupID.ContainsKey(entry.SpawnGroupID) == false)
+            //        creatureSpawnEntriesByGroupID.Add(entry.SpawnGroupID, new List<CreatureSpawnEntry>());
+            //    creatureSpawnEntriesByGroupID[entry.SpawnGroupID].Add(entry);
+            //}
 
-                // Validate the chances
-                if (curSpawnPool.DoChancesAddTo100() == false)
-                {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
-                    curSpawnPool.BalanceChancesTo100();
-                }
+            //// Group all spawn instances (locations) by group ID
+            //List<CreatureSpawnInstance> creatureSpawnInstances = CreatureSpawnInstance.GetSpawnInstanceListByID().Values.ToList();
+            //Dictionary<int, List<CreatureSpawnInstance>> creatureSpawnInstancesByGroupID = new Dictionary<int, List<CreatureSpawnInstance>>();
+            //foreach (CreatureSpawnInstance instance in creatureSpawnInstances)
+            //{
+            //    if (creatureSpawnInstancesByGroupID.ContainsKey(instance.SpawnGroupID) == false)
+            //        creatureSpawnInstancesByGroupID.Add(instance.SpawnGroupID, new List<CreatureSpawnInstance>());
+            //    creatureSpawnInstancesByGroupID[instance.SpawnGroupID].Add(instance);
+            //}
 
-                // Add it
-                spawnPoolsByGroupID.Add(spawnGroup.Key, curSpawnPool);
-            }
-            creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
+            //// Go through each spawn group and generate pools
+            //Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
+            //Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
+            //foreach (var spawnGroup in spawnGroupsByGroupID)
+            //{
+            //    // Confirm there are related instances
+            //    if (creatureSpawnInstancesByGroupID.ContainsKey(spawnGroup.Key) == false)
+            //        continue;
 
-            // Make a list of path grid entries
-            Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>> creaturePathGridEntriesByIDAndMapID = new Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>>();
-            foreach (CreaturePathGridEntry creaturePathGridEntry in CreaturePathGridEntry.GetPathGridEntries())
-            {
-                // Skip non-viable maps
-                if (mapIDsByShortName.ContainsKey(creaturePathGridEntry.ZoneShortName.ToLower().Trim()) == false)
-                    continue;
-                int mapID = mapIDsByShortName[creaturePathGridEntry.ZoneShortName.ToLower().Trim()];
+            //    // Make the new pool
+            //    CreatureSpawnPool curSpawnPool = new CreatureSpawnPool(spawnGroup.Value);
 
-                // Add it
-                if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creaturePathGridEntry.GridID) == false)
-                    creaturePathGridEntriesByIDAndMapID.Add(creaturePathGridEntry.GridID, new Dictionary<int, List<CreaturePathGridEntry>>());
-                if (creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].ContainsKey(mapID) == false)
-                    creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].Add(mapID, new List<CreaturePathGridEntry>());
-                creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
-            }
+            //    // Add instances that are valid zones
+            //    foreach (CreatureSpawnInstance spawnInstance in creatureSpawnInstancesByGroupID[spawnGroup.Key])
+            //    {
+            //        if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
+            //        {
+            //            spawnInstance.MapID = mapIDsByShortName[spawnInstance.ZoneShortName.ToLower().Trim()];
+            //            spawnInstance.AreaID = Convert.ToInt32(zonesByMapID[spawnInstance.MapID].DefaultArea.DBCAreaTableID);
+            //            curSpawnPool.AddSpawnInstance(spawnInstance);
+            //        }
+            //    }
 
-            // Sort and renumber grid IDs
-            foreach(var pathGridSetByGridID in creaturePathGridEntriesByIDAndMapID)
-            {
-                foreach (var pathGridSetByMapID in creaturePathGridEntriesByIDAndMapID[pathGridSetByGridID.Key])
-                {
-                    // Sort the values from smallest to largest
-                    pathGridSetByMapID.Value.Sort();
+            //    // Add spawns that are valid spawns
+            //    if (creatureSpawnEntriesByGroupID.ContainsKey(spawnGroup.Key))
+            //    {
+            //        foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
+            //        {
+            //            if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
+            //                curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
+            //        }
+            //    }
 
-                    // Renumber the elements so that it starts from 1 and incriments by 1
-                    int curID = 1;
-                    foreach(CreaturePathGridEntry curEntry in pathGridSetByMapID.Value)
-                    {
-                        curEntry.Number = curID;
-                        curID++;
-                    }
-                }
-            }
+            //    // Make sure there is at least one element
+            //    if (curSpawnPool.CreatureSpawnInstances.Count == 0)
+            //    {
+            //        Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
+            //        continue;
+            //    }
+            //    if (curSpawnPool.CreatureTemplates.Count == 0)
+            //    {
+            //        Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
+            //        continue;
+            //    }
 
-            // Associate path grid entries with relevant spawn instances
-            foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
-            {
-                foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
-                {
-                    if (creatureSpawnInstance.PathGridID != 0)
-                    {
-                        if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)
-                        {
-                            Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
-                            continue;
-                        }
-                        if (creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID].ContainsKey(creatureSpawnInstance.MapID) == false)
-                        {
-                            Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
-                            continue;
-                        }
+            //    // Validate the chances
+            //    if (curSpawnPool.DoChancesAddTo100() == false)
+            //    {
+            //        Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
+            //        curSpawnPool.BalanceChancesTo100();
+            //    }
 
-                        foreach (CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
-                            creatureSpawnInstance.PathGridEntries.Add(creaturePathGridEntry);
-                    }
-                }
-            }
+            //    // Add it
+            //    spawnPoolsByGroupID.Add(spawnGroup.Key, curSpawnPool);
+            //}
+            //creatureSpawnPools = spawnPoolsByGroupID.Values.ToList();
+
+            //// Make a list of path grid entries
+            //Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>> creaturePathGridEntriesByIDAndMapID = new Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>>();
+            //foreach (CreaturePathGridEntry creaturePathGridEntry in CreaturePathGridEntry.GetPathGridEntries())
+            //{
+            //    // Skip non-viable maps
+            //    if (mapIDsByShortName.ContainsKey(creaturePathGridEntry.ZoneShortName.ToLower().Trim()) == false)
+            //        continue;
+            //    int mapID = mapIDsByShortName[creaturePathGridEntry.ZoneShortName.ToLower().Trim()];
+
+            //    // Add it
+            //    if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creaturePathGridEntry.GridID) == false)
+            //        creaturePathGridEntriesByIDAndMapID.Add(creaturePathGridEntry.GridID, new Dictionary<int, List<CreaturePathGridEntry>>());
+            //    if (creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].ContainsKey(mapID) == false)
+            //        creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].Add(mapID, new List<CreaturePathGridEntry>());
+            //    creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
+            //}
+
+            //// Sort and renumber grid IDs
+            //foreach(var pathGridSetByGridID in creaturePathGridEntriesByIDAndMapID)
+            //{
+            //    foreach (var pathGridSetByMapID in creaturePathGridEntriesByIDAndMapID[pathGridSetByGridID.Key])
+            //    {
+            //        // Sort the values from smallest to largest
+            //        pathGridSetByMapID.Value.Sort();
+
+            //        // Renumber the elements so that it starts from 1 and incriments by 1
+            //        int curID = 1;
+            //        foreach(CreaturePathGridEntry curEntry in pathGridSetByMapID.Value)
+            //        {
+            //            curEntry.Number = curID;
+            //            curID++;
+            //        }
+            //    }
+            //}
+
+            //// Associate path grid entries with relevant spawn instances
+            //foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
+            //{
+            //    foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
+            //    {
+            //        if (creatureSpawnInstance.PathGridID != 0)
+            //        {
+            //            if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)
+            //            {
+            //                Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
+            //                continue;
+            //            }
+            //            if (creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID].ContainsKey(creatureSpawnInstance.MapID) == false)
+            //            {
+            //                Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
+            //                continue;
+            //            }
+
+            //            foreach (CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
+            //                creatureSpawnInstance.PathGridEntries.Add(creaturePathGridEntry);
+            //        }
+            //    }
+            //}
 
             // Copy all of the sound files
             Logger.WriteInfo("Copying creature sound files...");
@@ -1216,143 +1234,158 @@ namespace EQWOWConverter
             }
 
             // Creature Templates
+            //Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
+            //foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            //{
+            //    if (creatureTemplate.ModelTemplate == null)
+            //        Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
+            //    else
+            //    {
+            //        // Calculate the scale
+            //        CreatureRace curRace = allRaces[creatureTemplate.RaceID];
+            //        float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+
+            //        // Create the records
+            //        creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
+            //        creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+            //    }
+            //}
             Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                if (creatureTemplate.ModelTemplate == null)
-                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
-                else
-                {
-                    // Calculate the scale
-                    CreatureRace curRace = allRaces[creatureTemplate.RaceID];
-                    float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+                // Skip invalid zones
 
-                    // Create the records
-                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
-                }
-            }
+
+                // Calculate the scale
+                CreatureRace curRace = allRaces[creatureTemplate.RaceID];
+                float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+
+                // Create the records
+                creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
+                creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+             }            
 
             // Creature models
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
                 creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
 
+
             // Creature and Spawn Pools
-            foreach(CreatureSpawnPool spawnPool in creatureSpawnPools)
-            {
-                // For single element single location pools, just create a creature record
-                if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count == 1)
-                {
-                    CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
-                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-                    int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    if (spawnInstance.PathGridEntries.Count > 0)
-                    {
-                        int waypointGUID = creatureGUID * 1000;
-                        creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                        foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                            waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
-                    }
-                    else
-                    {
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                            spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
-                    }
-                }
+            //foreach(CreatureSpawnPool spawnPool in creatureSpawnPools)
+            //{
+            //    // For single element single location pools, just create a creature record
+            //    if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count == 1)
+            //    {
+            //        CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
+            //        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
+            //        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+            //        if (spawnInstance.PathGridEntries.Count > 0)
+            //        {
+            //            int waypointGUID = creatureGUID * 1000;
+            //            creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+            //            foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+            //                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+            //            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+            //                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+            //        }
+            //        else
+            //        {
+            //            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+            //                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+            //        }
+            //    }
+                //// Create a pool pools if there are multiple locations
+                //else if (spawnPool.CreatureSpawnInstances.Count > 1)
+                //{
+                //    // Create the mother pool template
+                //    int motherPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                //    List<string> motherPoolNames = new List<string>();
+                //    foreach(CreatureTemplate template in spawnPool.CreatureTemplates)
+                //        if (motherPoolNames.Contains(template.Name) == false)
+                //            motherPoolNames.Add(template.Name);
+                //    string motherPoolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
+                //    foreach (string name in motherPoolNames)
+                //        motherPoolDescription += ", " + name;
+                //    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool", spawnPool.GetMaxSpawnCount());
 
-                // Create a pool pools if there are multiple locations
-                else if (spawnPool.CreatureSpawnInstances.Count > 1)
-                {
-                    // Create the mother pool template
-                    int motherPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    List<string> motherPoolNames = new List<string>();
-                    foreach(CreatureTemplate template in spawnPool.CreatureTemplates)
-                        if (motherPoolNames.Contains(template.Name) == false)
-                            motherPoolNames.Add(template.Name);
-                    string motherPoolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
-                    foreach (string name in motherPoolNames)
-                        motherPoolDescription += ", " + name;
-                    poolTemplateSQL.AddRow(motherPoolTemplateID, motherPoolDescription + " - Master Pool", spawnPool.GetMaxSpawnCount());
+                //    // Create by instance groups
+                //    for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
+                //    {
+                //        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
 
-                    // Create by instance groups
-                    for (int spawnInstanceIndex = 0; spawnInstanceIndex < spawnPool.CreatureSpawnInstances.Count; spawnInstanceIndex++)
-                    {
-                        CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[spawnInstanceIndex];
+                //        // Create the pool pool
+                //        int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                //        string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
+                //        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription, 1);
+                //        poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
 
-                        // Create the pool pool
-                        int poolPoolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                        string poolPoolDescription = motherPoolDescription + " - " + spawnInstanceIndex.ToString();
-                        poolTemplateSQL.AddRow(poolPoolTemplateID, poolPoolDescription, 1);
-                        poolPoolSQL.AddRow(poolPoolTemplateID, motherPoolTemplateID, 0, poolPoolDescription);
+                //        // Create the creature records
+                //        for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
+                //        {
+                //            CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
+                //            int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
+                //            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                //            poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
+                //            if (spawnInstance.PathGridEntries.Count > 0)
+                //            {
+                //                int waypointGUID = creatureGUID * 1000;
+                //                creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                //                foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                //                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                //                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                //                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+                //            }
+                //            else
+                //            {
+                //                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                //                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+                //            }
+                //        }
+                //    }
+                //}
+                //// No mother pool needed
+                //else if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count > 0)
+                //{
+                //    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
 
-                        // Create the creature records
-                        for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
-                        {
-                            CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
-                            int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
-                            int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                            poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
-                            if (spawnInstance.PathGridEntries.Count > 0)
-                            {
-                                int waypointGUID = creatureGUID * 1000;
-                                creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                                foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                    waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
-                            }
-                            else
-                            {
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                    spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
-                            }
-                        }
-                    }
-                }
-
-                // No mother pool needed
-                else if (spawnPool.CreatureSpawnInstances.Count == 1 && spawnPool.CreatureTemplates.Count > 0)
-                {
-                    CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
-
-                    // Make the pool description
-                    List<string> poolNames = new List<string>();
-                    foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
-                        if (poolNames.Contains(template.Name) == false)
-                            poolNames.Add(template.Name);
-                    string poolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
-                    foreach (string name in poolNames)
-                        poolDescription += ", " + name;
+                //    // Make the pool description
+                //    List<string> poolNames = new List<string>();
+                //    foreach (CreatureTemplate template in spawnPool.CreatureTemplates)
+                //        if (poolNames.Contains(template.Name) == false)
+                //            poolNames.Add(template.Name);
+                //    string poolDescription = "(" + spawnPool.CreatureSpawnGroup.ID + ")";
+                //    foreach (string name in poolNames)
+                //        poolDescription += ", " + name;
                     
-                    // Create the pool template
-                    int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
-                    poolTemplateSQL.AddRow(poolTemplateID, poolDescription, spawnPool.GetMaxSpawnCount());
+                //    // Create the pool template
+                //    int poolTemplateID = CreatureSpawnPool.GetPoolTemplateSQLID();
+                //    poolTemplateSQL.AddRow(poolTemplateID, poolDescription, spawnPool.GetMaxSpawnCount());
 
-                    // Create the creature records
-                    for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
-                    {
-                        CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
-                        int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
-                        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                        poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
-                        if (spawnInstance.PathGridEntries.Count > 0)
-                        {
-                            int waypointGUID = creatureGUID * 1000;
-                            creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                            foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
-                                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
-                        }
-                        else
-                        {
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
-                                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
-                        }
-                    }
-                }
+                //    // Create the creature records
+                //    for (int creatureTemplateIndex = 0; creatureTemplateIndex < spawnPool.CreatureTemplates.Count; creatureTemplateIndex++)
+                //    {
+                //        CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[creatureTemplateIndex];
+                //        int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
+                //        int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                //        poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
+                //        if (spawnInstance.PathGridEntries.Count > 0)
+                //        {
+                //            int waypointGUID = creatureGUID * 1000;
+                //            creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                //            foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                //                waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
+                //            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                //                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
+                //        }
+                //        else
+                //        {
+                //            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                //                spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
+                //        }
+                //    }
+                //}
+
+
             }
 
             // Output them
