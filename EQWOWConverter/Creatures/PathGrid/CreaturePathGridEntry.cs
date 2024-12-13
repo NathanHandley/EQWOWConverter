@@ -83,7 +83,7 @@ namespace EQWOWConverter.Creatures
                 newPathGridEntry.PauseInSec = int.Parse(rowBlocks[6]);
 
                 // Remove 2 units of z (unsure if this is proper amount)
-                nodeZ -= 2f * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                //nodeZ -= 2f * Configuration.CONFIG_GENERATE_WORLD_SCALE;
 
                 // Skip any -1 number entries
                 if (newPathGridEntry.Number == -1)
