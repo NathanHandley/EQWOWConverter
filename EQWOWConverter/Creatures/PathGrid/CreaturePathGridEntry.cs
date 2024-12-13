@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Creatures
 {
-    internal class CreaturePathGridEntry
+    internal class CreaturePathGridEntry : IComparable, IEquatable<CreaturePathGridEntry>
     {
         private static List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
 
@@ -81,6 +82,9 @@ namespace EQWOWConverter.Creatures
                 float nodeZ = float.Parse(rowBlocks[5]);
                 newPathGridEntry.PauseInSec = int.Parse(rowBlocks[6]);
 
+                // Remove 2 units of z (unsure if this is proper amount)
+                nodeZ -= 2f * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+
                 // Skip any -1 number entries
                 if (newPathGridEntry.Number == -1)
                     continue;
@@ -93,6 +97,29 @@ namespace EQWOWConverter.Creatures
 
                 PathGridEntries.Add(newPathGridEntry);
             }
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj == null) return 1;
+            CreaturePathGridEntry? otherGridEntry = obj as CreaturePathGridEntry;
+            if (otherGridEntry != null)
+                return this.Number.CompareTo(otherGridEntry.Number);
+            else
+                throw new ArgumentException("Object is not a CreaturePathGridEntry");
+        }
+
+        public bool Equals(CreaturePathGridEntry? other)
+        {
+            if (other == null) return false;
+            if (GridID != other.GridID) return false;
+            if (ZoneShortName != other.ZoneShortName) return false;
+            if (Number != other.Number) return false;
+            if (NodeX != other.NodeX) return false;
+            if (NodeY != other.NodeY) return false;
+            if (NodeZ != other.NodeZ) return false;
+            if (PauseInSec != other.PauseInSec) return false;
+            return true;
         }
     }
 }

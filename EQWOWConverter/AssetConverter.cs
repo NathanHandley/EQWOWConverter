@@ -415,6 +415,24 @@ namespace EQWOWConverter
                 creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
             }
 
+            // Sort and renumber grid IDs
+            foreach(var pathGridSetByGridID in creaturePathGridEntriesByIDAndMapID)
+            {
+                foreach (var pathGridSetByMapID in creaturePathGridEntriesByIDAndMapID[pathGridSetByGridID.Key])
+                {
+                    // Sort the values from smallest to largest
+                    pathGridSetByMapID.Value.Sort();
+
+                    // Renumber the elements so that it starts from 1 and incriments by 1
+                    int curID = 1;
+                    foreach(CreaturePathGridEntry curEntry in pathGridSetByMapID.Value)
+                    {
+                        curEntry.Number = curID;
+                        curID++;
+                    }
+                }
+            }
+
             // Associate path grid entries with relevant spawn instances
             foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
             {
