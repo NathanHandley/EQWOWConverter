@@ -315,10 +315,12 @@ namespace EQWOWConverter
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
             Dictionary<int, Zone> zonesByMapID = new Dictionary<int, Zone>();
+            Dictionary<int, int> defaultAreaIDsByMapID = new Dictionary<int, int>();
             foreach (Zone zone in zones)
             {
                 mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
                 zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
+                defaultAreaIDsByMapID.Add(zone.ZoneProperties.DBCMapID, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
             }
 
             // Generate a creature template for every spawn instance
@@ -326,13 +328,16 @@ namespace EQWOWConverter
             foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnInstances)
             {
                 if (mapIDsByShortName.ContainsKey(creatureSpawnInstance.ZoneShortName.ToLower().Trim()) == true)
-                    CreatureTemplate.CreateCreatureTemplate(creatureSpawnInstance.ID, 0, 0, creatureSpawnInstance.SpawnXPosition, creatureSpawnInstance.SpawnYPosition, creatureSpawnInstance.SpawnZPosition, creatureSpawnInstance.ZoneShortName);
+                    CreatureTemplate.CreateCreatureTemplate(creatureSpawnInstance.ID, 0, 0, creatureSpawnInstance.SpawnXPosition, creatureSpawnInstance.SpawnYPosition, 
+                        creatureSpawnInstance.SpawnZPosition, creatureSpawnInstance.ZoneShortName, mapIDsByShortName[creatureSpawnInstance.ZoneShortName.ToLower().Trim()],
+                        defaultAreaIDsByMapID[mapIDsByShortName[creatureSpawnInstance.ZoneShortName.ToLower().Trim()]]);
             }
 
             // Generate a creature template for every grid entry
             foreach(CreaturePathGridEntry gridEntry in CreaturePathGridEntry.GetPathGridEntries())
                 if (mapIDsByShortName.ContainsKey(gridEntry.ZoneShortName.ToLower().Trim()) == true)
-                    CreatureTemplate.CreateCreatureTemplate(0, gridEntry.GridID, gridEntry.Number, gridEntry.NodeX, gridEntry.NodeY, gridEntry.NodeZ, gridEntry.ZoneShortName);
+                    CreatureTemplate.CreateCreatureTemplate(0, gridEntry.GridID, gridEntry.Number, gridEntry.NodeX, gridEntry.NodeY, gridEntry.NodeZ, gridEntry.ZoneShortName, 
+                        mapIDsByShortName[gridEntry.ZoneShortName.ToLower().Trim()], defaultAreaIDsByMapID[mapIDsByShortName[gridEntry.ZoneShortName.ToLower().Trim()]]);
 
             // Create a single model and associate with every template
             CreatureModelTemplate.CreateForTemplates(CreatureTemplate.AllCreatureTemplates);
@@ -1010,14 +1015,12 @@ namespace EQWOWConverter
             // Creatures sounds
             Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
             int curCreatureFootstepID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-            {
-                creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
-                string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
-                creatureModelDataDBC.AddRow(creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID, relativeModelPath);
-                CreatureRaceSounds curCreatureSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, creatureModelTemplate.GenderType);
-                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, curCreatureSounds, CreatureRaceSounds.FootstepIDBySoundName[curCreatureSounds.SoundWalkingName]);
-            }
+            
+            creatureDisplayInfoDBC.AddRow(CreatureModelTemplate.ModelTemplate.DBCCreatureDisplayID, CreatureModelTemplate.ModelTemplate.DBCCreatureModelDataID);
+            string relativeModelPath = "Creature\\Everquest\\" + CreatureModelTemplate.ModelTemplate.GetCreatureModelFolderName() + "\\" + CreatureModelTemplate.ModelTemplate.GenerateFileName() + ".mdx";
+            creatureModelDataDBC.AddRow(CreatureModelTemplate.ModelTemplate.DBCCreatureModelDataID, CreatureModelTemplate.ModelTemplate.DBCCreatureSoundDataID, relativeModelPath);
+            CreatureRaceSounds curCreatureSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(CreatureModelTemplate.ModelTemplate.Race.ID, CreatureModelTemplate.ModelTemplate.GenderType);
+            creatureSoundDataDBC.AddRow(CreatureModelTemplate.ModelTemplate.DBCCreatureSoundDataID, curCreatureSounds, CreatureRaceSounds.FootstepIDBySoundName[curCreatureSounds.SoundWalkingName]);
 
             // Footstep Terrain Lookup (for creatures)
             foreach(var footstepIDBySoundID in CreatureRaceSounds.FootstepIDBySoundID)
@@ -1251,11 +1254,8 @@ namespace EQWOWConverter
             //    }
             //}
             Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
-            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            foreach (CreatureTemplate creatureTemplate in CreatureTemplate.AllCreatureTemplates)
             {
-                // Skip invalid zones
-
-
                 // Calculate the scale
                 CreatureRace curRace = allRaces[creatureTemplate.RaceID];
                 float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
@@ -1263,11 +1263,14 @@ namespace EQWOWConverter
                 // Create the records
                 creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
                 creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+                creatureSQL.AddRow(CreatureTemplate.GenerateCreatureSQLGUID(), creatureTemplate.SQLCreatureTemplateID, creatureTemplate.MapID,
+                    creatureTemplate.MapID, creatureTemplate.AreaID, creatureTemplate.XPosition, creatureTemplate.YPosition, creatureTemplate.ZPosition,
+                    0, CreatureMovementType.None);
              }            
 
             // Creature models
-            foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
-                creatureModelInfoSQL.AddRow(creatureModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(creatureModelTemplate.GenderType));
+            //foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
+                creatureModelInfoSQL.AddRow(CreatureModelTemplate.ModelTemplate.DBCCreatureDisplayID, Convert.ToInt32(CreatureModelTemplate.ModelTemplate.GenderType));
 
 
             // Creature and Spawn Pools
@@ -1386,7 +1389,7 @@ namespace EQWOWConverter
                 //}
 
 
-            }
+            //}
 
             // Output them
             areaTriggerSQL.SaveToDisk("areatrigger");

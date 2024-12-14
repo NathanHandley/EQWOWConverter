@@ -46,10 +46,12 @@ namespace EQWOWConverter.Creatures
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
         public int SQLCreatureTemplateID;
 
+        public string ZoneName;
         public float XPosition;
         public float YPosition;
         public float ZPosition;
         public int MapID;
+        public int AreaID;
 
         public CreatureTemplate()
         {
@@ -71,7 +73,8 @@ namespace EQWOWConverter.Creatures
             return returnGUID;
         }
 
-        public static void CreateCreatureTemplate(int spawnInstanceID, int gridID, int gridNumber, float xPosition, float yPosition, float zPosition, string zoneShortName, int mapID)
+        public static void CreateCreatureTemplate(int spawnInstanceID, int gridID, int gridNumber, float xPosition, float yPosition, float zPosition, 
+            string zoneShortName, int mapID, int areaID)
         {
             CreatureTemplate newCreatureTemplate = new CreatureTemplate();
             newCreatureTemplate.ID = 0;
@@ -87,7 +90,9 @@ namespace EQWOWConverter.Creatures
             newCreatureTemplate.XPosition = xPosition;
             newCreatureTemplate.YPosition = yPosition;
             newCreatureTemplate.ZPosition = zPosition;
+            newCreatureTemplate.ZoneName = zoneShortName;
             newCreatureTemplate.MapID = mapID;
+            newCreatureTemplate.AreaID = areaID;
             AllCreatureTemplates.Add(newCreatureTemplate);
         }
 
