@@ -74,7 +74,7 @@ namespace EQWOWConverter.WOWFiles
                 newColumn.Name = columnName;
                 if (value != null)
                 {
-                    if (value.Length > 255)
+                    if (maxLength > 3 && value.Length > maxLength)
                         value = value.Substring(0, maxLength-3) + "...";
                     newColumn.Value = value;
                 }
