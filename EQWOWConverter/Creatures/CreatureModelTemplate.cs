@@ -50,7 +50,7 @@ namespace EQWOWConverter.Creatures
         {
             DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
             CURRENT_DBCID_CREATUREMODELDATAID++;
-            DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
+            DBCCreatureDisplayID = 1391;
             CURRENT_DBCID_CREATUREDISPLAYINFOID++;
             DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
             CURRENT_DBCID_CREATURESOUNDDATAID++;
