@@ -1268,7 +1268,8 @@ namespace EQWOWConverter
             {
                 // Calculate the scale
                 CreatureRace curRace = allRaces[creatureTemplate.RaceID];
-                float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+                //float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+                float scale = 3f;
 
                 // Create the records
                 creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
