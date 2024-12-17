@@ -29,11 +29,10 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Traps, like the crushing rock at -624 -243 -74
             // TODO: Drawbridges, like the one to the giants room
-            // TODO: Show Sky?  Nagafen's throne room should be able to see the sky above
             // TODO: More zone areas
             // TODO: Lava damage zones
             SetBaseZoneProperties("soldungb", "Nagafen's Lair", -262.7f, -423.99f, -108.22f, 0, ZoneContinentType.Antonica);
-            SetZonewideEnvironmentAsIndoors(180, 30, 30, ZoneFogType.Heavy);
+            SetZonewideEnvironmentAsOutdoorsWithSky(180, 30, 30, ZoneFogType.Heavy, 0.5f, 1f);
             OverrideVertexColorIntensity(0.3);
             DisableSunlight();           
 
