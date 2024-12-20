@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             // TODO: Make this have a high value
-            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + (Configuration.CONFIG_SQL_GAMETELE_ROWID_START + Rows.Count) + ";";
+            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_END + ";";
         }
 
         public void AddRow(int mapID, string name, float x, float y, float z)

@@ -358,8 +358,9 @@ namespace EQWOWConverter
         // Start GUIDs for gameobjects
         public static readonly int CONFIG_SQL_GAMEOBJECT_GUID_START = 310000;
 
-        // Start row for `game_tele` records. (~2000-2200)
+        // Start row for `game_tele` records. (~2000-2400)
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
+        public static readonly int CONFIG_SQL_GAMETELE_ROWID_END = 2400;
 
         // Start ID for pool_template data rows (reserve 40k records)
         public static readonly int CONFIG_SQL_POOL_TEMPLATE_ID_START = 110000;
