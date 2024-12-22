@@ -89,6 +89,8 @@ namespace EQWOWConverter
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
             foreach (string topDirectory in topDirectories)
             {
+                Logger.WriteInfo(".", true, false);
+
                 // Get just the folder name itself for later
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
@@ -197,6 +199,8 @@ namespace EQWOWConverter
                     }
                 }
             }
+
+            Logger.WriteInfo("done", false, false);
 
             // Clean up the temp folder
             Directory.Delete(tempFolderRoot, true);

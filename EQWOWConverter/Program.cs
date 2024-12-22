@@ -29,7 +29,8 @@ internal class Program
         {   
             Logger.WriteInfo("");
             Logger.WriteInfo("Options:");
-            Logger.WriteInfo(" [1] - Condition Exported EQ Data");
+            Logger.WriteInfo(" [1] - Extract EQ Data");
+            Logger.WriteInfo(" [2] - Condition Extracted EQ Data");
             Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
             Logger.WriteInfo(" [X] - Exit");
             Logger.WriteInfo(" ");
@@ -54,15 +55,23 @@ internal class Program
                             break;
                         case "1":
                             {
-                                Logger.WriteInfo("Conditioning Exported EQ Data...");
+                                Logger.WriteInfo("Extracting EQ files...");
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.CONFIG_PATH_EQTRILOGY_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER) == true)
+                                    Logger.WriteInfo("Extraction completed successfully.");
+                                else
+                                    Logger.WriteError("Extraction failed!");
+                            } break;
+                        case "2":
+                            {
+                                Logger.WriteInfo("Conditioning Extracted EQ Data...");
                                 AssetConditioner conditioner = new AssetConditioner();
                                 bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
                                 if (condenseResult == false)
                                 {
-                                    Logger.WriteInfo("Exported EQ Data Conditioning Failed.");
+                                    Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
                                     break;
                                 }
-                                Logger.WriteInfo("Exported EQ Data Conditioning Succeeded.");
+                                Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
                                 if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
                                     Console.Beep();
                             }

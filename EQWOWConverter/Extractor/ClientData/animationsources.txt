@@ -1,0 +1,250 @@
+# Lantern Animation Sources
+
+# 1 - Human
+HUM,ELM
+HUF,ELF
+
+# 2 - Barbarian
+BAM,ELM
+BAF,ELF
+
+# 3 - Erudite
+ERM,ELM
+ERF,ELF
+
+# 5 - High Elf
+HIM,ELM
+HIF,ELF
+
+# 6 - Dark Elf
+DAM,ELM
+DAF,ELF
+
+# 7 - Half Elf
+HAM,ELM
+HAF,ELF
+
+# 9 - Troll
+TRM,OGF
+TRF,OGF
+
+# 10 - Ogre
+OGM,OGF
+
+# 11 - Halfling
+HOM,DWM
+HOF,DWF
+
+# 12 - Gnome
+GNM,DWM
+GNF,DWF
+
+# 15 - Brownie
+BRM,ELM
+BRF,ELF
+
+# 17 - Golem
+GOM,GIA
+GOL,GIA
+
+# 22 - Beetle
+BET,SPI
+
+# 23 - Kerra
+CPF,CPM
+
+# 27 - Froglok Ghoul
+FRG,FRO
+
+# 29 - Gargoyle
+GAM,GAR
+
+# 33 - Ghoul
+GHU,GOB
+
+# 44 - Freeport Guards
+FPM,ELM
+
+# 46 - Imp
+IMP,GAR
+
+# 47 - Griffin
+GRI,DRK
+
+# 48 - Kobold
+KOB,WER
+
+# 50 - Lion
+LIF,LIM
+
+# 53 - Minotaur
+MIN,GNN
+
+# 55 - Human Beggar
+BGM,ELM
+
+# 56 - Pixie
+PIF,FAF
+
+# 59 - Bloodgills
+BGG,KGO
+
+# 60 - Skeleton
+SKE,ELM
+
+# 63 - Tiger
+TIG,LIM
+
+# 67 - Highpass Citizen
+HHM,ELM
+
+# 70 - Zombie
+ZOM,ELM
+ZOF,ELF
+
+# 71 - Qeynos Citizen
+QCM,ELM
+QCF,ELF
+
+# 76 - Puma
+PUM,LIM
+
+# 77 - Neriak Citizen
+NGM,ELM
+
+# 78 - Erudin Citizen
+EGM,ELM
+
+# 81 - Rivervale Citizen
+RIM,DWM
+RIF,DWF
+
+# 83 - Skunk
+SKU,RAT
+
+# 86 - Sphinx
+SPH,DRK
+
+# 87 - Armadillo
+ARM,RAT
+
+# 88 - Clockwork Gnome
+CLM,DWM
+CLF,DWF
+CL,DWM
+
+# 90 - Halas Citizen
+HLM,ELM
+HLF,ELF
+
+# 92 - Grobb Citizen
+GRM,OGF
+GRF,OGF
+
+# 93 - Oggok Citizen
+OKM,OGF
+OKF,OGF
+
+# 94 - Kaladim Citizen
+KAM,DWM
+KAF,DWF
+KA,DWM
+
+# 106 - Felguard
+FEM,ELM
+FEF,ELF
+
+# 112 - Fayguard
+GFM,ELM
+GFF,ELF
+
+# 119 - Sabertooth Cat
+STC,LIM
+
+# 128 - Iksar
+IKF,IKM
+
+# 139 - Iksar Citizen (verify ICF)
+ICM,IKM
+ICF,IKM
+ICN,IKM
+
+# 150 - Erollisi (guess)
+ERO,ELF
+
+# 151 - Tribunal (guess)
+TRI,ELM
+
+# 153 - Bristlebane (guess)
+BRI,DWM
+
+# 154 - Fay Drake - this is only for the global export
+FDF,FDR
+
+# 155 - Sarnak Skeleton
+SSK,SRW
+
+# 156 - Ratman
+VRF,VRM
+
+# 158 - Wurm
+WUR,DRA
+
+# 161 - Iksar Skeleton
+IKS,IKM
+
+# 166 - Iksar Hand
+IKH,REA
+
+# 168 - Flying Monkey (guess)
+FMO,DRK
+
+# 169 - Brontotherium
+BTM,RHI
+
+# 170 - Snow Dervish (Guess)
+SDE,DML
+
+# 173 - Totem (guess)
+TOT,SCA
+
+# 174 - Cold Spectre
+SPC,SPE
+
+# 175 - Enchanted Armor (guess)
+ENA,ELM
+
+# 181 - Yak Man (Guess)
+YAK,GNN
+
+# 183 - Coldain
+COM,DWM
+COF,DWF
+COK,DWM
+
+# 184 - Velious Dragons
+DR2,TRK
+
+# 185 - Hag (Guess)
+HAG,ELF
+
+# 187 - Siren (Guess)
+SIR,ELF
+
+# 189 - Storm Giant
+STG,FSG
+
+# 192 - Clockwork Dragon
+CCD,TRK
+
+# 193 - Abhorent (Guess)
+ABH,ELF
+
+# 195 - Black and White Dragons
+BWD,TRK
+
+# 196 - Ghost Dragon
+GDR,DRA
+
+# 198 - Prismatic Dragon
+PRI,TRK

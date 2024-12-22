@@ -20,30 +20,15 @@ It is currently still in heavy development and things are changing daily.  Curre
 # Requirements
 - Windows build environment
 - AzerothCore based WoW 3.3.5 server
-- LaternExtractor fork (https://github.com/NathanHandley/LanternExtractor)
 - BLPNG Converter (or other PNG -> BLP conversion software)
 - Installed and unpatched client of the EverQuest Trilogy
-- Installed 3.3.5 WoW client, US version
+- Installed 3.3.5 WoW client, US version (with nosignature patch)
 
 # Instructions
 **Extracting Everquest Assets** 
 
-Use LaternExtractor (https://github.com/NathanHandley/LanternExtractor)
-- Edit 'settings.txt' inside the respective Release/Debug binary folder
-- Set the Everquest directory
-- Set ModelExportFormat = 0 (Intermediate)
-- Set ExportHiddenGeometry = true
-- Set ExportZoneWithObjects = true
-- Set ExportCharacterToSingleFolder = true
-- Set ExportEquipmentToSingleFolder = true
-- Set ExportSoundsToSingleFolder = true
-- Set CopyMusic = true
-- Execute LaternExtractor.exe
-- Enter command "all", push enter
-
-**Configure and build EQWOWConverter**
-
-Before building, set all of your paths propertly in Configuration.cs ("Paths and Files" section)
+Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
+Build and use EQWOWConverter and run the command "Extract EQ Data"
 
 **Condition the EQ objects** 
 
@@ -55,12 +40,11 @@ Use BLPNG Converter.  Use option BLP > Choose Folder  (select the conditioned as
 
 **Converting Everquest data into World of Warcraft data**
 
-Use EQWOWConverter
-- Run command "Convert EQ Data to WOW"
+Use EQWOWConverter and command "Convert EQ Data to WOW"
 
 **Update the AzerothCore Database**
 
-Run the scripts located into the exports directory subfolder \AzerothCoreSQLScripts\
+Run the scripts located into the exports directory subfolder \AzerothCoreSQLScripts\ (unless you set it to do it automatically in the config)
 
 **Regenerate map/vmap files for AzerothCore**
 

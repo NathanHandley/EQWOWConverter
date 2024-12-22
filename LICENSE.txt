@@ -2,6 +2,12 @@ The GNU V3 license herein does not necessarily apply to anything in the
 \Tools\ folder of the original source directory.  Every item inside the 
 \Tools\ folder has its own related copying or license agreements.  Also,
 \Assets\WorldData has a Credits.txt for those resources.
+
+Additionally, a portion of this project is licensed under the MIT 
+license. This is found in EQWOWConverter/Extractor, and has the
+respective License placed in that folder.  Modification/enhancements to
+that code are licensed under the GPL, with appropriate annotations
+in the modified headers.
 					
 					GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
