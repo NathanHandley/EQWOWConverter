@@ -14,8 +14,7 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Point Sounds (campfires, running water, etc)
 - Ambient Sounds
 - Music
-- Creatures
- - Including Spawn points and pathing
+- Creatures (including Spawn points and pathing)
 
 # Requirements
 - Windows build environment
