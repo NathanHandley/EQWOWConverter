@@ -73,14 +73,14 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool CONFIG_DEPLOY_CLIENT_FILES = true;
+        public static readonly bool CONFIG_DEPLOY_CLIENT_FILES = false;
 
         // If true, deploy to the server files/data after building
-        public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
+        public static readonly bool CONFIG_DEPLOY_SERVER_FILES = false;
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
+        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = false;
 
         // If true, DBC files are extracted every time.
         public static readonly bool CONFIG_EXTRACT_DBC_FILES = true;
@@ -136,6 +136,9 @@ namespace EQWOWConverter
         // How many insert rows to restrict in a SQL output file
         public static readonly int CONFIG_GENERATE_SQL_FILE_BATCH_SIZE = 50000;
         public static readonly int CONFIG_GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 5000;
+
+        // How many file names to batch up when converting 
+        public static readonly int CONFIG_GENERATE_BLPCONVERTBATCHSIZE = 50;
 
         //=====================================================================
         // Zone General

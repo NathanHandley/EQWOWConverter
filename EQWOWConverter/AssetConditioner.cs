@@ -497,6 +497,114 @@ namespace EQWOWConverter
             Logger.WriteInfo(" done", false, false);
         }
 
+        public bool ConvertPNGFilesToBLP()
+        {
+            // Make sure the tool is there
+            string blpConverterFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            if (File.Exists(blpConverterFullPath) == false)
+            {
+                Logger.WriteError("Failed to convert images files. '" + blpConverterFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                return false;
+            }
+
+            // Build paths and store in a process array
+            List<string> textureFoldersToProcess = new List<string>();
+            string characterTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+            if (Directory.Exists(characterTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the character textures folder did not exist at '" + characterTexturesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(characterTexturesFolder);
+            string equipmentTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+            if (Directory.Exists(characterTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the equipment textures folder did not exist at '" + equipmentTexturesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(equipmentTexturesFolder);
+            string liquidSurfacesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "liquidsurfaces");
+            if (Directory.Exists(liquidSurfacesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the liquid surfaces folder did not exist at '" + liquidSurfacesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(liquidSurfacesFolder);
+            string miscImagesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
+            if (Directory.Exists(miscImagesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the misc images folder did not exist at '" + miscImagesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(miscImagesFolder);
+            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
+            if (Directory.Exists(objectTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the object textures folder did not exist at '" + objectTexturesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(objectTexturesFolder);
+            string zonesRootFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
+            if (Directory.Exists(zonesRootFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the zones root folder did not exist at '" + zonesRootFolder + "'");
+                return false;
+            }
+            string[] zoneDirectories = Directory.GetDirectories(zonesRootFolder);
+            foreach (string zoneDirectory in zoneDirectories)
+            {
+                string curZoneTextureFolder = Path.Combine(zoneDirectory, "Textures");
+                if (Directory.Exists(curZoneTextureFolder) == false)
+                {
+                    Logger.WriteError("Failed to convert png files to blp, as the zone '" + curZoneTextureFolder + "' had no Textures folder");
+                    return false;
+                }
+                textureFoldersToProcess.Add(curZoneTextureFolder);
+            }
+
+            // Get all the individual files to process
+            List<string> pngFilesToConvert = new List<string>();
+            foreach(string folderToProcess in textureFoldersToProcess)
+            {
+                string[] curFolderPNGFiles = Directory.GetFiles(folderToProcess, "*.png");
+                foreach(string curPngFile in curFolderPNGFiles)
+                {
+                    Logger.WriteDetail("Adding file '" + curPngFile + "' for conversion");
+                    pngFilesToConvert.Add(curPngFile);
+                }
+            }
+
+            // Convert them
+            Logger.WriteInfo("Converting png files to blp files...", true);
+            StringBuilder curFileArgListSB = new StringBuilder();
+            for(int i = 0; i < pngFilesToConvert.Count; i++)
+            {
+                string curFile = pngFilesToConvert[i];
+                curFileArgListSB.Append(" \"");
+                curFileArgListSB.Append(curFile);
+                curFileArgListSB.Append("\"");
+                if (i != 0 && i % Configuration.CONFIG_GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
+                {
+                    Logger.WriteDetail("Converting png files '" + curFileArgListSB.ToString() + "'");
+                    string args = "/M " + curFileArgListSB.ToString();
+                    System.Diagnostics.Process process = new System.Diagnostics.Process();
+                    process.StartInfo.RedirectStandardOutput = true;
+                    process.StartInfo.Arguments = args;
+                    process.StartInfo.FileName = blpConverterFullPath;
+                    process.Start();
+                    //process.WaitForExit();
+                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                    Console.Title = "EverQuest to WoW Converter";
+                    curFileArgListSB.Clear();
+
+                    Logger.WriteInfo(".", true, false);
+                }
+            }
+
+            Logger.WriteInfo("done", false, false);
+            return true;
+        }
+
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {
             // Look for texture collisions for different texture files

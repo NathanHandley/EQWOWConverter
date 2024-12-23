@@ -16,6 +16,7 @@
 
 using EQWOWConverter;
 using System.Runtime.CompilerServices;
+using static Mysqlx.Expect.Open.Types;
 
 internal class Program
 {
@@ -29,9 +30,14 @@ internal class Program
         {   
             Logger.WriteInfo("");
             Logger.WriteInfo("Options:");
-            Logger.WriteInfo(" [1] - Extract EQ Data");
-            Logger.WriteInfo(" [2] - Condition Extracted EQ Data");
-            Logger.WriteInfo(" [5] - Convert EQ Data to WOW");
+            Logger.WriteInfo(" ");
+            Logger.WriteInfo(" [1] - Perform Everything (Extraction to Conversion, do this if not sure)");
+            Logger.WriteInfo(" ");
+            Logger.WriteInfo(" [2] - Extract EQ Data ONLY");
+            Logger.WriteInfo(" [3] - Condition Extracted EQ Data ONLY");
+            Logger.WriteInfo(" [4] - Convert PNG files into BLP ONLY");
+            Logger.WriteInfo(" [5] - Convert EQ Data to WOW ONLY");
+            Logger.WriteInfo(" ");
             Logger.WriteInfo(" [X] - Exit");
             Logger.WriteInfo(" ");
             Logger.WriteInfo("Command (Default: X): ", true);
@@ -43,6 +49,7 @@ internal class Program
             }
             else
             {
+                Logger.WriteInfo(" ");
                 try
                 {
                     switch (enteredCommand.ToUpper())
@@ -55,23 +62,80 @@ internal class Program
                             break;
                         case "1":
                             {
+                                Logger.WriteInfo("Performing all steps to convert EQ to WoW...");
+
+                                // Extraction
+                                Logger.WriteInfo("Extracting EQ files...");
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.CONFIG_PATH_EQTRILOGY_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER) == true)
+                                    Logger.WriteInfo("Extraction completed successfully.");
+                                else
+                                {
+                                    Logger.WriteError("Extraction failed!");
+                                    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                        Console.Beep();
+                                    continue;
+                                }
+
+                                // Condition
+                                Logger.WriteInfo("Conditioning EQ files...");
+                                AssetConditioner conditioner = new AssetConditioner();
+                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
+                                if (condenseResult == false)
+                                {
+                                    Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
+                                    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                        Console.Beep();
+                                    continue;
+                                }
+
+                                // Convert PNG to BLP
+                                conditioner.ConvertPNGFilesToBLP();
+
+                                // Convert to WoW
+                                AssetConverter converter = new AssetConverter();
+                                bool conversionResult = converter.ConvertEQDataToWOW();
+                                if (conversionResult == false)
+                                {
+                                    Logger.WriteInfo("EQ to WoW conversion Failed.");
+                                    if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                        Console.Beep();
+                                    continue;
+                                }
+
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
+                                Logger.WriteInfo("All steps completed, and the EQ data is converted to WoW");
+                            }
+                            break;
+                        case "2":
+                            {
                                 Logger.WriteInfo("Extracting EQ files...");
                                 if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.CONFIG_PATH_EQTRILOGY_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER) == true)
                                     Logger.WriteInfo("Extraction completed successfully.");
                                 else
                                     Logger.WriteError("Extraction failed!");
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
                             } break;
-                        case "2":
+                        case "3":
                             {
-                                Logger.WriteInfo("Conditioning Extracted EQ Data...");
+                                Logger.WriteInfo("Conditioning EQ files...");
                                 AssetConditioner conditioner = new AssetConditioner();
                                 bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                                    Console.Beep();
                                 if (condenseResult == false)
-                                {
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
-                                    break;
-                                }
-                                Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
+                                else
+                                    Logger.WriteInfo("Extracted EQ Data Conditioning Succeeded.");
+                            }
+                            break;
+                        case "4":
+                            {
+                                AssetConditioner conditioner = new AssetConditioner();
+                                conditioner.ConvertPNGFilesToBLP();
                                 if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
                                     Console.Beep();
                             }
@@ -80,13 +144,10 @@ internal class Program
                             {
                                 AssetConverter converter = new AssetConverter();
                                 bool conversionResult = converter.ConvertEQDataToWOW();
-                                if (conversionResult == false)
-                                {
-                                    Logger.WriteInfo("EQ to WoW conversion Failed.");
-                                    break;
-                                }
                                 if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
                                     Console.Beep();
+                                if (conversionResult == false)
+                                    Logger.WriteInfo("EQ to WoW conversion Failed.");
                             }
                             break;
                         default:

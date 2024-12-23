@@ -20,36 +20,14 @@ It is currently still in heavy development and things are changing daily.  Curre
 # Requirements
 - Windows build environment
 - AzerothCore based WoW 3.3.5 server
-- BLPNG Converter (or other PNG -> BLP conversion software)
 - Installed and unpatched client of the EverQuest Trilogy
 - Installed 3.3.5 WoW client, US version (with nosignature patch)
 
 # Instructions
-**Extracting Everquest Assets** 
-
-Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
-Build and use EQWOWConverter and run the command "Extract EQ Data"
-
-**Condition the EQ objects** 
-
-Use EQWOWConverter and run the command "Condition Exported EQ Data"
-
- **Converting EQ texture assets into BLP**
-
-Use BLPNG Converter.  Use option BLP > Choose Folder  (select the conditioned assets folder)
-
-**Converting Everquest data into World of Warcraft data**
-
-Use EQWOWConverter and command "Convert EQ Data to WOW"
-
-**Update the AzerothCore Database**
-
-Run the scripts located into the exports directory subfolder \AzerothCoreSQLScripts\ (unless you set it to do it automatically in the config)
-
-**Regenerate map/vmap files for AzerothCore**
-
-Re-run the map_extractor, vmap4_assembler, etc.
-NOTE: Requires a vmap4_extractor with at least this pull request merged: https://github.com/azerothcore/azerothcore-wotlk/pull/20822
+1. Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
+2. Build and use EQWOWConverter and run the command "Perform Everything"
+3. Deploy your files. Alternately, you can set the configs in Deployment Rules so that they deploy for you
+4. Regenaret map/vmap files for the server
 
 # Special Thanks
 In no particular order...
