@@ -586,7 +586,7 @@ namespace EQWOWConverter
                 if (i != 0 && i % Configuration.CONFIG_GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
                 {
                     Logger.WriteDetail("Converting png files '" + curFileArgListSB.ToString() + "'");
-                    string args = "/M " + curFileArgListSB.ToString();
+                    string args = "/M /FBLP_DXT5 " + curFileArgListSB.ToString();
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.Arguments = args;
