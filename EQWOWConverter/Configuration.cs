@@ -92,9 +92,9 @@ namespace EQWOWConverter
         // Generator Rules
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
-        // 0.3 is the default.  A value of 0.245 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door
+        // A value of 0.25 seems to be 1:1 with EQ.  0.28 allows humans and 0.4 allows taurens to enter rivervale bank door
         public static readonly float CONFIG_GENERATE_WORLD_SCALE = 0.29f;
-        public static readonly float CONFIG_GENERATE_CREATURE_SCALE = 0.21f;
+        public static readonly float CONFIG_GENERATE_CREATURE_SCALE = 0.255f;
 
         // If true, then objects are generated
         public static readonly bool CONFIG_GENERATE_OBJECTS = true;
