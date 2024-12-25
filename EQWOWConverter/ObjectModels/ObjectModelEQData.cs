@@ -71,6 +71,10 @@ namespace EQWOWConverter.ObjectModels
             // Load skeleton
             LoadSkeletonData(inputObjectName, inputObjectFolder);
 
+            // Delete body mesh data for Dervish
+            if (raceID == 100)
+                SkeletonData.MeshNames.Remove("der");
+
             // Determine what mesh names to use for a given variation
             List<string> meshNames = new List<string>();
             if (creatureModelTemplate.HelmTextureIndex == 0)
@@ -87,7 +91,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     if (meshName.Contains("he0"))
                         helmTextureNames.Add(meshName);
-                    else
+                    else 
                         bodyTextureNames.Add(meshName);
                 }
                 foreach (string meshName in SkeletonData.SecondaryMeshNames)
