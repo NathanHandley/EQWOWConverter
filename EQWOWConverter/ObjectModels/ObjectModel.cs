@@ -553,22 +553,22 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.PlayerName:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "pe", "root");
                     }
                     break;
                 case ObjectModelAttachmentType.HeadTop:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.HandLeft_ItemVisual2:
                 case ObjectModelAttachmentType.SpellLeftHand:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("l_point", "pe", "root");
                     } break;
                 case ObjectModelAttachmentType.HandRight_ItemVisual1:
                 case ObjectModelAttachmentType.SpellRightHand:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "pe", "root");
                     } break;
                 default:
                     {
