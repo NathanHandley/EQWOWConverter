@@ -139,6 +139,28 @@ namespace EQWOWConverter.ObjectModels
             else
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
 
+            // Swap out any face textures for multi-face races
+            if (creatureModelTemplate.FaceIndex > 0)
+            {
+                if ((raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
+                {
+                    string faceTextureStart = string.Concat(inputObjectName, "he00");
+                    faceTextureStart = faceTextureStart.ToLower();
+                    foreach (Material material in Materials)
+                    {
+                        if (material.TextureNames.Count > 0 && material.TextureNames[0].ToLower().StartsWith(faceTextureStart))
+                        {
+                            char curTextureLastID = material.TextureNames[0].Last();
+                            string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
+
+                            // Only switch if that texture exists
+                            if (File.Exists(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
+                                material.TextureNames[0] = newFaceTextureName;
+                        }
+                    }
+                }
+            }
+
             // Load the rest
             LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelTemplate.GenderType));
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);

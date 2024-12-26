@@ -36,6 +36,7 @@ namespace EQWOWConverter.Creatures
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
         public int TextureIndex = 0;
         public int HelmTextureIndex = 0;
+        public int FaceIndex = 0;
 
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
         private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START;
@@ -57,6 +58,7 @@ namespace EQWOWConverter.Creatures
             GenderType = creatureTemplate.GenderType;
             TextureIndex = creatureTemplate.TextureID;
             HelmTextureIndex = creatureTemplate.HelmTextureID;
+            FaceIndex = creatureTemplate.FaceID;
         }
 
         static public void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
@@ -88,7 +90,8 @@ namespace EQWOWConverter.Creatures
                     // Skip if this model template already exists
                     if (modelTemplate.GenderType == creatureTemplate.GenderType && 
                         modelTemplate.HelmTextureIndex == creatureTemplate.HelmTextureID &&
-                        modelTemplate.TextureIndex == creatureTemplate.TextureID)
+                        modelTemplate.TextureIndex == creatureTemplate.TextureID &&
+                        modelTemplate.FaceIndex == creatureTemplate.FaceID)
                     {
                         existingModel = modelTemplate;
                         break;
@@ -193,6 +196,7 @@ namespace EQWOWConverter.Creatures
             }
             sb.Append("h" + HelmTextureIndex);
             sb.Append("t" + TextureIndex);
+            sb.Append("f" + FaceIndex);
             return sb.ToString();
         }
 

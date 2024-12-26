@@ -34,6 +34,7 @@ namespace EQWOWConverter.Creatures
         public int Class = 1;
         public int BodyType = 24; // This is common for the body type
         public int HP = 1;
+        public int FaceID = 0;
         public float Size = 0f;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
         public int TextureID = 0;
@@ -107,12 +108,6 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Class = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.BodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
-                newCreatureTemplate.Size = float.Parse(rowBlocks[12]);
-                if (newCreatureTemplate.Size <= 0)
-                {
-                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
-                    newCreatureTemplate.Size = 1;
-                }
                 int genderID = int.Parse(rowBlocks[9]);
                 switch (genderID)
                 {
@@ -122,6 +117,18 @@ namespace EQWOWConverter.Creatures
                 }
                 newCreatureTemplate.TextureID = int.Parse(rowBlocks[10]);
                 newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[11]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[12]);
+                if (newCreatureTemplate.Size <= 0)
+                {
+                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
+                    newCreatureTemplate.Size = 1;
+                }
+                newCreatureTemplate.FaceID = int.Parse(rowBlocks[13]);
+                if (newCreatureTemplate.FaceID > 9)
+                {
+                    Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
+                    newCreatureTemplate.FaceID = 0;
+                }
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
