@@ -61,17 +61,11 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
-            // For playable races, expand out the texture list
-            int raceID = creatureModelTemplate.Race.ID;
-            if (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130)
-            {
-                // TODO: Do something unique here for robes and whatnot
-            }
-
             // Load skeleton
             LoadSkeletonData(inputObjectName, inputObjectFolder);
 
             // Delete body mesh data for Dervish
+            int raceID = creatureModelTemplate.Race.ID;
             if (raceID == 100)
                 SkeletonData.MeshNames.Remove("der");
 
@@ -127,6 +121,14 @@ namespace EQWOWConverter.ObjectModels
             if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
                 meshNames.Add("eye");
 
+            // For robe-capable races, swap the chest geometry (erudites don't have more than one geometry)
+            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+            {
+                meshNames.Remove(inputObjectName.ToLower());
+                meshNames.Add(string.Concat(inputObjectName.ToLower(), "01"));
+            }
+
+            // Load the render meshes
             LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
 
             // Load the materials, with special logic for invisible man
@@ -139,25 +141,42 @@ namespace EQWOWConverter.ObjectModels
             else
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
 
-            // Swap out any face textures for multi-face races
-            if (creatureModelTemplate.FaceIndex > 0)
+            // For multi-face races, swap the faces
+            if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
             {
-                if ((raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
+                string faceTextureStart = string.Concat(inputObjectName, "he00");
+                faceTextureStart = faceTextureStart.ToLower();
+                foreach (Material material in Materials)
                 {
-                    string faceTextureStart = string.Concat(inputObjectName, "he00");
-                    faceTextureStart = faceTextureStart.ToLower();
-                    foreach (Material material in Materials)
+                    if (material.TextureNames.Count > 0 && material.TextureNames[0].ToLower().StartsWith(faceTextureStart))
                     {
-                        if (material.TextureNames.Count > 0 && material.TextureNames[0].ToLower().StartsWith(faceTextureStart))
-                        {
-                            char curTextureLastID = material.TextureNames[0].Last();
-                            string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
+                        char curTextureLastID = material.TextureNames[0].Last();
+                        string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
 
-                            // Only switch if that texture exists
-                            if (File.Exists(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
-                                material.TextureNames[0] = newFaceTextureName;
-                        }
+                        // Only switch if that texture exists
+                        if (File.Exists(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
+                            material.TextureNames[0] = newFaceTextureName;
                     }
+                }
+            }
+
+            // For robe-capable races, swap the chest texture
+            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+            {
+                // Calculate what robe graphics to use
+                int robeIndex = creatureModelTemplate.TextureIndex - 6;
+                if (robeIndex >= 0 && robeIndex <= 10)
+                {
+                    string replaceFromText = "clk04";
+                    string replaceToText;
+                    if (robeIndex == 10)
+                        replaceToText = "clk10";
+                    else
+                        replaceToText = string.Concat("clk0", robeIndex.ToString());
+
+                    foreach (Material material in Materials)
+                        if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
+                            material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
                 }
             }
 
