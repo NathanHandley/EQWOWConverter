@@ -121,8 +121,8 @@ namespace EQWOWConverter.ObjectModels
             if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
                 meshNames.Add("eye");
 
-            // For robe-capable races, swap the chest geometry (erudites don't have more than one geometry)
-            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+            // For robe-capable races, swap the chest geometry
+            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
             {
                 meshNames.Remove(inputObjectName.ToLower());
                 meshNames.Add(string.Concat(inputObjectName.ToLower(), "01"));
@@ -160,11 +160,13 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // For robe-capable races, swap the chest texture
+            // For robe-capable races, swap the textures
             if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
             {
-                // Calculate what robe graphics to use
+                // Calculate what body robe graphics to use
                 int robeIndex = creatureModelTemplate.TextureIndex - 6;
+
+                // Body graphics
                 if (robeIndex >= 0 && robeIndex <= 10)
                 {
                     string replaceFromText = "clk04";
@@ -173,6 +175,21 @@ namespace EQWOWConverter.ObjectModels
                         replaceToText = "clk10";
                     else
                         replaceToText = string.Concat("clk0", robeIndex.ToString());
+
+                    foreach (Material material in Materials)
+                        if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
+                            material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
+                }
+
+                // Head graphics (erudite only)
+                if (raceID == 3 && (robeIndex >= 0 && robeIndex <= 10))
+                {
+                    string replaceFromText = string.Concat("clk", inputObjectName.ToLower(), "06");
+                    string replaceToText;
+                    if (robeIndex == 10)
+                        replaceToText = "clk1006";
+                    else
+                        replaceToText = string.Concat("clk0", robeIndex.ToString(), "06");
 
                     foreach (Material material in Materials)
                         if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
