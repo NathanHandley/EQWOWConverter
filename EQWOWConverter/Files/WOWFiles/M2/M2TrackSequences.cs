@@ -30,6 +30,11 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 TimestampsOffset = 0;
         public UInt32 ValuesOffset = 0;
 
+        public M2TrackSequences()
+        {
+            TrackSequences = new ObjectModelTrackSequences<T>();
+        }
+
         public M2TrackSequences(ObjectModelTrackSequences<T> trackSequences)
         {
             TrackSequences = trackSequences;

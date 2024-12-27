@@ -140,7 +140,8 @@ namespace EQWOWConverter.WOWFiles
             List<M2SkinSubMesh> subMeshes = new List<M2SkinSubMesh>();
             for (UInt16 materialIter = 0; materialIter < modelObject.ModelMaterials.Count; materialIter++)
             {
-                int curMaterialIndex = Convert.ToInt32(modelObject.ModelMaterials[materialIter].Material.Index);
+                ObjectModelMaterial curModelMaterial = modelObject.ModelMaterials[materialIter];
+                int curMaterialIndex = Convert.ToInt32(curModelMaterial.Material.Index);
 
                 // Count number of triangles and find starting offset
                 int startTriangleIndex = -1;
@@ -202,7 +203,8 @@ namespace EQWOWConverter.WOWFiles
 
                 // Create a texture unit
                 UInt16 transparencyLookupIndex = modelObject.ModelTextureTransparencyLookups[materialIter];
-                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, transparencyLookupIndex);
+                M2SkinTextureUnit curTextureUnit = new M2SkinTextureUnit(materialIter, materialIter, materialIter, transparencyLookupIndex,
+                    curModelMaterial.ColorIndex);
                 textureUnits.Add(curTextureUnit);
             }
 

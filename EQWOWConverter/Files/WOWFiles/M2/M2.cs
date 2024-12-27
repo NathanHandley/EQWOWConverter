@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Int16> BoneKeyLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<ObjectModelVertex> Vertices = new M2GenericArrayByOffset<ObjectModelVertex>();
         private UInt32 SkinProfileCount = 0;
-        private M2GenericArrayByOffset<M2Color> Colors = new M2GenericArrayByOffset<M2Color>();
+        private M2ArrayWithTrackedObjectsByOffset<M2Color> Colors = new M2ArrayWithTrackedObjectsByOffset<M2Color>();
         private M2TextureArrayByOffset Textures;
         private M2TrackedSequencesArrayByOffset<Fixed16> TextureTransparencySequences = new M2TrackedSequencesArrayByOffset<Fixed16>();
         private M2TextureAnimationArrayByOffset TextureAnimations = new M2TextureAnimationArrayByOffset();
@@ -109,7 +109,8 @@ namespace EQWOWConverter.WOWFiles
             SkinProfileCount = 1;  // Fix to 1 for now
 
             // Color and Alpha Animation Definitions
-            // none for now
+            foreach (ColorRGBf color in wowObjectModel.ModelMaterialColors)
+                Colors.AddElement(new M2Color(color, wowObjectModel.ModelAnimations.Count));
 
             // Textures
             Textures.AddModelTextures(wowObjectModel.ModelTextures);

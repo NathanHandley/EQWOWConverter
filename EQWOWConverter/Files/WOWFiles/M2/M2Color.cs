@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.ObjectModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,17 +24,42 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class M2Color : IByteSerializable
+    internal class M2Color : IOffsetByteSerializable
     {
-        public UInt32 GetBytesSize()
+        M2TrackSequences<ColorRGBf> ColorTracks = new M2TrackSequences<ColorRGBf>();
+        M2TrackSequences<Fixed16> AlphaTracks = new M2TrackSequences<Fixed16>(); // 32767 = Opaque, 0 = Transparent
+        
+        public M2Color(ColorRGBf color, int numOfAnimations)
         {
-            return 0;
+            for (int i = 0; i < numOfAnimations; i++)
+            {
+                ColorTracks.TrackSequences.AddSequence();
+                ColorTracks.TrackSequences.AddValueToLastSequence(0, color);
+                AlphaTracks.TrackSequences.AddSequence();
+                AlphaTracks.TrackSequences.AddValueToLastSequence(0, new Fixed16(32767));
+            }
         }
 
-        public List<byte> ToBytes()
+        public UInt32 GetHeaderSize()
+        {
+            UInt32 size = 0;
+            size += ColorTracks.GetHeaderSize();
+            size += AlphaTracks.GetHeaderSize();
+            return size;
+        }
+
+        public List<byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
+            bytes.AddRange(ColorTracks.GetHeaderBytes());
+            bytes.AddRange(AlphaTracks.GetHeaderBytes());
             return bytes;
+        }
+
+        public void AddDataBytes(ref List<byte> byteBuffer)
+        {
+            ColorTracks.AddDataBytes(ref byteBuffer);
+            AlphaTracks.AddDataBytes(ref byteBuffer);
         }
     }
 }

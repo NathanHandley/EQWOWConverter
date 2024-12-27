@@ -38,7 +38,8 @@ namespace EQWOWConverter.WOWFiles
         public UInt16 TextureTransparencyLookupIndex = 0;
         public UInt16 TextureAnimationLookupIndex = 0;
         
-        public M2SkinTextureUnit(UInt16 subMeshID, UInt16 materialIndex, UInt16 textureLookupIndex, UInt16 transparencyLookupIndex)
+        public M2SkinTextureUnit(UInt16 subMeshID, UInt16 materialIndex, UInt16 textureLookupIndex, UInt16 transparencyLookupIndex,
+            Int16 colorIndex)
         {
             MaterialIndex = materialIndex;
             TextureLookupIndex = textureLookupIndex;
@@ -46,6 +47,7 @@ namespace EQWOWConverter.WOWFiles
             GeosetIndex = subMeshID; // I'm not 100% sure why this is the same as submeshID, but data in WOTLK skins seem to do that
             TextureAnimationLookupIndex = textureLookupIndex; // Maintaining 1:1 across, but revisit if that changes
             TextureTransparencyLookupIndex = transparencyLookupIndex;
+            ColorIndex = colorIndex;
         }
 
         public List<byte> ToBytes()

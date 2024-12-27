@@ -60,6 +60,7 @@ namespace EQWOWConverter.ObjectModels
         public List<Int16> ModelTextureAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
+        public List<ColorRGBf> ModelMaterialColors = new List<ColorRGBf>();
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
         public Sound? SoundIdleLoop = null;
@@ -72,6 +73,8 @@ namespace EQWOWConverter.ObjectModels
         public List<TriangleFace> CollisionTriangles = new List<TriangleFace>();
         public BoundingBox CollisionBoundingBox = new BoundingBox();
         public float CollisionSphereRaidus = 0f;
+
+        private CreatureModelTemplate? CreatureModelTemplate = null;
 
         public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1, float modelLift = 0)
         {
@@ -99,6 +102,9 @@ namespace EQWOWConverter.ObjectModels
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate);
+
+            // Save the template
+            CreatureModelTemplate = creatureModelTemplate;
 
             // Load it
             if (EQObjectModelData.CollisionVertices.Count == 0)
@@ -846,6 +852,79 @@ namespace EQWOWConverter.ObjectModels
                     ++curIndex;
                 }
             }
+
+            // Perform color tinting if this was a creature and had colors set
+            if (CreatureModelTemplate != null && CreatureModelTemplate.ColorTint != null)
+            {
+                CreatureTemplateColorTint colorTint = CreatureModelTemplate.ColorTint;
+
+                // Head
+                if (colorTint.HelmColor != null)
+                {
+                    SetMaterialColorByTextureNameFragment("helm", colorTint.HelmColor);
+                    SetMaterialColorByTextureNameFragment("chain", colorTint.HelmColor);
+                }
+
+                // Chest
+                if (colorTint.ChestColor != null)
+                {
+                    SetMaterialColorByTextureNameFragmentAtPosition("ch", 3, colorTint.ChestColor);
+                    SetMaterialColorByTextureNameFragment("clk", colorTint.ChestColor);
+                }
+
+                // Arms
+                if (colorTint.ArmsColor != null)
+                    SetMaterialColorByTextureNameFragmentAtPosition("ua", 3, colorTint.ArmsColor);
+
+                // Bracer
+                if (colorTint.BracerColor != null)
+                    SetMaterialColorByTextureNameFragmentAtPosition("fa", 3, colorTint.BracerColor);
+
+                // Hands
+                if (colorTint.HandsColor != null)
+                    SetMaterialColorByTextureNameFragmentAtPosition("hn", 3, colorTint.HandsColor);
+
+                // Legs
+                if (colorTint.LegsColor != null)
+                    SetMaterialColorByTextureNameFragmentAtPosition("lg", 3, colorTint.LegsColor);
+
+                // Feet
+                if (colorTint.FeetColor != null)
+                    SetMaterialColorByTextureNameFragmentAtPosition("ft", 3, colorTint.FeetColor);
+            }
+        }
+
+        private void SetMaterialColorByTextureNameFragment(string textureNameFragmentToMatch, ColorRGBf color)
+        {
+            bool materialFound = false;
+            foreach(ObjectModelMaterial objectModelMaterial in ModelMaterials)
+            {
+                if (objectModelMaterial.Material.TextureNames.Count > 0 &&
+                    objectModelMaterial.Material.TextureNames[0].Contains(textureNameFragmentToMatch) == true)
+                {
+                    objectModelMaterial.ColorIndex = Convert.ToInt16(ModelMaterialColors.Count);
+                    materialFound = true;
+                }
+            }
+            if (materialFound == true)
+                ModelMaterialColors.Add(new ColorRGBf(color));
+        }
+
+        private void SetMaterialColorByTextureNameFragmentAtPosition(string textureNameFragmentToMatch, int positionOffset, ColorRGBf color)
+        {
+            bool materialFound = false;
+            foreach (ObjectModelMaterial objectModelMaterial in ModelMaterials)
+            {
+                if (objectModelMaterial.Material.TextureNames.Count > 0 &&
+                    objectModelMaterial.Material.TextureNames[0].Length >= (textureNameFragmentToMatch.Length + positionOffset) &&
+                    objectModelMaterial.Material.TextureNames[0].Substring(positionOffset, textureNameFragmentToMatch.Length) == textureNameFragmentToMatch)
+                {
+                    objectModelMaterial.ColorIndex = Convert.ToInt16(ModelMaterialColors.Count);
+                    materialFound = true;
+                }
+            }
+            if (materialFound == true)
+                ModelMaterialColors.Add(new ColorRGBf(color));
         }
 
         private void ApplyCustomCollision(ObjectModelCustomCollisionType customCollisionType, ref List<Vector3> collisionVertices, ref List<TriangleFace> collisionTriangleFaces)

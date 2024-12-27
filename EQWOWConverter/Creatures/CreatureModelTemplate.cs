@@ -37,6 +37,8 @@ namespace EQWOWConverter.Creatures
         public int TextureIndex = 0;
         public int HelmTextureIndex = 0;
         public int FaceIndex = 0;
+        public int ColorTintID = 0;
+        public CreatureTemplateColorTint? ColorTint = null;
 
         private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
         private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START;
@@ -59,6 +61,18 @@ namespace EQWOWConverter.Creatures
             TextureIndex = creatureTemplate.TextureID;
             HelmTextureIndex = creatureTemplate.HelmTextureID;
             FaceIndex = creatureTemplate.FaceID;
+
+            if (creatureTemplate.ColorTintID != 0)
+            {
+                Dictionary<int, CreatureTemplateColorTint> colorTints = CreatureTemplateColorTint.GetCreatureTemplateColorTints();
+                if (colorTints.ContainsKey(creatureTemplate.ColorTintID) == false)
+                    Logger.WriteError("No color tint ID of '" + creatureTemplate.ColorTintID + "' found");
+                else
+                {
+                    ColorTint = colorTints[creatureTemplate.ColorTintID];
+                    ColorTintID = creatureTemplate.ColorTintID;
+                }
+            }
         }
 
         static public void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
@@ -91,7 +105,8 @@ namespace EQWOWConverter.Creatures
                     if (modelTemplate.GenderType == creatureTemplate.GenderType && 
                         modelTemplate.HelmTextureIndex == creatureTemplate.HelmTextureID &&
                         modelTemplate.TextureIndex == creatureTemplate.TextureID &&
-                        modelTemplate.FaceIndex == creatureTemplate.FaceID)
+                        modelTemplate.FaceIndex == creatureTemplate.FaceID &&
+                        modelTemplate.ColorTintID == creatureTemplate.ColorTintID)
                     {
                         existingModel = modelTemplate;
                         break;
@@ -197,6 +212,7 @@ namespace EQWOWConverter.Creatures
             sb.Append("h" + HelmTextureIndex);
             sb.Append("t" + TextureIndex);
             sb.Append("f" + FaceIndex);
+            sb.Append("c" + ColorTintID);
             return sb.ToString();
         }
 

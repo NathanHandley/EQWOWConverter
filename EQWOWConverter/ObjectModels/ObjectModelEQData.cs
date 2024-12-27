@@ -31,7 +31,6 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelEQData
     {
         public MeshData MeshData = new MeshData();
-        public AnimatedVertices AnimatedVertices = new AnimatedVertices(); // TODO: May not be in use, consider deleting
         public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
         public Dictionary<string, Animation> Animations = new Dictionary<string, Animation>();
