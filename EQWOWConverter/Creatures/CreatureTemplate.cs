@@ -136,6 +136,17 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
                 newCreatureTemplate.SubName = newCreatureTemplate.SubName.Replace('_', ' ');
 
+                // Special logic for a few variations of kobolds, which look wrong if not adjusted
+                if (newCreatureTemplate.RaceID == 48)
+                {
+                    if  (newCreatureTemplate.TextureID == 2 || (newCreatureTemplate.TextureID == 1 && newCreatureTemplate.HelmTextureID == 0))
+                    {
+                        newCreatureTemplate.TextureID = 0;
+                        newCreatureTemplate.HelmTextureID = 0;
+                        newCreatureTemplate.FaceID = 0;
+                    }
+                }
+
                 // Add ID if debugging for it is true
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();

@@ -31,7 +31,7 @@ internal class Program
             Logger.WriteInfo("");
             Logger.WriteInfo("Options:");
             Logger.WriteInfo(" ");
-            Logger.WriteInfo(" [1] - Perform Everything (Extraction to Conversion, do this if not sure)");
+            Logger.WriteInfo(" [1] - Perform Everything (Do this if not sure)");
             Logger.WriteInfo(" ");
             Logger.WriteInfo(" [2] - Extract EQ Data ONLY");
             Logger.WriteInfo(" [3] - Condition Extracted EQ Data ONLY");

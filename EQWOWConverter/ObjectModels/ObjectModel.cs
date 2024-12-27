@@ -907,7 +907,7 @@ namespace EQWOWConverter.ObjectModels
                     objectModelMaterial.Material.TextureNames[0].Contains(textureNameFragmentToMatch) == true)
                 {
                     string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
-                    ImageTool.GenerateColoredTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    ImageTool.GenerateColoredCreatureTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
                     objectModelMaterial.Material.TextureNames[0] = newTextureName;
                     if (GeneratedTextureNames.Contains(newTextureName) == false)
                         GeneratedTextureNames.Add(newTextureName);
@@ -924,7 +924,7 @@ namespace EQWOWConverter.ObjectModels
                     objectModelMaterial.Material.TextureNames[0].Substring(positionOffset, textureNameFragmentToMatch.Length) == textureNameFragmentToMatch)
                 {
                     string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
-                    ImageTool.GenerateColoredTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    ImageTool.GenerateColoredCreatureTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
                     objectModelMaterial.Material.TextureNames[0] = newTextureName;
                     if (GeneratedTextureNames.Contains(newTextureName) == false)
                         GeneratedTextureNames.Add(newTextureName);

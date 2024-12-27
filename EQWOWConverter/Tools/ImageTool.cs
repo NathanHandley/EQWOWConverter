@@ -34,7 +34,7 @@ namespace EQWOWConverter
         private static string InputCharacterTextureFolderPath = string.Empty;
         private static string BLPConverterFullPath = string.Empty;
 
-        public static void GenerateColoredTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)
+        public static void GenerateColoredCreatureTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)
         {
             Logger.WriteDetail("Generating colored texture from '" + inputTextureFileNameNoExt + "' to '" + outputTextureFileNameNoExt + "'");
 
