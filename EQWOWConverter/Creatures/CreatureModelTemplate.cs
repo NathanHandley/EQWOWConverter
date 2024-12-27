@@ -155,6 +155,7 @@ namespace EQWOWConverter.Creatures
             string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolderName);
             string outputFullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolderName);
             string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
+            string generatedTexturesFolderPath = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Create folder if it doesn't exist
             if (Directory.Exists(outputFullMPQPath) == false)
@@ -185,15 +186,24 @@ namespace EQWOWConverter.Creatures
             // Place the related textures
             foreach (ObjectModelTexture texture in curObject.ModelTextures)
             {
-                string inputTextureName = Path.Combine(inputObjectTextureFolder, texture.TextureName + ".blp");
+                string inputTextureNameInCharTextureFolder = Path.Combine(inputObjectTextureFolder, texture.TextureName + ".blp");
+                string inputTextureNameInGeneratedTextureFolder = Path.Combine(generatedTexturesFolderPath, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(outputFullMPQPath, texture.TextureName + ".blp");
-                if (Path.Exists(inputTextureName) == false)
+                if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
+                {
+                    File.Copy(inputTextureNameInCharTextureFolder, outputTextureName, true);
+                    Logger.WriteDetail("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                }
+                else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
+                {
+                    File.Copy(inputTextureNameInGeneratedTextureFolder, outputTextureName, true);
+                    Logger.WriteDetail("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                }
+                else
                 {
                     Logger.WriteError("- [" + curObject.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
                     return;
                 }
-                File.Copy(inputTextureName, outputTextureName, true);
-                Logger.WriteDetail("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }
 
             Logger.WriteDetail("For creature template '" + objectName + "', completed creating the object files");

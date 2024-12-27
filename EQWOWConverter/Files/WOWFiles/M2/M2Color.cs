@@ -31,13 +31,10 @@ namespace EQWOWConverter.WOWFiles
         
         public M2Color(ColorRGBf color, int numOfAnimations)
         {
-            for (int i = 0; i < numOfAnimations; i++)
-            {
-                ColorTracks.TrackSequences.AddSequence();
-                ColorTracks.TrackSequences.AddValueToLastSequence(0, color);
-                AlphaTracks.TrackSequences.AddSequence();
-                AlphaTracks.TrackSequences.AddValueToLastSequence(0, new Fixed16(32767));
-            }
+            ColorTracks.TrackSequences.AddSequence();
+            ColorTracks.TrackSequences.AddValueToLastSequence(0, color);
+            AlphaTracks.TrackSequences.AddSequence();
+            AlphaTracks.TrackSequences.AddValueToLastSequence(0, new Fixed16(32767));
         }
 
         public UInt32 GetHeaderSize()

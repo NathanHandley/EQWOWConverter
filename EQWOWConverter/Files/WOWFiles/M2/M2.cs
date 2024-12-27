@@ -25,7 +25,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.Files.WOWFiles.M2.OffsetObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
-using Google.Protobuf.WellKnownTypes;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -109,8 +108,8 @@ namespace EQWOWConverter.WOWFiles
             SkinProfileCount = 1;  // Fix to 1 for now
 
             // Color and Alpha Animation Definitions
-            foreach (ColorRGBf color in wowObjectModel.ModelMaterialColors)
-                Colors.AddElement(new M2Color(color, wowObjectModel.ModelAnimations.Count));
+            //foreach (ColorRGBf color in wowObjectModel.ModelMaterialColors)
+            //    Colors.AddElement(new M2Color(color, wowObjectModel.ModelAnimations.Count));
 
             // Textures
             Textures.AddModelTextures(wowObjectModel.ModelTextures);

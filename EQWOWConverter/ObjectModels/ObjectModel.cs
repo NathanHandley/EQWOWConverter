@@ -60,7 +60,7 @@ namespace EQWOWConverter.ObjectModels
         public List<Int16> ModelTextureAnimationLookup = new List<Int16>();
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
-        public List<ColorRGBf> ModelMaterialColors = new List<ColorRGBf>();
+        public List<string> GeneratedTextureNames = new List<string>();
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
         public Sound? SoundIdleLoop = null;
@@ -811,9 +811,6 @@ namespace EQWOWConverter.ObjectModels
             {
                 if (material.TextureNames.Count > 0)
                 {
-                    ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                    newModelTexture.TextureName = material.TextureNames[0];
-                    ModelTextures.Add(newModelTexture);
                     ObjectModelMaterial newModelMaterial;
                     if (Properties.AlphaBlendMaterialsByName.Contains(material.Name))
                     {
@@ -861,70 +858,78 @@ namespace EQWOWConverter.ObjectModels
                 // Head
                 if (colorTint.HelmColor != null)
                 {
-                    SetMaterialColorByTextureNameFragment("helm", colorTint.HelmColor);
-                    SetMaterialColorByTextureNameFragment("chain", colorTint.HelmColor);
+                    SetMaterialColorByTextureNameFragment("helm", colorTint.ID, colorTint.HelmColor);
+                    SetMaterialColorByTextureNameFragment("chain", colorTint.ID, colorTint.HelmColor);
                 }
 
                 // Chest
                 if (colorTint.ChestColor != null)
                 {
-                    SetMaterialColorByTextureNameFragmentAtPosition("ch", 3, colorTint.ChestColor);
-                    SetMaterialColorByTextureNameFragment("clk", colorTint.ChestColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ch", 3, colorTint.ID, colorTint.ChestColor);
+                    SetMaterialColorByTextureNameFragment("clk", colorTint.ID, colorTint.ChestColor);
                 }
 
                 // Arms
                 if (colorTint.ArmsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("ua", 3, colorTint.ArmsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ua", 3, colorTint.ID, colorTint.ArmsColor);
 
                 // Bracer
                 if (colorTint.BracerColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("fa", 3, colorTint.BracerColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("fa", 3, colorTint.ID, colorTint.BracerColor);
 
                 // Hands
                 if (colorTint.HandsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("hn", 3, colorTint.HandsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("hn", 3, colorTint.ID, colorTint.HandsColor);
 
                 // Legs
                 if (colorTint.LegsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("lg", 3, colorTint.LegsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("lg", 3, colorTint.ID, colorTint.LegsColor);
 
                 // Feet
                 if (colorTint.FeetColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("ft", 3, colorTint.FeetColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ft", 3, colorTint.ID, colorTint.FeetColor);
+            }
+
+            // Generate model textures
+            foreach(ObjectModelMaterial modelMaterial in ModelMaterials)
+            {
+                ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                newModelTexture.TextureName = modelMaterial.Material.TextureNames[0];
+                ModelTextures.Add(newModelTexture);
             }
         }
 
-        private void SetMaterialColorByTextureNameFragment(string textureNameFragmentToMatch, ColorRGBf color)
+        private void SetMaterialColorByTextureNameFragment(string textureNameFragmentToMatch, int colorID, ColorRGBA color)
         {
-            bool materialFound = false;
-            foreach(ObjectModelMaterial objectModelMaterial in ModelMaterials)
+            foreach (ObjectModelMaterial objectModelMaterial in ModelMaterials)
             {
                 if (objectModelMaterial.Material.TextureNames.Count > 0 &&
                     objectModelMaterial.Material.TextureNames[0].Contains(textureNameFragmentToMatch) == true)
                 {
-                    objectModelMaterial.ColorIndex = Convert.ToInt16(ModelMaterialColors.Count);
-                    materialFound = true;
+                    string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
+                    ImageTool.GenerateColoredTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    objectModelMaterial.Material.TextureNames[0] = newTextureName;
+                    if (GeneratedTextureNames.Contains(newTextureName) == false)
+                        GeneratedTextureNames.Add(newTextureName);
                 }
             }
-            if (materialFound == true)
-                ModelMaterialColors.Add(new ColorRGBf(color));
         }
 
-        private void SetMaterialColorByTextureNameFragmentAtPosition(string textureNameFragmentToMatch, int positionOffset, ColorRGBf color)
+        private void SetMaterialColorByTextureNameFragmentAtPosition(string textureNameFragmentToMatch, int positionOffset, int colorID, ColorRGBA color)
         {
-            bool materialFound = false;
             foreach (ObjectModelMaterial objectModelMaterial in ModelMaterials)
             {
                 if (objectModelMaterial.Material.TextureNames.Count > 0 &&
                     objectModelMaterial.Material.TextureNames[0].Length >= (textureNameFragmentToMatch.Length + positionOffset) &&
                     objectModelMaterial.Material.TextureNames[0].Substring(positionOffset, textureNameFragmentToMatch.Length) == textureNameFragmentToMatch)
                 {
-                    objectModelMaterial.ColorIndex = Convert.ToInt16(ModelMaterialColors.Count);
-                    materialFound = true;
+                    string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
+                    ImageTool.GenerateColoredTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    objectModelMaterial.Material.TextureNames[0] = newTextureName;
+                    if (GeneratedTextureNames.Contains(newTextureName) == false)
+                        GeneratedTextureNames.Add(newTextureName);
                 }
             }
-            if (materialFound == true)
-                ModelMaterialColors.Add(new ColorRGBf(color));
         }
 
         private void ApplyCustomCollision(ObjectModelCustomCollisionType customCollisionType, ref List<Vector3> collisionVertices, ref List<TriangleFace> collisionTriangleFaces)

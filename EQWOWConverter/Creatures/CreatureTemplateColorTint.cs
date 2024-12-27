@@ -29,13 +29,13 @@ namespace EQWOWConverter.Creatures
 
         public int ID = 0;
         public string Name = string.Empty;
-        public ColorRGBf? HelmColor = null;
-        public ColorRGBf? ChestColor = null;
-        public ColorRGBf? ArmsColor = null;
-        public ColorRGBf? BracerColor = null;
-        public ColorRGBf? HandsColor = null;
-        public ColorRGBf? LegsColor = null;
-        public ColorRGBf? FeetColor = null;
+        public ColorRGBA? HelmColor = null;
+        public ColorRGBA? ChestColor = null;
+        public ColorRGBA? ArmsColor = null;
+        public ColorRGBA? BracerColor = null;
+        public ColorRGBA? HandsColor = null;
+        public ColorRGBA? LegsColor = null;
+        public ColorRGBA? FeetColor = null;
 
         public static Dictionary<int, CreatureTemplateColorTint> GetCreatureTemplateColorTints()
         {
@@ -82,37 +82,37 @@ namespace EQWOWConverter.Creatures
                 int helmGreen = int.Parse(rowBlocks[3]);
                 int helmBlue = int.Parse(rowBlocks[4]);
                 if (helmRed != 0 || helmGreen != 0 || helmBlue != 0)
-                    colorTint.HelmColor = new ColorRGBf(helmRed, helmGreen, helmBlue);
+                    colorTint.HelmColor = new ColorRGBA(Convert.ToByte(helmRed), Convert.ToByte(helmGreen), Convert.ToByte(helmBlue));
                 int chestRed = int.Parse(rowBlocks[5]);
                 int chestGreen = int.Parse(rowBlocks[6]);
                 int chestBlue = int.Parse(rowBlocks[7]);
                 if (chestRed != 0 || chestGreen != 0 || chestBlue != 0)
-                    colorTint.ChestColor = new ColorRGBf(chestRed, chestGreen, chestBlue);
+                    colorTint.ChestColor = new ColorRGBA(Convert.ToByte(chestRed), Convert.ToByte(chestGreen), Convert.ToByte(chestBlue));
                 int armsRed = int.Parse(rowBlocks[8]);
                 int armsGreen = int.Parse(rowBlocks[9]);
                 int armsBlue = int.Parse(rowBlocks[10]);
                 if (armsRed != 0 || armsGreen != 0 || armsBlue != 0)
-                    colorTint.ArmsColor = new ColorRGBf(armsRed, armsGreen, armsBlue);
+                    colorTint.ArmsColor = new ColorRGBA(Convert.ToByte(armsRed), Convert.ToByte(armsGreen), Convert.ToByte(armsBlue));
                 int bracerRed = int.Parse(rowBlocks[11]);
                 int bracerGreen = int.Parse(rowBlocks[12]);
                 int bracerBlue = int.Parse(rowBlocks[13]);
                 if (bracerRed != 0 || bracerGreen != 0 || bracerBlue != 0)
-                    colorTint.BracerColor = new ColorRGBf(bracerRed, bracerGreen, bracerBlue);
+                    colorTint.BracerColor = new ColorRGBA(Convert.ToByte(bracerRed), Convert.ToByte(bracerGreen), Convert.ToByte(bracerBlue));
                 int handsRed = int.Parse(rowBlocks[14]);
                 int handsGreen = int.Parse(rowBlocks[15]);
                 int handsBlue = int.Parse(rowBlocks[16]);
                 if (handsRed != 0 || handsGreen != 0 || handsBlue != 0)
-                    colorTint.HandsColor = new ColorRGBf(handsRed, handsGreen, handsBlue);
+                    colorTint.HandsColor = new ColorRGBA(Convert.ToByte(handsRed), Convert.ToByte(handsGreen), Convert.ToByte(handsBlue));
                 int legsRed = int.Parse(rowBlocks[17]);
                 int legsGreen = int.Parse(rowBlocks[18]);
                 int legsBlue = int.Parse(rowBlocks[19]);
                 if (legsRed != 0 || legsGreen != 0 || legsBlue != 0)
-                    colorTint.LegsColor = new ColorRGBf(legsRed, legsGreen, legsBlue);
+                    colorTint.LegsColor = new ColorRGBA(Convert.ToByte(legsRed), Convert.ToByte(legsGreen), Convert.ToByte(legsBlue));
                 int feetRed = int.Parse(rowBlocks[20]);
                 int feetGreen = int.Parse(rowBlocks[21]);
                 int feetBlue = int.Parse(rowBlocks[22]);
                 if (feetRed != 0 || feetGreen != 0 || feetBlue != 0)
-                    colorTint.FeetColor = new ColorRGBf(feetRed, feetGreen, feetBlue);
+                    colorTint.FeetColor = new ColorRGBA(Convert.ToByte(feetRed), Convert.ToByte(feetGreen), Convert.ToByte(feetBlue));
                 if (CreatureTemplateColorTints.ContainsKey(colorTint.ID) == true)
                     Logger.WriteError("Unable to add creature template color tint with ID '" + colorTint.ID.ToString() + "' as that ID already exists in the collection");
                 else
