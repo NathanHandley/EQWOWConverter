@@ -35,6 +35,7 @@ namespace EQWOWConverter.Creatures
         public int BodyType = 24; // This is common for the body type
         public int HP = 1;
         public int FaceID = 0;
+        public int ColorTintID = 0;
         public float Size = 0f;
         public CreatureGenderType GenderType = CreatureGenderType.Neutral;
         public int TextureID = 0;
@@ -129,6 +130,7 @@ namespace EQWOWConverter.Creatures
                     Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
                     newCreatureTemplate.FaceID = 0;
                 }
+                newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[14]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
