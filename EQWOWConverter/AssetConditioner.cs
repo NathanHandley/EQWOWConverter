@@ -587,12 +587,12 @@ namespace EQWOWConverter
             }
             textureFoldersToProcess.Add(objectTexturesFolder);
             string itemIconFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
-            if (Directory.Exists(objectTexturesFolder) == false)
+            if (Directory.Exists(itemIconFolder) == false)
             {
-                Logger.WriteError("Failed to convert png files to blp, as the object textures folder did not exist at '" + objectTexturesFolder + "'");
+                Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + itemIconFolder + "'");
                 return false;
             }
-            textureFoldersToProcess.Add(objectTexturesFolder);
+            textureFoldersToProcess.Add(itemIconFolder);
             string zonesRootFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             if (Directory.Exists(zonesRootFolder) == false)
             {

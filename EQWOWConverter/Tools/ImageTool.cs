@@ -37,7 +37,25 @@ namespace EQWOWConverter
         {
             Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp +"' started...");
 
-            using (Bitmap inputImage = new Bitmap(inputImageToCutUp))
+            // Read in the backdrop data first
+            List<List<Color>> backdropPixels = new List<List<Color>>();
+            string backdropTextureFullPath = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "item", "ItemIconBackdrop.png");
+            if (Path.Exists(backdropTextureFullPath) == false)
+            {
+                Logger.WriteError("Failed to generate item icons since the backdrop image of '" + backdropTextureFullPath + "' did not exist");
+                return;
+            }
+            using (Bitmap backdrop = new Bitmap(backdropTextureFullPath))
+            {
+                for (int x = 0; x < 64; x++)
+                {
+                    backdropPixels.Add(new List<Color>());
+                    for (int y = 0; y < 64; y++)
+                        backdropPixels[x].Add(backdrop.GetPixel(x, y));
+                }
+            }
+
+            using (Bitmap inputIconsMosaic = new Bitmap(inputImageToCutUp))
             {
                 for (int i = 0; i < numberOfIconImagesToMake; i++)
                 {
@@ -46,20 +64,28 @@ namespace EQWOWConverter
                     int inputPixelStartY = (i % 12) * 40;
 
                     // Create it
-                    using (Bitmap outputImage = new Bitmap(40, 40))
+                    using (Bitmap outputImage = new Bitmap(64, 64))
                     {
-                        for (int y = 0; y < 40; y++)
+                        for (int y = 0; y < 64; y++)
                         {
-                            for (int x = 0; x < 40; x++)
+                            for (int x = 0; x < 64; x++)
                             {
-                                int curInputPixelStartX = inputPixelStartX + x;
-                                int curInputPixelStartY = inputPixelStartY + y;
+                                // Always output the backdrop
+                                outputImage.SetPixel(x, y, backdropPixels[x][y]);
 
-                                // Get the current pixel's color
-                                Color pixelColor = inputImage.GetPixel(curInputPixelStartX, curInputPixelStartY);
+                                // Only copy the icon images if it's the center block
+                                if (x >= 11 && y >= 11 && x <= 50 && y <= 50)
+                                {
+                                    int curInputPixelStartX = inputPixelStartX + (x - 11);
+                                    int curInputPixelStartY = inputPixelStartY + (y - 11);
 
-                                // Set the blended color to the output image
-                                outputImage.SetPixel(x, y, pixelColor);
+                                    // Get the current pixel's color
+                                    Color pixelColor = inputIconsMosaic.GetPixel(curInputPixelStartX, curInputPixelStartY);
+
+                                    // Output only non-alpha pixels
+                                    if (pixelColor.A > 0)
+                                        outputImage.SetPixel(x, y, pixelColor);
+                                }
                             }
                         }
                         string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
@@ -70,7 +96,6 @@ namespace EQWOWConverter
 
             Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp + "' completed.");
         }
-
 
         public static void GenerateColoredCreatureTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)
         {
