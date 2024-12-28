@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using LanternExtractor.EQ.Wld.Fragments;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -33,6 +32,45 @@ namespace EQWOWConverter
         private static string GeneratedFolderPath = string.Empty;
         private static string InputCharacterTextureFolderPath = string.Empty;
         private static string BLPConverterFullPath = string.Empty;
+
+        public static void GenerateItemIconImagesFromFile(string inputImageToCutUp, int numberOfIconImagesToMake, int startingIconImageIndex, string outputFolderPath)
+        {
+            Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp +"' started...");
+
+            using (Bitmap inputImage = new Bitmap(inputImageToCutUp))
+            {
+                for (int i = 0; i < numberOfIconImagesToMake; i++)
+                {
+                    // Calculate the start position for this image
+                    int inputPixelStartX = (i / 12) * 40;
+                    int inputPixelStartY = (i % 12) * 40;
+
+                    // Create it
+                    using (Bitmap outputImage = new Bitmap(40, 40))
+                    {
+                        for (int y = 0; y < 40; y++)
+                        {
+                            for (int x = 0; x < 40; x++)
+                            {
+                                int curInputPixelStartX = inputPixelStartX + x;
+                                int curInputPixelStartY = inputPixelStartY + y;
+
+                                // Get the current pixel's color
+                                Color pixelColor = inputImage.GetPixel(curInputPixelStartX, curInputPixelStartY);
+
+                                // Set the blended color to the output image
+                                outputImage.SetPixel(x, y, pixelColor);
+                            }
+                        }
+                        string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
+                        outputImage.Save(outputFileName);
+                    }
+                }
+            }
+
+            Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp + "' completed.");
+        }
+
 
         public static void GenerateColoredCreatureTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)
         {

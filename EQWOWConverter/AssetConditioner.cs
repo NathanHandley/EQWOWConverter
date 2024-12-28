@@ -236,6 +236,9 @@ namespace EQWOWConverter
             // Convert music
             ConditionMusicFiles(outputMusicFolderRoot);
 
+            // Create icons
+            CreateIndividualIconFiles();
+
             // Generate the liquid surfaces
             Logger.WriteInfo("Generating liquid surface materials...");
             for (int i = 1; i <= 30; i++)
@@ -497,6 +500,45 @@ namespace EQWOWConverter
             Logger.WriteInfo(" done", false, false);
         }
 
+        public void CreateIndividualIconFiles()
+        {
+            Logger.WriteInfo("Creating icon image files...");
+
+            // Make sure the folder is there
+            string miscImagesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
+            if (Directory.Exists(miscImagesFolder) == false)
+            {
+                Logger.WriteError("Icon Image creation failed.  Could not find the miscimages folder at '', ensure you have exported the EQ content");
+                return;
+            }
+
+            // Clear out the destination foldre
+            string itemIconsFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            if (Directory.Exists(itemIconsFolder) == true)
+                Directory.Delete(itemIconsFolder, true);
+            Directory.CreateDirectory(itemIconsFolder);
+
+            // Slice up the images
+            try
+            {
+                string curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem01.png");
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 0, itemIconsFolder);
+                curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem02.png");
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 192, itemIconsFolder);
+                curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem03.png");
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 384, itemIconsFolder);
+                curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem04.png");
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 175, 576, itemIconsFolder);
+            }
+            catch (Exception ex)
+            {
+                Logger.WriteError("Error occurred while creating icon files.");
+                return;
+            }
+
+            Logger.WriteInfo("Creating icon files complete.");
+        }
+
         public bool ConvertPNGFilesToBLP()
         {
             // Make sure the tool is there
@@ -538,6 +580,13 @@ namespace EQWOWConverter
             }
             textureFoldersToProcess.Add(miscImagesFolder);
             string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
+            if (Directory.Exists(objectTexturesFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the object textures folder did not exist at '" + objectTexturesFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(objectTexturesFolder);
+            string itemIconFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             if (Directory.Exists(objectTexturesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the object textures folder did not exist at '" + objectTexturesFolder + "'");
