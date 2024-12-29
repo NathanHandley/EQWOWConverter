@@ -77,6 +77,9 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
 
+            // Items
+            CreateItems();
+
             // Copy the loading screens
             CreateLoadingScreens();
 
@@ -293,6 +296,7 @@ namespace EQWOWConverter
             creatureTemplates = creatureTemplatesByID.Values.ToList();
 
             // Create all of the models and related model files
+            Logger.WriteInfo("Creating creature model files...", true);
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
@@ -300,8 +304,10 @@ namespace EQWOWConverter
                 {
                     modelTemplate.CreateModelFiles();
                     creatureModelTemplates.Add(modelTemplate);
+                    Logger.WriteInfo(".", true, false);
                 }
             }
+            Logger.WriteInfo("done", false, false);
 
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
@@ -313,6 +319,7 @@ namespace EQWOWConverter
             }
 
             // Group spawn entries (creature template relationships) by group ID
+            Logger.WriteInfo("Associating creatures with spawn locations...");
             List<CreatureSpawnEntry> spawnEntries = CreatureSpawnEntry.GetSpawnEntryList();
             Dictionary<int, List<CreatureSpawnEntry>> creatureSpawnEntriesByGroupID = new Dictionary<int, List<CreatureSpawnEntry>>();
             foreach (CreatureSpawnEntry entry in spawnEntries)
@@ -333,6 +340,7 @@ namespace EQWOWConverter
             }
 
             // Go through each spawn group and generate pools
+            Logger.WriteInfo("Generating creature spawn pools...");
             Dictionary<int, CreatureSpawnGroup> spawnGroupsByGroupID = CreatureSpawnGroup.GetSpawnGroupsByGroupID();
             Dictionary<int, CreatureSpawnPool> spawnPoolsByGroupID = new Dictionary<int, CreatureSpawnPool>();
             foreach (var spawnGroup in spawnGroupsByGroupID)
@@ -425,6 +433,7 @@ namespace EQWOWConverter
             }
 
             // Associate path grid entries with relevant spawn instances
+            Logger.WriteInfo("Relating creatures to spawn instances...");
             foreach (CreatureSpawnPool creatureSpawnPool in creatureSpawnPools)
             {
                 foreach (CreatureSpawnInstance creatureSpawnInstance in creatureSpawnPool.CreatureSpawnInstances)
@@ -464,6 +473,7 @@ namespace EQWOWConverter
                     File.Copy(sourceSoundFileName, targetSoundFileName, true);
             }
 
+            Logger.WriteInfo("Creature generation complete.");
             return true;
         }
 
@@ -635,6 +645,11 @@ namespace EQWOWConverter
                 string fullCreatureSoundPath = Path.Combine(mpqReadyFolder, relativeCreatureSoundsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullCreatureSoundPath + "\" \"" + relativeCreatureSoundsPath + "\" /r");
             }
+
+            // Items
+            string relativeItemIconsPath = Path.Combine("Interface", "ICONS");
+            string fullItemIconsPath = Path.Combine(mpqReadyFolder, relativeItemIconsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullItemIconsPath + "\" \"" + relativeItemIconsPath + "\" /r");
 
             // Ambient Sounds
             string relativeAmbientSoundsPath = Path.Combine("Sound", "Ambience", "Everquest");
@@ -931,6 +946,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
+            ItemDBC itemDBC = new ItemDBC();
+            itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
             itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
             LightDBC lightDBC = new LightDBC();
@@ -1014,6 +1031,8 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Item data
+                foreach (ItemTemplate itemTemplate in ItemTemplate.ItemTemplatesByEQDBID.Values)
+                    itemDBC.AddRow(itemTemplate);
                 foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                     itemDisplayInfoDBC.AddRow(itemDisplayInfo);
 
@@ -1123,6 +1142,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
+            itemDBC.SaveToDisk(dbcOutputClientFolder);
+            itemDBC.SaveToDisk(dbcOutputServerFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
@@ -1173,6 +1194,7 @@ namespace EQWOWConverter
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
+            ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
@@ -1354,6 +1376,10 @@ namespace EQWOWConverter
                 }
             }
 
+            // Items
+            foreach (ItemTemplate itemTemplate in ItemTemplate.ItemTemplatesByEQDBID.Values)
+                itemTemplateSQL.AddRow(itemTemplate);
+
             // Output them
             areaTriggerSQL.SaveToDisk("areatrigger");
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport");
@@ -1364,6 +1390,7 @@ namespace EQWOWConverter
             creatureTemplateModelSQL.SaveToDisk("creature_template_model");
             gameTeleSQL.SaveToDisk("game_tele");
             instanceTemplateSQL.SaveToDisk("instance_template");
+            itemTemplateSQL.SaveToDisk("item_template");
             poolCreatureSQL.SaveToDisk("pool_creature");
             poolPoolSQL.SaveToDisk("pool_pool");
             poolTemplateSQL.SaveToDisk("pool_template");
@@ -1530,6 +1557,28 @@ namespace EQWOWConverter
             }
 
             Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
+        }
+
+        public void CreateItems()
+        {
+            Logger.WriteInfo("Creating items...");
+            ItemTemplate.PopulateItemTemplateListFromDisk();
+            Logger.WriteInfo("Copying item icon files...");
+
+            // Clear and create the directory
+            string iconOutputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Interface", "ICONS");
+            if (Directory.Exists(iconOutputFolder) == true)
+                Directory.Delete(iconOutputFolder, true);
+            Directory.CreateDirectory(iconOutputFolder);
+
+            // Copy all of the icons
+            string iconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
+            {
+                string sourceIconFile = Path.Combine(iconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
+                string outputIconFile = Path.Combine(iconOutputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
+                File.Copy(sourceIconFile, outputIconFile, true);
+            }
         }
     }
 }

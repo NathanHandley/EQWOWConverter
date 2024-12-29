@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,14 +25,18 @@ namespace EQWOWConverter.Items
 {
     internal class ItemTemplate
     {
-        private static Dictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new Dictionary<int, ItemTemplate>();
+        public static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
-        
-        public int EntryID;
+
+        public int EQID = 0;
+        public int EntryID = 0;
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
         public int DisplayID = 0;
+        public int InventoryType = 0;
+        public int SheatheType = 0;
+        public int Material = -1;
 
         public ItemTemplate()
         {
@@ -39,9 +44,56 @@ namespace EQWOWConverter.Items
             CURRENT_SQL_ITEMTEMPLATEENTRYID++;
         }
 
-        public void PopulateItemTemplateListFromDisk()
+        static public void PopulateItemTemplateListFromDisk()
         {
+            ItemTemplatesByEQDBID.Clear();
 
+            // Load in item data
+            string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "Items.csv");
+            Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
+            string inputData = File.ReadAllText(itemsFileName);
+            string[] inputRows = inputData.Split(Environment.NewLine);
+            if (inputRows.Length < 2)
+            {
+                Logger.WriteError("Items list via file '" + itemsFileName + "' did not have enough lines");
+                return;
+            }
+
+            // Load all of the data
+            bool headerRow = true;
+            foreach (string row in inputRows)
+            {
+                // Handle first row
+                if (headerRow == true)
+                {
+                    headerRow = false;
+                    continue;
+                }
+
+                // Skip blank rows
+                if (row.Trim().Length == 0)
+                    continue;
+
+                // Load the row
+                string[] rowBlocks = row.Split("|");
+                ItemTemplate newItemTemplate = new ItemTemplate();
+                newItemTemplate.EQID = int.Parse(rowBlocks[0]);
+                newItemTemplate.Name = rowBlocks[1];
+
+                // Icon
+                int iconID = int.Parse(rowBlocks[2]);
+                string iconName = "INV_EQ_" + (iconID - 500).ToString();
+                ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
+                newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+
+                // Add
+                if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EntryID))
+                {
+                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with id '" + newItemTemplate.EntryID + "'");
+                    continue;
+                }
+                ItemTemplatesByEQDBID.Add(newItemTemplate.EntryID, newItemTemplate);
+            }
         }
     }
 }

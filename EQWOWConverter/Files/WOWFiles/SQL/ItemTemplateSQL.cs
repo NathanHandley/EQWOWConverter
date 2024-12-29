@@ -26,25 +26,25 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START + "AND `entry` <= " + Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_END + ";";
+            return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
         public void AddRow(ItemTemplate itemTemplate)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", 0);
-            newRow.AddInt("class", 0);
-            newRow.AddInt("subclass", 0);
+            newRow.AddInt("entry", itemTemplate.EntryID);
+            newRow.AddInt("class", itemTemplate.ClassID);
+            newRow.AddInt("subclass", itemTemplate.SubClassID);
             newRow.AddInt("SoundOverrideSubclass", -1);
-            newRow.AddString("name", 255, "");
-            newRow.AddInt("displayid", 0);
+            newRow.AddString("name", 255, itemTemplate.Name);
+            newRow.AddInt("displayid", itemTemplate.DisplayID);
             newRow.AddInt("Quality", 0);
             newRow.AddInt("Flags", 0);
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", 1);
             newRow.AddInt("BuyPrice", 0);
             newRow.AddInt("SellPrice", 0);
-            newRow.AddInt("InventoryType", 0);
+            newRow.AddInt("InventoryType", itemTemplate.InventoryType);
             newRow.AddInt("AllowableClass", -1);
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 0);
@@ -140,8 +140,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("PageMaterial", 0);
             newRow.AddInt("startquest", 0);
             newRow.AddInt("lockid", 0);
-            newRow.AddInt("Material", 0);
-            newRow.AddInt("sheath", 0);
+            newRow.AddInt("Material", itemTemplate.Material);
+            newRow.AddInt("sheath", itemTemplate.SheatheType);
             newRow.AddInt("RandomProperty", 0);
             newRow.AddInt("RandomSuffix", 0);
             newRow.AddInt("block", 0);

@@ -23,22 +23,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
 {
     internal class ItemDBC : DBCFile
     {
-        public void AddRow(int id, int classID, int subClassID, int displayInfoID, int inventoryType, int sheatheType)
+        public void AddRow(ItemTemplate itemTemplate)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(id);
-            newRow.AddInt(classID);
-            newRow.AddInt(subClassID);
+            newRow.AddInt(itemTemplate.EntryID);
+            newRow.AddInt(itemTemplate.ClassID);
+            newRow.AddInt(itemTemplate.SubClassID);
             newRow.AddInt(-1); // Sound Override SubclassID
-            newRow.AddInt(-1); // Material
-            newRow.AddInt(displayInfoID);
-            newRow.AddInt(inventoryType);
-            newRow.AddInt(sheatheType);
+            newRow.AddInt(itemTemplate.Material);
+            newRow.AddInt(itemTemplate.DisplayID);
+            newRow.AddInt(itemTemplate.InventoryType);
+            newRow.AddInt(itemTemplate.SheatheType);
             Rows.Add(newRow);
         }
     }
