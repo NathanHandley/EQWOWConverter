@@ -317,6 +317,9 @@ namespace EQWOWConverter
         // IDs for rows inside GameObjectDisplayInfo.dbc
         public static readonly int CONFIG_DBCID_GAMEOBJECTDISPLAYINFO_ID_START = 11000;
 
+        // Start ID for item display info
+        public static readonly int CONFIG_DBCID_ITEMDISPLAYINFO_START = 86000;
+
         // Identifies the Light.DBC row, used for environmental properties
         public static readonly int CONFIG_DBCID_LIGHT_ID_START = 3500;
 
@@ -351,7 +354,7 @@ namespace EQWOWConverter
         public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;
 
         // ====================================================================
-        // SQL Scripts
+        // SQL IDs
         // ====================================================================
         // Record identifier for the creature sql table, need at least 31k
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
@@ -367,6 +370,10 @@ namespace EQWOWConverter
         // Start row for `game_tele` records. (~2000-2400)
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_END = 2400;
+
+        // Start and end IDs for template entries
+        public static readonly int CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
+        public static readonly int CONFIG_SQL_ITEM_TEMPLATE_ENTRY_END = 111386;
 
         // Start ID for pool_template data rows (reserve 40k records)
         public static readonly int CONFIG_SQL_POOL_TEMPLATE_ID_START = 110000;

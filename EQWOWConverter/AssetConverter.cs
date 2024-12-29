@@ -14,25 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.SymbolStore;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using EQWOWConverter.WOWFiles;
-using EQWOWConverter.Zones;
 using EQWOWConverter.Common;
-using EQWOWConverter.ObjectModels;
-using Vector3 = EQWOWConverter.Common.Vector3;
-using EQWOWConverter.WOWFiles.DBC;
-using EQWOWConverter.ObjectModels.Properties;
-using MySql.Data.MySqlClient;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Zones.Properties;
-using System.Drawing;
-using EQWOWConverter.Files;
+using EQWOWConverter.Items;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.WOWFiles;
+using EQWOWConverter.WOWFiles.DBC;
+using EQWOWConverter.Zones;
+using MySql.Data.MySqlClient;
+using System.Text;
 
 namespace EQWOWConverter
 {
@@ -95,7 +86,7 @@ namespace EQWOWConverter
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates);
 
-            // Create the Azeroth Core Scripts (note: this must always be after DBC files)
+            // Create the SQL Scripts (note: this must always be after DBC files)
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools);
 
             // Create or update the MPQ
@@ -940,6 +931,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
+            ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
+            itemDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "ItemDisplayInfo.dbc");
             LightDBC lightDBC = new LightDBC();
             lightDBC.LoadFromDisk(dbcInputFolder, "Light.dbc");
             LightFloatBandDBC lightFloatBandDBC = new LightFloatBandDBC();
@@ -1019,6 +1012,10 @@ namespace EQWOWConverter
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+
+                // Item data
+                foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
+                    itemDisplayInfoDBC.AddRow(itemDisplayInfo);
 
                 // Light Tables
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
@@ -1126,6 +1123,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
+            itemDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            itemDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             lightDBC.SaveToDisk(dbcOutputClientFolder);
             lightDBC.SaveToDisk(dbcOutputServerFolder);
             lightFloatBandDBC.SaveToDisk(dbcOutputClientFolder);
