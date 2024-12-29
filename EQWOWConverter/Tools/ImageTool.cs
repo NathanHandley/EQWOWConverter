@@ -55,6 +55,17 @@ namespace EQWOWConverter
                 }
             }
 
+            // Used for drawing the border
+            Color borderPixelColor = Color.FromArgb(128, 128, 128);
+            List<List<bool>> outputMask = new List<List<bool>>();
+            for (int x = 0; x < 64; x++)
+            {
+                outputMask.Add(new List<bool>());
+                for (int y = 0; y < 64; y++)
+                    outputMask[x].Add(false);
+            }
+            
+            // Output the image
             using (Bitmap inputIconsMosaic = new Bitmap(inputImageToCutUp))
             {
                 for (int i = 0; i < numberOfIconImagesToMake; i++)
@@ -83,13 +94,40 @@ namespace EQWOWConverter
                                     Color pixelColor = inputIconsMosaic.GetPixel(curInputPixelStartX, curInputPixelStartY);
 
                                     // Output only non-alpha pixels
-                                    if (pixelColor.A > 0)
+                                    if (pixelColor.A != 0)
+                                    {
                                         outputImage.SetPixel(x, y, pixelColor);
+                                        outputMask[x][y] = true;
+                                    }
                                 }
                             }
                         }
+
+                        // Create the border
+                        for (int x = 10; x <= 51; x++)
+                        {
+                            for (int y = 10; y < 51; y++)
+                            {
+                                // Skip written-to
+                                if (outputMask[x][y] == true)
+                                    continue;
+
+                                // Mark all alpha locations that touch the item paremeter
+                                if (outputMask[x - 1][y] == true || outputMask[x + 1][y] == true || outputMask[x][y - 1] == true || outputMask[x][y + 1] == true)
+                                {
+                                    outputImage.SetPixel(x, y, borderPixelColor);
+                                }
+                            }
+                        }
+
+                        // Output the image
                         string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
                         outputImage.Save(outputFileName);
+
+                        // Reset the mask
+                        for (int x = 0; x < 64; x++)
+                            for (int y = 0; y < 64; y++)
+                                outputMask[x][y] = false;
                     }
                 }
             }
