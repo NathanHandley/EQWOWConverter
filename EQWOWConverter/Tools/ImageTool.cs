@@ -106,7 +106,7 @@ namespace EQWOWConverter
                         // Create the border
                         for (int x = 10; x <= 51; x++)
                         {
-                            for (int y = 10; y < 51; y++)
+                            for (int y = 10; y <= 51; y++)
                             {
                                 // Skip written-to
                                 if (outputMask[x][y] == true)
