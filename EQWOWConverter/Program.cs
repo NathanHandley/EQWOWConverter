@@ -129,12 +129,6 @@ internal class Program
                                 Logger.WriteInfo("EQ to WoW conversion Failed.");
                         }
                         break;
-                    case "9":
-                        {
-                            AssetConditioner conditioner = new AssetConditioner();
-                            conditioner.CreateIndividualIconFiles();
-                        }
-                        break;
                     default: break;
                 }
                 Logger.WriteInfo("Exiting....");
