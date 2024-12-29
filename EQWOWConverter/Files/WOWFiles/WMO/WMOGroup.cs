@@ -173,11 +173,6 @@ namespace EQWOWConverter.WOWFiles
             foreach (TriangleFace polyIndexTriangle in worldObjectModel.MeshData.TriangleFaces)
             {
                 WMOPolyMaterialFlags flags = 0;
-
-                // Note: The following condition isn't needed for WoW to work, but was required for AzerothCore extractors to work
-                //if (worldObjectModel.WMOType == ZoneObjectModelType.CollidableArea)
-                //    flags = WMOPolyMaterialFlags.NoCollision;
-                
                 chunkBytes.Add(Convert.ToByte(flags));
 
                 // Set 0xFF for non-renderable materials

@@ -114,7 +114,7 @@ namespace EQWOWConverter.WOWFiles
             Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' started...");
 
             // Determine the path and create the folder if needed
-            string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
+            string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
             FileTool.CreateBlankDirectory(outputFolder, true);
 
             // Generate the leading part of the SQL statement

@@ -96,7 +96,7 @@ namespace EQWOWConverter
             CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the Azeroth Core Scripts (note: this must always be after DBC files)
-            CreateAzerothCoreScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools);
+            CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -757,7 +757,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying sql to server...");
 
             // Verify there is a scripts folder
-            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
+            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
             if (Directory.Exists(sqlScriptFolder) == false)
             {
                 Logger.WriteError("Could not deploy SQL scripts to server. Path '" + sqlScriptFolder + "' did not exist");
@@ -1154,13 +1154,13 @@ namespace EQWOWConverter
             Logger.WriteDetail("Creating DBC Files complete");
         }
 
-        public void CreateAzerothCoreScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
+        public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools)
         {
-            Logger.WriteInfo("Creating AzerothCore SQL Scripts...");
+            Logger.WriteInfo("Creating SQL Scripts...");
 
             // Clean the folder
-            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "AzerothCoreSQLScripts");
+            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
             if (Directory.Exists(sqlScriptFolder))
                 Directory.Delete(sqlScriptFolder, true);
 
