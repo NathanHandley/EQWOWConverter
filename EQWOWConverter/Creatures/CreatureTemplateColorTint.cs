@@ -74,7 +74,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Load the row
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 CreatureTemplateColorTint colorTint = new CreatureTemplateColorTint();
                 colorTint.ID = int.Parse(rowBlocks[0]);
                 colorTint.Name = rowBlocks[1];

@@ -69,7 +69,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Load the row
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 CreaturePathGrid newPathGrid = new CreaturePathGrid();
                 newPathGrid.GridID = int.Parse(rowBlocks[0]);
                 newPathGrid.ZoneID = int.Parse(rowBlocks[1]);

@@ -175,7 +175,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Make sure data size is correct
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 if (rowBlocks.Length < 21)
                 {
                     Logger.WriteError("CreatureRaceSound list via file '" + soundDataFileName + "' has too few columns");

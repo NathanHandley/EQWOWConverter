@@ -99,7 +99,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Load the row
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.ID = int.Parse(rowBlocks[0]);
                 newCreatureTemplate.Name = rowBlocks[1];

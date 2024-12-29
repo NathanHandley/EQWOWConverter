@@ -67,7 +67,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Load the row
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 CreatureSpawnGroup newSpawnGroup = new CreatureSpawnGroup();
                 newSpawnGroup.ID = Convert.ToInt32(rowBlocks[0]);
                 newSpawnGroup.Name = rowBlocks[1];

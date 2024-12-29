@@ -130,7 +130,7 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Load the row
-                string[] rowBlocks = row.Split(",");
+                string[] rowBlocks = row.Split("|");
                 CreatureRace newCreatureRace = new CreatureRace();
                 newCreatureRace.ID = int.Parse(rowBlocks[0]);
                 newCreatureRace.Name = rowBlocks[1].Trim();
