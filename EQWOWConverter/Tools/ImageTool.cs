@@ -56,13 +56,14 @@ namespace EQWOWConverter
             }
 
             // Used for drawing the border
-            Color borderPixelColor = Color.FromArgb(128, 128, 128);
-            List<List<bool>> outputMask = new List<List<bool>>();
+            Color borderPixelColor = Color.FromArgb(100, 100, 100);
+            Color borderPixelColor2 = Color.FromArgb(64, 64, 64);
+            List<List<int>> outputMask = new List<List<int>>();
             for (int x = 0; x < 64; x++)
             {
-                outputMask.Add(new List<bool>());
+                outputMask.Add(new List<int>());
                 for (int y = 0; y < 64; y++)
-                    outputMask[x].Add(false);
+                    outputMask[x].Add(0);
             }
             
             // Output the image
@@ -97,25 +98,43 @@ namespace EQWOWConverter
                                     if (pixelColor.A != 0)
                                     {
                                         outputImage.SetPixel(x, y, pixelColor);
-                                        outputMask[x][y] = true;
+                                        outputMask[x][y] = 1;
                                     }
                                 }
                             }
                         }
 
-                        // Create the border
+                        // Create the border (layer 1)
                         for (int x = 10; x <= 51; x++)
                         {
                             for (int y = 10; y <= 51; y++)
                             {
                                 // Skip written-to
-                                if (outputMask[x][y] == true)
+                                if (outputMask[x][y] == 1)
                                     continue;
 
                                 // Mark all alpha locations that touch the item paremeter
-                                if (outputMask[x - 1][y] == true || outputMask[x + 1][y] == true || outputMask[x][y - 1] == true || outputMask[x][y + 1] == true)
+                                if (outputMask[x - 1][y] == 1 || outputMask[x + 1][y] == 1 || outputMask[x][y - 1] == 1 || outputMask[x][y + 1] == 1)
                                 {
                                     outputImage.SetPixel(x, y, borderPixelColor);
+                                    outputMask[x][y] = 2;
+                                }
+                            }
+                        }
+
+                        // Create the border (layer 2)
+                        for (int x = 9; x <= 52; x++)
+                        {
+                            for (int y = 9; y <= 52; y++)
+                            {
+                                // Skip written-to
+                                if (outputMask[x][y] > 0)
+                                    continue;
+
+                                // Mark all alpha locations that touch the item border paremeter
+                                if (outputMask[x - 1][y] == 2 || outputMask[x + 1][y] == 2 || outputMask[x][y - 1] == 2 || outputMask[x][y + 1] == 2)
+                                {
+                                    outputImage.SetPixel(x, y, borderPixelColor2);
                                 }
                             }
                         }
@@ -127,7 +146,7 @@ namespace EQWOWConverter
                         // Reset the mask
                         for (int x = 0; x < 64; x++)
                             for (int y = 0; y < 64; y++)
-                                outputMask[x][y] = false;
+                                outputMask[x][y] = 0;
                     }
                 }
             }
