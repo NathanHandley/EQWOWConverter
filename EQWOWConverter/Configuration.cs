@@ -291,7 +291,7 @@ namespace EQWOWConverter
         // Identifies Area rows in AreaTable.dbc
         public static readonly UInt32 CONFIG_DBCID_AREATABLE_ID_START = 5100;
 
-        // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in AzerothCore scripts
+        // IDs for AreaTrigger.DBC. These will be generated in ascending order by MapID, and referenced in SQL scripts
         // for teleports as well any other area-based triggers
         public static readonly int CONFIG_DBCID_AREATRIGGER_ID_START = 6500;
 
@@ -351,7 +351,7 @@ namespace EQWOWConverter
         public static readonly int CONFIG_DBCID_ZONEMUSIC_START = 700;
 
         // ====================================================================
-        // SQL Scripts (AzerothCore)
+        // SQL Scripts
         // ====================================================================
         // Record identifier for the creature sql table, need at least 31k
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
