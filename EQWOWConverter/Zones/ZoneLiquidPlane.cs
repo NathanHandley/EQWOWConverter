@@ -76,12 +76,10 @@ namespace EQWOWConverter.Zones
             HighZ = highZ;
             LowZ = lowZ;
             SlantType = slantType;
-
-            // Swap corners due to model space differences for water
-            NWCornerXY.X = seCornerX;
-            NWCornerXY.Y = seCornerY;
-            SECornerXY.X = nwCornerX;
-            SECornerXY.Y = nwCornerY;
+            SECornerXY.X = seCornerX;
+            SECornerXY.Y = seCornerY;
+            NWCornerXY.X = nwCornerX;
+            NWCornerXY.Y = nwCornerY;
 
             // Generate bounding box
             RegenerateBoundingBox();
@@ -109,10 +107,10 @@ namespace EQWOWConverter.Zones
             LowZ = allCornersZ;
 
             // Swap corners due to model space differences for water
-            NWCornerXY.X = seCornerX;
-            NWCornerXY.Y = seCornerY;
-            SECornerXY.X = nwCornerX;
-            SECornerXY.Y = nwCornerY;
+            SECornerXY.X = seCornerX;
+            SECornerXY.Y = seCornerY;
+            NWCornerXY.X = nwCornerX;
+            NWCornerXY.Y = nwCornerY;
 
             // Generate bounding box
             RegenerateBoundingBox();
@@ -157,14 +155,14 @@ namespace EQWOWConverter.Zones
                         if (curPlane.GetXDistance() > curPlane.GetYDistance())
                         {
                             float planeSplitDistance = (curPlane.NWCornerXY.X + curPlane.SECornerXY.X) * 0.5f;
-                            curPlane.NWCornerXY.X = planeSplitDistance;
-                            newPlane.SECornerXY.X = planeSplitDistance;
+                            curPlane.SECornerXY.X = planeSplitDistance;
+                            newPlane.NWCornerXY.X = planeSplitDistance;
                         }
                         else
                         {
                             float planeSplitDistance = (curPlane.NWCornerXY.Y + curPlane.SECornerXY.Y) * 0.5f;
-                            curPlane.NWCornerXY.Y = planeSplitDistance;
-                            newPlane.SECornerXY.Y = planeSplitDistance;
+                            curPlane.SECornerXY.Y = planeSplitDistance;
+                            newPlane.NWCornerXY.Y = planeSplitDistance;
                         }
                         doSplitFurther = true;
                         curPlane.RegenerateBoundingBox();
