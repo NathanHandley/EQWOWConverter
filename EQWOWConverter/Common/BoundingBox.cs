@@ -67,6 +67,12 @@ namespace EQWOWConverter.Common
             BottomCorner = new Vector3(box.BottomCorner);
         }
 
+        public BoundingBox(Vector3 topCorner, Vector3 bottomCorner)
+        {
+            TopCorner = new Vector3(topCorner);
+            BottomCorner = new Vector3(bottomCorner);
+        }
+
         public List<byte> ToBytesHighRes()
         {
             List<byte> returnBytes = new List<byte>();
@@ -289,6 +295,74 @@ namespace EQWOWConverter.Common
             }
 
             return boundingBox;
+        }
+
+        public bool DoesIntersectBox(BoundingBox other)
+        {
+            if (BottomCorner.X + float.Epsilon > other.TopCorner.X)
+                return false;
+            if (BottomCorner.Y + float.Epsilon > other.TopCorner.Y)
+                return false;
+            if (BottomCorner.Z + float.Epsilon > other.TopCorner.Z)
+                return false;
+            if (other.BottomCorner.X + float.Epsilon > TopCorner.X)
+                return false;
+            if (other.BottomCorner.Y + float.Epsilon > TopCorner.Y)
+                return false;
+            if (other.BottomCorner.Z + float.Epsilon > TopCorner.Z)
+                return false;
+            return true;
+        }
+
+        public static void SplitBoundingIntersect(BoundingBox box1, BoundingBox box2, out List<BoundingBox> intersecting, out List<BoundingBox> box1SubBoxes, out List<BoundingBox> box2SubBoxes)
+        {
+            intersecting = new List<BoundingBox>();
+            box1SubBoxes = new List<BoundingBox>();
+            box2SubBoxes = new List<BoundingBox>();
+
+            // Exit if nothing intersects
+            if (box1.DoesIntersectBox(box2) == false)
+            {
+                box1SubBoxes.Add(box1);
+                box2SubBoxes.Add(box2);
+                return;
+            }
+
+            // Calculate the intersection box
+            Vector3 intersectionTop = Vector3.GetMin(box1.TopCorner, box2.TopCorner);
+            Vector3 intersectionBottom = Vector3.GetMax(box1.BottomCorner, box2.BottomCorner);
+            intersecting.Add(new BoundingBox(intersectionTop, intersectionBottom));
+
+            // Create a box for any possible protusion
+            // X
+            if (box1.TopCorner.X > box2.TopCorner.X)
+                box1SubBoxes.Add(new BoundingBox(box1.TopCorner, new Vector3(intersectionTop.X, box1.BottomCorner.Y, box1.BottomCorner.Z)));
+            if (box2.TopCorner.X > box1.TopCorner.X)
+                box2SubBoxes.Add(new BoundingBox(box2.TopCorner, new Vector3(intersectionTop.X, box2.BottomCorner.Y, box2.BottomCorner.Z)));
+            if (box1.BottomCorner.X < box2.BottomCorner.X)
+                box1SubBoxes.Add(new BoundingBox(new Vector3(intersectionBottom.X, box1.TopCorner.Y, box1.TopCorner.Z), box1.BottomCorner));
+            if (box2.BottomCorner.X < box1.BottomCorner.X)
+                box2SubBoxes.Add(new BoundingBox(new Vector3(intersectionBottom.X, box2.TopCorner.Y, box2.TopCorner.Z), box2.BottomCorner));
+
+            // Y
+            if (box1.TopCorner.Y > box2.TopCorner.Y)
+                box1SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, box1.TopCorner.Y, box1.TopCorner.Z), new Vector3(intersectionBottom.X, intersectionTop.Y, box1.BottomCorner.Z)));
+            if (box2.TopCorner.Y > box1.TopCorner.Y)
+                box2SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, box2.TopCorner.Y, box2.TopCorner.Z), new Vector3(intersectionBottom.X, intersectionTop.Y, box2.BottomCorner.Z)));
+            if (box1.BottomCorner.Y < box2.BottomCorner.Y)
+                box1SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionBottom.Y, box1.TopCorner.Z), new Vector3(intersectionBottom.X, box1.BottomCorner.Y, box1.BottomCorner.Z)));
+            if (box2.BottomCorner.Y < box1.BottomCorner.Y)
+                box2SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionBottom.Y, box2.TopCorner.Z), new Vector3(intersectionBottom.X, box2.BottomCorner.Y, box2.BottomCorner.Z)));
+
+            // Z
+            if (box1.TopCorner.Z > box2.TopCorner.Z)
+                box1SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionTop.Y, box1.TopCorner.Z), new Vector3(intersectionBottom.X, intersectionBottom.Y, intersectionTop.Z)));
+            if (box2.TopCorner.Z > box1.TopCorner.Z)
+                box2SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionTop.Y, box2.TopCorner.Z), new Vector3(intersectionBottom.X, intersectionBottom.Y, intersectionTop.Z)));
+            if (box1.BottomCorner.Z < box2.BottomCorner.Z)
+                box1SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionTop.Y, intersectionBottom.Z), new Vector3(intersectionBottom.X, intersectionBottom.Y, box1.BottomCorner.Z)));
+            if (box2.BottomCorner.Z < box1.BottomCorner.Z)
+                box2SubBoxes.Add(new BoundingBox(new Vector3(intersectionTop.X, intersectionTop.Y, intersectionBottom.Z), new Vector3(intersectionBottom.X, intersectionBottom.Y, box2.BottomCorner.Z)));
         }
     }
 }
