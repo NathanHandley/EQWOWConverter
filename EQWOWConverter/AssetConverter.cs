@@ -129,18 +129,26 @@ namespace EQWOWConverter
             if (Directory.Exists(exportObjectsFolder))
                 Directory.Delete(exportObjectsFolder, true);
 
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+
             // Go through all of the object meshes and process them one at a time
             string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
             DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
             FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            foreach(FileInfo objectMeshFileInfo in objectMeshFileInfos)
+            foreach (FileInfo objectMeshFileInfo in objectMeshFileInfos)
             {
+                curProgress++;
                 string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
                 string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectMeshNameNoExt);
 
                 // Skip the collision mesh files
                 if (objectMeshFileInfo.Name.Contains("_collision"))
+                {
+                    Logger.WriteCounter(curProgress, curProgressOffset, objectMeshFileInfos.Length);
                     continue;
+                }
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
@@ -157,6 +165,8 @@ namespace EQWOWConverter
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
                 ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
+
+                Logger.WriteCounter(curProgress, curProgressOffset, objectMeshFileInfos.Length);
             }
             return true;
         }
@@ -301,7 +311,6 @@ namespace EQWOWConverter
             // For the counter
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset);
             
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
