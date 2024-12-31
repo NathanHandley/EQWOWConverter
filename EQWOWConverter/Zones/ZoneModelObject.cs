@@ -58,19 +58,10 @@ namespace EQWOWConverter.Zones
             AreaTableID = areaTableID;
         }
 
-        public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
-        {
-            WMOType = ZoneObjectModelType.LiquidVolume;
-            BoundingBox = boundingBox;
-            LiquidType = liquidType;
-            Liquid = liquidPlane;
-            IsLoaded = true;
-        }
-
-        public void LoadAsLiquidPlane(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
+        public void LoadAsLiquid(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
             ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.LiquidPlane;
+            WMOType = ZoneObjectModelType.Liquid;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;

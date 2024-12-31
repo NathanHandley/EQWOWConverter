@@ -344,38 +344,42 @@ namespace EQWOWConverter.WOWFiles
             List<byte> chunkBytes = new List<byte>();
 
             // Build the liquid object head
-            WMOLiquid liquid = new WMOLiquid();
-            liquid.MaterialID = Convert.ToUInt16(worldObjectModel.LiquidMaterial.Index);
+            WMOLiquid wmoLiquid = new WMOLiquid();
+            wmoLiquid.MaterialID = Convert.ToUInt16(worldObjectModel.LiquidMaterial.Index);
             if (worldObjectModel.LiquidType != ZoneLiquidType.Magma && worldObjectModel.LiquidType != ZoneLiquidType.Slime)
-                liquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
+                wmoLiquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
 
             // Different logic based on type
             switch (worldObjectModel.WMOType)
             {
-                case ZoneObjectModelType.LiquidPlane:
+                case ZoneObjectModelType.Liquid:
                     {
-                        ZoneLiquid liquidPlane = worldObjectModel.Liquid;
+                        if (worldObjectModel.Liquid == null)
+                            throw new Exception("Liquid object was null inside MLIQ chunk");
+                        ZoneLiquid liquid = worldObjectModel.Liquid;
 
-                        liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;
-                        liquid.CornerPosition.Y = liquidPlane.NWCornerXY.Y;
-                        liquid.CornerPosition.Z = 0f;
+                        wmoLiquid.CornerPosition = new Vector3();
+                        wmoLiquid.CornerPosition.X = liquid.NWCornerXY.X;
+                        wmoLiquid.CornerPosition.Y = liquid.NWCornerXY.Y;
+                        wmoLiquid.CornerPosition.Z = 0f;
 
                         // Calculate tiles
                         float xDistance = worldObjectModel.BoundingBox.GetXDistance();
                         float yDistance = worldObjectModel.BoundingBox.GetYDistance();
-                        liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.XVertexCount = liquid.XTileCount + 1;
-                        liquid.YVertexCount = liquid.YTileCount + 1;
+                        wmoLiquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                        wmoLiquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                        wmoLiquid.XVertexCount = wmoLiquid.XTileCount + 1;
+                        wmoLiquid.YVertexCount = wmoLiquid.YTileCount + 1;
 
                         // Build the tile data.  Z-Axis aligned can build it quicker
-                        if (liquidPlane.SlantType == ZoneLiquidSlantType.None)
+                        if (liquid.SlantType == ZoneLiquidSlantType.None)
                         {
-                            float zHeight = liquidPlane.HighZ;
-                            for (int y = 0; y < liquid.YVertexCount; y++)
+                            float zHeight = liquid.HighZ;
+                            if (liquid.LiquidShape == ZoneLiquidShapeType.Volume)
+                                zHeight += 1000f;
+                            for (int y = 0; y < wmoLiquid.YVertexCount; y++)
                             {
-                                for (int x = 0; x < liquid.XVertexCount; x++)
+                                for (int x = 0; x < wmoLiquid.XVertexCount; x++)
                                 { 
                                     switch (worldObjectModel.LiquidType)
                                     {
@@ -384,11 +388,11 @@ namespace EQWOWConverter.WOWFiles
                                         case ZoneLiquidType.GreenWater:
                                         case ZoneLiquidType.Slime:
                                             {
-                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
+                                                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
                                             } break;
                                         case ZoneLiquidType.Magma:
                                             {
-                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
+                                                wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
                                             } break;
                                     }
                                 }
@@ -398,40 +402,40 @@ namespace EQWOWConverter.WOWFiles
                         {
                             float xSlope = 0f;
                             float ySlope = 0f;
-                            float zDrop = liquidPlane.HighZ - liquidPlane.LowZ;
-                            float seZHeight = liquidPlane.HighZ;
-                            switch (liquidPlane.SlantType) // Walk 'up' from south to north
+                            float zDrop = liquid.HighZ - liquid.LowZ;
+                            float seZHeight = liquid.HighZ;
+                            switch (liquid.SlantType) // Walk 'up' from south to north
                             {
                                 case ZoneLiquidSlantType.None: break; // Intentionally blank
                                 case ZoneLiquidSlantType.NorthHighSouthLow:
                                     {
                                         xSlope = -(zDrop / xDistance);
-                                        seZHeight = liquidPlane.HighZ;
+                                        seZHeight = liquid.HighZ;
                                     } break;
                                 case ZoneLiquidSlantType.WestHighEastLow:
                                     {
                                         ySlope = -(zDrop / yDistance);
-                                        seZHeight = liquidPlane.HighZ;
+                                        seZHeight = liquid.HighZ;
                                     } break;
                                 case ZoneLiquidSlantType.EastHighWestLow:
                                     {
                                         ySlope = zDrop / yDistance;
-                                        seZHeight = liquidPlane.LowZ;
+                                        seZHeight = liquid.LowZ;
                                     } break;
                                 case ZoneLiquidSlantType.SouthHighNorthLow:
                                     {
                                         xSlope = zDrop / xDistance;
-                                        seZHeight = liquidPlane.LowZ;
+                                        seZHeight = liquid.LowZ;
                                     } break;
                                 default:
                                     {
-                                        Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquidPlane.SlantType +"'.  Plane will be flat.");
+                                        Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquid.SlantType +"'.  Plane will be flat.");
                                     } break;
                             }
 
-                            for (int y = 0; y < liquid.YVertexCount; y++)
+                            for (int y = 0; y < wmoLiquid.YVertexCount; y++)
                             {
-                                for (int x = 0; x < liquid.XVertexCount; x++)
+                                for (int x = 0; x < wmoLiquid.XVertexCount; x++)
                                 {
                                     float curZHeight = (x * 4.1666625f * xSlope) + (y * 4.1666625f * ySlope) + seZHeight;
                                     switch (worldObjectModel.LiquidType)
@@ -441,57 +445,12 @@ namespace EQWOWConverter.WOWFiles
                                         case ZoneLiquidType.GreenWater:
                                         case ZoneLiquidType.Slime:
                                             {
-                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, curZHeight));
+                                                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, curZHeight));
                                             } break;
                                         case ZoneLiquidType.Magma:
                                             {
-                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
+                                                wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
                                             } break;
-                                    }
-                                }
-                            }
-                        }
-                    } break;
-                case ZoneObjectModelType.LiquidVolume:
-                    {
-                        ZoneLiquid liquidPlane = worldObjectModel.Liquid;
-
-                        liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;
-                        liquid.CornerPosition.Y = liquidPlane.NWCornerXY.Y;
-                        liquid.CornerPosition.Z = 0f;
-
-                        // Calculate tiles
-                        float xDistance = worldObjectModel.BoundingBox.GetXDistance();
-                        float yDistance = worldObjectModel.BoundingBox.GetYDistance();
-                        liquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        liquid.XVertexCount = liquid.XTileCount + 1;
-                        liquid.YVertexCount = liquid.YTileCount + 1;
-
-                        // Build the tile data.  Z-Axis aligned can build it quicker
-                        if (liquidPlane.SlantType == ZoneLiquidSlantType.None)
-                        {
-                            float zHeight = liquidPlane.HighZ + 1000f;
-                            for (int y = 0; y < liquid.YVertexCount; y++)
-                            {
-                                for (int x = 0; x < liquid.XVertexCount; x++)
-                                {
-                                    switch (worldObjectModel.LiquidType)
-                                    {
-                                        case ZoneLiquidType.Water:
-                                        case ZoneLiquidType.Blood:
-                                        case ZoneLiquidType.GreenWater:
-                                        case ZoneLiquidType.Slime:
-                                            {
-                                                liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
-                                            }
-                                            break;
-                                        case ZoneLiquidType.Magma:
-                                            {
-                                                liquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
-                                            }
-                                            break;
                                     }
                                 }
                             }
@@ -500,21 +459,21 @@ namespace EQWOWConverter.WOWFiles
                 default:
                     {
                         // Create just a single water block and put in the middle of nowhere
-                        liquid.CornerPosition = new Vector3();
-                        liquid.CornerPosition.X = 0f;
-                        liquid.CornerPosition.Y = 0f;
-                        liquid.CornerPosition.Z = 0f;
-                        liquid.XTileCount = 1;
-                        liquid.YTileCount = 1;
-                        liquid.XVertexCount = 2;
-                        liquid.YVertexCount = 2;
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        liquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        wmoLiquid.CornerPosition = new Vector3();
+                        wmoLiquid.CornerPosition.X = 0f;
+                        wmoLiquid.CornerPosition.Y = 0f;
+                        wmoLiquid.CornerPosition.Z = 0f;
+                        wmoLiquid.XTileCount = 1;
+                        wmoLiquid.YTileCount = 1;
+                        wmoLiquid.XVertexCount = 2;
+                        wmoLiquid.YVertexCount = 2;
+                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
                     } break;
             }
-            chunkBytes.AddRange(liquid.ToBytes());
+            chunkBytes.AddRange(wmoLiquid.ToBytes());
             return WrapInChunk("MLIQ", chunkBytes.ToArray());
         }
     }

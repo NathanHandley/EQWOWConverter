@@ -248,14 +248,14 @@ namespace EQWOWConverter.Zones
                     foreach (ZoneLiquid curLiquidPlane in liquidPlaneChunks)
                     {
                         ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                        curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, Materials[0], curLiquidPlane.BoundingBox, zoneProperties);
+                        curWorldObjectModel.LoadAsLiquid(curLiquidPlane.LiquidType, curLiquidPlane, Materials[0], curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneObjectModels.Add(curWorldObjectModel);
                     }
                 }
                 else
                 {
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                    curWorldObjectModel.LoadAsLiquidPlane(liquid.LiquidType, liquid, Materials[0], liquid.BoundingBox, zoneProperties);
+                    curWorldObjectModel.LoadAsLiquid(liquid.LiquidType, liquid, Materials[0], liquid.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
             }

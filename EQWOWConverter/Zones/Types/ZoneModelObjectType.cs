@@ -26,8 +26,7 @@ namespace EQWOWConverter.Zones
     {
         Rendered,
         CollidableArea,
-        LiquidVolume,
-        LiquidPlane,
+        Liquid,
         ShadowBox
     }
 }
