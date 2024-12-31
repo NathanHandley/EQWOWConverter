@@ -623,6 +623,7 @@ namespace EQWOWConverter
             }
 
             // Get all the individual files to process
+            Logger.WriteInfo("Building list of png files to convert...");
             List<string> pngFilesToConvert = new List<string>();
             foreach(string folderToProcess in textureFoldersToProcess)
             {
@@ -634,13 +635,14 @@ namespace EQWOWConverter
                 }
             }
 
+            Logger.WriteInfo("Converting png files to blp files...");
+
             // For the counter
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset);
+            Logger.WriteCounter(curProgress, curProgressOffset, pngFilesToConvert.Count);
 
             // Convert them
-            Logger.WriteInfo("Converting png files to blp files...");
             StringBuilder curFileArgListSB = new StringBuilder();
             for(int i = 0; i < pngFilesToConvert.Count; i++)
             {
@@ -662,8 +664,8 @@ namespace EQWOWConverter
                     Console.Title = "EverQuest to WoW Converter";
                     curFileArgListSB.Clear();
 
-                    curProgress++;
-                    Logger.WriteCounter(curProgress, curProgressOffset);
+                    curProgress = i;
+                    Logger.WriteCounter(curProgress, curProgressOffset, pngFilesToConvert.Count);
                 }
             }
 

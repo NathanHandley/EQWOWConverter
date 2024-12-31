@@ -74,9 +74,22 @@ namespace EQWOWConverter
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
 
-        public static void WriteCounter(int number, int startPosition)
+        public static void WriteError(string text)
         {
-            string outputString = "(" + number.ToString() + ")";
+            string outputLine = "[*] Error| " + text;
+            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 2)
+                WriteToConsole(text);
+            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 2)
+                File.AppendAllText("log.txt", outputLine + "\n");
+        }
+
+        public static void WriteCounter(int number, int startPosition, int totalNumber = 0)
+        {
+            string outputString;
+            if (totalNumber != 0)
+                outputString = "(" + number.ToString() + " of " + totalNumber.ToString() + ")";
+            else
+                outputString = "(" + number.ToString() + ")";
             int cursorTop = Console.CursorTop - 1;
             Console.SetCursorPosition(startPosition, cursorTop);
             Console.Write(outputString);
@@ -98,15 +111,6 @@ namespace EQWOWConverter
                     return i;
             }
             return 0;
-        }
-
-        public static void WriteError(string text)
-        {
-            string outputLine = "[*] Error| " + text;
-            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 2)
-                WriteToConsole(text);
-            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 2)
-                File.AppendAllText("log.txt", outputLine + "\n");
         }
     }
 }

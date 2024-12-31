@@ -295,13 +295,14 @@ namespace EQWOWConverter
             Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
             creatureTemplates = creatureTemplatesByID.Values.ToList();
 
+            // Create all of the models and related model files
+            Logger.WriteInfo("Creating creature model files...");
+
             // For the counter
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
             Logger.WriteCounter(curProgress, curProgressOffset);
-
-            // Create all of the models and related model files
-            Logger.WriteInfo("Creating creature model files...");
+            
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {

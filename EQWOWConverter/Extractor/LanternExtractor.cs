@@ -84,12 +84,13 @@ namespace LanternExtractor
                 return false;
             }
 
+            Logger.WriteInfo("Extractor extracting files...");
+
             // For the counter
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
             Logger.WriteCounter(curProgress, curProgressOffset);
-
-            Logger.WriteInfo("Extractor extracting files...");
+            
             foreach (var file in eqFiles)
             {
                 ArchiveExtractor.Extract(file, extractDirectory, _logger, _settings);

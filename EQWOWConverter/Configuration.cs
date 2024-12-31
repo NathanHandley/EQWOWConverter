@@ -43,25 +43,25 @@ namespace EQWOWConverter
         // Paths and Files
         // ====================================================================
         // Location of the installed everquest trilogy
-        public static readonly string CONFIG_PATH_EQTRILOGY_FOLDER = "E:\\Development\\EQWOW-Reference\\EverQuestTrilogy";
+        public static readonly string CONFIG_PATH_EQTRILOGY_FOLDER = "C:\\Development\\EQWOWFiles\\EverQuestTrilogy";
 
         // Location of eq data exports before conditioning (from LaternExtractor)
-        public static readonly string CONFIG_PATH_EQEXPORTSRAW_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQClientExportRaw";
+        public static readonly string CONFIG_PATH_EQEXPORTSRAW_FOLDER = "C:\\Development\\EQWOWFiles\\EQExports-Int";
 
         // Location of your enUS World of Warcaft client, where your wow.exe is (such as C:\WorldOfWarcraft)
-        public static readonly string CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER = "E:\\Development\\azerothcore-wotlk\\Client\\";
+        public static readonly string CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER = "C:\\Games\\World of Warcraft";
 
         // Where the "conditioned" eq data export files go
-        public static readonly string CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQClientExportConditioned";
+        public static readonly string CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER = "C:\\Development\\EQWOWFiles\\EQExportsConditioned";
 
         // Where the intermediate generated WOW files go
-        public static readonly string CONFIG_PATH_EXPORT_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
+        public static readonly string CONFIG_PATH_EXPORT_FOLDER = "C:\\Development\\EQWOWFiles\\WOWExports";
 
         // The root of the tools directory (included in this source repository)
-        public static readonly string CONFIG_PATH_TOOLS_FOLDER = "E:\\Development\\EQWOW\\Tools";
+        public static readonly string CONFIG_PATH_TOOLS_FOLDER = "C:\\Development\\EQWOW\\Tools";
 
         // The root of the assets directory (included in this source repository)
-        public static readonly string CONFIG_PATH_ASSETS_FOLDER = "E:\\Development\\EQWOW\\Assets";
+        public static readonly string CONFIG_PATH_ASSETS_FOLDER = "C:\\Development\\EQWOW\\Assets";
 
         // Name of the newely generated patch file, without the extension. Note: Will be deleted when extracting DBC data, so make sure it's the last and new
         public static readonly string CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT = "patch-enUS-5";
