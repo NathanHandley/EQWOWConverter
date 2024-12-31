@@ -84,13 +84,18 @@ namespace LanternExtractor
                 return false;
             }
 
-            Logger.WriteInfo("Extractor extracting files...", true, true);
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset);
+
+            Logger.WriteInfo("Extractor extracting files...");
             foreach (var file in eqFiles)
             {
                 ArchiveExtractor.Extract(file, extractDirectory, _logger, _settings);
-                Logger.WriteInfo(".", true, false);
+                curProgress++;
+                Logger.WriteCounter(curProgress, curProgressOffset);
             }
-            Logger.WriteInfo("done", false, false);
 
             Logger.WriteInfo("Extractor copying client data...");
             ClientDataCopier.Copy(archiveName, extractDirectory, _logger, _settings);

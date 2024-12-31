@@ -168,10 +168,10 @@ namespace EQWOWConverter
 
             if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
             {
-                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", true, true);
+                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", false);
                 foreach (string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
-                    Logger.WriteInfo(zoneShortName + " ", true, false);
-                Logger.WriteInfo(string.Empty, false, false);
+                    Logger.WriteInfo(zoneShortName + " ", false, false);
+                Logger.WriteInfo(string.Empty, true, false);
             }
 
             if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true)
@@ -295,8 +295,13 @@ namespace EQWOWConverter
             Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
             creatureTemplates = creatureTemplatesByID.Values.ToList();
 
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset);
+
             // Create all of the models and related model files
-            Logger.WriteInfo("Creating creature model files...", true);
+            Logger.WriteInfo("Creating creature model files...");
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
@@ -304,10 +309,10 @@ namespace EQWOWConverter
                 {
                     modelTemplate.CreateModelFiles();
                     creatureModelTemplates.Add(modelTemplate);
-                    Logger.WriteInfo(".", true, false);
+                    curProgress++;
+                    Logger.WriteCounter(curProgress, curProgressOffset);
                 }
             }
-            Logger.WriteInfo("done", false, false);
 
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();

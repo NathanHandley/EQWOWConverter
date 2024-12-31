@@ -43,6 +43,8 @@ namespace EQWOWConverter
 
         public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
         {
+            Logger.WriteInfo("Conditioning EQ folders...");
+
             // Reset counters
             objectMeshesCondensed = 0;
             objectMaterialsCondensed = 0;
@@ -85,12 +87,15 @@ namespace EQWOWConverter
             FileTool.CreateBlankDirectory(outputLiquidSurfacesFolderRoot, false);
             FileTool.CreateBlankDirectory(tempFolderRoot, false);
 
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset);
+
             // Iterate through each exported directory and process objects and zones
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
             foreach (string topDirectory in topDirectories)
             {
-                Logger.WriteInfo(".", true, false);
-
                 // Get just the folder name itself for later
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
@@ -198,9 +203,9 @@ namespace EQWOWConverter
                         File.Copy(inputFileName, outputFileName, true);
                     }
                 }
+                curProgress++;
+                Logger.WriteCounter(curProgress, curProgressOffset);
             }
-
-            Logger.WriteInfo("done", false, false);
 
             // Clean up the temp folder
             Directory.Delete(tempFolderRoot, true);
@@ -400,7 +405,7 @@ namespace EQWOWConverter
 
         public void ConditionMusicFiles(string musicDirectory)
         {
-            Logger.WriteInfo("Converting music files...", true);
+            Logger.WriteInfo("Converting music files...");
             if (Path.Exists(musicDirectory) == false)
             {
                 Logger.WriteError("Failed to process music files.  The music directory at '" + musicDirectory + "' does not exist.");
@@ -446,6 +451,11 @@ namespace EQWOWConverter
                 Logger.WriteError("Failed to process music files. '" + ffmpegFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
                 return;
             }
+
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset);
 
             // Process all of the xmi files, which contain the midi information
             foreach (string musicXMIFile in musicXMIFiles)
@@ -494,10 +504,11 @@ namespace EQWOWConverter
                     // Delete the temp files
                     File.Delete(musicMidiFile);
                     File.Delete(tempWavFileName);
-                    Console.Write(".");
+
+                    curProgress++;
+                    Logger.WriteCounter(curProgress, curProgressOffset);
                 }
             }
-            Logger.WriteInfo(" done", false, false);
         }
 
         public void CreateIndividualIconFiles()
@@ -623,8 +634,13 @@ namespace EQWOWConverter
                 }
             }
 
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset);
+
             // Convert them
-            Logger.WriteInfo("Converting png files to blp files...", true);
+            Logger.WriteInfo("Converting png files to blp files...");
             StringBuilder curFileArgListSB = new StringBuilder();
             for(int i = 0; i < pngFilesToConvert.Count; i++)
             {
@@ -646,11 +662,11 @@ namespace EQWOWConverter
                     Console.Title = "EverQuest to WoW Converter";
                     curFileArgListSB.Clear();
 
-                    Logger.WriteInfo(".", true, false);
+                    curProgress++;
+                    Logger.WriteCounter(curProgress, curProgressOffset);
                 }
             }
 
-            Logger.WriteInfo("done", false, false);
             return true;
         }
 

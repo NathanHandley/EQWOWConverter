@@ -24,13 +24,35 @@ namespace EQWOWConverter
 {
     internal class Logger
     {
+        // Rows written to the console, for tracking
+        private static Dictionary<int, string> ConsoleRows = new Dictionary<int, string>();
+
         public static void ResetLog()
         {
             if (File.Exists("log.txt"))
                 File.Delete("log.txt");
         }
 
-        public static void WriteInfo(string text, bool noNewLineInConsole = false, bool includeLeaderBlock = true)
+        private static void WriteToConsole(string text, bool outputNewLine = true)
+        {
+            int row = Console.CursorTop;
+            int col = Console.CursorLeft;
+
+            if (ConsoleRows.ContainsKey(row) == false)
+                ConsoleRows[row] = new string(' ', Console.BufferWidth);
+
+            char[] rowBuffer = ConsoleRows[row].ToCharArray();
+            for (int i = 0; i < text.Length && col + i < Console.BufferWidth; i++)
+                rowBuffer[col + i] = text[i];
+
+            ConsoleRows[row] = new string(rowBuffer);
+            if (outputNewLine == true)
+                Console.WriteLine(text);
+            else
+                Console.Write(text);
+        }
+
+        public static void WriteInfo(string text, bool outputNewLine = true, bool includeLeaderBlock = true)
         {
             string outputLine;
             if (includeLeaderBlock == true)
@@ -38,12 +60,7 @@ namespace EQWOWConverter
             else
                 outputLine = text;
             if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
-            {
-                if (noNewLineInConsole)
-                    Console.Write(outputLine);
-                else
-                    Console.WriteLine(outputLine);
-            }
+                WriteToConsole(text, outputNewLine);
             if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
@@ -52,16 +69,42 @@ namespace EQWOWConverter
         {
             string outputLine = "[.] Detail| " + text;
             if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 3)
-                Console.WriteLine(outputLine);
+                WriteToConsole(text);
             if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 3)
                 File.AppendAllText("log.txt", outputLine + "\n");
+        }
+
+        public static void WriteCounter(int number, int startPosition)
+        {
+            string outputString = "(" + number.ToString() + ")";
+            int cursorTop = Console.CursorTop - 1;
+            Console.SetCursorPosition(startPosition, cursorTop);
+            Console.Write(outputString);
+            Console.SetCursorPosition(0, cursorTop + 1);
+        }
+
+        public static int GetConsolePriorRowCursorLeft()
+        {
+            int currentRow = Console.CursorTop;
+            if (currentRow == 0)
+                return 0;
+            int previousRow = currentRow - 1;
+            if (ConsoleRows.ContainsKey(previousRow) == false)
+                return 0;
+            string rowChars = ConsoleRows[previousRow];
+            for (int i = rowChars.Length - 1; i >= 0; i--)
+            {
+                if (rowChars[i] != ' ')
+                    return i;
+            }
+            return 0;
         }
 
         public static void WriteError(string text)
         {
             string outputLine = "[*] Error| " + text;
             if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 2)
-                Console.WriteLine(outputLine);
+                WriteToConsole(text);
             if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 2)
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
