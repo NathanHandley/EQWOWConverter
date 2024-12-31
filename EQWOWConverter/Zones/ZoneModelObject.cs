@@ -46,7 +46,7 @@ namespace EQWOWConverter.Zones
         public bool IsExterior = true;
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
         public Material LiquidMaterial = new Material();
-        public ZoneLiquidPlane LiquidPlane = new ZoneLiquidPlane();
+        public ZoneLiquid? Liquid = null;
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
         public ZoneAreaMusic? ZoneMusic = null;
 
@@ -58,23 +58,23 @@ namespace EQWOWConverter.Zones
             AreaTableID = areaTableID;
         }
 
-        public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
+        public void LoadAsLiquidVolume(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.LiquidVolume;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
-            LiquidPlane = liquidPlane;
+            Liquid = liquidPlane;
             IsLoaded = true;
         }
 
-        public void LoadAsLiquidPlane(ZoneLiquidType liquidType, ZoneLiquidPlane liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
+        public void LoadAsLiquidPlane(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
             ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.LiquidPlane;
             BoundingBox = boundingBox;
             LiquidType = liquidType;
             LiquidMaterial = liquidMaterial;
-            LiquidPlane = liquidPlane;
+            Liquid = liquidPlane;
             IsLoaded = true;
         }
 

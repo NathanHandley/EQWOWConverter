@@ -38,9 +38,8 @@ namespace EQWOWConverter.Zones
         public ZoneLiquidType CompletelyInLiquidType = ZoneLiquidType.None;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
-        public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
-        public List<ZoneLiquidVolume> LiquidVolumes = new List<ZoneLiquidVolume>();       
-        public List<ZoneLiquidPlane> LiquidPlanes = new List<ZoneLiquidPlane>();
+        public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();  
+        public List<ZoneLiquid> Liquids = new List<ZoneLiquid>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public double VertexColorIntensityOverride = -1;
@@ -304,26 +303,26 @@ namespace EQWOWConverter.Zones
         protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ)
         {
-            ZoneLiquidVolume liquidVolume = new ZoneLiquidVolume(liquidType, nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, lowZ);
-            LiquidVolumes.Add(liquidVolume);
+            ZoneLiquid liquidVolume = new ZoneLiquid(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, highZ-lowZ, ZoneLiquidShapeType.Volume);
+            Liquids.Add(liquidVolume);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth)
         {
-            ZoneLiquidPlane liquidPlane = new ZoneLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
+            ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
                 highZ, lowZ, slantType, minDepth);
-            LiquidPlanes.Add(liquidPlane);
+            Liquids.Add(liquidPlane);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlaneZLevel(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float fixedZ, float minDepth)
         {
-            ZoneLiquidPlane liquidPlane = new ZoneLiquidPlane(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
-                seCornerY, fixedZ, minDepth);
-            LiquidPlanes.Add(liquidPlane);
+            ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
+                seCornerY, fixedZ, minDepth, ZoneLiquidShapeType.Plane);
+            Liquids.Add(liquidPlane);
         }
 
         protected float GetYOnLineAtX(float point1X, float point1Y, float point2X, float point2Y, float testX)

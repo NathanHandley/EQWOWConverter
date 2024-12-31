@@ -354,7 +354,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 case ZoneObjectModelType.LiquidPlane:
                     {
-                        ZoneLiquidPlane liquidPlane = worldObjectModel.LiquidPlane;
+                        ZoneLiquid liquidPlane = worldObjectModel.Liquid;
 
                         liquid.CornerPosition = new Vector3();
                         liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;
@@ -454,7 +454,7 @@ namespace EQWOWConverter.WOWFiles
                     } break;
                 case ZoneObjectModelType.LiquidVolume:
                     {
-                        ZoneLiquidPlane liquidPlane = worldObjectModel.LiquidPlane;
+                        ZoneLiquid liquidPlane = worldObjectModel.Liquid;
 
                         liquid.CornerPosition = new Vector3();
                         liquid.CornerPosition.X = liquidPlane.NWCornerXY.X;

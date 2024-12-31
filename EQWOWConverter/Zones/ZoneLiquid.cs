@@ -23,10 +23,11 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZoneLiquidPlane
+    internal class ZoneLiquid
     {
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
-        public string MaterialName = string.Empty;
+        public ZoneLiquidShapeType LiquidShape = ZoneLiquidShapeType.Plane;
+        public string MaterialName = string.Empty; // Unused, consider removing
         public BoundingBox BoundingBox = new BoundingBox();
         public float MinDepth;
         public float HighZ;
@@ -35,12 +36,12 @@ namespace EQWOWConverter.Zones
         public Vector2 NWCornerXY = new Vector2();
         public Vector2 SECornerXY = new Vector2();
 
-        public ZoneLiquidPlane()
+        public ZoneLiquid()
         {
 
         }
 
-        public ZoneLiquidPlane(ZoneLiquidPlane other)
+        public ZoneLiquid(ZoneLiquid other)
         {
             LiquidType = other.LiquidType;
             MaterialName = other.MaterialName;
@@ -51,9 +52,10 @@ namespace EQWOWConverter.Zones
             NWCornerXY = new Vector2(other.NWCornerXY);
             SECornerXY = new Vector2(other.SECornerXY);
             BoundingBox = new BoundingBox(other.BoundingBox);
+            LiquidShape = other.LiquidShape;
         }
 
-        public ZoneLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+        public ZoneLiquid(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth)
         {
             LiquidType = liquidType;
@@ -85,11 +87,12 @@ namespace EQWOWConverter.Zones
             RegenerateBoundingBox();
         }
 
-        public ZoneLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float allCornersZ, float minDepth)
+        public ZoneLiquid(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
+            float allCornersZ, float minDepth, ZoneLiquidShapeType shapeType)
         {
             LiquidType = liquidType;
             MaterialName = materialName;
+            LiquidShape = shapeType;
 
             // Add additional height for ripple rendering
             allCornersZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
@@ -127,9 +130,9 @@ namespace EQWOWConverter.Zones
             BoundingBox = new BoundingBox(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
-        public List<ZoneLiquidPlane> SplitIntoSizeRestictedChunks(int maximumXYSizePerChunk)
+        public List<ZoneLiquid> SplitIntoSizeRestictedChunks(int maximumXYSizePerChunk)
         {
-            List<ZoneLiquidPlane> dividedPlanes = new List<ZoneLiquidPlane> { new ZoneLiquidPlane(this) };
+            List<ZoneLiquid> dividedPlanes = new List<ZoneLiquid> { new ZoneLiquid(this) };
 
             if (maximumXYSizePerChunk <= 0)
             {
@@ -146,12 +149,12 @@ namespace EQWOWConverter.Zones
             while (doSplitFurther)
             {
                 doSplitFurther = false;
-                List<ZoneLiquidPlane> newPlanes = new List<ZoneLiquidPlane>();
-                foreach (ZoneLiquidPlane curPlane in dividedPlanes)
+                List<ZoneLiquid> newPlanes = new List<ZoneLiquid>();
+                foreach (ZoneLiquid curPlane in dividedPlanes)
                 {
                     if (curPlane.GetXDistance() >= maximumXYSizePerChunk || curPlane.GetYDistance() >= maximumXYSizePerChunk)
                     {
-                        ZoneLiquidPlane newPlane = new ZoneLiquidPlane(curPlane);
+                        ZoneLiquid newPlane = new ZoneLiquid(curPlane);
                         if (curPlane.GetXDistance() > curPlane.GetYDistance())
                         {
                             float planeSplitDistance = (curPlane.NWCornerXY.X + curPlane.SECornerXY.X) * 0.5f;
@@ -170,7 +173,7 @@ namespace EQWOWConverter.Zones
                         newPlanes.Add(newPlane);
                     }
                 }
-                foreach (ZoneLiquidPlane newPlane in newPlanes)
+                foreach (ZoneLiquid newPlane in newPlanes)
                     dividedPlanes.Add(newPlane);
             }
 

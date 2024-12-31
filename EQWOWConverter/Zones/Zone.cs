@@ -238,51 +238,24 @@ namespace EQWOWConverter.Zones
 
         private void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
         {
-            // Volumes
-            foreach (ZoneLiquidVolume liquidVolume in zoneProperties.LiquidVolumes)
+            foreach (ZoneLiquid liquid in zoneProperties.Liquids)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                curWorldObjectModel.LoadAsLiquidVolume(liquidVolume.LiquidType, liquidVolume.LiquidPlane, liquidVolume.BoundingBox, zoneProperties);
-                ZoneObjectModels.Add(curWorldObjectModel);
-            }
-
-            // Planes
-            foreach (ZoneLiquidPlane liquidPlane in zoneProperties.LiquidPlanes)
-            {
-                Material planeMaterial = new Material();
-                bool materialFound = false;
-                foreach (Material material in Materials)
-                {
-                    if (liquidPlane.MaterialName == material.Name)
-                    {
-                        planeMaterial = material;
-                        materialFound = true;
-                        break;
-                    }
-                }
-                if (materialFound == false)
-                {
-                    Logger.WriteError("In generating liquidplane for wmo '" + ShortName + "', unable to find material named '" + liquidPlane.MaterialName + "'");
-                    if (Materials.Count > 0)
-                        planeMaterial = new Material(Materials[0]);
-                }
-
                 // Create the object, constraining to max size if needed
-                if (liquidPlane.BoundingBox.GetYDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION ||
-                    liquidPlane.BoundingBox.GetXDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION)
+                if (liquid.BoundingBox.GetYDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION ||
+                    liquid.BoundingBox.GetXDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION)
                 {
-                    List<ZoneLiquidPlane> liquidPlaneChunks = liquidPlane.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
-                    foreach (ZoneLiquidPlane curLiquidPlane in liquidPlaneChunks)
+                    List<ZoneLiquid> liquidPlaneChunks = liquid.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                    foreach (ZoneLiquid curLiquidPlane in liquidPlaneChunks)
                     {
                         ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                        curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, planeMaterial, curLiquidPlane.BoundingBox, zoneProperties);
+                        curWorldObjectModel.LoadAsLiquidPlane(curLiquidPlane.LiquidType, curLiquidPlane, Materials[0], curLiquidPlane.BoundingBox, zoneProperties);
                         ZoneObjectModels.Add(curWorldObjectModel);
                     }
                 }
                 else
                 {
                     ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                    curWorldObjectModel.LoadAsLiquidPlane(liquidPlane.LiquidType, liquidPlane, planeMaterial, liquidPlane.BoundingBox, zoneProperties);
+                    curWorldObjectModel.LoadAsLiquidPlane(liquid.LiquidType, liquid, Materials[0], liquid.BoundingBox, zoneProperties);
                     ZoneObjectModels.Add(curWorldObjectModel);
                 }
             }
