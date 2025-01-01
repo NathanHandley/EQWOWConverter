@@ -168,6 +168,24 @@ namespace EQWOWConverter.Common
             return true;
         }
 
+        public bool ContainsBox(BoundingBox other)
+        {
+            float edgePad = 0.001f;
+            if (TopCorner.X + edgePad < other.TopCorner.X)
+                return false;
+            if (TopCorner.Y + edgePad < other.TopCorner.Y)
+                return false;
+            if (TopCorner.Z + edgePad < other.TopCorner.Z)
+                return false;
+            if (other.BottomCorner.X + edgePad < BottomCorner.X)
+                return false;
+            if (other.BottomCorner.Y + edgePad < BottomCorner.Y)
+                return false;
+            if (other.BottomCorner.Z + edgePad < BottomCorner.Z)
+                return false;
+            return true;
+        }
+
         public static BoundingBox GenerateBoxFromBoxes(List<BoundingBox> boxes)
         {
             BoundingBox boundingBox = new BoundingBox();
@@ -299,24 +317,6 @@ namespace EQWOWConverter.Common
             if (other.BottomCorner.Y + edgePad > TopCorner.Y)
                 return false;
             if (other.BottomCorner.Z + edgePad > TopCorner.Z)
-                return false;
-            return true;
-        }
-
-        public bool DoesContainBoxFully(BoundingBox other)
-        {
-            float edgePad = 0.001f;
-            if (TopCorner.X + edgePad < other.TopCorner.X)
-                return false;
-            if (TopCorner.Y + edgePad < other.TopCorner.Y)
-                return false;
-            if (TopCorner.Z + edgePad < other.TopCorner.Z)
-                return false;
-            if (other.BottomCorner.X + edgePad < BottomCorner.X)
-                return false;
-            if (other.BottomCorner.Y + edgePad < BottomCorner.Y)
-                return false;
-            if (other.BottomCorner.Z + edgePad < BottomCorner.Z)
                 return false;
             return true;
         }

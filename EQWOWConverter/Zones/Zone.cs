@@ -61,6 +61,7 @@ namespace EQWOWConverter.Zones
             else
                 DescriptiveNameOnlyLetters = shortName;
             DefaultArea = zoneProperties.DefaultZoneArea;
+            SubAreas = zoneProperties.ZoneAreas;
         }
 
         public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
@@ -109,11 +110,8 @@ namespace EQWOWConverter.Zones
             // Create doodad instances
             GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
 
-            // Build liquid wmos
-            GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
-
-            // Create the areas
-            GenerateCollisionWorldObjectModelsAllCollidableAreas(renderMeshData, collisionMeshData, ZoneProperties);
+            // Generate the collidable areas (zone areas, liquid)
+            GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
 
             // Generate the render objects
             GenerateRenderWorldObjectModels(renderMeshData);
@@ -147,7 +145,32 @@ namespace EQWOWConverter.Zones
 
         private void AssignLiquidsToAreas()
         {
+            // Go through each liquid and find which area they belong to, and split if they fall onto a boundary
+            List<ZoneLiquid> liquidsToAssign = ZoneProperties.Liquids;
 
+            while (liquidsToAssign.Count > 0)
+            {
+                // Pop the first liquid and work with that
+                ZoneLiquid curLiquid = liquidsToAssign[0];
+                liquidsToAssign.RemoveAt(0);
+
+                // See if it fits in any sub areas
+                bool liquidWasAssignedToSubArea = false;
+                foreach(ZoneArea area in SubAreas)
+                {
+                    // If fully contained, make it directly assigned
+                    if (area.MaxBoundingBox.ContainsBox(curLiquid.BoundingBox) == true)
+                    {
+                        area.Liquids.Add(curLiquid);
+                        liquidWasAssignedToSubArea = true;
+                        break;
+                    }
+                }
+
+                // If no where else, give it to the default area
+                if (liquidWasAssignedToSubArea == false)
+                    DefaultArea.Liquids.Add(curLiquid);
+            }
         }
 
         private void AssociateDoodadsWithWMOs()
@@ -250,32 +273,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateLiquidWorldObjectModels(MeshData meshData, ZoneProperties zoneProperties)
-        {
-            foreach (ZoneLiquid liquid in zoneProperties.Liquids)
-            {
-                // Create the object, constraining to max size if needed
-                if (liquid.BoundingBox.GetYDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION ||
-                    liquid.BoundingBox.GetXDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION)
-                {
-                    List<ZoneLiquid> liquidPlaneChunks = liquid.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
-                    foreach (ZoneLiquid curLiquidPlane in liquidPlaneChunks)
-                    {
-                        ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                        curWorldObjectModel.LoadAsLiquid(curLiquidPlane.LiquidType, curLiquidPlane, Materials[0], curLiquidPlane.BoundingBox, zoneProperties);
-                        ZoneObjectModels.Add(curWorldObjectModel);
-                    }
-                }
-                else
-                {
-                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
-                    curWorldObjectModel.LoadAsLiquid(liquid.LiquidType, liquid, Materials[0], liquid.BoundingBox, zoneProperties);
-                    ZoneObjectModels.Add(curWorldObjectModel);
-                }
-            }
-        }
-
-        private void GenerateCollisionWorldObjectModelsAllCollidableAreas(MeshData renderMeshData, MeshData collisionMeshData, ZoneProperties zoneProperties)
+        private void GenerateCollidableWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData)
         {
             if (Configuration.CONFIG_ZONE_COLLISION_ENABLED == false)
                 return;
@@ -300,9 +298,13 @@ namespace EQWOWConverter.Zones
                         collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
             }
 
-            // Generate sub-areas
-            foreach(ZoneArea subArea in zoneProperties.ZoneAreas)
+            // Build collision areas based on zone areas
+            foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
             {
+                // Generate areas for each liquid first since those need to be fully contained
+                foreach (ZoneLiquid liquid in subArea.Liquids)
+                    GenerateCollisionWorldObjectModelsForLiquid(liquid, subArea);
+
                 // Areas can have multiple boxes, so merge them up
                 MeshData areaMeshDataFull = new MeshData();
                 foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
@@ -314,13 +316,33 @@ namespace EQWOWConverter.Zones
                     areaMeshDataFull.AddMeshData(areaMeshDataBox);
                 }
                 GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea);
-                SubAreas.Add(subArea);
             }
-
-            // Remainder is the primary area
-            DefaultArea.BoundingBoxes.Clear();
+            foreach (ZoneLiquid liquid in DefaultArea.Liquids)
+                GenerateCollisionWorldObjectModelsForLiquid(liquid, DefaultArea);
             DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
+        }
+
+        private void GenerateCollisionWorldObjectModelsForLiquid(ZoneLiquid liquid, ZoneArea zoneArea)
+        {
+            // Create the object, constraining to max size if needed
+            if (liquid.BoundingBox.GetYDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION ||
+                liquid.BoundingBox.GetXDistance() >= Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION)
+            {
+                List<ZoneLiquid> liquidPlaneChunks = liquid.SplitIntoSizeRestictedChunks(Configuration.CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                foreach (ZoneLiquid curLiquidPlane in liquidPlaneChunks)
+                {
+                    ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                    curWorldObjectModel.LoadAsLiquid(curLiquidPlane.LiquidType, curLiquidPlane, Materials[0], curLiquidPlane.BoundingBox, ZoneProperties);
+                    ZoneObjectModels.Add(curWorldObjectModel);
+                }
+            }
+            else
+            {
+                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                curWorldObjectModel.LoadAsLiquid(liquid.LiquidType, liquid, Materials[0], liquid.BoundingBox, ZoneProperties);
+                ZoneObjectModels.Add(curWorldObjectModel);
+            }
         }
 
         private void GenerateCollisionWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea)
