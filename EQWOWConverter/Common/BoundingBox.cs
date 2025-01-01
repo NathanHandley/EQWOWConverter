@@ -39,18 +39,6 @@ namespace EQWOWConverter.Common
             TopCorner = new Vector3(topX, topY, topZ);
         }
 
-        public BoundingBox(float bottomX, float bottomY, float bottomZ, float topX, float topY, float topZ, float addedBoundary)
-        {
-            bottomX -= addedBoundary;
-            bottomY -= addedBoundary;
-            bottomZ -= addedBoundary;
-            topX += addedBoundary;
-            topY += addedBoundary;
-            topZ += addedBoundary;
-            BottomCorner = new Vector3(bottomX, bottomY, bottomZ);
-            TopCorner = new Vector3(topX, topY, topZ);
-        }
-
         public BoundingBox(Vector3 centerPosition, float apothem)
         {
             BottomCorner.X = centerPosition.X - apothem;
@@ -299,17 +287,36 @@ namespace EQWOWConverter.Common
 
         public bool DoesIntersectBox(BoundingBox other)
         {
-            if (BottomCorner.X + float.Epsilon > other.TopCorner.X)
+            float edgePad = 0.001f;
+            if (BottomCorner.X + edgePad > other.TopCorner.X)
                 return false;
-            if (BottomCorner.Y + float.Epsilon > other.TopCorner.Y)
+            if (BottomCorner.Y + edgePad > other.TopCorner.Y)
                 return false;
-            if (BottomCorner.Z + float.Epsilon > other.TopCorner.Z)
+            if (BottomCorner.Z + edgePad > other.TopCorner.Z)
                 return false;
-            if (other.BottomCorner.X + float.Epsilon > TopCorner.X)
+            if (other.BottomCorner.X + edgePad > TopCorner.X)
                 return false;
-            if (other.BottomCorner.Y + float.Epsilon > TopCorner.Y)
+            if (other.BottomCorner.Y + edgePad > TopCorner.Y)
                 return false;
-            if (other.BottomCorner.Z + float.Epsilon > TopCorner.Z)
+            if (other.BottomCorner.Z + edgePad > TopCorner.Z)
+                return false;
+            return true;
+        }
+
+        public bool DoesContainBoxFully(BoundingBox other)
+        {
+            float edgePad = 0.001f;
+            if (TopCorner.X + edgePad < other.TopCorner.X)
+                return false;
+            if (TopCorner.Y + edgePad < other.TopCorner.Y)
+                return false;
+            if (TopCorner.Z + edgePad < other.TopCorner.Z)
+                return false;
+            if (other.BottomCorner.X + edgePad < BottomCorner.X)
+                return false;
+            if (other.BottomCorner.Y + edgePad < BottomCorner.Y)
+                return false;
+            if (other.BottomCorner.Z + edgePad < BottomCorner.Z)
                 return false;
             return true;
         }

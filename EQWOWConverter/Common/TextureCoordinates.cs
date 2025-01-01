@@ -44,20 +44,6 @@ namespace EQWOWConverter.Common
             Y = y;
         }
 
-        public bool HasOversizedCoordinates()
-        {
-            if (X - float.Epsilon > 1.0f)
-                return true;
-            else if (X + float.Epsilon < -1.0f)
-                return true;
-            else if (Y - float.Epsilon > 1.0f)
-                return true;
-            else if (Y + float.Epsilon < -1.0f)
-                return true;
-
-            return false;
-        }
-
         public List<byte> ToBytes()
         {
             List<byte> returnBytes = new List<byte>();

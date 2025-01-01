@@ -103,6 +103,12 @@ namespace EQWOWConverter.Zones
             // Process Sound Instances
             ProcessSoundInstances();
 
+            // Associate liquids to their respective zone areas 
+            AssignLiquidsToAreas();
+
+            // Create doodad instances
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+
             // Build liquid wmos
             GenerateLiquidWorldObjectModels(renderMeshData, ZoneProperties);
 
@@ -112,8 +118,8 @@ namespace EQWOWConverter.Zones
             // Generate the render objects
             GenerateRenderWorldObjectModels(renderMeshData);
 
-            // Create doodad instances
-            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+            // Bind doodads to wmos
+            AssociateDoodadsWithWMOs();
 
             // Save the loading screen
             SetLoadingScreen();
@@ -137,6 +143,37 @@ namespace EQWOWConverter.Zones
 
             // Completely loaded
             IsLoaded = true;
+        }
+
+        private void AssignLiquidsToAreas()
+        {
+
+        }
+
+        private void AssociateDoodadsWithWMOs()
+        {
+            // Attach the doodads to the nearest wmo
+            for (int di = 0; di < DoodadInstances.Count; di++)
+            {
+                ZoneDoodadInstance doodadInstance = DoodadInstances[di];
+
+                int curZoneObjectModelIndex = 0;
+                float currentDistance = 1000000;
+                for (int i = 0; i < ZoneObjectModels.Count; i++)
+                {
+                    ZoneObjectModel curZoneObjectModel = ZoneObjectModels[i];
+                    if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered)
+                        continue;
+
+                    float thisDistance = doodadInstance.Position.GetDistance(curZoneObjectModel.BoundingBox.GetCenter());
+                    if (thisDistance < currentDistance)
+                    {
+                        currentDistance = thisDistance;
+                        curZoneObjectModelIndex = i;
+                    }
+                }
+                ZoneObjectModels[curZoneObjectModelIndex].DoodadInstances.Add(di, doodadInstance);
+            }
         }
 
         private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, MeshData renderMeshData)
@@ -187,29 +224,6 @@ namespace EQWOWConverter.Zones
                     doodadInstance.Position = lightInstance.Position;
                     DoodadInstances.Add(doodadInstance);
                 }
-            }
-
-            // Attach the doodads to the nearest wmo
-            for (int di = 0; di < DoodadInstances.Count; di++)
-            {
-                ZoneDoodadInstance doodadInstance = DoodadInstances[di];
-
-                int curZoneObjectModelIndex = 0;
-                float currentDistance = 1000000;
-                for(int i = 0; i < ZoneObjectModels.Count; i++)
-                {
-                    ZoneObjectModel curZoneObjectModel = ZoneObjectModels[i];
-                    if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered)
-                        continue;
-
-                    float thisDistance = doodadInstance.Position.GetDistance(curZoneObjectModel.BoundingBox.GetCenter());
-                    if (thisDistance < currentDistance)
-                    {
-                        currentDistance = thisDistance;
-                        curZoneObjectModelIndex = i;
-                    }
-                }
-                ZoneObjectModels[curZoneObjectModelIndex].DoodadInstances.Add(di, doodadInstance);
             }
         }
 
