@@ -176,7 +176,7 @@ namespace EQWOWConverter.Zones
             {
                 if (zoneArea.DisplayName == zoneAreaName)
                 {
-                    zoneArea.AddBoundingBox(boundingBox);
+                    zoneArea.AddBoundingBox(boundingBox, true);
                     return;
                 }
             }

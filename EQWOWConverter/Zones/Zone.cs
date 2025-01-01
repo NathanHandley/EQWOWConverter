@@ -305,7 +305,7 @@ namespace EQWOWConverter.Zones
 
             // Remainder is the primary area
             DefaultArea.BoundingBoxes.Clear();
-            DefaultArea.BoundingBoxes.Add(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT));
+            DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea);
         }
 

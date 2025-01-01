@@ -33,6 +33,7 @@ namespace EQWOWConverter.Zones
         public string DisplayName = string.Empty;
         public string ParentAreaDisplayName = string.Empty;
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
+        public BoundingBox MaxBoundingBox = new BoundingBox();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
         public bool MusicLoop = false;
@@ -50,17 +51,26 @@ namespace EQWOWConverter.Zones
             ParentAreaDisplayName = parentAreaDisplayName;
         }
 
-        public void AddBoundingBox(BoundingBox boundingBox)
+        public void AddBoundingBox(BoundingBox boundingBox, bool scaleAndRotate)
         {
             // Scale and rotate
-            BoundingBox newBox = new BoundingBox();
-            newBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            newBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            newBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            newBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            BoundingBoxes.Add(newBox);
+            if (scaleAndRotate == true)
+            {
+                BoundingBox newBox = new BoundingBox();
+                newBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                BoundingBoxes.Add(newBox);
+            }
+            else
+            {
+                BoundingBoxes.Add(new BoundingBox(boundingBox));
+            }
+
+            MaxBoundingBox = BoundingBox.GenerateBoxFromBoxes(BoundingBoxes);
         }
 
         public void SetAmbientSound(string ambientSoundFileNameNoExtDay, string ambientSoundFileNameNoExtNight)
