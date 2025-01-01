@@ -299,37 +299,57 @@ namespace EQWOWConverter.Zones
             }
 
             // Build collision areas based on zone areas
-            foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
-            {
-                // Generate areas for each liquid first since those need to be fully contained
-                foreach(ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
-                {
-                    // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
-                    MeshData liquidGroupMeshData;
-                    MeshData remainderMeshData;
-                    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
-                    collisionMeshData = remainderMeshData;
-                    foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
-                    {
-                        MeshData liquidChunkMeshData;
-                        MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
-                        GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, subArea, liquid);
-                        liquidGroupMeshData = remainderMeshData;
-                    }
-                    collisionMeshData.AddMeshData(remainderMeshData);
-                }
-                // Areas can have multiple boxes, so merge them up
-                MeshData areaMeshDataFull = new MeshData();
-                foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
-                {
-                    MeshData areaMeshDataBox;
-                    MeshData remainderMeshData;
-                    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, areaSubBoundingBox, out areaMeshDataBox, out remainderMeshData);
-                    collisionMeshData = remainderMeshData;
-                    areaMeshDataFull.AddMeshData(areaMeshDataBox);
-                }
-                GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea, null);
-            }
+            //foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
+            //{
+            //    // Generate areas for each liquid first since those need to be fully contained
+            //    foreach(ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
+            //    {
+            //        // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
+            //        MeshData liquidGroupMeshData;
+            //        MeshData remainderMeshData;
+            //        MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
+            //        collisionMeshData = remainderMeshData;
+            //        foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
+            //        {
+            //            MeshData liquidChunkMeshData;
+            //            MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+            //            GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, subArea, liquid);
+            //            liquidGroupMeshData = remainderMeshData;
+            //        }
+            //        collisionMeshData.AddMeshData(remainderMeshData);
+            //    }
+            //    // Areas can have multiple boxes, so merge them up
+            //    MeshData areaMeshDataFull = new MeshData();
+            //    foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
+            //    {
+            //        MeshData areaMeshDataBox;
+            //        MeshData remainderMeshData;
+            //        MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, areaSubBoundingBox, out areaMeshDataBox, out remainderMeshData);
+            //        collisionMeshData = remainderMeshData;
+            //        areaMeshDataFull.AddMeshData(areaMeshDataBox);
+            //    }
+            //    GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea, null);
+            //}
+            //foreach (ZoneLiquidGroup liquidGroup in DefaultArea.LiquidGroups)
+            //{
+            //    // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
+            //    MeshData liquidGroupMeshData;
+            //    MeshData remainderMeshData;
+            //    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
+            //    collisionMeshData = remainderMeshData;
+            //    foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
+            //    {
+            //        MeshData liquidChunkMeshData;
+            //        MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+            //        GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, DefaultArea, liquid);
+            //        //liquidGroupMeshData = remainderMeshData;
+            //    }
+            //    collisionMeshData.AddMeshData(remainderMeshData);
+            //}
+            //DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
+            //GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
+
+
             foreach (ZoneLiquidGroup liquidGroup in DefaultArea.LiquidGroups)
             {
                 // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
@@ -341,10 +361,10 @@ namespace EQWOWConverter.Zones
                 {
                     MeshData liquidChunkMeshData;
                     MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
-                    GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, DefaultArea, liquid);
+                    GenerateCollisionWorldObjectModelsForCollidableArea(liquidChunkMeshData, DefaultArea, liquid);
                     liquidGroupMeshData = remainderMeshData;
                 }
-                collisionMeshData.AddMeshData(remainderMeshData);
+                collisionMeshData.AddMeshData(liquidGroupMeshData);
             }
             DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
@@ -371,15 +391,15 @@ namespace EQWOWConverter.Zones
             // Break the geometry into as many parts as limited by the system
             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP);
-            
+
             // Force a data chunk if there is still liquid
-            //if (meshDataChunks.Count == 0 && liquid != null)
-            //{
-            //    meshDataChunks.Add(new MeshData());
-            //}
+            if (meshDataChunks.Count == 0 && liquid != null)
+            {
+                meshDataChunks.Add(new MeshData());
+            }
 
             // Create a group for each chunk
-            foreach(MeshData meshDataChunk in meshDataChunks)
+            foreach (MeshData meshDataChunk in meshDataChunks)
             {
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
