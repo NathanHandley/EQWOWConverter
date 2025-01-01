@@ -146,13 +146,13 @@ namespace EQWOWConverter.Zones
         private void AssignLiquidsToAreas()
         {
             // Go through each liquid and find which area they belong to, and split if they fall onto a boundary
-            List<ZoneLiquid> liquidsToAssign = ZoneProperties.Liquids;
+            List<ZoneLiquidGroup> liquidGroupsToAssign = ZoneProperties.LiquidGroups;
 
-            while (liquidsToAssign.Count > 0)
+            while (liquidGroupsToAssign.Count > 0)
             {
                 // Pop the first liquid and work with that
-                ZoneLiquid curLiquid = liquidsToAssign[0];
-                liquidsToAssign.RemoveAt(0);
+                ZoneLiquidGroup curLiquidGroup = liquidGroupsToAssign[0];
+                liquidGroupsToAssign.RemoveAt(0);
 
                 //// See if it fits in any sub areas
                 //bool liquidWasAssignedToSubArea = false;
@@ -169,7 +169,7 @@ namespace EQWOWConverter.Zones
 
                 //// If no where else, give it to the default area
                 //if (liquidWasAssignedToSubArea == false)
-                    DefaultArea.Liquids.Add(curLiquid);
+                    DefaultArea.LiquidGroups.Add(curLiquidGroup);
             }
         }
 
@@ -302,15 +302,22 @@ namespace EQWOWConverter.Zones
             foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
             {
                 // Generate areas for each liquid first since those need to be fully contained
-                foreach (ZoneLiquid liquid in subArea.Liquids)
+                foreach(ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
                 {
-                    MeshData liquidAreaMeshData;
+                    // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
+                    MeshData liquidGroupMeshData;
                     MeshData remainderMeshData;
-                    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquid.BoundingBox, out liquidAreaMeshData, out remainderMeshData);
+                    MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
                     collisionMeshData = remainderMeshData;
-                    GenerateCollisionWorldObjectModelsForCollidableArea(liquidAreaMeshData, subArea, liquid);
+                    foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
+                    {
+                        MeshData liquidChunkMeshData;
+                        MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+                        GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, subArea, liquid);
+                        liquidGroupMeshData = remainderMeshData;
+                    }
+                    collisionMeshData.AddMeshData(remainderMeshData);
                 }
-
                 // Areas can have multiple boxes, so merge them up
                 MeshData areaMeshDataFull = new MeshData();
                 foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
@@ -323,16 +330,24 @@ namespace EQWOWConverter.Zones
                 }
                 GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea, null);
             }
-            foreach (ZoneLiquid liquid in DefaultArea.Liquids)
+            foreach (ZoneLiquidGroup liquidGroup in DefaultArea.LiquidGroups)
             {
-                MeshData liquidAreaMeshData;
+                // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
+                MeshData liquidGroupMeshData;
                 MeshData remainderMeshData;
-                MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquid.BoundingBox, out liquidAreaMeshData, out remainderMeshData);
+                MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
                 collisionMeshData = remainderMeshData;
-                GenerateCollisionWorldObjectModelsForCollidableArea(liquidAreaMeshData, DefaultArea, liquid);
+                foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
+                {
+                    MeshData liquidChunkMeshData;
+                    MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+                    GenerateCollisionWorldObjectModelsForCollidableArea(liquidGroupMeshData, DefaultArea, liquid);
+                    liquidGroupMeshData = remainderMeshData;
+                }
+                collisionMeshData.AddMeshData(remainderMeshData);
             }
-            //DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
-            //GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
+            DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
+            GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
         }
 
         private void GenerateCollisionWorldObjectModelsForCollidableArea(MeshData collisionMeshData, ZoneArea zoneArea, ZoneLiquid? liquid)
@@ -358,10 +373,10 @@ namespace EQWOWConverter.Zones
             List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP);
             
             // Force a data chunk if there is still liquid
-            if (meshDataChunks.Count == 0 && liquid != null)
-            {
-                meshDataChunks.Add(new MeshData());
-            }
+            //if (meshDataChunks.Count == 0 && liquid != null)
+            //{
+            //    meshDataChunks.Add(new MeshData());
+            //}
 
             // Create a group for each chunk
             foreach(MeshData meshDataChunk in meshDataChunks)

@@ -190,7 +190,7 @@ namespace EQWOWConverter.Common
         {
             if (boxes.Count == 0)
                 throw new Exception("GenerateBoxFromBoxes had no boxes");
-            BoundingBox boundingBox = boxes[0];
+            BoundingBox boundingBox = new BoundingBox(boxes[0]);
             for (int i = 1; i < boxes.Count; i++)
             {
                 BoundingBox box = boxes[i];

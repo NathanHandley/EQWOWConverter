@@ -96,8 +96,7 @@ namespace EQWOWConverter.Zones
             {
                 Liquid = liquid;
                 LiquidType = liquid.LiquidType;
-                BoundingBox.TopCorner = Vector3.GetMax(BoundingBox.TopCorner, liquid.BoundingBox.TopCorner);
-                BoundingBox.BottomCorner = Vector3.GetMin(BoundingBox.BottomCorner, liquid.BoundingBox.BottomCorner);
+                BoundingBox = liquid.BoundingBox;
             }
             IsLoaded = true;
         }

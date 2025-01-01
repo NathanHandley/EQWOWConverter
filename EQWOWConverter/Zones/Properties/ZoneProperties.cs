@@ -39,7 +39,7 @@ namespace EQWOWConverter.Zones
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();  
-        public List<ZoneLiquid> Liquids = new List<ZoneLiquid>();
+        public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
         public double VertexColorIntensityOverride = -1;
@@ -301,28 +301,49 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float highZ, float lowZ)
+            float highZ, float lowZ, int liquidGroupID = -1)
         {
             ZoneLiquid liquidVolume = new ZoneLiquid(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, highZ-lowZ, ZoneLiquidShapeType.Volume);
-            Liquids.Add(liquidVolume);
+            if (liquidGroupID == -1)
+            {
+                ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
+                newLiquidGroup.AddLiquidChunk(liquidVolume);
+                LiquidGroups.Add(newLiquidGroup);
+            }
+            else
+                LiquidGroups[liquidGroupID].AddLiquidChunk(liquidVolume);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth)
+            float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth, int liquidGroupID = -1)
         {
             ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
                 highZ, lowZ, slantType, minDepth);
-            Liquids.Add(liquidPlane);
+            if (liquidGroupID == -1)
+            {
+                ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
+                newLiquidGroup.AddLiquidChunk(liquidPlane);
+                LiquidGroups.Add(newLiquidGroup);
+            }
+            else
+                LiquidGroups[liquidGroupID].AddLiquidChunk(liquidPlane);
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlaneZLevel(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float fixedZ, float minDepth)
+            float fixedZ, float minDepth, int liquidGroupID = -1)
         {
             ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX,
                 seCornerY, fixedZ, minDepth, ZoneLiquidShapeType.Plane);
-            Liquids.Add(liquidPlane);
+            if (liquidGroupID == -1)
+            {
+                ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
+                newLiquidGroup.AddLiquidChunk(liquidPlane);
+                LiquidGroups.Add(newLiquidGroup);
+            }
+            else
+                LiquidGroups[liquidGroupID].AddLiquidChunk(liquidPlane);
         }
 
         protected float GetYOnLineAtX(float point1X, float point1Y, float point2X, float point2Y, float testX)
@@ -356,6 +377,10 @@ namespace EQWOWConverter.Zones
                 Logger.WriteError("AddQuadrilateralLiquidShapeZLevel error for zone '" + ShortName + "' and material '" + materialName + "' as west x < east x");
                 return;
             }
+
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
 
             // Start at the north X and walk down to the south X
             float curXTop = northMostX;
@@ -394,7 +419,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -412,6 +437,11 @@ namespace EQWOWConverter.Zones
             float yEastDelta = northY - southEastY;
             float northToSouthWestDistance = MathF.Sqrt(xDelta * xDelta + yWestDelta * yWestDelta);
             float northToSouthEastDistance = MathF.Sqrt(xDelta * xDelta + yEastDelta * yEastDelta);
+
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
+
             while (moreXToWalk == true)
             {
                 // Calculate the bottom edge, and align bottom edge if extends
@@ -432,7 +462,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -444,6 +474,10 @@ namespace EQWOWConverter.Zones
         protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
         {
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
+
             // Step down through all text X positions based on radius
             float relativeWorkingX = radius - float.Epsilon;
             float relativeEndX = -(radius - float.Epsilon);
@@ -466,7 +500,7 @@ namespace EQWOWConverter.Zones
                 seY = MathF.Max(seY, minY);
 
                 // Make the plane
-                AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height);
+                AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID);
 
                 // Step
                 relativeWorkingX -= stepSize;
@@ -477,6 +511,10 @@ namespace EQWOWConverter.Zones
         protected void AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
             float southWestY, float southEastY, float topZ, float height, float stepSize)
         {
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
+
             float curXTop = northEdgeX;
             bool moreXToWalk = true;
             while (moreXToWalk == true)
@@ -499,7 +537,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
@@ -538,6 +576,10 @@ namespace EQWOWConverter.Zones
                 return;
             }
 
+            // Generate a new group
+            int curLiquidGroupID = LiquidGroups.Count;
+            LiquidGroups.Add(new ZoneLiquidGroup());
+
             // Start at the north X and walk down to the south X
             float curXTop = northEdgeX;
             bool moreXToWalk = true;
@@ -547,7 +589,7 @@ namespace EQWOWConverter.Zones
                 if (curXTop <= westNorthX && curXTop <= eastNorthX && curXTop >= westSouthX && curXTop >= eastSouthX)
                 {
                     float highestSouthEastX = MathF.Max(westSouthX, eastSouthX);
-                    AddLiquidPlaneZLevel(liquidType, materialName, curXTop, westEdgeY, highestSouthEastX, eastEdgeY, allCornersZ, minDepth);
+                    AddLiquidPlaneZLevel(liquidType, materialName, curXTop, westEdgeY, highestSouthEastX, eastEdgeY, allCornersZ, minDepth, curLiquidGroupID);
                     curXTop = highestSouthEastX;
                 }
 
@@ -583,7 +625,7 @@ namespace EQWOWConverter.Zones
 
                 // Add the plane if the bounds are good
                 if (nwX > seX && nwY > seY)
-                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth);
+                    AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;

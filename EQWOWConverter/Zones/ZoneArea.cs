@@ -33,7 +33,7 @@ namespace EQWOWConverter.Zones
         public string DisplayName = string.Empty;
         public string ParentAreaDisplayName = string.Empty;
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
-        public List<ZoneLiquid> Liquids = new List<ZoneLiquid>();
+        public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public BoundingBox MaxBoundingBox = new BoundingBox();
         public string MusicFileNameNoExtDay = string.Empty;
         public string MusicFileNameNoExtNight = string.Empty;
