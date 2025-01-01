@@ -45,7 +45,6 @@ namespace EQWOWConverter.Zones
         public bool IsCompletelyInLiquid = false;
         public bool IsExterior = true;
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
-        public Material LiquidMaterial = new Material();
         public ZoneLiquid? Liquid = null;
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
         public ZoneAreaMusic? ZoneMusic = null;
@@ -56,17 +55,6 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
             GroupIndex = groupIndex;
             AreaTableID = areaTableID;
-        }
-
-        public void LoadAsLiquid(ZoneLiquidType liquidType, ZoneLiquid liquidPlane, Material liquidMaterial, BoundingBox boundingBox,
-            ZoneProperties zoneProperties)
-        {
-            WMOType = ZoneObjectModelType.Liquid;
-            BoundingBox = boundingBox;
-            LiquidType = liquidType;
-            LiquidMaterial = liquidMaterial;
-            Liquid = liquidPlane;
-            IsLoaded = true;
         }
 
         public void LoadAsRendered(MeshData meshData, List<Material> materials, List<LightInstance> lightInstances, ZoneProperties zoneProperties)
@@ -87,9 +75,10 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollidableArea(MeshData collisionMeshData, string displayName, ZoneAreaMusic? zoneMusic, ZoneProperties zoneProperties)
+        public void LoadAsCollidableArea(MeshData collisionMeshData, string displayName, ZoneAreaMusic? zoneMusic, ZoneLiquid? liquid,
+            ZoneProperties zoneProperties)
         {
-            WMOType = ZoneObjectModelType.CollidableArea;
+            WMOType = ZoneObjectModelType.Collidable;
             DisplayName = displayName;
             MeshData = collisionMeshData;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
@@ -102,6 +91,13 @@ namespace EQWOWConverter.Zones
             {
                 IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
                 LiquidType = zoneProperties.CompletelyInLiquidType;
+            }
+            else if (liquid != null)
+            {
+                Liquid = liquid;
+                LiquidType = liquid.LiquidType;
+                BoundingBox.TopCorner = Vector3.GetMax(BoundingBox.TopCorner, liquid.BoundingBox.TopCorner);
+                BoundingBox.BottomCorner = Vector3.GetMin(BoundingBox.BottomCorner, liquid.BoundingBox.BottomCorner);
             }
             IsLoaded = true;
         }

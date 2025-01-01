@@ -25,8 +25,7 @@ namespace EQWOWConverter.Zones
     internal enum ZoneObjectModelType
     {
         Rendered,
-        CollidableArea,
-        Liquid,
+        Collidable,
         ShadowBox
     }
 }

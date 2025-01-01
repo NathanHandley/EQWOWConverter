@@ -39,9 +39,9 @@ internal class Program
         Logger.WriteInfo(" ");
         Logger.WriteInfo("Command (Default: X): ", false);
         string? enteredCommand = Console.ReadLine();
-        Logger.WriteInfo("Are you sure? (Y/N): ", false);
+        Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
-        if (enteredConfirm != null && enteredConfirm.Length > 0 && enteredConfirm.Trim().ToUpper()[0] == 'Y')
+        if (enteredConfirm != null && (enteredConfirm.Length == 0 || enteredConfirm.Trim().ToUpper()[0] == 'Y'))
         {
             Logger.WriteInfo(" ");
             if (enteredCommand == null)

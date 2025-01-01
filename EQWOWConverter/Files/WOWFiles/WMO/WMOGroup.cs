@@ -176,7 +176,7 @@ namespace EQWOWConverter.WOWFiles
                 chunkBytes.Add(Convert.ToByte(flags));
 
                 // Set 0xFF for non-renderable materials
-                if ((worldObjectModel.WMOType == ZoneObjectModelType.CollidableArea) 
+                if ((worldObjectModel.WMOType == ZoneObjectModelType.Collidable) 
                     || worldObjectModel.Materials[polyIndexTriangle.MaterialIndex].IsRenderable() == false)
                     chunkBytes.Add(Convert.ToByte(0xFF));
                 else
@@ -345,134 +345,139 @@ namespace EQWOWConverter.WOWFiles
 
             // Build the liquid object head
             WMOLiquid wmoLiquid = new WMOLiquid();
-            wmoLiquid.MaterialID = Convert.ToUInt16(worldObjectModel.LiquidMaterial.Index);
+            wmoLiquid.MaterialID = Convert.ToUInt16(0);
             if (worldObjectModel.LiquidType != ZoneLiquidType.Magma && worldObjectModel.LiquidType != ZoneLiquidType.Slime)
                 wmoLiquid.TileFlags.Add(WMOLiquidFlags.IsFishable);
 
-            // Different logic based on type
-            switch (worldObjectModel.WMOType)
+            // Different logic based on if there's liquid data
+            if (worldObjectModel.Liquid != null)
             {
-                case ZoneObjectModelType.Liquid:
+                ZoneLiquid liquid = worldObjectModel.Liquid;
+
+                wmoLiquid.CornerPosition = new Vector3();
+                wmoLiquid.CornerPosition.X = liquid.NWCornerXY.X;
+                wmoLiquid.CornerPosition.Y = liquid.NWCornerXY.Y;
+                wmoLiquid.CornerPosition.Z = 0f;
+
+                // Calculate tiles
+                float xDistance = worldObjectModel.BoundingBox.GetXDistance();
+                float yDistance = worldObjectModel.BoundingBox.GetYDistance();
+                wmoLiquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                wmoLiquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
+                wmoLiquid.XVertexCount = wmoLiquid.XTileCount + 1;
+                wmoLiquid.YVertexCount = wmoLiquid.YTileCount + 1;
+
+                // Build the tile data.  Z-Axis aligned can build it quicker
+                if (liquid.SlantType == ZoneLiquidSlantType.None)
+                {
+                    float zHeight = liquid.HighZ;
+                    if (liquid.LiquidShape == ZoneLiquidShapeType.Volume)
+                        zHeight += 1000f;
+                    for (int y = 0; y < wmoLiquid.YVertexCount; y++)
                     {
-                        if (worldObjectModel.Liquid == null)
-                            throw new Exception("Liquid object was null inside MLIQ chunk");
-                        ZoneLiquid liquid = worldObjectModel.Liquid;
-
-                        wmoLiquid.CornerPosition = new Vector3();
-                        wmoLiquid.CornerPosition.X = liquid.NWCornerXY.X;
-                        wmoLiquid.CornerPosition.Y = liquid.NWCornerXY.Y;
-                        wmoLiquid.CornerPosition.Z = 0f;
-
-                        // Calculate tiles
-                        float xDistance = worldObjectModel.BoundingBox.GetXDistance();
-                        float yDistance = worldObjectModel.BoundingBox.GetYDistance();
-                        wmoLiquid.XTileCount = Convert.ToInt32(Math.Round(xDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        wmoLiquid.YTileCount = Convert.ToInt32(Math.Round(yDistance / 4.1666625f, MidpointRounding.AwayFromZero)) + 1;
-                        wmoLiquid.XVertexCount = wmoLiquid.XTileCount + 1;
-                        wmoLiquid.YVertexCount = wmoLiquid.YTileCount + 1;
-
-                        // Build the tile data.  Z-Axis aligned can build it quicker
-                        if (liquid.SlantType == ZoneLiquidSlantType.None)
+                        for (int x = 0; x < wmoLiquid.XVertexCount; x++)
                         {
-                            float zHeight = liquid.HighZ;
-                            if (liquid.LiquidShape == ZoneLiquidShapeType.Volume)
-                                zHeight += 1000f;
-                            for (int y = 0; y < wmoLiquid.YVertexCount; y++)
+                            switch (worldObjectModel.LiquidType)
                             {
-                                for (int x = 0; x < wmoLiquid.XVertexCount; x++)
-                                { 
-                                    switch (worldObjectModel.LiquidType)
+                                case ZoneLiquidType.Water:
+                                case ZoneLiquidType.Blood:
+                                case ZoneLiquidType.GreenWater:
+                                case ZoneLiquidType.Slime:
                                     {
-                                        case ZoneLiquidType.Water:
-                                        case ZoneLiquidType.Blood:
-                                        case ZoneLiquidType.GreenWater:
-                                        case ZoneLiquidType.Slime:
-                                            {
-                                                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
-                                            } break;
-                                        case ZoneLiquidType.Magma:
-                                            {
-                                                wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
-                                            } break;
+                                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, zHeight));
                                     }
-                                }
+                                    break;
+                                case ZoneLiquidType.Magma:
+                                    {
+                                        wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, zHeight));
+                                    }
+                                    break;
                             }
                         }
-                        else
-                        {
-                            float xSlope = 0f;
-                            float ySlope = 0f;
-                            float zDrop = liquid.HighZ - liquid.LowZ;
-                            float seZHeight = liquid.HighZ;
-                            switch (liquid.SlantType) // Walk 'up' from south to north
+                    }
+                }
+                else
+                {
+                    float xSlope = 0f;
+                    float ySlope = 0f;
+                    float zDrop = liquid.HighZ - liquid.LowZ;
+                    float seZHeight = liquid.HighZ;
+                    switch (liquid.SlantType) // Walk 'up' from south to north
+                    {
+                        case ZoneLiquidSlantType.None: break; // Intentionally blank
+                        case ZoneLiquidSlantType.NorthHighSouthLow:
                             {
-                                case ZoneLiquidSlantType.None: break; // Intentionally blank
-                                case ZoneLiquidSlantType.NorthHighSouthLow:
-                                    {
-                                        xSlope = -(zDrop / xDistance);
-                                        seZHeight = liquid.HighZ;
-                                    } break;
-                                case ZoneLiquidSlantType.WestHighEastLow:
-                                    {
-                                        ySlope = -(zDrop / yDistance);
-                                        seZHeight = liquid.HighZ;
-                                    } break;
-                                case ZoneLiquidSlantType.EastHighWestLow:
-                                    {
-                                        ySlope = zDrop / yDistance;
-                                        seZHeight = liquid.LowZ;
-                                    } break;
-                                case ZoneLiquidSlantType.SouthHighNorthLow:
-                                    {
-                                        xSlope = zDrop / xDistance;
-                                        seZHeight = liquid.LowZ;
-                                    } break;
-                                default:
-                                    {
-                                        Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquid.SlantType +"'.  Plane will be flat.");
-                                    } break;
+                                xSlope = -(zDrop / xDistance);
+                                seZHeight = liquid.HighZ;
                             }
-
-                            for (int y = 0; y < wmoLiquid.YVertexCount; y++)
+                            break;
+                        case ZoneLiquidSlantType.WestHighEastLow:
                             {
-                                for (int x = 0; x < wmoLiquid.XVertexCount; x++)
-                                {
-                                    float curZHeight = (x * 4.1666625f * xSlope) + (y * 4.1666625f * ySlope) + seZHeight;
-                                    switch (worldObjectModel.LiquidType)
+                                ySlope = -(zDrop / yDistance);
+                                seZHeight = liquid.HighZ;
+                            }
+                            break;
+                        case ZoneLiquidSlantType.EastHighWestLow:
+                            {
+                                ySlope = zDrop / yDistance;
+                                seZHeight = liquid.LowZ;
+                            }
+                            break;
+                        case ZoneLiquidSlantType.SouthHighNorthLow:
+                            {
+                                xSlope = zDrop / xDistance;
+                                seZHeight = liquid.LowZ;
+                            }
+                            break;
+                        default:
+                            {
+                                Logger.WriteError("Unhandled LiquidPlane SlantType of '" + liquid.SlantType + "'.  Plane will be flat.");
+                            }
+                            break;
+                    }
+
+                    for (int y = 0; y < wmoLiquid.YVertexCount; y++)
+                    {
+                        for (int x = 0; x < wmoLiquid.XVertexCount; x++)
+                        {
+                            float curZHeight = (x * 4.1666625f * xSlope) + (y * 4.1666625f * ySlope) + seZHeight;
+                            switch (worldObjectModel.LiquidType)
+                            {
+                                case ZoneLiquidType.Water:
+                                case ZoneLiquidType.Blood:
+                                case ZoneLiquidType.GreenWater:
+                                case ZoneLiquidType.Slime:
                                     {
-                                        case ZoneLiquidType.Water:
-                                        case ZoneLiquidType.Blood:
-                                        case ZoneLiquidType.GreenWater:
-                                        case ZoneLiquidType.Slime:
-                                            {
-                                                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, curZHeight));
-                                            } break;
-                                        case ZoneLiquidType.Magma:
-                                            {
-                                                wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
-                                            } break;
+                                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, curZHeight));
                                     }
-                                }
+                                    break;
+                                case ZoneLiquidType.Magma:
+                                    {
+                                        wmoLiquid.MagmaVerts.Add(new WMOMagmaVert(0, 0, curZHeight));
+                                    }
+                                    break;
                             }
                         }
-                    } break;
-                default:
-                    {
-                        // Create just a single water block and put in the middle of nowhere
-                        wmoLiquid.CornerPosition = new Vector3();
-                        wmoLiquid.CornerPosition.X = 0f;
-                        wmoLiquid.CornerPosition.Y = 0f;
-                        wmoLiquid.CornerPosition.Z = 0f;
-                        wmoLiquid.XTileCount = 1;
-                        wmoLiquid.YTileCount = 1;
-                        wmoLiquid.XVertexCount = 2;
-                        wmoLiquid.YVertexCount = 2;
-                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                        wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
-                    } break;
+                    }
+                }
             }
+            else
+            {
+                // Create just a single water block and put in the middle of nowhere
+                wmoLiquid.CornerPosition = new Vector3();
+                wmoLiquid.CornerPosition.X = 0f;
+                wmoLiquid.CornerPosition.Y = 0f;
+                wmoLiquid.CornerPosition.Z = 0f;
+                wmoLiquid.XTileCount = 1;
+                wmoLiquid.YTileCount = 1;
+                wmoLiquid.XVertexCount = 2;
+                wmoLiquid.YVertexCount = 2;
+                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+                wmoLiquid.WaterVerts.Add(new WMOWaterVert(0, 0, 0, 0, -1000f));
+            }
+
             chunkBytes.AddRange(wmoLiquid.ToBytes());
             return WrapInChunk("MLIQ", chunkBytes.ToArray());
         }
