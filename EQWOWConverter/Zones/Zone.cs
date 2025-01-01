@@ -166,44 +166,48 @@ namespace EQWOWConverter.Zones
                         break;
                     }
 
-                    // If it intersects, split it up
-                    if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == true)
+                    // Try every box in the area
+                    foreach (BoundingBox areaBox in area.BoundingBoxes)
                     {
-                        // Create two groups, one for what goes to this subarea and one that goes back on the pile
-                        ZoneLiquidGroup subAreaLiquidGroup = new ZoneLiquidGroup();
-                        ZoneLiquidGroup remainderLiquidGroup = new ZoneLiquidGroup();
-                        foreach(ZoneLiquid liquidChunk in curLiquidGroup.GetLiquidChunks())
+                        // If it intersects, split it up
+                        if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == true)
                         {
-                            if (area.MaxBoundingBox.ContainsBox(liquidChunk.BoundingBox) == true)
+                            // Create two groups, one for what goes to this subarea and one that goes back on the pile
+                            ZoneLiquidGroup subAreaLiquidGroup = new ZoneLiquidGroup();
+                            ZoneLiquidGroup remainderLiquidGroup = new ZoneLiquidGroup();
+                            foreach (ZoneLiquid liquidChunk in curLiquidGroup.GetLiquidChunks())
                             {
-                                subAreaLiquidGroup.AddLiquidChunk(liquidChunk);
-                                continue;
-                            }
-                            if (area.MaxBoundingBox.DoesIntersectBox(liquidChunk.BoundingBox) == true)
-                            {
-                                List<BoundingBox> intersectingBox;
-                                List<BoundingBox> areaOnlyBoxes;
-                                List<BoundingBox> liquidOnlyBoxes;
-                                BoundingBox.SplitBoundingIntersect(area.MaxBoundingBox, liquidChunk.BoundingBox, out intersectingBox, out areaOnlyBoxes, out liquidOnlyBoxes);
-                                if (intersectingBox.Count == 0)
-                                    throw new Exception("Could not split up a liquid volume, as no intersecting box was found");
-
-                                // Save the intersection box into the area as a new chunk
-                                ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromBoundingBox(intersectingBox[0]);
-                                subAreaLiquidGroup.AddLiquidChunk(intersectionLiquid);
-
-                                // The rest go to the remainder group if they were liquid
-                                foreach(BoundingBox box in liquidOnlyBoxes)
+                                if (areaBox.ContainsBox(liquidChunk.BoundingBox) == true)
                                 {
-                                    ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromBoundingBox(box);
-                                    remainderLiquidGroup.AddLiquidChunk(liquidBox);
+                                    subAreaLiquidGroup.AddLiquidChunk(liquidChunk);
+                                    continue;
+                                }
+                                if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox) == true)
+                                {
+                                    List<BoundingBox> intersectingBox;
+                                    List<BoundingBox> areaOnlyBoxes;
+                                    List<BoundingBox> liquidOnlyBoxes;
+                                    BoundingBox.SplitBoundingIntersect(areaBox, liquidChunk.BoundingBox, out intersectingBox, out areaOnlyBoxes, out liquidOnlyBoxes);
+                                    if (intersectingBox.Count == 0)
+                                        throw new Exception("Could not split up a liquid volume, as no intersecting box was found");
+
+                                    // Save the intersection box into the area as a new chunk
+                                    ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromBoundingBox(intersectingBox[0]);
+                                    subAreaLiquidGroup.AddLiquidChunk(intersectionLiquid);
+
+                                    // The rest go to the remainder group if they were liquid
+                                    foreach (BoundingBox box in liquidOnlyBoxes)
+                                    {
+                                        ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromBoundingBox(box);
+                                        remainderLiquidGroup.AddLiquidChunk(liquidBox);
+                                    }
                                 }
                             }
+                            if (subAreaLiquidGroup.GetLiquidChunks().Count > 0)
+                                area.LiquidGroups.Add(subAreaLiquidGroup);
+                            if (remainderLiquidGroup.GetLiquidChunks().Count > 0)
+                                liquidGroupsToAssign.Add(remainderLiquidGroup);
                         }
-                        if (subAreaLiquidGroup.GetLiquidChunks().Count > 0)
-                            area.LiquidGroups.Add(subAreaLiquidGroup);
-                        if (remainderLiquidGroup.GetLiquidChunks().Count > 0)
-                            liquidGroupsToAssign.Add(remainderLiquidGroup);
                     }
                 }
 
@@ -339,48 +343,48 @@ namespace EQWOWConverter.Zones
             }
 
             // Build collision areas based on zone areas
-            //foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
-            //{
-            //    // Generate areas for each liquid first since those need to be fully contained
-            //    foreach (ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
-            //    {
-            //        // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
-            //        MeshData liquidGroupMeshData;
-            //        MeshData remainderMeshData;
-            //        MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
-            //        collisionMeshData = remainderMeshData;
-            //        foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
-            //        {
-            //            MeshData liquidChunkMeshData;
-            //            MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
-            //            GenerateCollisionWorldObjectModelsForCollidableArea(liquidChunkMeshData, subArea, liquid);
-            //            liquidGroupMeshData = remainderMeshData;
-            //        }
-            //        collisionMeshData.AddMeshData(liquidGroupMeshData);
-            //    }
-            //    // Areas can have multiple boxes, so merge them up
-            //    MeshData areaMeshDataFull = new MeshData();
-            //    foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
-            //    {
-            //        MeshData areaMeshDataBox;
-            //        MeshData remainderMeshData;
-            //        MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, areaSubBoundingBox, out areaMeshDataBox, out remainderMeshData);
-            //        collisionMeshData = remainderMeshData;
-            //        areaMeshDataFull.AddMeshData(areaMeshDataBox);
-            //    }
-            //    GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea, null);
-            //}
+            foreach (ZoneArea subArea in ZoneProperties.ZoneAreas)
+            {
+                // Generate areas for each liquid first since those need to be fully contained
+                foreach (ZoneLiquidGroup liquidGroup in subArea.LiquidGroups)
+                {
+                    // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
+                    MeshData liquidGroupMeshData;
+                    MeshData remainderMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
+                    collisionMeshData = remainderMeshData;
+                    foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
+                    {
+                        MeshData liquidChunkMeshData;
+                        MeshData.GetSplitMeshDataWithClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+                        GenerateCollisionWorldObjectModelsForCollidableArea(liquidChunkMeshData, subArea, liquid);
+                        liquidGroupMeshData = remainderMeshData;
+                    }
+                    collisionMeshData.AddMeshData(liquidGroupMeshData);
+                }
+                // Areas can have multiple boxes, so merge them up
+                MeshData areaMeshDataFull = new MeshData();
+                foreach (BoundingBox areaSubBoundingBox in subArea.BoundingBoxes)
+                {
+                    MeshData areaMeshDataBox;
+                    MeshData remainderMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(collisionMeshData, areaSubBoundingBox, out areaMeshDataBox, out remainderMeshData);
+                    collisionMeshData = remainderMeshData;
+                    areaMeshDataFull.AddMeshData(areaMeshDataBox);
+                }
+                GenerateCollisionWorldObjectModelsForCollidableArea(areaMeshDataFull, subArea, null);
+            }
             foreach (ZoneLiquidGroup liquidGroup in DefaultArea.LiquidGroups)
             {
                 // Clip out all geoemetry for the liquid group and use that same collision geometry for every liquid entry
                 MeshData liquidGroupMeshData;
                 MeshData remainderMeshData;
-                MeshData.GetSplitMeshDataWithXYClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
+                MeshData.GetSplitMeshDataWithClipping(collisionMeshData, liquidGroup.BoundingBox, out liquidGroupMeshData, out remainderMeshData);
                 collisionMeshData = remainderMeshData;
                 foreach (ZoneLiquid liquid in liquidGroup.GetLiquidChunks())
                 {
                     MeshData liquidChunkMeshData;
-                    MeshData.GetSplitMeshDataWithXYClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
+                    MeshData.GetSplitMeshDataWithClipping(liquidGroupMeshData, liquid.BoundingBox, out liquidChunkMeshData, out remainderMeshData);
                     GenerateCollisionWorldObjectModelsForCollidableArea(liquidChunkMeshData, DefaultArea, liquid);
                     liquidGroupMeshData = remainderMeshData;
                 }
