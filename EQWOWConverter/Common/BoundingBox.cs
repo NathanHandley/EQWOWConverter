@@ -188,9 +188,12 @@ namespace EQWOWConverter.Common
 
         public static BoundingBox GenerateBoxFromBoxes(List<BoundingBox> boxes)
         {
-            BoundingBox boundingBox = new BoundingBox();
-            foreach(BoundingBox box in boxes)
+            if (boxes.Count == 0)
+                throw new Exception("GenerateBoxFromBoxes had no boxes");
+            BoundingBox boundingBox = boxes[0];
+            for (int i = 1; i < boxes.Count; i++)
             {
+                BoundingBox box = boxes[i];
                 if (box.TopCorner.X > boundingBox.TopCorner.X)
                     boundingBox.TopCorner.X = box.TopCorner.X;
                 if (box.TopCorner.Y > boundingBox.TopCorner.Y)
