@@ -154,21 +154,21 @@ namespace EQWOWConverter.Zones
                 ZoneLiquidGroup curLiquidGroup = liquidGroupsToAssign[0];
                 liquidGroupsToAssign.RemoveAt(0);
 
-                //// See if it fits in any sub areas
-                //bool liquidWasAssignedToSubArea = false;
-                //foreach(ZoneArea area in SubAreas)
-                //{
-                //    // If fully contained, make it directly assigned
-                //    if (area.MaxBoundingBox.ContainsBox(curLiquid.BoundingBox) == true)
-                //    {
-                //        area.Liquids.Add(curLiquid);
-                //        liquidWasAssignedToSubArea = true;
-                //        break;
-                //    }
-                //}
+                // See if it fits in any sub areas
+                bool liquidWasAssignedToSubArea = false;
+                foreach (ZoneArea area in SubAreas)
+                {
+                    // If fully contained, make it directly assigned
+                    if (area.MaxBoundingBox.ContainsBox(curLiquidGroup.BoundingBox) == true)
+                    {
+                        area.LiquidGroups.Add(curLiquidGroup);
+                        liquidWasAssignedToSubArea = true;
+                        break;
+                    }
+                }
 
-                //// If no where else, give it to the default area
-                //if (liquidWasAssignedToSubArea == false)
+                // If no where else, give it to the default area
+                if (liquidWasAssignedToSubArea == false)
                     DefaultArea.LiquidGroups.Add(curLiquidGroup);
             }
         }
@@ -374,9 +374,7 @@ namespace EQWOWConverter.Zones
 
             // Force a data chunk if there is still liquid
             if (meshDataChunks.Count == 0 && liquid != null)
-            {
                 meshDataChunks.Add(new MeshData());
-            }
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
