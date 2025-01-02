@@ -32,7 +32,7 @@ namespace EQWOWConverter.Zones.Properties
             SetZonewideAmbienceSound("ocean", "ocean");
 
             AddZoneArea("Fishing Camp", "erudsxing-01", "erudsxing-01", true, "", "", 0.8f); // Music was too loud
-            AddZoneAreaBox("Fishing Camp", -1387.844849f, 1039.357910f, 99.225990f, - 1675.524048f, 651.345337f, -107.792427f);
+            AddZoneAreaBox("Fishing Camp", -1387.844849f, 1039.357910f, 99.225990f, -1675.524048f, 651.345337f, -107.792427f);
 
             AddZoneArea("Shipwreck");
             AddZoneAreaBox("Shipwreck", -1022.513428f, 2311.508545f, 169.701233f, -1509.418091f, 1992.726685f, -313.425903f);
@@ -42,8 +42,11 @@ namespace EQWOWConverter.Zones.Properties
 
             AddZoneArea("Island");
             AddZoneAreaBox("Island", -356.611389f, 2056.785889f, 388.188568f, -2012.822754f, 514.036499f, -340.110535f);
-            
-            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500);
+
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -758.372131f, -3051.582520f, -20.062160f, 500); // North
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 5036.591309f, -4999.445801f, 1787.470825f, -20.062160f, 500); // West
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", -1693.079224f, 5036.591309f, -4999.445801f, -3051.582520f, -20.062160f, 500); // South
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_w1", 3050.016846f, 796.321411f, -4999.445801f, -3051.582520f, -20.062160f, 500); // East
         }
     }
 }

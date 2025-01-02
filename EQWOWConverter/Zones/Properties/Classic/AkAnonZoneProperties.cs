@@ -92,8 +92,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 946.898315f, -29.885700f, 937.846619f, -35.895458f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (middle)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 950.656982f, -27.905569f, 936.563416f, -32.405380f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (north)
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 944.902893f, -27.905569f, 936.563416f, -38.282459f, -28.999929f, 60f); // Large water pool, nw cutout, sw coner section (south)
-            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "d_m0004", 503.825012f, 489.799225f, 0.645790f, -97.986412f, -13.937520f, -83.965424f, 174.745728f, 350f, 0.3f); // Entry waterfall, south
-            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "d_m0004", 517.780579f, 503.815012f, 28.102119f, -126.010399f, 0.645790f, -97.986412f, 174.745728f, 350f, 0.3f); // Entry waterfall, north
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "d_m0004", 503.825012f, 489.799225f, 0.645790f, -97.986412f, -13.937520f, -83.965424f, 174.745728f, 350f, 0.4f); // Entry waterfall, south
+            AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType.Water, "d_m0004", 517.780579f, 503.815012f, 28.102119f, -126.010399f, 0.645790f, -97.986412f, 174.745728f, 350f, 0.4f); // Entry waterfall, north
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1393.839966f, -624.353882f, 1099.773682f, -687.787842f, -29.000010f, 50f); // Large to Medium connection channel, bridge and forge nearby
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1159.325195f, -600.300171f, 1069.149658f, -624.363882f, -29.000010f, 50f); // Large to Medium connection channel, bend around low internal 
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1147.023926f, -455.328409f, 1076.342651f, -600.290171f, -29.000010f, 50f); // Large to Medium connection channel, south run

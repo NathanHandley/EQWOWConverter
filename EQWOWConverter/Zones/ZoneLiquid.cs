@@ -96,7 +96,7 @@ namespace EQWOWConverter.Zones
 
             // Add additional height for ripple rendering
             allCornersZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            
+
             // Scale and save the coordinates, rotated
             nwCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
             nwCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
@@ -194,19 +194,6 @@ namespace EQWOWConverter.Zones
                 return MathF.Abs(NWCornerXY.Y - SECornerXY.Y);
             else
                 return MathF.Abs(SECornerXY.Y - NWCornerXY.Y);
-        }
-
-        public ZoneLiquid GeneratePartialFromBoundingBox(BoundingBox boundingBox)
-        {
-            if (boundingBox.DoesIntersectBox(BoundingBox) == false)
-                throw new Exception("Attempted to generate a partial zone liquid plane but the passed bounding box didn't intersect with it");
-            if (SlantType != ZoneLiquidSlantType.None)
-                Logger.WriteDetail("Warning!  Unhandled slanting type for ZoneLiquid::GeneratePartialFromBoundingBox, which could cause errors");
-
-            ZoneLiquid newLiquid = new ZoneLiquid(LiquidType, MaterialName, boundingBox.TopCorner.X, boundingBox.TopCorner.Y, boundingBox.BottomCorner.X, boundingBox.BottomCorner.Y,
-                boundingBox.TopCorner.Z, (boundingBox.BottomCorner.Z - boundingBox.TopCorner.Z) * -1, LiquidShape);
-
-            return newLiquid;
         }
     }
 }
