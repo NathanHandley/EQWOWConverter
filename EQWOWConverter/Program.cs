@@ -39,6 +39,15 @@ internal class Program
         Logger.WriteInfo(" ");
         Logger.WriteInfo("Command (Default: X): ", false);
         string? enteredCommand = Console.ReadLine();
+        if (enteredCommand == null || enteredCommand.Length == 0 || enteredCommand[0] == ' ' || enteredCommand.ToUpper()[0] == 'X')
+        {
+            if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+                Console.Beep();
+            Console.WriteLine("");
+            Console.WriteLine("Press any key to exit");
+            Console.ReadKey();
+            return;
+        }
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
         if (enteredConfirm != null && (enteredConfirm.Length == 0 || enteredConfirm.Trim().ToUpper()[0] == 'Y'))
