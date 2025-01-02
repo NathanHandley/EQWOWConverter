@@ -195,5 +195,32 @@ namespace EQWOWConverter.Zones
             else
                 return MathF.Abs(SECornerXY.Y - NWCornerXY.Y);
         }
+
+        public ZoneLiquid GeneratePartialFromScaledTransformedBoundingBox(BoundingBox scaledTransformedBoundingBox)
+        {
+            if (scaledTransformedBoundingBox.DoesIntersectBox(BoundingBox) == false)
+                throw new Exception("Attempted to generate a partial zone liquid plane but the passed bounding box didn't intersect with it");
+            if (SlantType != ZoneLiquidSlantType.None)
+                Logger.WriteError("Warning!  Unhandled slanting type for ZoneLiquid::GeneratePartialFromBoundingBox, which could cause errors");
+
+            ZoneLiquid newZoneLiquid = new ZoneLiquid();
+            newZoneLiquid.LiquidType = LiquidType;
+            newZoneLiquid.MaterialName = MaterialName;
+            newZoneLiquid.SlantType = SlantType;
+            newZoneLiquid.LiquidShape = LiquidShape;
+            newZoneLiquid.NWCornerXY.X = scaledTransformedBoundingBox.BottomCorner.X;
+            newZoneLiquid.NWCornerXY.Y = scaledTransformedBoundingBox.BottomCorner.Y;
+            newZoneLiquid.SECornerXY.X = scaledTransformedBoundingBox.TopCorner.X;
+            newZoneLiquid.SECornerXY.Y = scaledTransformedBoundingBox.TopCorner.Y;
+            
+            // TODO: Make the depth calculate properly based on slant type
+            newZoneLiquid.LowZ = scaledTransformedBoundingBox.TopCorner.Z;
+            newZoneLiquid.HighZ = scaledTransformedBoundingBox.TopCorner.Z;
+            newZoneLiquid.MinDepth = scaledTransformedBoundingBox.TopCorner.Z - scaledTransformedBoundingBox.BottomCorner.Z;
+
+            newZoneLiquid.RegenerateBoundingBox();
+
+            return newZoneLiquid;
+        }
     }
 }

@@ -203,17 +203,13 @@ namespace EQWOWConverter.Zones
                                         throw new Exception("Could not split up a liquid volume, as no intersecting box was found");
 
                                     // Save the intersection box into the area as a new chunk
-                                    //ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromBoundingBox(intersectingBox[0]);
-                                    ZoneLiquid intersectionLiquid = new ZoneLiquid(liquidChunk);
-                                    intersectionLiquid.BoundingBox = intersectingBox[0];
+                                    ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
                                     subAreaLiquidGroup.AddLiquidChunk(intersectionLiquid);
 
                                     // The rest go to the remainder group if they were liquid
                                     foreach (BoundingBox box in liquidOnlyBoxes)
                                     {
-                                        //ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromBoundingBox(box);
-                                        ZoneLiquid liquidBox = new ZoneLiquid(liquidChunk);
-                                        liquidBox.BoundingBox = box;
+                                        ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(box);
                                         remainderLiquidGroup.AddLiquidChunk(liquidBox);
                                     }
                                 }
