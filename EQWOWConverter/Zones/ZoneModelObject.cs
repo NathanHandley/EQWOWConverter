@@ -70,13 +70,13 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
-        public void LoadAsCollidableArea(MeshData collisionMeshData, string displayName, ZoneAreaMusic? zoneMusic, ZoneLiquid? liquid,
+        public void LoadAsCollidableArea(MeshData collisionMeshData, BoundingBox boundingBox, string displayName, ZoneAreaMusic? zoneMusic, ZoneLiquid? liquid,
             ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.Collidable;
             DisplayName = displayName;
             MeshData = collisionMeshData;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = boundingBox;
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);

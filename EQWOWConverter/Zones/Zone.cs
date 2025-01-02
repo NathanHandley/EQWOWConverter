@@ -468,18 +468,45 @@ namespace EQWOWConverter.Zones
 
             // Break the geometry into as many parts as limited by the system
             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP);
+            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, 
+                (liquid != null), Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP, Configuration.CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION);
+
+            // Build the bounding box, which must always be at least as high as the liquid
+            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            if (liquid != null)
+                boundingBox.TopCorner.Z = float.Max(boundingBox.TopCorner.Z, liquid.BoundingBox.TopCorner.Z);
 
             // Force a data chunk if there is still liquid
             if (meshDataChunks.Count == 0 && liquid != null)
+            {
                 meshDataChunks.Add(new MeshData());
+                boundingBox = new BoundingBox(liquid.BoundingBox);
+            }
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
             {
+                // If there are multiple chunks and liquid, break up the liquid
+                ZoneLiquid? chunkLiquid = liquid;
+                if (meshDataChunks.Count > 1 && chunkLiquid != null)
+                {
+                    // If liquid and geometry are both here, then the geometry's bounding top must be at least as high as the liquid
+                    boundingBox = BoundingBox.GenerateBoxFromVectors(meshDataChunk.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+                    boundingBox.TopCorner.Z = float.Max(boundingBox.TopCorner.Z, chunkLiquid.BoundingBox.TopCorner.Z);
+
+                    // Find out the intersecting liquid areas
+                    List<BoundingBox> intersectingBox;
+                    List<BoundingBox> chunkOnlyBoxes;
+                    List<BoundingBox> liquidOnlyBoxes;
+                    BoundingBox.SplitBoundingIntersect(boundingBox, chunkLiquid.BoundingBox, out intersectingBox, out chunkOnlyBoxes, out liquidOnlyBoxes);
+
+                    // Generate and use only the intersecting subsection of the liquid
+                    chunkLiquid = chunkLiquid.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
+                }
+
                 ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
-                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, zoneArea.DisplayName, areaMusic, liquid, ZoneProperties);
+                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, boundingBox, zoneArea.DisplayName, areaMusic, chunkLiquid, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }
@@ -507,7 +534,7 @@ namespace EQWOWConverter.Zones
 
             // Break the geometry into as many parts as limited by the system
             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = staticMeshData.GetMeshDataChunks(fullBoundingBox, staticMeshData.TriangleFaces, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
+            List<MeshData> meshDataChunks = staticMeshData.GetMeshDataChunks(fullBoundingBox, staticMeshData.TriangleFaces, false, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)

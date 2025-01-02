@@ -916,12 +916,12 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public List<MeshData> GetMeshDataChunks(BoundingBox boundingBox, List<TriangleFace> faces, int maxFaceCountPerChunk)
+        public List<MeshData> GetMeshDataChunks(BoundingBox boundingBox, List<TriangleFace> faces, bool hasLiquid, int maxFaceCountPerChunk, int maxXYDimension = -1)
         {
             List<MeshData> returnMeshChunks = new List<MeshData>();
 
             // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
-            if (faces.Count > maxFaceCountPerChunk)
+            if (faces.Count > maxFaceCountPerChunk || ((hasLiquid == true && (boundingBox.GetXDistance() > maxXYDimension || boundingBox.GetYDistance() > maxXYDimension))))
             {
                 // Create two new bounding boxes
                 SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox);
@@ -957,8 +957,8 @@ namespace EQWOWConverter.Common
                 }
 
                 // Generate for the two sub boxes
-                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxA, aBoxTriangles, maxFaceCountPerChunk));
-                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxB, bBoxTriangles, maxFaceCountPerChunk));
+                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxA, aBoxTriangles, hasLiquid, maxFaceCountPerChunk, maxXYDimension));
+                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxB, bBoxTriangles, hasLiquid, maxFaceCountPerChunk, maxXYDimension));
             }
             else
             {
