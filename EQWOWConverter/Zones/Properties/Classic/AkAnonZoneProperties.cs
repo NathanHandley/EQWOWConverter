@@ -99,8 +99,8 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1147.023926f, -455.328409f, 1076.342651f, -600.290171f, -29.000010f, 50f); // Large to Medium connection channel, south run
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1162.622070f, -455.328409f, 1147.013926f, -488.690735f, -29.000010f, 50f); // Large to Medium connection channel, small corner
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1303.937500f, -615.752747f, 1249.870728f, -624.343882f, -29.000010f, 50f); // Large to Medium connection channel, flat to waterfall
-            AddLiquidPlane(ZoneLiquidType.Water, "d_m0004", 1315.200073f, -609.897156f, 1268.035645f, -615.752747f, -29.000010f, -34.656818f, ZoneLiquidSlantType.EastHighWestLow, 150f); // Large to Medium channel, waterfall high
-            AddLiquidPlane(ZoneLiquidType.Water, "d_m0004", 1319.235107f, -601.728088f, 1276.238281f, -609.898156f, -34.656818f, -42.569721f, ZoneLiquidSlantType.EastHighWestLow, 150f); // Large to Medium channel, waterfall low
+            AddLiquidPlane(ZoneLiquidType.Water, "d_m0004", 1315.200073f, -609.897156f, 1268.035645f, -615.752747f, -29.000010f, -34.656818f, ZoneLiquidSlantType.EastHighWestLow, 150f, -1, "The Falls"); // Large to Medium channel, waterfall high
+            AddLiquidPlane(ZoneLiquidType.Water, "d_m0004", 1319.235107f, -601.728088f, 1276.238281f, -609.898156f, -34.656818f, -42.569721f, ZoneLiquidSlantType.EastHighWestLow, 150f, -1, "The Falls"); // Large to Medium channel, waterfall low
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1385.424927f, -219.524216f, 1235.044922f, -601.738088f, -83.969673f, 200f);  // Angle water room, large west stretch
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1690.890137f, -222.218719f, 1583.315674f, -459.795074f, -125.937500f, 250f); // Angle water room, large lower area
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "d_m0004", 1749.439209f, -264.337097f, 1690.880137f, -323.689636f, -125.937500f, 250f); // Angle water room, outflow

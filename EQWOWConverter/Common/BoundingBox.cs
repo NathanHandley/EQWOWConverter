@@ -308,6 +308,13 @@ namespace EQWOWConverter.Common
 
         public bool DoesIntersectBox(BoundingBox other)
         {
+            // It's an intersection if either box contains the other
+            if (ContainsBox(other) == true)
+                return true;
+            if (other.ContainsBox(this) == true)
+                return true;
+
+            // Otherwise, check boundaries
             float edgePad = 0.001f;
             if (BottomCorner.X + edgePad > other.TopCorner.X)
                 return false;

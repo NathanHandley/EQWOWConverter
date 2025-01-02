@@ -27,6 +27,7 @@ namespace EQWOWConverter.Zones
     {
         private List<ZoneLiquid> LiquidChunks = new List<ZoneLiquid>();
         public BoundingBox BoundingBox = new BoundingBox();
+        public string ForcedAreaAssignmentName = string.Empty;
 
         public void AddLiquidChunk(ZoneLiquid liquid)
         {
@@ -45,6 +46,18 @@ namespace EQWOWConverter.Zones
         public List<ZoneLiquid> GetLiquidChunks()
         {
             return LiquidChunks;
+        }
+
+        public void ClearLiquidChunks()
+        {
+            LiquidChunks.Clear();
+        }
+
+        public void DeleteLiquidChunkAtIndex(int index)
+        {
+            if (index >= LiquidChunks.Count)
+                throw new Exception("Attempted to delete a liquid chunk at an invalid index");
+            LiquidChunks.RemoveAt(index);
         }
     }
 }

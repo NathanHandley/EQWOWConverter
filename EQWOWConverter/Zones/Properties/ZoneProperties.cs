@@ -308,7 +308,7 @@ namespace EQWOWConverter.Zones
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
-            float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth, int liquidGroupID = -1)
+            float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth, int liquidGroupID = -1, string forcedAreaAlignment = "")
         {
             ZoneLiquid liquidPlane = new ZoneLiquid(liquidType, materialName, nwCornerX, nwCornerY, seCornerX, seCornerY,
                 highZ, lowZ, slantType, minDepth);
@@ -316,10 +316,16 @@ namespace EQWOWConverter.Zones
             {
                 ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
                 newLiquidGroup.AddLiquidChunk(liquidPlane);
+                if (forcedAreaAlignment.Length > 0)
+                    newLiquidGroup.ForcedAreaAssignmentName = forcedAreaAlignment;
                 LiquidGroups.Add(newLiquidGroup);
             }
             else
+            {
+                if (forcedAreaAlignment.Length > 0)
+                    Logger.WriteError("Unhandled forced alignment of liquid group to an area");
                 LiquidGroups[liquidGroupID].AddLiquidChunk(liquidPlane);
+            }
         }
 
         // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)

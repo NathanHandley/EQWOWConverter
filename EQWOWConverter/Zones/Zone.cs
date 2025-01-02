@@ -156,9 +156,91 @@ namespace EQWOWConverter.Zones
 
         private void AssignLiquidsToAreas()
         {
+            // Helper for stepping through and splitting water up in an area
+            void SegmentAndAssignToArea(ref ZoneArea area, ref ZoneLiquidGroup curLiquidGroup)
+            {
+                // If fully contained OR a forced assignment, make it directly assigned
+                if (area.MaxBoundingBox.ContainsBox(curLiquidGroup.BoundingBox) == true || area.DisplayName == curLiquidGroup.ForcedAreaAssignmentName)
+                {
+                    ZoneLiquidGroup fullLiquidGroup = new ZoneLiquidGroup();
+                    foreach(ZoneLiquid liquidChunk in curLiquidGroup.GetLiquidChunks())
+                        fullLiquidGroup.AddLiquidChunk(liquidChunk);
+                    area.LiquidGroups.Add(fullLiquidGroup);
+                    curLiquidGroup.ClearLiquidChunks();
+                    return;
+                }
+
+                // If it's directly assigned to an area but not this one, skip
+                if (curLiquidGroup.ForcedAreaAssignmentName.Length > 0)
+                    return;
+
+                // Do nothing if there is no intersection
+                if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == false)
+                    return;
+
+                // Try every box in the area
+                foreach (BoundingBox areaBox in area.BoundingBoxes)
+                {
+                    // If it intersects, split it up
+                    ZoneLiquidGroup liquidChunksOutsideAreaBox = new ZoneLiquidGroup();
+                    ZoneLiquidGroup liquidChunksInsideAreaBox = new ZoneLiquidGroup();
+                    if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == true)
+                    { 
+                        // Process all chunks
+                        for (int i = curLiquidGroup.GetLiquidChunks().Count - 1; i >= 0; i--)
+                        {
+                            // Pop off the current chunk and work with it
+                            ZoneLiquid liquidChunk = curLiquidGroup.GetLiquidChunks()[i];
+                            curLiquidGroup.DeleteLiquidChunkAtIndex(i);
+
+                            // Ignore the chunk if there's no intersection
+                            if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox) == false)
+                            {
+                                liquidChunksOutsideAreaBox.AddLiquidChunk(liquidChunk);
+                                continue;
+                            }
+
+                            // Save the chunk in the area if it can fully consume it
+                            if (areaBox.ContainsBox(liquidChunk.BoundingBox) == true)
+                            {
+                                liquidChunksInsideAreaBox.AddLiquidChunk(liquidChunk);
+                                continue;
+                            }
+
+                            // Split it up if there in as intersection
+                            List<BoundingBox> intersectingBox;
+                            List<BoundingBox> areaOnlyBoxes;
+                            List<BoundingBox> liquidOnlyBoxes;
+                            BoundingBox.SplitBoundingIntersect(areaBox, liquidChunk.BoundingBox, out intersectingBox, out areaOnlyBoxes, out liquidOnlyBoxes);
+                            if (intersectingBox.Count == 0)
+                                throw new Exception("Could not split up a liquid volume, as no intersecting box was found");
+
+                            // Save the intersection box into the area as a new chunk
+                            ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
+                            liquidChunksInsideAreaBox.AddLiquidChunk(intersectionLiquid);
+
+                            // Put the derived chunks back into the cur liquid group for futher processing in this cycle
+                            foreach (BoundingBox box in liquidOnlyBoxes)
+                            {
+                                ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(box);
+                                liquidChunksOutsideAreaBox.AddLiquidChunk(liquidBox);
+                            }
+                        }
+                    }
+
+                    // Save a group for any chunks that landed inside the box
+                    if (liquidChunksInsideAreaBox.GetLiquidChunks().Count > 0)
+                        area.LiquidGroups.Add(liquidChunksInsideAreaBox);
+
+                    // Save back the remainder liquid chunks to the working group
+                    if (liquidChunksOutsideAreaBox.GetLiquidChunks().Count > 0)
+                        foreach (ZoneLiquid liquidChunk in liquidChunksOutsideAreaBox.GetLiquidChunks())
+                            curLiquidGroup.AddLiquidChunk(liquidChunk);
+                }
+            }
+
             // Go through each liquid and find which area they belong to, and split if they fall onto a boundary
             List<ZoneLiquidGroup> liquidGroupsToAssign = ZoneProperties.LiquidGroups;
-
             while (liquidGroupsToAssign.Count > 0)
             {
                 // Pop the first liquid and work with that
@@ -166,64 +248,14 @@ namespace EQWOWConverter.Zones
                 liquidGroupsToAssign.RemoveAt(0);
 
                 // See if it fits in any sub areas
-                bool liquidWasAssignedToSubArea = false;
-                foreach (ZoneArea area in SubAreas)
+                for (int i = 0; i < SubAreas.Count; i++)
                 {
-                    // If fully contained, make it directly assigned
-                    if (area.MaxBoundingBox.ContainsBox(curLiquidGroup.BoundingBox) == true)
-                    {
-                        area.LiquidGroups.Add(curLiquidGroup);
-                        liquidWasAssignedToSubArea = true;
-                        break;
-                    }
-
-                    // Try every box in the area
-                    foreach (BoundingBox areaBox in area.BoundingBoxes)
-                    {
-                        // If it intersects, split it up
-                        if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == true)
-                        {
-                            // Create two groups, one for what goes to this subarea and one that goes back on the pile
-                            ZoneLiquidGroup subAreaLiquidGroup = new ZoneLiquidGroup();
-                            ZoneLiquidGroup remainderLiquidGroup = new ZoneLiquidGroup();
-                            foreach (ZoneLiquid liquidChunk in curLiquidGroup.GetLiquidChunks())
-                            {
-                                if (areaBox.ContainsBox(liquidChunk.BoundingBox) == true)
-                                {
-                                    subAreaLiquidGroup.AddLiquidChunk(liquidChunk);
-                                    continue;
-                                }
-                                if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox) == true)
-                                {
-                                    List<BoundingBox> intersectingBox;
-                                    List<BoundingBox> areaOnlyBoxes;
-                                    List<BoundingBox> liquidOnlyBoxes;
-                                    BoundingBox.SplitBoundingIntersect(areaBox, liquidChunk.BoundingBox, out intersectingBox, out areaOnlyBoxes, out liquidOnlyBoxes);
-                                    if (intersectingBox.Count == 0)
-                                        throw new Exception("Could not split up a liquid volume, as no intersecting box was found");
-
-                                    // Save the intersection box into the area as a new chunk
-                                    ZoneLiquid intersectionLiquid = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
-                                    subAreaLiquidGroup.AddLiquidChunk(intersectionLiquid);
-
-                                    // The rest go to the remainder group if they were liquid
-                                    foreach (BoundingBox box in liquidOnlyBoxes)
-                                    {
-                                        ZoneLiquid liquidBox = liquidChunk.GeneratePartialFromScaledTransformedBoundingBox(box);
-                                        remainderLiquidGroup.AddLiquidChunk(liquidBox);
-                                    }
-                                }
-                            }
-                            if (subAreaLiquidGroup.GetLiquidChunks().Count > 0)
-                                area.LiquidGroups.Add(subAreaLiquidGroup);
-                            if (remainderLiquidGroup.GetLiquidChunks().Count > 0)
-                                liquidGroupsToAssign.Add(remainderLiquidGroup);
-                        }
-                    }
+                    ZoneArea area = SubAreas[i];
+                    SegmentAndAssignToArea(ref area, ref curLiquidGroup);
                 }
 
                 // If no where else, give it to the default area
-                if (liquidWasAssignedToSubArea == false)
+                if (curLiquidGroup.GetLiquidChunks().Count > 0)
                     DefaultArea.LiquidGroups.Add(curLiquidGroup);
             }
         }
