@@ -33,9 +33,7 @@ namespace EQWOWConverter.Zones
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinentType Continent;
-        public bool IsCompletelyInLiquid = false;
         public bool HasShadowBox = false;
-        public ZoneLiquidType CompletelyInLiquidType = ZoneLiquidType.None;
         public Vector3 SafePosition = new Vector3();
         public float SafeOrientation = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();  
@@ -263,12 +261,6 @@ namespace EQWOWConverter.Zones
         protected void SetZonewideAmbienceSound(string ambienceFileNameNoExtDay, string ambienceFileNameNoExtNight)
         {
             DefaultZoneArea.SetAmbientSound(ambienceFileNameNoExtDay, ambienceFileNameNoExtNight);
-        }
-
-        protected void SetIsCompletelyInLiquid(ZoneLiquidType liquidType)
-        {
-            IsCompletelyInLiquid = true;
-            CompletelyInLiquidType = liquidType;
         }
 
         protected void AddAlwaysBrightMaterial(string materialName)

@@ -33,7 +33,9 @@ namespace EQWOWConverter.Zones.Properties
             OverrideVertexColorIntensity(0.4);
             SetZonewideMusic("gl-08", "gl-08", true); // Underwater music sound
             AddZoneLineBox("cauldron", -1170.507080f, -1030.383179f, -315.376831f, ZoneLineOrientationType.East, 140.130951f, 14.514380f, 348.342682f, 119.745049f, -10.192420f, 299.375000f);
-            SetIsCompletelyInLiquid(ZoneLiquidType.Water);
+
+            // Make one giant liquid surface that covers the whole zone
+            AddLiquidPlaneZLevel(ZoneLiquidType.Water, "Dummy", 370f, 370f, -430f, -680f, 400f, 1030f);
         }
     }
 }

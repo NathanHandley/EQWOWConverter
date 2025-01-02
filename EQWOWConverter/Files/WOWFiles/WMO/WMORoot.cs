@@ -203,7 +203,12 @@ namespace EQWOWConverter.WOWFiles
                 // Skip any non-rendered materials
                 if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
                     continue;
-                BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
+
+                // For kedge, put in the front
+                if (zone.ShortName == "kedge")
+                    BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
+                else
+                    BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
 
                 List<byte> curMaterialBytes = new List<byte>();
 

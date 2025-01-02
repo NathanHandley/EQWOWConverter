@@ -93,6 +93,17 @@ namespace EQWOWConverter.Zones
             foreach (Material material in Materials)
                 if (ZoneProperties.AlwaysBrightMaterialsByName.Contains(material.Name) == true)
                     material.AlwaysBrightOverride = true;
+            if (ShortName == "kedge")
+            {
+                // Kedge Keep needs a dummy material in order for it to reder
+                Material dummyMaterial = new Material(Materials[0]);
+                dummyMaterial.Name = "Dummy";
+                dummyMaterial.MaterialType = MaterialType.Diffuse;
+                dummyMaterial.TextureNames.Clear();
+                dummyMaterial.TextureNames.Add("kc1an1");
+                dummyMaterial.AnimationDelayMs = 0;
+                Materials.Add(dummyMaterial);
+            }
 
             // Make the zonewide music if needed
             if (DefaultArea.MusicFileNameNoExtDay != string.Empty || DefaultArea.MusicFileNameNoExtNight != string.Empty)

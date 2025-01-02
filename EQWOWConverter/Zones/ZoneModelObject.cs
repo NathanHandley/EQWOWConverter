@@ -64,11 +64,6 @@ namespace EQWOWConverter.Zones
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials, zoneProperties);
-            if (zoneProperties.IsCompletelyInLiquid)
-            {
-                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
-                LiquidType = zoneProperties.CompletelyInLiquidType;
-            }
             for (UInt16 i = 0; i < lightInstances.Count; i++)
             //    if (BoundingBox.ContainsPoint(lightInstances[i].Position))
                     LightInstanceIDs.Add(i);
@@ -87,12 +82,7 @@ namespace EQWOWConverter.Zones
                 collisionTriangleIncidies.Add(i);
             BSPTree = new BSPTree(collisionTriangleIncidies);
             ZoneMusic = zoneMusic;
-            if (zoneProperties.IsCompletelyInLiquid)
-            {
-                IsCompletelyInLiquid = zoneProperties.IsCompletelyInLiquid;
-                LiquidType = zoneProperties.CompletelyInLiquidType;
-            }
-            else if (liquid != null)
+            if (liquid != null)
             {
                 Liquid = liquid;
                 LiquidType = liquid.LiquidType;
