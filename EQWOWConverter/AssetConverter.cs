@@ -47,7 +47,7 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
-            // Objects
+            // Objects (must always come before zones)
             if (Configuration.CONFIG_GENERATE_OBJECTS == true)
             {
                 if (ConvertEQObjectsToWOW() == false)
@@ -166,6 +166,8 @@ namespace EQWOWConverter
                 string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
                 ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
 
+                // Save it for use elsewhere
+                ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
                 Logger.WriteCounter(curProgress, curProgressOffset, objectMeshFileInfos.Length);
             }
             return true;

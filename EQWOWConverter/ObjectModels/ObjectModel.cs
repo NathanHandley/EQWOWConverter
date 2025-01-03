@@ -76,6 +76,8 @@ namespace EQWOWConverter.ObjectModels
 
         private CreatureModelTemplate? CreatureModelTemplate = null;
 
+        public static Dictionary<string, ObjectModel> StaticObjectModelsByName = new Dictionary<string, ObjectModel>();
+
         public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1, float modelLift = 0)
         {
             Name = name;

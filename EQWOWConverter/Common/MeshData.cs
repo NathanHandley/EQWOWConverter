@@ -23,7 +23,7 @@ using System.Numerics;
 using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Transactions;
 
 namespace EQWOWConverter.Common
 {
@@ -206,6 +206,28 @@ namespace EQWOWConverter.Common
                 VertexColors.Add(new ColorRGBA(0, 0, 0));
                 BoneIDs.Add(0);
             }
+        }
+
+        public void ApplyRotationOnVertices(Quaternion rotation)
+        {
+            foreach (Vector3 vertex in Vertices)
+                vertex.Rotate(rotation);
+        }
+
+        public void ApplyTranslationOnVertices(Vector3 translation)
+        {
+            foreach(Vector3 vertex in Vertices)
+            {
+                vertex.X += translation.X;
+                vertex.Y += translation.Y;
+                vertex.Z += translation.Z;
+            }
+        }
+
+        public void ApplyScaleOnVertices(float scale)
+        {
+            foreach (Vector3 vertex in Vertices)
+                vertex.Scale(scale);
         }
 
         public void DeleteInvalidTriangles()

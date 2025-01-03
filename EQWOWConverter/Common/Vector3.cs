@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -93,6 +94,36 @@ namespace EQWOWConverter.Common
         public static Vector3 GetMax(Vector3 v1, Vector3 v2)
         {
             return new Vector3(Math.Max(v1.X, v2.X), Math.Max(v1.Y, v2.Y), Math.Max(v1.Z, v2.Z));
+        }
+
+        public void Rotate(Quaternion rotation)
+        {
+            // Pull out for easier reading
+            float rx = rotation.X;
+            float ry = rotation.Y;
+            float rz = rotation.Z; 
+            float rw = rotation.W;
+
+            // Calculate intermediate values
+            float x2 = rx + rx, y2 = ry + ry, z2 = rz + rz;
+            float xx = rx * x2, yy = ry * y2, zz = rz * z2;
+            float xy = rx * y2, xz = rx * z2, yz = ry * z2;
+            float wx = rw * x2, wy = rw * y2, wz = rw * z2;
+
+            // Apply rotation matrix
+            float transformedX = (1 - (yy + zz)) * X + (xy - wz) * Y + (xz + wy) * Z;
+            float transformedY = (xy + wz) * X + (1 - (xx + zz)) * Y + (yz - wx) * Z;
+            float transformedZ = (xz - wy) * X + (yz + wx) * Y + (1 - (xx + yy)) * Z;
+            X = transformedX;
+            Y = transformedY;
+            Z = transformedZ;
+        }
+
+        public void Scale(float scale)
+        {
+            X *= scale;
+            Y *= scale;
+            Z *= scale;
         }
     }
 }

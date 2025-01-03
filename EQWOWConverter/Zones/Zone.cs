@@ -385,6 +385,43 @@ namespace EQWOWConverter.Zones
                         collisionMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
             }
 
+            // Grab the collision data from the doodads and bake into the zone's collision map
+            if (Configuration.CONFIG_GENERATE_OBJECTS == true && ObjectModel.StaticObjectModelsByName.Count != 0)
+            {
+                foreach (ZoneDoodadInstance doodadInstance in DoodadInstances)
+                {
+                    // Only work with the static ones for the bake-in
+                    if (doodadInstance.DoodadType != ZoneDoodadInstanceType.StaticObject)
+                        continue;
+
+                    // Get the object mesh data
+                    ObjectModel curObject = ObjectModel.StaticObjectModelsByName[doodadInstance.ObjectName];
+                    MeshData objectMeshData = new MeshData();
+                    foreach (Vector3 collisionPosition in curObject.CollisionPositions)
+                        objectMeshData.Vertices.Add(new Vector3(collisionPosition));
+                    foreach (Vector3 collisionNormal in curObject.CollisionFaceNormals)
+                        objectMeshData.Normals.Add(new Vector3(collisionNormal));
+                    foreach (TriangleFace collisionFace in curObject.CollisionTriangles)
+                        objectMeshData.TriangleFaces.Add(new TriangleFace(collisionFace));
+
+                    // Fill out placeholders (TODO: Figure out how to remove this)
+                    for (int i = 0; i < objectMeshData.Vertices.Count; i++)
+                        objectMeshData.Normals.Add(new Vector3(0, 0, 0));
+                    for (int i = 0; i < objectMeshData.Vertices.Count; i++)
+                        objectMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
+                    for (int i = 0; i < objectMeshData.Vertices.Count; i++)
+                        objectMeshData.VertexColors.Add(new ColorRGBA(0, 0, 0, 0));
+
+                    // Perform transformatinos
+                    objectMeshData.ApplyRotationOnVertices(doodadInstance.Orientation);
+                    objectMeshData.ApplyScaleOnVertices(doodadInstance.Scale);
+                    objectMeshData.ApplyTranslationOnVertices(doodadInstance.Position);
+
+                    // Add it to the collision map
+                    collisionMeshData.AddMeshData(objectMeshData);
+                }
+            }
+
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
             {
