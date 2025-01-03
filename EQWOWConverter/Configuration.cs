@@ -155,6 +155,9 @@ namespace EQWOWConverter
         // Maxinum number of triangle faces that can be in any zone-to-material-object
         public static readonly int CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
 
+        // Any surface liquid that has an x or y dimension larger than this will be cut down in size
+        public static readonly int CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
+
         // How much bigger to make the box which causes the shadow in a shadowbox
         public static readonly float CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
 
@@ -173,9 +176,6 @@ namespace EQWOWConverter
         // If this is true, it will show the true surface line of water and not just the material from EQ.  This should only be used
         // for debugging as it very visually unpleasant
         public static readonly bool CONFIG_LIQUID_SHOW_TRUE_SURFACE = false;
-
-        // Any surface liquid that has an x or y dimension larger than this will be cut down in size
-        public static readonly int CONFIG_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
 
         // How much 'height' to add to liquid surface, helps with rendering the waves
         public static readonly float CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT = 0.001f;
