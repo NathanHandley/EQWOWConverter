@@ -41,7 +41,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneRenderBatch> RenderBatches = new List<ZoneRenderBatch>();
         public Dictionary<int, ZoneDoodadInstance> DoodadInstances = new Dictionary<int, ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
-        public BSPTree BSPTree = new BSPTree(new List<UInt32>());
+        public BSPTree BSPTree = new BSPTree();
         public bool IsCompletelyInLiquid = false;
         public bool IsExterior = true;
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
@@ -80,7 +80,7 @@ namespace EQWOWConverter.Zones
             List<UInt32> collisionTriangleIncidies = new List<UInt32>();
             for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
                 collisionTriangleIncidies.Add(i);
-            BSPTree = new BSPTree(collisionTriangleIncidies);
+            BSPTree = new BSPTree(collisionMeshData);
             ZoneMusic = zoneMusic;
             if (liquid != null)
             {

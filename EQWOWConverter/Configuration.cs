@@ -164,11 +164,17 @@ namespace EQWOWConverter
         // If true, allow collision with world model objects. This will also impact music and ambient sounds, since they align to areas which require collision detection
         public static readonly bool CONFIG_ZONE_COLLISION_ENABLED = true;
 
+        // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
+        public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
+
         // Maximum number of BTREE faces that fit into a WMO group before it subdivides
         public static readonly int CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
 
-        // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
-        public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
+        // BSP tree nodes will stop subdividing when this many (or less) triangles are found
+        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 15;
+        
+        // BSP tree nodes won't operate on bounding boxes smaller than this
+        public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
 
         //=====================================================================
         // Liquid

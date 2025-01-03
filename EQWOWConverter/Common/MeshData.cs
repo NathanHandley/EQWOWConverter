@@ -1093,7 +1093,7 @@ namespace EQWOWConverter.Common
             MeshData newPositiveMeshData = new MeshData();
             MeshData newNegativeMeshData = new MeshData();
 
-            // Starting clockwise, check for intersections and ensure all verticies are added in order
+            // Starting clockwise, check for intersections and ensure all vertices are added in order
             // V1
             if (v1.X >= xLine)
             {
@@ -1211,7 +1211,7 @@ namespace EQWOWConverter.Common
             MeshData newPositiveMeshData = new MeshData();
             MeshData newNegativeMeshData = new MeshData();
 
-            // Starting clockwise, check for intersections and ensure all verticies are added in order
+            // Starting clockwise, check for intersections and ensure all vertices are added in order
             // V1
             if (v1.Y >= yLine)
             {
@@ -1329,7 +1329,7 @@ namespace EQWOWConverter.Common
             MeshData newPositiveMeshData = new MeshData();
             MeshData newNegativeMeshData = new MeshData();
 
-            // Starting clockwise, check for intersections and ensure all verticies are added in order
+            // Starting clockwise, check for intersections and ensure all vertices are added in order
             // V1
             if (v1.Z >= zLine)
             {
