@@ -291,6 +291,13 @@ namespace EQWOWConverter.Zones
             // Create doodad instances from EQ object instances
             foreach (ObjectInstance objectInstance in eqObjectInstances)
             {
+                // Skip any invalid instances
+                if (ObjectModel.StaticObjectModelsByName.ContainsKey(objectInstance.ModelName) == false)
+                {
+                    Logger.WriteDetail("WARNING (or maybe Error): Could not generate doodad instance since model '" + objectInstance.ModelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
+                    continue;
+                }
+
                 ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
                 doodadInstance.ObjectName = objectInstance.ModelName;
                 doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
