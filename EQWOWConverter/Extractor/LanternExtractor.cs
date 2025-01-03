@@ -22,7 +22,7 @@
 //  Additional code in this file and the project as a whole is licensed under the
 //  GNU General Public License.
 //  Author: Nathan Handley (nathanhandley@protonmail.com)
-//  Copyright (c) 2024 Nathan Handley
+//  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify it under the
 //  terms of the GNU General Public License as published by the Free Software Foundation,
