@@ -364,6 +364,7 @@ namespace EQWOWConverter.Common
                 return true;
             return false;
         }
+
         bool InBox(Vector3 collidePoint, int testAxis)
         {
             if (testAxis == 1 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
@@ -374,6 +375,7 @@ namespace EQWOWConverter.Common
                 return true;
             return false;
         }
+
         bool GetIntersection(float distance1, float distance2, Vector3 point1, Vector3 point2, ref Vector3 collidePoint)
         {
             if ((distance1 * distance2) >= 0.0f) return false;

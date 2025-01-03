@@ -146,8 +146,8 @@ namespace EQWOWConverter
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging
         public static readonly bool CONFIG_ZONE_SHOW_STATIC_GEOMETRY = true;
 
-        // Maximum number of faces that fit into a WMO group before it subdivides (true max is 21,840)
-        public static readonly int CONFIG_ZONE_MAX_FACES_PER_WMOGROUP = 21000;
+        // Maximum number of faces that fit into a render WMO group before it subdivides (max is due to various variable limits)
+        public static readonly int CONFIG_ZONE_MAX_FACES_PER_WMOGROUP = 21840;
 
         // Maximum size of any zone-to-material-object creation along the X and Y axis
         public static readonly float CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
@@ -167,14 +167,11 @@ namespace EQWOWConverter
         // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
         public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
 
-        // Maximum number of BTREE faces that fit into a WMO group before it subdivides
-        public static readonly int CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP = 2100;
-
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_BSPTREE_MIN_SPLIT_SIZE = 15;
+        public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 15;
         
         // BSP tree nodes won't operate on bounding boxes smaller than this
-        public static readonly float CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
+        public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
 
         //=====================================================================
         // Liquid

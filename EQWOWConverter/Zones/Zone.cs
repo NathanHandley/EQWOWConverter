@@ -513,7 +513,7 @@ namespace EQWOWConverter.Zones
             // Break the geometry into as many parts as limited by the system
             BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, 
-                (liquid != null), Configuration.CONFIG_ZONE_MAX_BTREE_FACES_PER_WMOGROUP, Configuration.CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION);
+                (liquid != null), Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP, Configuration.CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION);
 
             // Build the bounding box, which must always be at least as high as the liquid
             BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);

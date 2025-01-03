@@ -126,7 +126,7 @@ namespace EQWOWConverter.Common
             float zDistance = curNodeBoundingBox.GetZDistance();
             float totalDistance = xDistance + yDistance + zDistance;
             // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
-            if (Nodes[nodeIndex].TreeGenFaceIndices.Count <= Configuration.CONFIG_BSPTREE_MIN_SPLIT_SIZE || totalDistance < Configuration.CONFIG_BSPTREE_MIN_BOX_SIZE_TOTAL)
+            if (Nodes[nodeIndex].TreeGenFaceIndices.Count <= Configuration.CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE || totalDistance < Configuration.CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL)
             {
                 // Store the faces on the master list
                 UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndices.Count);
