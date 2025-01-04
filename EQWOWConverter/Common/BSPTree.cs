@@ -60,45 +60,6 @@ namespace EQWOWConverter.Common
                     ProcessNode(nodeIndexToProcess, collisionMeshData.TriangleFaces, collisionMeshData.Vertices);
             }
         }
-        private SplitBox GenerateSplitBox(BoundingBox box, BSPNodeFlag planeSplitType)
-        {
-            SplitBox splitBox = new SplitBox();
-            splitBox.BoxA = new BoundingBox(box);
-            splitBox.BoxB = new BoundingBox(box);
-            switch (planeSplitType)
-            {
-                case BSPNodeFlag.XYPlane:
-                    {
-                        float planeSplitDistance = (box.TopCorner.Z + box.BottomCorner.Z) * 0.5f;
-                        splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCorner.Z = planeSplitDistance;
-                        splitBox.BoxB.BottomCorner.Z = planeSplitDistance;
-                    }
-                    break;
-                case BSPNodeFlag.YZPlane:
-                    {
-                        float planeSplitDistance = (box.TopCorner.X + box.BottomCorner.X) * 0.5f;
-                        splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCorner.X = planeSplitDistance;
-                        splitBox.BoxB.BottomCorner.X = planeSplitDistance;
-                    }
-                    break;
-                case BSPNodeFlag.XZPlane:
-                    {
-                        float planeSplitDistance = (box.TopCorner.Y + box.BottomCorner.Y) * 0.5f;
-                        splitBox.PlaneDistance = planeSplitDistance;
-                        splitBox.BoxA.TopCorner.Y = planeSplitDistance;
-                        splitBox.BoxB.BottomCorner.Y = planeSplitDistance;
-                    }
-                    break;
-                default:
-                    {
-                        Logger.WriteError("BSPTree.GenerateSplitBox Error!  Invalid planeSplitType provided.");
-                    }
-                    break;
-            }
-            return splitBox;
-        }
 
         private void ProcessNode(int nodeIndex, List<TriangleFace> allTriangleFaces, List<Vector3> allVertices)
         {
@@ -134,15 +95,13 @@ namespace EQWOWConverter.Common
             }
 
             // Calculate plane type and split the box long way
-            BSPNodeFlag planeSplitType;
-            if (xDistance >= yDistance && (xDistance > zDistance))
-                planeSplitType = BSPNodeFlag.YZPlane;
-            else if (yDistance >= xDistance && (yDistance > zDistance))
-                planeSplitType = BSPNodeFlag.XZPlane;
+            SplitBox splitBox = SplitBox.GenerateXYZSplitBox(curNodeBoundingBox);
+            if (splitBox.SplitAxis == AxisType.XAxis)
+                curNode.Flags = BSPNodeFlag.YZPlane;
+            else if (splitBox.SplitAxis == AxisType.YAxis)
+                curNode.Flags = BSPNodeFlag.XZPlane;
             else
-                planeSplitType = BSPNodeFlag.XYPlane;
-            SplitBox splitBox = GenerateSplitBox(curNodeBoundingBox, planeSplitType);
-            curNode.Flags = planeSplitType;
+                curNode.Flags = BSPNodeFlag.XYPlane;
             curNode.PlaneDistance = splitBox.PlaneDistance;
 
             // Store face Indices that collide with each box, and either update the node half or create appropriate nodes to reflect

@@ -27,28 +27,73 @@ namespace EQWOWConverter.Common
         public BoundingBox BoxA = new BoundingBox();
         public BoundingBox BoxB = new BoundingBox();
         public float PlaneDistance;
+        public AxisType SplitAxis = AxisType.None;
 
-        public static SplitBox GenerateXYSplitBoxFromBoundingBox(BoundingBox box)
+        public static SplitBox GenerateXYSplitBox(BoundingBox box)
+        {
+            if (box.GetXDistance() > box.GetYDistance())
+                return GenerateSplitBoxByPlane(box, AxisType.XAxis);
+            else
+                return GenerateSplitBoxByPlane(box, AxisType.YAxis);
+        }
+
+        public static SplitBox GenerateXYZSplitBox(BoundingBox box)
+        {
+            // Determine the split type
+            AxisType splitAxis;
+            float xDistance = box.GetXDistance();
+            float yDistance = box.GetYDistance();
+            float zDistance = box.GetZDistance();
+            if (xDistance >= yDistance && (xDistance > zDistance))
+                splitAxis = AxisType.XAxis;
+            else if (yDistance >= xDistance && (yDistance > zDistance))
+                splitAxis = AxisType.YAxis;
+            else
+                splitAxis = AxisType.ZAxis;
+
+            return GenerateSplitBoxByPlane(box, splitAxis);
+        }
+
+        public static SplitBox GenerateSplitBoxByPlane(BoundingBox box, AxisType splitAxis)
         {
             SplitBox splitBox = new SplitBox();
             splitBox.BoxA = new BoundingBox(box);
             splitBox.BoxB = new BoundingBox(box);
-
-            if (box.GetXDistance() > box.GetYDistance())
+            switch (splitAxis)
             {
-                float planeSplitDistance = (box.TopCorner.X + box.BottomCorner.X) * 0.5f;
-                splitBox.PlaneDistance = planeSplitDistance;
-                splitBox.BoxA.TopCorner.X = planeSplitDistance;
-                splitBox.BoxB.BottomCorner.X = planeSplitDistance;
+                case AxisType.ZAxis:
+                    {
+                        float planeSplitDistance = (box.TopCorner.Z + box.BottomCorner.Z) * 0.5f;
+                        splitBox.PlaneDistance = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.Z = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.Z = planeSplitDistance;
+                        splitBox.SplitAxis = AxisType.ZAxis;
+                    }
+                    break;
+                case AxisType.XAxis:
+                    {
+                        float planeSplitDistance = (box.TopCorner.X + box.BottomCorner.X) * 0.5f;
+                        splitBox.PlaneDistance = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.X = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.X = planeSplitDistance;
+                        splitBox.SplitAxis = AxisType.XAxis;
+                    }
+                    break;
+                case AxisType.YAxis:
+                    {
+                        float planeSplitDistance = (box.TopCorner.Y + box.BottomCorner.Y) * 0.5f;
+                        splitBox.PlaneDistance = planeSplitDistance;
+                        splitBox.BoxA.TopCorner.Y = planeSplitDistance;
+                        splitBox.BoxB.BottomCorner.Y = planeSplitDistance;
+                        splitBox.SplitAxis = AxisType.YAxis;
+                    }
+                    break;
+                default:
+                    {
+                        Logger.WriteError("GenerateSplitBoxByPlane Error!  Invalid planeSplitType provided.");
+                    }
+                    break;
             }
-            else
-            {
-                float planeSplitDistance = (box.TopCorner.Y + box.BottomCorner.Y) * 0.5f;
-                splitBox.PlaneDistance = planeSplitDistance;
-                splitBox.BoxA.TopCorner.Y = planeSplitDistance;
-                splitBox.BoxB.BottomCorner.Y = planeSplitDistance;
-            }
-
             return splitBox;
         }
     }

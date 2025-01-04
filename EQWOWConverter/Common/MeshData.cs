@@ -884,7 +884,7 @@ namespace EQWOWConverter.Common
                 || finalTriangleCount >= Configuration.CONFIG_ZONE_BTREE_MAX_FACES_PER_COLLISION_WMO)
             {
                 // Create two new bounding boxes based on the longest edge
-                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(curBoundingBox);
+                SplitBox splitBox = SplitBox.GenerateXYSplitBox(curBoundingBox);
 
                 // Calculate what triangles fit into these boxes
                 List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
@@ -938,6 +938,7 @@ namespace EQWOWConverter.Common
             }
         }
 
+        // TODO: look into merging this into similar methods
         public List<MeshData> GetMeshDataChunks(BoundingBox boundingBox, List<TriangleFace> faces, bool hasLiquid, int maxFaceCountPerChunk, int maxXYDimension = -1)
         {
             List<MeshData> returnMeshChunks = new List<MeshData>();
@@ -946,7 +947,7 @@ namespace EQWOWConverter.Common
             if (faces.Count > maxFaceCountPerChunk || ((hasLiquid == true && (boundingBox.GetXDistance() > maxXYDimension || boundingBox.GetYDistance() > maxXYDimension))))
             {
                 // Create two new bounding boxes
-                SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(boundingBox);
+                SplitBox splitBox = SplitBox.GenerateXYSplitBox(boundingBox);
 
                 // Calculate what triangles fit into these boxes
                 List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
@@ -993,6 +994,28 @@ namespace EQWOWConverter.Common
             }
             return returnMeshChunks;
         }
+
+        public void SplitIntoCleanBlockChunks(float maxSpanX, float maxSpanY, float maxSpanZ)
+        {
+            if (maxSpanX <= float.Epsilon || maxSpanY <= float.Epsilon || maxSpanZ <= float.Epsilon)
+                throw new Exception("MeshData.SplitIntoCleanBlockChunks failure due to a max span value being <= 0");
+
+            // Put self into the queue as a single item
+            List<MeshData> pendingChunkQueue = new List<MeshData>() { this };
+            
+            // Process all chunks until they are within the max span
+            List<MeshData> finishedChunks = new List<MeshData>();
+            while (pendingChunkQueue.Count > 0)
+            {
+                // Pop off the last element to work with it
+                MeshData curMeshData = pendingChunkQueue[pendingChunkQueue.Count - 1];
+                pendingChunkQueue.RemoveAt(pendingChunkQueue.Count - 1);
+
+                // Determine 
+
+            }
+        }
+
 
         public static void GetSplitMeshDataWithClipping(MeshData meshToExtractFrom, BoundingBox extractionArea,
             out MeshData extractedMeshData, out MeshData remainderMeshData)
