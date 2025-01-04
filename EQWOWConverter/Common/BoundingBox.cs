@@ -170,7 +170,7 @@ namespace EQWOWConverter.Common
 
         public bool ContainsBox(BoundingBox other)
         {
-            float edgePad = 0.001f;
+            float edgePad = Configuration.CONFIG_GENERATE_FLOAT_EPSILON;
             if (TopCorner.X + edgePad < other.TopCorner.X)
                 return false;
             if (TopCorner.Y + edgePad < other.TopCorner.Y)
@@ -306,7 +306,7 @@ namespace EQWOWConverter.Common
             return boundingBox;
         }
 
-        public bool DoesIntersectBox(BoundingBox other)
+        public bool DoesIntersectBox(BoundingBox other, float edgePad)
         {
             // It's an intersection if either box contains the other
             if (ContainsBox(other) == true)
@@ -315,80 +315,106 @@ namespace EQWOWConverter.Common
                 return true;
 
             // Otherwise, check boundaries
-            float edgePad = 0.001f;
-            if (BottomCorner.X + edgePad > other.TopCorner.X)
+            if (BottomCorner.X > other.TopCorner.X + edgePad)
                 return false;
-            if (BottomCorner.Y + edgePad > other.TopCorner.Y)
+            if (BottomCorner.Y > other.TopCorner.Y + edgePad)
                 return false;
-            if (BottomCorner.Z + edgePad > other.TopCorner.Z)
+            if (BottomCorner.Z > other.TopCorner.Z + edgePad)
                 return false;
-            if (other.BottomCorner.X + edgePad > TopCorner.X)
+            if (other.BottomCorner.X > TopCorner.X + edgePad)
                 return false;
-            if (other.BottomCorner.Y + edgePad > TopCorner.Y)
+            if (other.BottomCorner.Y > TopCorner.Y + edgePad)
                 return false;
-            if (other.BottomCorner.Z + edgePad > TopCorner.Z)
+            if (other.BottomCorner.Z > TopCorner.Z + edgePad)
                 return false;
             return true;
         }
 
-        public bool DoesIntersectTriangle(Vector3 point1, Vector3 point2, Vector3 point3)
+        public bool DoesIntersectTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             // Vertices contained in the box are given collisions, and should be checked first
-            if (IsPointInside(point1) || IsPointInside(point2) || IsPointInside(point3))
+            if (IsPointInside(v1, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) || 
+                IsPointInside(v2, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) || 
+                IsPointInside(v3, Configuration.CONFIG_GENERATE_FLOAT_EPSILON))
                 return true;
-            // Test each line of the triangle for collision
-            if (DoesLineCollide(point1, point2))
-                return true;
-            if (DoesLineCollide(point1, point3))
-                return true;
-            if (DoesLineCollide(point2, point3))
-                return true;
-            return false;
-        }
 
-        // The following three methods were adapted from an answer found here: https://stackoverflow.com/questions/3235385/given-a-bounding-box-and-a-line-two-points-determine-if-the-line-intersects-t
-        private bool DoesLineCollide(Vector3 point1, Vector3 point2)
-        {
-            Vector3 collidePoint = new Vector3();
-            if (GetIntersection(point1.X - TopCorner.X, point2.X - TopCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
-                return true;
-            if (GetIntersection(point1.Y - TopCorner.Y, point2.Y - TopCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
-                return true;
-            if (GetIntersection(point1.Z - TopCorner.Z, point2.Z - TopCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
-                return true;
-            if (GetIntersection(point1.X - BottomCorner.X, point2.X - BottomCorner.X, point1, point2, ref collidePoint) && InBox(collidePoint, 1))
-                return true;
-            if (GetIntersection(point1.Y - BottomCorner.Y, point2.Y - BottomCorner.Y, point1, point2, ref collidePoint) && InBox(collidePoint, 2))
-                return true;
-            if (GetIntersection(point1.Z - BottomCorner.Z, point2.Z - BottomCorner.Z, point1, point2, ref collidePoint) && InBox(collidePoint, 3))
-                return true;
-            return false;
-        }
+            // Check if box intersects triangle plane
+            if (DoesTrianglePlaneIntersectBox(v1, v2, v3) == false)
+                return false;
 
-        bool InBox(Vector3 collidePoint, int testAxis)
-        {
-            if (testAxis == 1 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
-                return true;
-            else if (testAxis == 2 && collidePoint.Z > TopCorner.Z && collidePoint.Z < BottomCorner.Z && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X)
-                return true;
-            else if (testAxis == 3 && collidePoint.X > TopCorner.X && collidePoint.X < BottomCorner.X && collidePoint.Y > TopCorner.Y && collidePoint.Y < BottomCorner.Y)
-                return true;
-            return false;
-        }
+            // Use Separating Axis Theorem to detect if there's an intersect
+            Vector3[] triangleEdges = { v2 - v1, v3 - v2, v1 - v3 };
+            Vector3[] boxAxes = { Vector3.Right, Vector3.Up, Vector3.Forward };
 
-        bool GetIntersection(float distance1, float distance2, Vector3 point1, Vector3 point2, ref Vector3 collidePoint)
-        {
-            if ((distance1 * distance2) >= 0.0f) return false;
-            if (distance1 == distance2) return false;
-            collidePoint = point1 + (point2 - point1) * (-distance1 / (distance2 - distance1));
+            foreach (var triangleEdge in triangleEdges)
+            {
+                foreach (var boxAxis in boxAxes)
+                {
+                    Vector3 axis = Vector3.Cross(triangleEdge, boxAxis);
+                    if (OverlapOnAxis(axis, v1, v2, v3) == false)
+                        return false;
+                }
+            }
+
             return true;
         }
 
-        public bool IsPointInside(Vector3 point)
+        private bool DoesTrianglePlaneIntersectBox(Vector3 v1, Vector3 v2, Vector3 v3)
         {
-            return point.X >= BottomCorner.X && point.X <= TopCorner.X &&
-                   point.Y >= BottomCorner.Y && point.Y <= TopCorner.Y &&
-                   point.Z >= BottomCorner.Z && point.Z <= TopCorner.Z;
+            // Compute triangle normal
+            Vector3 edge1 = v2 - v1;
+            Vector3 edge2 = v3 - v1;
+            Vector3 normal = Vector3.Cross(edge1, edge2);
+
+            // Project box corners onto triangle normal
+            Vector3 boxCenter = (BottomCorner + TopCorner) / 2;
+            Vector3 boxHalfSize = (TopCorner - BottomCorner) / 2;
+
+            float r = Math.Abs(boxHalfSize.X * normal.X) +
+                      Math.Abs(boxHalfSize.Y * normal.Y) +
+                      Math.Abs(boxHalfSize.Z * normal.Z);
+
+            float s = Vector3.Dot(normal, v1 - boxCenter);
+
+            return Math.Abs(s) <= r;
+        }
+
+        private bool OverlapOnAxis(Vector3 axis, Vector3 v1, Vector3 v2, Vector3 v3)
+        {
+            // Degenerate axis, discard
+            if (axis.GetLengthSquared() < Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return true;
+
+            // Project triangle vertices onto axis
+            float[] triProjections = new float[3];
+            triProjections[0] = Vector3.Dot(v1, axis);
+            triProjections[1] = Vector3.Dot(v2, axis);
+            triProjections[2] = Vector3.Dot(v3, axis);
+
+            float triMin = Math.Min(Math.Min(triProjections[0], triProjections[1]), triProjections[2]);
+            float triMax = Math.Max(Math.Max(triProjections[0], triProjections[1]), triProjections[2]);
+
+            // Project box onto axis
+            Vector3 boxCenter = (BottomCorner + TopCorner) / 2;
+            Vector3 boxHalfSize = (TopCorner - BottomCorner) / 2;
+
+            float boxCenterProjection = Vector3.Dot(boxCenter, axis);
+            float boxExtent = Math.Abs(boxHalfSize.X * axis.X) +
+                              Math.Abs(boxHalfSize.Y * axis.Y) +
+                              Math.Abs(boxHalfSize.Z * axis.Z);
+
+            float boxMinProjection = boxCenterProjection - boxExtent;
+            float boxMaxProjection = boxCenterProjection + boxExtent;
+
+            // Check for overlap
+            return triMax >= boxMinProjection && triMin <= boxMaxProjection;
+        }
+
+        public bool IsPointInside(Vector3 point, float edgePad)
+        {
+            return point.X + edgePad >= BottomCorner.X && point.X <= TopCorner.X + edgePad &&
+                   point.Y + edgePad >= BottomCorner.Y && point.Y <= TopCorner.Y + edgePad &&
+                   point.Z + edgePad >= BottomCorner.Z && point.Z <= TopCorner.Z + edgePad;
         }
 
         public static void SplitBoundingIntersect(BoundingBox box1, BoundingBox box2, out List<BoundingBox> intersecting, out List<BoundingBox> box1SubBoxes, out List<BoundingBox> box2SubBoxes)
@@ -398,7 +424,7 @@ namespace EQWOWConverter.Common
             box2SubBoxes = new List<BoundingBox>();
 
             // Exit if nothing intersects
-            if (box1.DoesIntersectBox(box2) == false)
+            if (box1.DoesIntersectBox(box2, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
             {
                 box1SubBoxes.Add(box1);
                 box2SubBoxes.Add(box2);

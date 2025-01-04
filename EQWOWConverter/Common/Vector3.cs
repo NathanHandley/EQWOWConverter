@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Data.Common;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.Intrinsics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,6 +30,10 @@ namespace EQWOWConverter.Common
         public float X;
         public float Y;
         public float Z;
+
+        public static readonly Vector3 Right = new Vector3(1, 0, 0);
+        public static readonly Vector3 Up = new Vector3(0, 1, 0);
+        public static readonly Vector3 Forward = new Vector3(0, 0, 1);
 
         public Vector3()
         {
@@ -78,6 +83,23 @@ namespace EQWOWConverter.Common
             return new Vector3(v1.X * val, v1.Y * val, v1.Z * val);
         }
 
+        public static Vector3 operator /(Vector3 v1, float scalar)
+        {
+            return new Vector3(v1.X / scalar, v1.Y / scalar, v1.Z / scalar);
+        }
+
+        public static float Dot(Vector3 v1, Vector3 v2)
+        {
+            return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z;
+        }
+
+        public static Vector3 Cross(Vector3 v1, Vector3 v2)
+        {
+            return new Vector3(v1.Y * v2.Z - v1.Z * v2.Y,
+                               v1.Z * v2.X - v1.X * v2.Z,
+                               v1.X * v2.Y - v1.Y * v2.X);
+        }
+
         public float GetDistance(Vector3 otherVector)
         {
             float dx = otherVector.X - X;
@@ -124,6 +146,30 @@ namespace EQWOWConverter.Common
             X *= scale;
             Y *= scale;
             Z *= scale;
+        }
+
+        public float GetMagnitude()
+        {
+            return MathF.Sqrt(X * X + Y * Y + Z * Z);
+        }
+
+        public static Vector3 GetNormalized(Vector3 v)
+        {
+            float magnitude = v.GetMagnitude();
+            if (magnitude > 0)
+            {
+                return v / magnitude;
+            }
+            else
+            {
+                // Return a zero vector if the magnitude is zero to avoid division by zero
+                return new Vector3(0, 0, 0);
+            }
+        }
+
+        public float GetLengthSquared()
+        {
+            return X * X + Y * Y + Z * Z;
         }
     }
 }

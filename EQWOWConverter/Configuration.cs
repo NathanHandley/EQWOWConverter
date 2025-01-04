@@ -140,6 +140,9 @@ namespace EQWOWConverter
         // How many file names to batch up when converting 
         public static readonly int CONFIG_GENERATE_BLPCONVERTBATCHSIZE = 50;
 
+        // What edge buffer to add when doing floating point month
+        public static readonly float CONFIG_GENERATE_FLOAT_EPSILON = 0.001f;
+
         //=====================================================================
         // Zone General
         //=====================================================================
@@ -153,7 +156,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
 
         // Maxinum number of triangle faces that can be in any zone-to-material-object
-        public static readonly int CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 21800;
+        public static readonly int CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 20000;
 
         // Any surface liquid that has an x or y dimension larger than this will be cut down in size
         public static readonly int CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
@@ -172,6 +175,9 @@ namespace EQWOWConverter
         
         // BSP tree nodes won't operate on bounding boxes smaller than this
         public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
+
+        // BSP tree nodes won't generate deeper than this many iterations
+        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 30;
 
         //=====================================================================
         // Liquid

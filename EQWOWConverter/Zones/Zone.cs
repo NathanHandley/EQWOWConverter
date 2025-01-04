@@ -175,7 +175,7 @@ namespace EQWOWConverter.Zones
                     return;
 
                 // Do nothing if there is no intersection
-                if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == false)
+                if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
                     return;
 
                 // Try every box in the area
@@ -184,7 +184,7 @@ namespace EQWOWConverter.Zones
                     // If it intersects, split it up
                     ZoneLiquidGroup liquidChunksOutsideAreaBox = new ZoneLiquidGroup();
                     ZoneLiquidGroup liquidChunksInsideAreaBox = new ZoneLiquidGroup();
-                    if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox) == true)
+                    if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == true)
                     { 
                         // Process all chunks
                         for (int i = curLiquidGroup.GetLiquidChunks().Count - 1; i >= 0; i--)
@@ -194,7 +194,7 @@ namespace EQWOWConverter.Zones
                             curLiquidGroup.DeleteLiquidChunkAtIndex(i);
 
                             // Ignore the chunk if there's no intersection
-                            if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox) == false)
+                            if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
                             {
                                 liquidChunksOutsideAreaBox.AddLiquidChunk(liquidChunk);
                                 continue;

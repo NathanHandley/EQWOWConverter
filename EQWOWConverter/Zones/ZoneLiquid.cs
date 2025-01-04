@@ -198,7 +198,7 @@ namespace EQWOWConverter.Zones
 
         public ZoneLiquid GeneratePartialFromScaledTransformedBoundingBox(BoundingBox scaledTransformedBoundingBox)
         {
-            if (scaledTransformedBoundingBox.DoesIntersectBox(BoundingBox) == false)
+            if (scaledTransformedBoundingBox.DoesIntersectBox(BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
                 throw new Exception("Attempted to generate a partial zone liquid plane but the passed bounding box didn't intersect with it");
             if (SlantType != ZoneLiquidSlantType.None)
                 Logger.WriteError("Warning!  Unhandled slanting type for ZoneLiquid::GeneratePartialFromBoundingBox, which could cause errors");
