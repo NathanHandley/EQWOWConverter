@@ -85,12 +85,12 @@ namespace EQWOWConverter.Common
                 curNode.ClearTreeGenData();
 
                 // Write the metrics
-                //using (StreamWriter writer = new StreamWriter(Path.Combine("E:", "Desktop", "testoutput.txt"), true))
-                //{
-                //    string outputLine = "Depth: " + curNode.Depth.ToString() + ",  NumFaces: " + curNode.NumFaces +
-                //        ", TreeGenFaceIndices: " + curNode.TreeGenFaceIndices.Count.ToString() + ", TotalDistance: " + totalDistance.ToString();
-                //    writer.WriteLine(outputLine);
-                //}
+                using (StreamWriter writer = new StreamWriter(Path.Combine("E:", "Desktop", "testoutput.txt"), true))
+                {
+                    string outputLine = "Depth: " + curNode.Depth.ToString() + ",  NumFaces: " + curNode.NumFaces +
+                        ", TotalDistance: " + totalDistance.ToString();
+                    writer.WriteLine(outputLine);
+                }
                 return;
             }
 
