@@ -995,10 +995,10 @@ namespace EQWOWConverter.Common
             return returnMeshChunks;
         }
 
-        public void SplitIntoCleanBlockChunks(float maxSpanX, float maxSpanY, float maxSpanZ)
+        public void SplitGeometryIntoCubiods(float maxSpan)
         {
-            if (maxSpanX <= float.Epsilon || maxSpanY <= float.Epsilon || maxSpanZ <= float.Epsilon)
-                throw new Exception("MeshData.SplitIntoCleanBlockChunks failure due to a max span value being <= 0");
+            if (maxSpan <= float.Epsilon)
+                throw new Exception("MeshData.SplitGeometryIntoCubiods failure due to a max span value being <= 0");
 
             // Put self into the queue as a single item
             List<MeshData> pendingChunkQueue = new List<MeshData>() { this };
@@ -1007,15 +1007,40 @@ namespace EQWOWConverter.Common
             List<MeshData> finishedChunks = new List<MeshData>();
             while (pendingChunkQueue.Count > 0)
             {
-                // Pop off the last element to work with it
+                // Pop off the last meshdata to work with it
                 MeshData curMeshData = pendingChunkQueue[pendingChunkQueue.Count - 1];
                 pendingChunkQueue.RemoveAt(pendingChunkQueue.Count - 1);
 
-                // Determine 
+                // If a max span is violated, split the box into two and add both to the pending chunk queue
+                BoundingBox curMeshBox = BoundingBox.GenerateBoxFromVectors(curMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+                if (curMeshBox.GetXDistance() > maxSpan || curMeshBox.GetYDistance() > maxSpan || curMeshBox.GetZDistance() > maxSpan)
+                {
+                    SplitBox splitBox = SplitBox.GenerateXYZSplitBox(curMeshBox);
+                    MeshData boxAMeshData;
+                    MeshData boxBMeshData;
+                    GetSplitMeshDataWithClipping(curMeshData, splitBox.BoxA, out boxAMeshData, out boxBMeshData);
+                    pendingChunkQueue.Add(boxAMeshData);
+                    pendingChunkQueue.Add(boxBMeshData);
+                }
 
+                // Otherwise, it's finished
+                else
+                    finishedChunks.Add(curMeshData);
             }
-        }
 
+            // Combine all of the chunks back into one
+            MeshData combinedMeshData = finishedChunks[0];
+            for (int i = 1; i < finishedChunks.Count; i++)
+                combinedMeshData.AddMeshData(finishedChunks[i]);
+
+            // Set it to the current object
+            Vertices = combinedMeshData.Vertices;
+            Normals = combinedMeshData.Normals;
+            TextureCoordinates = combinedMeshData.TextureCoordinates;
+            TriangleFaces = combinedMeshData.TriangleFaces;
+            VertexColors = combinedMeshData.VertexColors;
+            BoneIDs = combinedMeshData.BoneIDs;
+        }
 
         public static void GetSplitMeshDataWithClipping(MeshData meshToExtractFrom, BoundingBox extractionArea,
             out MeshData extractedMeshData, out MeshData remainderMeshData)

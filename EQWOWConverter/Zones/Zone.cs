@@ -395,6 +395,7 @@ namespace EQWOWConverter.Zones
             // Grab the collision data from the doodads and bake into the zone's collision map
             if (Configuration.CONFIG_GENERATE_OBJECTS == true && ObjectModel.StaticObjectModelsByName.Count != 0)
             {
+                MeshData allObjectMeshData = new MeshData();
                 foreach (ZoneDoodadInstance doodadInstance in DoodadInstances)
                 {
                     // Only work with the static ones for the bake-in
@@ -406,14 +407,10 @@ namespace EQWOWConverter.Zones
                     MeshData objectMeshData = new MeshData();
                     foreach (Vector3 collisionPosition in curObject.CollisionPositions)
                         objectMeshData.Vertices.Add(new Vector3(collisionPosition));
-                    foreach (Vector3 collisionNormal in curObject.CollisionFaceNormals)
-                        objectMeshData.Normals.Add(new Vector3(collisionNormal));
                     foreach (TriangleFace collisionFace in curObject.CollisionTriangles)
                         objectMeshData.TriangleFaces.Add(new TriangleFace(collisionFace));
 
                     // Fill out placeholders (TODO: Figure out how to remove this)
-                    for (int i = 0; i < objectMeshData.Vertices.Count; i++)
-                        objectMeshData.Normals.Add(new Vector3(0, 0, 0));
                     for (int i = 0; i < objectMeshData.Vertices.Count; i++)
                         objectMeshData.TextureCoordinates.Add(new TextureCoordinates(0, 0));
                     for (int i = 0; i < objectMeshData.Vertices.Count; i++)
@@ -425,9 +422,43 @@ namespace EQWOWConverter.Zones
                     objectMeshData.ApplyTranslationOnVertices(doodadInstance.Position);
 
                     // Add it to the collision map
-                    collisionMeshData.AddMeshData(objectMeshData);
+                    allObjectMeshData.AddMeshData(objectMeshData);
                 }
+
+                // Calculate the normals
+                List<Vector3> normals = new List<Vector3>();
+                for (int i = 0; i < allObjectMeshData.Vertices.Count; i++)
+                    normals.Add(new Vector3());
+                foreach (TriangleFace face in allObjectMeshData.TriangleFaces)
+                {
+                    // Get the vertex positions for the triangle
+                    Vector3 v1 = allObjectMeshData.Vertices[face.V1];
+                    Vector3 v2 = allObjectMeshData.Vertices[face.V2];
+                    Vector3 v3 = allObjectMeshData.Vertices[face.V3];
+
+                    // Calculate two edges of the triangle
+                    Vector3 edge1 = v2 - v1;
+                    Vector3 edge2 = v3 - v1;
+
+                    // Compute the face normal
+                    Vector3 faceNormal = Vector3.Cross(edge1, edge2);
+
+                    // Normalize the face normal to ensure it's a unit vector
+                    faceNormal = Vector3.GetNormalized(faceNormal);
+
+                    // Accumulate the face normal into the vertex normals
+                    normals[face.V1] += faceNormal;
+                    normals[face.V2] += faceNormal;
+                    normals[face.V3] += faceNormal;
+                }
+                allObjectMeshData.Normals = normals;
+
+                // Append it
+                collisionMeshData.AddMeshData(allObjectMeshData);
             }
+
+            // Split the collision geometry into cubiods
+            collisionMeshData.SplitGeometryIntoCubiods(Configuration.CONFIG_ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
