@@ -881,7 +881,7 @@ namespace EQWOWConverter.Common
             // If the box is too big, cut it up
             if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
                 || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || finalTriangleCount >= Configuration.CONFIG_ZONE_BTREE_MAX_FACES_PER_COLLISION_WMO)
+                || finalTriangleCount >= Configuration.CONFIG_ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT)
             {
                 // Create two new bounding boxes based on the longest edge
                 SplitBox splitBox = SplitBox.GenerateXYSplitBox(curBoundingBox);
@@ -938,70 +938,10 @@ namespace EQWOWConverter.Common
             }
         }
 
-        // TODO: look into merging this into similar methods
-        public List<MeshData> GetMeshDataChunks(BoundingBox boundingBox, List<TriangleFace> faces, bool hasLiquid, int maxFaceCountPerChunk, int maxXYDimension = -1)
+        public static List<MeshData> GetGeometrySplitIntoCubiods(MeshData meshData, float maxSpanPerCubiod = -1, int maxFaceCountPerCubiod = -1)
         {
-            List<MeshData> returnMeshChunks = new List<MeshData>();
-
-            // If there are too many triangles to fit in a single box, cut the box into two and generate two child world model objects
-            if (faces.Count > maxFaceCountPerChunk || ((hasLiquid == true && (boundingBox.GetXDistance() > maxXYDimension || boundingBox.GetYDistance() > maxXYDimension))))
-            {
-                // Create two new bounding boxes
-                SplitBox splitBox = SplitBox.GenerateXYSplitBox(boundingBox);
-
-                // Calculate what triangles fit into these boxes
-                List<TriangleFace> aBoxTriangles = new List<TriangleFace>();
-                List<TriangleFace> bBoxTriangles = new List<TriangleFace>();
-
-                foreach (TriangleFace triangle in faces)
-                {
-                    // Skip any faces that aren't actually triangles
-                    if (triangle.V1 == triangle.V2 || triangle.V2 == triangle.V3 || triangle.V1 == triangle.V3)
-                        continue;
-
-                    // Get center point
-                    Vector3 v1 = Vertices[triangle.V1];
-                    Vector3 v2 = Vertices[triangle.V2];
-                    Vector3 v3 = Vertices[triangle.V3];
-                    Vector3 center = new Vector3((v1.X + v2.X + v3.X) / 3, (v1.Y + v2.Y + v3.Y) / 3, (v1.Z + v2.Z + v3.Z) / 3);
-
-                    // Align to the first box if it is inside it (only based on xy), otherwise put in the other box
-                    // and don't do if/else since there is intentional overlap
-                    if (center.X >= splitBox.BoxA.BottomCorner.X && center.X <= splitBox.BoxA.TopCorner.X &&
-                        center.Y >= splitBox.BoxA.BottomCorner.Y && center.Y <= splitBox.BoxA.TopCorner.Y)
-                    {
-                        aBoxTriangles.Add(new TriangleFace(triangle));
-                    }
-                    if (center.X >= splitBox.BoxB.BottomCorner.X && center.X <= splitBox.BoxB.TopCorner.X &&
-                        center.Y >= splitBox.BoxB.BottomCorner.Y && center.Y <= splitBox.BoxB.TopCorner.Y)
-                    {
-                        bBoxTriangles.Add(new TriangleFace(triangle));
-                    }
-                }
-
-                // Generate for the two sub boxes
-                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxA, aBoxTriangles, hasLiquid, maxFaceCountPerChunk, maxXYDimension));
-                returnMeshChunks.AddRange(GetMeshDataChunks(splitBox.BoxB, bBoxTriangles, hasLiquid, maxFaceCountPerChunk, maxXYDimension));
-            }
-            else
-            {
-                MeshData newMeshChunk = GetMeshDataForFaces(faces);
-                if (newMeshChunk.TriangleFaces.Count > 0)
-                {
-                    newMeshChunk.CondenseAndRenumberVertexIndices();
-                    returnMeshChunks.Add(newMeshChunk);
-                }
-            }
-            return returnMeshChunks;
-        }
-
-        public void SplitGeometryIntoCubiods(float maxSpan)
-        {
-            if (maxSpan <= float.Epsilon)
-                throw new Exception("MeshData.SplitGeometryIntoCubiods failure due to a max span value being <= 0");
-
             // Put self into the queue as a single item
-            List<MeshData> pendingChunkQueue = new List<MeshData>() { this };
+            List<MeshData> pendingChunkQueue = new List<MeshData>() { meshData };
             
             // Process all chunks until they are within the max span
             List<MeshData> finishedChunks = new List<MeshData>();
@@ -1013,7 +953,8 @@ namespace EQWOWConverter.Common
 
                 // If a max span is violated, split the box into two and add both to the pending chunk queue
                 BoundingBox curMeshBox = BoundingBox.GenerateBoxFromVectors(curMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-                if (curMeshBox.GetXDistance() > maxSpan || curMeshBox.GetYDistance() > maxSpan || curMeshBox.GetZDistance() > maxSpan)
+                if ((maxSpanPerCubiod > 0 && (curMeshBox.GetXDistance() > maxSpanPerCubiod || curMeshBox.GetYDistance() > maxSpanPerCubiod || curMeshBox.GetZDistance() > maxSpanPerCubiod))
+                    || (maxFaceCountPerCubiod > 0 && curMeshData.TriangleFaces.Count > maxFaceCountPerCubiod))
                 {
                     SplitBox splitBox = SplitBox.GenerateXYZSplitBox(curMeshBox);
                     MeshData boxAMeshData;
@@ -1028,18 +969,7 @@ namespace EQWOWConverter.Common
                     finishedChunks.Add(curMeshData);
             }
 
-            // Combine all of the chunks back into one
-            MeshData combinedMeshData = finishedChunks[0];
-            for (int i = 1; i < finishedChunks.Count; i++)
-                combinedMeshData.AddMeshData(finishedChunks[i]);
-
-            // Set it to the current object
-            Vertices = combinedMeshData.Vertices;
-            Normals = combinedMeshData.Normals;
-            TextureCoordinates = combinedMeshData.TextureCoordinates;
-            TriangleFaces = combinedMeshData.TriangleFaces;
-            VertexColors = combinedMeshData.VertexColors;
-            BoneIDs = combinedMeshData.BoneIDs;
+            return finishedChunks;
         }
 
         public static void GetSplitMeshDataWithClipping(MeshData meshToExtractFrom, BoundingBox extractionArea,

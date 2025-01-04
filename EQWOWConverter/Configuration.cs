@@ -155,23 +155,20 @@ namespace EQWOWConverter
         // Maximum size of any zone-to-material-object creation along the X and Y axis
         public static readonly float CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
 
-        // Any surface liquid that has an x or y dimension larger than this will be cut down in size
-        public static readonly int CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
-
         // How much bigger to make the box which causes the shadow in a shadowbox
         public static readonly float CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE = 50f;
 
         // If true, allow collision with world model objects. This will also impact music and ambient sounds, since they align to areas which require collision detection
         public static readonly bool CONFIG_ZONE_COLLISION_ENABLED = true;
 
-        // When collision geometry gets broken into cuboids, this is the max side length of the area
-        public static readonly int CONFIG_ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH = 400;
+        // When zone geometry gets broken into cuboids, this is the max side length of the area
+        public static readonly int CONFIG_ZONE_SPLIT_COLLISION_CUBOID_MAX_EDGE_LEGNTH = 1300;
 
         // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
         public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
 
         // Maxinum number of triangle faces that can be in any zone-to-material-object
-        public static readonly int CONFIG_ZONE_BTREE_MAX_FACES_PER_COLLISION_WMO = 2000;
+        public static readonly int CONFIG_ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT = 2000;
 
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
         public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 15;
@@ -180,7 +177,7 @@ namespace EQWOWConverter
         public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 6f;
 
         // BSP tree nodes won't generate deeper than this many iterations
-        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 20;
+        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 25;
 
         //=====================================================================
         // Liquid

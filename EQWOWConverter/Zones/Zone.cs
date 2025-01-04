@@ -266,7 +266,6 @@ namespace EQWOWConverter.Zones
             for (int di = 0; di < DoodadInstances.Count; di++)
             {
                 ZoneDoodadInstance doodadInstance = DoodadInstances[di];
-
                 int curZoneObjectModelIndex = 0;
                 float currentDistance = 1000000;
                 for (int i = 0; i < ZoneObjectModels.Count; i++)
@@ -458,7 +457,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Split the collision geometry into cubiods
-            collisionMeshData.SplitGeometryIntoCubiods(Configuration.CONFIG_ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
+            //collisionMeshData.SplitGeometryIntoCubiods(Configuration.CONFIG_ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
@@ -542,9 +541,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = collisionMeshData.GetMeshDataChunks(fullBoundingBox, collisionMeshData.TriangleFaces, 
-                (liquid != null), Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP, Configuration.CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION);
+            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(collisionMeshData, Configuration.CONFIG_ZONE_SPLIT_COLLISION_CUBOID_MAX_EDGE_LEGNTH, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Build the bounding box, which must always be at least as high as the liquid
             BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
@@ -608,8 +605,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            BoundingBox fullBoundingBox = BoundingBox.GenerateBoxFromVectors(staticMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            List<MeshData> meshDataChunks = staticMeshData.GetMeshDataChunks(fullBoundingBox, staticMeshData.TriangleFaces, false, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
+            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(staticMeshData, 0, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
