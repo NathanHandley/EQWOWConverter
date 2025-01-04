@@ -110,6 +110,9 @@ namespace EQWOWConverter
         // Allows for much faster builds when debugging
         public static readonly bool CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL = false;
 
+        // If this is true, the collision (via Btree) is generated 'quickly' for fast debugging, but performance will suffer greatly in zones
+        public static readonly bool CONFIG_GENERATE_ZONE_COLLISION_QUICK_FOR_DEBUG = false;
+
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
 
@@ -171,13 +174,13 @@ namespace EQWOWConverter
         public static readonly int CONFIG_ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT = 2000;
 
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 30;
+        public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 10;
         
         // BSP tree nodes won't operate on bounding boxes smaller than this (X + Y + Z lengths)
-        public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 20f;
+        public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 5f;
 
         // BSP tree nodes won't generate deeper than this many iterations
-        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 25;
+        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 50;
 
         //=====================================================================
         // Liquid

@@ -27,12 +27,12 @@ namespace EQWOWConverter.Common
     {
         public List<BSPNode> Nodes = new List<BSPNode>();
         public List<UInt32> FaceTriangleIndices = new List<UInt32>();
-        private List<int> NodesToProcess = new List<int>();
+        private List<BSPNode> NodeProcessQueue = new List<BSPNode>();
 
         // Blank create for WMO groups that don't need one
         public BSPTree()
         {
-            BSPNode rootNode = new BSPNode(0);
+            BSPNode rootNode = new BSPNode(0, 0);
             Nodes.Add(rootNode);
 
             // Update leaf value
@@ -47,30 +47,44 @@ namespace EQWOWConverter.Common
             for (uint i = 0; i < collisionMeshData.TriangleFaces.Count; i++)
                 faceIndices.Add(i);
             BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
-            BSPNode rootNode = new BSPNode(true, boundingBox, faceIndices, 0);
+            BSPNode rootNode = new BSPNode(0, boundingBox, faceIndices, 0);
             Nodes.Add(rootNode);
-            NodesToProcess.Add(0);
+            NodeProcessQueue.Add(rootNode);
 
-            // Loop through nodes until there are none to process
-            while (NodesToProcess.Count > 0)
+            // Loop through nodes until there are none to process (and can't have more than Int16.Max-2 nodes)
+            int maxNodeCount = 32760;
+            if (Configuration.CONFIG_GENERATE_ZONE_COLLISION_QUICK_FOR_DEBUG == true)
+                maxNodeCount = 16;
+            while (NodeProcessQueue.Count > 0 && Nodes.Count < maxNodeCount)
             {
-                List<int> nodesToProcessCopy = new List<int>(NodesToProcess);
-                NodesToProcess.Clear();
-                foreach (int nodeIndexToProcess in nodesToProcessCopy)
-                    ProcessNode(nodeIndexToProcess, collisionMeshData.TriangleFaces, collisionMeshData.Vertices);
+                // Pop the last and process it
+                NodeProcessQueue.Sort();
+                BSPNode curNode = NodeProcessQueue[NodeProcessQueue.Count - 1];
+                NodeProcessQueue.RemoveAt(NodeProcessQueue.Count - 1);
+                ProcessNode(curNode.NodeID, collisionMeshData.TriangleFaces, collisionMeshData.Vertices);
+            }
+
+            // Set all remaining nodes as leaf nodes
+            foreach(BSPNode node in NodeProcessQueue)
+            {
+                UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndices.Count);
+                foreach (UInt32 faceIndex in node.TreeGenFaceIndices)
+                    FaceTriangleIndices.Add(faceIndex);
+                node.SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(node.TreeGenFaceIndices.Count), curFaceStartIndex, 0.0f);
             }
         }
 
         private void ProcessNode(int nodeIndex, List<TriangleFace> allTriangleFaces, List<Vector3> allVertices)
         {
-            BoundingBox curNodeBoundingBox = new BoundingBox(Nodes[nodeIndex].TreeGenBoundingBox);
+            BSPNode curNode = Nodes[nodeIndex];
+            BoundingBox curNodeBoundingBox = new BoundingBox(curNode.TreeGenBoundingBox);
             float xDistance = curNodeBoundingBox.GetXDistance();
             float yDistance = curNodeBoundingBox.GetYDistance();
             float zDistance = curNodeBoundingBox.GetZDistance();
             float totalDistance = xDistance + yDistance + zDistance;
+            curNode.TotalDistance = totalDistance;
 
             // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
-            BSPNode curNode = Nodes[nodeIndex];
             if (curNode.TreeGenFaceIndices.Count <= Configuration.CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE
                 || totalDistance < Configuration.CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL
                 || curNode.Depth >= Configuration.CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH)
@@ -83,14 +97,6 @@ namespace EQWOWConverter.Common
                 // Close out the leaf
                 curNode.SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(curNode.TreeGenFaceIndices.Count), curFaceStartIndex, 0.0f);
                 curNode.ClearTreeGenData();
-
-                // Write the metrics
-                using (StreamWriter writer = new StreamWriter(Path.Combine("E:", "Desktop", "testoutput.txt"), true))
-                {
-                    string outputLine = "Depth: " + curNode.Depth.ToString() + ",  NumFaces: " + curNode.NumFaces +
-                        ", TotalDistance: " + totalDistance.ToString();
-                    writer.WriteLine(outputLine);
-                }
                 return;
             }
 
@@ -118,9 +124,9 @@ namespace EQWOWConverter.Common
                 curNode.ChildANodeIndex = -1;
             else
             {
-                BSPNode newChildNode = new BSPNode(true, splitBox.BoxA, boxAFaceIndices, curNode.Depth + 1);
+                BSPNode newChildNode = new BSPNode(Nodes.Count, splitBox.BoxA, boxAFaceIndices, curNode.Depth + 1);
                 curNode.ChildANodeIndex = Convert.ToInt16(Nodes.Count);
-                NodesToProcess.Add(Nodes.Count);
+                NodeProcessQueue.Add(newChildNode);
                 Nodes.Add(newChildNode);
             }
             List<UInt32> boxBFaceIndices = new List<UInt32>();
@@ -136,10 +142,10 @@ namespace EQWOWConverter.Common
                 curNode.ChildBNodeIndex = -1;
             else
             {
-                BSPNode newChildNode = new BSPNode(true, splitBox.BoxB, boxBFaceIndices, curNode.Depth + 1);
+                BSPNode newChildNode = new BSPNode(Nodes.Count, splitBox.BoxB, boxBFaceIndices, curNode.Depth + 1);
                 curNode.ChildBNodeIndex = Convert.ToInt16(Nodes.Count);
-                NodesToProcess.Add(Nodes.Count);
-                Nodes.Add(newChildNode);
+                NodeProcessQueue.Add(newChildNode);
+                Nodes.Add(newChildNode);                
             }
 
             // No more processing

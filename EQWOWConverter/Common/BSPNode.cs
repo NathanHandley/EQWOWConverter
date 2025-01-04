@@ -22,8 +22,9 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
-    internal class BSPNode
+    internal class BSPNode : IComparable, IEquatable<BSPNode>
     {
+        public int NodeID = -1;
         public BSPNodeFlag Flags;
         public Int16 ChildANodeIndex = -1; // Right side, negative
         public Int16 ChildBNodeIndex = -1; // Left side, positive
@@ -31,20 +32,21 @@ namespace EQWOWConverter.Common
         public UInt32 FaceStartIndex = 0; // first triangle index (found in WMO MOBR)
         public float PlaneDistance = 0;
         public int Depth;
+        public float TotalDistance = 0;
 
         // Related to tree generation
-        public bool TreeGenHaveMoreToProcess = false;
         public BoundingBox TreeGenBoundingBox = new BoundingBox();
         public List<UInt32> TreeGenFaceIndices = new List<UInt32>();
 
-        public BSPNode(int depth)
+        public BSPNode(int nodeID, int depth)
         {
+            NodeID = nodeID;
             Depth = depth;
         }
 
-        public BSPNode(bool haveMoreToProcess, BoundingBox boundingBox, List<UInt32> faceIndices, int depth)
+        public BSPNode(int nodeID, BoundingBox boundingBox, List<UInt32> faceIndices, int depth)
         {
-            TreeGenHaveMoreToProcess = haveMoreToProcess;
+            NodeID = nodeID;
             TreeGenFaceIndices = new List<uint>(faceIndices);
             TreeGenBoundingBox = new BoundingBox(boundingBox);
             Depth = depth;
@@ -62,7 +64,6 @@ namespace EQWOWConverter.Common
 
         public void ClearTreeGenData()
         {
-            TreeGenHaveMoreToProcess = false;
             TreeGenBoundingBox = new BoundingBox();
             TreeGenFaceIndices.Clear();
         }
@@ -77,6 +78,23 @@ namespace EQWOWConverter.Common
             returnBytes.AddRange(BitConverter.GetBytes(FaceStartIndex));
             returnBytes.AddRange(BitConverter.GetBytes(PlaneDistance));
             return returnBytes;
+        }
+
+        public int CompareTo(object? obj)
+        {
+            if (obj == null) return 1;
+            BSPNode? otherNode = obj as BSPNode;
+            if (otherNode != null)
+                return TreeGenFaceIndices.Count.CompareTo(otherNode.TreeGenFaceIndices.Count);
+            else
+                throw new ArgumentException("Object is not a BSPNode");
+        }
+
+        public bool Equals(BSPNode? other)
+        {
+            if (other == null) return false;
+            if (NodeID != other.NodeID) return false;
+            return true;
         }
     }
 }
