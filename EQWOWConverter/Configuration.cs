@@ -155,9 +155,6 @@ namespace EQWOWConverter
         // Maximum size of any zone-to-material-object creation along the X and Y axis
         public static readonly float CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE = 325.0f;
 
-        // Maxinum number of triangle faces that can be in any zone-to-material-object
-        public static readonly int CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT = 20000;
-
         // Any surface liquid that has an x or y dimension larger than this will be cut down in size
         public static readonly int CONFIG_ZONE_LIQUID_SURFACE_MAX_XY_DIMENSION = 1300;
 
@@ -170,14 +167,17 @@ namespace EQWOWConverter
         // If set to 'true', show a box where the music zones are. This is for debugging only.  Only works when collision is enabled
         public static readonly bool CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES = false;
 
+        // Maxinum number of triangle faces that can be in any zone-to-material-object
+        public static readonly int CONFIG_ZONE_BTREE_MAX_FACES_PER_COLLISION_WMO = 2500;
+
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
-        public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 15;
+        public static readonly UInt16 CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE = 25;
         
         // BSP tree nodes won't operate on bounding boxes smaller than this
-        public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 5.0f;
+        public static readonly float CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 12f;
 
         // BSP tree nodes won't generate deeper than this many iterations
-        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 30;
+        public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 15;
 
         //=====================================================================
         // Liquid

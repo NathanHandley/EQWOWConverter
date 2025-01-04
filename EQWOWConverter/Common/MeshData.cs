@@ -881,7 +881,7 @@ namespace EQWOWConverter.Common
             // If the box is too big, cut it up
             if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
                 || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || finalTriangleCount >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MAX_FACE_TRIANGLE_COUNT)
+                || finalTriangleCount >= Configuration.CONFIG_ZONE_BTREE_MAX_FACES_PER_COLLISION_WMO)
             {
                 // Create two new bounding boxes based on the longest edge
                 SplitBox splitBox = SplitBox.GenerateXYSplitBoxFromBoundingBox(curBoundingBox);

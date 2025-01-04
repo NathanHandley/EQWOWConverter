@@ -107,20 +107,29 @@ namespace EQWOWConverter.Common
             float yDistance = curNodeBoundingBox.GetYDistance();
             float zDistance = curNodeBoundingBox.GetZDistance();
             float totalDistance = xDistance + yDistance + zDistance;
-            
+
             // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
-            if (Nodes[nodeIndex].TreeGenFaceIndices.Count <= Configuration.CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE 
+            BSPNode curNode = Nodes[nodeIndex];
+            if (curNode.TreeGenFaceIndices.Count <= Configuration.CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE
                 || totalDistance < Configuration.CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL
-                || Nodes[nodeIndex].Depth >= Configuration.CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH)
+                || curNode.Depth >= Configuration.CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH)
             {
                 // Store the faces on the master list
                 UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndices.Count);
-                foreach (UInt32 faceIndex in Nodes[nodeIndex].TreeGenFaceIndices)
+                foreach (UInt32 faceIndex in curNode.TreeGenFaceIndices)
                     FaceTriangleIndices.Add(faceIndex);
 
                 // Close out the leaf
-                Nodes[nodeIndex].SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(Nodes[nodeIndex].TreeGenFaceIndices.Count), curFaceStartIndex, 0.0f);
-                Nodes[nodeIndex].ClearTreeGenData();
+                curNode.SetValues(BSPNodeFlag.Leaf, -1, -1, Convert.ToUInt16(curNode.TreeGenFaceIndices.Count), curFaceStartIndex, 0.0f);
+                curNode.ClearTreeGenData();
+
+                // Write the metrics
+                //using (StreamWriter writer = new StreamWriter(Path.Combine("E:", "Desktop", "testoutput.txt"), true))
+                //{
+                //    string outputLine = "Depth: " + curNode.Depth.ToString() + ",  NumFaces: " + curNode.NumFaces +
+                //        ", TreeGenFaceIndices: " + curNode.TreeGenFaceIndices.Count.ToString() + ", TotalDistance: " + totalDistance.ToString();
+                //    writer.WriteLine(outputLine);
+                //}
                 return;
             }
 
@@ -133,12 +142,12 @@ namespace EQWOWConverter.Common
             else
                 planeSplitType = BSPNodeFlag.XYPlane;
             SplitBox splitBox = GenerateSplitBox(curNodeBoundingBox, planeSplitType);
-            Nodes[nodeIndex].Flags = planeSplitType;
-            Nodes[nodeIndex].PlaneDistance = splitBox.PlaneDistance;
+            curNode.Flags = planeSplitType;
+            curNode.PlaneDistance = splitBox.PlaneDistance;
 
             // Store face Indices that collide with each box, and either update the node half or create appropriate nodes to reflect
             List<UInt32> boxAFaceIndices = new List<UInt32>();
-            foreach (UInt32 boxFaceIndex in Nodes[nodeIndex].TreeGenFaceIndices)
+            foreach (UInt32 boxFaceIndex in curNode.TreeGenFaceIndices)
             {
                 Vector3 point1 = allVertices[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V1];
                 Vector3 point2 = allVertices[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V2];
@@ -147,16 +156,16 @@ namespace EQWOWConverter.Common
                     boxAFaceIndices.Add(boxFaceIndex);
             }
             if (boxAFaceIndices.Count == 0)
-                Nodes[nodeIndex].ChildANodeIndex = -1;
+                curNode.ChildANodeIndex = -1;
             else
             {
-                BSPNode newChildNode = new BSPNode(true, splitBox.BoxA, boxAFaceIndices, nodeIndex + 1);
-                Nodes[nodeIndex].ChildANodeIndex = Convert.ToInt16(Nodes.Count);
+                BSPNode newChildNode = new BSPNode(true, splitBox.BoxA, boxAFaceIndices, curNode.Depth + 1);
+                curNode.ChildANodeIndex = Convert.ToInt16(Nodes.Count);
                 NodesToProcess.Add(Nodes.Count);
                 Nodes.Add(newChildNode);
             }
             List<UInt32> boxBFaceIndices = new List<UInt32>();
-            foreach (UInt32 boxFaceIndex in Nodes[nodeIndex].TreeGenFaceIndices)
+            foreach (UInt32 boxFaceIndex in curNode.TreeGenFaceIndices)
             {
                 Vector3 point1 = allVertices[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V1];
                 Vector3 point2 = allVertices[allTriangleFaces[Convert.ToInt32(boxFaceIndex)].V2];
@@ -165,17 +174,17 @@ namespace EQWOWConverter.Common
                     boxBFaceIndices.Add(boxFaceIndex);
             }
             if (boxBFaceIndices.Count == 0)
-                Nodes[nodeIndex].ChildBNodeIndex = -1;
+                curNode.ChildBNodeIndex = -1;
             else
             {
-                BSPNode newChildNode = new BSPNode(true, splitBox.BoxB, boxBFaceIndices, nodeIndex + 1);
-                Nodes[nodeIndex].ChildBNodeIndex = Convert.ToInt16(Nodes.Count);
+                BSPNode newChildNode = new BSPNode(true, splitBox.BoxB, boxBFaceIndices, curNode.Depth + 1);
+                curNode.ChildBNodeIndex = Convert.ToInt16(Nodes.Count);
                 NodesToProcess.Add(Nodes.Count);
                 Nodes.Add(newChildNode);
             }
 
             // No more processing
-            Nodes[nodeIndex].ClearTreeGenData();
+            curNode.ClearTreeGenData();
             return;
         }
     }
