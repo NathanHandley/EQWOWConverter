@@ -338,6 +338,32 @@ namespace EQWOWConverter.Common
                 IsPointInside(v3, Configuration.CONFIG_GENERATE_FLOAT_EPSILON))
                 return true;
 
+            // Since the box is axis aligned, any triangle with all points outside of one axis cannot collide
+            if (v1.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+            if (v1.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+            if (v1.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+            if (v1.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+            if (v1.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+            if (v1.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v2.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
+                v3.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                return false;
+
             // Check if box intersects triangle plane
             if (DoesTrianglePlaneIntersectBox(v1, v2, v3) == false)
                 return false;
@@ -395,8 +421,8 @@ namespace EQWOWConverter.Common
             float triMax = Math.Max(Math.Max(triProjections[0], triProjections[1]), triProjections[2]);
 
             // Project box onto axis
-            Vector3 boxCenter = (BottomCorner + TopCorner) / 2;
-            Vector3 boxHalfSize = (TopCorner - BottomCorner) / 2;
+            Vector3 boxCenter = (BottomCorner + TopCorner) * 0.5f;
+            Vector3 boxHalfSize = (TopCorner - BottomCorner) * 0.5f;
 
             float boxCenterProjection = Vector3.Dot(boxCenter, axis);
             float boxExtent = Math.Abs(boxHalfSize.X * axis.X) +
