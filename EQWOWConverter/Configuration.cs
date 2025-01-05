@@ -110,9 +110,6 @@ namespace EQWOWConverter
         // Allows for much faster builds when debugging
         public static readonly bool CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL = false;
 
-        // If this is true, the collision (via Btree) is generated 'quickly' for fast debugging, but performance will suffer greatly in zones
-        public static readonly bool CONFIG_GENERATE_ZONE_COLLISION_QUICK_FOR_DEBUG = false;
-
         // If true, zones for Kunark are generated
         public static readonly bool CONFIG_GENERATE_KUNARK_ZONES = false;
 

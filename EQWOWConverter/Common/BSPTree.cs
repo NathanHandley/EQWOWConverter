@@ -49,16 +49,12 @@ namespace EQWOWConverter.Common
             BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
             BSPNode rootNode = new BSPNode(0, boundingBox, faceIndices, 0);
             Nodes.Add(rootNode);
-            NodeProcessQueue.Add(rootNode);
+            InsertNodeIntoProcessQueue(rootNode);
 
             // Loop through nodes until there are none to process (and can't have more than Int16.Max-2 nodes)
-            int maxNodeCount = 32760;
-            if (Configuration.CONFIG_GENERATE_ZONE_COLLISION_QUICK_FOR_DEBUG == true)
-                maxNodeCount = 16;
-            while (NodeProcessQueue.Count > 0 && Nodes.Count < maxNodeCount)
+            while (NodeProcessQueue.Count > 0 && Nodes.Count < 32760)
             {
                 // Pop the last and process it
-                NodeProcessQueue.Sort();
                 BSPNode curNode = NodeProcessQueue[NodeProcessQueue.Count - 1];
                 NodeProcessQueue.RemoveAt(NodeProcessQueue.Count - 1);
                 ProcessNode(curNode.NodeID, collisionMeshData.TriangleFaces, collisionMeshData.Vertices);
@@ -126,7 +122,7 @@ namespace EQWOWConverter.Common
             {
                 BSPNode newChildNode = new BSPNode(Nodes.Count, splitBox.BoxA, boxAFaceIndices, curNode.Depth + 1);
                 curNode.ChildANodeIndex = Convert.ToInt16(Nodes.Count);
-                NodeProcessQueue.Add(newChildNode);
+                InsertNodeIntoProcessQueue(newChildNode);
                 Nodes.Add(newChildNode);
             }
             List<UInt32> boxBFaceIndices = new List<UInt32>();
@@ -144,13 +140,21 @@ namespace EQWOWConverter.Common
             {
                 BSPNode newChildNode = new BSPNode(Nodes.Count, splitBox.BoxB, boxBFaceIndices, curNode.Depth + 1);
                 curNode.ChildBNodeIndex = Convert.ToInt16(Nodes.Count);
-                NodeProcessQueue.Add(newChildNode);
+                InsertNodeIntoProcessQueue(newChildNode);
                 Nodes.Add(newChildNode);                
             }
 
             // No more processing
             curNode.ClearTreeGenData();
             return;
+        }
+
+        private void InsertNodeIntoProcessQueue(BSPNode node)
+        {
+            int index = NodeProcessQueue.BinarySearch(node);
+            if (index < 0)
+                index = ~index;
+            NodeProcessQueue.Insert(index, node);
         }
     }
 }
