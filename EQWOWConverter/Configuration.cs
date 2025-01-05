@@ -73,14 +73,14 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool CONFIG_DEPLOY_CLIENT_FILES = false;
+        public static readonly bool CONFIG_DEPLOY_CLIENT_FILES = true;
 
         // If true, deploy to the server files/data after building
-        public static readonly bool CONFIG_DEPLOY_SERVER_FILES = false;
+        public static readonly bool CONFIG_DEPLOY_SERVER_FILES = true;
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = false;
+        public static readonly bool CONFIG_DEPLOY_SERVER_SQL = true;
 
         // If true, DBC files are extracted every time.
         public static readonly bool CONFIG_EXTRACT_DBC_FILES = true;
@@ -128,7 +128,7 @@ namespace EQWOWConverter
             "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
-        public static readonly int CONFIG_GENERATE_EQ_EXPANSION_ID = 0;
+        public static readonly int CONFIG_GENERATE_EQ_EXPANSION_ID = 2;
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
@@ -284,7 +284,7 @@ namespace EQWOWConverter
         public static readonly int CONFIG_CREATURE_FIDGET_TIME_PERCENT = 20;
 
         // If true, the entity name is put in the creature name for easy debugging. Default to false.
-        public static readonly bool CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME = false;
+        public static readonly bool CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME = true;
 
         // ====================================================================
         // WOW DBC/File IDs
@@ -366,12 +366,12 @@ namespace EQWOWConverter
         // SQL IDs
         // ====================================================================
         // Record identifier for the creature sql table, need at least 31k
-        public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
-        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 399999;
+        public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 425000;
+        public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 829000;
 
         // Record identifier for the creature template SQL table, need at least 25k
-        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 210000;
-        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 249999;
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 350000;
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 800000;
 
         // Start GUIDs for gameobjects
         public static readonly int CONFIG_SQL_GAMEOBJECT_GUID_START = 310000;
