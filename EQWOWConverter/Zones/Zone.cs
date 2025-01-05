@@ -82,10 +82,10 @@ namespace EQWOWConverter.Zones
             ZoneObjectModels.Clear();
 
             // Get and convert/translate the EverQuest mesh data
-            MeshData renderMeshData = new MeshData(EQZoneData.RenderMeshData);
+            MeshData renderMeshData = EQZoneData.RenderMeshData;
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.CONFIG_GENERATE_WORLD_SCALE);
             renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties);
-            MeshData collisionMeshData = new MeshData(EQZoneData.CollisionMeshData);
+            MeshData collisionMeshData = EQZoneData.CollisionMeshData;
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.CONFIG_GENERATE_WORLD_SCALE);
 
             // Update the materials

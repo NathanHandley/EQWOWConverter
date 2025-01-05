@@ -40,16 +40,22 @@ namespace EQWOWConverter.Common
 
         public MeshData(MeshData meshData)
         {
+            Vertices = new List<Vector3>(meshData.Vertices.Count);
             foreach (Vector3 vertex in meshData.Vertices)
                 Vertices.Add(new Vector3(vertex));
-            foreach(Vector3 normal in meshData.Normals)
+            Normals = new List<Vector3>(meshData.Normals.Count);
+            foreach (Vector3 normal in meshData.Normals)
                 Normals.Add(new Vector3(normal));
+            TextureCoordinates = new List<TextureCoordinates>(meshData.TextureCoordinates.Count);
             foreach(TextureCoordinates textureCoordinate in meshData.TextureCoordinates)
                 TextureCoordinates.Add(new TextureCoordinates(textureCoordinate));
+            TriangleFaces = new List<TriangleFace>(meshData.TriangleFaces.Count);
             foreach(TriangleFace triangleFace in meshData.TriangleFaces)
                 TriangleFaces.Add(new TriangleFace(triangleFace));
+            VertexColors = new List<ColorRGBA>(meshData.VertexColors.Count);
             foreach (ColorRGBA colorRGBA in meshData.VertexColors)
                 VertexColors.Add(new ColorRGBA(colorRGBA));
+            BoneIDs = new List<byte>(meshData.BoneIDs.Count);
             foreach (byte boneID in meshData.BoneIDs)
                 BoneIDs.Add(boneID);
         }
@@ -579,16 +585,17 @@ namespace EQWOWConverter.Common
         public void CondenseAndRenumberVertexIndices()
         {
             // Reorder the vertices / texcoords / normals / to match the sorted triangle faces
-            List<Vector3> sortedVertices = new List<Vector3>();
-            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>();
-            List<Vector3> sortedNormals = new List<Vector3>();
-            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>();
-            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>();
-            List<byte> sortedBoneIndexes = new List<byte>();
+            List<Vector3> sortedVertices = new List<Vector3>(Vertices.Count);
+            List<TriangleFace> sortedTriangleFaces = new List<TriangleFace>(TriangleFaces.Count);
+            List<Vector3> sortedNormals = new List<Vector3>(Normals.Count);
+            List<TextureCoordinates> sortedTextureCoordinates = new List<TextureCoordinates>(TextureCoordinates.Count);
+            List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>(VertexColors.Count);
+            List<byte> sortedBoneIndexes = new List<byte>(BoneIDs.Count);
             Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+            int curSortedVertexCount = 0;
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
-                TriangleFace curTriangleFace = new TriangleFace(TriangleFaces[i]);
+                TriangleFace curTriangleFace = TriangleFaces[i];
 
                 // Delete any that use the same index three times
                 if (curTriangleFace.V1 == curTriangleFace.V2 && curTriangleFace.V1 == curTriangleFace.V3)
@@ -604,10 +611,11 @@ namespace EQWOWConverter.Common
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V1;
-                    int newVertIndex = sortedVertices.Count;
+                    int newVertIndex = curSortedVertexCount;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V1 = newVertIndex;
                     sortedVertices.Add(Vertices[oldVertIndex]);
+                    curSortedVertexCount++;
                     if (Normals.Count != 0)
                         sortedNormals.Add(Normals[newVertIndex]);
                     if (TextureCoordinates.Count != 0)
@@ -628,10 +636,11 @@ namespace EQWOWConverter.Common
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V2;
-                    int newVertIndex = sortedVertices.Count;
+                    int newVertIndex = curSortedVertexCount;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V2 = newVertIndex;
                     sortedVertices.Add(Vertices[oldVertIndex]);
+                    curSortedVertexCount++;
                     if (Normals.Count != 0)
                         sortedNormals.Add(Normals[newVertIndex]);
                     if (TextureCoordinates.Count != 0)
@@ -652,10 +661,11 @@ namespace EQWOWConverter.Common
                 {
                     // Store new mapping
                     int oldVertIndex = curTriangleFace.V3;
-                    int newVertIndex = sortedVertices.Count;
+                    int newVertIndex = curSortedVertexCount;
                     oldNewVertexIndices.Add(oldVertIndex, newVertIndex);
                     curTriangleFace.V3 = newVertIndex;
                     sortedVertices.Add(Vertices[oldVertIndex]);
+                    curSortedVertexCount++;
                     if (Normals.Count != 0)
                         sortedNormals.Add(Normals[newVertIndex]);
                     if (TextureCoordinates.Count != 0)
