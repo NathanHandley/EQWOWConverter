@@ -1266,7 +1266,7 @@ namespace EQWOWConverter
                     float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
 
                     // Create the records
-                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale);
+                    creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale, creatureTemplate.Level);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
                 }
             }

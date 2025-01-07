@@ -31,8 +31,8 @@ namespace EQWOWConverter.Creatures
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
         public int RaceID = 0;
-        public int Class = 1;
-        public int BodyType = 24; // This is common for the body type
+        public int EQClass = 1;
+        public int EQBodyType = 24; // This is common for the body type
         public int HP = 1;
         public int FaceID = 0;
         public int ColorTintID = 0;
@@ -104,10 +104,10 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.ID = int.Parse(rowBlocks[0]);
                 newCreatureTemplate.Name = rowBlocks[1];
                 newCreatureTemplate.SubName = rowBlocks[2];
-                newCreatureTemplate.Level = int.Parse(rowBlocks[3]);
+                newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[3]), 1);
                 newCreatureTemplate.RaceID = int.Parse(rowBlocks[4]);
-                newCreatureTemplate.Class = int.Parse(rowBlocks[5]);
-                newCreatureTemplate.BodyType = int.Parse(rowBlocks[6]);
+                newCreatureTemplate.EQClass = int.Parse(rowBlocks[5]);
+                newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
                 int genderID = int.Parse(rowBlocks[9]);
                 switch (genderID)

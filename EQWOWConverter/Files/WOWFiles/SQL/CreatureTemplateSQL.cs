@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM creature_template WHERE `entry` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
 
-        public void AddRow(int entryID, string name, string subName, float scale)
+        public void AddRow(int entryID, string name, string subName, float scale, int level)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entry", entryID);
@@ -46,8 +46,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("subname", 100, subName);
             newRow.AddString("IconName", 100, string.Empty);
             newRow.AddInt("gossip_menu_id", 0);
-            newRow.AddInt("minlevel", 1);
-            newRow.AddInt("maxlevel", 1);
+            newRow.AddInt("minlevel", level);
+            newRow.AddInt("maxlevel", level);
             newRow.AddInt("exp", 0); // Unsure what this is used for, but commonly 0 and can be 2 sometimes
             newRow.AddInt("faction", 7); // Faction 7 is 'creature', references Faction.dbc
             newRow.AddInt("npcflag", 0);
