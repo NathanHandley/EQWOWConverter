@@ -192,7 +192,7 @@ namespace EQWOWConverter.WOWFiles
             // Cameras & ID Lookup
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
             {
-                Cameras.AddElement(new M2Camera());
+                Cameras.AddElement(new M2Camera(wowObjectModel.PortraitCameraPosition, wowObjectModel.PortraitCameraTargetPosition));
                 CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
             }
 

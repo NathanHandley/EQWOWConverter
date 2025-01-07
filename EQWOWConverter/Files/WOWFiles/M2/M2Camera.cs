@@ -31,14 +31,14 @@ namespace EQWOWConverter.WOWFiles
         private float DiagonalFOV = 0.950022f;
         private float FarClip = 27.77778f;
         private float NearClip = 0.2222222f;
-        private Vector3 Position = new Vector3(1.098256f, 0.3445347f, 1.827039f);
-        private Vector3 Target = new Vector3(0.6420655f, 0.0800957f, 1.94549f);
+        private Vector3 Position = new Vector3();
+        private Vector3 Target = new Vector3();
 
         public M2TrackSequences<SplineKey> TranslationPosition;
         public M2TrackSequences<SplineKey> TranslationTarget;
         public M2TrackSequences<M2Float> RollEffect;
 
-        public M2Camera()
+        public M2Camera(Vector3 position, Vector3 target)
         {
             // Translation Position
             ObjectModelTrackSequences<SplineKey> translationPositionTrack = new ObjectModelTrackSequences<SplineKey>();
@@ -57,6 +57,10 @@ namespace EQWOWConverter.WOWFiles
             rollEffect.AddSequence();
             rollEffect.AddValueToSequence(0, 0, new M2Float(0f));
             RollEffect = new M2TrackSequences<M2Float>(rollEffect);
+
+            // Set the position and target
+            Position = position;
+            Target = target;
         }
 
         public UInt32 GetHeaderSize()

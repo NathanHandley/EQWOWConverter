@@ -118,19 +118,13 @@ namespace EQWOWConverter.Common
             return new Vector3(Math.Max(v1.X, v2.X), Math.Max(v1.Y, v2.Y), Math.Max(v1.Z, v2.Z));
         }
 
-        public void Rotate(Quaternion rotation)
+        public void Rotate(float rotationX, float rotationY, float rotationZ, float rotationW)
         {
-            // Pull out for easier reading
-            float rx = rotation.X;
-            float ry = rotation.Y;
-            float rz = rotation.Z; 
-            float rw = rotation.W;
-
             // Calculate intermediate values
-            float x2 = rx + rx, y2 = ry + ry, z2 = rz + rz;
-            float xx = rx * x2, yy = ry * y2, zz = rz * z2;
-            float xy = rx * y2, xz = rx * z2, yz = ry * z2;
-            float wx = rw * x2, wy = rw * y2, wz = rw * z2;
+            float x2 = rotationX + rotationX, y2 = rotationY + rotationY, z2 = rotationZ + rotationZ;
+            float xx = rotationX * x2, yy = rotationY * y2, zz = rotationZ * z2;
+            float xy = rotationX * y2, xz = rotationX * z2, yz = rotationY * z2;
+            float wx = rotationW * x2, wy = rotationW * y2, wz = rotationW * z2;
 
             // Apply rotation matrix
             float transformedX = (1 - (yy + zz)) * X + (xy - wz) * Y + (xz + wy) * Z;
@@ -139,6 +133,16 @@ namespace EQWOWConverter.Common
             X = transformedX;
             Y = transformedY;
             Z = transformedZ;
+        }
+
+        public void Rotate(Quaternion rotation)
+        {
+            Rotate(rotation.X, rotation.Y, rotation.Z, rotation.W);
+        }
+
+        public void Rotate(QuaternionShort rotation)
+        {
+            Rotate(rotation.X, rotation.Y, rotation.Z, rotation.W);
         }
 
         public void Scale(float scale)

@@ -67,6 +67,8 @@ namespace EQWOWConverter.ObjectModels
         public float ModelScalePreWorldScale = 1f;
         public float ModelLiftPreWorldScale = 0f;
         public int NumOfFidgetSounds = 0;
+        public Vector3 PortraitCameraPosition = new Vector3();
+        public Vector3 PortraitCameraTargetPosition = new Vector3();
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
@@ -259,6 +261,9 @@ namespace EQWOWConverter.ObjectModels
                     // Add a lookup reference based on the lookup index
                     ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
                 }
+
+                // Set the portrait camera locations
+                SetupPortraitCamera();
             }
         }
 
@@ -403,6 +408,62 @@ namespace EQWOWConverter.ObjectModels
             // Set the animation lookups
             SetAllAnimationLookups();
             return true;
+        }
+
+        public void SetupPortraitCamera()
+        {
+            if (ModelAnimations.Count == 0)
+            {
+                Logger.WriteError("Could not set the portrait camera because there were not enough animations");
+                return;
+            }
+
+            // Use the 'name' bone since it points at the head
+            int headBoneID = GetFirstBoneIndexForEQBoneNames("head_point", "he", "pe", "root");
+            if (headBoneID == -1)
+            {
+                Logger.WriteError("Could not set the portrait camera because the head bone was indexed at -1");
+                return;
+            }
+
+            // Using the standing animation location, make this the base target point for the camera
+            ObjectModelBone headBone = ModelBones[headBoneID];
+            ObjectModelBone curBone = headBone;
+            while (curBone.TranslationTrack.Values[0].Values.Count == 0 && curBone.ParentBone != -1)
+                curBone = ModelBones[curBone.ParentBone];
+            if (curBone.TranslationTrack.Values[0].Values.Count == 0)
+            {
+                Logger.WriteError("Could not set the portrait camera because a valid head bone could not be located");
+                return;
+            }
+            Vector3 headLocation = new Vector3();
+
+            // Add all of the transformation data to get the actual head position
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Rotate
+                if (curBone.RotationTrack.Values[0].Values.Count > 0)
+                    headLocation.Rotate(curBone.RotationTrack.Values[0].Values[0]);
+
+                // Scale
+                if (curBone.ScaleTrack.Values[0].Values.Count > 0)
+                    headLocation.Scale(curBone.ScaleTrack.Values[0].Values[0].X);
+
+                // Translate
+                if (curBone.TranslationTrack.Values[0].Values.Count > 0)
+                    headLocation += curBone.TranslationTrack.Values[0].Values[0];
+
+                if (curBone.ParentBone != -1)
+                {
+                    curBone = ModelBones[curBone.ParentBone];
+                    moreToProcess = true;
+                }
+                else
+                    moreToProcess = false;
+            }
+            PortraitCameraTargetPosition = headLocation;
+            PortraitCameraPosition = headLocation + new Vector3(0.4561905f, -0.264439f, 0f);           
         }
 
         public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
