@@ -65,10 +65,12 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("McDaniel's Smokes and Spirits", 384.345398f, -236.876526f, 92.159866f, 307.601257f, -352.602509f, 11.183750f);
 
             AddZoneArea("McQuaid's Dark Stout", "halas-04", "halas-04");
-            AddZoneAreaOctagonBox("McDonald's Fire Cider", 129.972458f, 82.012718f, -183.867081f, -273.888367f, -189.872543f, -268.952698f, -194.811661f, -266.338409f,
+            AddZoneAreaOctagonBox("McQuaid's Dark Stout", 129.972458f, 82.012718f, -183.867081f, -273.888367f, -189.872543f, -268.952698f, -194.811661f, -266.338409f,
                 110.081520f, 100.430153f, 109.239693f, 97.214653f, 37.773350f, -2.628820f);
-            AddZoneAreaBox("McDonald's Fire Cider", 247.267914f, -134.631378f, 38.144821f, 175.779739f, -180.837265f, -2.174550f);
 
+            AddZoneArea("McDonald's Fire Cider");
+            AddZoneAreaBox("McDonald's Fire Cider", 247.267914f, -134.631378f, 38.144821f, 175.779739f, -180.837265f, -2.174550f);
+            
             AddZoneArea("Yee Majik", "halas-09", "halas-09");
             AddZoneAreaBox("Yee Majik", 145.826874f, -307.438782f, 26.357410f, 102.788857f, -359.476654f, -4.376070f);
             AddZoneAreaBox("Yee Majik", 160.033524f, -339.226288f, 26.357410f, 86.067749f, -399.233185f, -4.376070f);
