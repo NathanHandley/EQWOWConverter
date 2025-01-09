@@ -45,8 +45,7 @@ namespace EQWOWConverter.Zones.Properties
 
             AddZoneArea("Dead Tower", "innothule-02", "innothule-02");
             AddZoneAreaBox("Dead Tower", 2077.336914f, -37.029652f, 23.242470f, 1716.803101f, -277.183929f, -79.665352f);
-
-            AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1110.918945f, 1900.790283f, 9.191510f, -1156.486450f, 1899.104858f, -12.843200f);
+            AddZoneLineBox("feerrott", -1020.344177f, -3092.292236f, -12.343540f, ZoneLineOrientationType.North, -1099.632080f, 2000.790283f, 9.191510f, -1250f, 1882.234253f, -12.843200f);            
             AddZoneLineBox("grobb", -179.500046f, 39.101452f, -0.000000f, ZoneLineOrientationType.West, -2781.871094f, -625.318726f, -16.126810f, -2804.662109f, -646.227112f, -35.062538f);
             AddZoneLineBox("guktop", -62.457378f, 42.394871f, 0.000010f, ZoneLineOrientationType.East, 150.598709f, -828.381348f, 0.967340f, 136.212891f, -843.098694f, -11.999980f);
             AddZoneLineBox("sro", -3168.635742f, 1032.933105f, -26.814310f, ZoneLineOrientationType.North, 2800f, 1250f, 19.084551f, 2554.791748f, 1120f, -35f);
