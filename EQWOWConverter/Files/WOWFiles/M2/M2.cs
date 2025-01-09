@@ -166,18 +166,15 @@ namespace EQWOWConverter.WOWFiles
             // Collision Sphere Raidus
             CollisionSphereRadius = wowObjectModel.CollisionSphereRaidus;
 
-            // Since the collision is baked into the WMO for static objects (doodads), ignore it when outputting the objects
-            if (wowObjectModel.ModelType != ObjectModelType.SimpleDoodad)
-            {
-                // Collision Triangle Incidies
-                CollisionTriangleIndices.AddArray(wowObjectModel.CollisionTriangles);
+            // Collision Triangle Incidies
+            CollisionTriangleIndices.AddArray(wowObjectModel.CollisionTriangles);
 
-                // Collision Vertices
-                CollisionVertices.AddArray(wowObjectModel.CollisionPositions);
+            // Collision Vertices
+            CollisionVertices.AddArray(wowObjectModel.CollisionPositions);
 
-                // Collision Face Normals
-                CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
-            }
+            // Collision Face Normals
+            CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
+
 
             // Attachments & Attachment ID
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)
