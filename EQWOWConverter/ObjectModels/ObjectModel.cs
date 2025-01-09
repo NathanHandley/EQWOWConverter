@@ -463,7 +463,12 @@ namespace EQWOWConverter.ObjectModels
                     moreToProcess = false;
             }
             PortraitCameraTargetPosition = headLocation;
-            PortraitCameraPosition = headLocation + new Vector3(0.4561905f, -0.264439f, 0f);           
+            PortraitCameraPosition = headLocation;
+            if (CreatureModelTemplate != null)
+            {
+                PortraitCameraPosition += (CreatureModelTemplate.Race.CameraPositionMod * Configuration.CONFIG_GENERATE_CREATURE_SCALE);
+                PortraitCameraTargetPosition += (CreatureModelTemplate.Race.CameraTargetPositionMod * Configuration.CONFIG_GENERATE_CREATURE_SCALE);
+            }            
         }
 
         public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
