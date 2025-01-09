@@ -197,7 +197,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Load the rest
-            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.GetAnimationSupplementNameForGender(creatureModelTemplate.GenderType));
+            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.Skeleton2Name);
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 

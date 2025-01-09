@@ -30,7 +30,7 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty; // Restrict to 100 characters
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
-        public int RaceID = 0;
+        public CreatureRace Race = new CreatureRace();
         public int EQClass = 1;
         public int EQBodyType = 24; // This is common for the body type
         public int HP = 1;
@@ -80,9 +80,6 @@ namespace EQWOWConverter.Creatures
                 return;
             }
 
-            // Grab races for fallback
-            Dictionary<int, CreatureRace> allRacesById = CreatureRace.GetAllCreatureRacesByID();
-
             // Load all of the data
             bool headerRow = true;
             foreach (string row in inputRows)
@@ -105,7 +102,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.Name = rowBlocks[1];
                 newCreatureTemplate.SubName = rowBlocks[2];
                 newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[3]), 1);
-                newCreatureTemplate.RaceID = int.Parse(rowBlocks[4]);
+                int raceID = int.Parse(rowBlocks[4]);
                 newCreatureTemplate.EQClass = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
@@ -137,7 +134,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.SubName = newCreatureTemplate.SubName.Replace('_', ' ');
 
                 // Special logic for a few variations of kobolds, which look wrong if not adjusted
-                if (newCreatureTemplate.RaceID == 48)
+                if (raceID == 48)
                 {
                     if  (newCreatureTemplate.TextureID == 2 || (newCreatureTemplate.TextureID == 1 && newCreatureTemplate.HelmTextureID == 0))
                     {
@@ -151,22 +148,23 @@ namespace EQWOWConverter.Creatures
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
 
-                // Skip invalid races
-                if (allRacesById.ContainsKey(newCreatureTemplate.RaceID) == false)
+                // Grab the race
+                CreatureRace race = CreatureRace.GetCreatureRace(raceID, newCreatureTemplate.GenderType, 0);
+
+                // Make sure there's a skeleton
+                if (newCreatureTemplate.Race.SkeletonName.Trim().Length == 0)
                 {
-                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' has an invalid race ID of '" + newCreatureTemplate.RaceID + "', so skipping");
+                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + raceID + "' has no skeletons, so skipping");
                     continue;
                 }
-                if (allRacesById[newCreatureTemplate.RaceID].HasSkeletonName() == false)
-                {
-                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + newCreatureTemplate.RaceID + "' has no skeletons, so skipping");
-                    continue;
-                }
+
+                // Must be a unique record
                 if (CreatureTemplateList.ContainsKey(newCreatureTemplate.ID))
                 {
                     Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.ID + "'");
                     continue;
                 }
+
                 CreatureTemplateList.Add(newCreatureTemplate.ID, newCreatureTemplate);
             }
         }

@@ -481,8 +481,8 @@ namespace EQWOWConverter
             if (Directory.Exists(exportCreatureSoundsDirectory) == true)
                 Directory.Delete(exportCreatureSoundsDirectory, true);
             FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
-            CreatureRaceSounds.GenerateAllSounds();
-            foreach (var sound in CreatureRaceSounds.SoundsBySoundName)
+            CreatureRace.GenerateAllSounds();
+            foreach (var sound in CreatureRace.SoundsBySoundName)
             {
                 string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
                 string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
@@ -1024,12 +1024,11 @@ namespace EQWOWConverter
                 creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate.DBCCreatureModelDataID, creatureModelTemplate.DBCCreatureSoundDataID, relativeModelPath);
-                CreatureRaceSounds curCreatureSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(creatureModelTemplate.Race.ID, creatureModelTemplate.GenderType);
-                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, curCreatureSounds, CreatureRaceSounds.FootstepIDBySoundName[curCreatureSounds.SoundWalkingName]);
+                creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
             }
 
             // Footstep Terrain Lookup (for creatures)
-            foreach(var footstepIDBySoundID in CreatureRaceSounds.FootstepIDBySoundID)
+            foreach(var footstepIDBySoundID in CreatureRace.FootstepIDBySoundID)
                 footstepTerrainLookupDBC.AddRow(footstepIDBySoundID.Value, footstepIDBySoundID.Key);
 
             // Zone-specific records
@@ -1123,7 +1122,7 @@ namespace EQWOWConverter
                     }
                 }
                 string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
-                foreach (var sound in CreatureRaceSounds.SoundsBySoundName)
+                foreach (var sound in CreatureRace.SoundsBySoundName)
                 {
                     soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
                 }
@@ -1254,7 +1253,6 @@ namespace EQWOWConverter
             }
 
             // Creature Templates
-            Dictionary<int, CreatureRace> allRaces = CreatureRace.GetAllCreatureRacesByID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 if (creatureTemplate.ModelTemplate == null)
@@ -1262,8 +1260,7 @@ namespace EQWOWConverter
                 else
                 {
                     // Calculate the scale
-                    CreatureRace curRace = allRaces[creatureTemplate.RaceID];
-                    float scale = creatureTemplate.Size * curRace.SpawnSizeMod;
+                    float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
 
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.Name, creatureTemplate.SubName, scale, creatureTemplate.Level);

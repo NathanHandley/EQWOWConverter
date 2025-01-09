@@ -80,26 +80,16 @@ namespace EQWOWConverter.Creatures
             // Clear the old list
             AllTemplatesByRaceID.Clear();
 
-            // Get the races
-            Dictionary<int, CreatureRace> RacesByID = CreatureRace.GetAllCreatureRacesByID();
-
             // Generate model templates in response to creature templates
             foreach(CreatureTemplate creatureTemplate in creatureTemplates)
             {
-                // Skip invalid race IDs
-                if (RacesByID.ContainsKey(creatureTemplate.RaceID) == false)
-                {
-                    Logger.WriteError("CreatureAllCreatureModelTemplate skipped a template. Invalid race ID of '" + creatureTemplate.RaceID + "' from creature template with name '" + creatureTemplate.Name + "'");
-                    continue;
-                }
-
                 // They are grouped by race
-                if (AllTemplatesByRaceID.ContainsKey(creatureTemplate.RaceID) == false)
-                    AllTemplatesByRaceID.Add(creatureTemplate.RaceID, new List<CreatureModelTemplate>());
+                if (AllTemplatesByRaceID.ContainsKey(creatureTemplate.Race.ID) == false)
+                    AllTemplatesByRaceID.Add(creatureTemplate.Race.ID, new List<CreatureModelTemplate>());
 
                 // Create for any templates
                 CreatureModelTemplate? existingModel = null;
-                foreach(CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureTemplate.RaceID])
+                foreach(CreatureModelTemplate modelTemplate in AllTemplatesByRaceID[creatureTemplate.Race.ID])
                 {
                     // Skip if this model template already exists
                     if (modelTemplate.GenderType == creatureTemplate.GenderType && 
@@ -117,9 +107,9 @@ namespace EQWOWConverter.Creatures
                     continue;
 
                 // Create the new template
-                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(RacesByID[creatureTemplate.RaceID], creatureTemplate);
+                CreatureModelTemplate newModelTemplate = new CreatureModelTemplate(creatureTemplate.Race, creatureTemplate);
                 creatureTemplate.ModelTemplate = newModelTemplate;
-                AllTemplatesByRaceID[creatureTemplate.RaceID].Add(newModelTemplate);
+                AllTemplatesByRaceID[creatureTemplate.Race.ID].Add(newModelTemplate);
             }
         }
 
@@ -129,7 +119,7 @@ namespace EQWOWConverter.Creatures
             Logger.WriteDetail("For creature template '" + objectName + "', creating the object files");
 
             // Get the skeleton name
-            string skeletonName = Race.GetSkeletonNameForGender(GenderType);
+            string skeletonName = Race.SkeletonName;
 
             // Only operate if there is a skeleton name
             if (skeletonName.Trim().Length == 0)
@@ -162,7 +152,7 @@ namespace EQWOWConverter.Creatures
                 Directory.CreateDirectory(outputFullMPQPath);
 
             // Load in an object
-            float lift = Race.GetLiftHeightForGender(GenderType);
+            float lift = Race.Lift;
             ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale, lift);
             curObject.LoadAnimateEQObjectFromFile(charactersFolderRoot, this);
@@ -173,10 +163,9 @@ namespace EQWOWConverter.Creatures
             curObject.Name = nameSB.ToString();
 
             // Set fidget count for M2
-            CreatureRaceSounds creatureRaceSounds = CreatureRaceSounds.GetSoundsByRaceIDAndGender(Race.ID, GenderType);
-            if (creatureRaceSounds.SoundIdle2Name.ToLower() != "null24.wav")
+            if (Race.SoundIdle2Name.ToLower() != "null24.wav")
                 curObject.NumOfFidgetSounds = 2;
-            else if (creatureRaceSounds.SoundIdle1Name.ToLower() != "null24.wav")
+            else if (Race.SoundIdle1Name.ToLower() != "null24.wav")
                 curObject.NumOfFidgetSounds = 1;
 
             // Create the M2 and Skin
@@ -212,7 +201,7 @@ namespace EQWOWConverter.Creatures
         public string GenerateFileName()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append(Race.GetSkeletonNameForGender(GenderType));
+            sb.Append(Race.SkeletonName);
             switch (GenderType)
             {
                 case CreatureGenderType.Male: sb.Append("_M_"); break;

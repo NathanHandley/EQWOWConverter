@@ -34,7 +34,7 @@ namespace EQWOWConverter.Creatures
         public float SpawnZPosition = 0;
         public float Orientation = 0;
         public int RespawnTimeInSeconds = 0;
-        public int Variance = 0; // Unsure what this is
+        public int Variant = 0;
         public int PathGridID = 0;
         public int RoamRange = 0;
 
@@ -89,7 +89,7 @@ namespace EQWOWConverter.Creatures
                 float spawnZ = float.Parse(rowBlocks[5]);
                 float heading = float.Parse(rowBlocks[6]);
                 newSpawnDetail.RespawnTimeInSeconds = int.Parse(rowBlocks[7]);
-                newSpawnDetail.Variance = int.Parse(rowBlocks[8]);
+                newSpawnDetail.Variant = int.Parse(rowBlocks[8]);
                 newSpawnDetail.PathGridID = int.Parse(rowBlocks[9]);
                 newSpawnDetail.RoamRange = int.Parse(rowBlocks[10]);
 
