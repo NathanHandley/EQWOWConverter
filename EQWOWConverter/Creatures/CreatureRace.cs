@@ -61,6 +61,7 @@ namespace EQWOWConverter.Creatures
         public string SoundTechnicalAttackName = string.Empty;
         public Vector3 CameraPositionMod = new Vector3();
         public Vector3 CameraTargetPositionMod = new Vector3();
+        public float GeoboxInradius = 0;
 
         public static Dictionary<string, Sound> SoundsBySoundName = new Dictionary<string, Sound>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
@@ -203,6 +204,7 @@ namespace EQWOWConverter.Creatures
                 float cameraTargetPositionModY = float.Parse(rowBlocks[33]);
                 float cameraTargetPositionModZ = float.Parse(rowBlocks[34]);
                 newCreatureRace.CameraTargetPositionMod = new Vector3(cameraTargetPositionModX, cameraTargetPositionModY, cameraTargetPositionModZ);
+                newCreatureRace.GeoboxInradius = float.Parse(rowBlocks[35]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
 
                 CreatureRaces.Add(newCreatureRace);
             }
