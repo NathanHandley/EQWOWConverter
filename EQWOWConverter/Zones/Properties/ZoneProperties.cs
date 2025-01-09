@@ -185,7 +185,7 @@ namespace EQWOWConverter.Zones
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ)
         {
             // TODO: Consider moving this to a config
-            float stepSize = 0.2f;
+            float stepSize = 0.3f;
 
             // Boundary Control (very limited)
             if (northEdgeX < southEdgeX)
