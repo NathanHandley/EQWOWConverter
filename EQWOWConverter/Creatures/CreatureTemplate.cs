@@ -152,7 +152,7 @@ namespace EQWOWConverter.Creatures
                 // Add ID if debugging for it is true
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
-                newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.ID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
+                //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.ID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
                 // Grab the race
                 List<CreatureRace> allRaces = CreatureRace.GetAllCreatureRaces();
