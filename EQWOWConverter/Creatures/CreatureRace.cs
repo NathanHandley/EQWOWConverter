@@ -133,19 +133,6 @@ namespace EQWOWConverter.Creatures
             return CreatureRaces;
         }
 
-        public static CreatureRace GetCreatureRace(int raceID, CreatureGenderType gender, int variantID)
-        {
-            foreach(CreatureRace race in GetAllCreatureRaces())
-            {
-                if (race.ID == raceID && race.Gender == gender && race.VariantID == variantID)
-                    return race;
-            }
-
-            // By default, return the first result
-            Logger.WriteError("Could not find a race as id = '" + raceID.ToString() + "', gender = '" + gender.ToString() + "', variant = '" + variantID.ToString() + "'.  Returning human male.");
-            return CreatureRaces[0];
-        }
-
         private static void PopulateCreatureRaceList()
         {
             CreatureRaces.Clear();

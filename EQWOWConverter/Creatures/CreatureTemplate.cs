@@ -103,6 +103,11 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.SubName = rowBlocks[2];
                 newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[3]), 1);
                 int raceID = int.Parse(rowBlocks[4]);
+                if (raceID == 0)
+                {
+                    Logger.WriteDetail("Creature template had race of 0, so falling back to 1 (Human)");
+                    raceID = 1;
+                }
                 newCreatureTemplate.EQClass = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[6]);
                 newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
@@ -147,15 +152,34 @@ namespace EQWOWConverter.Creatures
                 // Add ID if debugging for it is true
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
+                newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.ID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
                 // Grab the race
-                CreatureRace race = CreatureRace.GetCreatureRace(raceID, newCreatureTemplate.GenderType, 0);
-
-                // Make sure there's a skeleton
-                if (newCreatureTemplate.Race.SkeletonName.Trim().Length == 0)
+                List<CreatureRace> allRaces = CreatureRace.GetAllCreatureRaces();
+                CreatureRace? race = null;
+                foreach (CreatureRace curRace in allRaces)
                 {
-                    Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + raceID + "' has no skeletons, so skipping");
+                    if (curRace.ID == raceID && curRace.Gender == newCreatureTemplate.GenderType && curRace.VariantID == 0)
+                    {
+                        race = curRace;
+                        break;
+                    }
+                }
+
+                if (race == null)
+                {
+                    Logger.WriteError("No valid race found that matches raceID '" + raceID + "' and gender '" + newCreatureTemplate.GenderType + "'");
                     continue;
+                }
+                else
+                {
+                    // Make sure there's a skeleton
+                    if (race.SkeletonName.Trim().Length == 0)
+                    {
+                        Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + raceID + "' has no skeletons, so skipping");
+                        continue;
+                    }
+                    newCreatureTemplate.Race = race;
                 }
 
                 // Must be a unique record
