@@ -200,6 +200,7 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations.Add(new ObjectModelAnimation());
                 ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                 ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                ModelAnimations[0].NumOfFrames = 1;
             }
 
             // Skeletal
@@ -209,15 +210,13 @@ namespace EQWOWConverter.ObjectModels
                 if (BuildSkeletonBonesAndLookups() == false)
                 {
                     Logger.WriteError("Could not build skeleton information for object '" + Name + "'");
+
+                    // Make one animation (standing)
                     ModelBones.Add(new ObjectModelBone());
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-
-                    // Make one animation (standing)
-                    ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations[0].NumOfFrames = 1;
                     return;
                 }
 
@@ -230,6 +229,14 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
                     return;
+                }
+
+                // Fill out the nameplate bone translation
+                if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                {
+                    ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
+                    for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
+                        nameplateBone.TranslationTrack.AddValueToSequence(i, 0, new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight));
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
@@ -336,6 +343,9 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
+            // Create the nameplate bone
+            GenerateNameplateBone();
+
             // Create the bones required for events
             CreateEventBone("dth"); // DeathThud
             //CreateEventBone("cah"); // HandleCombatAnim
@@ -361,6 +371,16 @@ namespace EQWOWConverter.ObjectModels
             SetKeyBone(KeyBoneType.CCH);
 
             return true;
+        }
+
+        public void GenerateNameplateBone()
+        {
+            // Grab the base bone for it
+            int initialBoneID = GetFirstBoneIndexForEQBoneNames("head_point", "he", "root");
+
+            // Create the nameplate bone for it
+            ObjectModelBone nameplateBone = new ObjectModelBone("nameplate", Convert.ToInt16(initialBoneID));
+            ModelBones.Add(nameplateBone);
         }
 
         public bool CreateAndSetAnimations()
@@ -407,6 +427,8 @@ namespace EQWOWConverter.ObjectModels
 
             // Set the animation lookups
             SetAllAnimationLookups();
+
+
             return true;
         }
 
@@ -466,8 +488,8 @@ namespace EQWOWConverter.ObjectModels
             PortraitCameraPosition = headLocation;
             if (CreatureModelTemplate != null)
             {
-                PortraitCameraPosition += (CreatureModelTemplate.Race.CameraPositionMod * Configuration.CONFIG_GENERATE_CREATURE_SCALE);
-                PortraitCameraTargetPosition += (CreatureModelTemplate.Race.CameraTargetPositionMod * Configuration.CONFIG_GENERATE_CREATURE_SCALE);
+                PortraitCameraPosition += CreatureModelTemplate.Race.CameraPositionMod;
+                PortraitCameraTargetPosition += CreatureModelTemplate.Race.CameraTargetPositionMod;
             }            
         }
 
@@ -517,6 +539,7 @@ namespace EQWOWConverter.ObjectModels
                         Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
                         foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
                         {
+                            newAnimation.NumOfFrames++;
                             if (DoesBoneExistForName(animationFrame.GetBoneName()) == false)
                             {
                                 Logger.WriteDetail("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
@@ -627,7 +650,7 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ObjectModelAttachmentType.PlayerName:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "pe", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("nameplate");
                     }
                     break;
                 case ObjectModelAttachmentType.HeadTop:
@@ -676,7 +699,7 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case KeyBoneType._Name:
                     {
-                        returnValue = GetFirstBoneIndexForEQBoneNames("head_point", "he", "root");
+                        returnValue = GetFirstBoneIndexForEQBoneNames("nameplate");
                     } break;
                 case KeyBoneType.CCH:
                     {

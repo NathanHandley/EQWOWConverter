@@ -42,20 +42,7 @@ namespace EQWOWConverter.ObjectModels
         public float BoundingRadius = 0f;
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
-
-        // TODO Perhaps delete this
-        public int GetAnimationPriority()
-        {
-            switch (EQAnimationType)
-            {
-                case EQAnimationType.posStandPose: return 0;
-                case EQAnimationType.drfStandPose: return 0;
-                case EQAnimationType.o02StandArmsToSide: return 1;
-                case EQAnimationType.o01StandIdle: return 2;
-                case EQAnimationType.p01StandPassive: return 3;
-                default: return 4;
-            }
-        }
+        public int NumOfFrames = 0;
 
         static public List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
         {

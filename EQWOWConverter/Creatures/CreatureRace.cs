@@ -62,6 +62,7 @@ namespace EQWOWConverter.Creatures
         public Vector3 CameraPositionMod = new Vector3();
         public Vector3 CameraTargetPositionMod = new Vector3();
         public float GeoboxInradius = 0;
+        public float NameplateAddedHeight = 0;
 
         public static Dictionary<string, Sound> SoundsBySoundName = new Dictionary<string, Sound>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
@@ -196,15 +197,16 @@ namespace EQWOWConverter.Creatures
                 newCreatureRace.SoundAttackName = rowBlocks[26];
                 newCreatureRace.SoundSpellAttackName = rowBlocks[27];
                 newCreatureRace.SoundTechnicalAttackName = rowBlocks[28];
-                float cameraPositionModX = float.Parse(rowBlocks[29]);
-                float cameraPositionModY = float.Parse(rowBlocks[30]);
-                float cameraPositionModZ = float.Parse(rowBlocks[31]);
+                float cameraPositionModX = float.Parse(rowBlocks[29]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                float cameraPositionModY = float.Parse(rowBlocks[30]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                float cameraPositionModZ = float.Parse(rowBlocks[31]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
                 newCreatureRace.CameraPositionMod = new Vector3(cameraPositionModX, cameraPositionModY, cameraPositionModZ);
-                float cameraTargetPositionModX = float.Parse(rowBlocks[32]);
-                float cameraTargetPositionModY = float.Parse(rowBlocks[33]);
-                float cameraTargetPositionModZ = float.Parse(rowBlocks[34]);
+                float cameraTargetPositionModX = float.Parse(rowBlocks[32]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                float cameraTargetPositionModY = float.Parse(rowBlocks[33]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                float cameraTargetPositionModZ = float.Parse(rowBlocks[34]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
                 newCreatureRace.CameraTargetPositionMod = new Vector3(cameraTargetPositionModX, cameraTargetPositionModY, cameraTargetPositionModZ);
                 newCreatureRace.GeoboxInradius = float.Parse(rowBlocks[35]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                newCreatureRace.NameplateAddedHeight = float.Parse(rowBlocks[36]) * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
 
                 CreatureRaces.Add(newCreatureRace);
             }
