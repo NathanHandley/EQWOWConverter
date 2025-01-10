@@ -51,7 +51,7 @@ namespace EQWOWConverter.Items
             // Load in item data
             string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "Items.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
-            string inputData = File.ReadAllText(itemsFileName);
+            string inputData = FileTool.ReadAllDataFromFile(itemsFileName);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

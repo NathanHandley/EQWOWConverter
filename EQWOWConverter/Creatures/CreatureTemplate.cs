@@ -72,7 +72,7 @@ namespace EQWOWConverter.Creatures
 
             string creatureTemplatesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
             Logger.WriteDetail("Populating Creature Template list via file '" + creatureTemplatesFile + "'");
-            string inputData = File.ReadAllText(creatureTemplatesFile);
+            string inputData = FileTool.ReadAllDataFromFile(creatureTemplatesFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

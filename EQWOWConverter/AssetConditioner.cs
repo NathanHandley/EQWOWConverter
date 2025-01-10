@@ -311,7 +311,7 @@ namespace EQWOWConverter
             string[] materialListFiles = Directory.GetFiles(materialListFolder);
             foreach (string materialListFile in materialListFiles)
             {
-                string materialFileText = File.ReadAllText(materialListFile);
+                string materialFileText = FileTool.ReadAllDataFromFile(materialListFile);
                 string[] materialFileRows = materialFileText.Split(Environment.NewLine);
                 string[] materialFileRowsForWrite = materialFileText.Split(Environment.NewLine);
                 EQMaterialList materialListData = new EQMaterialList();
@@ -722,7 +722,7 @@ namespace EQWOWConverter
                                 }
                                 if (materialHasTextureName)
                                 {
-                                    string fileText = File.ReadAllText(objectMaterialFile);
+                                    string fileText = FileTool.ReadAllDataFromFile(objectMaterialFile);
                                     if (fileText.Contains(":" + objectTextureFileNameNoExtension))
                                     {
                                         string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
@@ -793,7 +793,7 @@ namespace EQWOWConverter
                                 string objectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(objectMaterialFileNameOnly);
                                 if (curMesh.MaterialListFileName == objectMaterialFileNameNoExtension)
                                 {
-                                    string fileText = File.ReadAllText(objectMeshFile);
+                                    string fileText = FileTool.ReadAllDataFromFile(objectMeshFile);
                                     string newObjectMaterialFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMaterialFileNameOnly);
                                     Logger.WriteDetail("- [" + topDirectory + "] Object mesh file '" + objectMeshFile + "' contained material '" + objectMaterialFileNameNoExtension + "' which was renamed to '" + newObjectMaterialFileNameNoExtension + "'. Updating mesh file...");
                                     fileText = fileText.Replace("," + objectMaterialFileNameNoExtension, "," + newObjectMaterialFileNameNoExtension);
@@ -892,7 +892,7 @@ namespace EQWOWConverter
                                     }
                                     if (meshFoundInFile == true)
                                     {
-                                        string fileText = File.ReadAllText(zoneObjectInstancesFile);
+                                        string fileText = FileTool.ReadAllDataFromFile(zoneObjectInstancesFile);
                                         if (fileText.Contains(objectMeshFileNameNoExtension + ","))
                                         {
                                             string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectMeshFileNameOnly);

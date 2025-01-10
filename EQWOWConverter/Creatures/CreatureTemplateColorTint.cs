@@ -50,7 +50,7 @@ namespace EQWOWConverter.Creatures
 
             string creatureTemplateColorTintsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplateColors.csv");
             Logger.WriteDetail("Populating Creature Template Color Tint list via file '" + creatureTemplateColorTintsFile + "'");
-            string inputData = File.ReadAllText(creatureTemplateColorTintsFile);
+            string inputData = FileTool.ReadAllDataFromFile(creatureTemplateColorTintsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

@@ -45,7 +45,7 @@ namespace EQWOWConverter.Creatures
 
             string pathGridsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "PathGrids.csv");
             Logger.WriteDetail("Populating Path Grids list via file '" + pathGridsFile + "'");
-            string inputData = File.ReadAllText(pathGridsFile);
+            string inputData = FileTool.ReadAllDataFromFile(pathGridsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

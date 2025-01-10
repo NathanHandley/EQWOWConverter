@@ -151,6 +151,22 @@ namespace EQWOWConverter
             return true;
         }
 
+        public static string ReadAllDataFromFile(string fileName)
+        {
+            string returnString = string.Empty;
+            try
+            {
+                using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                    using (StreamReader reader = new StreamReader(fs))
+                        returnString = reader.ReadToEnd();
+            }
+            catch
+            {
+                Logger.WriteError("Unable to read all text from file '" + fileName + "'");
+            }
+            return returnString;
+        }
+
         public static bool IsFileLocked(string fileName)
         {
             try

@@ -64,7 +64,7 @@ namespace EQWOWConverter.EQFiles
             }
 
             // Load the core data
-            string inputData = File.ReadAllText(fileFullPath);
+            string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
             string[] inputRows = inputData.Split(Environment.NewLine);
 
             // Read in the number of variations by looking for any textures with more than 1 variation listing

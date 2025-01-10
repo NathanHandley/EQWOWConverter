@@ -38,7 +38,7 @@ namespace EQWOWConverter.EQFiles
             }
 
             // Load the data
-            string inputData = File.ReadAllText(fileFullPath);
+            string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
             string[] inputRows = inputData.Split(Environment.NewLine);
             foreach (string inputRow in inputRows)
             {

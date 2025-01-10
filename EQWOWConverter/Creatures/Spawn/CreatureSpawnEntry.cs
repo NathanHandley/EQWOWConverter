@@ -43,7 +43,7 @@ namespace EQWOWConverter
 
             string spawnEntriesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnEntries.csv");
             Logger.WriteDetail("Populating Spawn Entry list via file '" + spawnEntriesFile + "'");
-            string inputData = File.ReadAllText(spawnEntriesFile);
+            string inputData = FileTool.ReadAllDataFromFile(spawnEntriesFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

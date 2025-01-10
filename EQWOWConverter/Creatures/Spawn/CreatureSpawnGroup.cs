@@ -43,7 +43,7 @@ namespace EQWOWConverter.Creatures
 
             string spawnGroupsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnGroups.csv");
             Logger.WriteDetail("Populating Spawn Group list via file '" + spawnGroupsFile + "'");
-            string inputData = File.ReadAllText(spawnGroupsFile);
+            string inputData = FileTool.ReadAllDataFromFile(spawnGroupsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

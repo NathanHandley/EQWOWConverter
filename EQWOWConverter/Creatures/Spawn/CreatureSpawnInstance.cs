@@ -55,7 +55,7 @@ namespace EQWOWConverter.Creatures
 
             string spawnDetailsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnInstances.csv");
             Logger.WriteDetail("Populating Spawn Detail list via file '" + spawnDetailsFile + "'");
-            string inputData = File.ReadAllText(spawnDetailsFile);
+            string inputData = FileTool.ReadAllDataFromFile(spawnDetailsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {

@@ -48,7 +48,7 @@ namespace EQWOWConverter.EQFiles
             }
 
             // Load the core data
-            string inputData = File.ReadAllText(fileFullPath);
+            string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
             string[] inputRows = inputData.Split(Environment.NewLine);
 
             // Make sure there is the minimum number of rows
