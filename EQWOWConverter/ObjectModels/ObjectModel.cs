@@ -234,9 +234,26 @@ namespace EQWOWConverter.ObjectModels
                 // Fill out the nameplate bone translation
                 if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
                 {
+                    // Set the adjustment vector
                     ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
+                    Vector3 adjustmentVector = new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight);
+                    int raceID = CreatureModelTemplate.Race.ID;
+
+                    // These races project forward instead of up due to a rotation
+                    if (raceID == 31 || raceID == 66 || raceID == 126)
+                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+
+                    // These races project to their right instead of up due to a rotation
+                    if (raceID == 107 || raceID == 135 || raceID == 154)
+                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+
+                    // These races project to their right, but rotated the other way
+                    if (raceID == 162 || raceID == 68)
+                        adjustmentVector = new Vector3(CreatureModelTemplate.Race.NameplateAddedHeight * -1, 0, 0);
+
+                    // Update all of the track sequences
                     for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
-                        nameplateBone.TranslationTrack.AddValueToSequence(i, 0, new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight));
+                        nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)

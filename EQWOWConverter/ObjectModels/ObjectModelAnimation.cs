@@ -320,7 +320,7 @@ namespace EQWOWConverter.ObjectModels
                 case AnimationType.Swim:
                     {
                         returnTypes.Add(EQAnimationType.p06Swim);
-                        returnTypes.Add(EQAnimationType.l09SwimIdle);                        
+                        returnTypes.Add(EQAnimationType.l09SwimIdle);
                     }
                     break;
                 case AnimationType.SwimLeft:
