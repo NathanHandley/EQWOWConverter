@@ -687,7 +687,10 @@ namespace EQWOWConverter
             string relativeDBCClientPath = Path.Combine("DBFilesClient");
             string fullDBCClientPath = Path.Combine(mpqReadyFolder, relativeDBCClientPath);
             mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullDBCClientPath + "\" \"" + relativeDBCClientPath + "\" /r");
-            
+
+            // Finally, compact it
+            mpqUpdateScriptText.AppendLine("compact \"" + exportMPQFileName + "\" /r");
+
             // Output the script to disk
             string mpqUpdateScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "mpqupdate.txt");
             using (var mpqUpdateScriptFile = new StreamWriter(mpqUpdateScriptFileName))
