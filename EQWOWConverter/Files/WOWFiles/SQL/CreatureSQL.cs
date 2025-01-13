@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + " ;";
+            return "DELETE FROM creature WHERE `guid` >= " + Configuration.CONFIG_SQL_CREATURE_GUID_LOW.ToString() + " AND `guid` <= " + Configuration.CONFIG_SQL_CREATURE_GUID_HIGH + ";";
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 

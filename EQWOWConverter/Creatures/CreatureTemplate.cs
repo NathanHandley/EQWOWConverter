@@ -26,7 +26,7 @@ namespace EQWOWConverter.Creatures
     {
         private static Dictionary<int, CreatureTemplate> CreatureTemplateList = new Dictionary<int, CreatureTemplate>();
 
-        public int ID = 0;
+        public int EQCreatureTemplateID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
@@ -98,7 +98,7 @@ namespace EQWOWConverter.Creatures
                 // Load the row
                 string[] rowBlocks = row.Split("|");
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
-                newCreatureTemplate.ID = int.Parse(rowBlocks[0]);
+                newCreatureTemplate.EQCreatureTemplateID = int.Parse(rowBlocks[0]);
                 newCreatureTemplate.Name = rowBlocks[1];
                 newCreatureTemplate.SubName = rowBlocks[2];
                 newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[3]), 1);
@@ -179,18 +179,18 @@ namespace EQWOWConverter.Creatures
 
                 // Add ID if debugging for it is true
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
-                    newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.ID.ToString();
-                //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.ID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
+                    newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
+                //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
 
                 // Must be a unique record
-                if (CreatureTemplateList.ContainsKey(newCreatureTemplate.ID))
+                if (CreatureTemplateList.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))
                 {
-                    Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.ID + "'");
+                    Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.EQCreatureTemplateID + "'");
                     continue;
                 }
 
-                CreatureTemplateList.Add(newCreatureTemplate.ID, newCreatureTemplate);
+                CreatureTemplateList.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
             }
         }
     }

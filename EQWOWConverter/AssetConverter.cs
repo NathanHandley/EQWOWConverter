@@ -385,8 +385,8 @@ namespace EQWOWConverter
                 {
                     foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
                     {
-                        if (creatureTemplatesByID.ContainsKey(spawnEntry.CreatureTemplateID))
-                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.CreatureTemplateID], spawnEntry.Chance);
+                        if (creatureTemplatesByID.ContainsKey(spawnEntry.EQCreatureTemplateID))
+                            curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
                     }
                 }
 

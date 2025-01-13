@@ -20,34 +20,36 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter
+namespace EQWOWConverter.Creatures
 {
-    internal class CreatureSpawnEntry
+    internal class CreatureVendorItem
     {
-        private static List<CreatureSpawnEntry> SpawnEntryList = new List<CreatureSpawnEntry>();
+        private static List<CreatureVendorItem> CreatureVendorItems = new List<CreatureVendorItem>();
 
-        public int SpawnGroupID = 0;
         public int EQCreatureTemplateID = 0;
-        public int Chance = 100;
+        public int EQItemID = 0;
+        public int Slot = 0;
+        public int FactionRequired = -1100; // Unsure what this is (found in merchantlist inside TAKP database). Looks like a packed flag, but why negative?
+        public int Quantity = 0;
 
-        public static List<CreatureSpawnEntry> GetSpawnEntryList()
+        public static List<CreatureVendorItem> GetCreatureVendorItems()
         {
-            if (SpawnEntryList.Count == 0)
-                PopulateSpawnEntryList();
-            return SpawnEntryList;
+            if (CreatureVendorItems.Count == 0)
+                PopulateCreatureVendorItems();
+            return CreatureVendorItems;
         }
 
-        private static void PopulateSpawnEntryList()
+        private static void PopulateCreatureVendorItems()
         {
-            SpawnEntryList.Clear();
+            CreatureVendorItems.Clear();
 
-            string spawnEntriesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnEntries.csv");
-            Logger.WriteDetail("Populating Spawn Entry list via file '" + spawnEntriesFile + "'");
-            string inputData = FileTool.ReadAllDataFromFile(spawnEntriesFile);
+            string creatureVendorItemsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
+            Logger.WriteDetail("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
+            string inputData = FileTool.ReadAllDataFromFile(creatureVendorItemsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)
             {
-                Logger.WriteError("SpawnEntry list via file '" + spawnEntriesFile + "' did not have enough rows");
+                Logger.WriteError("CreatureVenderItems list via file '" + creatureVendorItemsFile + "' did not have enough rows");
                 return;
             }
 
@@ -68,20 +70,21 @@ namespace EQWOWConverter
 
                 // Load the row
                 string[] rowBlocks = row.Split("|");
-                CreatureSpawnEntry newSpawnEntry = new CreatureSpawnEntry();
-                newSpawnEntry.SpawnGroupID = int.Parse(rowBlocks[0]);
-                newSpawnEntry.EQCreatureTemplateID = int.Parse(rowBlocks[1]);
-                newSpawnEntry.Chance = int.Parse(rowBlocks[2]);
+                CreatureVendorItem newItem = new CreatureVendorItem();
+                newItem.EQCreatureTemplateID = int.Parse(rowBlocks[0]);
+                newItem.Slot = int.Parse(rowBlocks[1]);
+                newItem.EQItemID = int.Parse(rowBlocks[2]);
+                newItem.FactionRequired = int.Parse(rowBlocks[3]);
+                newItem.Quantity = int.Parse(rowBlocks[4]);
 
-                // Skip any invalid expansion rows
+                // Only add if it's within this target expansion
                 int minExpansion = int.Parse(rowBlocks[5]);
                 int maxExpansion = int.Parse(rowBlocks[6]);
                 if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
                     continue;
                 if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
                     continue;
-
-                SpawnEntryList.Add(newSpawnEntry);
+                CreatureVendorItems.Add(newItem);
             }
         }
     }

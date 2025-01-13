@@ -14,27 +14,34 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
+using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWFiles
-{ 
-    internal class PoolTemplateSQL : SQLFile
+namespace EQWOWConverter.Files.WOWFiles.SQL
+{
+    internal class NPCVendorSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM pool_template WHERE entry >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND entry <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
+            return "DELETE FROM `npc_vendor` WHERE `entry` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
 
-        public void AddRow(int entryID, string description, int maxLimit)
+        public void AddRow(int creatureTemplateID, int itemID, int slot)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", entryID);
-            newRow.AddInt("max_limit", maxLimit);
-            newRow.AddString("description", 255, description);
+            newRow.AddInt("entry", creatureTemplateID);
+            newRow.AddInt("slot", slot);
+            newRow.AddInt("item", itemID);
+            newRow.AddInt("maxcount", 0);
+            newRow.AddInt("incrtime", 0);
+            newRow.AddInt("ExtendedCost", 0);
+            newRow.AddInt("VerifiedBuild", 0);
             Rows.Add(newRow);
         }
     }

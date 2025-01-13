@@ -28,7 +28,7 @@ namespace EQWOWConverter.Items
         public static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
 
-        public int EQID = 0;
+        public int EQItemID = 0;
         public int EntryID = 0;
         public int ClassID = 0;
         public int SubClassID = 0;
@@ -77,7 +77,7 @@ namespace EQWOWConverter.Items
                 // Load the row
                 string[] rowBlocks = row.Split("|");
                 ItemTemplate newItemTemplate = new ItemTemplate();
-                newItemTemplate.EQID = int.Parse(rowBlocks[0]);
+                newItemTemplate.EQItemID = int.Parse(rowBlocks[0]);
                 newItemTemplate.Name = rowBlocks[1];
 
                 // Icon
