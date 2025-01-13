@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using static Org.BouncyCastle.Asn1.Cmp.Challenge;
+using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -33,21 +33,21 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM creature_template WHERE `entry` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
 
-        public void AddRow(int entryID, string name, string subName, float scale, int level)
+        public void AddRow(CreatureTemplate creatureTemplate, float scale)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", entryID);
+            newRow.AddInt("entry", creatureTemplate.SQLCreatureTemplateID);
             newRow.AddInt("difficulty_entry_1", 0);
             newRow.AddInt("difficulty_entry_2", 0);
             newRow.AddInt("difficulty_entry_3", 0);
             newRow.AddInt("KillCredit1", 0);
             newRow.AddInt("KillCredit2", 0);
-            newRow.AddString("name", 100, name);
-            newRow.AddString("subname", 100, subName);
+            newRow.AddString("name", 100, creatureTemplate.Name);
+            newRow.AddString("subname", 100, creatureTemplate.SubName);
             newRow.AddString("IconName", 100, string.Empty);
             newRow.AddInt("gossip_menu_id", 0);
-            newRow.AddInt("minlevel", level);
-            newRow.AddInt("maxlevel", level);
+            newRow.AddInt("minlevel", creatureTemplate.Level);
+            newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Unsure what this is used for, but commonly 0 and can be 2 sometimes
             newRow.AddInt("faction", 7); // Faction 7 is 'creature', references Faction.dbc
             newRow.AddInt("npcflag", 0);
