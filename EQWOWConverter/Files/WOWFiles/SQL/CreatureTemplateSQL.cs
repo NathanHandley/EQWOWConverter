@@ -35,6 +35,10 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(CreatureTemplate creatureTemplate, float scale)
         {
+            int npcFlags = 0;
+            if (creatureTemplate.MerchantID != 0)
+                npcFlags |= 128; // 	0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
+
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entry", creatureTemplate.SQLCreatureTemplateID);
             newRow.AddInt("difficulty_entry_1", 0);
@@ -50,7 +54,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Unsure what this is used for, but commonly 0 and can be 2 sometimes
             newRow.AddInt("faction", 7); // Faction 7 is 'creature', references Faction.dbc
-            newRow.AddInt("npcflag", 0);
+            newRow.AddInt("npcflag", npcFlags);
             newRow.AddFloat("speed_walk", 1); // 1 is very common, but can be other values
             newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common
             newRow.AddFloat("speed_swim", 1);

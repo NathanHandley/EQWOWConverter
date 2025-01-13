@@ -24,25 +24,23 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureVendorItem
     {
-        private static List<CreatureVendorItem> CreatureVendorItems = new List<CreatureVendorItem>();
+        private static Dictionary<int, List<CreatureVendorItem>> CreatureVendorItemsByMerchantID = new Dictionary<int, List<CreatureVendorItem>>();
 
-        public int EQCreatureTemplateID = 0;
+        public int MerchantID = 0;
         public int EQItemID = 0;
         public int Slot = 0;
-        public int FactionRequired = -1100; // Unsure what this is (found in merchantlist inside TAKP database). Looks like a packed flag, but why negative?
+        public int FactionRequired = -1100; // Unsure how to read this exactly (found in merchantlist inside TAKP database). Looks like a packed flag, but why negative?
         public int Quantity = 0;
 
-        public static List<CreatureVendorItem> GetCreatureVendorItems()
+        public static Dictionary<int, List<CreatureVendorItem>> GetCreatureVendorItemsByMerchantIDs()
         {
-            if (CreatureVendorItems.Count == 0)
+            if (CreatureVendorItemsByMerchantID.Count == 0)
                 PopulateCreatureVendorItems();
-            return CreatureVendorItems;
+            return CreatureVendorItemsByMerchantID;
         }
 
         private static void PopulateCreatureVendorItems()
         {
-            CreatureVendorItems.Clear();
-
             string creatureVendorItemsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
             Logger.WriteDetail("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(creatureVendorItemsFile);
@@ -70,12 +68,12 @@ namespace EQWOWConverter.Creatures
 
                 // Load the row
                 string[] rowBlocks = row.Split("|");
-                CreatureVendorItem newItem = new CreatureVendorItem();
-                newItem.EQCreatureTemplateID = int.Parse(rowBlocks[0]);
-                newItem.Slot = int.Parse(rowBlocks[1]);
-                newItem.EQItemID = int.Parse(rowBlocks[2]);
-                newItem.FactionRequired = int.Parse(rowBlocks[3]);
-                newItem.Quantity = int.Parse(rowBlocks[4]);
+                CreatureVendorItem newVendorItem = new CreatureVendorItem();
+                newVendorItem.MerchantID = int.Parse(rowBlocks[0]);
+                newVendorItem.Slot = int.Parse(rowBlocks[1]);
+                newVendorItem.EQItemID = int.Parse(rowBlocks[2]);
+                newVendorItem.FactionRequired = int.Parse(rowBlocks[3]);
+                newVendorItem.Quantity = int.Parse(rowBlocks[4]);
 
                 // Only add if it's within this target expansion
                 int minExpansion = int.Parse(rowBlocks[5]);
@@ -84,7 +82,9 @@ namespace EQWOWConverter.Creatures
                     continue;
                 if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
                     continue;
-                CreatureVendorItems.Add(newItem);
+                if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)
+                    CreatureVendorItemsByMerchantID.Add(newVendorItem.MerchantID, new List<CreatureVendorItem>());
+                CreatureVendorItemsByMerchantID[newVendorItem.MerchantID].Add(newVendorItem);
             }
         }
     }

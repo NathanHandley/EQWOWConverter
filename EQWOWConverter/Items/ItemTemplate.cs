@@ -25,7 +25,7 @@ namespace EQWOWConverter.Items
 {
     internal class ItemTemplate
     {
-        public static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
+        private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
 
         public int EQItemID = 0;
@@ -37,6 +37,7 @@ namespace EQWOWConverter.Items
         public int InventoryType = 0;
         public int SheatheType = 0;
         public int Material = -1;
+        public int BuyPriceInCopper = 0;
 
         public ItemTemplate()
         {
@@ -44,10 +45,15 @@ namespace EQWOWConverter.Items
             CURRENT_SQL_ITEMTEMPLATEENTRYID++;
         }
 
+        static public SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
+        {
+            if (ItemTemplatesByEQDBID.Count == 0)
+                PopulateItemTemplateListFromDisk();
+            return ItemTemplatesByEQDBID;
+        }
+
         static public void PopulateItemTemplateListFromDisk()
         {
-            ItemTemplatesByEQDBID.Clear();
-
             // Load in item data
             string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "Items.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
@@ -85,14 +91,15 @@ namespace EQWOWConverter.Items
                 string iconName = "INV_EQ_" + (iconID - 500).ToString();
                 ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
                 newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+                newItemTemplate.BuyPriceInCopper = int.Parse(rowBlocks[25]);
 
                 // Add
-                if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EntryID))
+                if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
                 {
-                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with id '" + newItemTemplate.EntryID + "'");
+                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with EQItemID '" + newItemTemplate.EQItemID + "'");
                     continue;
                 }
-                ItemTemplatesByEQDBID.Add(newItemTemplate.EntryID, newItemTemplate);
+                ItemTemplatesByEQDBID.Add(newItemTemplate.EQItemID, newItemTemplate);
             }
         }
     }

@@ -41,6 +41,7 @@ namespace EQWOWConverter.Creatures
         public int TextureID = 0;
         public int HelmTextureID = 0;
         public CreatureModelTemplate? ModelTemplate = null;
+        public int MerchantID = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -133,6 +134,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.FaceID = 0;
                 }
                 newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[14]);
+                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[20]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');

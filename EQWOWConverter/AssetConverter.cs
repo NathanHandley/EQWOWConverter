@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Files.WOWFiles.SQL;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
@@ -63,6 +64,9 @@ namespace EQWOWConverter
             if (ConvertEQZonesToWOW(out zones) == false)
                 return false;
 
+            // Items
+            CreateItemIconFiles();
+
             // Creatures
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
@@ -76,9 +80,6 @@ namespace EQWOWConverter
             {
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
-
-            // Items
-            CreateItems();
 
             // Copy the loading screens
             CreateLoadingScreens();
@@ -1050,7 +1051,7 @@ namespace EQWOWConverter
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
                 // Item data
-                foreach (ItemTemplate itemTemplate in ItemTemplate.ItemTemplatesByEQDBID.Values)
+                foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
                     itemDBC.AddRow(itemTemplate);
                 foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                     itemDisplayInfoDBC.AddRow(itemDisplayInfo);
@@ -1214,6 +1215,7 @@ namespace EQWOWConverter
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+            NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
@@ -1256,6 +1258,7 @@ namespace EQWOWConverter
             }
 
             // Creature Templates
+            Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 if (creatureTemplate.ModelTemplate == null)
@@ -1268,6 +1271,21 @@ namespace EQWOWConverter
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate, scale);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+
+                    // If it's a vendor, add the vendor records too
+                    if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
+                    {
+                        foreach(CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
+                        {
+                            if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
+                            {
+                                Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
+                                continue;
+                            }
+
+                            npcVendorSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].EntryID, vendorItem.Slot);
+                        }
+                    }
                 }
             }
 
@@ -1394,7 +1412,7 @@ namespace EQWOWConverter
             }
 
             // Items
-            foreach (ItemTemplate itemTemplate in ItemTemplate.ItemTemplatesByEQDBID.Values)
+            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
                 itemTemplateSQL.AddRow(itemTemplate);
 
             // Output them
@@ -1408,6 +1426,7 @@ namespace EQWOWConverter
             gameTeleSQL.SaveToDisk("game_tele");
             instanceTemplateSQL.SaveToDisk("instance_template");
             itemTemplateSQL.SaveToDisk("item_template");
+            npcVendorSQL.SaveToDisk("npc_vendor");
             poolCreatureSQL.SaveToDisk("pool_creature");
             poolPoolSQL.SaveToDisk("pool_pool");
             poolTemplateSQL.SaveToDisk("pool_template");
@@ -1576,11 +1595,12 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
         }
 
-        public void CreateItems()
+        public void CreateItemIconFiles()
         {
-            Logger.WriteInfo("Creating items...");
-            ItemTemplate.PopulateItemTemplateListFromDisk();
             Logger.WriteInfo("Copying item icon files...");
+
+            // Make sure items are created
+            SortedDictionary<int, ItemTemplate> itemTemplates = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
             // Clear and create the directory
             string iconOutputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Interface", "ICONS");
