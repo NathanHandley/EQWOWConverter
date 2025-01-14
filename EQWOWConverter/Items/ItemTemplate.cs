@@ -38,7 +38,8 @@ namespace EQWOWConverter.Items
         public int SheatheType = 0;
         public int Material = -1;
         public int BuyPriceInCopper = 0;
-        public int SellPriceInCopper = 0;        
+        public int SellPriceInCopper = 0;
+        public int BagSlots = 0;
 
         public ItemTemplate()
         {
@@ -53,15 +54,46 @@ namespace EQWOWConverter.Items
             return ItemTemplatesByEQDBID;
         }
 
-        static private void PopulateItemClassAndSubclass(ref ItemTemplate itemTemplate, int eqItemType)
+        static private void PopulateItemClassAndSubclass(ref ItemTemplate itemTemplate, int eqItemType, int bagType)
         {
             switch (eqItemType)
             {
-                case 0: // 1 Hand Slash => 1h Sword
+                case 0: // Catches a lot of items
                     {
-                        // TODO: Axe
-                        itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 7;
+                        if (bagType != 0)
+                        {
+                            switch (bagType)
+                            {
+                                case 2: // Quiver
+                                    {
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 3;
+                                    } break;
+                                case 10: // Toolbox => Engineering Bag
+                                    {
+                                        itemTemplate.ClassID = 1;
+                                        itemTemplate.SubClassID = 4;
+                                    } break;
+                                case 16: // Sewing Kit => Leatherworking Bag (TODO: Add Tailoring Bag?)
+                                    {
+                                        itemTemplate.ClassID = 1;
+                                        itemTemplate.SubClassID = 7;
+                                    } break;
+                                default: // Normal Bag
+                                    {
+                                        itemTemplate.ClassID = 0;
+                                        itemTemplate.SubClassID = 1;
+                                    } break;
+                            }
+                            return;
+                        }
+                        else
+                        {
+                            // 1 Hand Slash => 1h Sword
+                            // TODO: Axe
+                            itemTemplate.ClassID = 2;
+                            itemTemplate.SubClassID = 7;
+                        }
                     } break;
                 case 1: // 2 Hand Slash => 2h Sword
                     {
@@ -332,7 +364,8 @@ namespace EQWOWConverter.Items
 
                 // Type
                 int itemType = int.Parse(rowBlocks[2]);
-                PopulateItemClassAndSubclass(ref newItemTemplate, itemType);
+                int bagType = int.Parse(rowBlocks[7]);
+                PopulateItemClassAndSubclass(ref newItemTemplate, itemType, bagType);
 
                 // Icon
                 int iconID = int.Parse(rowBlocks[3]);
@@ -345,6 +378,9 @@ namespace EQWOWConverter.Items
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
+
+                // Other
+                newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
