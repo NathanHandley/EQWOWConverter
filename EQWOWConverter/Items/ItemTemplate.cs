@@ -34,12 +34,12 @@ namespace EQWOWConverter.Items
         public int SubClassID = 0;
         public string Name = string.Empty;
         public int DisplayID = 0;
-        public int InventoryType = 0;
         public int SheatheType = 0;
         public int Material = -1;
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
+        public ItemInventoryType InventoryType = ItemInventoryType.NoEquip;
 
         public ItemTemplate()
         {
@@ -54,7 +54,7 @@ namespace EQWOWConverter.Items
             return ItemTemplatesByEQDBID;
         }
 
-        static private void PopulateItemClassAndSubclass(ref ItemTemplate itemTemplate, int eqItemType, int bagType)
+        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType)
         {
             switch (eqItemType)
             {
@@ -62,12 +62,14 @@ namespace EQWOWConverter.Items
                     {
                         if (bagType != 0)
                         {
+                            itemTemplate.InventoryType = ItemInventoryType.Bag;
                             switch (bagType)
                             {
                                 case 2: // Quiver
                                     {
                                         itemTemplate.ClassID = 2;
                                         itemTemplate.SubClassID = 3;
+                                        itemTemplate.InventoryType = ItemInventoryType.Quiver;
                                     } break;
                                 case 10: // Toolbox => Engineering Bag
                                     {
@@ -81,8 +83,8 @@ namespace EQWOWConverter.Items
                                     } break;
                                 default: // Normal Bag
                                     {
-                                        itemTemplate.ClassID = 0;
-                                        itemTemplate.SubClassID = 1;
+                                        itemTemplate.ClassID = 1;
+                                        itemTemplate.SubClassID = 0;
                                     } break;
                             }
                             return;
@@ -93,6 +95,7 @@ namespace EQWOWConverter.Items
                             // TODO: Axe
                             itemTemplate.ClassID = 2;
                             itemTemplate.SubClassID = 7;
+                            itemTemplate.InventoryType = ItemInventoryType.OneHand;
                         }
                     } break;
                 case 1: // 2 Hand Slash => 2h Sword
@@ -100,47 +103,56 @@ namespace EQWOWConverter.Items
                         // TODO: Axe
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 8;
+                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                     } break;
                 case 2: // 1 Hand Pierce => Dagger
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 15;
+                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
                 case 35: // 2 Hand Pierce => Polearm
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 6;
+                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                     } break;
                 case 3: // 1 Hand Blunt => 1H Mace
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 4;
+                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
                 case 4: // 2 Hand Blunt => 2H Mace
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 5;
+                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                         // TODO: Staves
                     } break;
                 case 5: // Bow
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 2;
+                        itemTemplate.InventoryType = ItemInventoryType.Ranged;
                     } break;
                 case 7: // Thrown
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 16;
+                        itemTemplate.InventoryType = ItemInventoryType.Thrown;
                     } break;
                 case 8: // Shield
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 6;
+                        itemTemplate.InventoryType = ItemInventoryType.Shield;
                     } break;
                 case 10: // Armor
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 1;
+                        itemTemplate.InventoryType = ItemInventoryType.Chest; // TEMP
                         // TODO: Slot
                         // TODO: Armor Type
                     } break;
@@ -183,6 +195,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 16;
+                        itemTemplate.InventoryType = ItemInventoryType.Thrown;
                     } break;
                 case 20: // Spell/Tome => Book
                     {
@@ -218,6 +231,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 6;
                         itemTemplate.SubClassID = 2;
+                        itemTemplate.InventoryType = ItemInventoryType.Ammo;
                     } break;
                 case 28: // Other Consumable => Generic Consumable
                     {
@@ -228,6 +242,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 0;
+                        itemTemplate.InventoryType = ItemInventoryType.Finger; // TODO: Neck vs Earring vs Ring
                     } break;
                 case 30: // Skull => Misc
                     {
@@ -258,6 +273,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 20;
+                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                     } break;
                 case 37: // Fishing Bait => Devices (like other fishing bait)
                     {
@@ -288,6 +304,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 13;
+                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
                 case 50: // Singing => Misc
                     {
@@ -362,10 +379,10 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemID = int.Parse(rowBlocks[0]);
                 newItemTemplate.Name = rowBlocks[1];
 
-                // Type
+                // Equippable Properties
                 int itemType = int.Parse(rowBlocks[2]);
                 int bagType = int.Parse(rowBlocks[7]);
-                PopulateItemClassAndSubclass(ref newItemTemplate, itemType, bagType);
+                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType);
 
                 // Icon
                 int iconID = int.Parse(rowBlocks[3]);

@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("BuyCount", 1);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
             newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
-            newRow.AddInt("InventoryType", itemTemplate.InventoryType);
+            newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
             newRow.AddInt("AllowableClass", -1);
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 0);
