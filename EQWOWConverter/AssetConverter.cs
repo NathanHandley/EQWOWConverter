@@ -102,7 +102,11 @@ namespace EQWOWConverter
 
             // Deploy 
             if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
+            {
                 DeployClient();
+                if (Configuration.CONFIG_DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
+                    ClearClientCache();
+            }
             if (Configuration.CONFIG_DEPLOY_SERVER_FILES == true)
                 DeployServerFiles();
             if (Configuration.CONFIG_DEPLOY_SERVER_SQL == true)
@@ -747,6 +751,24 @@ namespace EQWOWConverter
             File.Copy(sourcePatchFileNameAndPath, targetPatchFileNameAndPath, true);
 
             Logger.WriteDetail("Deploying to client complete");
+        }
+
+        public void ClearClientCache()
+        {
+            Logger.WriteInfo("Clearing client cache...");
+
+            // If there is a folder, delete it
+            string folderToDelete = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Cache", "WDB");
+            if (Directory.Exists(folderToDelete) == true)
+            {
+                Logger.WriteDetail("Client cache WDB folder found, so deleting...");
+                Directory.Delete(folderToDelete, true);
+                Logger.WriteDetail("Client cache WDB deleted.");
+            }
+            else
+                Logger.WriteDetail("No client cache WDB folder detected");
+
+            Logger.WriteDetail("Clearing client cache complete");
         }
 
         public void DeployServerFiles()

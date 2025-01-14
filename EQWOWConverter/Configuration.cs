@@ -85,6 +85,9 @@ namespace EQWOWConverter
         // If true, DBC files are extracted every time.
         public static readonly bool CONFIG_EXTRACT_DBC_FILES = true;
 
+        // If true and when deploying client files, clear the cache
+        public static readonly bool CONFIG_DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
+
         // If deploying to SQL, you need to set this to something real that points to your world database
         public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
