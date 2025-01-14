@@ -38,12 +38,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("SoundOverrideSubclass", -1);
             newRow.AddString("name", 255, itemTemplate.Name);
             newRow.AddInt("displayid", itemTemplate.DisplayID);
-            newRow.AddInt("Quality", 0);
+            newRow.AddInt("Quality", 1);
             newRow.AddInt("Flags", 0);
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", 1);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
-            newRow.AddInt("SellPrice", 1);
+            newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", itemTemplate.InventoryType);
             newRow.AddInt("AllowableClass", -1);
             newRow.AddInt("AllowableRace", -1);
