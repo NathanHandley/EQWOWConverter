@@ -89,7 +89,7 @@ namespace EQWOWConverter.Items
                 // Map it to a table
                 if (ItemLootTablesByEQID.ContainsKey(curLootTableEntry.LootTableID) == false)
                 {
-                    Logger.WriteError("LootTableEntry could not find LootTable with ID '" + curLootTableEntry.LootTableID + "'");
+                    Logger.WriteDetail("LootTableEntry could not find a valid LootTable with ID '" + curLootTableEntry.LootTableID + "', which probably means it is for a different expansion");
                     continue;
                 }
                 else

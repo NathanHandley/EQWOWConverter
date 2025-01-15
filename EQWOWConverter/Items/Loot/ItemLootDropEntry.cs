@@ -24,5 +24,12 @@ namespace EQWOWConverter.Items
 {
     internal class ItemLootDropEntry
     {
+        public int LootDropID = 0;
+        public int ItemIDEQ = 0;
+        public int ItemCharges = 1;
+        public int EquipItem = 0; //?
+        public float Chance = 0;
+        public int Multiplier = 1;
+        public float DisabledChance = 0;
     }
 }
