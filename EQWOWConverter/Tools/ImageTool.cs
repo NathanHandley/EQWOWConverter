@@ -56,8 +56,8 @@ namespace EQWOWConverter
             }
 
             // Used for drawing the border
-            Color borderPixelColor = Color.FromArgb(100, 100, 100);
-            Color borderPixelColor2 = Color.FromArgb(64, 64, 64);
+            Color borderPixelColor = Color.FromArgb(64, 64, 64);
+            Color borderPixelColor2 = Color.FromArgb(32, 32, 32);
             List<List<int>> outputMask = new List<List<int>>();
             for (int x = 0; x < 64; x++)
             {
@@ -71,43 +71,46 @@ namespace EQWOWConverter
             {
                 for (int i = 0; i < numberOfIconImagesToMake; i++)
                 {
+                    // Reset the mask
+                    for (int x = 0; x < 64; x++)
+                        for (int y = 0; y < 64; y++)
+                            outputMask[x][y] = 0;
+
                     // Calculate the start position for this image
                     int inputPixelStartX = (i / 12) * 40;
                     int inputPixelStartY = (i % 12) * 40;
 
-                    // Create it
-                    using (Bitmap outputImage = new Bitmap(64, 64))
+                    // Create an image representing only the source image slice
+                    using (Bitmap sourceIconImage = new Bitmap(40, 40))
                     {
-                        for (int y = 0; y < 64; y++)
+                        // Copy the pixel data into the source icon image
+                        for (int y = 0; y < 40; y++)
                         {
-                            for (int x = 0; x < 64; x++)
+                            for (int x = 0; x < 40; x++)
                             {
-                                // Always output the backdrop
-                                outputImage.SetPixel(x, y, backdropPixels[x][y]);
+                                int curInputPixelStartX = inputPixelStartX + x;
+                                int curInputPixelStartY = inputPixelStartY + y;
 
-                                // Only copy the icon images if it's the center block
-                                if (x >= 11 && y >= 11 && x <= 50 && y <= 50)
+                                // Add some offsets for specific icons that are not well centered
+                                int iconID = i + startingIconImageIndex;
+                                int addedYOffset = 0;
+                                if (iconID == 13 || iconID == 33) // Wrist and a Belt
+                                    addedYOffset = 8;
+
+                                // Output only non-alpha pixels
+                                Color pixelColor = inputIconsMosaic.GetPixel(curInputPixelStartX, curInputPixelStartY);
+                                if (pixelColor.A != 0)
                                 {
-                                    int curInputPixelStartX = inputPixelStartX + (x - 11);
-                                    int curInputPixelStartY = inputPixelStartY + (y - 11);
-
-                                    // Get the current pixel's color
-                                    Color pixelColor = inputIconsMosaic.GetPixel(curInputPixelStartX, curInputPixelStartY);
-
-                                    // Output only non-alpha pixels
-                                    if (pixelColor.A != 0)
-                                    {
-                                        outputImage.SetPixel(x, y, pixelColor);
-                                        outputMask[x][y] = 1;
-                                    }
+                                    sourceIconImage.SetPixel(x, y + addedYOffset, inputIconsMosaic.GetPixel(curInputPixelStartX, curInputPixelStartY));
+                                    outputMask[x][y + addedYOffset] = 1;
                                 }
                             }
                         }
 
                         // Create the border (layer 1)
-                        for (int x = 10; x <= 51; x++)
+                        for (int x = 1; x < 39; x++)
                         {
-                            for (int y = 10; y <= 51; y++)
+                            for (int y = 1; y < 39; y++)
                             {
                                 // Skip written-to
                                 if (outputMask[x][y] == 1)
@@ -116,16 +119,16 @@ namespace EQWOWConverter
                                 // Mark all alpha locations that touch the item paremeter
                                 if (outputMask[x - 1][y] == 1 || outputMask[x + 1][y] == 1 || outputMask[x][y - 1] == 1 || outputMask[x][y + 1] == 1)
                                 {
-                                    outputImage.SetPixel(x, y, borderPixelColor);
+                                    sourceIconImage.SetPixel(x, y, borderPixelColor);
                                     outputMask[x][y] = 2;
                                 }
                             }
                         }
 
                         // Create the border (layer 2)
-                        for (int x = 9; x <= 52; x++)
+                        for (int x = 1; x < 39; x++)
                         {
-                            for (int y = 9; y <= 52; y++)
+                            for (int y = 1; y <= 39; y++)
                             {
                                 // Skip written-to
                                 if (outputMask[x][y] > 0)
@@ -134,19 +137,80 @@ namespace EQWOWConverter
                                 // Mark all alpha locations that touch the item border paremeter
                                 if (outputMask[x - 1][y] == 2 || outputMask[x + 1][y] == 2 || outputMask[x][y - 1] == 2 || outputMask[x][y + 1] == 2)
                                 {
-                                    outputImage.SetPixel(x, y, borderPixelColor2);
+                                    sourceIconImage.SetPixel(x, y, borderPixelColor2);
                                 }
                             }
                         }
 
-                        // Output the image
-                        string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
-                        outputImage.Save(outputFileName);
+                        // Create a scaled image 
+                        using (Bitmap scaledIconImage = new Bitmap(58, 58))
+                        {
+                            using (Graphics graphics = Graphics.FromImage(scaledIconImage))
+                            {
+                                // Set interpolation mode to Linear
+                                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
-                        // Reset the mask
-                        for (int x = 0; x < 64; x++)
-                            for (int y = 0; y < 64; y++)
-                                outputMask[x][y] = 0;
+                                // Draw the scaled image
+                                graphics.DrawImage(sourceIconImage, 0, 0, 58, 58);
+                            }
+
+                            // Create a final image with the background put on first, then the scaled image
+                            using (Bitmap outputImage = new Bitmap(64, 64))
+                            {
+                                // Output the backdrop first
+                                for (int y = 0; y < 64; y++)
+                                {
+                                    for (int x = 0; x < 64; x++)
+                                    {
+                                        // Always output the backdrop
+                                        outputImage.SetPixel(x, y, backdropPixels[x][y]);
+                                    }
+                                }
+
+                                // Output the scaled image
+                                for (int y = 0; y < 58; y++)
+                                {
+                                    for (int x = 0; x < 58; x++)
+                                    {
+                                        // Determine output spot
+                                        int curPixelOutputX = x + 3;
+                                        int curPixelOutputY = y + 3;
+
+                                        // Skip the corner blocks
+                                        if ((x == 0 || x == 57) && (y < 3 || y > 55))
+                                            continue;
+                                        if ((x == 1 || x == 56) && (y < 2 || y > 56))
+                                            continue;
+                                        if ((x == 2 || x == 55) && (y < 1 || y > 57))
+                                            continue;
+                                        if ((y == 0 || y == 57) && (x < 3 || x > 55))
+                                            continue;
+                                        if ((y == 1 || y == 56) && (x < 2 || x > 56))
+                                            continue;
+                                        if ((y == 2 || y == 55) && (x < 1 || x > 57))
+                                            continue;
+
+                                        // Get the current pixel's color;
+                                        Color scaledPixelColor = scaledIconImage.GetPixel(x, y);
+                                        Color targetPixelColor = outputImage.GetPixel(curPixelOutputX, curPixelOutputY);
+
+                                        // Output factoring for alpha values
+                                        float scaledAlpha = Convert.ToSingle(scaledPixelColor.A) / 255f;
+                                        float targetAlpha = Convert.ToSingle(targetPixelColor.A) / 255f;
+                                        float blendedAlpha = scaledAlpha + targetAlpha * (1 - scaledAlpha);
+                                        int blendedR = (int)((scaledPixelColor.R * scaledAlpha) + (targetPixelColor.R * targetAlpha * (1 - scaledAlpha)));
+                                        int blendedG = (int)((scaledPixelColor.G * scaledAlpha) + (targetPixelColor.G * targetAlpha * (1 - scaledAlpha)));
+                                        int blendedB = (int)((scaledPixelColor.B * scaledAlpha) + (targetPixelColor.B * targetAlpha * (1 - scaledAlpha)));
+                                        outputImage.SetPixel(curPixelOutputX, curPixelOutputY, Color.FromArgb((int)(blendedAlpha * 255), blendedR, blendedG, blendedB));
+                                        //outputImage.SetPixel(curPixelOutputX, curPixelOutputY, scaledPixelColor);
+                                    }
+                                }
+
+                                // Output the image
+                                string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
+                                outputImage.Save(outputFileName);
+                            }
+                        }
                     }
                 }
             }
