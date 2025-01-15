@@ -167,6 +167,37 @@ namespace EQWOWConverter
             return returnString;
         }
 
+        public static List<string> ReadAllStringLinesFromFile(string fileName, bool stripHeader, bool removeBlankRows)
+        {
+            // Load in item data
+            Logger.WriteDetail("Reading all string lines from file '" + fileName + "'");
+            string inputData = FileTool.ReadAllDataFromFile(fileName);
+            List<string> inputRows = new List<string>(inputData.Split(Environment.NewLine));
+            if (stripHeader == true)
+            {
+                if (inputRows.Count == 0)
+                {
+                    Logger.WriteError("Failed to read all string lines from file '" + fileName + "'. stripHeader is 'true' but there are no rows");
+                    return new List<string>();
+                }
+                else
+                {
+                    inputRows.RemoveAt(0);
+                    Logger.WriteDetail("stripHeaders was true, so the first row is deleted from file '" + fileName + "'");
+                }
+            }
+            if (removeBlankRows == true)
+            {
+                for (int i = inputRows.Count - 1; i >= 0; i--)
+                {
+                    if (inputRows[i].Trim().Length == 0)
+                        inputRows.RemoveAt(i);
+                }
+            }
+            Logger.WriteDetail("All rows read from '" + fileName + "', which has '" + inputRows.Count + "' content rows");
+            return inputRows;
+        }
+
         public static bool IsFileLocked(string fileName)
         {
             try

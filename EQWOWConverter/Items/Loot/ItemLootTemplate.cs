@@ -22,14 +22,14 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal class ItemLootTableEntry
+    internal class ItemLootTemplate
     {
-        public int LootTableID = 0;
-        public int LootDropID = 0;
-        public int Multiplier = 0;
-        public int Probability = 100;
-        public int DropLimit = 0;
-        public int MinDrop = 0;
-        public int MultiplierMin = 0;
+        public int CreatureTemplateEntryID = 0;
+        public int ItemTemplateEntryID = 0;
+        public float Chance = 0;
+        public bool QuestRequired = false;
+        public int MinCount = 1;
+        public int MaxCount = 1;
+        public string Comment = string.Empty;
     }
 }

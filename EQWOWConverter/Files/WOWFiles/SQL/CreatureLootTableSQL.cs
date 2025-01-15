@@ -21,6 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -31,19 +32,22 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM creature_loot_template WHERE `entry` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
 
-        public void AddRow()
+        public void AddRow(ItemLootTemplate itemLootTemplate)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("Entry", 0);
-            newRow.AddInt("Item", 0);
+            newRow.AddInt("Entry", itemLootTemplate.CreatureTemplateEntryID);
+            newRow.AddInt("Item", itemLootTemplate.ItemTemplateEntryID);
             newRow.AddInt("Reference", 0);
-            newRow.AddFloat("Chance", 0);
-            newRow.AddInt("QuestRequired", 0);
+            newRow.AddFloat("Chance", itemLootTemplate.Chance);
+            if (itemLootTemplate.QuestRequired == true)
+                newRow.AddInt("QuestRequired", 1);
+            else
+                newRow.AddInt("QuestRequired", 0);
             newRow.AddInt("LootMode", 1);
             newRow.AddInt("GroupId", 0);
-            newRow.AddInt("MinCount", 1);
-            newRow.AddInt("MaxCount", 0);
-            newRow.AddInt("Comment", 0);
+            newRow.AddInt("MinCount", itemLootTemplate.MinCount);
+            newRow.AddInt("MaxCount", itemLootTemplate.MaxCount);
+            newRow.AddString("Comment", 255, itemLootTemplate.Comment);
             Rows.Add(newRow);
         }
     }
