@@ -39,6 +39,7 @@ namespace EQWOWConverter.Items
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
+        public int StackSize = 1;
         public ItemInventoryType InventoryType = ItemInventoryType.NoEquip;
 
         public ItemTemplate()
@@ -398,6 +399,7 @@ namespace EQWOWConverter.Items
 
                 // Other
                 newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
+                newItemTemplate.StackSize = int.Max(int.Parse(rowBlocks[9]), 1);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))

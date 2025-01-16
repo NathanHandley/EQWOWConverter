@@ -57,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredReputationFaction", 0);
             newRow.AddInt("RequiredReputationRank", 0);
             newRow.AddInt("maxcount", 0);
-            newRow.AddInt("stackable", 1);
+            newRow.AddInt("stackable", itemTemplate.StackSize);
             newRow.AddInt("ContainerSlots", itemTemplate.BagSlots);
             newRow.AddInt("StatsCount", 0);
             newRow.AddInt("stat_type1", 0);
