@@ -24,9 +24,10 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureTemplate
     {
-        private static Dictionary<int, CreatureTemplate> CreatureTemplateList = new Dictionary<int, CreatureTemplate>();
+        private static Dictionary<int, CreatureTemplate> CreatureTemplateListByEQID = new Dictionary<int, CreatureTemplate>();
 
         public int EQCreatureTemplateID = 0;
+        public int WOWCreatureTemplateID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
@@ -42,22 +43,25 @@ namespace EQWOWConverter.Creatures
         public int HelmTextureID = 0;
         public CreatureModelTemplate? ModelTemplate = null;
         public int MerchantID = 0;
+        public int EQLootTableID = 0;
+        public int WOWLootID = 0;
+        public int MoneyMinInCopper = 0;
+        public int MoneyMaxInCopper = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
-        public int SQLCreatureTemplateID;
-
+        
         public CreatureTemplate()
         {
-            SQLCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
+            WOWCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
             CURRENT_SQL_CREATURETEMPLATEID++;
         }
 
-        public static Dictionary<int, CreatureTemplate> GetCreatureTemplateList()
+        public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
-            if (CreatureTemplateList.Count == 0)
+            if (CreatureTemplateListByEQID.Count == 0)
                 PopulateCreatureTemplateList();
-            return CreatureTemplateList;
+            return CreatureTemplateListByEQID;
         }
 
         public static int GenerateCreatureSQLGUID()
@@ -69,7 +73,7 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateCreatureTemplateList()
         {
-            CreatureTemplateList.Clear();
+            CreatureTemplateListByEQID.Clear();
 
             string creatureTemplatesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
             Logger.WriteDetail("Populating Creature Template list via file '" + creatureTemplatesFile + "'");
@@ -111,30 +115,31 @@ namespace EQWOWConverter.Creatures
                 }
                 newCreatureTemplate.EQClass = int.Parse(rowBlocks[5]);
                 newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[6]);
-                newCreatureTemplate.HP = int.Parse(rowBlocks[7]);
-                int genderID = int.Parse(rowBlocks[9]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[7]);
+                if (newCreatureTemplate.Size <= 0)
+                {
+                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
+                    newCreatureTemplate.Size = 1;
+                }
+                int genderID = int.Parse(rowBlocks[8]);
                 switch (genderID)
                 {
                     case 0: newCreatureTemplate.GenderType = CreatureGenderType.Male; break;
                     case 1: newCreatureTemplate.GenderType = CreatureGenderType.Female; break;
                     default: newCreatureTemplate.GenderType = CreatureGenderType.Neutral; break;
                 }
-                newCreatureTemplate.TextureID = int.Parse(rowBlocks[10]);
-                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[11]);
-                newCreatureTemplate.Size = float.Parse(rowBlocks[12]);
-                if (newCreatureTemplate.Size <= 0)
-                {
-                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
-                    newCreatureTemplate.Size = 1;
-                }
-                newCreatureTemplate.FaceID = int.Parse(rowBlocks[13]);
+                newCreatureTemplate.TextureID = int.Parse(rowBlocks[9]);
+                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[10]);
+                newCreatureTemplate.FaceID = int.Parse(rowBlocks[11]);
                 if (newCreatureTemplate.FaceID > 9)
                 {
                     Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
                     newCreatureTemplate.FaceID = 0;
                 }
+                newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[12]);
+                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[13]);
                 newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[14]);
-                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[20]);
+                newCreatureTemplate.HP = int.Parse(rowBlocks[15]);                     
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
@@ -186,13 +191,13 @@ namespace EQWOWConverter.Creatures
 
 
                 // Must be a unique record
-                if (CreatureTemplateList.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))
+                if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))
                 {
                     Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.EQCreatureTemplateID + "'");
                     continue;
                 }
 
-                CreatureTemplateList.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
+                CreatureTemplateListByEQID.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
             }
         }
     }

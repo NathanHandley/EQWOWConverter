@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ItemTemplate itemTemplate)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", itemTemplate.EntryID);
+            newRow.AddInt("entry", itemTemplate.WOWEntryID);
             newRow.AddInt("class", itemTemplate.ClassID);
             newRow.AddInt("subclass", itemTemplate.SubClassID);
             newRow.AddInt("SoundOverrideSubclass", -1);

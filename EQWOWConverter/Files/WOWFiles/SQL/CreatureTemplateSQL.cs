@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 128; // 	0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
 
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", creatureTemplate.SQLCreatureTemplateID);
+            newRow.AddInt("entry", creatureTemplate.WOWCreatureTemplateID);
             newRow.AddInt("difficulty_entry_1", 0);
             newRow.AddInt("difficulty_entry_2", 0);
             newRow.AddInt("difficulty_entry_3", 0);
@@ -79,13 +79,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("trainer_race", 0);
             newRow.AddInt("type", 0); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
             newRow.AddInt("type_flags", 0); // "Is this minable, tameable, etc"
-            newRow.AddInt("lootid", 0);
+            newRow.AddInt("lootid", creatureTemplate.WOWLootID);
             newRow.AddInt("pickpocketloot", 0);
             newRow.AddInt("skinloot", 0);
             newRow.AddInt("PetSpellDataId", 0);
             newRow.AddInt("VehicleId", 0);
-            newRow.AddInt("mingold", 0);
-            newRow.AddInt("maxgold", 0);
+            newRow.AddInt("mingold", creatureTemplate.MoneyMinInCopper); // "mingold" in the DB, but value is actually copper
+            newRow.AddInt("maxgold", creatureTemplate.MoneyMaxInCopper); // "maxgold" in the DB, but value is actually copper
             newRow.AddString("AIName", 64, string.Empty);
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);

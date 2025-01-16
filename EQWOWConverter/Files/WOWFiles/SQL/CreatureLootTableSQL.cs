@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("QuestRequired", 0);
             newRow.AddInt("LootMode", 1);
-            newRow.AddInt("GroupId", 0);
+            newRow.AddInt("GroupId", itemLootTemplate.GroupID);
             newRow.AddInt("MinCount", itemLootTemplate.MinCount);
             newRow.AddInt("MaxCount", itemLootTemplate.MaxCount);
             newRow.AddString("Comment", 255, itemLootTemplate.Comment);

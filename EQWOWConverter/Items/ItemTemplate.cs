@@ -29,7 +29,7 @@ namespace EQWOWConverter.Items
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
 
         public int EQItemID = 0;
-        public int EntryID = 0;
+        public int WOWEntryID = 0;
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
@@ -43,7 +43,7 @@ namespace EQWOWConverter.Items
 
         public ItemTemplate()
         {
-            EntryID = CURRENT_SQL_ITEMTEMPLATEENTRYID;
+            WOWEntryID = CURRENT_SQL_ITEMTEMPLATEENTRYID;
             CURRENT_SQL_ITEMTEMPLATEENTRYID++;
         }
 

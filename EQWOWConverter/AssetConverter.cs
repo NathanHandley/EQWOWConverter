@@ -64,9 +64,6 @@ namespace EQWOWConverter
             if (ConvertEQZonesToWOW(out zones) == false)
                 return false;
 
-            // Items
-            CreateItemIconFiles();
-
             // Creatures
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
@@ -81,6 +78,10 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
 
+            // Items
+            Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
+            ConvertItemsAndLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
+
             // Copy the loading screens
             CreateLoadingScreens();
 
@@ -91,7 +92,7 @@ namespace EQWOWConverter
             CreateDBCFiles(zones, creatureModelTemplates);
 
             // Create the SQL Scripts (note: this must always be after DBC files)
-            CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools);
+            CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -309,7 +310,7 @@ namespace EQWOWConverter
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
 
             // Generate templates
-            Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateList();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateListByEQID();
             creatureTemplates = creatureTemplatesByID.Values.ToList();
 
             // Create all of the models and related model files
@@ -497,6 +498,76 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Creature generation complete.");
             return true;
+        }
+
+        public void ConvertItemsAndLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
+        {
+            Logger.WriteInfo("Converting items and loot...");
+            
+            // Icons
+            CreateItemIconFiles();
+
+            // Generate item templates
+            SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
+
+            // Build item loot templates
+            itemLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
+            Dictionary<int, ItemLootDrop> itemLootDropsByEQID = ItemLootDrop.GetItemLootDropsByEQID();
+            Dictionary<int, ItemLootTable> itemLootTablesByEQID = ItemLootTable.GetItemLootTablesByEQID();
+            foreach(CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                // Skip creatures with no loot table
+                if (creatureTemplate.EQLootTableID == 0)
+                    continue;
+                if (itemLootTablesByEQID.ContainsKey(creatureTemplate.EQLootTableID) == false)
+                {
+                    Logger.WriteError("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
+                    continue;
+                }
+                ItemLootTable curItemLootTable = itemLootTablesByEQID[creatureTemplate.EQLootTableID];
+
+                // Set money
+                creatureTemplate.MoneyMinInCopper = curItemLootTable.MinMoney;
+                creatureTemplate.MoneyMaxInCopper = curItemLootTable.MaxMoney;
+
+                // Create the item loot template records
+                List<ItemLootTemplate> itemLootTemplates = new List<ItemLootTemplate>();
+                int itemGroupID = 0;
+                foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
+                {
+                    if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
+                    {
+                        Logger.WriteError("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
+                        continue;
+                    }
+                    ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
+                    foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
+                    {
+                        if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
+                        {
+                            Logger.WriteError("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                            continue;
+                        }
+                        ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
+                        ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
+                        newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                        newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
+                        newItemLootTemplate.Chance = itemDropEntry.Chance;
+                        newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
+                        newItemLootTemplate.GroupID = itemGroupID;
+                        itemLootTemplates.Add(newItemLootTemplate);
+                    }
+                    itemGroupID++;
+                }
+
+                if (itemLootTemplates.Count > 0)
+                {
+                    itemLootTemplatesByCreatureTemplateID.Add(creatureTemplate.WOWCreatureTemplateID, itemLootTemplates);
+                    creatureTemplate.WOWLootID = creatureTemplate.WOWCreatureTemplateID;
+                }
+            }
+
+            Logger.WriteInfo("Item and loot conversion complete.");
         }
 
         public void ExtractClientDBCFiles()
@@ -1217,7 +1288,7 @@ namespace EQWOWConverter
         }
 
         public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
-            List<CreatureSpawnPool> creatureSpawnPools)
+            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
 
@@ -1231,6 +1302,7 @@ namespace EQWOWConverter
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
             CreatureSQL creatureSQL = new CreatureSQL();
             CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
+            CreatureLootTableSQL creatureLootTableSQL = new CreatureLootTableSQL();
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
@@ -1292,7 +1364,7 @@ namespace EQWOWConverter
 
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate, scale);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
 
                     // If it's a vendor, add the vendor records too
                     if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
@@ -1305,7 +1377,7 @@ namespace EQWOWConverter
                                 continue;
                             }
 
-                            npcVendorSQL.AddRow(creatureTemplate.SQLCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].EntryID, vendorItem.Slot);
+                            npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
                         }
                     }
                 }
@@ -1330,12 +1402,12 @@ namespace EQWOWConverter
                         creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                         foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
                             waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                        creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                     }
                     else
                     {
-                        creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                        creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
                     }
                 }
@@ -1378,12 +1450,12 @@ namespace EQWOWConverter
                                 creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                                 foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
                                     waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                             }
                             else
                             {
-                                creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                                creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
                             }
                         }
@@ -1421,12 +1493,12 @@ namespace EQWOWConverter
                             creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
                             foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
                                 waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
                         }
                         else
                         {
-                            creatureSQL.AddRow(creatureGUID, creatureTemplate.SQLCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
+                            creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.None);
                         }
                     }
@@ -1436,12 +1508,16 @@ namespace EQWOWConverter
             // Items
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
                 itemTemplateSQL.AddRow(itemTemplate);
+            foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
+                foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
+                    creatureLootTableSQL.AddRow(itemLootTemplate);
 
             // Output them
             areaTriggerSQL.SaveToDisk("areatrigger");
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport");
             creatureSQL.SaveToDisk("creature");
             creatureAddonSQL.SaveToDisk("creature_addon");
+            creatureLootTableSQL.SaveToDisk("creature_loot_template");
             creatureModelInfoSQL.SaveToDisk("creature_model_info");
             creatureTemplateSQL.SaveToDisk("creature_template");
             creatureTemplateModelSQL.SaveToDisk("creature_template_model");
