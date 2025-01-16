@@ -521,7 +521,8 @@ namespace EQWOWConverter
                     continue;
                 if (itemLootTablesByEQID.ContainsKey(creatureTemplate.EQLootTableID) == false)
                 {
-                    Logger.WriteError("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
+                    // In review, these errors have to do with future expansions that this code won't support
+                    Logger.WriteDetail("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
                     continue;
                 }
                 ItemLootTable curItemLootTable = itemLootTablesByEQID[creatureTemplate.EQLootTableID];
@@ -537,7 +538,8 @@ namespace EQWOWConverter
                 {
                     if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
                     {
-                        Logger.WriteError("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
+                        // In review, these errors have to do with future expansions that this code won't support
+                        Logger.WriteDetail("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
                         continue;
                     }
                     ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
@@ -545,7 +547,8 @@ namespace EQWOWConverter
                     {
                         if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
                         {
-                            Logger.WriteError("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                            // In review, these errors have to do with items in future expansions
+                            Logger.WriteDetail("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
                             continue;
                         }
                         ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
