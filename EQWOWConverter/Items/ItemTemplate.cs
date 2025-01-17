@@ -25,6 +25,7 @@ namespace EQWOWConverter.Items
 {
     internal class ItemTemplate
     {
+
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
 
@@ -48,14 +49,186 @@ namespace EQWOWConverter.Items
             CURRENT_SQL_ITEMTEMPLATEENTRYID++;
         }
 
-        static public SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
+        public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
         {
             if (ItemTemplatesByEQDBID.Count == 0)
                 PopulateItemTemplateListFromDisk();
             return ItemTemplatesByEQDBID;
         }
 
-        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType)
+        private enum WeaponIconImpliedType
+        {
+            BladeSlash,
+            BladeStab,
+            Axe,
+            Polearm,
+            BluntNonStaff,
+            BluntStaff,
+            Hand2Hand
+        }
+
+        private static WeaponIconImpliedType GetWeaponImpliedTypeFromIcon(int iconID)
+        {
+            switch (iconID)
+            {
+                case 19: return WeaponIconImpliedType.BladeSlash;
+                case 47: return WeaponIconImpliedType.BluntNonStaff;
+                case 59: return WeaponIconImpliedType.BluntNonStaff;
+                case 67: return WeaponIconImpliedType.BluntNonStaff;
+                case 68: return WeaponIconImpliedType.Axe;
+                case 69: return WeaponIconImpliedType.Axe;
+                case 73: return WeaponIconImpliedType.Axe;
+                case 78: return WeaponIconImpliedType.BluntNonStaff;
+                case 81: return WeaponIconImpliedType.BluntNonStaff;
+                case 74: return WeaponIconImpliedType.BladeSlash;
+                case 75: return WeaponIconImpliedType.BladeSlash;
+                case 76: return WeaponIconImpliedType.BladeSlash;
+                case 77: return WeaponIconImpliedType.BladeSlash;
+                case 79: return WeaponIconImpliedType.BladeSlash; // Scythe icon
+                case 80: return WeaponIconImpliedType.BladeSlash;
+                case 88: return WeaponIconImpliedType.BladeSlash;
+                case 89: return WeaponIconImpliedType.BladeSlash;
+                case 90: return WeaponIconImpliedType.BladeSlash;
+                case 91: return WeaponIconImpliedType.BladeSlash;
+                case 92: return WeaponIconImpliedType.BladeSlash;
+                case 101: return WeaponIconImpliedType.BluntStaff;
+                case 102: return WeaponIconImpliedType.BluntStaff;
+                case 103: return WeaponIconImpliedType.BladeSlash;
+                case 104: return WeaponIconImpliedType.BladeSlash;
+                case 105: return WeaponIconImpliedType.BladeSlash;
+                case 186: return WeaponIconImpliedType.BluntStaff;
+                case 236: return WeaponIconImpliedType.Polearm;
+                case 237: return WeaponIconImpliedType.BluntNonStaff;
+                case 238: return WeaponIconImpliedType.BluntNonStaff;
+                case 240: return WeaponIconImpliedType.Polearm;
+                case 241: return WeaponIconImpliedType.BluntNonStaff;
+                case 242: return WeaponIconImpliedType.Polearm;
+                case 249: return WeaponIconImpliedType.BluntStaff; // Fishing Pole
+                case 262: return WeaponIconImpliedType.BladeSlash;
+                case 263: return WeaponIconImpliedType.BladeSlash;
+                case 268: return WeaponIconImpliedType.Axe;
+                case 276: return WeaponIconImpliedType.Polearm;
+                case 281: return WeaponIconImpliedType.BladeSlash; // Scythe icon
+                case 309: return WeaponIconImpliedType.BluntStaff; // Potential wand
+                case 310: return WeaponIconImpliedType.BluntStaff; // Potential wand
+                case 311: return WeaponIconImpliedType.BluntStaff; // Potential wand
+                case 321: return WeaponIconImpliedType.BluntNonStaff;
+                case 322: return WeaponIconImpliedType.BluntNonStaff;
+                case 347: return WeaponIconImpliedType.BladeSlash;
+                case 382: return WeaponIconImpliedType.BladeSlash;
+                case 387: return WeaponIconImpliedType.BluntStaff;
+                case 388: return WeaponIconImpliedType.Axe;
+                case 389: return WeaponIconImpliedType.BluntStaff;
+                case 390: return WeaponIconImpliedType.BladeSlash;
+                case 391: return WeaponIconImpliedType.BluntNonStaff;
+                case 402: return WeaponIconImpliedType.Axe;
+                case 403: return WeaponIconImpliedType.BluntNonStaff;
+                case 473: return WeaponIconImpliedType.BluntNonStaff;
+                case 475: return WeaponIconImpliedType.Hand2Hand;
+                case 583: return WeaponIconImpliedType.BluntStaff;
+                case 617: return WeaponIconImpliedType.BluntNonStaff;
+                case 643: return WeaponIconImpliedType.BluntStaff; // Fishing Pole
+                case 663: return WeaponIconImpliedType.Polearm;
+                case 664: return WeaponIconImpliedType.Axe;
+                case 665: return WeaponIconImpliedType.BladeSlash; // Might be stab
+                case 666: return WeaponIconImpliedType.Axe;
+                case 667: return WeaponIconImpliedType.Axe;
+                case 668: return WeaponIconImpliedType.BladeSlash;
+                case 669: return WeaponIconImpliedType.BladeSlash;
+                case 670: return WeaponIconImpliedType.BladeSlash; // Might be stab, but probably slash
+                case 671: return WeaponIconImpliedType.BladeSlash;
+                case 672: return WeaponIconImpliedType.BluntNonStaff; // Might be a staff
+                case 673: return WeaponIconImpliedType.BladeSlash;
+                case 674: return WeaponIconImpliedType.BladeSlash;
+                case 675: return WeaponIconImpliedType.BluntNonStaff;
+                case 676: return WeaponIconImpliedType.BladeSlash;
+                case 677: return WeaponIconImpliedType.BladeSlash;
+                case 678: return WeaponIconImpliedType.BladeSlash;
+                case 679: return WeaponIconImpliedType.Hand2Hand;
+                case 680: return WeaponIconImpliedType.Hand2Hand;
+                case 681: return WeaponIconImpliedType.Polearm; // May not be a polearm
+                case 682: return WeaponIconImpliedType.Hand2Hand; // Could be dagger, but I recall this was for monk weapons
+                case 683: return WeaponIconImpliedType.BladeStab; // Could also be slash
+                case 684: return WeaponIconImpliedType.BladeSlash;
+                case 685: return WeaponIconImpliedType.BladeSlash;
+                case 686: return WeaponIconImpliedType.BladeSlash;
+                case 687: return WeaponIconImpliedType.Polearm;
+                case 688: return WeaponIconImpliedType.BluntNonStaff;
+                case 689: return WeaponIconImpliedType.BluntNonStaff;
+                case 690: return WeaponIconImpliedType.BladeSlash;
+                case 691: return WeaponIconImpliedType.BladeSlash;
+                case 692: return WeaponIconImpliedType.BladeSlash;
+                case 693: return WeaponIconImpliedType.BladeSlash;
+                case 694: return WeaponIconImpliedType.BluntNonStaff;
+                case 695: return WeaponIconImpliedType.BladeSlash;
+                case 711: return WeaponIconImpliedType.BladeSlash;
+                case 712: return WeaponIconImpliedType.BladeSlash;
+                case 713: return WeaponIconImpliedType.BluntStaff;
+                case 714: return WeaponIconImpliedType.BladeStab; // Could be slash
+                case 715: return WeaponIconImpliedType.BladeSlash; // Could be slash
+                case 716: return WeaponIconImpliedType.Polearm;
+                default: return WeaponIconImpliedType.BluntNonStaff; // Default to 'blunt' since it would probably be some odd object
+            }
+        }
+
+        private static ItemWeaponSubclassType GetWeaponSubclass(int eqItemID, int eqItemType, int iconID)
+        {
+            WeaponIconImpliedType iconWeaponImpliedType = GetWeaponImpliedTypeFromIcon(iconID);
+            switch (eqItemType)
+            {
+                case 0: // 1h Slashing + Junk
+                    {
+                        switch (iconWeaponImpliedType)
+                        {
+                            case WeaponIconImpliedType.BluntNonStaff: return ItemWeaponSubclassType.MaceOneHand;
+                            case WeaponIconImpliedType.Hand2Hand: return ItemWeaponSubclassType.FistWeapon;
+                            case WeaponIconImpliedType.BladeStab: return ItemWeaponSubclassType.Dagger;
+                            case WeaponIconImpliedType.Axe: return ItemWeaponSubclassType.AxeOneHand;
+                            default: return ItemWeaponSubclassType.SwordOneHand;
+                        }
+                    }
+                case 1: // 2h Slashing
+                    {
+                        switch (iconWeaponImpliedType)
+                        {
+                            case WeaponIconImpliedType.Axe: return ItemWeaponSubclassType.AxeTwoHand;
+                            case WeaponIconImpliedType.Polearm: return ItemWeaponSubclassType.Polearm;
+                            default: return ItemWeaponSubclassType.SwordTwoHand;
+                        }
+                    }
+                case 2: // 1h Pierce
+                    {
+                        switch (iconWeaponImpliedType)
+                        {
+                            case WeaponIconImpliedType.Hand2Hand: return ItemWeaponSubclassType.FistWeapon;
+                            default: return ItemWeaponSubclassType.Dagger;
+                        }
+                    }
+                case 35: // 2h Pierce
+                    {
+                        return ItemWeaponSubclassType.Polearm;
+                    }
+                case 3: // 1h Blunt
+                    {
+                        return ItemWeaponSubclassType.MaceOneHand;
+                    }
+                case 4: // 2h Blunt
+                    {
+                        switch (iconWeaponImpliedType)
+                        {
+                            case WeaponIconImpliedType.BluntStaff: return ItemWeaponSubclassType.Staff;
+                            default: return ItemWeaponSubclassType.MaceTwoHand;
+                        }
+                    }
+                default:
+                    {
+                        Logger.WriteError("Unhandled iconID of `" + eqItemType + "` in GetWeaponSubclass");
+                        return 0;
+                    }
+            }
+        }
+
+        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int iconID)
         {
             switch (eqItemType)
             {
@@ -95,7 +268,7 @@ namespace EQWOWConverter.Items
                             // 1 Hand Slash => 1h Sword
                             // TODO: Axe
                             itemTemplate.ClassID = 2;
-                            itemTemplate.SubClassID = 7;
+                            itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                             itemTemplate.InventoryType = ItemInventoryType.OneHand;
                         }
                     } break;
@@ -103,44 +276,43 @@ namespace EQWOWConverter.Items
                     {
                         // TODO: Axe
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 8;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                     } break;
                 case 2: // 1 Hand Pierce => Dagger
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 15;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
                 case 35: // 2 Hand Pierce => Polearm
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 6;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.TwoHand;
                     } break;
                 case 3: // 1 Hand Blunt => 1H Mace
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 4;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
                 case 4: // 2 Hand Blunt => 2H Mace
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 5;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.TwoHand;
-                        // TODO: Staves
                     } break;
                 case 5: // Bow
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 2;
+                        itemTemplate.SubClassID = Convert.ToInt32(ItemWeaponSubclassType.Bow);
                         itemTemplate.InventoryType = ItemInventoryType.Ranged;
                     } break;
                 case 7: // Thrown
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = 16;
+                        itemTemplate.SubClassID = Convert.ToInt32(ItemWeaponSubclassType.Thrown);
                         itemTemplate.InventoryType = ItemInventoryType.Thrown;
                     } break;
                 case 8: // Shield
@@ -380,16 +552,16 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemID = int.Parse(rowBlocks[0]);
                 newItemTemplate.Name = rowBlocks[1];
 
+                // Icon
+                int iconID = int.Parse(rowBlocks[3]) - 500;
+                string iconName = "INV_EQ_" + (iconID).ToString();
+                ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
+                newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+
                 // Equippable Properties
                 int itemType = int.Parse(rowBlocks[2]);
                 int bagType = int.Parse(rowBlocks[7]);
-                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType);
-
-                // Icon
-                int iconID = int.Parse(rowBlocks[3]);
-                string iconName = "INV_EQ_" + (iconID - 500).ToString();
-                ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
-                newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, iconID);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(rowBlocks[4]);
