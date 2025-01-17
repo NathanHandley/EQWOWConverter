@@ -37,6 +37,39 @@ namespace EQWOWConverter.Items
             return ItemLootDropsByEQID;
         }
 
+        // TODO: Find out why we need to do this.  Without this, many drop entry groups will have >100 aggregate
+        // chance.  Either the source data is dirty, or there is a dimension that is missing.
+        public void ReduceChanceIfOver100()
+        {
+            // Don't do anything if the total isn't over 100
+            float totalChance = 0;
+            foreach(ItemLootDropEntry entry in ItemLootDropEntries)
+                totalChance += entry.Chance;
+            if (totalChance - Configuration.CONFIG_GENERATE_FLOAT_EPSILON < 100)
+                return;
+
+            // Reduce the amounts proportional to the overage and round it
+            float modScale = 100 / totalChance;
+            float roundedTotal = 0;
+            foreach (ItemLootDropEntry entry in ItemLootDropEntries)
+            {
+                float newScaledRoundedValue = MathF.Round(entry.Chance * modScale, 1);
+                roundedTotal += newScaledRoundedValue;
+                entry.Chance = newScaledRoundedValue;
+            }
+
+            // Control for overflow from the rounding by removing it from the largest value
+            float differenceTo100 = 100 - roundedTotal;
+            if (MathF.Abs(differenceTo100) > 0.01f)
+            {
+                int largestValueIndex = 0;
+                for (int i = 1; i < ItemLootDropEntries.Count; i++)
+                    if (ItemLootDropEntries[i].Chance > ItemLootDropEntries[0].Chance)
+                        largestValueIndex = i;
+                ItemLootDropEntries[largestValueIndex].Chance = MathF.Round(ItemLootDropEntries[largestValueIndex].Chance + differenceTo100, 1);
+            }
+        }
+
         private static void PopulateItemLootDropDataFromDisk()
         {
             // Populate the loot drops
@@ -70,6 +103,14 @@ namespace EQWOWConverter.Items
             {
                 string[] rowBlocks = row.Split("|");
 
+                // Skip invalid expansion rows
+                int minExpansion = int.Parse(rowBlocks[7]);
+                int maxExpansion = int.Parse(rowBlocks[8]);
+                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                    continue;
+
                 // Create the entry record
                 ItemLootDropEntry curLootDropEntry = new ItemLootDropEntry();
                 curLootDropEntry.LootDropID = int.Parse(rowBlocks[0]);
@@ -89,6 +130,10 @@ namespace EQWOWConverter.Items
                 else
                     ItemLootDropsByEQID[curLootDropEntry.LootDropID].ItemLootDropEntries.Add(curLootDropEntry);
             }
+
+            // Normalize the loot drop chances
+            foreach (var itemLootDropsByEQID in ItemLootDropsByEQID)
+                itemLootDropsByEQID.Value.ReduceChanceIfOver100();
         }
     }
 }
