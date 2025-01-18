@@ -42,6 +42,9 @@ namespace EQWOWConverter.Items
         public int BagSlots = 0;
         public int StackSize = 1;
         public ItemInventoryType InventoryType = ItemInventoryType.NoEquip;
+        public int WeaponMinDamage = 0;
+        public int WeaponMaxDamage = 0;
+        public int WeaponDelay = 0;
 
         public ItemTemplate()
         {
@@ -54,6 +57,41 @@ namespace EQWOWConverter.Items
             if (ItemTemplatesByEQDBID.Count == 0)
                 PopulateItemTemplateListFromDisk();
             return ItemTemplatesByEQDBID;
+        }
+
+        private static void CalculateWeaponDamage(int eqWeaponDamage, int eqWeaponDelayInMS, bool isTwoHanded, out int weaponMin, 
+            out int weaponMax, out int weaponDelayInMS)
+        {
+            // Calculate the original DPS for the weapon in EQ
+            float eqDPS = Convert.ToSingle(eqWeaponDamage) / (Convert.ToSingle(eqWeaponDelayInMS) / 1000);
+
+            // Calculate the amount to scale the weapon DPS by
+            float dpsScaleLow = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_1H;
+            float dpsScaleHigh = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_1H;
+            if (isTwoHanded == true)
+            {
+                dpsScaleLow = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_2H;
+                dpsScaleHigh = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_2H;
+            }
+            float dpsScaleAmt = 1;
+            if (eqDPS >= dpsScaleHigh)
+                dpsScaleAmt = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER;
+            else if (eqDPS > dpsScaleLow)
+            {
+                float normalizedMod = (eqDPS - dpsScaleLow) / (dpsScaleHigh - dpsScaleLow);
+                dpsScaleAmt = 1 + normalizedMod * (Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER - 1);
+            }
+
+            // Calculate a new weapon delay based on the config and scale down the damage accordingly
+            weaponDelayInMS = Convert.ToInt32(Math.Round(Convert.ToSingle(eqWeaponDelayInMS) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT)));
+            float newBaseDmg = eqWeaponDamage * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT);
+
+            // Scale up the damage
+            newBaseDmg *= dpsScaleAmt;
+
+            // Calculate min/max damage ranges (+/- 20%)
+            weaponMin = Convert.ToInt32(Math.Round(newBaseDmg * 0.8f));
+            weaponMax = Convert.ToInt32(Math.Round(newBaseDmg * 1.2f));
         }
 
         private enum WeaponIconImpliedType
@@ -265,16 +303,14 @@ namespace EQWOWConverter.Items
                         }
                         else
                         {
-                            // 1 Hand Slash => 1h Sword
-                            // TODO: Axe
+                            // 1 Hand Slash => 1h Sword or Axe
                             itemTemplate.ClassID = 2;
                             itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                             itemTemplate.InventoryType = ItemInventoryType.OneHand;
                         }
                     } break;
-                case 1: // 2 Hand Slash => 2h Sword
+                case 1: // 2 Hand Slash => 2h Sword or Axe
                     {
-                        // TODO: Axe
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.TwoHand;
@@ -297,7 +333,7 @@ namespace EQWOWConverter.Items
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
                         itemTemplate.InventoryType = ItemInventoryType.OneHand;
                     } break;
-                case 4: // 2 Hand Blunt => 2H Mace
+                case 4: // 2 Hand Blunt => 2H Mace or Staff
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
@@ -572,6 +608,28 @@ namespace EQWOWConverter.Items
                 // Other
                 newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
                 newItemTemplate.StackSize = int.Max(int.Parse(rowBlocks[9]), 1);
+
+                // Calculate the weapon damage
+                // TODO: Bow
+                int damage = int.Parse(rowBlocks[10]);
+                int delay = int.Parse(rowBlocks[11]) * 100;
+                if (damage > 0 && delay > 0 && newItemTemplate.ClassID == 2 && newItemTemplate.SubClassID != 2)
+                {
+                    bool isTwoHanded = false;
+                    if (newItemTemplate.SubClassID == 1 || newItemTemplate.SubClassID == 5 || newItemTemplate.SubClassID == 6 || 
+                        newItemTemplate.SubClassID == 8 || newItemTemplate.SubClassID == 10)
+                            isTwoHanded = true;
+                    int weaponMin;
+                    int weaponMax;
+                    int weaponDelayInMS;
+                    CalculateWeaponDamage(damage, delay, isTwoHanded, out weaponMin, out weaponMax, out weaponDelayInMS);
+                    newItemTemplate.WeaponMinDamage = weaponMin;
+                    newItemTemplate.WeaponMaxDamage = weaponMax;
+                    newItemTemplate.WeaponDelay = weaponDelayInMS;
+                }
+
+                // Calculate projectile damage
+                // TODO:
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))

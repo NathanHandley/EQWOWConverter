@@ -82,8 +82,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("stat_value10", 0);
             newRow.AddInt("ScalingStatDistribution", 0);
             newRow.AddInt("ScalingStatValue", 0);
-            newRow.AddInt("dmg_min1", 0);
-            newRow.AddInt("dmg_max1", 0);
+            newRow.AddInt("dmg_min1", itemTemplate.WeaponMinDamage);
+            newRow.AddInt("dmg_max1", itemTemplate.WeaponMaxDamage);
             newRow.AddInt("dmg_type1", 0);
             newRow.AddInt("dmg_min2", 0);
             newRow.AddInt("dmg_max2", 0);
@@ -95,7 +95,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("frost_res", null);
             newRow.AddInt("shadow_res", null);
             newRow.AddInt("arcane_res", null);
-            newRow.AddInt("delay", 1000);
+            newRow.AddInt("delay", itemTemplate.WeaponDelay);
             newRow.AddInt("ammo_type", 0);
             newRow.AddFloat("RangedModRange", 0);
             newRow.AddInt("spellid_1", 0);
