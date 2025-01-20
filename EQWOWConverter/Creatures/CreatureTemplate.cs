@@ -34,7 +34,6 @@ namespace EQWOWConverter.Creatures
         public CreatureRace Race = new CreatureRace();
         public int EQClass = 1;
         public int EQBodyType = 24; // This is common for the body type
-        public int HP = 1;
         public int FaceID = 0;
         public int ColorTintID = 0;
         public float Size = 0f;
@@ -48,6 +47,7 @@ namespace EQWOWConverter.Creatures
         public int MoneyMinInCopper = 0;
         public int MoneyMaxInCopper = 0;
         public bool HasMana = false;
+        public float HPMod = 1f;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -105,43 +105,43 @@ namespace EQWOWConverter.Creatures
                 string[] rowBlocks = row.Split("|");
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(rowBlocks[0]);
-                newCreatureTemplate.Name = rowBlocks[1];
-                newCreatureTemplate.SubName = rowBlocks[2];
-                newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[3]), 1);
-                int raceID = int.Parse(rowBlocks[4]);
+                newCreatureTemplate.Name = rowBlocks[2];
+                newCreatureTemplate.SubName = rowBlocks[3];
+                newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[4]), 1);
+                int raceID = int.Parse(rowBlocks[5]);
                 if (raceID == 0)
                 {
                     Logger.WriteDetail("Creature template had race of 0, so falling back to 1 (Human)");
                     raceID = 1;
                 }
-                newCreatureTemplate.EQClass = int.Parse(rowBlocks[5]);
-                newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[6]);
-                newCreatureTemplate.Size = float.Parse(rowBlocks[7]);
+                newCreatureTemplate.EQClass = int.Parse(rowBlocks[6]);
+                newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[7]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[8]);
                 if (newCreatureTemplate.Size <= 0)
                 {
                     Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
                     newCreatureTemplate.Size = 1;
                 }
-                int genderID = int.Parse(rowBlocks[8]);
+                int genderID = int.Parse(rowBlocks[9]);
                 switch (genderID)
                 {
                     case 0: newCreatureTemplate.GenderType = CreatureGenderType.Male; break;
                     case 1: newCreatureTemplate.GenderType = CreatureGenderType.Female; break;
                     default: newCreatureTemplate.GenderType = CreatureGenderType.Neutral; break;
                 }
-                newCreatureTemplate.TextureID = int.Parse(rowBlocks[9]);
-                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[10]);
-                newCreatureTemplate.FaceID = int.Parse(rowBlocks[11]);
+                newCreatureTemplate.TextureID = int.Parse(rowBlocks[10]);
+                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[11]);
+                newCreatureTemplate.FaceID = int.Parse(rowBlocks[12]);
                 if (newCreatureTemplate.FaceID > 9)
                 {
                     Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
                     newCreatureTemplate.FaceID = 0;
                 }
-                newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[12]);
-                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[13]);
-                newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[14]);
-                newCreatureTemplate.HP = int.Parse(rowBlocks[15]);
+                newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[13]);
+                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[14]);
+                newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[15]);
                 newCreatureTemplate.HasMana = (int.Parse(rowBlocks[16]) > 0);
+                newCreatureTemplate.HPMod = float.Parse(rowBlocks[17]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
@@ -190,7 +190,6 @@ namespace EQWOWConverter.Creatures
                 if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
                 //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
-
 
                 // Must be a unique record
                 if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))

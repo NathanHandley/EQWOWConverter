@@ -92,7 +92,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("AIName", 64, string.Empty);
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);
-            newRow.AddFloat("HealthModifier", 1);
+            newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
             newRow.AddFloat("ManaModifier", 1);
             newRow.AddFloat("ArmorModifier", 1);
             newRow.AddFloat("ExperienceModifier", 1);
