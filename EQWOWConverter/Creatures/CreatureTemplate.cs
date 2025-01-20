@@ -47,6 +47,7 @@ namespace EQWOWConverter.Creatures
         public int WOWLootID = 0;
         public int MoneyMinInCopper = 0;
         public int MoneyMaxInCopper = 0;
+        public bool HasMana = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -139,7 +140,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[12]);
                 newCreatureTemplate.MerchantID = int.Parse(rowBlocks[13]);
                 newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[14]);
-                newCreatureTemplate.HP = int.Parse(rowBlocks[15]);                     
+                newCreatureTemplate.HP = int.Parse(rowBlocks[15]);
+                newCreatureTemplate.HasMana = (int.Parse(rowBlocks[16]) > 0);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');

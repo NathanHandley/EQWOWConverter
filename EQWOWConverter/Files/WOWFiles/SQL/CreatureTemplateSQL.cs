@@ -68,7 +68,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RangeAttackTime", 2000);
             newRow.AddFloat("BaseVariance", 1);
             newRow.AddFloat("RangeVariance", 1);
-            newRow.AddInt("unit_class", 1);
+            if (creatureTemplate.HasMana == true)
+                newRow.AddInt("unit_class", 2);
+            else
+                newRow.AddInt("unit_class", 1);
             newRow.AddInt("unit_flags", 0);
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
