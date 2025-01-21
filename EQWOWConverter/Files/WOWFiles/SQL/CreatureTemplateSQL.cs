@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("scale", scale);
             newRow.AddInt("rank", Convert.ToInt32(creatureTemplate.Rank));
             newRow.AddInt("dmgschool", 0);
-            newRow.AddFloat("DamageModifier", 1);
+            newRow.AddFloat("DamageModifier", creatureTemplate.DamageMod);
             newRow.AddInt("BaseAttackTime", 2000); // 2,000 very common, but can be lower like 1,500
             newRow.AddInt("RangeAttackTime", 2000);
             newRow.AddFloat("BaseVariance", 1);

@@ -48,6 +48,7 @@ namespace EQWOWConverter.Creatures
         public int MoneyMaxInCopper = 0;
         public bool HasMana = false;
         public float HPMod = 1f;
+        public float DamageMod = 1f;
         public CreatureRankType Rank = CreatureRankType.Normal;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
@@ -144,6 +145,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[16]);
                 newCreatureTemplate.HasMana = (int.Parse(rowBlocks[17]) > 0);
                 newCreatureTemplate.HPMod = float.Parse(rowBlocks[18]);
+                newCreatureTemplate.DamageMod = float.Parse(rowBlocks[19]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
