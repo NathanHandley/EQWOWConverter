@@ -48,6 +48,7 @@ namespace EQWOWConverter.Creatures
         public int MoneyMaxInCopper = 0;
         public bool HasMana = false;
         public float HPMod = 1f;
+        public CreatureRankType Rank = CreatureRankType.Normal;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -105,43 +106,44 @@ namespace EQWOWConverter.Creatures
                 string[] rowBlocks = row.Split("|");
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(rowBlocks[0]);
-                newCreatureTemplate.Name = rowBlocks[2];
-                newCreatureTemplate.SubName = rowBlocks[3];
-                newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[4]), 1);
-                int raceID = int.Parse(rowBlocks[5]);
+                newCreatureTemplate.Rank = (CreatureRankType)int.Parse(rowBlocks[2]);
+                newCreatureTemplate.Name = rowBlocks[3];
+                newCreatureTemplate.SubName = rowBlocks[4];
+                newCreatureTemplate.Level = int.Max(int.Parse(rowBlocks[5]), 1);
+                int raceID = int.Parse(rowBlocks[6]);
                 if (raceID == 0)
                 {
                     Logger.WriteDetail("Creature template had race of 0, so falling back to 1 (Human)");
                     raceID = 1;
                 }
-                newCreatureTemplate.EQClass = int.Parse(rowBlocks[6]);
-                newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[7]);
-                newCreatureTemplate.Size = float.Parse(rowBlocks[8]);
+                newCreatureTemplate.EQClass = int.Parse(rowBlocks[7]);
+                newCreatureTemplate.EQBodyType = int.Parse(rowBlocks[8]);
+                newCreatureTemplate.Size = float.Parse(rowBlocks[9]);
                 if (newCreatureTemplate.Size <= 0)
                 {
                     Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
                     newCreatureTemplate.Size = 1;
                 }
-                int genderID = int.Parse(rowBlocks[9]);
+                int genderID = int.Parse(rowBlocks[10]);
                 switch (genderID)
                 {
                     case 0: newCreatureTemplate.GenderType = CreatureGenderType.Male; break;
                     case 1: newCreatureTemplate.GenderType = CreatureGenderType.Female; break;
                     default: newCreatureTemplate.GenderType = CreatureGenderType.Neutral; break;
                 }
-                newCreatureTemplate.TextureID = int.Parse(rowBlocks[10]);
-                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[11]);
-                newCreatureTemplate.FaceID = int.Parse(rowBlocks[12]);
+                newCreatureTemplate.TextureID = int.Parse(rowBlocks[11]);
+                newCreatureTemplate.HelmTextureID = int.Parse(rowBlocks[12]);
+                newCreatureTemplate.FaceID = int.Parse(rowBlocks[13]);
                 if (newCreatureTemplate.FaceID > 9)
                 {
                     Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
                     newCreatureTemplate.FaceID = 0;
                 }
-                newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[13]);
-                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[14]);
-                newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[15]);
-                newCreatureTemplate.HasMana = (int.Parse(rowBlocks[16]) > 0);
-                newCreatureTemplate.HPMod = float.Parse(rowBlocks[17]);
+                newCreatureTemplate.EQLootTableID = int.Parse(rowBlocks[14]);
+                newCreatureTemplate.MerchantID = int.Parse(rowBlocks[15]);
+                newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[16]);
+                newCreatureTemplate.HasMana = (int.Parse(rowBlocks[17]) > 0);
+                newCreatureTemplate.HPMod = float.Parse(rowBlocks[18]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');

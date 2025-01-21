@@ -61,7 +61,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("speed_flight", 1);
             newRow.AddFloat("detection_range", 20); // 20 is very common, but see a lot of 18 as well
             newRow.AddFloat("scale", scale);
-            newRow.AddInt("rank", 0);
+            newRow.AddInt("rank", Convert.ToInt32(creatureTemplate.Rank));
             newRow.AddInt("dmgschool", 0);
             newRow.AddFloat("DamageModifier", 1);
             newRow.AddInt("BaseAttackTime", 2000); // 2,000 very common, but can be lower like 1,500
