@@ -536,31 +536,48 @@ namespace EQWOWConverter
                 int itemGroupID = 0;
                 foreach (ItemLootTableEntry lootTableEntry in curItemLootTable.ItemLootTableEntries)
                 {
+                    // Skip invalid rows
                     if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
                     {
                         // In review, these errors have to do with future expansions that this code won't support
                         Logger.WriteDetail("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
                         continue;
                     }
-                    ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
-                    foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
+
+                    // Calculate the minimum number of times this entry should show up
+                    int numOfDropCopies = 1;
+                    if (lootTableEntry.Multiplier > 1)
                     {
-                        if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
-                        {
-                            // In review, these errors have to do with items in future expansions
-                            Logger.WriteDetail("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
-                            continue;
-                        }
-                        ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
-                        ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
-                        newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
-                        newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
-                        newItemLootTemplate.Chance = itemDropEntry.Chance;
-                        newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
-                        newItemLootTemplate.GroupID = itemGroupID;
-                        itemLootTemplates.Add(newItemLootTemplate);
+                        int calcMultiplier = (lootTableEntry.Multiplier * lootTableEntry.Probability) / 100;
+                        numOfDropCopies = int.Max(calcMultiplier, lootTableEntry.MultiplierMin);
+                        numOfDropCopies = int.Max(numOfDropCopies, 1);
                     }
-                    itemGroupID++;
+
+                    // Output loot table entries for each copy determined above
+                    ItemLootDrop curItemLootDrop = itemLootDropsByEQID[lootTableEntry.LootDropID];
+                    for (int i = 0; i < numOfDropCopies; i++)
+                    {
+                        foreach (ItemLootDropEntry itemDropEntry in curItemLootDrop.ItemLootDropEntries)
+                        {
+                            if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
+                            {
+                                // In review, these errors have to do with items in future expansions
+                                Logger.WriteDetail("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                                continue;
+                            }
+                            ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
+                            ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
+                            newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
+                            newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
+                            newItemLootTemplate.Chance = itemDropEntry.Chance;
+                            newItemLootTemplate.Comment = creatureTemplate.Name + " - " + curItemTemplate.Name;
+                            newItemLootTemplate.GroupID = itemGroupID;
+                            newItemLootTemplate.MinCount = Math.Max(lootTableEntry.MinDrop, 1);
+                            newItemLootTemplate.MaxCount = Math.Max(lootTableEntry.MinDrop, 1);
+                            itemLootTemplates.Add(newItemLootTemplate);
+                        }
+                        itemGroupID++;
+                    }
                 }
 
                 if (itemLootTemplates.Count > 0)

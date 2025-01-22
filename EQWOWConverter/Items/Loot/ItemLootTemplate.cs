@@ -24,8 +24,6 @@ namespace EQWOWConverter.Items
 {
     internal class ItemLootTemplate
     {
-        //public Dictionary<int, List<ItemLootTemplate>> ItemLootTemplatesByCreatureTemplateID = new Dictionary<int, List<ItemLootTemplate>>();
-
         public int CreatureTemplateEntryID = 0;
         public int ItemTemplateEntryID = 0;
         public float Chance = 0;
