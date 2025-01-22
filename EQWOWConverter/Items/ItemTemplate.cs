@@ -557,31 +557,13 @@ namespace EQWOWConverter.Items
         static public void PopulateItemTemplateListFromDisk()
         {
             // Load in item data
-            string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "Items.csv");
+            string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
-            string inputData = FileTool.ReadAllDataFromFile(itemsFileName);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
-            {
-                Logger.WriteError("Items list via file '" + itemsFileName + "' did not have enough lines");
-                return;
-            }
+            List<string> itemTemplateRows = FileTool.ReadAllStringLinesFromFile(itemsFileName, true, true);
 
             // Load all of the data
-            bool headerRow = true;
-            foreach (string row in inputRows)
+            foreach (string row in itemTemplateRows)
             {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
-                    continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
                 // Load the row
                 string[] rowBlocks = row.Split("|");
                 ItemTemplate newItemTemplate = new ItemTemplate();
