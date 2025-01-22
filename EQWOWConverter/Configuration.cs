@@ -289,6 +289,24 @@ namespace EQWOWConverter
         // If true, the entity name is put in the creature name for easy debugging. Default to false.
         public static readonly bool CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME = false;
 
+        // Stat modifiers for creatures
+        // - "MIN" and "MAX" are applied after all other calculations
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_ADD = 0.5f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_MIN = 0.8f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_MAX_NORMAL = 2f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_MAX_RARE = 2f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_ELITE = 20f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_ELITERARE = 80f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
+
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_ADD = 0.2f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_MIN = 0.8f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 1.5f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_RARE = 1.5f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITE = 8f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
+        public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
+
         //=====================================================================
         // Items
         //=====================================================================

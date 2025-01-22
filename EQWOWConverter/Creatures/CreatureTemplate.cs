@@ -127,8 +127,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.MerchantID = int.Parse(rowBlocks[15]);
                 newCreatureTemplate.ColorTintID = int.Parse(rowBlocks[16]);
                 newCreatureTemplate.HasMana = (int.Parse(rowBlocks[17]) > 0);
-                newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, float.Parse(rowBlocks[18]));
-                newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, float.Parse(rowBlocks[19]));
+                newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(rowBlocks[18]));
+                newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(rowBlocks[19]));
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
@@ -209,12 +209,44 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        private static float GetStatMod(string statName, int creatureLevel, float creatureStatValue)
+        private static float GetStatMod(string statName, int creatureLevel, CreatureRankType creatureRank, float creatureStatValue)
         {
             if (creatureLevel == 0)
                 return 1;
             if (creatureStatValue < 1)
                 return 1;
+
+            // Determine the boundaries and adds
+            float modAdd;
+            float modMin;
+            float modMax;
+            float modSet;
+            switch(statName)
+            {
+                case "hp":
+                    {
+                        modAdd = Configuration.CONFIG_CREATURE_STAT_MOD_HP_ADD;
+                        modMin = Configuration.CONFIG_CREATURE_STAT_MOD_HP_MIN;
+                        modMax = GetValueForRank(creatureRank, Configuration.CONFIG_CREATURE_STAT_MOD_HP_MAX_NORMAL,
+                            -1, -1, -1, Configuration.CONFIG_CREATURE_STAT_MOD_HP_MAX_RARE);
+                        modSet = GetValueForRank(creatureRank, -1, Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_ELITE,
+                            Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_ELITERARE, Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_BOSS, -1);
+                    } break;
+                case "avgdmg":
+                    {
+                        modAdd = Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_ADD;
+                        modMin = Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MIN;
+                        modMax = GetValueForRank(creatureRank, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL,
+                            -1, -1, -1, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_RARE);
+                        modSet = GetValueForRank(creatureRank, -1, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITE,
+                            Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_BOSS, -1);
+                    } break;
+                default:
+                    {
+                        Logger.WriteError("GetStatMod failed due to unhandled stat name of '" + statName + "'");
+                        return 1;
+                    }
+            }
 
             // Calculate the specific baseline to use based on range
             int levelLow = -1;
@@ -273,7 +305,35 @@ namespace EQWOWConverter.Creatures
                 float normalLevelRelative = (Convert.ToSingle(creatureLevel - levelLow) / Convert.ToSingle(levelHigh - levelLow));
                 statRelative = normalLevelRelative * statHigh + ((1 - normalLevelRelative) * statLow);
             }
-            return creatureStatValue / statRelative;
+            float genStatValue = creatureStatValue / statRelative;
+
+            // Apply adds and limits
+            genStatValue += modAdd;
+            if (modMin != -1)
+                genStatValue = MathF.Max(genStatValue, modMin);
+            if (modMax != -1)
+                genStatValue = MathF.Min(genStatValue, modMax);
+            if (modSet != -1)
+                genStatValue = modSet;
+            return genStatValue;
+        }
+
+        private static float GetValueForRank(CreatureRankType creatureRank, float normalValue, float eliteValue, float eliteRareValue,
+            float bossValue, float rareValue)
+        {
+            switch (creatureRank)
+            {
+                case CreatureRankType.Normal: return normalValue;
+                case CreatureRankType.Elite: return eliteValue;
+                case CreatureRankType.Boss: return bossValue;
+                case CreatureRankType.Rare: return rareValue;
+                case CreatureRankType.EliteRare: return eliteRareValue;
+                default:
+                    {
+                        Logger.WriteError("GeTValueForRank failed since rank '" + creatureRank + "' was not defined");
+                        return 1;
+                    }
+            }
         }
     }
 }
