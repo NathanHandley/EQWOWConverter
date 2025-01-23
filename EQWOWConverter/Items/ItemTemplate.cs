@@ -266,6 +266,11 @@ namespace EQWOWConverter.Items
             }
         }
 
+        private static ItemArmorSubclassType GetArmorSubclass()
+        {
+            return ItemArmorSubclassType.Misc;
+        }
+
         static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int iconID)
         {
             switch (eqItemType)
