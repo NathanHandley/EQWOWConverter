@@ -45,6 +45,7 @@ namespace EQWOWConverter.Items
         public int WeaponMinDamage = 0;
         public int WeaponMaxDamage = 0;
         public int WeaponDelay = 0;
+        public int EQClassMask = 32767;
 
         public ItemTemplate()
         {
@@ -266,12 +267,53 @@ namespace EQWOWConverter.Items
             }
         }
 
-        private static ItemArmorSubclassType GetArmorSubclass()
+        private static ItemArmorSubclassType GetArmorSubclass(int classMask)
         {
+            if (classMask == 0)
+                return ItemArmorSubclassType.Misc;
+            if (classMask == 32767)
+                return ItemArmorSubclassType.Cloth;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Necromancer)) == Convert.ToInt32(ItemPlayerBitmaskType.Necromancer))
+                return ItemArmorSubclassType.Cloth;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Wizard)) == Convert.ToInt32(ItemPlayerBitmaskType.Wizard))
+                return ItemArmorSubclassType.Cloth;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Magician)) == Convert.ToInt32(ItemPlayerBitmaskType.Magician))
+                return ItemArmorSubclassType.Cloth;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Enchanter)) == Convert.ToInt32(ItemPlayerBitmaskType.Enchanter))
+                return ItemArmorSubclassType.Cloth;
+            // Clerics can wear plate, but only make cleric gear cloth if it's cleric-only
+            if (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) == Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) && 
+                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Warrior)) != Convert.ToInt32(ItemPlayerBitmaskType.Warrior))) &&
+                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Paladin)) != Convert.ToInt32(ItemPlayerBitmaskType.Paladin))) &&
+                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight)) != Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight))))
+                return ItemArmorSubclassType.Cloth;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Druid)) == Convert.ToInt32(ItemPlayerBitmaskType.Druid))
+                return ItemArmorSubclassType.Leather;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Monk)) == Convert.ToInt32(ItemPlayerBitmaskType.Monk))
+                return ItemArmorSubclassType.Leather;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Beastlord)) == Convert.ToInt32(ItemPlayerBitmaskType.Beastlord))
+                return ItemArmorSubclassType.Leather;
+            // Note: EQ rogues can wear mail/chain
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Rogue)) == Convert.ToInt32(ItemPlayerBitmaskType.Rogue))
+                return ItemArmorSubclassType.Leather;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Ranger)) == Convert.ToInt32(ItemPlayerBitmaskType.Ranger))
+                return ItemArmorSubclassType.Mail;            
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Shaman)) == Convert.ToInt32(ItemPlayerBitmaskType.Shaman))
+                return ItemArmorSubclassType.Mail;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Warrior)) == Convert.ToInt32(ItemPlayerBitmaskType.Warrior))
+                return ItemArmorSubclassType.Plate;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Paladin)) == Convert.ToInt32(ItemPlayerBitmaskType.Paladin))
+                return ItemArmorSubclassType.Plate;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight)) == Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight))
+                return ItemArmorSubclassType.Plate;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Bard)) == Convert.ToInt32(ItemPlayerBitmaskType.Bard))
+                return ItemArmorSubclassType.Plate;
+            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) == Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) // Clerics can wear plate
+                return ItemArmorSubclassType.Plate;
             return ItemArmorSubclassType.Misc;
         }
 
-        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int iconID)
+        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int iconID)
         {
             switch (eqItemType)
             {
@@ -365,7 +407,7 @@ namespace EQWOWConverter.Items
                 case 10: // Armor
                     {
                         itemTemplate.ClassID = 4;
-                        itemTemplate.SubClassID = 1;
+                        itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
                         itemTemplate.InventoryType = ItemInventoryType.Chest; // TEMP
                         // TODO: Slot
                         // TODO: Armor Type
@@ -584,7 +626,10 @@ namespace EQWOWConverter.Items
                 // Equippable Properties
                 int itemType = int.Parse(rowBlocks[2]);
                 int bagType = int.Parse(rowBlocks[7]);
-                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, iconID);
+                newItemTemplate.EQClassMask = int.Parse(rowBlocks[12]);
+
+                if (newItemTemplate.EQItemID == 4004)
+                    PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, iconID);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(rowBlocks[4]);
