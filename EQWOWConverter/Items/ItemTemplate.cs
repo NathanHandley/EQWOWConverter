@@ -273,47 +273,55 @@ namespace EQWOWConverter.Items
                 return ItemArmorSubclassType.Misc;
             if (classMask == 32767)
                 return ItemArmorSubclassType.Cloth;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Necromancer)) == Convert.ToInt32(ItemPlayerBitmaskType.Necromancer))
+            if (IsPackedClassMask(ItemClassBitmaskType.Necromancer, classMask))
                 return ItemArmorSubclassType.Cloth;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Wizard)) == Convert.ToInt32(ItemPlayerBitmaskType.Wizard))
+            if (IsPackedClassMask(ItemClassBitmaskType.Wizard, classMask))
                 return ItemArmorSubclassType.Cloth;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Magician)) == Convert.ToInt32(ItemPlayerBitmaskType.Magician))
+            if (IsPackedClassMask(ItemClassBitmaskType.Magician, classMask))
                 return ItemArmorSubclassType.Cloth;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Enchanter)) == Convert.ToInt32(ItemPlayerBitmaskType.Enchanter))
+            if (IsPackedClassMask(ItemClassBitmaskType.Enchanter, classMask))
                 return ItemArmorSubclassType.Cloth;
-            // Clerics can wear plate, but only make cleric gear cloth if it's cleric-only
-            if (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) == Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) && 
-                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Warrior)) != Convert.ToInt32(ItemPlayerBitmaskType.Warrior))) &&
-                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Paladin)) != Convert.ToInt32(ItemPlayerBitmaskType.Paladin))) &&
-                (((classMask & Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight)) != Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight))))
+            // Clerics can wear plate in EQ, but only make cleric gear cloth if it's cleric-only
+            if (IsPackedClassMask(ItemClassBitmaskType.Cleric, classMask) &&
+                IsPackedClassMask(ItemClassBitmaskType.Warrior, classMask) == false &&
+                IsPackedClassMask(ItemClassBitmaskType.Paladin, classMask) == false &&
+                IsPackedClassMask(ItemClassBitmaskType.ShadowKnight, classMask) == false)
                 return ItemArmorSubclassType.Cloth;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Druid)) == Convert.ToInt32(ItemPlayerBitmaskType.Druid))
+            if (IsPackedClassMask(ItemClassBitmaskType.Druid, classMask))
                 return ItemArmorSubclassType.Leather;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Monk)) == Convert.ToInt32(ItemPlayerBitmaskType.Monk))
+            if (IsPackedClassMask(ItemClassBitmaskType.Monk, classMask))
                 return ItemArmorSubclassType.Leather;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Beastlord)) == Convert.ToInt32(ItemPlayerBitmaskType.Beastlord))
+            if (IsPackedClassMask(ItemClassBitmaskType.Beastlord, classMask))
                 return ItemArmorSubclassType.Leather;
             // Note: EQ rogues can wear mail/chain
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Rogue)) == Convert.ToInt32(ItemPlayerBitmaskType.Rogue))
+            if (IsPackedClassMask(ItemClassBitmaskType.Rogue, classMask))
                 return ItemArmorSubclassType.Leather;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Ranger)) == Convert.ToInt32(ItemPlayerBitmaskType.Ranger))
-                return ItemArmorSubclassType.Mail;            
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Shaman)) == Convert.ToInt32(ItemPlayerBitmaskType.Shaman))
+            if (IsPackedClassMask(ItemClassBitmaskType.Ranger, classMask))
                 return ItemArmorSubclassType.Mail;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Warrior)) == Convert.ToInt32(ItemPlayerBitmaskType.Warrior))
+            if (IsPackedClassMask(ItemClassBitmaskType.Shaman, classMask))
+                return ItemArmorSubclassType.Mail;
+            if (IsPackedClassMask(ItemClassBitmaskType.Warrior, classMask))
                 return ItemArmorSubclassType.Plate;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Paladin)) == Convert.ToInt32(ItemPlayerBitmaskType.Paladin))
+            if (IsPackedClassMask(ItemClassBitmaskType.Paladin, classMask))
                 return ItemArmorSubclassType.Plate;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight)) == Convert.ToInt32(ItemPlayerBitmaskType.ShadowKnight))
+            if (IsPackedClassMask(ItemClassBitmaskType.ShadowKnight, classMask))
                 return ItemArmorSubclassType.Plate;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Bard)) == Convert.ToInt32(ItemPlayerBitmaskType.Bard))
+            if (IsPackedClassMask(ItemClassBitmaskType.Bard, classMask))
                 return ItemArmorSubclassType.Plate;
-            if ((classMask & Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) == Convert.ToInt32(ItemPlayerBitmaskType.Cleric)) // Clerics can wear plate
+            // Clerics can wear plate in EQ
+            if (IsPackedClassMask(ItemClassBitmaskType.Cleric, classMask))
                 return ItemArmorSubclassType.Plate;
             return ItemArmorSubclassType.Misc;
         }
 
-        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int iconID)
+        private static bool IsPackedClassMask(ItemClassBitmaskType itemClassBitmaskType, int classMask)
+        {
+            if ((classMask & Convert.ToInt32(itemClassBitmaskType)) == Convert.ToInt32(itemClassBitmaskType))
+                return true;
+            return false;
+        }
+
+        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, int iconID)
         {
             switch (eqItemType)
             {
