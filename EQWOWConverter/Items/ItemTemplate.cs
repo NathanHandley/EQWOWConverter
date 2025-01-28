@@ -46,6 +46,7 @@ namespace EQWOWConverter.Items
         public int WeaponMaxDamage = 0;
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
+        public int EQSlotMask = 0;
 
         public ItemTemplate()
         {
@@ -267,6 +268,55 @@ namespace EQWOWConverter.Items
             }
         }
 
+        private static ItemInventoryType GetInventoryTypeFromSlotMask(int slotMask)
+        {
+            if (slotMask == 0)
+                return 0;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Chest, slotMask))
+                return ItemInventoryType.Chest;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Hands, slotMask))
+                return ItemInventoryType.Hands;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ear1, slotMask))
+                return ItemInventoryType.Trinket;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ear2, slotMask))
+                return ItemInventoryType.Trinket;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ring1, slotMask))
+                return ItemInventoryType.Finger;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ring2, slotMask))
+                return ItemInventoryType.Finger;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ammo, slotMask))
+                return ItemInventoryType.Ammo;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Feet, slotMask))
+                return ItemInventoryType.Feet;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Head, slotMask))
+                return ItemInventoryType.Head;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Face, slotMask))
+                return ItemInventoryType.Head;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Shoulder, slotMask))
+                return ItemInventoryType.Shoulder;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Arms, slotMask))
+                return ItemInventoryType.Shoulder;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Wrist1, slotMask))
+                return ItemInventoryType.Wrists;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Wrist2, slotMask))
+                return ItemInventoryType.Wrists;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Legs, slotMask))
+                return ItemInventoryType.Legs;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Waist, slotMask))
+                return ItemInventoryType.Waist;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Neck, slotMask))
+                return ItemInventoryType.Neck;
+            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Back, slotMask))
+                return ItemInventoryType.Back;
+            return ItemInventoryType.NoEquip;
+        }
+        private static bool IsPackedSlotMask(ItemEquipSlotBitmaskType itemSlotBitmaskType, int slotMask)
+        {
+            if ((slotMask & Convert.ToInt32(itemSlotBitmaskType)) == Convert.ToInt32(itemSlotBitmaskType))
+                return true;
+            return false;
+        }
+
         private static ItemArmorSubclassType GetArmorSubclass(int classMask)
         {
             if (classMask == 0)
@@ -416,9 +466,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
-                        itemTemplate.InventoryType = ItemInventoryType.Chest; // TEMP
-                        // TODO: Slot
-                        // TODO: Armor Type
+                        itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
                     } break;
                 case 11: // Misc
                     {
@@ -635,9 +683,8 @@ namespace EQWOWConverter.Items
                 int itemType = int.Parse(rowBlocks[2]);
                 int bagType = int.Parse(rowBlocks[7]);
                 newItemTemplate.EQClassMask = int.Parse(rowBlocks[12]);
-
-                if (newItemTemplate.EQItemID == 4004)
-                    PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, iconID);
+                newItemTemplate.EQSlotMask = int.Parse(rowBlocks[13]);
+                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(rowBlocks[4]);

@@ -22,22 +22,30 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemPlayerBitmaskType : Int32
+    internal enum ItemEquipSlotBitmaskType : Int32
     {
-		Warrior = 1,
-		Cleric = 2,
-		Paladin = 4,
-		Ranger = 8,
-		ShadowKnight = 16,
-		Druid = 32,
-		Monk = 64,
-		Bard = 128,
-		Rogue = 256,
-		Shaman = 512,
-		Necromancer = 1024,
-		Wizard = 2048,
-		Magician = 4096,
-		Enchanter = 8192,
-		Beastlord = 16384
+        None1 = 0,
+        None2 = 1,
+        Ear1 = 2,
+        Head = 4,
+        Face = 8,
+        Ear2 = 16,
+        Neck = 32,
+        Shoulder = 64,
+        Arms = 128,
+        Back = 256,
+        Wrist2 = 512,
+        Wrist1 = 1024,
+        Ranged = 2048, // ? And Ammo?
+        Hands = 4096,
+        Primary = 8192,
+        Secondary = 16384,
+        Ring1 = 32768,
+        Ring2 = 65536,
+        Chest = 131072,
+        Legs = 262144,
+        Feet = 524288,
+        Waist = 1048576,
+        Ammo = 2097152
     }
 }
