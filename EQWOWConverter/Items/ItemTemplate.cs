@@ -343,13 +343,13 @@ namespace EQWOWConverter.Items
                 return ItemArmorSubclassType.Leather;
             if (IsPackedClassMask(ItemClassBitmaskType.Beastlord, classMask))
                 return ItemArmorSubclassType.Leather;
-            // Note: EQ rogues can wear mail/chain
-            if (IsPackedClassMask(ItemClassBitmaskType.Rogue, classMask))
-                return ItemArmorSubclassType.Leather;
             if (IsPackedClassMask(ItemClassBitmaskType.Ranger, classMask))
                 return ItemArmorSubclassType.Mail;
             if (IsPackedClassMask(ItemClassBitmaskType.Shaman, classMask))
                 return ItemArmorSubclassType.Mail;
+            // Note: EQ rogues can wear mail/chain, so this will be an issue in some cases
+            if (IsPackedClassMask(ItemClassBitmaskType.Rogue, classMask))
+                return ItemArmorSubclassType.Leather;
             if (IsPackedClassMask(ItemClassBitmaskType.Warrior, classMask))
                 return ItemArmorSubclassType.Plate;
             if (IsPackedClassMask(ItemClassBitmaskType.Paladin, classMask))
