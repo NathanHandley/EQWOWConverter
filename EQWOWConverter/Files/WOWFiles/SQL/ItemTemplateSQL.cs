@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EQWOWConverter.Common;
 using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
@@ -45,7 +46,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
             newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
-            newRow.AddInt("AllowableClass", -1);
+            newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 0);
             newRow.AddInt("RequiredLevel", 0);
@@ -172,6 +173,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("flagsCustom", 0);
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
+        }
+
+        private int CalculateAllowableClasses(ItemTemplate itemTemplate)
+        {
+            int allowableClass = 0;
+            foreach (ClassType classType in itemTemplate.AllowedClassTypes)
+                allowableClass += Convert.ToInt32(classType);
+            if (allowableClass == 0)
+                allowableClass = -1;
+            return allowableClass;
         }
     }
 }

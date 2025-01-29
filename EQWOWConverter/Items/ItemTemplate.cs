@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ namespace EQWOWConverter.Items
         public int WeaponDelay = 0;
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
+        public List<ClassType> AllowedClassTypes = new List<ClassType>();
 
         public ItemTemplate()
         {
@@ -321,7 +323,7 @@ namespace EQWOWConverter.Items
         {
             if (classMask == 0)
                 return ItemWOWArmorSubclassType.Misc;
-            if (classMask == 32767)
+            if (classMask >= 32767)
                 return ItemWOWArmorSubclassType.Cloth;
             if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask))
                 return ItemWOWArmorSubclassType.Cloth;
@@ -362,6 +364,40 @@ namespace EQWOWConverter.Items
             if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
                 return ItemWOWArmorSubclassType.Plate;
             return ItemWOWArmorSubclassType.Misc;
+        }
+
+        private static List<ClassType> GetClassTypesFromClassMask(int classMask)
+        {
+            List<ClassType> classTypes = new List<ClassType>();
+
+            if (classMask <= 0 || classMask >= 32767)
+            {
+                classTypes.Add(ClassType.All);
+                return classTypes;
+            }
+
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+                classTypes.Add(ClassType.Warlock);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask))
+                classTypes.Add(ClassType.Mage);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Beastlord, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Ranger, classMask))
+                classTypes.Add(ClassType.Hunter);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Monk, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Rogue, classMask))
+                classTypes.Add(ClassType.Rogue);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Bard, classMask) || IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask))
+                classTypes.Add(ClassType.Warrior);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask))
+                classTypes.Add(ClassType.Shaman);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask))
+                classTypes.Add(ClassType.Druid);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask))
+                classTypes.Add(ClassType.Paladin);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask))
+                classTypes.Add(ClassType.DeathKnight);
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
+                classTypes.Add(ClassType.Priest);
+            
+            return classTypes;
         }
 
         private static bool IsPackedClassMask(ItemEQClassBitmaskType itemClassBitmaskType, int classMask)
@@ -695,6 +731,7 @@ namespace EQWOWConverter.Items
                 // Other
                 newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
                 newItemTemplate.StackSize = int.Max(int.Parse(rowBlocks[9]), 1);
+                newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask);
 
                 // Calculate the weapon damage
                 // TODO: Bow
