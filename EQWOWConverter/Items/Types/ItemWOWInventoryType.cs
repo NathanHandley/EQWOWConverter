@@ -22,25 +22,36 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemWeaponSubclassType : int
+    internal enum ItemWOWInventoryType: int
     {
-        AxeOneHand = 0,
-        AxeTwoHand = 1, 
-        Bow = 2,
-        Gun = 3,
-        MaceOneHand = 4,
-        MaceTwoHand = 5,
-        Polearm = 6,
-        SwordOneHand = 7,
-        SwordTwoHand = 8,
-        Staff = 10,
-        FistWeapon = 13,
-        Miscellaneous = 14, // Held items that have no weapon type, like blacksmith hammer
-        Dagger = 15,
-        Thrown = 16,
-        Spear = 17,
-        Crossbow = 18,
-        Wand = 19,
-        FishingPole = 20
+        NoEquip = 0,
+        Head = 1,
+        Neck = 2,
+        Shoulder = 3,
+        Shirt = 4,
+        Chest = 5, // Works the same as robe, 20
+        Waist = 6,
+        Legs = 7,
+        Feet = 8,
+        Wrists = 9,
+        Hands = 10,
+        Finger = 11,
+        Trinket = 12,
+        OneHand = 13,
+        Shield = 14,
+        Ranged = 15, // Bows
+        Back = 16,
+        TwoHand = 17,
+        Bag = 18,
+        Tabard = 19,
+        Robe = 20, // Works the same as chest, 5
+        MainHand = 21, // One-Hand, but only in main
+        OffHand2 = 22, // Same as 13?
+        HeldInOffHand = 23,
+        Ammo = 24,
+        Thrown = 25,
+        RangedRight = 26, // Wands, Guns
+        Quiver = 27,
+        Relic = 28
     }
 }

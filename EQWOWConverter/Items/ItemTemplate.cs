@@ -41,7 +41,7 @@ namespace EQWOWConverter.Items
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
         public int StackSize = 1;
-        public ItemInventoryType InventoryType = ItemInventoryType.NoEquip;
+        public ItemWOWInventoryType InventoryType = ItemWOWInventoryType.NoEquip;
         public int WeaponMinDamage = 0;
         public int WeaponMaxDamage = 0;
         public int WeaponDelay = 0;
@@ -211,7 +211,7 @@ namespace EQWOWConverter.Items
             }
         }
 
-        private static ItemWeaponSubclassType GetWeaponSubclass(int eqItemID, int eqItemType, int iconID)
+        private static ItemWOWWeaponSubclassType GetWeaponSubclass(int eqItemID, int eqItemType, int iconID)
         {
             WeaponIconImpliedType iconWeaponImpliedType = GetWeaponImpliedTypeFromIcon(iconID);
             switch (eqItemType)
@@ -220,44 +220,44 @@ namespace EQWOWConverter.Items
                     {
                         switch (iconWeaponImpliedType)
                         {
-                            case WeaponIconImpliedType.BluntNonStaff: return ItemWeaponSubclassType.MaceOneHand;
-                            case WeaponIconImpliedType.Hand2Hand: return ItemWeaponSubclassType.FistWeapon;
-                            case WeaponIconImpliedType.BladeStab: return ItemWeaponSubclassType.Dagger;
-                            case WeaponIconImpliedType.Axe: return ItemWeaponSubclassType.AxeOneHand;
-                            default: return ItemWeaponSubclassType.SwordOneHand;
+                            case WeaponIconImpliedType.BluntNonStaff: return ItemWOWWeaponSubclassType.MaceOneHand;
+                            case WeaponIconImpliedType.Hand2Hand: return ItemWOWWeaponSubclassType.FistWeapon;
+                            case WeaponIconImpliedType.BladeStab: return ItemWOWWeaponSubclassType.Dagger;
+                            case WeaponIconImpliedType.Axe: return ItemWOWWeaponSubclassType.AxeOneHand;
+                            default: return ItemWOWWeaponSubclassType.SwordOneHand;
                         }
                     }
                 case 1: // 2h Slashing
                     {
                         switch (iconWeaponImpliedType)
                         {
-                            case WeaponIconImpliedType.Axe: return ItemWeaponSubclassType.AxeTwoHand;
-                            case WeaponIconImpliedType.Polearm: return ItemWeaponSubclassType.Polearm;
-                            default: return ItemWeaponSubclassType.SwordTwoHand;
+                            case WeaponIconImpliedType.Axe: return ItemWOWWeaponSubclassType.AxeTwoHand;
+                            case WeaponIconImpliedType.Polearm: return ItemWOWWeaponSubclassType.Polearm;
+                            default: return ItemWOWWeaponSubclassType.SwordTwoHand;
                         }
                     }
                 case 2: // 1h Pierce
                     {
                         switch (iconWeaponImpliedType)
                         {
-                            case WeaponIconImpliedType.Hand2Hand: return ItemWeaponSubclassType.FistWeapon;
-                            default: return ItemWeaponSubclassType.Dagger;
+                            case WeaponIconImpliedType.Hand2Hand: return ItemWOWWeaponSubclassType.FistWeapon;
+                            default: return ItemWOWWeaponSubclassType.Dagger;
                         }
                     }
                 case 35: // 2h Pierce
                     {
-                        return ItemWeaponSubclassType.Polearm;
+                        return ItemWOWWeaponSubclassType.Polearm;
                     }
                 case 3: // 1h Blunt
                     {
-                        return ItemWeaponSubclassType.MaceOneHand;
+                        return ItemWOWWeaponSubclassType.MaceOneHand;
                     }
                 case 4: // 2h Blunt
                     {
                         switch (iconWeaponImpliedType)
                         {
-                            case WeaponIconImpliedType.BluntStaff: return ItemWeaponSubclassType.Staff;
-                            default: return ItemWeaponSubclassType.MaceTwoHand;
+                            case WeaponIconImpliedType.BluntStaff: return ItemWOWWeaponSubclassType.Staff;
+                            default: return ItemWOWWeaponSubclassType.MaceTwoHand;
                         }
                     }
                 default:
@@ -268,103 +268,103 @@ namespace EQWOWConverter.Items
             }
         }
 
-        private static ItemInventoryType GetInventoryTypeFromSlotMask(int slotMask)
+        private static ItemWOWInventoryType GetInventoryTypeFromSlotMask(int slotMask)
         {
             if (slotMask == 0)
                 return 0;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Chest, slotMask))
-                return ItemInventoryType.Chest;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Hands, slotMask))
-                return ItemInventoryType.Hands;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ear1, slotMask))
-                return ItemInventoryType.Trinket;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ear2, slotMask))
-                return ItemInventoryType.Trinket;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ring1, slotMask))
-                return ItemInventoryType.Finger;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ring2, slotMask))
-                return ItemInventoryType.Finger;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Ammo, slotMask))
-                return ItemInventoryType.Ammo;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Feet, slotMask))
-                return ItemInventoryType.Feet;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Head, slotMask))
-                return ItemInventoryType.Head;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Face, slotMask))
-                return ItemInventoryType.Head;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Shoulder, slotMask))
-                return ItemInventoryType.Shoulder;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Arms, slotMask))
-                return ItemInventoryType.Shoulder;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Wrist1, slotMask))
-                return ItemInventoryType.Wrists;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Wrist2, slotMask))
-                return ItemInventoryType.Wrists;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Legs, slotMask))
-                return ItemInventoryType.Legs;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Waist, slotMask))
-                return ItemInventoryType.Waist;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Neck, slotMask))
-                return ItemInventoryType.Neck;
-            if (IsPackedSlotMask(ItemEquipSlotBitmaskType.Back, slotMask))
-                return ItemInventoryType.Back;
-            return ItemInventoryType.NoEquip;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Chest, slotMask))
+                return ItemWOWInventoryType.Chest;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Hands, slotMask))
+                return ItemWOWInventoryType.Hands;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear1, slotMask))
+                return ItemWOWInventoryType.Trinket;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ear2, slotMask))
+                return ItemWOWInventoryType.Trinket;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring1, slotMask))
+                return ItemWOWInventoryType.Finger;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ring2, slotMask))
+                return ItemWOWInventoryType.Finger;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ammo, slotMask))
+                return ItemWOWInventoryType.Ammo;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Feet, slotMask))
+                return ItemWOWInventoryType.Feet;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Head, slotMask))
+                return ItemWOWInventoryType.Head;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Face, slotMask))
+                return ItemWOWInventoryType.Head;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Shoulder, slotMask))
+                return ItemWOWInventoryType.Shoulder;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Arms, slotMask))
+                return ItemWOWInventoryType.Shoulder;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Wrist1, slotMask))
+                return ItemWOWInventoryType.Wrists;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Wrist2, slotMask))
+                return ItemWOWInventoryType.Wrists;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Legs, slotMask))
+                return ItemWOWInventoryType.Legs;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Waist, slotMask))
+                return ItemWOWInventoryType.Waist;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Neck, slotMask))
+                return ItemWOWInventoryType.Neck;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Back, slotMask))
+                return ItemWOWInventoryType.Back;
+            return ItemWOWInventoryType.NoEquip;
         }
-        private static bool IsPackedSlotMask(ItemEquipSlotBitmaskType itemSlotBitmaskType, int slotMask)
+        private static bool IsPackedSlotMask(ItemEQEquipSlotBitmaskType itemSlotBitmaskType, int slotMask)
         {
             if ((slotMask & Convert.ToInt32(itemSlotBitmaskType)) == Convert.ToInt32(itemSlotBitmaskType))
                 return true;
             return false;
         }
 
-        private static ItemArmorSubclassType GetArmorSubclass(int classMask)
+        private static ItemWOWArmorSubclassType GetArmorSubclass(int classMask)
         {
             if (classMask == 0)
-                return ItemArmorSubclassType.Misc;
+                return ItemWOWArmorSubclassType.Misc;
             if (classMask == 32767)
-                return ItemArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemClassBitmaskType.Necromancer, classMask))
-                return ItemArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemClassBitmaskType.Wizard, classMask))
-                return ItemArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemClassBitmaskType.Magician, classMask))
-                return ItemArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemClassBitmaskType.Enchanter, classMask))
-                return ItemArmorSubclassType.Cloth;
+                return ItemWOWArmorSubclassType.Cloth;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask))
+                return ItemWOWArmorSubclassType.Cloth;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask))
+                return ItemWOWArmorSubclassType.Cloth;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask))
+                return ItemWOWArmorSubclassType.Cloth;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+                return ItemWOWArmorSubclassType.Cloth;
             // Clerics can wear plate in EQ, but only make cleric gear cloth if it's cleric-only
-            if (IsPackedClassMask(ItemClassBitmaskType.Cleric, classMask) &&
-                IsPackedClassMask(ItemClassBitmaskType.Warrior, classMask) == false &&
-                IsPackedClassMask(ItemClassBitmaskType.Paladin, classMask) == false &&
-                IsPackedClassMask(ItemClassBitmaskType.ShadowKnight, classMask) == false)
-                return ItemArmorSubclassType.Cloth;
-            if (IsPackedClassMask(ItemClassBitmaskType.Druid, classMask))
-                return ItemArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemClassBitmaskType.Monk, classMask))
-                return ItemArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemClassBitmaskType.Beastlord, classMask))
-                return ItemArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemClassBitmaskType.Ranger, classMask))
-                return ItemArmorSubclassType.Mail;
-            if (IsPackedClassMask(ItemClassBitmaskType.Shaman, classMask))
-                return ItemArmorSubclassType.Mail;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) &&
+                IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask) == false &&
+                IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) == false &&
+                IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask) == false)
+                return ItemWOWArmorSubclassType.Cloth;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask))
+                return ItemWOWArmorSubclassType.Leather;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Monk, classMask))
+                return ItemWOWArmorSubclassType.Leather;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Beastlord, classMask))
+                return ItemWOWArmorSubclassType.Leather;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Ranger, classMask))
+                return ItemWOWArmorSubclassType.Mail;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask))
+                return ItemWOWArmorSubclassType.Mail;
             // Note: EQ rogues can wear mail/chain, so this will be an issue in some cases
-            if (IsPackedClassMask(ItemClassBitmaskType.Rogue, classMask))
-                return ItemArmorSubclassType.Leather;
-            if (IsPackedClassMask(ItemClassBitmaskType.Warrior, classMask))
-                return ItemArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemClassBitmaskType.Paladin, classMask))
-                return ItemArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemClassBitmaskType.ShadowKnight, classMask))
-                return ItemArmorSubclassType.Plate;
-            if (IsPackedClassMask(ItemClassBitmaskType.Bard, classMask))
-                return ItemArmorSubclassType.Plate;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Rogue, classMask))
+                return ItemWOWArmorSubclassType.Leather;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Warrior, classMask))
+                return ItemWOWArmorSubclassType.Plate;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask))
+                return ItemWOWArmorSubclassType.Plate;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.ShadowKnight, classMask))
+                return ItemWOWArmorSubclassType.Plate;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Bard, classMask))
+                return ItemWOWArmorSubclassType.Plate;
             // Clerics can wear plate in EQ
-            if (IsPackedClassMask(ItemClassBitmaskType.Cleric, classMask))
-                return ItemArmorSubclassType.Plate;
-            return ItemArmorSubclassType.Misc;
+            if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
+                return ItemWOWArmorSubclassType.Plate;
+            return ItemWOWArmorSubclassType.Misc;
         }
 
-        private static bool IsPackedClassMask(ItemClassBitmaskType itemClassBitmaskType, int classMask)
+        private static bool IsPackedClassMask(ItemEQClassBitmaskType itemClassBitmaskType, int classMask)
         {
             if ((classMask & Convert.ToInt32(itemClassBitmaskType)) == Convert.ToInt32(itemClassBitmaskType))
                 return true;
@@ -379,14 +379,14 @@ namespace EQWOWConverter.Items
                     {
                         if (bagType != 0)
                         {
-                            itemTemplate.InventoryType = ItemInventoryType.Bag;
+                            itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                             switch (bagType)
                             {
                                 case 2: // Quiver
                                     {
                                         itemTemplate.ClassID = 2;
                                         itemTemplate.SubClassID = 3;
-                                        itemTemplate.InventoryType = ItemInventoryType.Quiver;
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.Quiver;
                                     } break;
                                 case 10: // Toolbox => Engineering Bag
                                     {
@@ -411,56 +411,56 @@ namespace EQWOWConverter.Items
                             // 1 Hand Slash => 1h Sword or Axe
                             itemTemplate.ClassID = 2;
                             itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                            itemTemplate.InventoryType = ItemInventoryType.OneHand;
+                            itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
                         }
                     } break;
                 case 1: // 2 Hand Slash => 2h Sword or Axe
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 2: // 1 Hand Pierce => Dagger
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
                     } break;
                 case 35: // 2 Hand Pierce => Polearm
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 3: // 1 Hand Blunt => 1H Mace
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
                     } break;
                 case 4: // 2 Hand Blunt => 2H Mace or Staff
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 5: // Bow
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = Convert.ToInt32(ItemWeaponSubclassType.Bow);
-                        itemTemplate.InventoryType = ItemInventoryType.Ranged;
+                        itemTemplate.SubClassID = Convert.ToInt32(ItemWOWWeaponSubclassType.Bow);
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
                     } break;
                 case 7: // Thrown
                     {
                         itemTemplate.ClassID = 2;
-                        itemTemplate.SubClassID = Convert.ToInt32(ItemWeaponSubclassType.Thrown);
-                        itemTemplate.InventoryType = ItemInventoryType.Thrown;
+                        itemTemplate.SubClassID = Convert.ToInt32(ItemWOWWeaponSubclassType.Thrown);
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Thrown;
                     } break;
                 case 8: // Shield
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 6;
-                        itemTemplate.InventoryType = ItemInventoryType.Shield;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Shield;
                     } break;
                 case 10: // Armor
                     {
@@ -507,7 +507,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 16;
-                        itemTemplate.InventoryType = ItemInventoryType.Thrown;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Thrown;
                     } break;
                 case 20: // Spell/Tome => Book
                     {
@@ -543,7 +543,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 6;
                         itemTemplate.SubClassID = 2;
-                        itemTemplate.InventoryType = ItemInventoryType.Ammo;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Ammo;
                     } break;
                 case 28: // Other Consumable => Generic Consumable
                     {
@@ -554,7 +554,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 0;
-                        itemTemplate.InventoryType = ItemInventoryType.Finger; // TODO: Neck vs Earring vs Ring
+                        itemTemplate.InventoryType = ItemWOWInventoryType.Finger; // TODO: Neck vs Earring vs Ring
                     } break;
                 case 30: // Skull => Misc
                     {
@@ -585,7 +585,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 20;
-                        itemTemplate.InventoryType = ItemInventoryType.TwoHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.TwoHand;
                     } break;
                 case 37: // Fishing Bait => Devices (like other fishing bait)
                     {
@@ -616,7 +616,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 13;
-                        itemTemplate.InventoryType = ItemInventoryType.OneHand;
+                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
                     } break;
                 case 50: // Singing => Misc
                     {

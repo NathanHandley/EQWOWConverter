@@ -1,4 +1,4 @@
-﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
 //  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -22,30 +22,25 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemEquipSlotBitmaskType : Int32
+    internal enum ItemWOWWeaponSubclassType : int
     {
-        None1 = 0,
-        None2 = 1,
-        Ear1 = 2,
-        Head = 4,
-        Face = 8,
-        Ear2 = 16,
-        Neck = 32,
-        Shoulder = 64,
-        Arms = 128,
-        Back = 256,
-        Wrist2 = 512,
-        Wrist1 = 1024,
-        Ranged = 2048, // ? And Ammo?
-        Hands = 4096,
-        Primary = 8192,
-        Secondary = 16384,
-        Ring1 = 32768,
-        Ring2 = 65536,
-        Chest = 131072,
-        Legs = 262144,
-        Feet = 524288,
-        Waist = 1048576,
-        Ammo = 2097152
+        AxeOneHand = 0,
+        AxeTwoHand = 1, 
+        Bow = 2,
+        Gun = 3,
+        MaceOneHand = 4,
+        MaceTwoHand = 5,
+        Polearm = 6,
+        SwordOneHand = 7,
+        SwordTwoHand = 8,
+        Staff = 10,
+        FistWeapon = 13,
+        Miscellaneous = 14, // Held items that have no weapon type, like blacksmith hammer
+        Dagger = 15,
+        Thrown = 16,
+        Spear = 17,
+        Crossbow = 18,
+        Wand = 19,
+        FishingPole = 20
     }
 }

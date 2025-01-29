@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemClassBitmaskType : Int32
+    internal enum ItemEQClassBitmaskType : Int32
     {
 		Warrior = 1,
 		Cleric = 2,

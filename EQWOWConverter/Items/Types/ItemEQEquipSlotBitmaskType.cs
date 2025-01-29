@@ -1,4 +1,4 @@
-﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
+﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
 //  Copyright (c) 2025 Nathan Handley
 //
 //  This program is free software: you can redistribute it and/or modify
@@ -22,36 +22,30 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemInventoryType: int
+    internal enum ItemEQEquipSlotBitmaskType : Int32
     {
-        NoEquip = 0,
-        Head = 1,
-        Neck = 2,
-        Shoulder = 3,
-        Shirt = 4,
-        Chest = 5, // Works the same as robe, 20
-        Waist = 6,
-        Legs = 7,
-        Feet = 8,
-        Wrists = 9,
-        Hands = 10,
-        Finger = 11,
-        Trinket = 12,
-        OneHand = 13,
-        Shield = 14,
-        Ranged = 15, // Bows
-        Back = 16,
-        TwoHand = 17,
-        Bag = 18,
-        Tabard = 19,
-        Robe = 20, // Works the same as chest, 5
-        MainHand = 21, // One-Hand, but only in main
-        OffHand2 = 22, // Same as 13?
-        HeldInOffHand = 23,
-        Ammo = 24,
-        Thrown = 25,
-        RangedRight = 26, // Wands, Guns
-        Quiver = 27,
-        Relic = 28
+        None1 = 0,
+        None2 = 1,
+        Ear1 = 2,
+        Head = 4,
+        Face = 8,
+        Ear2 = 16,
+        Neck = 32,
+        Shoulder = 64,
+        Arms = 128,
+        Back = 256,
+        Wrist2 = 512,
+        Wrist1 = 1024,
+        Ranged = 2048, // ? And Ammo?
+        Hands = 4096,
+        Primary = 8192,
+        Secondary = 16384,
+        Ring1 = 32768,
+        Ring2 = 65536,
+        Chest = 131072,
+        Legs = 262144,
+        Feet = 524288,
+        Waist = 1048576,
+        Ammo = 2097152
     }
 }

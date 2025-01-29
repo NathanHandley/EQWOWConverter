@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemArmorSubclassType : int
+    internal enum ItemWOWArmorSubclassType : int
     {
         Misc = 0,
         Cloth = 1,
