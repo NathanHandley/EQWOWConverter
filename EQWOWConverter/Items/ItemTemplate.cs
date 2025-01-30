@@ -63,11 +63,15 @@ namespace EQWOWConverter.Items
             return ItemTemplatesByEQDBID;
         }
 
-        public static float GetStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
+        private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
         {
             // Read the file if haven't yet
             if (StatBaselinesBySlotAndStat.Count() == 0)
                 PopulateStatBaselinesBySlot();
+
+            // Zero or negative stats give nothing back
+            if (eqStatValue <= 0)
+                return 0;
 
             // Get the slot row
             string slotNameLower = itemSlot.ToString().ToLower();
@@ -126,49 +130,14 @@ namespace EQWOWConverter.Items
                 return 0;
             }
 
+            // Maintain a minimum boundary
+            if (eqStatValue < statEqLow)
+                return statWowLow;
+
             // Calculate the stat
-
-
-
-
-
-            return 0;
-        }
-
-
-        private static void CalculateWeaponDamage(int eqWeaponDamage, int eqWeaponDelayInMS, bool isTwoHanded, out int weaponMin, 
-            out int weaponMax, out int weaponDelayInMS)
-        {
-            // Calculate the original DPS for the weapon in EQ
-            float eqDPS = Convert.ToSingle(eqWeaponDamage) / (Convert.ToSingle(eqWeaponDelayInMS) / 1000);
-
-            // Calculate the amount to scale the weapon DPS by
-            float dpsScaleLow = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_1H;
-            float dpsScaleHigh = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_1H;
-            if (isTwoHanded == true)
-            {
-                dpsScaleLow = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_2H;
-                dpsScaleHigh = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_2H;
-            }
-            float dpsScaleAmt = 1;
-            if (eqDPS >= dpsScaleHigh)
-                dpsScaleAmt = Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER;
-            else if (eqDPS > dpsScaleLow)
-            {
-                float normalizedMod = (eqDPS - dpsScaleLow) / (dpsScaleHigh - dpsScaleLow);
-                dpsScaleAmt = 1 + normalizedMod * (Configuration.CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER - 1);
-            }
-
-            // Calculate a new weapon delay based on the config and scale down the damage accordingly
-            weaponDelayInMS = Convert.ToInt32(Math.Round(Convert.ToSingle(eqWeaponDelayInMS) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT)));
-            float newBaseDmg = eqWeaponDamage * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT);
-
-            // Scale up the damage
-            newBaseDmg *= dpsScaleAmt;
-
-            // Calculate min/max damage ranges (+/- 20%)
-            weaponMin = Convert.ToInt32(Math.Round(newBaseDmg * 0.8f));
-            weaponMax = Convert.ToInt32(Math.Round(newBaseDmg * 1.2f));
+            float normalizedModOfHigh = (eqStatValue - statEqLow) / (statEqHigh - statEqLow);
+            float calculatedStat = (normalizedModOfHigh * statWowHigh) + ((1 - normalizedModOfHigh) * statWowLow);
+            return calculatedStat;
         }
 
         private enum WeaponIconImpliedType
@@ -807,26 +776,22 @@ namespace EQWOWConverter.Items
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask);
 
                 // Calculate the weapon damage
-                // TODO: Bow
                 int damage = int.Parse(rowBlocks[10]);
                 int delay = int.Parse(rowBlocks[11]) * 100;
-                if (damage > 0 && delay > 0 && newItemTemplate.ClassID == 2 && newItemTemplate.SubClassID != 2)
+                if (damage > 0 && newItemTemplate.ClassID == 2)
                 {
-                    bool isTwoHanded = false;
-                    if (newItemTemplate.SubClassID == 1 || newItemTemplate.SubClassID == 5 || newItemTemplate.SubClassID == 6 || 
-                        newItemTemplate.SubClassID == 8 || newItemTemplate.SubClassID == 10)
-                            isTwoHanded = true;
-                    int weaponMin;
-                    int weaponMax;
-                    int weaponDelayInMS;
-                    CalculateWeaponDamage(damage, delay, isTwoHanded, out weaponMin, out weaponMax, out weaponDelayInMS);
-                    newItemTemplate.WeaponMinDamage = weaponMin;
-                    newItemTemplate.WeaponMaxDamage = weaponMax;
-                    newItemTemplate.WeaponDelay = weaponDelayInMS;
-                }
+                    float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", damage);
+                    if (calcDps != 0)
+                    {
+                        // Min/Max damage ranges are a +/- 20% 
+                        newItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(calcDps * 0.8f));
+                        newItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(calcDps * 1.2f));
 
-                // Calculate projectile damage
-                // TODO:
+                        // Scale the delay
+                        if (delay > 0)
+                            newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(Convert.ToSingle(delay) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT)));
+                    }
+                }
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))

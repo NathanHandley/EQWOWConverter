@@ -313,19 +313,6 @@ namespace EQWOWConverter
         // This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;
         public static readonly float CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
 
-        // How much to scale DPS for a weapon that is near the DPS target (must be 1 or greater)
-        public static readonly float CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER = 10;
-
-        // The amount of CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER will be applied to a
-        // weapon when scaling damage based on how close the EQ dps is to the MIN and MAX values,
-        // for example, a MIN of 10 and MAX of 20 and a weapon with a DPS of 17 will then be calculated
-        // as "DPS *= 7 * CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MULTIPLIER (minimum of the dps of the weapon)
-        // NOTE: These values are before factoring CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT
-        public static readonly float CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_1H = 1.4f;
-        public static readonly float CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_1H = 6f;
-        public static readonly float CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MIN_INFLUENCE_2H = 1.4f;
-        public static readonly float CONFIG_ITEMS_WEAPON_DPS_HIGH_END_SCALE_MAX_INFLUENCE_2H = 8.3f;
-
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
