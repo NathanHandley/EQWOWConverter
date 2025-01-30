@@ -408,7 +408,7 @@ namespace EQWOWConverter.Items
             return ItemWOWArmorSubclassType.Misc;
         }
 
-        private static List<ClassType> GetClassTypesFromClassMask(int classMask)
+        private static List<ClassType> GetClassTypesFromClassMask(int classMask, int classID, int subClassID)
         {
             List<ClassType> classTypes = new List<ClassType>();
 
@@ -438,6 +438,31 @@ namespace EQWOWConverter.Items
                 classTypes.Add(ClassType.DeathKnight);
             if (IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask))
                 classTypes.Add(ClassType.Priest);
+
+            // If set, collapse common armors and weapons
+            if (Configuration.CONFIG_ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP == true)
+            {
+                // Weapon
+                if (classID == 2)
+                {
+                    if (classTypes.Count >= 3)
+                    {
+                        classTypes.Clear();
+                        classTypes.Add(ClassType.All);
+                    }
+                }
+
+                // Armor
+                else if (classID == 4)
+                {
+                    // Leather and higher
+                    if (subClassID >= 2 && classTypes.Count >= 4)
+                    {
+                        classTypes.Clear();
+                        classTypes.Add(ClassType.All);
+                    }
+                }
+            }
             
             return classTypes;
         }
@@ -773,7 +798,7 @@ namespace EQWOWConverter.Items
                 // Other
                 newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
                 newItemTemplate.StackSize = int.Max(int.Parse(rowBlocks[9]), 1);
-                newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask);
+                newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
                 // Calculate the weapon damage
                 int damage = int.Parse(rowBlocks[10]);
@@ -792,6 +817,11 @@ namespace EQWOWConverter.Items
                             newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(Convert.ToSingle(delay) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT)));
                     }
                 }
+
+                // Calculate stats
+
+
+
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
