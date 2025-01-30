@@ -26,7 +26,7 @@ namespace EQWOWConverter.Items
 {
     internal class ItemTemplate
     {
-
+        private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
 
@@ -62,6 +62,79 @@ namespace EQWOWConverter.Items
                 PopulateItemTemplateListFromDisk();
             return ItemTemplatesByEQDBID;
         }
+
+        public static float GetStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
+        {
+            // Read the file if haven't yet
+            if (StatBaselinesBySlotAndStat.Count() == 0)
+                PopulateStatBaselinesBySlot();
+
+            // Get the slot row
+            string slotNameLower = itemSlot.ToString().ToLower();
+            if (StatBaselinesBySlotAndStat.ContainsKey(slotNameLower) == false)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as that slot wasn't in the ItemStatBaselines");
+                return 0;
+            }
+            Dictionary<string, float> statsForSlot = StatBaselinesBySlotAndStat[slotNameLower];
+            string statNameLower = statName.Trim().ToLower();
+
+            // Pull "EqLow"
+            string statNameEqLow = statNameLower + "eqlow";
+            float statEqLow = 0;
+            if (statsForSlot.ContainsKey(statNameEqLow) == false)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as the column '" + statEqLow + "' did not exist in the ItemStatBaselines");
+                return 0;
+            }
+            statEqLow = statsForSlot[statNameEqLow];
+
+            // Pull "EqHigh"
+            string statNameEqHigh = statNameLower + "eqhigh";
+            float statEqHigh = 0;
+            if (statsForSlot.ContainsKey(statNameEqHigh) == false)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as the column '" + statEqHigh + "' did not exist in the ItemStatBaselines");
+                return 0;
+            }
+            statEqHigh = statsForSlot[statNameEqHigh];
+
+            // Pull "WowLow"
+            string statNameWowLow = statNameLower + "wowlow";
+            float statWowLow = 0;
+            if (statsForSlot.ContainsKey(statNameWowLow) == false)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as the column '" + statWowLow + "' did not exist in the ItemStatBaselines");
+                return 0;
+            }
+            statWowLow = statsForSlot[statNameEqLow];
+
+            // Pull "WowHigh"
+            string statNameWowHigh = statNameLower + "wowhigh";
+            float statWowHigh = 0;
+            if (statsForSlot.ContainsKey(statNameWowHigh) == false)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as the column '" + statWowHigh + "' did not exist in the ItemStatBaselines");
+                return 0;
+            }
+            statWowHigh = statsForSlot[statNameWowHigh];
+
+            // Ignore any rows that are without stat
+            if (statEqHigh <= 0 || statEqLow <= 0 || statWowHigh <= 0 || statWowLow <= 0)
+            {
+                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as one of the 4 values was <= 0 from TtemStatBaselines");
+                return 0;
+            }
+
+            // Calculate the stat
+
+
+
+
+
+            return 0;
+        }
+
 
         private static void CalculateWeaponDamage(int eqWeaponDamage, int eqWeaponDelayInMS, bool isTwoHanded, out int weaponMin, 
             out int weaponMax, out int weaponDelayInMS)
@@ -762,6 +835,41 @@ namespace EQWOWConverter.Items
                     continue;
                 }
                 ItemTemplatesByEQDBID.Add(newItemTemplate.EQItemID, newItemTemplate);
+            }
+        }
+
+        private static void PopulateStatBaselinesBySlot()
+        {
+            string itemStatBaselineFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemStatBaselines.csv");
+            Logger.WriteDetail("Populating Item Stat Baselines list via file '" + itemStatBaselineFile + "'");
+            List<string> itemStatBaselineRows = FileTool.ReadAllStringLinesFromFile(itemStatBaselineFile, false, true);
+            bool isFirstRow = true;
+            List<string> stats = new List<string>();
+            foreach (string row in itemStatBaselineRows)
+            {
+                // Load the row
+                string[] rowBlocks = row.Split("|");
+
+                // If it's the first row, build out the stats
+                if (isFirstRow == true)
+                {
+                    foreach(string block in rowBlocks)
+                    {
+                        string lowerText = block.Trim().ToLower();
+                        if (lowerText == "slot")
+                            continue;
+                        stats.Add(lowerText);
+                    }
+
+                    isFirstRow = false;
+                    continue;
+                }
+
+                // Otherwise, load the stats
+                string slot = rowBlocks[0].Trim().ToLower();
+                StatBaselinesBySlotAndStat.Add(slot, new Dictionary<string, float>());
+                for (int i = 1; i < rowBlocks.Count(); i++)
+                    StatBaselinesBySlotAndStat[slot].Add(stats[i - 1], float.Parse(rowBlocks[i]));
             }
         }
     }
