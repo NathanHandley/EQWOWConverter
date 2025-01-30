@@ -22,36 +22,25 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Items
 {
-    internal enum ItemWOWInventoryType: Int32
+    internal enum ItemWOWStatType : Int32
     {
-        NoEquip = 0,
-        Head = 1,
-        Neck = 2,
-        Shoulder = 3,
-        Shirt = 4,
-        Chest = 5, // Works the same as robe, 20
-        Waist = 6,
-        Legs = 7,
-        Feet = 8,
-        Wrists = 9,
-        Hands = 10,
-        Finger = 11,
-        Trinket = 12,
-        OneHand = 13,
-        Shield = 14,
-        Ranged = 15, // Bows
-        Back = 16,
-        TwoHand = 17,
-        Bag = 18,
-        Tabard = 19,
-        Robe = 20, // Works the same as chest, 5
-        MainHand = 21, // One-Hand, but only in main
-        OffHand2 = 22, // Same as 13?
-        HeldInOffHand = 23,
-        Ammo = 24,
-        Thrown = 25,
-        RangedRight = 26, // Wands, Guns
-        Quiver = 27,
-        Relic = 28
+        Mana = 0,
+        Health = 1,
+        Agility = 2,
+        Strength = 4,
+        Intellect = 5,
+        Spirit = 6,
+        Stamina = 7,
+        DefenseSkillRating = 12,
+        DodgeRating = 13,
+        ParryRating = 14,
+        BlockRating = 15,
+        SpellHitRating = 18,
+        HitRating = 31,
+        CritRating = 32,
+        HasteRating = 36,
+        SpellPower = 45,
+        HealthRegen = 46,
+        BlockValue = 48
     }
 }

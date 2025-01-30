@@ -313,6 +313,15 @@ namespace EQWOWConverter
         // This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;
         public static readonly float CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
 
+        // If this is true, then weapons and armor that allow all normally-aligned classes to be
+        //  classified as 'all'.  For example: Bronze Breastplate allows all plate classes, so
+        //  it will have the classes allowed list set to 'any'
+        public static readonly bool CONFIG_ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP = true;
+
+        // This is how much 'weight' the lower stat has when converting EQ to WoW stats, with 
+        //  values > 1 leaning towards the lower stat, and < 1 leaning towards the higher stat
+        public static readonly float CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT = 1.8f;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================

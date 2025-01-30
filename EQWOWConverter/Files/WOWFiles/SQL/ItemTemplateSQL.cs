@@ -60,27 +60,21 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("maxcount", 0);
             newRow.AddInt("stackable", itemTemplate.StackSize);
             newRow.AddInt("ContainerSlots", itemTemplate.BagSlots);
-            newRow.AddInt("StatsCount", 0);
-            newRow.AddInt("stat_type1", 0);
-            newRow.AddInt("stat_value1", 0);
-            newRow.AddInt("stat_type2", 0);
-            newRow.AddInt("stat_value2", 0);
-            newRow.AddInt("stat_type3", 0);
-            newRow.AddInt("stat_value3", 0);
-            newRow.AddInt("stat_type4", 0);
-            newRow.AddInt("stat_value4", 0);
-            newRow.AddInt("stat_type5", 0);
-            newRow.AddInt("stat_value5", 0);
-            newRow.AddInt("stat_type6", 0);
-            newRow.AddInt("stat_value6", 0);
-            newRow.AddInt("stat_type7", 0);
-            newRow.AddInt("stat_value7", 0);
-            newRow.AddInt("stat_type8", 0);
-            newRow.AddInt("stat_value8", 0);
-            newRow.AddInt("stat_type9", 0);
-            newRow.AddInt("stat_value9", 0);
-            newRow.AddInt("stat_type10", 0);
-            newRow.AddInt("stat_value10", 0);
+            newRow.AddInt("StatsCount", itemTemplate.StatValues.Count);
+            for (int i = 1; i <= 10; i++)
+            {
+                string curStatTypeFieldName = "stat_type" + i.ToString();
+                int curStatTypeFieldValue = 0;
+                string curStatValueFieldName = "stat_value" + i.ToString();
+                int curStatValueFieldValue = 0;
+                if (i <= itemTemplate.StatValues.Count)
+                {
+                    curStatTypeFieldValue = Convert.ToInt32(itemTemplate.StatValues[i-1].Item1);
+                    curStatValueFieldValue = itemTemplate.StatValues[i-1].Item2;
+                }
+                newRow.AddInt(curStatTypeFieldName, curStatTypeFieldValue);
+                newRow.AddInt(curStatValueFieldName, curStatValueFieldValue);
+            }
             newRow.AddInt("ScalingStatDistribution", 0);
             newRow.AddInt("ScalingStatValue", 0);
             newRow.AddInt("dmg_min1", itemTemplate.WeaponMinDamage);
@@ -89,7 +83,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("dmg_min2", 0);
             newRow.AddInt("dmg_max2", 0);
             newRow.AddInt("dmg_type2", 0);
-            newRow.AddInt("armor", 0);
+            newRow.AddInt("armor", itemTemplate.Armor);
             newRow.AddInt("holy_res", null);
             newRow.AddInt("fire_res", null);
             newRow.AddInt("nature_res", null);

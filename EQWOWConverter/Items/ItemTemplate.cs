@@ -49,6 +49,8 @@ namespace EQWOWConverter.Items
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
         public List<ClassType> AllowedClassTypes = new List<ClassType>();
+        public List<Tuple<ItemWOWStatType, int>> StatValues = new List<Tuple<ItemWOWStatType, int>>();
+        public int Armor = 0;
 
         public ItemTemplate()
         {
@@ -126,7 +128,7 @@ namespace EQWOWConverter.Items
             // Ignore any rows that are without stat
             if (statEqHigh <= 0 || statEqLow <= 0 || statWowHigh <= 0 || statWowLow <= 0)
             {
-                Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as one of the 4 values was <= 0 from TtemStatBaselines");
+                Logger.WriteDetail("Could not pull stat for slot '" + slotNameLower + "' as one of the 4 values was <= 0 from TtemStatBaselines");
                 return 0;
             }
 
@@ -135,9 +137,34 @@ namespace EQWOWConverter.Items
                 return statWowLow;
 
             // Calculate the stat
-            float normalizedModOfHigh = (eqStatValue - statEqLow) / (statEqHigh - statEqLow);
+            float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow)) / Configuration.CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT;
             float calculatedStat = (normalizedModOfHigh * statWowHigh) + ((1 - normalizedModOfHigh) * statWowLow);
             return calculatedStat;
+        }
+
+        // TODO: May not need class/subclass
+        private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
+            int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom)
+        {
+            itemTemplate.StatValues.Clear();
+
+            // Armor Class
+            if (eqArmorClass > 0)
+                itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ac", eqArmorClass));
+
+            // Strength
+
+            // Agility
+
+            // Charisma
+
+            // Dexterity
+
+            // Intelligence
+
+            // Stamina
+
+            // Wisdom
         }
 
         private enum WeaponIconImpliedType
@@ -819,9 +846,16 @@ namespace EQWOWConverter.Items
                 }
 
                 // Calculate stats
-
-
-
+                int agility = int.Parse(rowBlocks[14]);
+                int armorClass = int.Parse(rowBlocks[15]);
+                int charisma = int.Parse(rowBlocks[16]);
+                int dexterity = int.Parse(rowBlocks[17]);
+                int intelligence = int.Parse(rowBlocks[18]);
+                int stamina = int.Parse(rowBlocks[19]);
+                int strength = int.Parse(rowBlocks[20]);
+                int wisdom = int.Parse(rowBlocks[21]);
+                PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
+                    armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))

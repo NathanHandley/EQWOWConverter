@@ -36,7 +36,7 @@ namespace EQWOWConverter.Items
         Back = 256,
         Wrist2 = 512,
         Wrist1 = 1024,
-        Ranged = 2048, // ? And Ammo?
+        Ranged = 2048,
         Hands = 4096,
         Primary = 8192,
         Secondary = 16384,
