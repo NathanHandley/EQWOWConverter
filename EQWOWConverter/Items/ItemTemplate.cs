@@ -49,7 +49,7 @@ namespace EQWOWConverter.Items
         public int EQClassMask = 32767;
         public int EQSlotMask = 0;
         public List<ClassType> AllowedClassTypes = new List<ClassType>();
-        public List<Tuple<ItemWOWStatType, int>> StatValues = new List<Tuple<ItemWOWStatType, int>>();
+        public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
 
         public ItemTemplate()
@@ -144,7 +144,8 @@ namespace EQWOWConverter.Items
 
         // TODO: May not need class/subclass
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
-            int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom)
+            int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom,
+            int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold)
         {
             itemTemplate.StatValues.Clear();
 
@@ -153,6 +154,8 @@ namespace EQWOWConverter.Items
                 itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ac", eqArmorClass));
 
             // Strength
+            if (eqStrength > 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "str", eqArmorClass))));
 
             // Agility
 
@@ -163,8 +166,32 @@ namespace EQWOWConverter.Items
             // Intelligence
 
             // Stamina
+            if (eqStamina > 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "sta", eqArmorClass))));
 
             // Wisdom
+
+            // HP
+
+            // Mana
+
+            // Resist Magic
+
+            // Resist Nature
+
+            // Resist Shadow
+
+            // Resist Fire
+
+            // Resist Cold
+
+            // Hit Rating
+
+            // Parry Rating
+
+            // Block Rating
+
+            // Block Value
         }
 
         private enum WeaponIconImpliedType
@@ -854,8 +881,16 @@ namespace EQWOWConverter.Items
                 int stamina = int.Parse(rowBlocks[19]);
                 int strength = int.Parse(rowBlocks[20]);
                 int wisdom = int.Parse(rowBlocks[21]);
+                int hp = int.Parse(rowBlocks[22]);
+                int mana = int.Parse(rowBlocks[23]);
+                int resistMagic = int.Parse(rowBlocks[24]);
+                int resistDisease = int.Parse(rowBlocks[25]);
+                int resistPoison = int.Parse(rowBlocks[26]);
+                int resistCold = int.Parse(rowBlocks[27]);
+                int resistFire = int.Parse(rowBlocks[28]);
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
-                    armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom);
+                    armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, mana, resistPoison, resistMagic, 
+                    resistDisease, resistFire, resistCold);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
