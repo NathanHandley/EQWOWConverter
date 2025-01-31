@@ -164,6 +164,8 @@ namespace EQWOWConverter.Items
             // Dexterity
 
             // Intelligence
+            if (eqIntelligence > 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "int", eqArmorClass))));
 
             // Stamina
             if (eqStamina > 0)
