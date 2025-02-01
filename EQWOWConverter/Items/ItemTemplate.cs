@@ -167,10 +167,14 @@ namespace EQWOWConverter.Items
                 itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "str", eqStrength))));
 
             // Agility
-
-            // Charisma
-
-            // Dexterity
+            // Note: The highest between Dex or Agl is used
+            if (eqDexterity != 0 || eqAgility != 0)
+            {
+                int pickedStat = Math.Max(eqDexterity, eqAgility);
+                if (pickedStat == 0) // One is zero, one is below zero
+                    pickedStat = Math.Min(eqDexterity, eqAgility);
+                itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "agi", pickedStat))));
+            }
 
             // Intelligence
             if (eqIntelligence != 0)
@@ -184,6 +188,9 @@ namespace EQWOWConverter.Items
             // Note: This is converted from "Wisdom"
             if (eqWisdom != 0)
                 itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqWisdom))));
+
+            // Charisma
+            // Note: This is being mapped to "hit".  There wasn't a better option, and it makes this stat useful on equipment
 
             // HP
 
