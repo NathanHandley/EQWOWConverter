@@ -72,9 +72,13 @@ namespace EQWOWConverter.Items
                 PopulateStatBaselinesBySlot();
 
             // Zero or negative stats give nothing back
+            bool flipStatSign = false;
             if (eqStatValue <= 0)
-                return 0;
-
+            {
+                flipStatSign = true;
+                eqStatValue *= -1;
+            }
+                
             // Get the slot row
             string slotNameLower = itemSlot.ToString().ToLower();
             if (StatBaselinesBySlotAndStat.ContainsKey(slotNameLower) == false)
@@ -139,6 +143,11 @@ namespace EQWOWConverter.Items
             // Calculate the stat
             float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow)) / Configuration.CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT;
             float calculatedStat = (normalizedModOfHigh * statWowHigh) + ((1 - normalizedModOfHigh) * statWowLow);
+
+            // Flip the sign if needed
+            if (flipStatSign == true)
+                calculatedStat *= -1;
+
             return calculatedStat;
         }
 
@@ -149,13 +158,13 @@ namespace EQWOWConverter.Items
         {
             itemTemplate.StatValues.Clear();
 
-            // Armor Class
+            // Armor Class (can't process negatives for armor)
             if (eqArmorClass > 0)
                 itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ac", eqArmorClass));
 
             // Strength
-            if (eqStrength > 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "str", eqArmorClass))));
+            if (eqStrength != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "str", eqStrength))));
 
             // Agility
 
@@ -164,17 +173,17 @@ namespace EQWOWConverter.Items
             // Dexterity
 
             // Intelligence
-            if (eqIntelligence > 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "int", eqArmorClass))));
+            if (eqIntelligence != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "int", eqIntelligence))));
 
             // Stamina
-            if (eqStamina > 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "sta", eqArmorClass))));
+            if (eqStamina != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "sta", eqStamina))));
 
             // Spirit
             // Note: This is converted from "Wisdom"
-            if (eqWisdom > 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqArmorClass))));
+            if (eqWisdom != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqWisdom))));
 
             // HP
 
