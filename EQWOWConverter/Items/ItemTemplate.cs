@@ -171,7 +171,10 @@ namespace EQWOWConverter.Items
             if (eqStamina > 0)
                 itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "sta", eqArmorClass))));
 
-            // Wisdom
+            // Spirit
+            // Note: This is converted from "Wisdom"
+            if (eqWisdom > 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqArmorClass))));
 
             // HP
 
