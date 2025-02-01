@@ -26,7 +26,7 @@ namespace EQWOWConverter.Items
     {
         Mana = 0,
         Health = 1,
-        Agility = 2,
+        Agility = 3,
         Strength = 4,
         Intellect = 5,
         Spirit = 6,

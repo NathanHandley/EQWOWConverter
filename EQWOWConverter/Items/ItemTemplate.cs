@@ -196,8 +196,12 @@ namespace EQWOWConverter.Items
                 itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "hitrating", eqCharisma))));
 
             // HP
+            if (eqHp != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "hp", eqHp))));
 
             // Mana
+            if (eqMana != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.Mana, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "mp", eqMana))));
 
             // Resist Magic
 
@@ -208,12 +212,6 @@ namespace EQWOWConverter.Items
             // Resist Fire
 
             // Resist Cold
-
-            // Hit Rating
-
-            // Parry Rating
-
-            // Block Rating
 
             // Block Value
         }
