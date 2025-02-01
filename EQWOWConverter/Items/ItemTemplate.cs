@@ -35,6 +35,7 @@ namespace EQWOWConverter.Items
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
+        public ItemWOWQuality Quality = ItemWOWQuality.Poor;
         public int DisplayID = 0;
         public int SheatheType = 0;
         public int Material = -1;
@@ -215,6 +216,14 @@ namespace EQWOWConverter.Items
             // Block Rating
 
             // Block Value
+        }
+
+        private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues)
+        {
+            if (statValues.Count > 0)
+                return ItemWOWQuality.Uncommon;
+            else
+                return ItemWOWQuality.Common;
         }
 
         private enum WeaponIconImpliedType
@@ -914,6 +923,9 @@ namespace EQWOWConverter.Items
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
                     armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, mana, resistPoison, resistMagic, 
                     resistDisease, resistFire, resistCold);
+
+                // Set the quality
+                newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
