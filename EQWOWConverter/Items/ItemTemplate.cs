@@ -189,8 +189,10 @@ namespace EQWOWConverter.Items
             if (eqWisdom != 0)
                 itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqWisdom))));
 
-            // Charisma
+            // Hit (Charisma)
             // Note: This is being mapped to "hit".  There wasn't a better option, and it makes this stat useful on equipment
+            if (eqCharisma != 0)
+                itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "hitrating", eqCharisma))));
 
             // HP
 
