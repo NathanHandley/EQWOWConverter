@@ -124,7 +124,7 @@ namespace EQWOWConverter.Items
                 Logger.WriteError("Could not pull stat for slot '" + slotNameLower + "' as the column '" + statWowLow + "' did not exist in the ItemStatBaselines");
                 return 0;
             }
-            statWowLow = statsForSlot[statNameEqLow];
+            statWowLow = statsForSlot[statNameWowLow];
 
             // Pull "WowHigh"
             string statNameWowHigh = statNameLower + "wowhigh";
@@ -144,12 +144,18 @@ namespace EQWOWConverter.Items
             }
 
             // Maintain a minimum boundary
-            if (eqStatValue < statEqLow)
+            if (eqStatValue == statEqLow)
                 return statWowLow;
+            if (eqStatValue == statEqHigh)
+                return statWowHigh;
 
             // Calculate the stat
-            float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow)) / Configuration.CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT;
-            float calculatedStat = (normalizedModOfHigh * statWowHigh) + ((1 - normalizedModOfHigh) * statWowLow);
+            float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow));
+            float calcBiasFactor = 1;
+            if (normalizedModOfHigh < 1)
+                calcBiasFactor = ((1 - normalizedModOfHigh) * (Configuration.CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT - 1)) + 1;
+            float biasedNormalizedModOfHigh = normalizedModOfHigh / calcBiasFactor;
+            float calculatedStat = (biasedNormalizedModOfHigh * statWowHigh) + ((1 - biasedNormalizedModOfHigh) * statWowLow);
 
             // Flip the sign if needed
             if (flipStatSign == true)
@@ -167,7 +173,7 @@ namespace EQWOWConverter.Items
 
             // Armor Class (can't process negatives for armor)
             if (eqArmorClass > 0)
-                itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Ac", eqArmorClass));
+                itemTemplate.Armor = Math.Max(Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Ac", eqArmorClass)), 0);
 
             // Strength
             if (eqStrength != 0)
@@ -910,18 +916,21 @@ namespace EQWOWConverter.Items
                 // Calculate the weapon damage
                 int damage = int.Parse(rowBlocks[10]);
                 int delay = int.Parse(rowBlocks[11]) * 100;
-                if (damage > 0 && newItemTemplate.ClassID == 2)
+                if (damage > 0  && delay > 0 && newItemTemplate.ClassID == 2)
                 {
-                    float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", damage);
+                    float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
+                    float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", dps);
+                    float calcDelay = Convert.ToSingle(delay) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT);
+                    float calcDamage = calcDps * (calcDelay / 1000);
                     if (calcDps != 0)
                     {
                         // Min/Max damage ranges are a +/- 20% 
-                        newItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(calcDps * 0.8f));
-                        newItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(calcDps * 1.2f));
+                        newItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(calcDamage * 0.8f));
+                        newItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(calcDamage * 1.2f));
 
                         // Scale the delay
                         if (delay > 0)
-                            newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(Convert.ToSingle(delay) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT)));
+                            newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(calcDelay));
                     }
                 }
 
