@@ -238,9 +238,10 @@ namespace EQWOWConverter.Items
                 itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
         }
 
-        private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues)
+        private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues, int eqResistPoison, 
+            int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold)
         {
-            if (statValues.Count > 0)
+            if (statValues.Count > 0 || eqResistPoison > 0 || eqResistMagic > 0 || eqResistDisease > 0 || eqResistCold > 0 || eqResistFire > 0)
                 return ItemWOWQuality.Uncommon;
             else
                 return ItemWOWQuality.Common;
@@ -945,7 +946,8 @@ namespace EQWOWConverter.Items
                     resistDisease, resistFire, resistCold);
 
                 // Set the quality
-                newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues);
+                newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease,
+                    resistFire, resistCold);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
