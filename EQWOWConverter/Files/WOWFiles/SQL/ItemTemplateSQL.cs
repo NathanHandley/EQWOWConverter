@@ -139,7 +139,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("sheath", itemTemplate.SheatheType);
             newRow.AddInt("RandomProperty", 0);
             newRow.AddInt("RandomSuffix", 0);
-            newRow.AddInt("block", 0);
+            newRow.AddInt("block", itemTemplate.Block);
             newRow.AddInt("itemset", 0);
             newRow.AddInt("MaxDurability", 0);
             newRow.AddInt("area", 0);

@@ -57,6 +57,7 @@ namespace EQWOWConverter.Items
         public int FrostResist = 0;
         public int FireResist = 0;
         public int NatureResist = 0;
+        public int Block = 0;
 
         public ItemTemplate()
         {
@@ -232,6 +233,9 @@ namespace EQWOWConverter.Items
                 itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "FroRes", eqResistCold));
 
             // Block Value
+            // Note: Using AC as the scale for shield since there's no other anchor
+            if (classID == 4 && subClassID == 6) // Shields only
+                itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
         }
 
         private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues)
