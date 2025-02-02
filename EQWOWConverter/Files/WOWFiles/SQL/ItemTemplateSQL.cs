@@ -85,11 +85,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("dmg_type2", 0);
             newRow.AddInt("armor", itemTemplate.Armor);
             newRow.AddInt("holy_res", null);
-            newRow.AddInt("fire_res", null);
-            newRow.AddInt("nature_res", null);
-            newRow.AddInt("frost_res", null);
-            newRow.AddInt("shadow_res", null);
-            newRow.AddInt("arcane_res", null);
+            newRow.AddInt("fire_res", itemTemplate.FireResist);
+            newRow.AddInt("nature_res", itemTemplate.NatureResist);
+            newRow.AddInt("frost_res", itemTemplate.FrostResist);
+            newRow.AddInt("shadow_res", itemTemplate.ShadowResist);
+            newRow.AddInt("arcane_res", itemTemplate.ArcaneResist);
             newRow.AddInt("delay", itemTemplate.WeaponDelay);
             newRow.AddInt("ammo_type", 0);
             newRow.AddFloat("RangedModRange", 0);

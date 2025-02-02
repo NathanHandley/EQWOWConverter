@@ -52,6 +52,11 @@ namespace EQWOWConverter.Items
         public List<ClassType> AllowedClassTypes = new List<ClassType>();
         public List<(ItemWOWStatType, int)> StatValues = new List<(ItemWOWStatType, int)>();
         public int Armor = 0;
+        public int ArcaneResist = 0;
+        public int ShadowResist = 0;
+        public int FrostResist = 0;
+        public int FireResist = 0;
+        public int NatureResist = 0;
 
         public ItemTemplate()
         {
@@ -161,11 +166,11 @@ namespace EQWOWConverter.Items
 
             // Armor Class (can't process negatives for armor)
             if (eqArmorClass > 0)
-                itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ac", eqArmorClass));
+                itemTemplate.Armor = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Ac", eqArmorClass));
 
             // Strength
             if (eqStrength != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "str", eqStrength))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Strength, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Str", eqStrength))));
 
             // Agility
             // Note: The highest between Dex or Agl is used
@@ -174,44 +179,57 @@ namespace EQWOWConverter.Items
                 int pickedStat = Math.Max(eqDexterity, eqAgility);
                 if (pickedStat == 0) // One is zero, one is below zero
                     pickedStat = Math.Min(eqDexterity, eqAgility);
-                itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "agi", pickedStat))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Agility, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Agi", pickedStat))));
             }
 
             // Intelligence
             if (eqIntelligence != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "int", eqIntelligence))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Int", eqIntelligence))));
 
             // Stamina
             if (eqStamina != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "sta", eqStamina))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Sta", eqStamina))));
 
             // Spirit
             // Note: This is converted from "Wisdom"
             if (eqWisdom != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "spr", eqWisdom))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Spr", eqWisdom))));
 
             // Hit (Charisma)
-            // Note: This is being mapped to "hit".  There wasn't a better option, and it makes this stat useful on equipment
+            // Note: Charisma is being mapped to "hit"
             if (eqCharisma != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "hitrating", eqCharisma))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "HitRating", eqCharisma))));
 
             // HP
             if (eqHp != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "hp", eqHp))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Health, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Hp", eqHp))));
 
             // Mana
             if (eqMana != 0)
-                itemTemplate.StatValues.Add((ItemWOWStatType.Mana, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "mp", eqMana))));
+                itemTemplate.StatValues.Add((ItemWOWStatType.Mana, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Mp", eqMana))));
 
-            // Resist Magic
+            // Resist Arcane
+            // Note: Magic resist is being mapped to Arcane
+            if (eqResistMagic != 0)
+                itemTemplate.ArcaneResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ArcRes", eqResistMagic));
 
             // Resist Nature
+            // Note: Poison resist is being mapped to Nature
+            if (eqResistPoison != 0)
+                itemTemplate.NatureResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "NatRes", eqResistPoison));
 
             // Resist Shadow
+            // Note: Disease resist is being mapped to Shadow
+            if (eqResistDisease != 0)
+                itemTemplate.ShadowResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ShaRes", eqResistDisease));
 
             // Resist Fire
+            if (eqResistFire != 0)
+                itemTemplate.FireResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "FirRes", eqResistFire));
 
-            // Resist Cold
+            // Resist Frost
+            if (eqResistCold != 0)
+                itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "FroRes", eqResistCold));
 
             // Block Value
         }
