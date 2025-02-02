@@ -164,51 +164,6 @@ namespace EQWOWConverter.Items
             return calculatedStat;
         }
 
-        private static void PopulateResistances(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int eqResistPoison, int eqResistMagic, 
-            int eqResistDisease, int eqResistFire, int eqResistCold)
-        {
-            // In the case of all resists being > 0 and all set the same, use the highest of the types and spread out
-            if (eqResistPoison != 0 && (eqResistPoison == eqResistMagic && eqResistPoison == eqResistDisease && 
-                eqResistPoison == eqResistFire && eqResistPoison == eqResistCold))
-            {
-                float highestValue = GetConvertedEqToWowStat(itemSlot, "ArcRes", eqResistMagic);
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "NatRes", eqResistPoison));
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "ShaRes", eqResistDisease));
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "FirRes", eqResistFire));
-                highestValue = MathF.Max(highestValue, GetConvertedEqToWowStat(itemSlot, "FroRes", eqResistCold));
-                itemTemplate.ArcaneResist = Convert.ToInt32(highestValue);
-                itemTemplate.NatureResist = Convert.ToInt32(highestValue);
-                itemTemplate.ShadowResist = Convert.ToInt32(highestValue);
-                itemTemplate.FireResist = Convert.ToInt32(highestValue);
-                itemTemplate.FrostResist = Convert.ToInt32(highestValue);
-            }
-            else
-            {
-                // Resist Arcane
-                // Note: Magic resist is being mapped to Arcane
-                if (eqResistMagic != 0)
-                    itemTemplate.ArcaneResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ArcRes", eqResistMagic));
-
-                // Resist Nature
-                // Note: Poison resist is being mapped to Nature
-                if (eqResistPoison != 0)
-                    itemTemplate.NatureResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "NatRes", eqResistPoison));
-
-                // Resist Shadow
-                // Note: Disease resist is being mapped to Shadow
-                if (eqResistDisease != 0)
-                    itemTemplate.ShadowResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "ShaRes", eqResistDisease));
-
-                // Resist Fire
-                if (eqResistFire != 0)
-                    itemTemplate.FireResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "FirRes", eqResistFire));
-
-                // Resist Frost
-                if (eqResistCold != 0)
-                    itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "FroRes", eqResistCold));
-            }
-        }
-
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
             int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom,
             int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold)
@@ -283,8 +238,28 @@ namespace EQWOWConverter.Items
             if (classID == 4 && subClassID == 6) // Shields only
                 itemTemplate.Block = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "BlockValue", eqArmorClass));
 
-            // Resistances
-            PopulateResistances(ref itemTemplate, itemSlot, eqResistPoison, eqResistMagic, eqResistDisease, eqResistFire, eqResistCold);
+            // Resist Arcane
+            // Note: Magic resist is being mapped to Arcane
+            if (eqResistMagic != 0)
+                itemTemplate.ArcaneResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistMagic));
+
+            // Resist Nature
+            // Note: Poison resist is being mapped to Nature
+            if (eqResistPoison != 0)
+                itemTemplate.NatureResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistPoison));
+
+            // Resist Shadow
+            // Note: Disease resist is being mapped to Shadow
+            if (eqResistDisease != 0)
+                itemTemplate.ShadowResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistDisease));
+
+            // Resist Fire
+            if (eqResistFire != 0)
+                itemTemplate.FireResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistFire));
+
+            // Resist Frost
+            if (eqResistCold != 0)
+                itemTemplate.FrostResist = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Res", eqResistCold));
         }
 
         private static ItemWOWQuality CalculateQuality(List<(ItemWOWStatType, int)> statValues, int eqResistPoison, 

@@ -319,8 +319,9 @@ namespace EQWOWConverter
         public static readonly bool CONFIG_ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP = true;
 
         // This is how much 'weight' the lower stat has when converting EQ to WoW stats, with 
-        //  values > 1 leaning towards the lower stat, and < 1 leaning towards the higher stat
-        public static readonly float CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT = 1.8f;
+        //  values closer to 1 leaning towards the lower stat, and further from 1 leaning towards
+        //  the higher stat.  Don't make it less than 1.  
+        public static readonly float CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT = 2.5f;
 
         // ====================================================================
         // WOW DBC/File IDs
