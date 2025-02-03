@@ -58,6 +58,8 @@ namespace EQWOWConverter.Items
         public int FireResist = 0;
         public int NatureResist = 0;
         public int Block = 0;
+        public bool DoesVanishOnLogout = false;
+        public bool IsNoDrop = false;
 
         public ItemTemplate()
         {
@@ -911,6 +913,10 @@ namespace EQWOWConverter.Items
                 string iconName = "INV_EQ_" + (iconID).ToString();
                 ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
                 newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+
+                // Binding Properties
+                newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
+                newItemTemplate.DoesVanishOnLogout = int.Parse(columns["norent"]) == 0 ? true : false;
 
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);

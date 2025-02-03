@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("name", 255, itemTemplate.Name);
             newRow.AddInt("displayid", itemTemplate.DisplayID);
             newRow.AddInt("Quality", Convert.ToInt32(itemTemplate.Quality));
-            newRow.AddInt("Flags", 0);
+            newRow.AddInt("Flags", itemTemplate.DoesVanishOnLogout == true ? 2 : 0);
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", 1);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
@@ -128,7 +128,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spellcooldown_5", -1);
             newRow.AddInt("spellcategory_5", 0);
             newRow.AddInt("spellcategorycooldown_5", -1);
-            newRow.AddInt("bonding", 0);
+            newRow.AddInt("bonding", itemTemplate.IsNoDrop == true ? 1 : 0);
             newRow.AddString("description", 255, string.Empty);
             newRow.AddInt("PageText", 0);
             newRow.AddInt("LanguageID", 0);
