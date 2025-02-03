@@ -198,6 +198,36 @@ namespace EQWOWConverter
             return inputRows;
         }
 
+        public static List<Dictionary<string, string>> ReadAllRowsFromFileWithHeader(string fileName, string delimeter)
+        {
+            // Get the rows
+            List<Dictionary<string, string>> returnRows = new List<Dictionary<string, string>>();
+            List<string> rows = ReadAllStringLinesFromFile(fileName, false, true);
+
+            // For each row, create a blocked return set
+            bool isHeader = true;
+            List<string> columnNames = new List<string>();
+            foreach(string row in rows)
+            {
+                string[] rowBlocks = row.Split(delimeter);
+                if (isHeader == true)
+                {
+                    foreach(string block in rowBlocks)
+                        columnNames.Add(block);
+                    isHeader = false;
+                }
+                else
+                {
+                    Dictionary<string, string> rowValues = new Dictionary<string, string>();
+                    for (int i = 0; i < columnNames.Count; i++)
+                        rowValues.Add(columnNames[i], rowBlocks[i]);
+                    returnRows.Add(rowValues);
+                }
+            }
+
+            return returnRows;
+        }
+
         public static bool IsFileLocked(string fileName)
         {
             try

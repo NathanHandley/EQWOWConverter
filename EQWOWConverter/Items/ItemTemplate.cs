@@ -896,44 +896,43 @@ namespace EQWOWConverter.Items
             // Load in item data
             string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
-            List<string> itemTemplateRows = FileTool.ReadAllStringLinesFromFile(itemsFileName, true, true);
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(itemsFileName, "|");
 
             // Load all of the data
-            foreach (string row in itemTemplateRows)
+            foreach (Dictionary<string, string> columns in rows)
             {
                 // Load the row
-                string[] rowBlocks = row.Split("|");
                 ItemTemplate newItemTemplate = new ItemTemplate();
-                newItemTemplate.EQItemID = int.Parse(rowBlocks[0]);
-                newItemTemplate.Name = rowBlocks[1];
+                newItemTemplate.EQItemID = int.Parse(columns["id"]);
+                newItemTemplate.Name = columns["Name"];
 
                 // Icon
-                int iconID = int.Parse(rowBlocks[3]) - 500;
+                int iconID = int.Parse(columns["icon"]) - 500;
                 string iconName = "INV_EQ_" + (iconID).ToString();
                 ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
                 newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
 
                 // Equippable Properties
-                int itemType = int.Parse(rowBlocks[2]);
-                int bagType = int.Parse(rowBlocks[7]);
-                newItemTemplate.EQClassMask = int.Parse(rowBlocks[12]);
-                newItemTemplate.EQSlotMask = int.Parse(rowBlocks[13]);
+                int itemType = int.Parse(columns["itemtype"]);
+                int bagType = int.Parse(columns["bagtype"]);
+                newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
+                newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID);
 
                 // Price
-                newItemTemplate.BuyPriceInCopper = int.Parse(rowBlocks[4]);
+                newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);
                 if (newItemTemplate.BuyPriceInCopper <= 0)
                     newItemTemplate.BuyPriceInCopper = 1;
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
 
                 // Other
-                newItemTemplate.BagSlots = int.Parse(rowBlocks[8]);
-                newItemTemplate.StackSize = int.Max(int.Parse(rowBlocks[9]), 1);
+                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]);
+                newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
                 // Calculate the weapon damage
-                int damage = int.Parse(rowBlocks[10]);
-                int delay = int.Parse(rowBlocks[11]) * 100;
+                int damage = int.Parse(columns["damage"]);
+                int delay = int.Parse(columns["delay"]) * 100;
                 if (damage > 0  && delay > 0 && newItemTemplate.ClassID == 2)
                 {
                     float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
@@ -953,21 +952,21 @@ namespace EQWOWConverter.Items
                 }
 
                 // Calculate stats
-                int agility = int.Parse(rowBlocks[14]);
-                int armorClass = int.Parse(rowBlocks[15]);
-                int charisma = int.Parse(rowBlocks[16]);
-                int dexterity = int.Parse(rowBlocks[17]);
-                int intelligence = int.Parse(rowBlocks[18]);
-                int stamina = int.Parse(rowBlocks[19]);
-                int strength = int.Parse(rowBlocks[20]);
-                int wisdom = int.Parse(rowBlocks[21]);
-                int hp = int.Parse(rowBlocks[22]);
-                int mana = int.Parse(rowBlocks[23]);
-                int resistMagic = int.Parse(rowBlocks[24]);
-                int resistDisease = int.Parse(rowBlocks[25]);
-                int resistPoison = int.Parse(rowBlocks[26]);
-                int resistCold = int.Parse(rowBlocks[27]);
-                int resistFire = int.Parse(rowBlocks[28]);
+                int agility = int.Parse(columns["aagi"]);
+                int armorClass = int.Parse(columns["ac"]);
+                int charisma = int.Parse(columns["acha"]);
+                int dexterity = int.Parse(columns["adex"]);
+                int intelligence = int.Parse(columns["aint"]);
+                int stamina = int.Parse(columns["asta"]);
+                int strength = int.Parse(columns["astr"]);
+                int wisdom = int.Parse(columns["awis"]);
+                int hp = int.Parse(columns["hp"]);
+                int mana = int.Parse(columns["mana"]);
+                int resistMagic = int.Parse(columns["resistmagic"]);
+                int resistDisease = int.Parse(columns["resistdisease"]);
+                int resistPoison = int.Parse(columns["resistpoison"]);
+                int resistCold = int.Parse(columns["resistcold"]);
+                int resistFire = int.Parse(columns["resistfire"]);
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
                     armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, mana, resistPoison, resistMagic, 
                     resistDisease, resistFire, resistCold);
