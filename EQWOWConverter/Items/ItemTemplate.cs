@@ -229,26 +229,46 @@ namespace EQWOWConverter.Items
             }
 
             // Spell Power
-            // Note: Using weapon DPS and only setting for weapons usable by casters
-            ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
-            if (classID == 2 && (subClass == ItemWOWWeaponSubclassType.Dagger || 
-                subClass == ItemWOWWeaponSubclassType.Staff || 
-                subClass == ItemWOWWeaponSubclassType.MaceOneHand))
+            // Note: Only applies to equipment usable by caster classes
+            if (classMask >= 32767 ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) ||
+                IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
             {
-                if (classMask >= 32767 ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) ||
-                    IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+                ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
+
+                // Weapons
+                if (classID == 2)
                 {
-                    float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
-                    float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", dps);
-                    if (spellPower > 0)
+                    // Either on generally caster weapons (Dagger / Staff / OneHand Mace), or if the weapon has spirit/int/mana
+                    if ((subClass == ItemWOWWeaponSubclassType.Dagger ||
+                         subClass == ItemWOWWeaponSubclassType.Staff ||
+                         subClass == ItemWOWWeaponSubclassType.MaceOneHand)
+                         ||
+                         (eqWisdom > 0 || eqIntelligence > 0 || eqMana > 0))
+                    {
+                        float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
+                        float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", dps);
+                        if (spellPower > 0)
+                            itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
+                    }
+                }
+
+                // Armor
+                else
+                {
+                    // Use the higher of wisdom or int to determine amount
+                    int higherOfIntAndWis = Math.Max(eqWisdom, eqIntelligence);
+                    if (higherOfIntAndWis > 0)
+                    {
+                        float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", higherOfIntAndWis);
                         itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
+                    }
                 }
             }
 
