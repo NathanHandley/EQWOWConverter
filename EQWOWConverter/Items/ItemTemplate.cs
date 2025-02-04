@@ -652,7 +652,7 @@ namespace EQWOWConverter.Items
             return false;
         }
 
-        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, int iconID)
+        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, int iconID, int damage)
         {
             switch (eqItemType)
             {
@@ -689,10 +689,50 @@ namespace EQWOWConverter.Items
                         }
                         else
                         {
-                            // 1 Hand Slash => 1h Sword or Axe
-                            itemTemplate.ClassID = 2;
-                            itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                            itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                            // If it has damage, it's a weapon
+                            if (damage > 0)
+                            {
+                                // 1 Hand Slash => 1h Sword or Axe
+                                itemTemplate.ClassID = 2;
+                                itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
+                                itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                            }
+
+                            // No damage, check if it has an equippable slot.  If so, it's armor or a held item
+                            else
+                            {
+                                // If it can be equipped in hands, make it holdable
+                                if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                                   IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
+                                {
+                                    itemTemplate.ClassID = 2;
+                                    itemTemplate.SubClassID = 14;
+                                    itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
+                                }
+
+                                // If it can equip in range, allow it to equip there (as a wand)
+                                else if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
+                                {
+                                    itemTemplate.ClassID = 2;
+                                    itemTemplate.SubClassID = 14;
+                                    itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
+                                }
+
+                                // If it has any other equippable armor slot, it's armor
+                                else if (slotMask != 0)
+                                {
+                                    itemTemplate.ClassID = 4;
+                                    itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
+                                    itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
+                                }
+
+                                // Otherwise, store it as misc
+                                else
+                                {
+                                    itemTemplate.ClassID = 4; // armor class
+                                    itemTemplate.SubClassID = 4;
+                                }
+                            }                           
                         }
                     } break;
                 case 1: // 2 Hand Slash => 2h Sword or Axe
@@ -751,8 +791,29 @@ namespace EQWOWConverter.Items
                     } break;
                 case 11: // Misc
                     {
-                        itemTemplate.ClassID = 14;
-                        itemTemplate.SubClassID = 4;
+                        // If it can be equipped in hands, make it holdable
+                        if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                           IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
+                        {
+                            itemTemplate.ClassID = 2;
+                            itemTemplate.SubClassID = 14;
+                            itemTemplate.InventoryType = ItemWOWInventoryType.HeldInOffHand;
+                        }
+
+                        // If it can equip in range, allow it to equip there (as a wand)
+                        else if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Ranged, slotMask))
+                        {
+                            itemTemplate.ClassID = 2;
+                            itemTemplate.SubClassID = 14;
+                            itemTemplate.InventoryType = ItemWOWInventoryType.Ranged;
+                        }                        
+
+                        // Otherwise, store it as misc
+                        else
+                        {
+                            itemTemplate.ClassID = 4; // armor class
+                            itemTemplate.SubClassID = 4;
+                        }
                     } break;
                 case 12: // Lockpick
                     {
@@ -966,9 +1027,10 @@ namespace EQWOWConverter.Items
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);
                 int bagType = int.Parse(columns["bagtype"]);
+                int damage = int.Parse(columns["damage"]);
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
-                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID);
+                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, damage);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);
@@ -982,7 +1044,6 @@ namespace EQWOWConverter.Items
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
                 // Calculate the weapon damage
-                int damage = int.Parse(columns["damage"]);
                 int delay = int.Parse(columns["delay"]) * 100;
                 if (damage > 0  && delay > 0 && newItemTemplate.ClassID == 2)
                 {
