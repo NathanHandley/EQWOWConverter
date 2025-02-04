@@ -167,8 +167,9 @@ namespace EQWOWConverter.Items
         }
 
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
-            int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, int eqStamina, int eqWisdom,
-            int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, int eqResistCold)
+            int classMask, int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, 
+            int eqStamina, int eqWisdom, int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, 
+            int eqResistCold, int damage, int delay)
         {
             itemTemplate.StatValues.Clear();
 
@@ -225,6 +226,30 @@ namespace EQWOWConverter.Items
                 // Note: Charisma is being mapped to "hit"
                 if (eqCharisma != 0)
                     itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "HitRating", eqCharisma))));
+            }
+
+            // Spell Power
+            // Note: Using weapon DPS and only setting for weapons usable by casters
+            ItemWOWWeaponSubclassType subClass = (ItemWOWWeaponSubclassType)subClassID;
+            if (classID == 2 && (subClass == ItemWOWWeaponSubclassType.Dagger || 
+                subClass == ItemWOWWeaponSubclassType.Staff || 
+                subClass == ItemWOWWeaponSubclassType.MaceOneHand))
+            {
+                if (classMask >= 32767 ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Cleric, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Paladin, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Druid, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Shaman, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Wizard, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Magician, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Necromancer, classMask) ||
+                    IsPackedClassMask(ItemEQClassBitmaskType.Enchanter, classMask))
+                {
+                    float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
+                    float spellPower = GetConvertedEqToWowStat(itemSlot, "SpellPwr", dps);
+                    if (spellPower > 0)
+                        itemTemplate.StatValues.Add((ItemWOWStatType.SpellPower, Convert.ToInt32(spellPower)));
+                }
             }
 
             // HP
@@ -974,8 +999,8 @@ namespace EQWOWConverter.Items
                 int resistCold = int.Parse(columns["resistcold"]);
                 int resistFire = int.Parse(columns["resistfire"]);
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
-                    armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, mana, resistPoison, resistMagic, 
-                    resistDisease, resistFire, resistCold);
+                    newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
+                    mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay);
 
                 // Set the quality
                 newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease,
