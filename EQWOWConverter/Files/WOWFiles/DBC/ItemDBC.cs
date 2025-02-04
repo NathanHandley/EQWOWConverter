@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
-using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;

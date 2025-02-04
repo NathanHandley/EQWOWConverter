@@ -23,25 +23,30 @@ using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class FootstepTerrainLookupDBC : DBCFile
+    internal class FactionTemplateDBC : DBCFile
     {
-        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_ID_START;
+        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTIONTEMPLATE_ID_START;
 
-        public void AddRow(int creatureFootstepID, int soundID)
+        public void AddRow()
         {
-            // 10 rows are created for every creaturefootstep record to cover values within TerrainType.dbc
-            for (int terrainTypeSoundID = 0; terrainTypeSoundID < 10; terrainTypeSoundID++)
-            {
-                int curID = CURRENT_ID;
-                CURRENT_ID++;
-                DBCRow newRow = new DBCRow();
-                newRow.AddInt(curID); // ID
-                newRow.AddInt(creatureFootstepID);
-                newRow.AddInt(terrainTypeSoundID); // TerrainType.ID
-                newRow.AddInt(soundID);
-                newRow.AddInt(0); // SoundIDSplash
-                Rows.Add(newRow);
-            }
+            int curID = CURRENT_ID;
+            CURRENT_ID++;
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt(0); // ID
+            newRow.AddInt(0); // Faction.ID
+            newRow.AddInt(0); // Flags
+            newRow.AddInt(0); // FactionGroup.ID (lots of 0, 1, 8)
+            newRow.AddInt(0); // FriendGroup (bitmask field)
+            newRow.AddInt(0); // EnemyGroup (bitmask field)
+            newRow.AddInt(0); // Enemies 1
+            newRow.AddInt(0); // Enemies 2
+            newRow.AddInt(0); // Enemies 3
+            newRow.AddInt(0); // Enemies 4
+            newRow.AddInt(0); // Friend 1
+            newRow.AddInt(0); // Friend 2
+            newRow.AddInt(0); // Friend 3
+            newRow.AddInt(0); // Friend 4
+            Rows.Add(newRow);
         }
     }
 }

@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Creatures;
-using Google.Protobuf.WellKnownTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
