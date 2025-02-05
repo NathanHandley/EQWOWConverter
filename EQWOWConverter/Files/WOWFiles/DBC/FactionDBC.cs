@@ -25,12 +25,12 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class FactionDBC : DBCFile
     {
-        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTION_ID_START;
+        //public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTION_ID_START;
 
         public void AddRow()
         {
-            int curID = CURRENT_ID;
-            CURRENT_ID++;
+            //int curID = CURRENT_ID;
+            //CURRENT_ID++;
             DBCRow newRow = new DBCRow();
             newRow.AddInt(0); // ID
             newRow.AddInt(0); // ReputationIndex (Must be a unique number, max 127, no gain -1)

@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
             int curID = CURRENT_ID;
             CURRENT_ID++;
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(0); // ID
+            newRow.AddInt(CURRENT_ID); // ID
             newRow.AddInt(0); // Faction.ID
             newRow.AddInt(0); // Flags
             newRow.AddInt(0); // FactionGroup.ID (lots of 0, 1, 8)
