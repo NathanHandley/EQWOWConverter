@@ -1078,6 +1078,8 @@ namespace EQWOWConverter
             creatureModelDataDBC.LoadFromDisk(dbcInputFolder, "CreatureModelData.dbc");
             CreatureSoundDataDBC creatureSoundDataDBC = new CreatureSoundDataDBC();
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
+            FactionDBC factionDBC = new FactionDBC();
+            factionDBC.LoadFromDisk(dbcInputFolder, "Faction.dbc");
             FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
             ItemDBC itemDBC = new ItemDBC();
@@ -1273,6 +1275,8 @@ namespace EQWOWConverter
             creatureModelDataDBC.SaveToDisk(dbcOutputServerFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputClientFolder);
             creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
+            factionDBC.SaveToDisk(dbcOutputClientFolder);
+            factionDBC.SaveToDisk(dbcOutputServerFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);

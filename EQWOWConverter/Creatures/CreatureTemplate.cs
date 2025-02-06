@@ -51,6 +51,7 @@ namespace EQWOWConverter.Creatures
         public float HPMod = 1f;
         public float DamageMod = 1f;
         public CreatureRankType Rank = CreatureRankType.Normal;
+        public int EQFactionID = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -128,6 +129,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
                 newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
                 newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["avgdmg"]));
+                newCreatureTemplate.EQFactionID = int.Parse(columns["faction_id"]);
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
