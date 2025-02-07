@@ -67,19 +67,6 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        //public static int GetWOWFactionIDForEQFactionID(int eqFactionID)
-        //{
-        //    if (CreatureWOWFactionIDByEQFactionID.Count == 0)
-        //        PopulateFactionData();
-        //    if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
-        //        return CreatureWOWFactionIDByEQFactionID[eqFactionID];
-        //    else
-        //    {
-        //        Logger.WriteDetail("Creature Faction - No wow faction ID mapped to eq faction ID '" + eqFactionID.ToString() + "'");
-        //        return -1;
-        //    }    
-        //}
-
         public static Dictionary<int, CreatureFaction> GetCreatureFactionsByFactionID()
         {
             if (CreatureFactionsByWOWFactionID.Count == 0)
@@ -130,7 +117,7 @@ namespace EQWOWConverter.Creatures
             if (parentFactionID > 0)
             {
                 foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
-                    if (creatureFaction.FactionID != parentFactionID)
+                    if (creatureFaction.FactionID != parentFactionID && creatureFaction.ReputationIndex > -1)
                         creatureFaction.ParentFactionID = parentFactionID;
             }
             else

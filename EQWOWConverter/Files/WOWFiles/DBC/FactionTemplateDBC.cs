@@ -33,9 +33,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(creatureFaction.FactionTemplateID); // ID
             newRow.AddInt(creatureFaction.FactionID); // Faction.ID
             newRow.AddInt(33); // Flags (Copied from Netherwing, revisit)
-            newRow.AddInt(0); // FactionGroup.ID (lots of 0, 1, 8)
+            newRow.AddInt(8); // FactionGroup.ID (lots of 0, 1, 8)
             newRow.AddInt(0); // FriendGroup (bitmask field)
-            newRow.AddInt(0); // EnemyGroup (bitmask field)
+            newRow.AddInt(1); // EnemyGroup (bitmask field)
             newRow.AddInt(0); // Enemies 1
             newRow.AddInt(0); // Enemies 2
             newRow.AddInt(0); // Enemies 3
