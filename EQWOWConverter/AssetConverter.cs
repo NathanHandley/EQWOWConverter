@@ -1345,6 +1345,7 @@ namespace EQWOWConverter
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+            ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
             NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
@@ -1416,6 +1417,10 @@ namespace EQWOWConverter
                             npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
                         }
                     }
+
+                    // Kill rewards
+                    foreach(CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
+                        modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
                 }
             }
 
@@ -1560,6 +1565,7 @@ namespace EQWOWConverter
             gameTeleSQL.SaveToDisk("game_tele");
             instanceTemplateSQL.SaveToDisk("instance_template");
             itemTemplateSQL.SaveToDisk("item_template");
+            modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation");
             npcVendorSQL.SaveToDisk("npc_vendor");
             poolCreatureSQL.SaveToDisk("pool_creature");
             poolPoolSQL.SaveToDisk("pool_pool");

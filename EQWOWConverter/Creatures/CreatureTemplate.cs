@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -52,7 +53,9 @@ namespace EQWOWConverter.Creatures
         public float DamageMod = 1f;
         public CreatureRankType Rank = CreatureRankType.Normal;
         public int EQFactionID = 0;
+        public int EQNPCFactionID = 0;
         public int WOWFactionTemplateID = 0;
+        public List<CreatureFactionKillReward> CreatureFactionKillRewards = new List<CreatureFactionKillReward>();
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -179,11 +182,17 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
                 //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
-                // Reputation
+                // Reputation / Faction
                 newCreatureTemplate.EQFactionID = int.Parse(columns["faction_id"]);
+                newCreatureTemplate.EQNPCFactionID = int.Parse(columns["npc_faction_id"]);
+                //int wowFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(newCreatureTemplate.EQFactionID);
                 int wowFactionTemplateID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(newCreatureTemplate.EQFactionID);
                 if (wowFactionTemplateID > 0)
+                {
                     newCreatureTemplate.WOWFactionTemplateID = wowFactionTemplateID;
+                    foreach (CreatureFactionKillReward factionKillReward in CreatureFaction.GetCreatureFactionKillRewards(newCreatureTemplate.EQNPCFactionID))
+                        newCreatureTemplate.CreatureFactionKillRewards.Add(factionKillReward);
+                }
 
                 // Must be a unique record
                 if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))

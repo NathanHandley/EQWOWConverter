@@ -1,315 +1,315 @@
 EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
-0|1225|Unknown - Neutral|EQ Creature Neutral|
-156|1207|FelGuard|Allies of Tunare|
-226|1207|Clerics of Tunare|Allies of Tunare|
-275|1207|Keepers of the Art|Allies of Tunare|
-279|1207|King Tearis Thex|Allies of Tunare|
-325|1207|Merchants of Felwithe|Allies of Tunare|
-438|1207|Servants of Tunare|Allies of Tunare|
-469|1207|Protectors of Growth|Allies of Tunare|
-207|1233|Karana|Antonica Settlers|
-345|1233|Karana Residents|Antonica Settlers|
-346|1233|Commons Residents|Antonica Settlers|
-361|1233|Ashen Order|League of Light|
-220|1211|Arcane Scientists|Arcane Scientists|
-213|1211|Solusek Ro|Arcane Scientists|
-451|1229|Brood of Di`Zok|Brood of Di`Zok|
-223|1210|Circle of Unseen Hands|Circle of Unseen Hands|
-225|1212|Clan Runnyeye|Clan Runnyeye|
-365|1212|Pickclaw Goblins|Clan Runnyeye|
-474|1212|Sporali|Clan Runnyeye|
-430|1236|Claws of Veeshan|Claws of Veeshan|
-436|1236|Yelinak|Claws of Veeshan|
-229|1214|Coalition of Tradefolk|Coalition of Tradefolk|
-291|1214|Merchants of Qeynos|Coalition of Tradefolk|
-271|1221|Dismal Rage|Coalition of Tradefolk Underground|
-296|1221|Opal Darkbriar|Coalition of Tradefolk Underground|
-336|1221|Coalition of Tradefolk Underground|Coalition of Tradefolk Underground|
-440|1231|Cabilis Residents|Devotees of the Faceless|
-441|1231|Legion of Cabilis|Devotees of the Faceless|
-442|1231|Crusaders of Greenmist|Devotees of the Faceless|
-443|1231|Brood of Kotiz|Devotees of the Faceless|
-444|1231|Swift Tails|Devotees of the Faceless|
-445|1231|Scaled Mystics|Devotees of the Faceless|
-63|1223|Aviak|EQ Creature KOS|
-64|1223|Werewolf|EQ Creature KOS|
-68|1223|Cyclops|EQ Creature KOS|
-71|1223|Evil Eye|EQ Creature KOS|
-78|1223|FungusMan|EQ Creature KOS|
-83|1223|Ghoul|EQ Creature KOS|
-90|1223|Goblin|EQ Creature KOS|It should raise rep with Faydwer (Kaladim, Kelethin, Akanon)
-91|1223|Gorilla|EQ Creature KOS|
-96|1223|Imp|EQ Creature KOS|
-97|1223|Griffon|EQ Creature KOS|
-98|1223|Kobold|EQ Creature KOS|
-101|1223|Lizard Man|EQ Creature KOS|
-103|1223|Minotaur|EQ Creature KOS|
-104|1223|Orc|EQ Creature KOS|
-110|1223|Skeleton|EQ Creature KOS|
-120|1223|Zombie|EQ Creature KOS|
-124|1223|Piranha|EQ Creature KOS|
-125|1223|Elemental|EQ Creature KOS|
-132|1223|Scarecrow|EQ Creature KOS|
-139|1223|Drake|EQ Creature KOS|
+426|1223|Agents of Mistmoore|EQ Creature KOS|
 141|1223|Alligator|EQ Creature KOS|
-146|1223|Cockatrice|EQ Creature KOS|
-150|1223|Dervish|EQ Creature KOS|
-151|1223|Efreeti|EQ Creature KOS|
-154|1223|Leech|EQ Creature KOS|
-175|1223|Pegasus|EQ Creature KOS|
-179|1223|Scorpion|EQ Creature KOS|
-184|1223|Mosquito|EQ Creature KOS|
-188|1223|Yeti|EQ Creature KOS|
-203|1223|CazicThule|EQ Creature KOS|
-205|1223|Fizzlethorp|EQ Creature KOS|
-206|1223|Innoruuk|EQ Creature KOS|
-211|1223|Rallos Zek|EQ Creature KOS|
-217|1223|Allize Volew|EQ Creature KOS|
 218|1223|Allize Taeew|EQ Creature KOS|
-234|1223|Crushbone Orcs|EQ Creature KOS|
-247|1223|Horde of Xalgoz|EQ Creature KOS|
-249|1223|Nagafen|EQ Creature KOS|
-250|1223|The Kromdul|EQ Creature KOS|
-252|1223|Frogloks of Kunark|EQ Creature KOS|
-253|1223|Burynai Legion|EQ Creature KOS|
+217|1223|Allize Volew|EQ Creature KOS|
+417|1226|Ankhefenmut|EQ Creature Unfriendly|
+219|1201|Antonius Bayle|The Silver Mantle|
+1622|1226|Arboreans of the Faydark|EQ Creature Unfriendly|
+220|1211|Arcane Scientists|Arcane Scientists|
+137|1226|Armadillo|EQ Creature Neutral|
+361|1233|Ashen Order|League of Light|
+63|1223|Aviak|EQ Creature KOS|
+5003|1201|Banker|The Silver Mantle|
+387|1223|Befallen Inhabitants|EQ Creature KOS|
+201|1208|Bertoxxulous|The Bertoxxulous Collective|
+686|1226|Beta Dubious|EQ Creature Unfriendly|
+479|1225|Beta KOS|EQ Creature Neutral|Should be KOS, but aligning with Faeries
+344|1225|Beta Neutral|EQ Creature Neutral|
+687|1223|Beta Threatening|EQ Creature KOS|
+1043|1223|BetaNPCKOS-PC|EQ Creature KOS|This may need to be neutral
 256|1223|Bloodgills|EQ Creature KOS|
+221|1208|Bloodsabers|The Bertoxxulous Collective|
+222|1226|Broken Skull Clan|EQ Creature Unfriendly|
+451|1229|Brood of Di`Zok|Brood of Di`Zok|
+443|1231|Brood of Kotiz|Devotees of the Faceless|
+65|1226|Brownie|EQ Creature Unfriendly|
+1630|1223|Burning Dead|EQ Creature KOS|
+253|1223|Burynai Legion|EQ Creature KOS|
+379|1223|Butcherblock Bandits|EQ Creature KOS|
+440|1231|Cabilis Residents|Devotees of the Faceless|
+498|1225|Cactus Man|EQ Creature Neutral|
+329|1230|Carson McCabe|Highpass Citizens|
+203|1223|CazicThule|EQ Creature KOS|
+462|1226|Chetari|EQ Creature Unfriendly|TODO: Separate Rep
+223|1210|Circle of Unseen Hands|Circle of Unseen Hands|
+460|1235|Citizens of Froststone|The Coldain|
+1604|1223|Clan Grikbar|EQ Creature KOS|
+471|1223|Clan Kolbok|EQ Creature KOS|
+225|1212|Clan Runnyeye|Clan Runnyeye|
+41|1225|Class41|EQ Creature Neutral|
+430|1236|Claws of Veeshan|Claws of Veeshan|
+226|1207|Clerics of Tunare|Allies of Tunare|
+227|1205|Clerics of Underfoot|The Deepstone Accord|
+138|1203|Clockworks of Ak`Anon|Gnomes of Ak'anon|Look into Dark Reflection / Meldrath reps (Bad)
+228|1213|Clurg|The Warborn|
+229|1214|Coalition of Tradefolk|Coalition of Tradefolk|
+336|1221|Coalition of Tradefolk Underground|Coalition of Tradefolk Underground|
+146|1223|Cockatrice|EQ Creature KOS|
+5046|1225|coerced_smith|EQ Creature Neutral|
+406|1235|Coldain|The Coldain|
+346|1233|Commons Residents|Antonica Settlers|
+230|1215|Corrupt Qeynos Guards|The Corrupt Militia|
+231|1202|Craftkeepers|Erudin Collective|
+232|1213|Craknek Warriors|The Warborn|
+233|1202|Crimson Hands|Erudin Collective|
+442|1231|Crusaders of Greenmist|Devotees of the Faceless|
+234|1223|Crushbone Orcs|EQ Creature KOS|
+461|1225|Crystal Denizens|EQ Creature Neutral|
+658|1223|Crystal Spider (Race)|EQ Creature KOS|
+68|1223|Cyclops|EQ Creature KOS|
+235|1216|Da Bashers|The Mireborn|
+405|1235|Dain Frostreaver IV|The Coldain|
+236|1217|Dark Bargainers|Hands of Innoruuk|"Consider making this ""Dark Bargainers"" as a rep"
+237|1216|Dark Ones|The Mireborn|
+238|1203|Dark Reflection|Gnomes of Ak'anon|
+375|1223|Death Fist Orcs|EQ Creature KOS|
+5071|1225|Decaying Skeleton|EQ Creature Neutral|
+240|1203|Deepmuses|Gnomes of Ak'anon|
+241|1218|Deeppockets|Rivervale Concord|
+242|1202|Deepwater Knights|Erudin Collective|
+385|1226|Defective Clockwork|EQ Creature Unfriendly|
+5007|1223|Denizens of Fear|EQ Creature KOS|
+437|1225|Denizens of Mischief|EQ Creature Neutral|
+150|1223|Dervish|EQ Creature KOS|
+368|1226|Dervish Cutthroats|EQ Creature Unfriendly|
+271|1221|Dismal Rage|Coalition of Tradefolk Underground|
+367|1230|Donovon|Highpass Citizens|
+243|1218|Drafling|Rivervale Concord|
+139|1223|Drake|EQ Creature KOS|
+370|1217|Dreadguard Inner|Hands of Innoruuk|
+334|1217|Dreadguard Outer|Hands of Innoruuk|
+454|1223|Drusella Sathir|EQ Creature KOS|
+5043|1226|dubiously|EQ Creature Unfriendly|
+244|1217|Ebon Mask|Hands of Innoruuk|
+151|1223|Efreeti|EQ Creature KOS|
+245|1203|Eldritch Collective|Gnomes of Ak'anon|
+125|1223|Elemental|EQ Creature KOS|
+5072|1225|Elven Skeleton|EQ Creature Neutral|
+326|1206|Emerald Warriors|The Feir`Dal|
+128|1202|Erudin Citizens|Erudin Collective|
+694|1202|Erudite Citizen (Race)|Erudin Collective|
+71|1223|Evil Eye|EQ Creature KOS|
+388|1225|Fairie|EQ Creature Neutral|
+420|1223|Fallen of Bloody Kithicor|EQ Creature KOS|Needed for Rogue epic, TODO FIX
+246|1206|Faydarks Champions|The Feir`Dal|
+156|1207|FelGuard|Allies of Tunare|
+72|1226|Fire Beetle|EQ Creature Unfriendly|
+74|1226|Fish|EQ Creature Neutral|
+205|1223|Fizzlethorp|EQ Creature KOS|
+251|1220|Frogloks of Guk|Frogloks of Guk|
+252|1223|Frogloks of Kunark|EQ Creature KOS|
+78|1223|FungusMan|EQ Creature KOS|
+254|1202|Gate Callers|Erudin Collective|
+456|1225|Gelistial|EQ Creature Neutral|
+255|1203|Gem Choppers|Gnomes of Ak'anon|
+458|1225|Geonid Collective|EQ Creature Neutral|
+83|1223|Ghoul|EQ Creature KOS|
+371|1217|Ghouls of Neriak|Hands of Innoruuk|
+84|1226|Giant Bat|EQ Creature Unfriendly|
+86|1226|Giant Rat|EQ Creature Unfriendly|
+87|1226|Giant Snake|EQ Creature Neutral|
+88|1226|Giant Spider|EQ Creature Neutral|
+90|1223|Goblin|EQ Creature KOS|It should raise rep with Faydwer (Kaladim, Kelethin, Akanon)
 257|1223|Goblins of Cleaving Tooth|EQ Creature KOS|
 258|1223|Goblins of Fire Peak|EQ Creature KOS|
 259|1223|Goblins of Mountain Death|EQ Creature KOS|
-282|1223|Kobolds of Fire Pit|EQ Creature KOS|
-283|1223|Pack of Tomar|EQ Creature KOS|
-285|1223|Mayong Mistmoore|EQ Creature KOS|
-287|1223|Meldrath|EQ Creature KOS|
-295|1223|The Kromdek|EQ Creature KOS|
-299|1223|Phinigel Autropos|EQ Creature KOS|
-304|1223|Ring of Scale|EQ Creature KOS|
-306|1223|Sabertooths of Blackburrow|EQ Creature KOS|
-307|1223|Sarnak Collective|EQ Creature KOS|
-313|1223|Pirates of Gunthak|EQ Creature KOS|
-315|1223|Trakanon|EQ Creature KOS|
-317|1223|Undead Frogloks of Guk|EQ Creature KOS|
-319|1223|Vox|EQ Creature KOS|
-321|1223|Split Paw Clan|EQ Creature KOS|
-324|1223|Unkempt Druids|EQ Creature KOS|Consider giving its own faction
-347|1223|Shark|EQ Creature KOS|
-364|1223|Shralok Orcs|EQ Creature KOS|
-366|1223|Karana Bandits|EQ Creature KOS|
-372|1223|Najena|EQ Creature KOS|
-373|1223|Mucktail Gnolls|EQ Creature KOS|
-375|1223|Death Fist Orcs|EQ Creature KOS|
-378|1223|Stone Hive Bixies|EQ Creature KOS|
-379|1223|Butcherblock Bandits|EQ Creature KOS|
-386|1223|Unrest Inhabitants|EQ Creature KOS|
-387|1223|Befallen Inhabitants|EQ Creature KOS|
-398|1223|Riptide Goblins|EQ Creature KOS|
-407|1223|Ry`Gorr Clan Snow Orcs|EQ Creature KOS|
-409|1223|Tserrina Syl`Tor|EQ Creature KOS|
-412|1223|Krag|EQ Creature KOS|
-416|1223|Shadowed Men|EQ Creature KOS|
-420|1223|Fallen of Bloody Kithicor|EQ Creature KOS|Needed for Rogue epic, TODO FIX
-423|1223|Verish Mal|EQ Creature KOS|
-425|1223|Inhabitants of Hate|EQ Creature KOS|
-426|1223|Agents of Mistmoore|EQ Creature KOS|
-427|1223|Spirocs of Timorous|EQ Creature KOS|
-428|1223|Minions of Underfoot|EQ Creature KOS|
-431|1223|Ulthork|EQ Creature KOS|
-434|1223|Sirens of the Grotto|EQ Creature KOS|
-435|1223|Velketor|EQ Creature KOS|
-450|1223|Thrall of Kly|EQ Creature KOS|
-452|1223|The Hotwingz|EQ Creature KOS|
-454|1223|Drusella Sathir|EQ Creature KOS|
-455|1223|Minions of Scale|EQ Creature KOS|May need to be non-KOS for quests, check it
-457|1223|Holgresh|EQ Creature KOS|
-465|1223|Tizmak Clan|EQ Creature KOS|
+91|1223|Gorilla|EQ Creature KOS|
+261|1213|Green Blood Knights|The Warborn|
+97|1223|Griffon|EQ Creature KOS|
+376|1216|Grobb Merchants|The Mireborn|
+263|1218|Guardians of the Vale|Rivervale Concord|
 467|1223|Guardians of Veeshan|EQ Creature KOS|
-471|1223|Clan Kolbok|EQ Creature KOS|
-472|1223|Warders of The Claw|EQ Creature KOS|
-475|1223|King Xorbb|EQ Creature KOS|
-493|1223|Man-Eating Plant|EQ Creature KOS|
-658|1223|Crystal Spider (Race)|EQ Creature KOS|
-687|1223|Beta Threatening|EQ Creature KOS|
-1043|1223|BetaNPCKOS-PC|EQ Creature KOS|This may need to be neutral
-1604|1223|Clan Grikbar|EQ Creature KOS|
-1630|1223|Burning Dead|EQ Creature KOS|
-5001|1223|oot_skeleton|EQ Creature KOS|
-5007|1223|Denizens of Fear|EQ Creature KOS|
-5017|1223|KOS|EQ Creature KOS|
-5034|1223|Madmen|EQ Creature KOS|
-5044|1223|Threateningly|EQ Creature KOS|
-5047|1223|Venril-KoS|EQ Creature KOS|
-5049|1223|KOS_Kael|EQ Creature KOS|
-5069|1223|Stone Skeleton|EQ Creature KOS|
-5070|1223|Jonah Brucker|EQ Creature KOS|
-92|1224|Wolf|EQ Creature KOS Nature Neutral|
-169|1224|Saber-toothed Cat|EQ Creature KOS Nature Neutral|
-185|1224|Rhino|EQ Creature KOS Nature Neutral|
-343|1224|QRG Protected Animals|EQ Creature KOS Nature Neutral|
-494|1224|Raptor|EQ Creature KOS Nature Neutral|
-5018|1224|KOS_animal|EQ Creature KOS Nature Neutral|
-41|1225|Class41|EQ Creature Neutral|
-51|1226|Human|EQ Creature Neutral|
-60|1226|Ogre|EQ Creature Neutral|
-74|1226|Fish|EQ Creature Neutral|
-87|1226|Giant Snake|EQ Creature Neutral|
-88|1226|Giant Spider|EQ Creature Neutral|
-106|1226|Pixie|EQ Creature Neutral|"Consider giving these ""Pixies of Faydwer"" rep"
-117|1226|High Hold Citizen|EQ Creature Neutral|
-133|1226|Skunk|EQ Creature Neutral|
-137|1226|Armadillo|EQ Creature Neutral|
-157|1226|Mammoth|EQ Creature Neutral|
-160|1225|Mermaid|EQ Creature Neutral|
+262|1201|Guards of Qeynos|The Silver Mantle|
 161|1226|Harpie|EQ Creature Neutral|
-189|1226|Iksar Citizen|EQ Creature Neutral|
-269|1225|Kithicor Residents|EQ Creature Neutral|
-344|1225|Beta Neutral|EQ Creature Neutral|
-383|1225|Thunder Hooves|EQ Creature Neutral|Has a quest and merchant
-388|1225|Fairie|EQ Creature Neutral|
-402|1225|Oracle of K`Arnon|EQ Creature Neutral|
-424|1225|Inhabitants of Sky|EQ Creature Neutral|
-432|1225|Othmir|EQ Creature Neutral|
-433|1225|Jaled Dar|EQ Creature Neutral|
-437|1225|Denizens of Mischief|EQ Creature Neutral|
-439|1225|Snowfang Gnolls|EQ Creature Neutral|
-449|1225|Tunarean Court|EQ Creature Neutral|The rep isn't directly linked to Plane of Growth
-456|1225|Gelistial|EQ Creature Neutral|
-458|1225|Geonid Collective|EQ Creature Neutral|
-459|1225|Lithiniath|EQ Creature Neutral|
-461|1225|Crystal Denizens|EQ Creature Neutral|
-468|1225|The Sleeper|EQ Creature Neutral|
-479|1225|Beta KOS|EQ Creature Neutral|Should be KOS, but aligning with Faeries
-498|1225|Cactus Man|EQ Creature Neutral|
-1159|1225|Nature Animal - Beetle|EQ Creature Neutral|
-5023|1225|Noobie Monsters KOS to Guards|EQ Creature Neutral|
-5028|1225|Indifferent|EQ Creature Neutral|
-5042|1225|Indifferent-wasp|EQ Creature Neutral|
-5046|1225|coerced_smith|EQ Creature Neutral|
-5048|1225|indifferent-walus-iceclad|EQ Creature Neutral|
-5071|1225|Decaying Skeleton|EQ Creature Neutral|
-5072|1225|Elven Skeleton|EQ Creature Neutral|
-65|1226|Brownie|EQ Creature Unfriendly|
-72|1226|Fire Beetle|EQ Creature Unfriendly|
-84|1226|Giant Bat|EQ Creature Unfriendly|
-86|1226|Giant Rat|EQ Creature Unfriendly|
-99|1226|Lava Dragon|EQ Creature Unfriendly|
-119|1226|Will-O-Wisp|EQ Creature Unfriendly|
-126|1226|Puma|EQ Creature Unfriendly|
-368|1226|Dervish Cutthroats|EQ Creature Unfriendly|
-385|1226|Defective Clockwork|EQ Creature Unfriendly|
-397|1226|Sky Talons (good)|EQ Creature Unfriendly|
-417|1226|Ankhefenmut|EQ Creature Unfriendly|
-418|1226|Zazamoukh|EQ Creature Unfriendly|
-446|1226|The Forsaken|EQ Creature Unfriendly|
-447|1226|Pirates of Iceclad|EQ Creature Unfriendly|
-462|1226|Chetari|EQ Creature Unfriendly|TODO: Separate Rep
-463|1226|Paebala|EQ Creature Unfriendly|TODO: Separate Rep
-464|1226|Zlandicar|EQ Creature Unfriendly|TODO: Separate Rep
-686|1226|Beta Dubious|EQ Creature Unfriendly|
-1622|1226|Arboreans of the Faydark|EQ Creature Unfriendly|
-5011|1226|Kejek Village|EQ Creature Unfriendly|
-5043|1226|dubiously|EQ Creature Unfriendly|
-5068|1226|Qcat-Smugglers|EQ Creature Unfriendly|
-222|1226|Broken Skull Clan|EQ Creature Unfriendly|
-128|1202|Erudin Citizens|Erudin Collective|
-231|1202|Craftkeepers|Erudin Collective|
-233|1202|Crimson Hands|Erudin Collective|
-242|1202|Deepwater Knights|Erudin Collective|
-254|1202|Gate Callers|Erudin Collective|
+265|1208|Heretics|The Bertoxxulous Collective|
 266|1202|High Council of Erudin|Erudin Collective|
 267|1202|High Guard of Erudin|Erudin Collective|
-289|1202|Merchants of Erudin|Erudin Collective|
-298|1202|Peace Keepers|Erudin Collective|
-694|1202|Erudite Citizen (Race)|Erudin Collective|
-201|1208|Bertoxxulous|The Bertoxxulous Collective|
-221|1208|Bloodsabers|The Bertoxxulous Collective|
-265|1208|Heretics|The Bertoxxulous Collective|
-251|1220|Frogloks of Guk|Frogloks of Guk|
-138|1203|Clockworks of Ak`Anon|Gnomes of Ak'anon|Look into Dark Reflection / Meldrath reps (Bad)
-238|1203|Dark Reflection|Gnomes of Ak'anon|
-240|1203|Deepmuses|Gnomes of Ak'anon|
-245|1203|Eldritch Collective|Gnomes of Ak'anon|
-255|1203|Gem Choppers|Gnomes of Ak'anon|
-288|1203|Merchants of Ak`Anon|Gnomes of Ak'anon|
-323|1203|Solusek Mining Co.|Gnomes of Ak'anon|TODO Split into its own later
-333|1203|King Ak`Anon|Gnomes of Ak'anon|
-235|1216|Da Bashers|The Mireborn|
-237|1216|Dark Ones|The Mireborn|
-308|1216|Shadowknights of Night Keep|The Mireborn|
-376|1216|Grobb Merchants|The Mireborn|
-305|1204|Rogues of the White Rose|Clans of the North|
-320|1204|Wolves of the North|Clans of the North|
-327|1204|Shamen of Justice|Clans of the North|
-328|1204|Merchants of Halas|Clans of the North|
-236|1217|Dark Bargainers|Hands of Innoruuk|"Consider making this ""Dark Bargainers"" as a rep"
-239|1217|The Dead|Hands of Innoruuk|
-244|1217|Ebon Mask|Hands of Innoruuk|
+117|1226|High Hold Citizen|EQ Creature Neutral|
+332|1230|Highpass Guards|Highpass Citizens|
+457|1223|Holgresh|EQ Creature KOS|
+247|1223|Horde of Xalgoz|EQ Creature KOS|
+51|1226|Human|EQ Creature Neutral|
+189|1226|Iksar Citizen|EQ Creature Neutral|
+96|1223|Imp|EQ Creature KOS|
+5028|1225|Indifferent|EQ Creature Neutral|
+5048|1225|indifferent-walus-iceclad|EQ Creature Neutral|
+5042|1225|Indifferent-wasp|EQ Creature Neutral|
 270|1217|Indigo Brotherhood|Hands of Innoruuk|
+248|1219|Inhabitants of Firiona Vie|Inhabitants of Firiona Vie|
+425|1223|Inhabitants of Hate|EQ Creature KOS|
+424|1225|Inhabitants of Sky|EQ Creature Neutral|
+206|1223|Innoruuk|EQ Creature KOS|
+272|1222|Jaggedpine Treefolk|Pinewardens|
+433|1225|Jaled Dar|EQ Creature Neutral|
+5070|1223|Jonah Brucker|EQ Creature KOS|
+144|1205|Kaladim Citizens|The Deepstone Accord|
+273|1201|Kane Bayle|The Silver Mantle|
+207|1233|Karana|Antonica Settlers|
+366|1223|Karana Bandits|EQ Creature KOS|
+345|1233|Karana Residents|Antonica Settlers|
+274|1205|Kazon Stormhammer|The Deepstone Accord|
+275|1207|Keepers of the Art|Allies of Tunare|
+5011|1226|Kejek Village|EQ Creature Unfriendly|
+276|1206|Kelethin Merchants|The Feir`Dal|
+382|1209|Kerra Isle|The Kerra|
+333|1203|King Ak`Anon|Gnomes of Ak'anon|
 278|1217|King Naythox Thex|Hands of Innoruuk|
-334|1217|Dreadguard Outer|Hands of Innoruuk|
-340|1217|Priests of Innoruuk|Hands of Innoruuk|
+279|1207|King Tearis Thex|Allies of Tunare|
+429|1232|King Tormax|The Storm Giants|
+475|1223|King Xorbb|EQ Creature KOS|
+269|1225|Kithicor Residents|EQ Creature Neutral|
+280|1201|Knights of Thunder|The Silver Mantle|
+281|1227|Knights of Truth|League of Light|
+98|1223|Kobold|EQ Creature KOS|
+282|1223|Kobolds of Fire Pit|EQ Creature KOS|
+5017|1223|KOS|EQ Creature KOS|
+5018|1224|KOS_animal|EQ Creature KOS Nature Neutral|
+5049|1223|KOS_Kael|EQ Creature KOS|
+412|1223|Krag|EQ Creature KOS|
+419|1232|Kromrif|The Storm Giants|
+448|1232|Kromzek|The Storm Giants|
+99|1226|Lava Dragon|EQ Creature Unfriendly|
+284|1227|League of Antonican Bards|League of Light|Look into separate rep
+154|1223|Leech|EQ Creature KOS|
+441|1231|Legion of Cabilis|Devotees of the Faceless|
+459|1225|Lithiniath|EQ Creature Neutral|
+101|1223|Lizard Man|EQ Creature KOS|
+5034|1223|Madmen|EQ Creature KOS|
+157|1226|Mammoth|EQ Creature Neutral|
+493|1223|Man-Eating Plant|EQ Creature KOS|
+285|1223|Mayong Mistmoore|EQ Creature KOS|
+286|1218|Mayor Gubbin|Rivervale Concord|
+287|1223|Meldrath|EQ Creature KOS|
+288|1203|Merchants of Ak`Anon|Gnomes of Ak'anon|
+289|1202|Merchants of Erudin|Erudin Collective|
+325|1207|Merchants of Felwithe|Allies of Tunare|
+328|1204|Merchants of Halas|Clans of the North|
+331|1230|Merchants of Highpass|Highpass Citizens|
+290|1205|Merchants of Kaladim|The Deepstone Accord|
+338|1213|Merchants of Oggok|The Warborn|
+291|1214|Merchants of Qeynos|Coalition of Tradefolk|
+292|1218|Merchants of Rivervale|Rivervale Concord|
+160|1225|Mermaid|EQ Creature Neutral|
+293|1205|Miners Guild 249|The Deepstone Accord|
+322|1205|Miners Guild 628|The Deepstone Accord|
+455|1223|Minions of Scale|EQ Creature KOS|May need to be non-KOS for quests, check it
+428|1223|Minions of Underfoot|EQ Creature KOS|
+103|1223|Minotaur|EQ Creature KOS|
+184|1223|Mosquito|EQ Creature KOS|
+373|1223|Mucktail Gnolls|EQ Creature KOS|
+249|1223|Nagafen|EQ Creature KOS|
+372|1223|Najena|EQ Creature KOS|
+1159|1225|Nature Animal - Beetle|EQ Creature Neutral|
 353|1217|Neriak Ogre|Hands of Innoruuk|
 354|1217|Neriak Troll|Hands of Innoruuk|
-363|1217|The Spurned|Hands of Innoruuk|
-370|1217|Dreadguard Inner|Hands of Innoruuk|
-371|1217|Ghouls of Neriak|Hands of Innoruuk|
-318|1217|Venril Sathir|Hands of Innoruuk|TODO: Map to its own rep (Venril Sathir)
-329|1230|Carson McCabe|Highpass Citizens|
-331|1230|Merchants of Highpass|Highpass Citizens|
-332|1230|Highpass Guards|Highpass Citizens|
-367|1230|Donovon|Highpass Citizens|
-248|1219|Inhabitants of Firiona Vie|Inhabitants of Firiona Vie|
-144|1205|Kaladim Citizens|The Deepstone Accord|
-227|1205|Clerics of Underfoot|The Deepstone Accord|
-274|1205|Kazon Stormhammer|The Deepstone Accord|
-290|1205|Merchants of Kaladim|The Deepstone Accord|
-293|1205|Miners Guild 249|The Deepstone Accord|
-297|1205|Paladins of Underfoot|The Deepstone Accord|
-312|1205|Storm Guard|The Deepstone Accord|
-322|1205|Miners Guild 628|The Deepstone Accord|
-246|1206|Faydarks Champions|The Feir`Dal|
-276|1206|Kelethin Merchants|The Feir`Dal|
-310|1206|Soldiers of Tunare|The Feir`Dal|
-316|1206|Scouts of Tunare|The Feir`Dal|
-326|1206|Emerald Warriors|The Feir`Dal|
-401|1206|Song Weavers|The Feir`Dal|
-209|1209|Prexus|The Kerra|Revisit
-382|1209|Kerra Isle|The Kerra|
-281|1227|Knights of Truth|League of Light|
-362|1227|Priests of Marr|League of Light|
-284|1227|League of Antonican Bards|League of Light|Look into separate rep
-311|1227|Steel Warriors|League of Light|Look into separate rep
-228|1213|Clurg|The Warborn|
-232|1213|Craknek Warriors|The Warborn|
-261|1213|Green Blood Knights|The Warborn|
+5023|1225|Noobie Monsters KOS to Guards|EQ Creature Neutral|
 337|1213|Oggok Guards|The Warborn|
-338|1213|Merchants of Oggok|The Warborn|
 374|1213|Oggok Resident|The Warborn|
-394|1213|Shamen of War|The Warborn|
-121|1201|Qeynos Citizens|The Silver Mantle|Lowers rep with self, and some quests raise it
-219|1201|Antonius Bayle|The Silver Mantle|
-262|1201|Guards of Qeynos|The Silver Mantle|
-273|1201|Kane Bayle|The Silver Mantle|
-280|1201|Knights of Thunder|The Silver Mantle|
-309|1201|Silent Fist Clan|The Silver Mantle|
-341|1201|Priests of Life|The Silver Mantle|
+60|1226|Ogre|EQ Creature Neutral|
+5001|1223|oot_skeleton|EQ Creature KOS|
+296|1221|Opal Darkbriar|Coalition of Tradefolk Underground|
+402|1225|Oracle of K`Arnon|EQ Creature Neutral|
+104|1223|Orc|EQ Creature KOS|
 342|1201|Order of Three|The Silver Mantle|
-693|1201|Qeynos Citizen (Race)|The Silver Mantle|
-5003|1201|Banker|The Silver Mantle|
-241|1218|Deeppockets|Rivervale Concord|
-243|1218|Drafling|Rivervale Concord|
-263|1218|Guardians of the Vale|Rivervale Concord|
-286|1218|Mayor Gubbin|Rivervale Concord|
-292|1218|Merchants of Rivervale|Rivervale Concord|
+432|1225|Othmir|EQ Creature Neutral|
+283|1223|Pack of Tomar|EQ Creature KOS|
+463|1226|Paebala|EQ Creature Unfriendly|TODO: Separate Rep
+297|1205|Paladins of Underfoot|The Deepstone Accord|
+298|1202|Peace Keepers|Erudin Collective|
+175|1223|Pegasus|EQ Creature KOS|
+299|1223|Phinigel Autropos|EQ Creature KOS|
+365|1212|Pickclaw Goblins|Clan Runnyeye|
+124|1223|Piranha|EQ Creature KOS|
+313|1223|Pirates of Gunthak|EQ Creature KOS|
+447|1226|Pirates of Iceclad|EQ Creature Unfriendly|
+106|1226|Pixie|EQ Creature Neutral|"Consider giving these ""Pixies of Faydwer"" rep"
+209|1209|Prexus|The Kerra|Revisit
+340|1217|Priests of Innoruuk|Hands of Innoruuk|
+341|1201|Priests of Life|The Silver Mantle|
+362|1227|Priests of Marr|League of Light|
 300|1218|Priests of Mischief|Rivervale Concord|
-355|1218|Storm Reapers|Rivervale Concord|
-272|1222|Jaggedpine Treefolk|Pinewardens|
+469|1207|Protectors of Growth|Allies of Tunare|
 302|1222|Protectors of Pine|Pinewardens|
+126|1226|Puma|EQ Creature Unfriendly|
+5068|1226|Qcat-Smugglers|EQ Creature Unfriendly|
+693|1201|Qeynos Citizen (Race)|The Silver Mantle|
+121|1201|Qeynos Citizens|The Silver Mantle|Lowers rep with self, and some quests raise it
+343|1224|QRG Protected Animals|EQ Creature KOS Nature Neutral|
+211|1223|Rallos Zek|EQ Creature KOS|
+494|1224|Raptor|EQ Creature KOS Nature Neutral|
+185|1224|Rhino|EQ Creature KOS Nature Neutral|
+304|1223|Ring of Scale|EQ Creature KOS|
+398|1223|Riptide Goblins|EQ Creature KOS|
+305|1204|Rogues of the White Rose|Clans of the North|
+407|1223|Ry`Gorr Clan Snow Orcs|EQ Creature KOS|
+169|1224|Saber-toothed Cat|EQ Creature KOS Nature Neutral|
+306|1223|Sabertooths of Blackburrow|EQ Creature KOS|
+307|1223|Sarnak Collective|EQ Creature KOS|
+445|1231|Scaled Mystics|Devotees of the Faceless|
+132|1223|Scarecrow|EQ Creature KOS|
+179|1223|Scorpion|EQ Creature KOS|
+316|1206|Scouts of Tunare|The Feir`Dal|
+438|1207|Servants of Tunare|Allies of Tunare|
+416|1223|Shadowed Men|EQ Creature KOS|
+308|1216|Shadowknights of Night Keep|The Mireborn|
+327|1204|Shamen of Justice|Clans of the North|
+394|1213|Shamen of War|The Warborn|
+347|1223|Shark|EQ Creature KOS|
+364|1223|Shralok Orcs|EQ Creature KOS|
+309|1201|Silent Fist Clan|The Silver Mantle|
+434|1223|Sirens of the Grotto|EQ Creature KOS|
+110|1223|Skeleton|EQ Creature KOS|
+133|1226|Skunk|EQ Creature Neutral|
+397|1226|Sky Talons (good)|EQ Creature Unfriendly|
+439|1225|Snowfang Gnolls|EQ Creature Neutral|
+310|1206|Soldiers of Tunare|The Feir`Dal|
+323|1203|Solusek Mining Co.|Gnomes of Ak'anon|TODO Split into its own later
+213|1211|Solusek Ro|Arcane Scientists|
+401|1206|Song Weavers|The Feir`Dal|
+427|1223|Spirocs of Timorous|EQ Creature KOS|
+321|1223|Split Paw Clan|EQ Creature KOS|
+474|1212|Sporali|Clan Runnyeye|
+311|1227|Steel Warriors|League of Light|Look into separate rep
+378|1223|Stone Hive Bixies|EQ Creature KOS|
+5069|1223|Stone Skeleton|EQ Creature KOS|
+312|1205|Storm Guard|The Deepstone Accord|
+355|1218|Storm Reapers|Rivervale Concord|
+444|1231|Swift Tails|Devotees of the Faceless|
 415|1228|Temple of Solusek Ro|Temple of Solusek Ro|
-405|1235|Dain Frostreaver IV|The Coldain|
-406|1235|Coldain|The Coldain|
-460|1235|Citizens of Froststone|The Coldain|
-230|1215|Corrupt Qeynos Guards|The Corrupt Militia|
+239|1217|The Dead|Hands of Innoruuk|
+446|1226|The Forsaken|EQ Creature Unfriendly|
 330|1215|The Freeport Militia|The Corrupt Militia|
-419|1232|Kromrif|The Storm Giants|
-429|1232|King Tormax|The Storm Giants|
-448|1232|Kromzek|The Storm Giants|
+452|1223|The Hotwingz|EQ Creature KOS|
+295|1223|The Kromdek|EQ Creature KOS|
+250|1223|The Kromdul|EQ Creature KOS|
+468|1225|The Sleeper|EQ Creature Neutral|
+363|1217|The Spurned|Hands of Innoruuk|
+450|1223|Thrall of Kly|EQ Creature KOS|
+5044|1223|Threateningly|EQ Creature KOS|
+383|1225|Thunder Hooves|EQ Creature Neutral|Has a quest and merchant
+465|1223|Tizmak Clan|EQ Creature KOS|
+315|1223|Trakanon|EQ Creature KOS|
 404|1234|Truespirit|Truespirit|For Epics
+409|1223|Tserrina Syl`Tor|EQ Creature KOS|
+449|1225|Tunarean Court|EQ Creature Neutral|The rep isn't directly linked to Plane of Growth
+431|1223|Ulthork|EQ Creature KOS|
+317|1223|Undead Frogloks of Guk|EQ Creature KOS|
+324|1223|Unkempt Druids|EQ Creature KOS|Consider giving its own faction
+0|1225|Unknown - Neutral|EQ Creature Neutral|
+386|1223|Unrest Inhabitants|EQ Creature KOS|
+435|1223|Velketor|EQ Creature KOS|
+318|1217|Venril Sathir|Hands of Innoruuk|TODO: Map to its own rep (Venril Sathir)
+5047|1223|Venril-KoS|EQ Creature KOS|
+423|1223|Verish Mal|EQ Creature KOS|
+319|1223|Vox|EQ Creature KOS|
+472|1223|Warders of The Claw|EQ Creature KOS|
+64|1223|Werewolf|EQ Creature KOS|
+119|1226|Will-O-Wisp|EQ Creature Unfriendly|
+92|1224|Wolf|EQ Creature KOS Nature Neutral|
+320|1204|Wolves of the North|Clans of the North|
+436|1236|Yelinak|Claws of Veeshan|
+188|1223|Yeti|EQ Creature KOS|
+418|1226|Zazamoukh|EQ Creature Unfriendly|
+464|1226|Zlandicar|EQ Creature Unfriendly|TODO: Separate Rep
+120|1223|Zombie|EQ Creature KOS|
