@@ -81,7 +81,32 @@ namespace EQWOWConverter.Creatures
             if (CreatureFactionKillRewardsByEQNPCFactionID.ContainsKey(eqNPCFactionID) == false)
                 return new List<CreatureFactionKillReward>();
             else
-                return CreatureFactionKillRewardsByEQNPCFactionID[eqNPCFactionID];
+            {
+                // Condense the list so that there are no duplicates
+                List<CreatureFactionKillReward> returnRewards = new List<CreatureFactionKillReward>();
+                foreach(CreatureFactionKillReward killRewardCandidate in CreatureFactionKillRewardsByEQNPCFactionID[eqNPCFactionID])
+                {
+                    bool killRewardFound = false;
+                    for (int i = returnRewards.Count - 1; i >= 0; i--)
+                    {
+                        // Take the highest or lowest faction reward
+                        CreatureFactionKillReward killRewardStage = returnRewards[i];
+                        if (killRewardStage.WOWFactionID == killRewardCandidate.WOWFactionID)
+                        {
+                            if (Math.Abs(killRewardCandidate.KillRewardValue) > Math.Abs(killRewardStage.KillRewardValue))
+                                returnRewards.RemoveAt(i);
+                            else
+                            {
+                                killRewardFound = true;
+                                continue;
+                            }
+                        }
+                    }
+                    if (killRewardFound == false)
+                        returnRewards.Add(killRewardCandidate);
+                }
+                return returnRewards;
+            }   
         }
 
         private static void PopulateFactionData()

@@ -185,7 +185,6 @@ namespace EQWOWConverter.Creatures
                 // Reputation / Faction
                 newCreatureTemplate.EQFactionID = int.Parse(columns["faction_id"]);
                 newCreatureTemplate.EQNPCFactionID = int.Parse(columns["npc_faction_id"]);
-                //int wowFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(newCreatureTemplate.EQFactionID);
                 int wowFactionTemplateID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(newCreatureTemplate.EQFactionID);
                 if (wowFactionTemplateID > 0)
                 {
