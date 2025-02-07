@@ -307,6 +307,9 @@ namespace EQWOWConverter
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE = 10f;
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
 
+        // The value to name the everquest parent reputation item as
+        public static readonly string CONFIG_CREATURE_FACTION_ROOT_NAME = "Everquest";
+
         //=====================================================================
         // Items
         //=====================================================================
@@ -351,9 +354,6 @@ namespace EQWOWConverter
 
         // IDs for CreatureSoundData.dbc
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3300;
-
-        // IDs for Faction.dbc
-        public static readonly int CONFIG_DBCID_FACTION_ID_START = 1200;
 
         // IDs for FactionTemplate.dbc
         public static readonly int CONFIG_DBCID_FACTIONTEMPLATE_ID_START = 2300;

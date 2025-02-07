@@ -53,7 +53,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Unsure what this is used for, but commonly 0 and can be 2 sometimes
-            newRow.AddInt("faction", 7); // Faction 7 is 'creature', references Faction.dbc
+            newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);
             newRow.AddFloat("speed_walk", 1); // 1 is very common, but can be other values
             newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common

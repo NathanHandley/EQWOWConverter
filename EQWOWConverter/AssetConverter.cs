@@ -1080,6 +1080,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.LoadFromDisk(dbcInputFolder, "CreatureSoundData.dbc");
             FactionDBC factionDBC = new FactionDBC();
             factionDBC.LoadFromDisk(dbcInputFolder, "Faction.dbc");
+            FactionTemplateDBC factionTemplateDBC = new FactionTemplateDBC();
+            factionTemplateDBC.LoadFromDisk(dbcInputFolder, "FactionTemplate.dbc");
             FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
             ItemDBC itemDBC = new ItemDBC();
@@ -1144,6 +1146,14 @@ namespace EQWOWConverter
                 string relativeModelPath = "Creature\\Everquest\\" + creatureModelTemplate.GetCreatureModelFolderName() + "\\" + creatureModelTemplate.GenerateFileName() + ".mdx";
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
                 creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
+            }
+
+            // Faction
+            foreach(CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
+            {
+                factionDBC.AddRow(creatureFaction);
+                if (creatureFaction.Name != Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                    factionTemplateDBC.AddRow(creatureFaction);
             }
 
             // Footstep Terrain Lookup (for creatures)
@@ -1277,6 +1287,8 @@ namespace EQWOWConverter
             creatureSoundDataDBC.SaveToDisk(dbcOutputServerFolder);
             factionDBC.SaveToDisk(dbcOutputClientFolder);
             factionDBC.SaveToDisk(dbcOutputServerFolder);
+            factionTemplateDBC.SaveToDisk(dbcOutputClientFolder);
+            factionTemplateDBC.SaveToDisk(dbcOutputServerFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);

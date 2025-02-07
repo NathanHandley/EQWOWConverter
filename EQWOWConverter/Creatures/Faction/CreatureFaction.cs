@@ -24,14 +24,18 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureFaction
     {
-        private static Dictionary<int, CreatureFaction> CreatureFactionsByFactionID = new Dictionary<int, CreatureFaction>();
-        private static Dictionary<int, int> CreatureWOWFactionIDByEQFactionID = new Dictionary<int, int>();
+        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTIONTEMPLATE_ID_START;
 
-        int FactionID = 0;
-        int ReputationIndex = 0;
-        string Name = string.Empty;
-        int BaseRep = 0;
-        string Description = string.Empty;
+        private static Dictionary<int, CreatureFaction> CreatureFactionsByFactionID = new Dictionary<int, CreatureFaction>();
+        private static Dictionary<int, int> CreatureWOWFactionTemplateIDByEQFactionID = new Dictionary<int, int>();
+
+        public int FactionID = 0;
+        public int FactionTemplateID = -1;
+        public int ParentFactionID = 0;
+        public int ReputationIndex = 0;
+        public string Name = string.Empty;
+        public int BaseRep = 0;
+        public string Description = string.Empty;
 
         public static int GetRootFactionParentWOWFactionID()
         {
@@ -40,7 +44,7 @@ namespace EQWOWConverter.Creatures
 
             foreach (CreatureFaction creatureFaction in CreatureFactionsByFactionID.Values)
             {
-                if (creatureFaction.Name == "Everquest")
+                if (creatureFaction.Name == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
                     return creatureFaction.FactionID;
             }
 
@@ -48,12 +52,12 @@ namespace EQWOWConverter.Creatures
             return 0;
         }
 
-        public static int GetWOWFactionIDForEQFactionID(int eqFactionID)
+        public static int GetWOWFactionTemplateIDForEQFactionID(int eqFactionID)
         {
-            if (CreatureWOWFactionIDByEQFactionID.Count == 0)
+            if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
                 PopulateFactionData();
-            if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
-                return CreatureWOWFactionIDByEQFactionID[eqFactionID];
+            if (CreatureWOWFactionTemplateIDByEQFactionID.ContainsKey(eqFactionID) == true)
+                return CreatureWOWFactionTemplateIDByEQFactionID[eqFactionID];
             else
             {
                 Logger.WriteDetail("Creature Faction - No wow faction ID mapped to eq faction ID '" + eqFactionID.ToString() + "'");
@@ -70,9 +74,6 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateFactionData()
         {
-            CreatureFactionsByFactionID.Clear();
-            CreatureWOWFactionIDByEQFactionID.Clear();
-
             // Load in faction list
             string factionListFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactions.csv");
             Logger.WriteDetail("Populating creature factions via file '" + factionListFile + "'");
@@ -86,8 +87,29 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.Name = columns["Name"];
                 newCreatureFaction.BaseRep = int.Parse(columns["Base"]);
                 newCreatureFaction.Description = columns["Description"];
+
+                // Generate a faction template ID if it's not the root
+                if (newCreatureFaction.Name != Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                {
+                    // Generate the unique ID
+                    int curID = CURRENT_ID;
+                    CURRENT_ID++;
+                    newCreatureFaction.FactionTemplateID = curID;
+                }
+
                 CreatureFactionsByFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
             }
+
+            // Update the parents for these factions
+            int parentFactionID = GetRootFactionParentWOWFactionID();
+            if (parentFactionID > 0)
+            {
+                foreach (CreatureFaction creatureFaction in CreatureFactionsByFactionID.Values)
+                    if (creatureFaction.FactionID != parentFactionID)
+                        creatureFaction.ParentFactionID = parentFactionID;
+            }
+            else
+                Logger.WriteError("Creature Faction - Could not assign parent ID to faction since no parent faction ID could be found");
 
             // Load the faction mappings
             string factionMapListFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionMap.csv");
@@ -98,12 +120,22 @@ namespace EQWOWConverter.Creatures
                 // Load the row
                 int eqfactionID = int.Parse(columns["EQFactionID"]);
                 int wowFactionID = int.Parse(columns["WOWFactionID"]);
-                if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqfactionID) == true)
+                if(CreatureFactionsByFactionID.ContainsKey(wowFactionID) == false)
                 {
-                    Logger.WriteError("Creature Faction - Attempted to map eqFactionID of '" + eqfactionID + "' to wowFactionID of '" + wowFactionID + "' but a mapping already existed for the eqFactionID");
+                    Logger.WriteError("Creature Faction: Attempted to map an eq faction to wow, but there was no wowFactionID of '" + wowFactionID + "' in the CreatureFactionMap");
                     continue;
                 }
-                CreatureWOWFactionIDByEQFactionID.Add(eqfactionID, wowFactionID);
+                else
+                {
+                    CreatureFaction curFaction = CreatureFactionsByFactionID[wowFactionID];
+                    int wowFactionTemplateID = curFaction.FactionTemplateID;
+                    if (CreatureWOWFactionTemplateIDByEQFactionID.ContainsKey(eqfactionID) == true)
+                    {
+                        Logger.WriteError("Creature Faction - Attempted to map eqFactionID of '" + eqfactionID + "' to wowFactionTemplateID of '" + wowFactionTemplateID + "' but a mapping already existed for the eqFactionID");
+                        continue;
+                    }
+                    CreatureWOWFactionTemplateIDByEQFactionID.Add(eqfactionID, wowFactionTemplateID);
+                }
             }
         }
     }

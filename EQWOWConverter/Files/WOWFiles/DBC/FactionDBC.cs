@@ -14,49 +14,64 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.Marshalling;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+
+// Faction Bands:
+// - Hated: -42,000 to - 6,000
+// - Hostile: -5,999 to - 3,000
+// - Unfriendly: -2,999 to -1
+// - Neutral: 0 to 2,999
+// - Friendly: 3,000 to 5,999
+// - Honored: 6,000 to 11,999
+// - Revered: 12,000 to 20,999
+// - Exalted: 21,000 +
 
 namespace EQWOWConverter.WOWFiles
 {
     internal class FactionDBC : DBCFile
     {
-        //public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTION_ID_START;
-
-        public void AddRow()
+        public void AddRow(CreatureFaction creatureFaction)
         {
-            //int curID = CURRENT_ID;
-            //CURRENT_ID++;
+            // Calc flags
+            int reputation1Flags = 0;
+            if (creatureFaction.BaseRep < 3000) // Under 'friendly'
+                reputation1Flags = 2; // "Enable 'at war' on the client by default        
+            if (creatureFaction.Name == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                reputation1Flags = 12;
+
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(0); // ID
-            newRow.AddInt(0); // ReputationIndex (Must be a unique number, max 127, no gain -1)
-            newRow.AddInt(0); // Reputation Race Mask 1
+            newRow.AddInt(creatureFaction.FactionID); // ID
+            newRow.AddInt(creatureFaction.ReputationIndex); // ReputationIndex (Must be a unique number, max 127, no gain -1)
+            newRow.AddInt(1791); // Reputation Race Mask 1 (1791 should cover all, taken from Netherwing)
             newRow.AddInt(0); // Reputation Race Mask 2
             newRow.AddInt(0); // Reputation Race Mask 3
             newRow.AddInt(0); // Reputation Race Mask 4
-            newRow.AddInt(0); // Reputation Class Mask 1
+            newRow.AddInt(0); // Reputation Class Mask 1 (Note: Netherwing has "1535")
             newRow.AddInt(0); // Reputation Class Mask 2
             newRow.AddInt(0); // Reputation Class Mask 3
             newRow.AddInt(0); // Reputation Class Mask 4
-            newRow.AddInt(0); // Reputation Base 1 (Used by Race/Class Mask 1)
+            newRow.AddInt(creatureFaction.BaseRep); // Reputation Base 1 (Used by Race/Class Mask 1)
             newRow.AddInt(0); // Reputation Base 2 (Used by Race/Class Mask 2)
             newRow.AddInt(0); // Reputation Base 3 (Used by Race/Class Mask 3)
             newRow.AddInt(0); // Reputation Base 4 (Used by Race/Class Mask 4)
-            newRow.AddInt(0); // Reputation Flags 1 (similar to above?)
+            newRow.AddInt(reputation1Flags); // Reputation Flags 1
             newRow.AddInt(0); // Reputation Flags 2
             newRow.AddInt(0); // Reputation Flags 3
             newRow.AddInt(0); // Reputation Flags 4
-            newRow.AddInt(0); // Parent Faction ID (Faction.ID)
+            newRow.AddInt(creatureFaction.ParentFactionID); // Parent Faction ID (Faction.ID)
             newRow.AddFloat(0); // ParentFactionMod 1
             newRow.AddFloat(0); // ParentFactionMod 2
-            newRow.AddInt(0); // Parent Faction Cap 1
-            newRow.AddInt(0); // Parent Faction Cap 2
-            newRow.AddStringLang(string.Empty); // Name
-            newRow.AddStringLang(string.Empty); // Description
+            newRow.AddInt(5); // Parent Faction Cap 1 // Unsure why this is 5, but most rows are
+            newRow.AddInt(5); // Parent Faction Cap 2 // Unsure why this is 5, but most rows are
+            newRow.AddStringLang(creatureFaction.Name); // Name
+            newRow.AddStringLang(creatureFaction.Description); // Description
             Rows.Add(newRow);
         }
     }

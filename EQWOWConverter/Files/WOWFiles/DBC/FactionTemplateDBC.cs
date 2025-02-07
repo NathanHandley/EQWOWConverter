@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,16 +26,13 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class FactionTemplateDBC : DBCFile
     {
-        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTIONTEMPLATE_ID_START;
-
-        public void AddRow()
+        public void AddRow(CreatureFaction creatureFaction)
         {
-            int curID = CURRENT_ID;
-            CURRENT_ID++;
+            // Fill the row
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(CURRENT_ID); // ID
-            newRow.AddInt(0); // Faction.ID
-            newRow.AddInt(0); // Flags
+            newRow.AddInt(creatureFaction.FactionTemplateID); // ID
+            newRow.AddInt(creatureFaction.FactionID); // Faction.ID
+            newRow.AddInt(33); // Flags (Copied from Netherwing, revisit)
             newRow.AddInt(0); // FactionGroup.ID (lots of 0, 1, 8)
             newRow.AddInt(0); // FriendGroup (bitmask field)
             newRow.AddInt(0); // EnemyGroup (bitmask field)
@@ -42,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // Enemies 2
             newRow.AddInt(0); // Enemies 3
             newRow.AddInt(0); // Enemies 4
-            newRow.AddInt(0); // Friend 1
+            newRow.AddInt(creatureFaction.FactionID); // Friend 1 (help self)
             newRow.AddInt(0); // Friend 2
             newRow.AddInt(0); // Friend 3
             newRow.AddInt(0); // Friend 4
