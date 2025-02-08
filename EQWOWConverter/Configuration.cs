@@ -313,6 +313,9 @@ namespace EQWOWConverter
         // What to multiple the EverQuest reputation kill rewards by.  WOW is approx 20-30x that of EQ in band.
         public static readonly int CONFIG_CREATURE_KILL_REWARD_REP_MULTIPLIER = 20;
 
+        // Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)
+        public static readonly float CONFIG_CREATURE_DEFAULT_DETECTION_RANGE = 20f;
+
         //=====================================================================
         // Items
         //=====================================================================

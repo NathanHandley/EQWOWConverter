@@ -56,6 +56,7 @@ namespace EQWOWConverter.Creatures
         public int EQNPCFactionID = 0;
         public int WOWFactionTemplateID = 0;
         public List<CreatureFactionKillReward> CreatureFactionKillRewards = new List<CreatureFactionKillReward>();
+        public float DetectionRange = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -133,6 +134,11 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
                 newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
                 newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["avgdmg"]));
+                float detectionRange = float.Parse(columns["aggroradius"]);
+                if (detectionRange > 0)
+                    newCreatureTemplate.DetectionRange = detectionRange * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                else
+                    newCreatureTemplate.DetectionRange = Configuration.CONFIG_CREATURE_DEFAULT_DETECTION_RANGE;
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');

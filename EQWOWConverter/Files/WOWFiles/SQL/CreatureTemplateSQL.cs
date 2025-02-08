@@ -59,7 +59,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("speed_run", 1.14286f); // 1.14286 seems common
             newRow.AddFloat("speed_swim", 1);
             newRow.AddFloat("speed_flight", 1);
-            newRow.AddFloat("detection_range", 20); // 20 is very common, but see a lot of 18 as well
+            newRow.AddFloat("detection_range", creatureTemplate.DetectionRange); 
             newRow.AddFloat("scale", scale);
             newRow.AddInt("rank", Convert.ToInt32(creatureTemplate.Rank));
             newRow.AddInt("dmgschool", 0);
