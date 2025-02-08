@@ -24,14 +24,14 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 
 // WOW Faction Bands:
-// - Hated: -42,000 to - 6,000
-// - Hostile: -5,999 to - 3,000
+// - Hated: -42,000 to -6,000
+// - Hostile: -5,999 to -3,000
 // - Unfriendly: -2,999 to -1
 // - Neutral: 0 to 2,999
 // - Friendly: 3,000 to 5,999
 // - Honored: 6,000 to 11,999
 // - Revered: 12,000 to 20,999
-// - Exalted: 21,000 +
+// - Exalted: 21,000+
 // EQ Faction Bands:
 // - Scowling (KOS - Kill on Sight): -2000 to -751
 // - Threateningly: -750 to -501

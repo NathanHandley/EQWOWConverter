@@ -308,7 +308,10 @@ namespace EQWOWConverter
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_BOSS = 18f;
 
         // The value to name the everquest parent reputation item as
-        public static readonly string CONFIG_CREATURE_FACTION_ROOT_NAME = "Everquest";
+        public static readonly string CONFIG_CREATURE_FACTION_ROOT_NAME = "EverQuest";
+
+        // What to multiple the EverQuest reputation kill rewards by.  WOW is approx 20-30x that of EQ in band.
+        public static readonly int CONFIG_CREATURE_KILL_REWARD_REP_MULTIPLIER = 20;
 
         //=====================================================================
         // Items
