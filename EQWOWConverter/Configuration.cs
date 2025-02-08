@@ -310,6 +310,9 @@ namespace EQWOWConverter
         // The value to name the everquest parent reputation item as
         public static readonly string CONFIG_CREATURE_FACTION_ROOT_NAME = "EverQuest";
 
+        // The default faction value to use if none can be mapped.  Using the 'neutral' record for now.
+        public static readonly int CONFIG_CREATURE_FACTION_TEMPLATE_DEFAULT = 2302;
+
         // What to multiple the EverQuest reputation kill rewards by.  WOW is approx 20-30x that of EQ in band.
         public static readonly int CONFIG_CREATURE_KILL_REWARD_REP_MULTIPLIER = 20;
 
@@ -360,9 +363,6 @@ namespace EQWOWConverter
 
         // IDs for CreatureSoundData.dbc
         public static readonly int CONFIG_DBCID_CREATURESOUNDDATA_ID_START = 3300;
-
-        // IDs for FactionTemplate.dbc
-        public static readonly int CONFIG_DBCID_FACTIONTEMPLATE_ID_START = 2300;
 
         // IDs for FootstepTerrainLookup.dbc
         public static readonly int CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = 600;

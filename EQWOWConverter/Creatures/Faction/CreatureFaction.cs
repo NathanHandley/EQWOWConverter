@@ -24,8 +24,6 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureFaction
     {
-        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FACTIONTEMPLATE_ID_START;
-
         private static Dictionary<int, CreatureFaction> CreatureFactionsByWOWFactionID = new Dictionary<int, CreatureFaction>();
         private static Dictionary<int, int> CreatureWOWFactionTemplateIDByEQFactionID = new Dictionary<int, int>();
         private static Dictionary<int, int> CreatureWOWFactionIDByEQFactionID = new Dictionary<int, int>();
@@ -62,8 +60,8 @@ namespace EQWOWConverter.Creatures
                 return CreatureWOWFactionTemplateIDByEQFactionID[eqFactionID];
             else
             {
-                Logger.WriteDetail("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "'");
-                return -1;
+                Logger.WriteDetail("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
+                return Configuration.CONFIG_CREATURE_FACTION_TEMPLATE_DEFAULT;
             }
         }
 
@@ -120,20 +118,11 @@ namespace EQWOWConverter.Creatures
                 // Load the row
                 CreatureFaction newCreatureFaction = new CreatureFaction();
                 newCreatureFaction.FactionID = int.Parse(columns["FactionID"]);
+                newCreatureFaction.FactionTemplateID = int.Parse(columns["FactionTemplateID"]);
                 newCreatureFaction.ReputationIndex = int.Parse(columns["ReputationIndex"]);
                 newCreatureFaction.Name = columns["Name"];
                 newCreatureFaction.BaseRep = int.Parse(columns["Base"]);
                 newCreatureFaction.Description = columns["Description"];
-
-                // Generate a faction template ID if it's not the root
-                if (newCreatureFaction.Name != Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
-                {
-                    // Generate the unique ID
-                    int curID = CURRENT_ID;
-                    CURRENT_ID++;
-                    newCreatureFaction.FactionTemplateID = curID;
-                }
-
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
             }
 
