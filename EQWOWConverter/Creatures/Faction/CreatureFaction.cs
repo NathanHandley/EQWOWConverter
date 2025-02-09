@@ -36,6 +36,8 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty;
         public int BaseRep = 0;
         public string Description = string.Empty;
+        public bool ForceAgro = false;
+        public bool FleeAtLowLife = false;
 
         public static int GetRootFactionParentWOWFactionID()
         {
@@ -123,6 +125,8 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.Name = columns["Name"];
                 newCreatureFaction.BaseRep = int.Parse(columns["Base"]);
                 newCreatureFaction.Description = columns["Description"];
+                newCreatureFaction.FleeAtLowLife = int.Parse(columns["FleeLowLife"]) == 1 ? true : false;
+                newCreatureFaction.ForceAgro = int.Parse(columns["ForceAgro"]) == 1 ? true : false;
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
             }
 

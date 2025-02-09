@@ -28,14 +28,27 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(CreatureFaction creatureFaction)
         {
+            // Determine flags
+            int flags = 0;
+            flags |= 0x0001; // Respond to calls for help
+            flags |= 0x0040; // Searches for enemies, aggressively
+            flags |= 0x0008; // Broadcast to enemies, aggressively
+            if (creatureFaction.FleeAtLowLife == true)
+                flags |= 0x0400; // Flee from and call for help
+            if (creatureFaction.ReputationIndex > 0)
+                flags |= 0x0800; // Assists players
+
             // Fill the row
             DBCRow newRow = new DBCRow();
             newRow.AddInt(creatureFaction.FactionTemplateID); // ID
             newRow.AddInt(creatureFaction.FactionID); // Faction.ID
-            newRow.AddInt(33); // Flags (Copied from Netherwing, revisit)
+            newRow.AddInt(flags); // Flags
             newRow.AddInt(8); // FactionGroup.ID (lots of 0, 1, 8)
             newRow.AddInt(0); // FriendGroup (bitmask field)
-            newRow.AddInt(1); // EnemyGroup (bitmask field)
+            if (creatureFaction.ForceAgro == false && creatureFaction.ReputationIndex < 0)
+                newRow.AddInt(0); // EnemyGroup (bitmask field)
+            else
+                newRow.AddInt(1); // EnemyGroup (bitmask field) - 1 = All players (and pets)
             newRow.AddInt(0); // Enemies 1
             newRow.AddInt(0); // Enemies 2
             newRow.AddInt(0); // Enemies 3

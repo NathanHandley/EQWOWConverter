@@ -1,38 +1,40 @@
-FactionID|FactionTemplateID|ReputationIndex|Name|Base|Description|Comment
-1223|2300|-1|EQ Creature KOS|-42000||Model after ID 35 (Villian)
-1224|2301|-1|EQ Creature KOS Nature Neutral|-42000||Druid/Ranger rep
-1225|2302|-1|EQ Creature Neutral|0||Snakes, etc
-1226|2303|-1|EQ Creature Unfriendly|-2500||
-1231|2304|8|Devotees of the Faceless|0|TBD|"Takeover ""Wildhammer Clan"".  Iksar, Cazic-Thule"
-1232|2305|34|The Storm Giants|-3500|TBD|"Takeover ""Caer Darrow"""
-1230|2306|82|Highpass Citizens|0|TBD|"Takeover ""REUSE"""
-1227|2307|85|League of Light|0|TBD|"Takeover ""Test Faction 1"", Look into splitting out bards, warriors, paladins.  These are the good freeport guards too."
-1228|2308|86|Temple of Solusek Ro|0|TBD|"Takeover ""Test Faction 2"""
-1229|2309|87|Brood of Di`Zok|0|TBD|"Takeover ""Test Faction 3"""
-1236|2310|100|Claws of Veeshan|-3500|TBD|"Takeover ""Tranquillen Conversion"""
-1235|2311|101|The Coldain|-2500|TBD|"Takeover ""Wintersaber Conversion"""
-1234|2312|102|Truespirit|0|TBD|"Takeover ""Silver Covenant Conversion"""
-1233|2313|103|Antonica Settlers|0|TBD|"Takeover ""Sunreavers Conversion"""
-1200|2314|105|EverQuest|0|TBD|"Parent Rep for UX (Considered ""Norrath"", but existing are like ""Burning Crusade"")"
-1201|2315|106|The Silver Mantle|0|TBD|Good Qeynos
-1202|2316|107|Erudin Collective|0|TBD|Erudites, peaceful
-1203|2317|108|Gnomes of Ak'anon|0|TBD|There's an evil rep with Dark Reflection / Meldrath
-1204|2318|109|Clans of the North|0|TBD|Barbarian / Halas
-1205|2319|110|The Deepstone Accord|0|TBD|Kaladim
-1206|2320|111|The Feir`Dal|0|TBD|Wood Elves / Kaladim
-1207|2321|112|Allies of Tunare|0|TBD|Felwethe High Elves
-1208|2322|113|The Bertoxxulous Collective|0|TBD|Paineel / Dark Erudites
-1209|2323|114|The Kerra|0|TBD|
-1210|2324|115|Circle of Unseen Hands|0|TBD|
-1211|2325|116|Arcane Scientists|0|TBD|West Freeport - Arcane
-1212|2326|117|Clan Runnyeye|-3500|TBD|
-1213|2327|118|The Warborn|0|TBD|Oggok / Ogres
-1214|2328|119|Coalition of Tradefolk|0|TBD|
-1215|2329|120|The Corrupt Militia|0|TBD|
-1216|2330|121|The Mireborn|0|TBD|Trolls / Grobb
-1217|2331|122|Hands of Innoruuk|0|TBD|Dark Bargainers merge here, consider splitting.  Dark Elves, or Teir'Dal
-1218|2332|123|Rivervale Concord|0|TBD|Halflings / Rivervale
-1219|2333|124|Inhabitants of Firiona Vie|0|TBD|
-1220|2334|125|Frogloks of Guk|-3500|TBD|
-1221|2335|126|Coalition of Tradefolk Underground|0|TBD|Dismal Rage
-1222|2336|127|The Pinewardens|0|TBD|Half Elves, Jaggedpine Treefolk, Protectors of the Pine
+FactionID|FactionTemplateID|ReputationIndex|Name|Base|Description|FleeLowLife|ForceAgro|Comment
+1200|2314|105|EverQuest|0|TBD|1|0|"Parent Rep for UX (Considered ""Norrath"", but existing are like ""Burning Crusade"")"
+1201|2315|106|The Silver Mantle|0|TBD|1|0|Good Qeynos
+1202|2316|107|Erudin Collective|0|TBD|1|0|Erudites, peaceful
+1203|2317|108|Gnomes of Ak'anon|0|TBD|1|0|There's an evil rep with Dark Reflection / Meldrath
+1204|2318|109|Clans of the North|0|TBD|1|0|Barbarian / Halas
+1205|2319|110|The Deepstone Accord|0|TBD|1|0|Kaladim
+1206|2320|111|The Feir`Dal|0|TBD|1|0|Wood Elves / Kaladim
+1207|2321|112|Allies of Tunare|0|TBD|1|0|Felwethe High Elves
+1208|2322|113|The Bertoxxulous Collective|0|TBD|1|0|Paineel / Dark Erudites
+1209|2323|114|The Kerra|0|TBD|1|0|
+1210|2324|115|Circle of Unseen Hands|0|TBD|1|0|
+1211|2325|116|Arcane Scientists|0|TBD|1|0|West Freeport - Arcane
+1212|2326|117|Clan Runnyeye|-3500|TBD|1|0|
+1213|2327|118|The Warborn|0|TBD|1|0|Oggok / Ogres
+1214|2328|119|Coalition of Tradefolk|0|TBD|1|0|
+1215|2329|120|The Corrupt Militia|0|TBD|1|0|
+1216|2330|121|The Mireborn|0|TBD|1|0|Trolls / Grobb
+1217|2331|122|Hands of Innoruuk|0|TBD|1|0|Dark Bargainers merge here, consider splitting.  Dark Elves, or Teir'Dal
+1218|2332|123|Rivervale Concord|0|TBD|1|0|Halflings / Rivervale
+1219|2333|124|Inhabitants of Firiona Vie|0|TBD|1|0|
+1220|2334|125|Frogloks of Guk|-3500|TBD|1|0|
+1221|2335|126|Coalition of Tradefolk Underground|0|TBD|1|0|Dismal Rage
+1222|2336|127|The Pinewardens|0|TBD|1|0|Half Elves, Jaggedpine Treefolk, Protectors of the Pine
+1223|2300|-1|EQ Creature KOS|-42000||1|1|Model after ID 35 (Villian)
+1224|2301|-1|EQ Creature KOS Nature Neutral|-42000||1|0|Druid/Ranger rep
+1225|2302|-1|EQ Creature Neutral|0||1|0|Snakes, etc
+1226|2303|-1|EQ Creature Unfriendly|-2500||1|0|
+1227|2307|85|League of Light|0|TBD|1|0|"Takeover ""Test Faction 1"", Look into splitting out bards, warriors, paladins.  These are the good freeport guards too."
+1228|2308|86|Temple of Solusek Ro|0|TBD|1|0|"Takeover ""Test Faction 2"""
+1229|2309|87|Brood of Di`Zok|0|TBD|1|0|"Takeover ""Test Faction 3"""
+1230|2306|82|Highpass Citizens|0|TBD|1|0|"Takeover ""REUSE"""
+1231|2304|8|Devotees of the Faceless|0|TBD|1|0|"Takeover ""Wildhammer Clan"".  Iksar, Cazic-Thule"
+1232|2305|34|The Storm Giants|-3500|TBD|1|0|"Takeover ""Caer Darrow"""
+1233|2313|103|Antonica Settlers|0|TBD|1|0|"Takeover ""Sunreavers Conversion"""
+1234|2312|102|Truespirit|0|TBD|1|0|"Takeover ""Silver Covenant Conversion"""
+1235|2311|101|The Coldain|-2500|TBD|1|0|"Takeover ""Wintersaber Conversion"""
+1236|2310|100|Claws of Veeshan|-3500|TBD|1|0|"Takeover ""Tranquillen Conversion"""
+1237|2337|-1|EQ Creature KOS No Flee|-42000||0|1|
+1238|2338|-1|EQ Creature Neutral No Flee|0||0|0|
