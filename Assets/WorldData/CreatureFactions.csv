@@ -23,7 +23,7 @@ FactionID|FactionTemplateID|ReputationIndex|Name|Base|Description|FleeLowLife|Fo
 1221|2335|126|Coalition of Tradefolk Underground|0|TBD|1|0|Dismal Rage
 1222|2336|127|The Pinewardens|0|TBD|1|0|Half Elves, Jaggedpine Treefolk, Protectors of the Pine
 1223|2300|-1|EQ Creature KOS|-42000||1|1|Model after ID 35 (Villian)
-1224|2301|-1|EQ Creature KOS Nature Neutral|-42000||1|0|Druid/Ranger rep
+1224|2301|-1|EQ Creature KOS Nature Neutral|-42000||1|1|Druid/Ranger rep, DO NOT CHANGE FactionID / FactionTemplateID as it's used by mod-EverQuest
 1225|2302|-1|EQ Creature Neutral|0||1|0|Snakes, etc
 1226|2303|-1|EQ Creature Unfriendly|-2500||1|0|
 1227|2307|85|League of Light|0|TBD|1|0|"Takeover ""Test Faction 1"", Look into splitting out bards, warriors, paladins.  These are the good freeport guards too."
