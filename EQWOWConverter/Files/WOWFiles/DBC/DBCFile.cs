@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Google.Protobuf.WellKnownTypes;
+using Mysqlx.Session;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,6 +83,25 @@ namespace EQWOWConverter.WOWFiles
                 AddedFields.Add(new DBCFieldInt(value));
             }
 
+            public void AddIntFromSourceRawBytes(ref int offsetCursor)
+            {
+                if (offsetCursor >= SourceRawBytes.Count)
+                {
+                    Logger.WriteError("DBCRow AddIntFromSourceRawBytes failure, offsetCursor was beyond the raw data stream");
+                    return;
+                }
+                if (offsetCursor + 4 > SourceRawBytes.Count + 1)
+                {
+                    Logger.WriteError("DBCRow AddIntFromSourceRawBytes failure, as offsetCursor is trying to pull data that will fall outside the stream");
+                    return;
+                }
+
+                // Add it
+                byte[] intBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
+                AddedFields.Add(new DBCFieldInt(BitConverter.ToInt32(intBytes, 0)));
+                offsetCursor += 4;
+            }
+
             public class DBCFieldFloat : DBCField
             {
                 public DBCFieldFloat(float value) { Value = value; }
@@ -90,6 +111,25 @@ namespace EQWOWConverter.WOWFiles
             public void AddFloat(float value)
             {
                 AddedFields.Add(new DBCFieldFloat(value));
+            }
+
+            public void AddFloatFromSourceRawBytes(ref int offsetCursor)
+            {
+                if (offsetCursor >= SourceRawBytes.Count)
+                {
+                    Logger.WriteError("DBCRow AddFloatFromSourceRawBytes failure, offsetCursor was beyond the raw data stream");
+                    return;
+                }
+                if (offsetCursor + 4 > SourceRawBytes.Count + 1)
+                {
+                    Logger.WriteError("DBCRow AddFloatFromSourceRawBytes failure, as offsetCursor is trying to pull data that will fall outside the stream");
+                    return;
+                }
+
+                // Add it
+                byte[] floatBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
+                AddedFields.Add(new DBCFieldFloat(BitConverter.ToSingle(floatBytes, 0)));
+                offsetCursor += 4;
             }
 
             public class DBCFieldString : DBCField
@@ -112,6 +152,37 @@ namespace EQWOWConverter.WOWFiles
             public void AddStringLang(string value)
             {
                 AddedFields.Add(new DBCFieldStringLang(value));
+            }
+
+            // Note: Only work with the first description (english).  Will probably break for other language types
+            public void AddStringLangFromSourceRawBytes(ref int offsetCursor, List<char> stringBlock)
+            {
+                if (offsetCursor >= SourceRawBytes.Count)
+                {
+                    Logger.WriteError("DBCRow AddStringLangFromSourceRawBytes failure, offsetCursor was beyond the raw data stream");
+                    return;
+                }
+
+                // Load in the 16 string offsets
+                List<int> stringOffsets = new List<int>();
+                for (int i = 0; i < 16; i++)
+                {
+                    // Current string offset
+                    int curOffset = offsetCursor + (4 * i);
+                    byte[] intBytes = SourceRawBytes.Skip(curOffset).Take(4).ToArray();
+                    stringOffsets.Add(BitConverter.ToInt32(intBytes));                   
+                }
+
+                // First string is the only one we care about
+                string curLangStringValue = string.Empty;
+                for (int i = stringOffsets[0]; i < stringBlock.Count; i++)
+                {
+                    if (stringBlock[i] == '\0')
+                        break;
+                    curLangStringValue += stringBlock[i];
+                }
+                AddedFields.Add(new DBCFieldStringLang(curLangStringValue));
+                offsetCursor += 64; // (4 * 16)
             }
 
             public List<DBCRow.DBCField> AddedFields = new List<DBCField>();
@@ -173,6 +244,9 @@ namespace EQWOWConverter.WOWFiles
             // Done loading
             IsLoaded = true;
             Logger.WriteDetail("Loading dbc '" + fileName + "' completed");
+
+            // Call post load event for hooks later
+            OnPostLoadDataFromDisk();
         }
 
         public void SaveToDisk(string fileFolder)
@@ -281,5 +355,7 @@ namespace EQWOWConverter.WOWFiles
             // Return the index
             return newIndex;
         }
+
+        protected virtual void OnPostLoadDataFromDisk() { }
     }
 }
