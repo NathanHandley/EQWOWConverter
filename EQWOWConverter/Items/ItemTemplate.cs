@@ -82,7 +82,7 @@ namespace EQWOWConverter.Items
 
             // Zero or negative stats give nothing back
             bool flipStatSign = false;
-            if (eqStatValue <= 0)
+            if (eqStatValue < 0)
             {
                 flipStatSign = true;
                 eqStatValue *= -1;
@@ -150,6 +150,9 @@ namespace EQWOWConverter.Items
                 return statWowLow;
             if (eqStatValue == statEqHigh)
                 return statWowHigh;
+
+            // Set a floor on the stat value
+            eqStatValue = MathF.Max(eqStatValue, statEqLow);
 
             // Calculate the stat
             float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow));
