@@ -899,7 +899,7 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 4;
                         itemTemplate.SubClassID = 0;
-                        itemTemplate.InventoryType = ItemWOWInventoryType.Finger; // TODO: Neck vs Earring vs Ring
+                        itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
                     } break;
                 case 30: // Skull => Misc
                     {
