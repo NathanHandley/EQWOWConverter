@@ -814,8 +814,8 @@ namespace EQWOWConverter.Items
                         // Otherwise, store it as misc
                         else
                         {
-                            itemTemplate.ClassID = 4; // armor class
-                            itemTemplate.SubClassID = 4;
+                            itemTemplate.ClassID = 15; // Misc
+                            itemTemplate.SubClassID = 4; // Other
                         }
                     } break;
                 case 12: // Lockpick
