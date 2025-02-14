@@ -173,7 +173,11 @@ namespace EQWOWConverter.WOWFiles
         {
             int allowableClass = 0;
             foreach (ClassType classType in itemTemplate.AllowedClassTypes)
-                allowableClass += Convert.ToInt32(classType);
+            {
+                if (classType == ClassType.All)
+                    return -1;
+                allowableClass += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
+            }
             if (allowableClass == 0)
                 allowableClass = -1;
             return allowableClass;
