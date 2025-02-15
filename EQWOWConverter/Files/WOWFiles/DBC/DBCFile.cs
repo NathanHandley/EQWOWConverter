@@ -168,9 +168,9 @@ namespace EQWOWConverter.WOWFiles
                 for (int i = 0; i < 16; i++)
                 {
                     // Current string offset
-                    int curOffset = offsetCursor + (4 * i);
-                    byte[] intBytes = SourceRawBytes.Skip(curOffset).Take(4).ToArray();
-                    stringOffsets.Add(BitConverter.ToInt32(intBytes));                   
+                    byte[] intBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
+                    stringOffsets.Add(BitConverter.ToInt32(intBytes));
+                    offsetCursor += 4;
                 }
 
                 // First string is the only one we care about
@@ -182,7 +182,9 @@ namespace EQWOWConverter.WOWFiles
                     curLangStringValue += stringBlock[i];
                 }
                 AddedFields.Add(new DBCFieldStringLang(curLangStringValue));
-                offsetCursor += 64; // (4 * 16)
+
+                // Throw out the language mask flag
+                offsetCursor += 4;
             }
 
             public List<DBCRow.DBCField> AddedFields = new List<DBCField>();
