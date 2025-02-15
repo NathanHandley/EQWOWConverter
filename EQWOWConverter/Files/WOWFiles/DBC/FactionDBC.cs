@@ -49,17 +49,6 @@ namespace EQWOWConverter.WOWFiles
     {
         public void AddRow(CreatureFaction creatureFaction)
         {
-            // Calc flags
-            int reputationFlags = 0;
-            if (creatureFaction.Name == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
-                reputationFlags = 12;
-            else
-            {
-                if (Configuration.CONFIG_CREATURE_FACTION_SHOW_ALL == true)
-                    reputationFlags |= 0x01; // Show by default
-                reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR
-            }
-
             DBCRow newRow = new DBCRow();
             newRow.AddInt(creatureFaction.FactionID); // ID
             newRow.AddInt(creatureFaction.ReputationIndex); // ReputationIndex (Must be a unique number, max 127, no gain -1)
@@ -75,10 +64,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(creatureFaction.GetBaseRep2()); // Reputation Base 2 (Used by Race/Class Mask 2)
             newRow.AddInt(creatureFaction.GetBaseRep3()); // Reputation Base 3 (Used by Race/Class Mask 3)
             newRow.AddInt(creatureFaction.GetBaseRep4()); // Reputation Base 4 (Used by Race/Class Mask 4)
-            newRow.AddInt(reputationFlags); // Reputation Flags 1
-            newRow.AddInt(reputationFlags); // Reputation Flags 2
-            newRow.AddInt(reputationFlags); // Reputation Flags 3
-            newRow.AddInt(reputationFlags); // Reputation Flags 4
+            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep1())); // Reputation Flags 1
+            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep2())); // Reputation Flags 2
+            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep3())); // Reputation Flags 3
+            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep4())); // Reputation Flags 4
             newRow.AddInt(creatureFaction.ParentFactionID); // Parent Faction ID (Faction.ID)
             newRow.AddFloat(0); // ParentFactionMod 1
             newRow.AddFloat(0); // ParentFactionMod 2
@@ -87,6 +76,21 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(creatureFaction.Name); // Name
             newRow.AddStringLang(creatureFaction.Description); // Description
             Rows.Add(newRow);
+        }
+
+        protected int GetFlagsForRep(string creatureFactionName, int reputationIndex, int baseReputation)
+        {
+            int reputationFlags = 0;
+            if (creatureFactionName == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                reputationFlags = 12;
+            else
+            {
+                if (Configuration.CONFIG_CREATURE_FACTION_SHOW_ALL == true)
+                    reputationFlags |= 0x01; // Show by default
+                if (baseReputation < 0 || reputationIndex == -1)
+                    reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR
+            }
+            return reputationFlags;
         }
 
         protected override void OnPostLoadDataFromDisk()
