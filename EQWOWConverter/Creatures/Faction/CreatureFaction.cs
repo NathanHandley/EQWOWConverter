@@ -217,7 +217,7 @@ namespace EQWOWConverter.Creatures
                     newCreatureFaction.AlignedRacesMask += NeutralRacesMask;
                 if (int.Parse(columns["AlignedRaceEvil"]) == 1)
                     newCreatureFaction.AlignedRacesMask += EvilRacesMask;
-                newCreatureFaction.UnalignedRacesMask = 1535 - newCreatureFaction.AlignedRacesMask;
+                newCreatureFaction.UnalignedRacesMask = 1791 - newCreatureFaction.AlignedRacesMask;
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
             }
 
@@ -290,12 +290,12 @@ namespace EQWOWConverter.Creatures
             if (BaseRepOverride == -1)
                 return GoodClassesMask;
             else
-                return 1791; // All
+                return 1535; // All
         }
 
         public int GetRaceMask1()
         {
-            return 1535; // All
+            return 1791; // All
         }
 
         public int GetBaseRep1()
@@ -317,7 +317,7 @@ namespace EQWOWConverter.Creatures
         public int GetRaceMask2()
         {
             if (BaseRepOverride == -1)
-                return 1535; // All
+                return 1791; // All
             else
                 return 0;
         }
