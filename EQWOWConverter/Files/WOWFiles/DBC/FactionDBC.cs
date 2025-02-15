@@ -54,7 +54,11 @@ namespace EQWOWConverter.WOWFiles
             if (creatureFaction.Name == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
                 reputationFlags = 12;
             else
+            {
+                if (Configuration.CONFIG_CREATURE_FACTION_SHOW_ALL == true)
+                    reputationFlags |= 0x01; // Show by default
                 reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR
+            }
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt(creatureFaction.FactionID); // ID

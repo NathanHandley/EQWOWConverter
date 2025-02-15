@@ -313,6 +313,9 @@ namespace EQWOWConverter
         // The default faction value to use if none can be mapped.  Using the 'neutral' record for now.
         public static readonly int CONFIG_CREATURE_FACTION_TEMPLATE_DEFAULT = 2302;
 
+        // If set to true, all factions will show up for EverQuest in the faction list immediately
+        public static readonly bool CONFIG_CREATURE_FACTION_SHOW_ALL = true;
+
         // What to multiple the EverQuest reputation kill rewards by.  WOW is approx 20-30x that of EQ in band.
         public static readonly int CONFIG_CREATURE_KILL_REWARD_REP_MULTIPLIER = 20;
 
