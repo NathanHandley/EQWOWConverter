@@ -63,18 +63,18 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt(creatureFaction.FactionID); // ID
             newRow.AddInt(creatureFaction.ReputationIndex); // ReputationIndex (Must be a unique number, max 127, no gain -1)
-            newRow.AddInt(creatureFaction.GetGood1RaceMask()); // Reputation Race Mask 1 (Netherwing has "1791")
-            newRow.AddInt(creatureFaction.GetGood2RaceMask()); // Reputation Race Mask 2
-            newRow.AddInt(creatureFaction.GetEvil1RaceMask()); // Reputation Race Mask 3
-            newRow.AddInt(creatureFaction.GetEvil2RaceMask()); // Reputation Race Mask 4
-            newRow.AddInt(creatureFaction.GetGood1ClassMask()); // Reputation Class Mask 1 (Note: Netherwing has "1535")
-            newRow.AddInt(creatureFaction.GetGood2ClassMask()); // Reputation Class Mask 2
-            newRow.AddInt(creatureFaction.GetEvil1ClassMask()); // Reputation Class Mask 3
-            newRow.AddInt(creatureFaction.GetEvil2ClassMask()); // Reputation Class Mask 4
-            newRow.AddInt(creatureFaction.GetGood1BaseRep()); // Reputation Base 1 (Used by Race/Class Mask 1)
-            newRow.AddInt(creatureFaction.GetGood2BaseRep()); // Reputation Base 2 (Used by Race/Class Mask 2)
-            newRow.AddInt(creatureFaction.GetEvil1BaseRep()); // Reputation Base 3 (Used by Race/Class Mask 3)
-            newRow.AddInt(creatureFaction.GetEvil2BaseRep()); // Reputation Base 4 (Used by Race/Class Mask 4)
+            newRow.AddInt(creatureFaction.GetRaceMask1()); // Reputation Race Mask 1 (Netherwing has "1791")
+            newRow.AddInt(creatureFaction.GetRaceMask2()); // Reputation Race Mask 2
+            newRow.AddInt(creatureFaction.GetRaceMask3()); // Reputation Race Mask 3
+            newRow.AddInt(creatureFaction.GetRaceMask4()); // Reputation Race Mask 4
+            newRow.AddInt(creatureFaction.GetClassMask1()); // Reputation Class Mask 1 (Note: Netherwing has "1535")
+            newRow.AddInt(creatureFaction.GetClassMask2()); // Reputation Class Mask 2
+            newRow.AddInt(creatureFaction.GetClassMask3()); // Reputation Class Mask 3
+            newRow.AddInt(creatureFaction.GetClassMask4()); // Reputation Class Mask 4
+            newRow.AddInt(creatureFaction.GetBaseRep1()); // Reputation Base 1 (Used by Race/Class Mask 1)
+            newRow.AddInt(creatureFaction.GetBaseRep2()); // Reputation Base 2 (Used by Race/Class Mask 2)
+            newRow.AddInt(creatureFaction.GetBaseRep3()); // Reputation Base 3 (Used by Race/Class Mask 3)
+            newRow.AddInt(creatureFaction.GetBaseRep4()); // Reputation Base 4 (Used by Race/Class Mask 4)
             newRow.AddInt(reputationFlags); // Reputation Flags 1
             newRow.AddInt(reputationFlags); // Reputation Flags 2
             newRow.AddInt(reputationFlags); // Reputation Flags 3
