@@ -37,7 +37,7 @@ namespace EQWOWConverter.Creatures
         private static int Evil1RaceMask = 0;        
         private static int Evil2ClassMask = 0;
         private static int Evil2RaceMask = 0;
-        private int NoRepIndexBaseRep = 0;
+        private int BaseRepOverride = 0;
         private int GoodBaseRep = 0;
         private int EvilBaseRep = 0;
         public int FactionID = 0;
@@ -133,7 +133,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.FactionTemplateID = int.Parse(columns["FactionTemplateID"]);
                 newCreatureFaction.ReputationIndex = int.Parse(columns["ReputationIndex"]);
                 newCreatureFaction.Name = columns["Name"];
-                newCreatureFaction.NoRepIndexBaseRep = int.Parse(columns["BaseRepNoRepIndex"]);
+                newCreatureFaction.BaseRepOverride = int.Parse(columns["BaseRepOverride"]);
                 newCreatureFaction.GoodBaseRep = int.Parse(columns["BaseRepGood"]);
                 newCreatureFaction.EvilBaseRep = int.Parse(columns["BaseRepEvil"]);
                 newCreatureFaction.Description = columns["Description"];
@@ -297,7 +297,7 @@ namespace EQWOWConverter.Creatures
         // Accessors for the rep values
         public int GetGood1ClassMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Good1ClassMask;
             else
                 return 1791; // Taken from Netherwing
@@ -305,7 +305,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetGood1RaceMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Good1RaceMask;
             else
                 return 1535; // Taken from Netherwing
@@ -313,15 +313,15 @@ namespace EQWOWConverter.Creatures
 
         public int GetGood1BaseRep()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return GoodBaseRep;
             else
-                return NoRepIndexBaseRep;
+                return BaseRepOverride;
         }
 
         public int GetGood2ClassMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Good2ClassMask;
             else
                 return 0;
@@ -329,7 +329,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetGood2RaceMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Good2RaceMask;
             else
                 return 0;
@@ -337,7 +337,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetGood2BaseRep()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return GoodBaseRep;
             else
                 return 0;
@@ -345,7 +345,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil1ClassMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Evil1ClassMask;
             else
                 return 0;
@@ -353,7 +353,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil1RaceMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Evil1RaceMask;
             else
                 return 0;
@@ -361,7 +361,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil1BaseRep()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return EvilBaseRep;
             else
                 return 0;
@@ -369,7 +369,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil2ClassMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Evil2ClassMask;
             else
                 return 0;
@@ -377,7 +377,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil2RaceMask()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return Evil2RaceMask;
             else
                 return 0;
@@ -385,7 +385,7 @@ namespace EQWOWConverter.Creatures
 
         public int GetEvil2BaseRep()
         {
-            if (ReputationIndex > -1)
+            if (BaseRepOverride == -1)
                 return EvilBaseRep;
             else
                 return 0;
