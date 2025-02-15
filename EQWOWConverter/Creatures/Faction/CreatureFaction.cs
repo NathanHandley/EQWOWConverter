@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,13 +29,22 @@ namespace EQWOWConverter.Creatures
         private static Dictionary<int, int> CreatureWOWFactionTemplateIDByEQFactionID = new Dictionary<int, int>();
         private static Dictionary<int, int> CreatureWOWFactionIDByEQFactionID = new Dictionary<int, int>();
         private static Dictionary<int, List<CreatureFactionKillReward>> CreatureFactionKillRewardsByEQNPCFactionID = new Dictionary<int, List<CreatureFactionKillReward>>();
-
+        private static int Good1ClassMask = 0;
+        private static int Good1RaceMask = 0;        
+        private static int Good2ClassMask = 0;
+        private static int Good2RaceMask = 0;        
+        private static int Evil1ClassMask = 0;
+        private static int Evil1RaceMask = 0;        
+        private static int Evil2ClassMask = 0;
+        private static int Evil2RaceMask = 0;
+        private int NoRepIndexBaseRep = 0;
+        private int GoodBaseRep = 0;
+        private int EvilBaseRep = 0;
         public int FactionID = 0;
         public int FactionTemplateID = -1;
         public int ParentFactionID = 0;
         public int ReputationIndex = 0;
         public string Name = string.Empty;
-        public int BaseRep = 0;
         public string Description = string.Empty;
         public bool ForceAgro = false;
         public bool FleeAtLowLife = false;
@@ -123,7 +133,9 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.FactionTemplateID = int.Parse(columns["FactionTemplateID"]);
                 newCreatureFaction.ReputationIndex = int.Parse(columns["ReputationIndex"]);
                 newCreatureFaction.Name = columns["Name"];
-                newCreatureFaction.BaseRep = int.Parse(columns["Base"]);
+                newCreatureFaction.NoRepIndexBaseRep = int.Parse(columns["BaseRepNoRepIndex"]);
+                newCreatureFaction.GoodBaseRep = int.Parse(columns["BaseRepGood"]);
+                newCreatureFaction.EvilBaseRep = int.Parse(columns["BaseRepEvil"]);
                 newCreatureFaction.Description = columns["Description"];
                 newCreatureFaction.FleeAtLowLife = int.Parse(columns["FleeLowLife"]) == 1 ? true : false;
                 newCreatureFaction.ForceAgro = int.Parse(columns["ForceAgro"]) == 1 ? true : false;
@@ -150,7 +162,7 @@ namespace EQWOWConverter.Creatures
                 // Load the row
                 int eqfactionID = int.Parse(columns["EQFactionID"]);
                 int wowFactionID = int.Parse(columns["WOWFactionID"]);
-                if(CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == false)
+                if (CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == false)
                 {
                     Logger.WriteError("Creature Faction: Attempted to map an eq faction to wow, but there was no wowFactionID of '" + wowFactionID + "' in the CreatureFactionMap");
                     continue;
@@ -191,6 +203,192 @@ namespace EQWOWConverter.Creatures
                     CreatureFactionKillRewardsByEQNPCFactionID[creatureFactionKillReward.EQNPCFactionID].Add(creatureFactionKillReward);
                 }
             }
+
+            // Load in the class alignments
+            string factionClassAlignmentFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionClassAlignment.csv");
+            Logger.WriteDetail("Populating creature faction class alignments via file '" + factionClassAlignmentFile + "'");
+            List<Dictionary<string, string>> classAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionClassAlignmentFile, "|");
+            HashSet<ClassType> evilClasses = new HashSet<ClassType>();
+            HashSet<ClassType> goodClasses = new HashSet<ClassType>();    
+            foreach (Dictionary<string, string> columns in classAlignmentRows)
+            {
+                ClassType classType = (ClassType)int.Parse(columns["ClassID"]);
+                string alignmentString = columns["Alignment"].Trim().ToLower();
+                switch (alignmentString)
+                {
+                    case "evil": evilClasses.Add(classType); break;
+                    case "good": goodClasses.Add(classType); break;
+                    case "neutral": break; // do nothing for neutral
+                    default:
+                        {
+                            Logger.WriteError("Class alignment error, as the alignment string '" + alignmentString + "' has no mapping");
+                        } break;                
+                }
+            }
+
+            // Load in the race alignments
+            string factionRaceAlignmentFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
+            Logger.WriteDetail("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
+            List<Dictionary<string, string>> raceAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionRaceAlignmentFile, "|");
+            HashSet<RaceType> evilRaces = new HashSet<RaceType>();
+            HashSet<RaceType> goodRaces = new HashSet<RaceType>();
+            foreach (Dictionary<string, string> columns in raceAlignmentRows)
+            {
+                RaceType raceType = (RaceType)int.Parse(columns["RaceID"]);
+                string alignmentString = columns["Alignment"].Trim().ToLower();
+                switch (alignmentString)
+                {
+                    case "evil": evilRaces.Add(raceType); break;
+                    case "good": goodRaces.Add(raceType); break;
+                    case "neutral": break; // do nothing for neutral
+                    default:
+                        {
+                            Logger.WriteError("Race alignment error, as the alignment string '" + alignmentString + "' has no mapping");
+                        }
+                        break;
+                }
+            }
+
+            // Calculate the masks
+            GenerateGoodEvilClassRaceMasks(goodClasses, evilClasses, goodRaces, evilRaces);
+        }
+
+        private static void GenerateGoodEvilClassRaceMasks(HashSet<ClassType> goodClasses, HashSet<ClassType> evilClasses, HashSet<RaceType> goodRaces, HashSet<RaceType> evilRaces)
+        {
+            Logger.WriteDetail("Generating good and evil class race masks for factions");
+
+            // Good 1: Class Perspective (Good Classes + Good or Neutral races)
+            Good1ClassMask = 0;
+            Good1RaceMask = 0;
+            foreach (ClassType goodClass in goodClasses)
+                Good1ClassMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(goodClass) - 1));
+            foreach (RaceType race in Enum.GetValues(typeof(RaceType)))
+                if (evilRaces.Contains(race) == false)
+                    Good1RaceMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(race) - 1));
+
+            // Good 2: Race Perspective (Good Races + Good or Neutral classes)
+            Good2ClassMask = 0;
+            Good2RaceMask = 0;
+            foreach (RaceType goodRace in goodRaces)
+                Good2RaceMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(goodRace) - 1));
+            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+                if (evilClasses.Contains(classType) == false)
+                    Good2ClassMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
+
+            // Evil 1: Class Perspective (Evil Classes + Evil or Neutral races)
+            Evil1ClassMask = 0;
+            Evil1RaceMask = 0;
+            foreach (ClassType evilClass in evilClasses)
+                Evil1ClassMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(evilClass) - 1));
+            foreach (RaceType race in Enum.GetValues(typeof(RaceType)))
+                if (goodRaces.Contains(race) == false)
+                    Evil1RaceMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(race) - 1));
+
+            // Evil 2: Race Perspective (Evil Races + Evil or Neutral classes)
+            Evil2ClassMask = 0;
+            Evil2RaceMask = 0;
+            foreach (RaceType evilRace in evilRaces)
+                Evil2RaceMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(evilRace) - 1));
+            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+                if (goodClasses.Contains(classType) == false)
+                    Evil2ClassMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
+        }
+
+        // Accessors for the rep values
+        public int GetGood1ClassMask()
+        {
+            if (ReputationIndex > -1)
+                return Good1ClassMask;
+            else
+                return 1791; // Taken from Netherwing
+        }
+
+        public int GetGood1RaceMask()
+        {
+            if (ReputationIndex > -1)
+                return Good1RaceMask;
+            else
+                return 1535; // Taken from Netherwing
+        }
+
+        public int GetGood1BaseRep()
+        {
+            if (ReputationIndex > -1)
+                return GoodBaseRep;
+            else
+                return NoRepIndexBaseRep;
+        }
+
+        public int GetGood2ClassMask()
+        {
+            if (ReputationIndex > -1)
+                return Good2ClassMask;
+            else
+                return 0;
+        }
+
+        public int GetGood2RaceMask()
+        {
+            if (ReputationIndex > -1)
+                return Good2RaceMask;
+            else
+                return 0;
+        }
+
+        public int GetGood2BaseRep()
+        {
+            if (ReputationIndex > -1)
+                return GoodBaseRep;
+            else
+                return 0;
+        }
+
+        public int GetEvil1ClassMask()
+        {
+            if (ReputationIndex > -1)
+                return Evil1ClassMask;
+            else
+                return 0;
+        }
+
+        public int GetEvil1RaceMask()
+        {
+            if (ReputationIndex > -1)
+                return Evil1RaceMask;
+            else
+                return 0;
+        }
+
+        public int GetEvil1BaseRep()
+        {
+            if (ReputationIndex > -1)
+                return EvilBaseRep;
+            else
+                return 0;
+        }
+
+        public int GetEvil2ClassMask()
+        {
+            if (ReputationIndex > -1)
+                return Evil2ClassMask;
+            else
+                return 0;
+        }
+
+        public int GetEvil2RaceMask()
+        {
+            if (ReputationIndex > -1)
+                return Evil2RaceMask;
+            else
+                return 0;
+        }
+
+        public int GetEvil2BaseRep()
+        {
+            if (ReputationIndex > -1)
+                return EvilBaseRep;
+            else
+                return 0;
         }
     }
 }
