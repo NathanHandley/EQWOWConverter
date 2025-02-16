@@ -29,7 +29,9 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(CreatureFaction creatureFaction)
         {
             // Determine flags
-            int flags = 0;
+            int flags = 1; // 0x0001 - Respond to calls for help
+            flags |= 32; // 0x0020 - Search for enemies (med priority)
+            flags |= 2048; // 0x0800 - Assist players
 
             // Fill the row
             DBCRow newRow = new DBCRow();
@@ -42,10 +44,10 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt(0); // EnemyGroup (bitmask field)
             else
                 newRow.AddInt(1); // EnemyGroup (bitmask field) - 1 = All players (and pets)
-            newRow.AddInt(0); // Enemies 1
-            newRow.AddInt(0); // Enemies 2
-            newRow.AddInt(0); // Enemies 3
-            newRow.AddInt(0); // Enemies 4
+            newRow.AddInt(creatureFaction.EnemyFaction1); // Enemies 1
+            newRow.AddInt(creatureFaction.EnemyFaction2); // Enemies 2
+            newRow.AddInt(creatureFaction.EnemyFaction3); // Enemies 3
+            newRow.AddInt(creatureFaction.EnemyFaction4); // Enemies 4
             newRow.AddInt(creatureFaction.FactionID); // Friend 1 (help self)
             newRow.AddInt(0); // Friend 2
             newRow.AddInt(0); // Friend 3

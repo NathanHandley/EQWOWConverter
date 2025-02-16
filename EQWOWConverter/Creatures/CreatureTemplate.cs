@@ -57,6 +57,7 @@ namespace EQWOWConverter.Creatures
         public int WOWFactionTemplateID = 0;
         public List<CreatureFactionKillReward> CreatureFactionKillRewards = new List<CreatureFactionKillReward>();
         public float DetectionRange = 0;
+        public bool CanAssist = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -191,13 +192,10 @@ namespace EQWOWConverter.Creatures
                 // Reputation / Faction
                 newCreatureTemplate.EQFactionID = int.Parse(columns["faction_id"]);
                 newCreatureTemplate.EQNPCFactionID = int.Parse(columns["npc_faction_id"]);
-                int wowFactionTemplateID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(newCreatureTemplate.EQFactionID);
-                if (wowFactionTemplateID > 0)
-                {
-                    newCreatureTemplate.WOWFactionTemplateID = wowFactionTemplateID;
-                    foreach (CreatureFactionKillReward factionKillReward in CreatureFaction.GetCreatureFactionKillRewards(newCreatureTemplate.EQNPCFactionID))
-                        newCreatureTemplate.CreatureFactionKillRewards.Add(factionKillReward);
-                }
+                newCreatureTemplate.WOWFactionTemplateID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(newCreatureTemplate.EQFactionID);
+                newCreatureTemplate.CanAssist = CreatureFaction.CanFactionAssistPlayer(newCreatureTemplate.EQFactionID);
+                foreach (CreatureFactionKillReward factionKillReward in CreatureFaction.GetCreatureFactionKillRewards(newCreatureTemplate.EQNPCFactionID))
+                    newCreatureTemplate.CreatureFactionKillRewards.Add(factionKillReward);
 
                 // Must be a unique record
                 if (CreatureTemplateListByEQID.ContainsKey(newCreatureTemplate.EQCreatureTemplateID))

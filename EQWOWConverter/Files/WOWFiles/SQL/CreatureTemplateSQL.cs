@@ -35,10 +35,18 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(CreatureTemplate creatureTemplate, float scale)
         {
+            // Flags
             int npcFlags = 0;
             if (creatureTemplate.MerchantID != 0)
-                npcFlags |= 128; // 	0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
+                npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
 
+            int unitFlags = 0;
+
+            int typeFlags = 0;
+            if (creatureTemplate.CanAssist == true)
+                typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
+
+            // Create the row
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entry", creatureTemplate.WOWCreatureTemplateID);
             newRow.AddInt("difficulty_entry_1", 0);
@@ -72,7 +80,7 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("unit_class", 2);
             else
                 newRow.AddInt("unit_class", 1);
-            newRow.AddInt("unit_flags", 0);
+            newRow.AddInt("unit_flags", unitFlags);
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
             newRow.AddInt("family", 0); // I see other values here, like 1 and 3
@@ -81,7 +89,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("trainer_class", 0);
             newRow.AddInt("trainer_race", 0);
             newRow.AddInt("type", 0); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
-            newRow.AddInt("type_flags", 0); // "Is this minable, tameable, etc"
+            newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"
             newRow.AddInt("lootid", creatureTemplate.WOWLootID);
             newRow.AddInt("pickpocketloot", 0);
             newRow.AddInt("skinloot", 0);

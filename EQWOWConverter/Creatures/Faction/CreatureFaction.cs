@@ -23,6 +23,26 @@ using System.Threading.Tasks;
 
 namespace EQWOWConverter.Creatures
 {
+    // WOW Faction Bands:
+    // - Hated: -42,000 to -6,000
+    // - Hostile: -5,999 to -3,000
+    // - Unfriendly: -2,999 to -1
+    // - Neutral: 0 to 2,999
+    // - Friendly: 3,000 to 5,999
+    // - Honored: 6,000 to 11,999
+    // - Revered: 12,000 to 20,999
+    // - Exalted: 21,000+
+    // EQ Faction Bands:
+    // - Scowling (KOS - Kill on Sight): -2000 to -751
+    // - Threateningly: -750 to -501
+    // - Dubious: -500 to -101
+    // - Apprehensive: -100 to -1
+    // - Indifferent: 0 to 99
+    // - Amiable: 100 to 499
+    // - Kindly: 500 to 749
+    // - Warmly: 750 to 1099
+    // - Ally: 1100+
+
     internal class CreatureFaction
     {
         private static Dictionary<int, CreatureFaction> CreatureFactionsByWOWFactionID = new Dictionary<int, CreatureFaction>();
@@ -49,7 +69,10 @@ namespace EQWOWConverter.Creatures
         public string Name = string.Empty;
         public string Description = string.Empty;
         public bool ForceAgro = false;
-        public bool FleeAtLowLife = false;
+        public int EnemyFaction1 = 0;
+        public int EnemyFaction2 = 0;
+        public int EnemyFaction3 = 0;
+        public int EnemyFaction4 = 0;
 
         public static int GetRootFactionParentWOWFactionID()
         {
@@ -77,6 +100,22 @@ namespace EQWOWConverter.Creatures
                 Logger.WriteDetail("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
                 return Configuration.CONFIG_CREATURE_FACTION_TEMPLATE_DEFAULT;
             }
+        }
+
+        public static bool CanFactionAssistPlayer(int eqFactionID)
+        {
+            if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
+            {
+                int wowFactionID = CreatureWOWFactionIDByEQFactionID[eqFactionID];
+                if (CreatureFactionsByWOWFactionID.ContainsKey(wowFactionID) == true)
+                {
+                    if (CreatureFactionsByWOWFactionID[wowFactionID].ReputationIndex > -1)
+                        return true;
+                }                
+            }
+            return false;
         }
 
         public static Dictionary<int, CreatureFaction> GetCreatureFactionsByFactionID()
@@ -209,7 +248,6 @@ namespace EQWOWConverter.Creatures
                 newCreatureFaction.BaseRepAlignedRaces = int.Parse(columns["BaseRepAlignedRace"]);
                 newCreatureFaction.BaseRepUnalignedRaces = int.Parse(columns["BaseRepUnalignedRace"]);
                 newCreatureFaction.Description = columns["Description"];
-                newCreatureFaction.FleeAtLowLife = int.Parse(columns["FleeLowLife"]) == 1 ? true : false;
                 newCreatureFaction.ForceAgro = int.Parse(columns["ForceAgro"]) == 1 ? true : false;
                 if (int.Parse(columns["AlignedRaceGood"]) == 1)
                     newCreatureFaction.AlignedRacesMask += GoodRacesMask;
@@ -218,6 +256,10 @@ namespace EQWOWConverter.Creatures
                 if (int.Parse(columns["AlignedRaceEvil"]) == 1)
                     newCreatureFaction.AlignedRacesMask += EvilRacesMask;
                 newCreatureFaction.UnalignedRacesMask = 1791 - newCreatureFaction.AlignedRacesMask;
+                newCreatureFaction.EnemyFaction1 = int.Parse(columns["EnemyFaction1"]);
+                newCreatureFaction.EnemyFaction2 = int.Parse(columns["EnemyFaction2"]);
+                newCreatureFaction.EnemyFaction3 = int.Parse(columns["EnemyFaction3"]);
+                newCreatureFaction.EnemyFaction4 = int.Parse(columns["EnemyFaction4"]);
                 CreatureFactionsByWOWFactionID.Add(newCreatureFaction.FactionID, newCreatureFaction);
             }
 
