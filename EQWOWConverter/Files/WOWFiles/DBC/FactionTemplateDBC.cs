@@ -31,7 +31,6 @@ namespace EQWOWConverter.WOWFiles
             // Determine flags
             int flags = 1; // 0x0001 - Respond to calls for help
             flags |= 32; // 0x0020 - Search for enemies (med priority)
-            flags |= 2048; // 0x0800 - Assist players
 
             // Fill the row
             DBCRow newRow = new DBCRow();
