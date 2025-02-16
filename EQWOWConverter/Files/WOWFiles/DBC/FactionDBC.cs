@@ -23,26 +23,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-// WOW Faction Bands:
-// - Hated: -42,000 to -6,000
-// - Hostile: -5,999 to -3,000
-// - Unfriendly: -2,999 to -1
-// - Neutral: 0 to 2,999
-// - Friendly: 3,000 to 5,999
-// - Honored: 6,000 to 11,999
-// - Revered: 12,000 to 20,999
-// - Exalted: 21,000+
-// EQ Faction Bands:
-// - Scowling (KOS - Kill on Sight): -2000 to -751
-// - Threateningly: -750 to -501
-// - Dubious: -500 to -101
-// - Apprehensive: -100 to -1
-// - Indifferent: 0 to 99
-// - Amiable: 100 to 499
-// - Kindly: 500 to 749
-// - Warmly: 750 to 1099
-// - Ally: 1100+
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class FactionDBC : DBCFile
@@ -87,7 +67,7 @@ namespace EQWOWConverter.WOWFiles
             {
                 if (Configuration.CONFIG_CREATURE_FACTION_SHOW_ALL == true)
                     reputationFlags |= 0x01; // Show by default
-                if (baseReputation < 0 || reputationIndex == -1)
+                if (baseReputation <= -3000 || reputationIndex == -1)
                     reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR
             }
             return reputationFlags;
