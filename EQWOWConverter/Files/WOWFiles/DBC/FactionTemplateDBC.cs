@@ -30,13 +30,6 @@ namespace EQWOWConverter.WOWFiles
         {
             // Determine flags
             int flags = 0;
-            flags |= 0x0001; // Respond to calls for help
-            flags |= 0x0040; // Searches for enemies, aggressively
-            flags |= 0x0008; // Broadcast to enemies, aggressively
-            if (creatureFaction.FleeAtLowLife == true)
-                flags |= 0x0400; // Flee from and call for help
-            if (creatureFaction.ReputationIndex > 0)
-                flags |= 0x0800; // Assists players
 
             // Fill the row
             DBCRow newRow = new DBCRow();
