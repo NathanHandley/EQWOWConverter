@@ -216,6 +216,11 @@ namespace EQWOWConverter
                         columnNames.Add(block);
                     isHeader = false;
                 }
+                else if (rowBlocks.Length == 1)
+                {
+                    Logger.WriteError("Could not read a proper line from '" + fileName + "'. Make sure the file has this as the delimiter: " + delimeter);
+                    continue;
+                }
                 else
                 {
                     Dictionary<string, string> rowValues = new Dictionary<string, string>();
