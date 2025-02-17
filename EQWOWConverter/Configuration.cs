@@ -338,6 +338,9 @@ namespace EQWOWConverter
         //  the higher stat.  Don't make it less than 1.  
         public static readonly float CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT = 2.5f;
 
+        // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
+        public static readonly int CONFIG_ITEM_BAG_SLOT_MULTIPLIER = 2;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================

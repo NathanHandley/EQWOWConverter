@@ -1042,7 +1042,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
 
                 // Other
-                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]);
+                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.CONFIG_ITEM_BAG_SLOT_MULTIPLIER;
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
