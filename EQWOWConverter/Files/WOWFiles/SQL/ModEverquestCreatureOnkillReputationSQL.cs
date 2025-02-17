@@ -15,12 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Creatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -28,7 +23,15 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM mod_everquest_creature_onkill_reputation;";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("DROP TABLE IF EXISTS `mod_everquest_creature_onkill_reputation`; ");
+            stringBuilder.AppendLine("CREATE TABLE IF NOT EXISTS `mod_everquest_creature_onkill_reputation` ( ");
+            stringBuilder.AppendLine("`CreatureTemplateID` INT(10) UNSIGNED NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`SortOrder` TINYINT(3) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`FactionID` SMALLINT(5) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("`KillRewardValue` INT(10) NOT NULL DEFAULT '0', ");
+            stringBuilder.AppendLine("PRIMARY KEY(`CreatureTemplateID`, `SortOrder`) USING BTREE ); ");
+            return stringBuilder.ToString();
         }
 
         public void AddRow(int creatureTemplateID, CreatureFactionKillReward creatureFactionKillReward)
