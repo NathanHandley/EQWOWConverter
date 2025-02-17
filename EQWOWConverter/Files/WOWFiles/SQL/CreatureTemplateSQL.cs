@@ -39,6 +39,8 @@ namespace EQWOWConverter.WOWFiles
             int npcFlags = 0;
             if (creatureTemplate.MerchantID != 0)
                 npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
+            if (creatureTemplate.IsBanker == true)
+                npcFlags |= 131072; // 0x00020000 = Banker Flag
 
             int unitFlags = 0;
 

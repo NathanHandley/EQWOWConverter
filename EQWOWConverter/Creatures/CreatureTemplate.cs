@@ -58,6 +58,7 @@ namespace EQWOWConverter.Creatures
         public List<CreatureFactionKillReward> CreatureFactionKillRewards = new List<CreatureFactionKillReward>();
         public float DetectionRange = 0;
         public bool CanAssist = false;
+        public bool IsBanker = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -106,7 +107,6 @@ namespace EQWOWConverter.Creatures
                     Logger.WriteDetail("Creature template had race of 0, so falling back to 1 (Human)");
                     raceID = 1;
                 }
-                newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                 newCreatureTemplate.EQBodyType = int.Parse(columns["bodytype"]);
                 newCreatureTemplate.Size = float.Parse(columns["size"]);
                 if (newCreatureTemplate.Size <= 0)
@@ -140,6 +140,8 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.DetectionRange = detectionRange * Configuration.CONFIG_GENERATE_WORLD_SCALE;
                 else
                     newCreatureTemplate.DetectionRange = Configuration.CONFIG_CREATURE_DEFAULT_DETECTION_RANGE;
+                newCreatureTemplate.EQClass = int.Parse(columns["class"]);
+                ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);              
 
                 // Strip underscores
                 newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
@@ -206,6 +208,21 @@ namespace EQWOWConverter.Creatures
 
                 CreatureTemplateListByEQID.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
             }
+        }
+
+        private static void ProcessEQClass(ref CreatureTemplate creatureTemplate, int eqClass)
+        {
+            switch(eqClass)
+            {
+                case 40: // Banker
+                    {
+                        creatureTemplate.IsBanker = true;
+                    } break;
+                default:
+                    {
+                        // Do nothing
+                    } break;
+            }                
         }
 
         private static void PopulateStatBaselinesByLevel()
