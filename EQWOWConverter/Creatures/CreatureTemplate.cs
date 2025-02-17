@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -59,6 +60,7 @@ namespace EQWOWConverter.Creatures
         public float DetectionRange = 0;
         public bool CanAssist = false;
         public bool IsBanker = false;
+        public ClassType ClassTrainerType = ClassType.None;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
@@ -98,8 +100,8 @@ namespace EQWOWConverter.Creatures
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["id"]);
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
-                newCreatureTemplate.Name = columns["name"];
-                newCreatureTemplate.SubName = columns["lastname"];
+                newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
+                newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                 newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);
                 int raceID = int.Parse(columns["race"]);
                 if (raceID == 0)
@@ -142,10 +144,6 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.DetectionRange = Configuration.CONFIG_CREATURE_DEFAULT_DETECTION_RANGE;
                 newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                 ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);              
-
-                // Strip underscores
-                newCreatureTemplate.Name = newCreatureTemplate.Name.Replace('_', ' ');
-                newCreatureTemplate.SubName = newCreatureTemplate.SubName.Replace('_', ' ');
 
                 // Special logic for a few variations of kobolds, which look wrong if not adjusted
                 if (raceID == 48)
@@ -214,6 +212,81 @@ namespace EQWOWConverter.Creatures
         {
             switch(eqClass)
             {
+                case 20: // Warrior GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Warrior;
+                        creatureTemplate.SubName = "Warrior Trainer";
+                    } break;
+                case 21: // Cleric GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Priest;
+                        creatureTemplate.SubName = "Priest Trainer";
+                    } break;
+                case 22: // Paladin GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Paladin;
+                        creatureTemplate.SubName = "Paladin Trainer";
+                    } break;
+                case 23: // RangerGM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Hunter;
+                        creatureTemplate.SubName = "Hunter Trainer";
+                    } break;
+                case 24: // ShadowKnight GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.DeathKnight;
+                        creatureTemplate.SubName = "Death Knight Trainer";
+                    } break;
+                case 25: // Druid GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Druid;
+                        creatureTemplate.SubName = "Druid Trainer";
+                    } break;
+                case 26: // Monk GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Rogue;
+                        creatureTemplate.SubName = "Rogue Trainer";
+                    } break;
+                case 27: // Bard GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Warrior;
+                        creatureTemplate.SubName = "Warrior Trainer";
+                    } break;
+                case 28: // Rogue GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Rogue;
+                        creatureTemplate.SubName = "Rogue Trainer";
+                    } break;
+                case 29: // Shaman GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Shaman;
+                        creatureTemplate.SubName = "Shaman Trainer";
+                    } break;
+                case 30: // Necromancer GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Warlock;
+                        creatureTemplate.SubName = "Warlock Trainer";
+                    } break;
+                case 31: // Wizard GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Mage;
+                        creatureTemplate.SubName = "Mage Trainer";
+                    } break;
+                case 32: // Mage GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Mage;
+                        creatureTemplate.SubName = "Mage Trainer";
+                    } break;
+                case 33: // Enchanter GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Warlock;
+                        creatureTemplate.SubName = "Warlock Trainer";
+                    } break;
+                case 34: // Beastlord GM
+                    {
+                        creatureTemplate.ClassTrainerType = ClassType.Hunter;
+                        creatureTemplate.SubName = "Hunter Trainer";
+                    } break;
                 case 40: // Banker
                     {
                         creatureTemplate.IsBanker = true;

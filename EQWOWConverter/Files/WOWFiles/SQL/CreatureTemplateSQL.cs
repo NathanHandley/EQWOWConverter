@@ -22,6 +22,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.WOWFiles
@@ -35,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRow(CreatureTemplate creatureTemplate, float scale)
         {
-            // Flags
+            // Determine flags and types
             int npcFlags = 0;
             if (creatureTemplate.MerchantID != 0)
                 npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
@@ -47,6 +48,14 @@ namespace EQWOWConverter.WOWFiles
             int typeFlags = 0;
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
+
+            int trainerType = 0;
+            int trainerClass = 0;
+            if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
+            {
+                trainerType = 0;    // 0 = Class Trainer
+                trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
+            }
 
             // Create the row
             SQLRow newRow = new SQLRow();
@@ -62,7 +71,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("gossip_menu_id", 0);
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);
-            newRow.AddInt("exp", 0); // Unsure what this is used for, but commonly 0 and can be 2 sometimes
+            newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)
             newRow.AddInt("faction", creatureTemplate.WOWFactionTemplateID); // References FactionTemplate.dbc
             newRow.AddInt("npcflag", npcFlags);
             newRow.AddFloat("speed_walk", 1); // 1 is very common, but can be other values
@@ -86,9 +95,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
             newRow.AddInt("family", 0); // I see other values here, like 1 and 3
-            newRow.AddInt("trainer_type", 0);
+            newRow.AddInt("trainer_type", trainerType);
             newRow.AddInt("trainer_spell", 0);
-            newRow.AddInt("trainer_class", 0);
+            newRow.AddInt("trainer_class", trainerClass);
             newRow.AddInt("trainer_race", 0);
             newRow.AddInt("type", 0); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
             newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"

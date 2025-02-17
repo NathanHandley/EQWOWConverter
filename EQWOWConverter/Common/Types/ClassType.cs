@@ -27,6 +27,7 @@ namespace EQWOWConverter.Common
     internal enum ClassType : Int32
     {
         All = -1,
+        None = 0,
         Warrior = 1,
         Paladin = 2,
         Hunter = 3,

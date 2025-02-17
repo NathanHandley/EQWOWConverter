@@ -188,6 +188,8 @@ namespace EQWOWConverter.Creatures
             // Generate the class bitmasks
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
+                if (classType == ClassType.All || classType == ClassType.None)
+                    continue;
                 if (evilClasses.Contains(classType) == true)
                     EvilClassesMask += Convert.ToInt32(Math.Pow(2, Convert.ToInt32(classType) - 1));
                 else if (goodClasses.Contains(classType) == true)
