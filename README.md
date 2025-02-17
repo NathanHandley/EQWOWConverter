@@ -23,11 +23,10 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Installed 3.3.5 WoW client, US version (with nosignature patch)
 
 # Instructions
-1. Ensure that the WorldServer has been loaded at least once since the mod-everquest mod was installed (above)
-2. Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
-3. Build and use EQWOWConverter and run the command "Perform Everything"
-4. Deploy your files. Alternately, you can set the configs in Deployment Rules so that they deploy for you
-5. Regenerate map/vmap files for the server
+1. Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
+2. Build and use EQWOWConverter and run the command "Perform Everything"
+3. Deploy your files. Alternately, you can set the configs in Deployment Rules so that they deploy for you
+4. Regenerate map/vmap files for the server
 
 # Special Thanks
 In no particular order...
