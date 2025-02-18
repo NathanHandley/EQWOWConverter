@@ -14,14 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.WOWFiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EQWOWConverter.Files.WOWFiles.M2.OffsetObjects
+namespace EQWOWConverter.WOWFiles
 {
     internal class M2ArrayWithTrackedObjectsByOffset<T> where T: IOffsetByteSerializable
     {

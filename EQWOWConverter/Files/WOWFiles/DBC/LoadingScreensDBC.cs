@@ -20,7 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.WOWFiles.DBC
+namespace EQWOWConverter.WOWFiles
 {
     internal class LoadingScreensDBC : DBCFile
     {

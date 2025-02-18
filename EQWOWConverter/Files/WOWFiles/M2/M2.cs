@@ -22,7 +22,6 @@ using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 using EQWOWConverter.Common;
-using EQWOWConverter.Files.WOWFiles.M2.OffsetObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
 

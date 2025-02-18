@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
-using EQWOWConverter.WOWFiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,7 +21,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EQWOWConverter.Files.WOWFiles.SQL
+namespace EQWOWConverter.WOWFiles
 {
     internal class NPCVendorSQL : SQLFile
     {

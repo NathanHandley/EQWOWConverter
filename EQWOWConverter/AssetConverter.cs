@@ -16,12 +16,10 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Files.WOWFiles.SQL;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
-using EQWOWConverter.WOWFiles.DBC;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
 using System.Text;

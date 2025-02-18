@@ -23,7 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace EQWOWConverter.WOWFiles.DBC
+namespace EQWOWConverter.WOWFiles
 {
     internal class LiquidTypeDBC : DBCFile
     {
