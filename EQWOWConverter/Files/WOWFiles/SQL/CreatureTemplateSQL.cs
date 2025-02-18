@@ -42,20 +42,27 @@ namespace EQWOWConverter.WOWFiles
                 npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
             if (creatureTemplate.IsBanker == true)
                 npcFlags |= 131072; // 0x00020000 = Banker Flag
-
-            int unitFlags = 0;
-
+            if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
+            {
+                npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
+                npcFlags |= 32;    // 0x00000020 = Is Class Trainer
+            }
+            
             int typeFlags = 0;
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
 
             int trainerType = 0;
             int trainerClass = 0;
+            int gossipMenuID = 0;
             if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
             {
                 trainerType = 0;    // 0 = Class Trainer
+                gossipMenuID = 4662;
                 trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
             }
+
+            int unitFlags = 0;
 
             // Create the row
             SQLRow newRow = new SQLRow();
@@ -68,7 +75,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("name", 100, creatureTemplate.Name);
             newRow.AddString("subname", 100, creatureTemplate.SubName);
             newRow.AddString("IconName", 100, string.Empty);
-            newRow.AddInt("gossip_menu_id", 0);
+            newRow.AddInt("gossip_menu_id", gossipMenuID);
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);
             newRow.AddInt("exp", 0); // Which expansion to use (0 = classic)

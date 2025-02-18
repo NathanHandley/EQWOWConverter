@@ -1,0 +1,1994 @@
+ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLevel|ReqSpellID
+1|6673|Battle Shout|Rank 1|10|0|0|1|0
+1|100|Charge|Rank 1|100|0|0|4|0
+1|772|Rend|Rank 1|100|0|0|4|0
+1|3127|Parry|Passive|100|0|0|6|0
+1|6343|Thunder Clap|Rank 1|100|0|0|6|0
+1|34428|Victory Rush||100|0|0|6|0
+1|284|Heroic Strike|Rank 2|200|0|0|8|0
+1|1715|Hamstring||200|0|0|8|0
+1|2687|Bloodrage||600|0|0|10|0
+1|6546|Rend|Rank 2|600|0|0|10|0
+1|72|Shield Bash||1000|0|0|12|0
+1|5242|Battle Shout|Rank 2|1000|0|0|12|0
+1|7384|Overpower||1000|0|0|12|0
+1|1160|Demoralizing Shout|Rank 1|1500|0|0|14|0
+1|6572|Revenge|Rank 1|1500|0|0|14|0
+1|285|Heroic Strike|Rank 3|2000|0|0|16|0
+1|694|Mocking Blow||2000|0|0|16|0
+1|2565|Shield Block||2000|0|0|16|0
+1|676|Disarm||3000|0|0|18|0
+1|8198|Thunder Clap|Rank 2|3000|0|0|18|0
+1|674|Dual Wield|Passive|4000|0|0|20|0
+1|845|Cleave|Rank 1|4000|0|0|20|0
+1|6547|Rend|Rank 3|4000|0|0|20|0
+1|12678|Stance Mastery|Passive|4000|0|0|20|0
+1|20230|Retaliation||4000|0|0|20|0
+1|5246|Intimidating Shout||6000|0|0|22|0
+1|6192|Battle Shout|Rank 3|6000|0|0|22|0
+1|1608|Heroic Strike|Rank 4|8000|0|0|24|0
+1|5308|Execute|Rank 1|8000|0|0|24|0
+1|6190|Demoralizing Shout|Rank 2|8000|0|0|24|0
+1|6574|Revenge|Rank 2|8000|0|0|24|0
+1|1161|Challenging Shout||10000|0|0|26|0
+1|6178|Charge|Rank 2|10000|0|0|26|0
+1|871|Shield Wall||11000|0|0|28|0
+1|8204|Thunder Clap|Rank 3|11000|0|0|28|0
+1|1464|Slam|Rank 1|12000|0|0|30|0
+1|6548|Rend|Rank 4|12000|0|0|30|0
+1|7369|Cleave|Rank 2|12000|0|0|30|0
+1|20252|Intercept||12000|0|0|30|0
+1|11549|Battle Shout|Rank 4|14000|0|0|32|0
+1|11564|Heroic Strike|Rank 5|14000|0|0|32|0
+1|18499|Berserker Rage||14000|0|0|32|0
+1|20658|Execute|Rank 2|14000|0|0|32|0
+1|7379|Revenge|Rank 3|16000|0|0|34|0
+1|11554|Demoralizing Shout|Rank 3|16000|0|0|34|0
+1|1680|Whirlwind||18000|0|0|36|0
+1|6552|Pummel||20000|0|0|38|0
+1|8205|Thunder Clap|Rank 4|20000|0|0|38|0
+1|8820|Slam|Rank 2|20000|0|0|38|0
+1|750|Plate Mail||22000|0|0|40|0
+1|11565|Heroic Strike|Rank 6|22000|0|0|40|0
+1|11572|Rend|Rank 5|22000|0|0|40|0
+1|11608|Cleave|Rank 3|22000|0|0|40|0
+1|20660|Execute|Rank 3|22000|0|0|40|0
+1|23922|Shield Slam|Rank 1|22000|0|0|40|0
+1|11550|Battle Shout|Rank 5|32000|0|0|42|0
+1|11555|Demoralizing Shout|Rank 4|34000|0|0|44|0
+1|11600|Revenge|Rank 4|34000|0|0|44|0
+1|11578|Charge|Rank 3|36000|0|0|46|0
+1|11604|Slam|Rank 3|36000|0|0|46|0
+1|11566|Heroic Strike|Rank 7|40000|0|0|48|0
+1|11580|Thunder Clap|Rank 5|40000|0|0|48|0
+1|20661|Execute|Rank 4|40000|0|0|48|0
+1|21551|Mortal Strike|Rank 2|2000|0|0|48|0
+1|23923|Shield Slam|Rank 2|40000|0|0|48|0
+1|1719|Recklessness||42000|0|0|50|0
+1|11573|Rend|Rank 6|42000|0|0|50|0
+1|11609|Cleave|Rank 4|42000|0|0|50|0
+1|11551|Battle Shout|Rank 6|54000|0|0|52|0
+1|11556|Demoralizing Shout|Rank 5|56000|0|0|54|0
+1|11601|Revenge|Rank 5|56000|0|0|54|0
+1|11605|Slam|Rank 4|56000|0|0|54|0
+1|21552|Mortal Strike|Rank 3|2800|0|0|54|0
+1|23924|Shield Slam|Rank 3|56000|0|0|54|0
+1|11567|Heroic Strike|Rank 8|58000|0|0|56|0
+1|20662|Execute|Rank 5|58000|0|0|56|0
+1|11581|Thunder Clap|Rank 6|60000|0|0|58|0
+1|11574|Rend|Rank 7|62000|0|0|60|0
+1|20569|Cleave|Rank 5|62000|0|0|60|0
+1|21553|Mortal Strike|Rank 4|3100|0|0|60|0
+1|23925|Shield Slam|Rank 4|62000|0|0|60|0
+1|25286|Heroic Strike|Rank 9|60000|0|0|60|0
+1|25288|Revenge|Rank 6|60000|0|0|60|0
+1|25289|Battle Shout|Rank 7|65000|0|0|60|0
+1|30016|Devastate|Rank 2|3100|0|0|60|0
+1|25241|Slam|Rank 5|65000|0|0|61|0
+1|25202|Demoralizing Shout|Rank 6|65000|0|0|62|0
+1|25269|Revenge|Rank 7|65000|0|0|63|0
+1|23920|Spell Reflection||65000|0|0|64|0
+1|25234|Execute|Rank 6|65000|0|0|65|0
+1|25248|Mortal Strike|Rank 5|3250|0|0|66|0
+1|25258|Shield Slam|Rank 5|65000|0|0|66|0
+1|29707|Heroic Strike|Rank 10|65000|0|0|66|0
+1|25264|Thunder Clap|Rank 7|65000|0|0|67|0
+1|469|Commanding Shout|Rank 1|65000|0|0|68|0
+1|25208|Rend|Rank 8|65000|0|0|68|0
+1|25231|Cleave|Rank 6|65000|0|0|68|0
+1|2048|Battle Shout|Rank 8|71000|0|0|69|0
+1|25242|Slam|Rank 6|71000|0|0|69|0
+1|3411|Intervene||65000|0|0|70|0
+1|25203|Demoralizing Shout|Rank 7|71000|0|0|70|0
+1|25236|Execute|Rank 7|71000|0|0|70|0
+1|30022|Devastate|Rank 3|3250|0|0|70|0
+1|30324|Heroic Strike|Rank 11|100000|0|0|70|0
+1|30330|Mortal Strike|Rank 6|3500|0|0|70|0
+1|30356|Shield Slam|Rank 6|71000|0|0|70|0
+1|30357|Revenge|Rank 8|260000|0|0|70|0
+1|46845|Rend|Rank 9|260000|0|0|71|0
+1|64382|Shattering Throw||260000|0|0|71|0
+1|47449|Heroic Strike|Rank 12|260000|0|0|72|0
+1|47519|Cleave|Rank 7|260000|0|0|72|0
+1|47470|Execute|Rank 8|260000|0|0|73|0
+1|47501|Thunder Clap|Rank 8|260000|0|0|73|0
+1|47439|Commanding Shout|Rank 2|100000|0|0|74|0
+1|47474|Slam|Rank 7|260000|0|0|74|0
+1|47485|Mortal Strike|Rank 7|13000|0|0|75|0
+1|47487|Shield Slam|Rank 7|260000|0|0|75|0
+1|47497|Devastate|Rank 4|5000|0|0|75|0
+1|55694|Enraged Regeneration||100000|0|0|75|0
+1|47450|Heroic Strike|Rank 13|260000|0|0|76|0
+1|47465|Rend|Rank 10|260000|0|0|76|0
+1|47520|Cleave|Rank 8|260000|0|0|77|0
+1|47436|Battle Shout|Rank 9|260000|0|0|78|0
+1|47502|Thunder Clap|Rank 9|26000|0|0|78|0
+1|47437|Demoralizing Shout|Rank 8|260000|0|0|79|0
+1|47475|Slam|Rank 8|260000|0|0|79|0
+1|47440|Commanding Shout|Rank 3|260000|0|0|80|0
+1|47471|Execute|Rank 9|260000|0|0|80|0
+1|47486|Mortal Strike|Rank 8|13000|0|0|80|0
+1|47488|Shield Slam|Rank 8|260000|0|0|80|0
+1|47498|Devastate|Rank 5|5000|0|0|80|0
+1|57755|Heroic Throw||100000|0|0|80|0
+1|57823|Revenge|Rank 9|260000|0|0|80|0
+2|465|Devotion Aura|Rank 1|10|0|0|1|0
+2|19740|Blessing of Might|Rank 1|100|0|0|4|0
+2|20271|Judgement of Light||100|0|0|4|0
+2|498|Divine Protection||100|0|0|6|0
+2|639|Holy Light|Rank 2|100|0|0|6|0
+2|853|Hammer of Justice|Rank 1|100|0|0|8|0
+2|1152|Purify||100|0|0|8|0
+2|3127|Parry|Passive|100|0|0|8|0
+2|633|Lay on Hands|Rank 1|300|0|0|10|0
+2|1022|Hand of Protection|Rank 1|300|0|0|10|0
+2|10290|Devotion Aura|Rank 2|300|0|0|10|0
+2|19834|Blessing of Might|Rank 2|1000|0|0|12|0
+2|53408|Judgement of Wisdom||1000|0|0|12|0
+2|647|Holy Light|Rank 3|2000|0|0|14|0
+2|19742|Blessing of Wisdom|Rank 1|2000|0|0|14|0
+2|31789|Righteous Defense||4000|0|0|14|0
+2|7294|Retribution Aura|Rank 1|3000|0|0|16|0
+2|25780|Righteous Fury||3000|0|0|16|0
+2|62124|Hand of Reckoning||3000|0|0|16|0
+2|1044|Hand of Freedom||3500|0|0|18|0
+2|643|Devotion Aura|Rank 3|4000|0|0|20|0
+2|879|Exorcism|Rank 1|4000|0|0|20|0
+2|5502|Sense Undead||4000|0|0|20|0
+2|19750|Flash of Light|Rank 1|4000|0|0|20|0
+2|20217|Blessing of Kings||4000|0|0|20|0
+2|26573|Consecration|Rank 1|4000|0|0|20|0
+2|13820|Summon Warhorse|Summon|3500|0|0|20|0
+2|34768|Summon Warhorse|Summon|3500|0|0|20|0
+2|1026|Holy Light|Rank 4|4000|0|0|22|0
+2|19746|Concentration Aura||4000|0|0|22|0
+2|19835|Blessing of Might|Rank 3|4000|0|0|22|0
+2|20164|Seal of Justice||4000|0|0|22|0
+2|5588|Hammer of Justice|Rank 2|5000|0|0|24|0
+2|5599|Hand of Protection|Rank 2|5000|0|0|24|0
+2|10322|Redemption|Rank 2|5000|0|0|24|0
+2|10326|Turn Evil||5000|0|0|24|0
+2|19850|Blessing of Wisdom|Rank 2|5000|0|0|24|0
+2|1038|Hand of Salvation||6000|0|0|26|0
+2|10298|Retribution Aura|Rank 2|6000|0|0|26|0
+2|19939|Flash of Light|Rank 2|6000|0|0|26|0
+2|5614|Exorcism|Rank 2|9000|0|0|28|0
+2|19876|Shadow Resistance Aura|Rank 1|9000|0|0|28|0
+2|53407|Judgement of Justice||9000|0|0|28|0
+2|1042|Holy Light|Rank 5|11000|0|0|30|0
+2|2800|Lay on Hands|Rank 2|11000|0|0|30|0
+2|10291|Devotion Aura|Rank 4|11000|0|0|30|0
+2|19752|Divine Intervention||11000|0|0|30|0
+2|20116|Consecration|Rank 2|11000|0|0|30|0
+2|20165|Seal of Light||11000|0|0|30|0
+2|19836|Blessing of Might|Rank 4|12000|0|0|32|0
+2|19888|Frost Resistance Aura|Rank 1|12000|0|0|32|0
+2|642|Divine Shield||13000|0|0|34|0
+2|19852|Blessing of Wisdom|Rank 3|13000|0|0|34|0
+2|19940|Flash of Light|Rank 3|13000|0|0|34|0
+2|5615|Exorcism|Rank 3|14000|0|0|36|0
+2|10299|Retribution Aura|Rank 3|14000|0|0|36|0
+2|10324|Redemption|Rank 3|14000|0|0|36|0
+2|19891|Fire Resistance Aura|Rank 1|14000|0|0|36|0
+2|3472|Holy Light|Rank 6|16000|0|0|38|0
+2|10278|Hand of Protection|Rank 3|16000|0|0|38|0
+2|20166|Seal of Wisdom||16000|0|0|38|0
+2|750|Plate Mail||20000|0|0|40|0
+2|1032|Devotion Aura|Rank 5|20000|0|0|40|0
+2|5589|Hammer of Justice|Rank 3|20000|0|0|40|0
+2|19895|Shadow Resistance Aura|Rank 2|20000|0|0|40|0
+2|20922|Consecration|Rank 3|20000|0|0|40|0
+2|23214|Charger|Summon|3500|0|0|40|0
+2|34767|Summon Charger|Summon|3500|0|0|40|0
+2|4987|Cleanse||21000|0|0|42|0
+2|19837|Blessing of Might|Rank 5|21000|0|0|42|0
+2|19941|Flash of Light|Rank 4|21000|0|0|42|0
+2|10312|Exorcism|Rank 4|22000|0|0|44|0
+2|19853|Blessing of Wisdom|Rank 4|22000|0|0|44|0
+2|19897|Frost Resistance Aura|Rank 2|22000|0|0|44|0
+2|24275|Hammer of Wrath|Rank 1|22000|0|0|44|0
+2|6940|Hand of Sacrifice||24000|0|0|46|0
+2|10300|Retribution Aura|Rank 4|24000|0|0|46|0
+2|10328|Holy Light|Rank 7|24000|0|0|46|0
+2|19899|Fire Resistance Aura|Rank 2|26000|0|0|48|0
+2|20772|Redemption|Rank 4|26000|0|0|48|0
+2|20929|Holy Shock|Rank 2|1300|0|0|48|0
+2|2812|Holy Wrath|Rank 1|28000|0|0|50|0
+2|10292|Devotion Aura|Rank 6|28000|0|0|50|0
+2|10310|Lay on Hands|Rank 3|28000|0|0|50|0
+2|19942|Flash of Light|Rank 5|28000|0|0|50|0
+2|20923|Consecration|Rank 4|28000|0|0|50|0
+2|20927|Holy Shield|Rank 2|1400|0|0|50|0
+2|10313|Exorcism|Rank 5|34000|0|0|52|0
+2|19838|Blessing of Might|Rank 6|34000|0|0|52|0
+2|19896|Shadow Resistance Aura|Rank 3|34000|0|0|52|0
+2|24274|Hammer of Wrath|Rank 2|34000|0|0|52|0
+2|25782|Greater Blessing of Might|Rank 1|46000|0|0|52|0
+2|10308|Hammer of Justice|Rank 4|40000|0|0|54|0
+2|10329|Holy Light|Rank 8|40000|0|0|54|0
+2|19854|Blessing of Wisdom|Rank 5|40000|0|0|54|0
+2|25894|Greater Blessing of Wisdom|Rank 1|46000|0|0|54|0
+2|10301|Retribution Aura|Rank 5|42000|0|0|56|0
+2|19898|Frost Resistance Aura|Rank 3|42000|0|0|56|0
+2|20930|Holy Shock|Rank 3|2100|0|0|56|0
+2|19943|Flash of Light|Rank 6|44000|0|0|58|0
+2|10293|Devotion Aura|Rank 7|46000|0|0|60|0
+2|10314|Exorcism|Rank 6|46000|0|0|60|0
+2|10318|Holy Wrath|Rank 2|46000|0|0|60|0
+2|19900|Fire Resistance Aura|Rank 3|46000|0|0|60|0
+2|20773|Redemption|Rank 5|46000|0|0|60|0
+2|20924|Consecration|Rank 5|46000|0|0|60|0
+2|20928|Holy Shield|Rank 3|2300|0|0|60|0
+2|24239|Hammer of Wrath|Rank 3|46000|0|0|60|0
+2|25290|Blessing of Wisdom|Rank 6|50000|0|0|60|0
+2|25291|Blessing of Might|Rank 7|50000|0|0|60|0
+2|25292|Holy Light|Rank 9|46000|0|0|60|0
+2|25898|Greater Blessing of Kings||2300|0|0|60|0
+2|25899|Greater Blessing of Sanctuary||2300|0|0|60|0
+2|25916|Greater Blessing of Might|Rank 2|46000|0|0|60|0
+2|25918|Greater Blessing of Wisdom|Rank 2|46000|0|0|60|0
+2|32699|Avenger's Shield|Rank 2|2300|0|0|60|0
+2|27135|Holy Light|Rank 10|55000|0|0|62|0
+2|32223|Crusader Aura||55000|0|0|62|0
+2|27151|Shadow Resistance Aura|Rank 4|61000|0|0|63|0
+2|27174|Holy Shock|Rank 4|3348|0|0|64|0
+2|31801|Seal of Vengeance||67000|0|0|64|0
+2|27142|Blessing of Wisdom|Rank 7|75000|0|0|65|0
+2|27143|Greater Blessing of Wisdom|Rank 3|75000|0|0|65|0
+2|27137|Flash of Light|Rank 7|83000|0|0|66|0
+2|27150|Retribution Aura|Rank 6|83000|0|0|66|0
+2|53736|Seal of Corruption||100000|0|0|66|0
+2|27138|Exorcism|Rank 7|100000|0|0|68|0
+2|27152|Frost Resistance Aura|Rank 4|100000|0|0|68|0
+2|27180|Hammer of Wrath|Rank 4|100000|0|0|68|0
+2|27139|Holy Wrath|Rank 3|110000|0|0|69|0
+2|27154|Lay on Hands|Rank 4|110000|0|0|69|0
+2|27136|Holy Light|Rank 11|130000|0|0|70|0
+2|27140|Blessing of Might|Rank 8|200000|0|0|70|0
+2|27141|Greater Blessing of Might|Rank 3|100000|0|0|70|0
+2|27149|Devotion Aura|Rank 8|130000|0|0|70|0
+2|27153|Fire Resistance Aura|Rank 4|130000|0|0|70|0
+2|27173|Consecration|Rank 6|130000|0|0|70|0
+2|27179|Holy Shield|Rank 4|6500|0|0|70|0
+2|31884|Avenging Wrath||130000|0|0|70|0
+2|32700|Avenger's Shield|Rank 3|5000|0|0|70|0
+2|33072|Holy Shock|Rank 5|6500|0|0|70|0
+2|48935|Blessing of Wisdom|Rank 8|200000|0|0|71|0
+2|48937|Greater Blessing of Wisdom|Rank 4|200000|0|0|71|0
+2|54428|Divine Plea||100000|0|0|71|0
+2|48816|Holy Wrath|Rank 4|200000|0|0|72|0
+2|48949|Redemption|Rank 6|200000|0|0|72|0
+2|48800|Exorcism|Rank 8|200000|0|0|73|0
+2|48931|Blessing of Might|Rank 9|200000|0|0|73|0
+2|48933|Greater Blessing of Might|Rank 4|200000|0|0|73|0
+2|48784|Flash of Light|Rank 8|200000|0|0|74|0
+2|48805|Hammer of Wrath|Rank 5|200000|0|0|74|0
+2|48941|Devotion Aura|Rank 9|200000|0|0|74|0
+2|48781|Holy Light|Rank 12|200000|0|0|75|0
+2|48818|Consecration|Rank 7|200000|0|0|75|0
+2|48824|Holy Shock|Rank 6|10000|0|0|75|0
+2|48826|Avenger's Shield|Rank 4|10000|0|0|75|0
+2|48951|Holy Shield|Rank 5|10000|0|0|75|0
+2|53600|Shield of Righteousness|Rank 1|200000|0|0|75|0
+2|48943|Shadow Resistance Aura|Rank 5|200000|0|0|76|0
+2|54043|Retribution Aura|Rank 7|200000|0|0|76|0
+2|48936|Blessing of Wisdom|Rank 9|200000|0|0|77|0
+2|48938|Greater Blessing of Wisdom|Rank 5|200000|0|0|77|0
+2|48945|Frost Resistance Aura|Rank 5|200000|0|0|77|0
+2|48788|Lay on Hands|Rank 5|200000|0|0|78|0
+2|48817|Holy Wrath|Rank 5|200000|0|0|78|0
+2|48947|Fire Resistance Aura|Rank 5|200000|0|0|78|0
+2|48785|Flash of Light|Rank 9|200000|0|0|79|0
+2|48801|Exorcism|Rank 9|200000|0|0|79|0
+2|48932|Blessing of Might|Rank 10|200000|0|0|79|0
+2|48934|Greater Blessing of Might|Rank 5|200000|0|0|79|0
+2|48942|Devotion Aura|Rank 10|200000|0|0|79|0
+2|48950|Redemption|Rank 7|200000|0|0|79|0
+2|48782|Holy Light|Rank 13|200000|0|0|80|0
+2|48806|Hammer of Wrath|Rank 6|200000|0|0|80|0
+2|48819|Consecration|Rank 8|200000|0|0|80|0
+2|48825|Holy Shock|Rank 7|10000|0|0|80|0
+2|48827|Avenger's Shield|Rank 5|10000|0|0|80|0
+2|48952|Holy Shield|Rank 6|10000|0|0|80|0
+2|53601|Sacred Shield|Rank 1|100000|0|0|80|0
+2|61411|Shield of Righteousness|Rank 2|200000|0|0|80|0
+3|1494|Track Beasts||10|0|0|2|0
+3|1978|Serpent Sting|Rank 1|100|0|0|4|0
+3|13163|Aspect of the Monkey||100|0|0|4|0
+3|1130|Hunter's Mark|Rank 1|100|0|0|6|0
+3|3044|Arcane Shot|Rank 1|100|0|0|6|0
+3|3127|Parry|Passive|200|0|0|8|0
+3|5116|Concussive Shot||200|0|0|8|0
+3|14260|Raptor Strike|Rank 2|200|0|0|8|0
+3|13165|Aspect of the Hawk|Rank 1|400|0|0|10|0
+3|13549|Serpent Sting|Rank 2|400|0|0|10|0
+3|19883|Track Humanoids||400|0|0|10|0
+3|136|Mend Pet|Rank 1|600|0|0|12|0
+3|2974|Wing Clip||600|0|0|12|0
+3|14281|Arcane Shot|Rank 2|600|0|0|12|0
+3|20736|Distracting Shot|Rank 1|600|0|0|12|0
+3|1002|Eyes of the Beast||1200|0|0|14|0
+3|1513|Scare Beast|Rank 1|1200|0|0|14|0
+3|6197|Eagle Eye||1200|0|0|14|0
+3|1495|Mongoose Bite|Rank 1|1800|0|0|16|0
+3|5118|Aspect of the Cheetah||2200|0|0|16|0
+3|13795|Immolation Trap|Rank 1|1800|0|0|16|0
+3|14261|Raptor Strike|Rank 3|1800|0|0|16|0
+3|2643|Multi-Shot|Rank 1|2000|0|0|18|0
+3|13550|Serpent Sting|Rank 3|2000|0|0|18|0
+3|14318|Aspect of the Hawk|Rank 2|2000|0|0|18|0
+3|19884|Track Undead||2000|0|0|18|0
+3|674|Dual Wield|Passive|2200|0|0|20|0
+3|781|Disengage||2200|0|0|20|0
+3|1499|Freezing Trap|Rank 1|2200|0|0|20|0
+3|3111|Mend Pet|Rank 2|2200|0|0|20|0
+3|14282|Arcane Shot|Rank 3|2200|0|0|20|0
+3|34074|Aspect of the Viper||2200|0|0|20|0
+3|3043|Scorpid Sting||6000|0|0|22|0
+3|14323|Hunter's Mark|Rank 2|6000|0|0|22|0
+3|1462|Beast Lore||7000|0|0|24|0
+3|14262|Raptor Strike|Rank 4|7000|0|0|24|0
+3|19885|Track Hidden||7000|0|0|24|0
+3|3045|Rapid Fire||7000|0|0|26|0
+3|13551|Serpent Sting|Rank 4|7000|0|0|26|0
+3|14302|Immolation Trap|Rank 2|7000|0|0|26|0
+3|19880|Track Elementals||7000|0|0|26|0
+3|3661|Mend Pet|Rank 3|8000|0|0|28|0
+3|13809|Frost Trap||8000|0|0|28|0
+3|14283|Arcane Shot|Rank 4|8000|0|0|28|0
+3|14319|Aspect of the Hawk|Rank 3|8000|0|0|28|0
+3|20900|Aimed Shot|Rank 2|400|0|0|28|0
+3|5384|Feign Death||8000|0|0|30|0
+3|13161|Aspect of the Beast||8000|0|0|30|0
+3|14269|Mongoose Bite|Rank 2|8000|0|0|30|0
+3|14288|Multi-Shot|Rank 2|8000|0|0|30|0
+3|14326|Scare Beast|Rank 2|8000|0|0|30|0
+3|1543|Flare||10000|0|0|32|0
+3|14263|Raptor Strike|Rank 5|10000|0|0|32|0
+3|19878|Track Demons||10000|0|0|32|0
+3|13552|Serpent Sting|Rank 5|12000|0|0|34|0
+3|13813|Explosive Trap|Rank 1|12000|0|0|34|0
+3|3034|Viper Sting||14000|0|0|36|0
+3|3662|Mend Pet|Rank 4|14000|0|0|36|0
+3|14284|Arcane Shot|Rank 5|14000|0|0|36|0
+3|14303|Immolation Trap|Rank 3|14000|0|0|36|0
+3|20901|Aimed Shot|Rank 3|700|0|0|36|0
+3|14320|Aspect of the Hawk|Rank 4|16000|0|0|38|0
+3|1510|Volley|Rank 1|18000|0|0|40|0
+3|8737|Mail||18000|0|0|40|0
+3|13159|Aspect of the Pack||18000|0|0|40|0
+3|14264|Raptor Strike|Rank 6|18000|0|0|40|0
+3|14310|Freezing Trap|Rank 2|18000|0|0|40|0
+3|14324|Hunter's Mark|Rank 3|18000|0|0|40|0
+3|19882|Track Giants||18000|0|0|40|0
+3|13553|Serpent Sting|Rank 6|24000|0|0|42|0
+3|14289|Multi-Shot|Rank 3|24000|0|0|42|0
+3|20909|Counterattack|Rank 2|1200|0|0|42|0
+3|13542|Mend Pet|Rank 5|26000|0|0|44|0
+3|14270|Mongoose Bite|Rank 3|26000|0|0|44|0
+3|14285|Arcane Shot|Rank 6|26000|0|0|44|0
+3|14316|Explosive Trap|Rank 2|26000|0|0|44|0
+3|20902|Aimed Shot|Rank 4|1300|0|0|44|0
+3|14304|Immolation Trap|Rank 4|28000|0|0|46|0
+3|14327|Scare Beast|Rank 3|28000|0|0|46|0
+3|20043|Aspect of the Wild|Rank 1|28000|0|0|46|0
+3|14265|Raptor Strike|Rank 7|32000|0|0|48|0
+3|14321|Aspect of the Hawk|Rank 5|32000|0|0|48|0
+3|13554|Serpent Sting|Rank 7|36000|0|0|50|0
+3|14294|Volley|Rank 2|36000|0|0|50|0
+3|19879|Track Dragonkin||36000|0|0|50|0
+3|24132|Wyvern Sting|Rank 2|1800|0|0|50|0
+3|56641|Steady Shot|Rank 1|36000|0|0|50|0
+3|13543|Mend Pet|Rank 6|40000|0|0|52|0
+3|14286|Arcane Shot|Rank 7|40000|0|0|52|0
+3|20903|Aimed Shot|Rank 5|2000|0|0|52|0
+3|14290|Multi-Shot|Rank 4|42000|0|0|54|0
+3|14317|Explosive Trap|Rank 3|42000|0|0|54|0
+3|20910|Counterattack|Rank 3|2100|0|0|54|0
+3|14266|Raptor Strike|Rank 8|46000|0|0|56|0
+3|14305|Immolation Trap|Rank 5|46000|0|0|56|0
+3|20190|Aspect of the Wild|Rank 2|46000|0|0|56|0
+3|63668|Black Arrow|Rank 2|1800|0|0|57|0
+3|13555|Serpent Sting|Rank 8|48000|0|0|58|0
+3|14271|Mongoose Bite|Rank 4|48000|0|0|58|0
+3|14295|Volley|Rank 3|48000|0|0|58|0
+3|14322|Aspect of the Hawk|Rank 6|48000|0|0|58|0
+3|14325|Hunter's Mark|Rank 4|48000|0|0|58|0
+3|13544|Mend Pet|Rank 7|50000|0|0|60|0
+3|14287|Arcane Shot|Rank 8|50000|0|0|60|0
+3|14311|Freezing Trap|Rank 3|50000|0|0|60|0
+3|19263|Deterrence||2200|0|0|60|0
+3|19801|Tranquilizing Shot||50000|0|0|60|0
+3|20904|Aimed Shot|Rank 6|2500|0|0|60|0
+3|24133|Wyvern Sting|Rank 3|2500|0|0|60|0
+3|25294|Multi-Shot|Rank 5|50000|0|0|60|0
+3|25295|Serpent Sting|Rank 9|50000|0|0|60|0
+3|25296|Aspect of the Hawk|Rank 7|50000|0|0|60|0
+3|27025|Explosive Trap|Rank 4|68000|0|0|61|0
+3|34120|Steady Shot|Rank 2|70000|0|0|62|0
+3|27014|Raptor Strike|Rank 9|87000|0|0|63|0
+3|63669|Black Arrow|Rank 3|7000|0|0|63|0
+3|27023|Immolation Trap|Rank 6|110000|0|0|65|0
+3|27067|Counterattack|Rank 4|2500|0|0|66|0
+3|34026|Kill Command||120000|0|0|66|0
+3|27016|Serpent Sting|Rank 10|140000|0|0|67|0
+3|27021|Multi-Shot|Rank 6|140000|0|0|67|0
+3|27022|Volley|Rank 4|140000|0|0|67|0
+3|27044|Aspect of the Hawk|Rank 8|150000|0|0|68|0
+3|27045|Aspect of the Wild|Rank 3|150000|0|0|68|0
+3|27046|Mend Pet|Rank 8|150000|0|0|68|0
+3|34600|Snake Trap||150000|0|0|68|0
+3|27019|Arcane Shot|Rank 9|170000|0|0|69|0
+3|63670|Black Arrow|Rank 4|10000|0|0|69|0
+3|27065|Aimed Shot|Rank 7|10000|0|0|70|0
+3|27068|Wyvern Sting|Rank 4|5000|0|0|70|0
+3|34477|Misdirection||190000|0|0|70|0
+3|36916|Mongoose Bite|Rank 5|300000|0|0|70|0
+3|60051|Explosive Shot|Rank 2|400|0|0|70|0
+3|48995|Raptor Strike|Rank 10|300000|0|0|71|0
+3|49051|Steady Shot|Rank 3|300000|0|0|71|0
+3|49066|Explosive Trap|Rank 5|300000|0|0|71|0
+3|53351|Kill Shot|Rank 1|300000|0|0|71|0
+3|48998|Counterattack|Rank 5|15000|0|0|72|0
+3|49055|Immolation Trap|Rank 7|300000|0|0|72|0
+3|49000|Serpent Sting|Rank 11|300000|0|0|73|0
+3|49044|Arcane Shot|Rank 10|300000|0|0|73|0
+3|48989|Mend Pet|Rank 9|300000|0|0|74|0
+3|49047|Multi-Shot|Rank 7|300000|0|0|74|0
+3|58431|Volley|Rank 5|300000|0|0|74|0
+3|61846|Aspect of the Dragonhawk|Rank 1|300000|0|0|74|0
+3|49011|Wyvern Sting|Rank 5|100000|0|0|75|0
+3|49049|Aimed Shot|Rank 8|10000|0|0|75|0
+3|53271|Master's Call||10000|0|0|75|0
+3|60052|Explosive Shot|Rank 3|400|0|0|75|0
+3|61005|Kill Shot|Rank 2|300000|0|0|75|0
+3|63671|Black Arrow|Rank 5|10000|0|0|75|0
+3|49071|Aspect of the Wild|Rank 4|300000|0|0|76|0
+3|53338|Hunter's Mark|Rank 5|10000|0|0|76|0
+3|48996|Raptor Strike|Rank 11|300000|0|0|77|0
+3|49052|Steady Shot|Rank 4|300000|0|0|77|0
+3|49067|Explosive Trap|Rank 6|300000|0|0|77|0
+3|48999|Counterattack|Rank 6|15000|0|0|78|0
+3|49056|Immolation Trap|Rank 8|300000|0|0|78|0
+3|49001|Serpent Sting|Rank 12|300000|0|0|79|0
+3|49045|Arcane Shot|Rank 11|300000|0|0|79|0
+3|48990|Mend Pet|Rank 10|300000|0|0|80|0
+3|49012|Wyvern Sting|Rank 6|100000|0|0|80|0
+3|49048|Multi-Shot|Rank 8|300000|0|0|80|0
+3|49050|Aimed Shot|Rank 9|10000|0|0|80|0
+3|53339|Mongoose Bite|Rank 6|300000|0|0|80|0
+3|58434|Volley|Rank 6|300000|0|0|80|0
+3|60053|Explosive Shot|Rank 4|100000|0|0|80|0
+3|60192|Freezing Arrow|Rank 1|100000|0|0|80|0
+3|61006|Kill Shot|Rank 3|300000|0|0|80|0
+3|61847|Aspect of the Dragonhawk|Rank 2|300000|0|0|80|0
+3|62757|Call Stabled Pet||300000|0|0|80|0
+3|63672|Black Arrow|Rank 6|10000|0|0|80|0
+4|1784|Stealth||10|0|0|1|0
+4|53|Backstab|Rank 1|100|0|0|4|0
+4|921|Pick Pocket||100|0|0|4|0
+4|1757|Sinister Strike|Rank 2|100|0|0|6|0
+4|1776|Gouge||100|0|0|6|0
+4|5277|Evasion|Rank 1|200|0|0|8|0
+4|6760|Eviscerate|Rank 2|200|0|0|8|0
+4|674|Dual Wield|Passive|300|0|0|10|0
+4|2983|Sprint|Rank 1|300|0|0|10|0
+4|5171|Slice and Dice|Rank 1|300|0|0|10|0
+4|6770|Sap|Rank 1|300|0|0|10|0
+4|1766|Kick||800|0|0|12|0
+4|2589|Backstab|Rank 2|800|0|0|12|0
+4|3127|Parry|Passive|800|0|0|12|0
+4|703|Garrote|Rank 1|1200|0|0|14|0
+4|1758|Sinister Strike|Rank 3|1200|0|0|14|0
+4|8647|Expose Armor||1200|0|0|14|0
+4|1804|Pick Lock||1800|0|0|16|0
+4|1966|Feint|Rank 1|1800|0|0|16|0
+4|6761|Eviscerate|Rank 3|1800|0|0|16|0
+4|8676|Ambush|Rank 1|2900|0|0|18|0
+4|1943|Rupture|Rank 1|3000|0|0|20|0
+4|2590|Backstab|Rank 3|3000|0|0|20|0
+4|51722|Dismantle||3000|0|0|20|0
+4|1725|Distract||4000|0|0|22|0
+4|1759|Sinister Strike|Rank 4|4000|0|0|22|0
+4|1856|Vanish|Rank 1|4000|0|0|22|0
+4|8631|Garrote|Rank 2|4000|0|0|22|0
+4|2836|Detect Traps|Passive|5000|0|0|24|0
+4|6762|Eviscerate|Rank 4|5000|0|0|24|0
+4|1833|Cheap Shot||6000|0|0|26|0
+4|8724|Ambush|Rank 2|6000|0|0|26|0
+4|2070|Sap|Rank 2|8000|0|0|28|0
+4|2591|Backstab|Rank 4|8000|0|0|28|0
+4|6768|Feint|Rank 2|8000|0|0|28|0
+4|8639|Rupture|Rank 2|8000|0|0|28|0
+4|408|Kidney Shot|Rank 1|10000|0|0|30|0
+4|1760|Sinister Strike|Rank 5|10000|0|0|30|0
+4|1842|Disarm Trap||10000|0|0|30|0
+4|8632|Garrote|Rank 3|10000|0|0|30|0
+4|8623|Eviscerate|Rank 5|12000|0|0|32|0
+4|2094|Blind||14000|0|0|34|0
+4|8696|Sprint|Rank 2|14000|0|0|34|0
+4|8725|Ambush|Rank 3|14000|0|0|34|0
+4|8640|Rupture|Rank 3|16000|0|0|36|0
+4|8721|Backstab|Rank 5|16000|0|0|36|0
+4|8621|Sinister Strike|Rank 6|18000|0|0|38|0
+4|8633|Garrote|Rank 4|18000|0|0|38|0
+4|1860|Safe Fall|Passive|20000|0|0|40|0
+4|8624|Eviscerate|Rank 6|20000|0|0|40|0
+4|8637|Feint|Rank 3|20000|0|0|40|0
+4|1857|Vanish|Rank 2|27000|0|0|42|0
+4|6774|Slice and Dice|Rank 2|27000|0|0|42|0
+4|11267|Ambush|Rank 4|27000|0|0|42|0
+4|11273|Rupture|Rank 4|29000|0|0|44|0
+4|11279|Backstab|Rank 6|29000|0|0|44|0
+4|11289|Garrote|Rank 5|31000|0|0|46|0
+4|11293|Sinister Strike|Rank 7|31000|0|0|46|0
+4|17347|Hemorrhage|Rank 2|384|0|0|46|0
+4|11297|Sap|Rank 3|33000|0|0|48|0
+4|11299|Eviscerate|Rank 7|33000|0|0|48|0
+4|8643|Kidney Shot|Rank 2|35000|0|0|50|0
+4|11268|Ambush|Rank 5|35000|0|0|50|0
+4|26669|Evasion|Rank 2|35000|0|0|50|0
+4|34411|Mutilate|Rank 2|5500|0|0|50|0
+4|11274|Rupture|Rank 5|46000|0|0|52|0
+4|11280|Backstab|Rank 7|46000|0|0|52|0
+4|11303|Feint|Rank 4|46000|0|0|52|0
+4|11290|Garrote|Rank 6|48000|0|0|54|0
+4|11294|Sinister Strike|Rank 8|48000|0|0|54|0
+4|11300|Eviscerate|Rank 8|50000|0|0|56|0
+4|11269|Ambush|Rank 6|52000|0|0|58|0
+4|11305|Sprint|Rank 3|52000|0|0|58|0
+4|17348|Hemorrhage|Rank 3|650|0|0|58|0
+4|11275|Rupture|Rank 6|54000|0|0|60|0
+4|11281|Backstab|Rank 8|54000|0|0|60|0
+4|25300|Backstab|Rank 9|72000|0|0|60|0
+4|25302|Feint|Rank 5|50000|0|0|60|0
+4|31016|Eviscerate|Rank 9|65000|0|0|60|0
+4|34412|Mutilate|Rank 3|6500|0|0|60|0
+4|26839|Garrote|Rank 7|50000|0|0|61|0
+4|26861|Sinister Strike|Rank 9|50000|0|0|62|0
+4|26889|Vanish|Rank 3|59000|0|0|62|0
+4|32645|Envenom|Rank 1|59000|0|0|62|0
+4|26679|Deadly Throw|Rank 1|72000|0|0|64|0
+4|26865|Eviscerate|Rank 10|140000|0|0|64|0
+4|27448|Feint|Rank 6|72000|0|0|64|0
+4|27441|Ambush|Rank 7|80000|0|0|66|0
+4|31224|Cloak of Shadows||89000|0|0|66|0
+4|26863|Backstab|Rank 10|110000|0|0|68|0
+4|26867|Rupture|Rank 7|120000|0|0|68|0
+4|32684|Envenom|Rank 2|100000|0|0|69|0
+4|5938|Shiv||100000|0|0|70|0
+4|26862|Sinister Strike|Rank 10|100000|0|0|70|0
+4|26864|Hemorrhage|Rank 4|2700|0|0|70|0
+4|26884|Garrote|Rank 8|100000|0|0|70|0
+4|34413|Mutilate|Rank 4|7500|0|0|70|0
+4|48673|Deadly Throw|Rank 2|100000|0|0|70|0
+4|48689|Ambush|Rank 8|140000|0|0|70|0
+4|51724|Sap|Rank 4|300000|0|0|71|0
+4|48658|Feint|Rank 7|300000|0|0|72|0
+4|48667|Eviscerate|Rank 11|300000|0|0|73|0
+4|48656|Backstab|Rank 11|300000|0|0|74|0
+4|48671|Rupture|Rank 8|300000|0|0|74|0
+4|57992|Envenom|Rank 3|300000|0|0|74|0
+4|48663|Mutilate|Rank 5|15000|0|0|75|0
+4|48675|Garrote|Rank 9|300000|0|0|75|0
+4|48690|Ambush|Rank 9|300000|0|0|75|0
+4|57934|Tricks of the Trade||300000|0|0|75|0
+4|48637|Sinister Strike|Rank 11|300000|0|0|76|0
+4|48674|Deadly Throw|Rank 3|300000|0|0|76|0
+4|48659|Feint|Rank 8|300000|0|0|78|0
+4|48668|Eviscerate|Rank 12|300000|0|0|79|0
+4|48672|Rupture|Rank 9|300000|0|0|79|0
+4|48638|Sinister Strike|Rank 12|300000|0|0|80|0
+4|48657|Backstab|Rank 12|300000|0|0|80|0
+4|48660|Hemorrhage|Rank 5|15000|0|0|80|0
+4|48666|Mutilate|Rank 6|15000|0|0|80|0
+4|48676|Garrote|Rank 10|300000|0|0|80|0
+4|48691|Ambush|Rank 10|300000|0|0|80|0
+4|51723|Fan of Knives||300000|0|0|80|0
+4|57993|Envenom|Rank 4|300000|0|0|80|0
+5|1243|Power Word: Fortitude|Rank 1|10|0|0|1|0
+5|589|Shadow Word: Pain|Rank 1|100|0|0|4|0
+5|2052|Lesser Heal|Rank 2|100|0|0|4|0
+5|17|Power Word: Shield|Rank 1|100|0|0|6|0
+5|591|Smite|Rank 2|100|0|0|6|0
+5|139|Renew|Rank 1|200|0|0|8|0
+5|586|Fade||200|0|0|8|0
+5|594|Shadow Word: Pain|Rank 2|300|0|0|10|0
+5|2006|Resurrection|Rank 1|300|0|0|10|0
+5|2053|Lesser Heal|Rank 3|300|0|0|10|0
+5|8092|Mind Blast|Rank 1|300|0|0|10|0
+5|588|Inner Fire|Rank 1|800|0|0|12|0
+5|592|Power Word: Shield|Rank 2|800|0|0|12|0
+5|1244|Power Word: Fortitude|Rank 2|800|0|0|12|0
+5|528|Cure Disease||1200|0|0|14|0
+5|598|Smite|Rank 3|1200|0|0|14|0
+5|6074|Renew|Rank 2|1200|0|0|14|0
+5|8122|Psychic Scream|Rank 1|1200|0|0|14|0
+5|2054|Heal|Rank 1|1600|0|0|16|0
+5|8102|Mind Blast|Rank 2|1600|0|0|16|0
+5|527|Dispel Magic|Rank 1|2000|0|0|18|0
+5|600|Power Word: Shield|Rank 3|2000|0|0|18|0
+5|970|Shadow Word: Pain|Rank 3|2000|0|0|18|0
+5|453|Mind Soothe||3000|0|0|20|0
+5|2061|Flash Heal|Rank 1|3000|0|0|20|0
+5|2944|Devouring Plague|Rank 1|3000|0|0|20|0
+5|6075|Renew|Rank 3|3000|0|0|20|0
+5|6346|Fear Ward||800|0|0|20|0
+5|7128|Inner Fire|Rank 2|3000|0|0|20|0
+5|9484|Shackle Undead|Rank 1|3000|0|0|20|0
+5|14914|Holy Fire|Rank 1|3000|0|0|20|0
+5|15237|Holy Nova|Rank 1|3000|0|0|20|0
+5|984|Smite|Rank 4|4000|0|0|22|0
+5|2010|Resurrection|Rank 2|4000|0|0|22|0
+5|2055|Heal|Rank 2|4000|0|0|22|0
+5|2096|Mind Vision|Rank 1|4000|0|0|22|0
+5|8103|Mind Blast|Rank 3|4000|0|0|22|0
+5|1245|Power Word: Fortitude|Rank 3|5000|0|0|24|0
+5|3747|Power Word: Shield|Rank 4|5000|0|0|24|0
+5|8129|Mana Burn||5000|0|0|24|0
+5|15262|Holy Fire|Rank 2|5000|0|0|24|0
+5|992|Shadow Word: Pain|Rank 4|6000|0|0|26|0
+5|6076|Renew|Rank 4|6000|0|0|26|0
+5|9472|Flash Heal|Rank 2|6000|0|0|26|0
+5|19238|Desperate Prayer|Rank 2|60|0|0|26|0
+5|6063|Heal|Rank 3|8000|0|0|28|0
+5|8104|Mind Blast|Rank 4|8000|0|0|28|0
+5|8124|Psychic Scream|Rank 2|8000|0|0|28|0
+5|15430|Holy Nova|Rank 2|8000|0|0|28|0
+5|17311|Mind Flay|Rank 2|400|0|0|28|0
+5|19276|Devouring Plague|Rank 2|8000|0|0|28|0
+5|596|Prayer of Healing|Rank 1|10000|0|0|30|0
+5|602|Inner Fire|Rank 3|10000|0|0|30|0
+5|605|Mind Control||10000|0|0|30|0
+5|976|Shadow Protection|Rank 1|10000|0|0|30|0
+5|1004|Smite|Rank 5|10000|0|0|30|0
+5|6065|Power Word: Shield|Rank 5|10000|0|0|30|0
+5|14752|Divine Spirit|Rank 1|600|0|0|30|0
+5|15263|Holy Fire|Rank 3|10000|0|0|30|0
+5|552|Abolish Disease||11000|0|0|32|0
+5|6077|Renew|Rank 5|11000|0|0|32|0
+5|9473|Flash Heal|Rank 3|11000|0|0|32|0
+5|1706|Levitate||12000|0|0|34|0
+5|2767|Shadow Word: Pain|Rank 5|12000|0|0|34|0
+5|6064|Heal|Rank 4|12000|0|0|34|0
+5|8105|Mind Blast|Rank 5|12000|0|0|34|0
+5|10880|Resurrection|Rank 3|12000|0|0|34|0
+5|19240|Desperate Prayer|Rank 3|300|0|0|34|0
+5|988|Dispel Magic|Rank 2|14000|0|0|36|0
+5|2791|Power Word: Fortitude|Rank 4|14000|0|0|36|0
+5|6066|Power Word: Shield|Rank 6|14000|0|0|36|0
+5|15264|Holy Fire|Rank 4|14000|0|0|36|0
+5|15431|Holy Nova|Rank 3|14000|0|0|36|0
+5|17312|Mind Flay|Rank 3|700|0|0|36|0
+5|19277|Devouring Plague|Rank 3|14000|0|0|36|0
+5|6060|Smite|Rank 6|16000|0|0|38|0
+5|6078|Renew|Rank 6|16000|0|0|38|0
+5|9474|Flash Heal|Rank 4|16000|0|0|38|0
+5|996|Prayer of Healing|Rank 2|18000|0|0|40|0
+5|1006|Inner Fire|Rank 4|18000|0|0|40|0
+5|2060|Greater Heal|Rank 1|18000|0|0|40|0
+5|8106|Mind Blast|Rank 6|18000|0|0|40|0
+5|9485|Shackle Undead|Rank 2|18000|0|0|40|0
+5|14818|Divine Spirit|Rank 2|900|0|0|40|0
+5|10888|Psychic Scream|Rank 3|22000|0|0|42|0
+5|10892|Shadow Word: Pain|Rank 6|22000|0|0|42|0
+5|10898|Power Word: Shield|Rank 7|22000|0|0|42|0
+5|10957|Shadow Protection|Rank 2|22000|0|0|42|0
+5|15265|Holy Fire|Rank 5|22000|0|0|42|0
+5|19241|Desperate Prayer|Rank 4|600|0|0|42|0
+5|10909|Mind Vision|Rank 2|24000|0|0|44|0
+5|10915|Flash Heal|Rank 5|24000|0|0|44|0
+5|10927|Renew|Rank 7|24000|0|0|44|0
+5|17313|Mind Flay|Rank 4|1200|0|0|44|0
+5|19278|Devouring Plague|Rank 4|24000|0|0|44|0
+5|27799|Holy Nova|Rank 4|24000|0|0|44|0
+5|10881|Resurrection|Rank 4|26000|0|0|46|0
+5|10933|Smite|Rank 7|26000|0|0|46|0
+5|10945|Mind Blast|Rank 7|26000|0|0|46|0
+5|10963|Greater Heal|Rank 2|26000|0|0|46|0
+5|10899|Power Word: Shield|Rank 8|28000|0|0|48|0
+5|10937|Power Word: Fortitude|Rank 5|28000|0|0|48|0
+5|15266|Holy Fire|Rank 6|28000|0|0|48|0
+5|21562|Prayer of Fortitude|Rank 1|28000|0|0|48|0
+5|10893|Shadow Word: Pain|Rank 7|30000|0|0|50|0
+5|10916|Flash Heal|Rank 6|30000|0|0|50|0
+5|10928|Renew|Rank 8|30000|0|0|50|0
+5|10951|Inner Fire|Rank 5|30000|0|0|50|0
+5|10960|Prayer of Healing|Rank 3|30000|0|0|50|0
+5|14819|Divine Spirit|Rank 3|1500|0|0|50|0
+5|19242|Desperate Prayer|Rank 5|1100|0|0|50|0
+5|27870|Lightwell|Rank 2|1200|0|0|50|0
+5|10946|Mind Blast|Rank 8|38000|0|0|52|0
+5|10964|Greater Heal|Rank 3|38000|0|0|52|0
+5|17314|Mind Flay|Rank 5|1900|0|0|52|0
+5|19279|Devouring Plague|Rank 5|38000|0|0|52|0
+5|27800|Holy Nova|Rank 5|38000|0|0|52|0
+5|10900|Power Word: Shield|Rank 9|40000|0|0|54|0
+5|10934|Smite|Rank 8|40000|0|0|54|0
+5|15267|Holy Fire|Rank 7|40000|0|0|54|0
+5|10890|Psychic Scream|Rank 4|42000|0|0|56|0
+5|10917|Flash Heal|Rank 7|42000|0|0|56|0
+5|10929|Renew|Rank 9|42000|0|0|56|0
+5|10958|Shadow Protection|Rank 3|42000|0|0|56|0
+5|27683|Prayer of Shadow Protection|Rank 1|42000|0|0|56|0
+5|34863|Circle of Healing|Rank 2|2100|0|0|56|0
+5|10894|Shadow Word: Pain|Rank 8|44000|0|0|58|0
+5|10947|Mind Blast|Rank 9|44000|0|0|58|0
+5|10965|Greater Heal|Rank 4|44000|0|0|58|0
+5|19243|Desperate Prayer|Rank 6|1500|0|0|58|0
+5|20770|Resurrection|Rank 5|44000|0|0|58|0
+5|10901|Power Word: Shield|Rank 10|46000|0|0|60|0
+5|10938|Power Word: Fortitude|Rank 6|46000|0|0|60|0
+5|10952|Inner Fire|Rank 6|46000|0|0|60|0
+5|10955|Shackle Undead|Rank 3|46000|0|0|60|0
+5|10961|Prayer of Healing|Rank 4|46000|0|0|60|0
+5|15261|Holy Fire|Rank 8|46000|0|0|60|0
+5|18807|Mind Flay|Rank 6|2300|0|0|60|0
+5|19280|Devouring Plague|Rank 6|46000|0|0|60|0
+5|21564|Prayer of Fortitude|Rank 2|46000|0|0|60|0
+5|25314|Greater Heal|Rank 5|65000|0|0|60|0
+5|25315|Renew|Rank 10|6500|0|0|60|0
+5|25316|Prayer of Healing|Rank 5|6500|0|0|60|0
+5|27681|Prayer of Spirit|Rank 1|2300|0|0|60|0
+5|27801|Holy Nova|Rank 6|46000|0|0|60|0
+5|27841|Divine Spirit|Rank 4|2300|0|0|60|0
+5|27871|Lightwell|Rank 3|1500|0|0|60|0
+5|34864|Circle of Healing|Rank 3|2300|0|0|60|0
+5|34916|Vampiric Touch|Rank 2|2300|0|0|60|0
+5|25233|Flash Heal|Rank 8|53000|0|0|61|0
+5|25363|Smite|Rank 9|53000|0|0|61|0
+5|32379|Shadow Word: Death|Rank 1|59000|0|0|62|0
+5|25210|Greater Heal|Rank 6|65000|0|0|63|0
+5|25372|Mind Blast|Rank 10|65000|0|0|63|0
+5|32546|Binding Heal|Rank 1|72000|0|0|64|0
+5|25217|Power Word: Shield|Rank 11|80000|0|0|65|0
+5|25221|Renew|Rank 11|80000|0|0|65|0
+5|25367|Shadow Word: Pain|Rank 9|80000|0|0|65|0
+5|34865|Circle of Healing|Rank 4|4000|0|0|65|0
+5|25384|Holy Fire|Rank 9|65000|0|0|66|0
+5|25437|Desperate Prayer|Rank 7|2200|0|0|66|0
+5|34433|Shadowfiend||89000|0|0|66|0
+5|25235|Flash Heal|Rank 9|99000|0|0|67|0
+5|25213|Greater Heal|Rank 7|110000|0|0|68|0
+5|25308|Prayer of Healing|Rank 6|110000|0|0|68|0
+5|25331|Holy Nova|Rank 7|110000|0|0|68|0
+5|25387|Mind Flay|Rank 7|6500|0|0|68|0
+5|25433|Shadow Protection|Rank 4|110000|0|0|68|0
+5|25435|Resurrection|Rank 6|110000|0|0|68|0
+5|25467|Devouring Plague|Rank 7|110000|0|0|68|0
+5|33076|Prayer of Mending|Rank 1|110000|0|0|68|0
+5|25364|Smite|Rank 10|65000|0|0|69|0
+5|25375|Mind Blast|Rank 11|65000|0|0|69|0
+5|25431|Inner Fire|Rank 7|65000|0|0|69|0
+5|25218|Power Word: Shield|Rank 12|140000|0|0|70|0
+5|25222|Renew|Rank 12|140000|0|0|70|0
+5|25312|Divine Spirit|Rank 5|2300|0|0|70|0
+5|25368|Shadow Word: Pain|Rank 10|140000|0|0|70|0
+5|25389|Power Word: Fortitude|Rank 7|65000|0|0|70|0
+5|25392|Prayer of Fortitude|Rank 3|100000|0|0|70|0
+5|28275|Lightwell|Rank 4|1500|0|0|70|0
+5|32375|Mass Dispel||110000|0|0|70|0
+5|32996|Shadow Word: Death|Rank 2|110000|0|0|70|0
+5|32999|Prayer of Spirit|Rank 2|3400|0|0|70|0
+5|34866|Circle of Healing|Rank 5|7000|0|0|70|0
+5|34917|Vampiric Touch|Rank 3|2300|0|0|70|0
+5|39374|Prayer of Shadow Protection|Rank 2|100000|0|0|70|0
+5|53005|Penance|Rank 2|5000|0|0|70|0
+5|48040|Inner Fire|Rank 8|180000|0|0|71|0
+5|48119|Binding Heal|Rank 2|180000|0|0|72|0
+5|48134|Holy Fire|Rank 10|180000|0|0|72|0
+5|48062|Greater Heal|Rank 8|180000|0|0|73|0
+5|48070|Flash Heal|Rank 10|180000|0|0|73|0
+5|48172|Desperate Prayer|Rank 8|3250|0|0|73|0
+5|48299|Devouring Plague|Rank 8|180000|0|0|73|0
+5|48112|Prayer of Mending|Rank 2|100000|0|0|74|0
+5|48122|Smite|Rank 11|180000|0|0|74|0
+5|48126|Mind Blast|Rank 12|180000|0|0|74|0
+5|48155|Mind Flay|Rank 8|9000|0|0|74|0
+5|48045|Mind Sear|Rank 1|10000|0|0|75|0
+5|48065|Power Word: Shield|Rank 13|180000|0|0|75|0
+5|48067|Renew|Rank 13|180000|0|0|75|0
+5|48077|Holy Nova|Rank 8|180000|0|0|75|0
+5|48086|Lightwell|Rank 5|9000|0|0|75|0
+5|48088|Circle of Healing|Rank 6|9000|0|0|75|0
+5|48124|Shadow Word: Pain|Rank 11|180000|0|0|75|0
+5|48157|Shadow Word: Death|Rank 3|180000|0|0|75|0
+5|48159|Vampiric Touch|Rank 4|9000|0|0|75|0
+5|53006|Penance|Rank 3|9000|0|0|75|0
+5|48072|Prayer of Healing|Rank 7|180000|0|0|76|0
+5|48169|Shadow Protection|Rank 5|180000|0|0|76|0
+5|48168|Inner Fire|Rank 9|180000|0|0|77|0
+5|48170|Prayer of Shadow Protection|Rank 3|180000|0|0|77|0
+5|48063|Greater Heal|Rank 9|180000|0|0|78|0
+5|48120|Binding Heal|Rank 3|180000|0|0|78|0
+5|48135|Holy Fire|Rank 11|180000|0|0|78|0
+5|48171|Resurrection|Rank 7|180000|0|0|78|0
+5|48071|Flash Heal|Rank 11|180000|0|0|79|0
+5|48113|Prayer of Mending|Rank 3|180000|0|0|79|0
+5|48123|Smite|Rank 12|180000|0|0|79|0
+5|48127|Mind Blast|Rank 13|180000|0|0|79|0
+5|48300|Devouring Plague|Rank 9|180000|0|0|79|0
+5|48066|Power Word: Shield|Rank 14|180000|0|0|80|0
+5|48068|Renew|Rank 14|180000|0|0|80|0
+5|48073|Divine Spirit|Rank 6|9000|0|0|80|0
+5|48074|Prayer of Spirit|Rank 3|9000|0|0|80|0
+5|48078|Holy Nova|Rank 9|180000|0|0|80|0
+5|48087|Lightwell|Rank 6|9000|0|0|80|0
+5|48089|Circle of Healing|Rank 7|9000|0|0|80|0
+5|48125|Shadow Word: Pain|Rank 12|180000|0|0|80|0
+5|48156|Mind Flay|Rank 9|9000|0|0|80|0
+5|48158|Shadow Word: Death|Rank 4|180000|0|0|80|0
+5|48160|Vampiric Touch|Rank 5|9000|0|0|80|0
+5|48161|Power Word: Fortitude|Rank 8|180000|0|0|80|0
+5|48162|Prayer of Fortitude|Rank 4|180000|0|0|80|0
+5|48173|Desperate Prayer|Rank 9|9000|0|0|80|0
+5|53007|Penance|Rank 4|9000|0|0|80|0
+5|53023|Mind Sear|Rank 2|100000|0|0|80|0
+5|64843|Divine Hymn|Rank 1|180000|0|0|80|0
+5|64901|Hymn of Hope||65000|0|0|80|0
+6|46584|Raise Dead||5600|0|0|56|0
+6|49998|Death Strike|Rank 1|5600|0|0|56|0
+6|50842|Pestilence||5600|0|0|56|0
+6|47528|Mind Freeze||5700|0|0|57|0
+6|48263|Frost Presence||5700|0|0|57|0
+6|53342|Rune of Spellshattering||5700|0|0|57|0
+6|54447|Rune of Spellbreaking||5700|0|0|57|0
+6|45524|Chains of Ice||5800|0|0|58|0
+6|48721|Blood Boil|Rank 1|5800|0|0|58|0
+6|47476|Strangulate||5900|0|0|59|0
+6|49926|Blood Strike|Rank 2|5900|0|0|59|0
+6|55258|Heart Strike|Rank 2|5900|0|0|59|0
+6|43265|Death and Decay|Rank 1|6000|0|0|60|0
+6|49917|Plague Strike|Rank 2|5800|0|0|60|0
+6|51325|Corpse Explosion|Rank 2|300|0|0|60|0
+6|51416|Frost Strike|Rank 2|6200|0|0|60|0
+6|53331|Rune of Lichbane||6000|0|0|60|0
+6|3714|Path of Frost||61000|0|0|61|0
+6|49020|Obliterate|Rank 1|61000|0|0|61|0
+6|49896|Icy Touch|Rank 2|61000|0|0|61|0
+6|48792|Icebound Fortitude||62000|0|0|62|0
+6|49892|Death Coil|Rank 2|59000|0|0|62|0
+6|49999|Death Strike|Rank 2|65000|0|0|63|0
+6|53323|Rune of Swordshattering||63000|0|0|63|0
+6|54446|Rune of Swordbreaking||68000|0|0|63|0
+6|45529|Blood Tap||64000|0|0|64|0
+6|49927|Blood Strike|Rank 3|64000|0|0|64|0
+6|55259|Heart Strike|Rank 3|3200|0|0|64|0
+6|49918|Plague Strike|Rank 3|65000|0|0|65|0
+6|51417|Frost Strike|Rank 3|3250|0|0|65|0
+6|56222|Dark Command||65000|0|0|65|0
+6|57330|Horn of Winter|Rank 1|65000|0|0|65|0
+6|48743|Death Pact||66000|0|0|66|0
+6|49939|Blood Boil|Rank 2|66000|0|0|66|0
+6|49903|Icy Touch|Rank 3|67000|0|0|67|0
+6|49936|Death and Decay|Rank 2|68000|0|0|67|0
+6|51423|Obliterate|Rank 2|67000|0|0|67|0
+6|55265|Scourge Strike|Rank 2|18000|0|0|67|0
+6|56815|Rune Strike||67000|0|0|67|0
+6|48707|Anti-Magic Shell||68000|0|0|68|0
+6|49893|Death Coil|Rank 3|68000|0|0|68|0
+6|49928|Blood Strike|Rank 4|69000|0|0|69|0
+6|55260|Heart Strike|Rank 4|3450|0|0|69|0
+6|45463|Death Strike|Rank 3|63000|0|0|70|0
+6|48265|Unholy Presence||360000|0|0|70|0
+6|49919|Plague Strike|Rank 4|360000|0|0|70|0
+6|51326|Corpse Explosion|Rank 3|18000|0|0|70|0
+6|51409|Howling Blast|Rank 2|6500|0|0|70|0
+6|51418|Frost Strike|Rank 4|18000|0|0|70|0
+6|53344|Rune of the Fallen Crusader||360000|0|0|70|0
+6|49940|Blood Boil|Rank 3|360000|0|0|72|0
+6|61999|Raise Ally||360000|0|0|72|0
+6|62158|Rune of the Stoneskin Gargoyle||360000|0|0|72|0
+6|70164|Rune of the Nerubian Carapace||360000|0|0|72|0
+6|49904|Icy Touch|Rank 4|360000|0|0|73|0
+6|49937|Death and Decay|Rank 3|360000|0|0|73|0
+6|51424|Obliterate|Rank 3|360000|0|0|73|0
+6|55270|Scourge Strike|Rank 3|18000|0|0|73|0
+6|49929|Blood Strike|Rank 5|360000|0|0|74|0
+6|55261|Heart Strike|Rank 5|18000|0|0|74|0
+6|47568|Empower Rune Weapon||360000|0|0|75|0
+6|49920|Plague Strike|Rank 5|360000|0|0|75|0
+6|49923|Death Strike|Rank 4|360000|0|0|75|0
+6|51327|Corpse Explosion|Rank 4|18000|0|0|75|0
+6|51410|Howling Blast|Rank 3|10000|0|0|75|0
+6|51419|Frost Strike|Rank 5|18000|0|0|75|0
+6|57623|Horn of Winter|Rank 2|360000|0|0|75|0
+6|49894|Death Coil|Rank 4|360000|0|0|76|0
+6|49909|Icy Touch|Rank 5|360000|0|0|78|0
+6|49941|Blood Boil|Rank 4|360000|0|0|78|0
+6|51425|Obliterate|Rank 4|360000|0|0|79|0
+6|55271|Scourge Strike|Rank 4|18000|0|0|79|0
+6|42650|Army of the Dead||360000|0|0|80|0
+6|49895|Death Coil|Rank 5|360000|0|0|80|0
+6|49921|Plague Strike|Rank 6|360000|0|0|80|0
+6|49924|Death Strike|Rank 5|360000|0|0|80|0
+6|49930|Blood Strike|Rank 6|360000|0|0|80|0
+6|49938|Death and Decay|Rank 4|360000|0|0|80|0
+6|51328|Corpse Explosion|Rank 5|18000|0|0|80|0
+6|51411|Howling Blast|Rank 4|10000|0|0|80|0
+6|55262|Heart Strike|Rank 6|18000|0|0|80|0
+6|55268|Frost Strike|Rank 6|18000|0|0|80|0
+7|8017|Rockbiter Weapon|Rank 1|10|0|0|1|0
+7|8042|Earth Shock|Rank 1|100|0|0|4|0
+7|332|Healing Wave|Rank 2|100|0|0|6|0
+7|2484|Earthbind Totem||100|0|0|6|0
+7|324|Lightning Shield|Rank 1|100|0|0|8|0
+7|529|Lightning Bolt|Rank 2|100|0|0|8|0
+7|5730|Stoneclaw Totem|Rank 1|100|0|0|8|0
+7|8018|Rockbiter Weapon|Rank 2|100|0|0|8|0
+7|8044|Earth Shock|Rank 2|100|0|0|8|0
+7|8024|Flametongue Weapon|Rank 1|400|0|0|10|0
+7|8050|Flame Shock|Rank 1|400|0|0|10|0
+7|8075|Strength of Earth Totem|Rank 1|400|0|0|10|0
+7|370|Purge|Rank 1|800|0|0|12|0
+7|547|Healing Wave|Rank 3|800|0|0|12|0
+7|1535|Fire Nova|Rank 1|800|0|0|12|0
+7|2008|Ancestral Spirit|Rank 1|800|0|0|12|0
+7|548|Lightning Bolt|Rank 3|900|0|0|14|0
+7|8045|Earth Shock|Rank 3|900|0|0|14|0
+7|8154|Stoneskin Totem|Rank 2|900|0|0|14|0
+7|325|Lightning Shield|Rank 2|1800|0|0|16|0
+7|526|Cure Toxins||1800|0|0|16|0
+7|2645|Ghost Wolf||2200|0|0|16|0
+7|8019|Rockbiter Weapon|Rank 3|1800|0|0|16|0
+7|57994|Wind Shear||2500|0|0|16|0
+7|913|Healing Wave|Rank 4|2000|0|0|18|0
+7|6390|Stoneclaw Totem|Rank 2|2000|0|0|18|0
+7|8027|Flametongue Weapon|Rank 2|2000|0|0|18|0
+7|8052|Flame Shock|Rank 2|2000|0|0|18|0
+7|8143|Tremor Totem||2000|0|0|18|0
+7|915|Lightning Bolt|Rank 4|2200|0|0|20|0
+7|6363|Searing Totem|Rank 2|2200|0|0|20|0
+7|8004|Lesser Healing Wave|Rank 1|2200|0|0|20|0
+7|8033|Frostbrand Weapon|Rank 1|2200|0|0|20|0
+7|8056|Frost Shock|Rank 1|2200|0|0|20|0
+7|52127|Water Shield|Rank 1|2200|0|0|20|0
+7|131|Water Breathing||3000|0|0|22|0
+7|8498|Fire Nova|Rank 2|3000|0|0|22|0
+7|905|Lightning Shield|Rank 3|3500|0|0|24|0
+7|939|Healing Wave|Rank 5|3500|0|0|24|0
+7|8046|Earth Shock|Rank 4|3500|0|0|24|0
+7|8155|Stoneskin Totem|Rank 3|3500|0|0|24|0
+7|8160|Strength of Earth Totem|Rank 2|3500|0|0|24|0
+7|8181|Frost Resistance Totem|Rank 1|3500|0|0|24|0
+7|10399|Rockbiter Weapon|Rank 4|3500|0|0|24|0
+7|20609|Ancestral Spirit|Rank 2|3500|0|0|24|0
+7|943|Lightning Bolt|Rank 5|4000|0|0|26|0
+7|5675|Mana Spring Totem|Rank 1|4000|0|0|26|0
+7|6196|Far Sight||4000|0|0|26|0
+7|8030|Flametongue Weapon|Rank 3|4000|0|0|26|0
+7|8190|Magma Totem|Rank 1|4000|0|0|26|0
+7|546|Water Walking||6000|0|0|28|0
+7|6391|Stoneclaw Totem|Rank 3|6000|0|0|28|0
+7|8008|Lesser Healing Wave|Rank 2|6000|0|0|28|0
+7|8038|Frostbrand Weapon|Rank 2|6000|0|0|28|0
+7|8053|Flame Shock|Rank 3|6000|0|0|28|0
+7|8184|Fire Resistance Totem|Rank 1|6000|0|0|28|0
+7|8227|Flametongue Totem|Rank 1|6000|0|0|28|0
+7|52129|Water Shield|Rank 2|6000|0|0|28|0
+7|556|Astral Recall||7000|0|0|30|0
+7|6364|Searing Totem|Rank 3|7000|0|0|30|0
+7|6375|Healing Stream Totem|Rank 2|7000|0|0|30|0
+7|8177|Grounding Totem||7000|0|0|30|0
+7|8232|Windfury Weapon|Rank 1|7000|0|0|30|0
+7|10595|Nature Resistance Totem|Rank 1|7000|0|0|30|0
+7|20608|Reincarnation|Passive|7000|0|0|30|0
+7|36936|Totemic Recall||7000|0|0|30|0
+7|51730|Earthliving Weapon|Rank 1|7000|0|0|30|0
+7|66842|Call of the Elements||700|0|0|30|0
+7|421|Chain Lightning|Rank 1|8000|0|0|32|0
+7|945|Lightning Shield|Rank 4|8000|0|0|32|0
+7|959|Healing Wave|Rank 6|8000|0|0|32|0
+7|6041|Lightning Bolt|Rank 6|8000|0|0|32|0
+7|8012|Purge|Rank 2|8000|0|0|32|0
+7|8499|Fire Nova|Rank 3|8000|0|0|32|0
+7|8512|Windfury Totem||8000|0|0|32|0
+7|6495|Sentry Totem||9000|0|0|34|0
+7|8058|Frost Shock|Rank 2|9000|0|0|34|0
+7|10406|Stoneskin Totem|Rank 4|9000|0|0|34|0
+7|52131|Water Shield|Rank 3|9000|0|0|34|0
+7|8010|Lesser Healing Wave|Rank 3|10000|0|0|36|0
+7|10412|Earth Shock|Rank 5|10000|0|0|36|0
+7|10495|Mana Spring Totem|Rank 2|10000|0|0|36|0
+7|10585|Magma Totem|Rank 2|10000|0|0|36|0
+7|16339|Flametongue Weapon|Rank 4|10000|0|0|36|0
+7|20610|Ancestral Spirit|Rank 3|10000|0|0|36|0
+7|6392|Stoneclaw Totem|Rank 4|11000|0|0|38|0
+7|8161|Strength of Earth Totem|Rank 3|11000|0|0|38|0
+7|8170|Cleansing Totem||11000|0|0|38|0
+7|8249|Flametongue Totem|Rank 2|11000|0|0|38|0
+7|10391|Lightning Bolt|Rank 7|11000|0|0|38|0
+7|10456|Frostbrand Weapon|Rank 3|11000|0|0|38|0
+7|10478|Frost Resistance Totem|Rank 2|11000|0|0|38|0
+7|930|Chain Lightning|Rank 2|12000|0|0|40|0
+7|1064|Chain Heal|Rank 1|12000|0|0|40|0
+7|6365|Searing Totem|Rank 4|12000|0|0|40|0
+7|6377|Healing Stream Totem|Rank 3|12000|0|0|40|0
+7|8005|Healing Wave|Rank 7|12000|0|0|40|0
+7|8134|Lightning Shield|Rank 5|12000|0|0|40|0
+7|8235|Windfury Weapon|Rank 2|12000|0|0|40|0
+7|8737|Mail||12000|0|0|40|0
+7|10447|Flame Shock|Rank 4|12000|0|0|40|0
+7|51988|Earthliving Weapon|Rank 2|12000|0|0|40|0
+7|66843|Call of the Ancestors||700|0|0|40|0
+7|52134|Water Shield|Rank 4|12000|0|0|41|0
+7|10537|Fire Resistance Totem|Rank 2|16000|0|0|42|0
+7|11314|Fire Nova|Rank 4|16000|0|0|42|0
+7|10392|Lightning Bolt|Rank 8|18000|0|0|44|0
+7|10407|Stoneskin Totem|Rank 5|18000|0|0|44|0
+7|10466|Lesser Healing Wave|Rank 4|18000|0|0|44|0
+7|10600|Nature Resistance Totem|Rank 2|18000|0|0|44|0
+7|10472|Frost Shock|Rank 3|20000|0|0|46|0
+7|10496|Mana Spring Totem|Rank 3|20000|0|0|46|0
+7|10586|Magma Totem|Rank 3|20000|0|0|46|0
+7|10622|Chain Heal|Rank 2|20000|0|0|46|0
+7|16341|Flametongue Weapon|Rank 5|20000|0|0|46|0
+7|2860|Chain Lightning|Rank 3|22000|0|0|48|0
+7|10395|Healing Wave|Rank 8|22000|0|0|48|0
+7|10413|Earth Shock|Rank 6|22000|0|0|48|0
+7|10427|Stoneclaw Totem|Rank 5|22000|0|0|48|0
+7|10431|Lightning Shield|Rank 6|22000|0|0|48|0
+7|10526|Flametongue Totem|Rank 3|22000|0|0|48|0
+7|16355|Frostbrand Weapon|Rank 4|22000|0|0|48|0
+7|20776|Ancestral Spirit|Rank 4|22000|0|0|48|0
+7|52136|Water Shield|Rank 5|22000|0|0|48|0
+7|10437|Searing Totem|Rank 5|24000|0|0|50|0
+7|10462|Healing Stream Totem|Rank 4|24000|0|0|50|0
+7|10486|Windfury Weapon|Rank 3|24000|0|0|50|0
+7|15207|Lightning Bolt|Rank 9|24000|0|0|50|0
+7|51991|Earthliving Weapon|Rank 3|24000|0|0|50|0
+7|66844|Call of the Spirits||700|0|0|50|0
+7|10442|Strength of Earth Totem|Rank 4|27000|0|0|52|0
+7|10448|Flame Shock|Rank 5|27000|0|0|52|0
+7|10467|Lesser Healing Wave|Rank 5|27000|0|0|52|0
+7|11315|Fire Nova|Rank 5|27000|0|0|52|0
+7|10408|Stoneskin Totem|Rank 6|29000|0|0|54|0
+7|10479|Frost Resistance Totem|Rank 3|29000|0|0|54|0
+7|10623|Chain Heal|Rank 3|29000|0|0|54|0
+7|52138|Water Shield|Rank 6|29000|0|0|55|0
+7|10396|Healing Wave|Rank 9|30000|0|0|56|0
+7|10432|Lightning Shield|Rank 7|30000|0|0|56|0
+7|10497|Mana Spring Totem|Rank 4|30000|0|0|56|0
+7|10587|Magma Totem|Rank 4|30000|0|0|56|0
+7|10605|Chain Lightning|Rank 4|30000|0|0|56|0
+7|15208|Lightning Bolt|Rank 10|30000|0|0|56|0
+7|16342|Flametongue Weapon|Rank 6|30000|0|0|56|0
+7|10428|Stoneclaw Totem|Rank 6|32000|0|0|58|0
+7|10473|Frost Shock|Rank 4|32000|0|0|58|0
+7|10538|Fire Resistance Totem|Rank 3|32000|0|0|58|0
+7|16356|Frostbrand Weapon|Rank 5|32000|0|0|58|0
+7|16387|Flametongue Totem|Rank 4|32000|0|0|58|0
+7|10414|Earth Shock|Rank 7|34000|0|0|60|0
+7|10438|Searing Totem|Rank 6|34000|0|0|60|0
+7|10463|Healing Stream Totem|Rank 5|34000|0|0|60|0
+7|10468|Lesser Healing Wave|Rank 6|34000|0|0|60|0
+7|10601|Nature Resistance Totem|Rank 3|34000|0|0|60|0
+7|16362|Windfury Weapon|Rank 4|34000|0|0|60|0
+7|20777|Ancestral Spirit|Rank 5|34000|0|0|60|0
+7|25357|Healing Wave|Rank 10|6500|0|0|60|0
+7|25361|Strength of Earth Totem|Rank 5|34000|0|0|60|0
+7|29228|Flame Shock|Rank 6|65000|0|0|60|0
+7|32593|Earth Shield|Rank 2|1700|0|0|60|0
+7|51992|Earthliving Weapon|Rank 4|34000|0|0|60|0
+7|57720|Totem of Wrath|Rank 2|3400|0|0|60|0
+7|25422|Chain Heal|Rank 4|34000|0|0|61|0
+7|25546|Fire Nova|Rank 6|34000|0|0|61|0
+7|24398|Water Shield|Rank 7|38000|0|0|62|0
+7|25448|Lightning Bolt|Rank 11|38000|0|0|62|0
+7|25391|Healing Wave|Rank 11|42000|0|0|63|0
+7|25439|Chain Lightning|Rank 5|42000|0|0|63|0
+7|25469|Lightning Shield|Rank 8|42000|0|0|63|0
+7|25508|Stoneskin Totem|Rank 7|42000|0|0|63|0
+7|3738|Wrath of Air Totem||47000|0|0|64|0
+7|25489|Flametongue Weapon|Rank 7|47000|0|0|64|0
+7|25528|Strength of Earth Totem|Rank 6|52000|0|0|65|0
+7|25552|Magma Totem|Rank 5|52000|0|0|65|0
+7|25570|Mana Spring Totem|Rank 5|52000|0|0|65|0
+7|2062|Earth Elemental Totem||58000|0|0|66|0
+7|25420|Lesser Healing Wave|Rank 7|58000|0|0|66|0
+7|25500|Frostbrand Weapon|Rank 6|58000|0|0|66|0
+7|25449|Lightning Bolt|Rank 12|64000|0|0|67|0
+7|25525|Stoneclaw Totem|Rank 7|64000|0|0|67|0
+7|25557|Flametongue Totem|Rank 5|64000|0|0|67|0
+7|25560|Frost Resistance Totem|Rank 4|64000|0|0|67|0
+7|2894|Fire Elemental Totem||71000|0|0|68|0
+7|25423|Chain Heal|Rank 5|71000|0|0|68|0
+7|25464|Frost Shock|Rank 5|71000|0|0|68|0
+7|25505|Windfury Weapon|Rank 5|71000|0|0|68|0
+7|25563|Fire Resistance Totem|Rank 4|71000|0|0|68|0
+7|25454|Earth Shock|Rank 8|79000|0|0|69|0
+7|25533|Searing Totem|Rank 7|79000|0|0|69|0
+7|25567|Healing Stream Totem|Rank 6|79000|0|0|69|0
+7|25574|Nature Resistance Totem|Rank 4|79000|0|0|69|0
+7|25590|Ancestral Spirit|Rank 6|79000|0|0|69|0
+7|33736|Water Shield|Rank 8|79000|0|0|69|0
+7|2825|Bloodlust||88000|0|0|70|0
+7|25396|Healing Wave|Rank 12|88000|0|0|70|0
+7|25442|Chain Lightning|Rank 6|88000|0|0|70|0
+7|25457|Flame Shock|Rank 7|88000|0|0|70|0
+7|25472|Lightning Shield|Rank 9|88000|0|0|70|0
+7|25509|Stoneskin Totem|Rank 8|88000|0|0|70|0
+7|25547|Fire Nova|Rank 7|88000|0|0|70|0
+7|32182|Heroism||88000|0|0|70|0
+7|32594|Earth Shield|Rank 3|5000|0|0|70|0
+7|51993|Earthliving Weapon|Rank 5|71000|0|0|70|0
+7|57721|Totem of Wrath|Rank 3|5200|0|0|70|0
+7|59156|Thunderstorm|Rank 2|88000|0|0|70|0
+7|61299|Riptide|Rank 2|9000|0|0|70|0
+7|58580|Stoneclaw Totem|Rank 8|180000|0|0|71|0
+7|58649|Flametongue Totem|Rank 6|180000|0|0|71|0
+7|58699|Searing Totem|Rank 8|180000|0|0|71|0
+7|58755|Healing Stream Totem|Rank 7|180000|0|0|71|0
+7|58771|Mana Spring Totem|Rank 6|180000|0|0|71|0
+7|58785|Flametongue Weapon|Rank 8|180000|0|0|71|0
+7|58794|Frostbrand Weapon|Rank 7|180000|0|0|71|0
+7|58801|Windfury Weapon|Rank 6|180000|0|0|71|0
+7|49275|Lesser Healing Wave|Rank 8|180000|0|0|72|0
+7|49235|Frost Shock|Rank 6|180000|0|0|73|0
+7|49237|Lightning Bolt|Rank 13|180000|0|0|73|0
+7|58731|Magma Totem|Rank 6|180000|0|0|73|0
+7|58751|Stoneskin Totem|Rank 9|180000|0|0|73|0
+7|49230|Earth Shock|Rank 9|180000|0|0|74|0
+7|49270|Chain Lightning|Rank 7|180000|0|0|74|0
+7|55458|Chain Heal|Rank 6|180000|0|0|74|0
+7|49232|Flame Shock|Rank 8|180000|0|0|75|0
+7|49272|Healing Wave|Rank 13|180000|0|0|75|0
+7|49280|Lightning Shield|Rank 10|180000|0|0|75|0
+7|49283|Earth Shield|Rank 4|9000|0|0|75|0
+7|51505|Lava Burst|Rank 1|180000|0|0|75|0
+7|57622|Strength of Earth Totem|Rank 7|180000|0|0|75|0
+7|58581|Stoneclaw Totem|Rank 9|180000|0|0|75|0
+7|58652|Flametongue Totem|Rank 7|180000|0|0|75|0
+7|58703|Searing Totem|Rank 9|180000|0|0|75|0
+7|58737|Fire Resistance Totem|Rank 5|180000|0|0|75|0
+7|58741|Frost Resistance Totem|Rank 5|180000|0|0|75|0
+7|58746|Nature Resistance Totem|Rank 5|180000|0|0|75|0
+7|59158|Thunderstorm|Rank 3|180000|0|0|75|0
+7|61300|Riptide|Rank 3|9000|0|0|75|0
+7|61649|Fire Nova|Rank 8|180000|0|0|75|0
+7|57960|Water Shield|Rank 9|180000|0|0|76|0
+7|58756|Healing Stream Totem|Rank 8|180000|0|0|76|0
+7|58773|Mana Spring Totem|Rank 7|180000|0|0|76|0
+7|58789|Flametongue Weapon|Rank 9|180000|0|0|76|0
+7|58795|Frostbrand Weapon|Rank 8|180000|0|0|76|0
+7|58803|Windfury Weapon|Rank 7|180000|0|0|76|0
+7|49276|Lesser Healing Wave|Rank 9|180000|0|0|77|0
+7|49236|Frost Shock|Rank 7|180000|0|0|78|0
+7|58582|Stoneclaw Totem|Rank 10|180000|0|0|78|0
+7|58734|Magma Totem|Rank 7|180000|0|0|78|0
+7|58753|Stoneskin Totem|Rank 10|180000|0|0|78|0
+7|49231|Earth Shock|Rank 10|180000|0|0|79|0
+7|49238|Lightning Bolt|Rank 14|180000|0|0|79|0
+7|49233|Flame Shock|Rank 9|180000|0|0|80|0
+7|49271|Chain Lightning|Rank 8|180000|0|0|80|0
+7|49273|Healing Wave|Rank 14|180000|0|0|80|0
+7|49277|Ancestral Spirit|Rank 7|180000|0|0|80|0
+7|49281|Lightning Shield|Rank 11|180000|0|0|80|0
+7|49284|Earth Shield|Rank 5|9000|0|0|80|0
+7|51514|Hex||180000|0|0|80|0
+7|51994|Earthliving Weapon|Rank 6|180000|0|0|80|0
+7|55459|Chain Heal|Rank 7|180000|0|0|80|0
+7|57722|Totem of Wrath|Rank 4|10000|0|0|80|0
+7|58643|Strength of Earth Totem|Rank 8|180000|0|0|80|0
+7|58656|Flametongue Totem|Rank 8|180000|0|0|80|0
+7|58704|Searing Totem|Rank 10|180000|0|0|80|0
+7|58739|Fire Resistance Totem|Rank 6|180000|0|0|80|0
+7|58745|Frost Resistance Totem|Rank 6|180000|0|0|80|0
+7|58749|Nature Resistance Totem|Rank 6|180000|0|0|80|0
+7|58757|Healing Stream Totem|Rank 9|180000|0|0|80|0
+7|58774|Mana Spring Totem|Rank 8|180000|0|0|80|0
+7|58790|Flametongue Weapon|Rank 10|180000|0|0|80|0
+7|58796|Frostbrand Weapon|Rank 9|180000|0|0|80|0
+7|58804|Windfury Weapon|Rank 8|180000|0|0|80|0
+7|59159|Thunderstorm|Rank 4|180000|0|0|80|0
+7|60043|Lava Burst|Rank 2|180000|0|0|80|0
+7|61301|Riptide|Rank 4|9000|0|0|80|0
+7|61657|Fire Nova|Rank 9|180000|0|0|80|0
+8|1459|Arcane Intellect|Rank 1|10|0|0|1|0
+8|116|Frostbolt|Rank 1|100|0|0|4|0
+8|5504|Conjure Water|Rank 1|100|0|0|4|0
+8|143|Fireball|Rank 2|100|0|0|6|0
+8|587|Conjure Food|Rank 1|100|0|0|6|0
+8|2136|Fire Blast|Rank 1|100|0|0|6|0
+8|118|Polymorph|Rank 1|200|0|0|8|0
+8|205|Frostbolt|Rank 2|200|0|0|8|0
+8|5143|Arcane Missiles|Rank 1|200|0|0|8|0
+8|122|Frost Nova|Rank 1|400|0|0|10|0
+8|5505|Conjure Water|Rank 2|400|0|0|10|0
+8|7300|Frost Armor|Rank 2|400|0|0|10|0
+8|130|Slow Fall||600|0|0|12|0
+8|145|Fireball|Rank 3|600|0|0|12|0
+8|597|Conjure Food|Rank 2|600|0|0|12|0
+8|604|Dampen Magic|Rank 1|600|0|0|12|0
+8|837|Frostbolt|Rank 3|900|0|0|14|0
+8|1449|Arcane Explosion|Rank 1|900|0|0|14|0
+8|1460|Arcane Intellect|Rank 2|900|0|0|14|0
+8|2137|Fire Blast|Rank 2|900|0|0|14|0
+8|2120|Flamestrike|Rank 1|1500|0|0|16|0
+8|5144|Arcane Missiles|Rank 2|1500|0|0|16|0
+8|475|Remove Curse||1800|0|0|18|0
+8|1008|Amplify Magic|Rank 1|1800|0|0|18|0
+8|3140|Fireball|Rank 4|1800|0|0|18|0
+8|10|Blizzard|Rank 1|2000|0|0|20|0
+8|543|Fire Ward|Rank 1|2000|0|0|20|0
+8|1463|Mana Shield|Rank 1|2000|0|0|20|0
+8|1953|Blink||2000|0|0|20|0
+8|5506|Conjure Water|Rank 3|2000|0|0|20|0
+8|7301|Frost Armor|Rank 3|2000|0|0|20|0
+8|7322|Frostbolt|Rank 4|2000|0|0|20|0
+8|12051|Evocation||2000|0|0|20|0
+8|12824|Polymorph|Rank 2|2000|0|0|20|0
+8|990|Conjure Food|Rank 3|3000|0|0|22|0
+8|2138|Fire Blast|Rank 3|3000|0|0|22|0
+8|2948|Scorch|Rank 1|3000|0|0|22|0
+8|6143|Frost Ward|Rank 1|3000|0|0|22|0
+8|8437|Arcane Explosion|Rank 2|3000|0|0|22|0
+8|2121|Flamestrike|Rank 2|4000|0|0|24|0
+8|2139|Counterspell||4000|0|0|24|0
+8|5145|Arcane Missiles|Rank 3|4000|0|0|24|0
+8|8400|Fireball|Rank 5|4000|0|0|24|0
+8|8450|Dampen Magic|Rank 2|4000|0|0|24|0
+8|12505|Pyroblast|Rank 2|100|0|0|24|0
+8|120|Cone of Cold|Rank 1|5000|0|0|26|0
+8|865|Frost Nova|Rank 2|5000|0|0|26|0
+8|8406|Frostbolt|Rank 5|5000|0|0|26|0
+8|759|Conjure Mana Gem|Rank 1|7000|0|0|28|0
+8|1461|Arcane Intellect|Rank 3|7000|0|0|28|0
+8|6141|Blizzard|Rank 2|7000|0|0|28|0
+8|8444|Scorch|Rank 2|7000|0|0|28|0
+8|8494|Mana Shield|Rank 2|7000|0|0|28|0
+8|6127|Conjure Water|Rank 4|8000|0|0|30|0
+8|7302|Ice Armor|Rank 1|8000|0|0|30|0
+8|8401|Fireball|Rank 6|8000|0|0|30|0
+8|8412|Fire Blast|Rank 4|8000|0|0|30|0
+8|8438|Arcane Explosion|Rank 3|8000|0|0|30|0
+8|8455|Amplify Magic|Rank 2|8000|0|0|30|0
+8|8457|Fire Ward|Rank 2|8000|0|0|30|0
+8|12522|Pyroblast|Rank 3|400|0|0|30|0
+8|45438|Ice Block||8000|0|0|30|0
+8|6129|Conjure Food|Rank 4|10000|0|0|32|0
+8|8407|Frostbolt|Rank 6|10000|0|0|32|0
+8|8416|Arcane Missiles|Rank 4|10000|0|0|32|0
+8|8422|Flamestrike|Rank 3|10000|0|0|32|0
+8|8461|Frost Ward|Rank 2|10000|0|0|32|0
+8|6117|Mage Armor|Rank 1|13000|0|0|34|0
+8|8445|Scorch|Rank 3|12000|0|0|34|0
+8|8492|Cone of Cold|Rank 2|12000|0|0|34|0
+8|8402|Fireball|Rank 7|13000|0|0|36|0
+8|8427|Blizzard|Rank 3|13000|0|0|36|0
+8|8451|Dampen Magic|Rank 3|13000|0|0|36|0
+8|8495|Mana Shield|Rank 3|13000|0|0|36|0
+8|12523|Pyroblast|Rank 4|650|0|0|36|0
+8|13018|Blast Wave|Rank 2|400|0|0|36|0
+8|3552|Conjure Mana Gem|Rank 2|14000|0|0|38|0
+8|8408|Frostbolt|Rank 7|14000|0|0|38|0
+8|8413|Fire Blast|Rank 5|14000|0|0|38|0
+8|8439|Arcane Explosion|Rank 4|14000|0|0|38|0
+8|6131|Frost Nova|Rank 3|15000|0|0|40|0
+8|7320|Ice Armor|Rank 2|15000|0|0|40|0
+8|8417|Arcane Missiles|Rank 5|15000|0|0|40|0
+8|8423|Flamestrike|Rank 4|15000|0|0|40|0
+8|8446|Scorch|Rank 4|15000|0|0|40|0
+8|8458|Fire Ward|Rank 3|15000|0|0|40|0
+8|10138|Conjure Water|Rank 5|15000|0|0|40|0
+8|12825|Polymorph|Rank 3|15000|0|0|40|0
+8|8462|Frost Ward|Rank 3|18000|0|0|42|0
+8|10144|Conjure Food|Rank 5|18000|0|0|42|0
+8|10148|Fireball|Rank 8|18000|0|0|42|0
+8|10156|Arcane Intellect|Rank 4|18000|0|0|42|0
+8|10159|Cone of Cold|Rank 3|18000|0|0|42|0
+8|10169|Amplify Magic|Rank 3|18000|0|0|42|0
+8|12524|Pyroblast|Rank 5|900|0|0|42|0
+8|10179|Frostbolt|Rank 8|23000|0|0|44|0
+8|10185|Blizzard|Rank 4|23000|0|0|44|0
+8|10191|Mana Shield|Rank 4|23000|0|0|44|0
+8|13019|Blast Wave|Rank 3|1148|0|0|44|0
+8|10197|Fire Blast|Rank 6|26000|0|0|46|0
+8|10201|Arcane Explosion|Rank 5|26000|0|0|46|0
+8|10205|Scorch|Rank 5|26000|0|0|46|0
+8|13031|Ice Barrier|Rank 2|1700|0|0|46|0
+8|22782|Mage Armor|Rank 2|1400|0|0|46|0
+8|10053|Conjure Mana Gem|Rank 3|28000|0|0|48|0
+8|10149|Fireball|Rank 9|28000|0|0|48|0
+8|10173|Dampen Magic|Rank 4|28000|0|0|48|0
+8|10211|Arcane Missiles|Rank 6|28000|0|0|48|0
+8|10215|Flamestrike|Rank 5|28000|0|0|48|0
+8|12525|Pyroblast|Rank 6|1400|0|0|48|0
+8|10139|Conjure Water|Rank 6|32000|0|0|50|0
+8|10160|Cone of Cold|Rank 4|32000|0|0|50|0
+8|10180|Frostbolt|Rank 9|32000|0|0|50|0
+8|10219|Ice Armor|Rank 3|32000|0|0|50|0
+8|10223|Fire Ward|Rank 4|32000|0|0|50|0
+8|10145|Conjure Food|Rank 6|35000|0|0|52|0
+8|10177|Frost Ward|Rank 4|35000|0|0|52|0
+8|10186|Blizzard|Rank 5|35000|0|0|52|0
+8|10192|Mana Shield|Rank 5|35000|0|0|52|0
+8|10206|Scorch|Rank 6|35000|0|0|52|0
+8|13020|Blast Wave|Rank 4|1748|0|0|52|0
+8|13032|Ice Barrier|Rank 3|1748|0|0|52|0
+8|10150|Fireball|Rank 10|36000|0|0|54|0
+8|10170|Amplify Magic|Rank 4|36000|0|0|54|0
+8|10199|Fire Blast|Rank 7|36000|0|0|54|0
+8|10202|Arcane Explosion|Rank 6|36000|0|0|54|0
+8|10230|Frost Nova|Rank 4|36000|0|0|54|0
+8|12526|Pyroblast|Rank 7|1800|0|0|54|0
+8|10157|Arcane Intellect|Rank 5|38000|0|0|56|0
+8|10181|Frostbolt|Rank 10|38000|0|0|56|0
+8|10212|Arcane Missiles|Rank 7|38000|0|0|56|0
+8|10216|Flamestrike|Rank 6|38000|0|0|56|0
+8|23028|Arcane Brilliance|Rank 1|38000|0|0|56|0
+8|33041|Dragon's Breath|Rank 2|1900|0|0|56|0
+8|10054|Conjure Mana Gem|Rank 4|40000|0|0|58|0
+8|10161|Cone of Cold|Rank 5|40000|0|0|58|0
+8|10207|Scorch|Rank 7|40000|0|0|58|0
+8|13033|Ice Barrier|Rank 4|2000|0|0|58|0
+8|22783|Mage Armor|Rank 3|40000|0|0|58|0
+8|10140|Conjure Water|Rank 7|42000|0|0|60|0
+8|10151|Fireball|Rank 11|42000|0|0|60|0
+8|10174|Dampen Magic|Rank 5|42000|0|0|60|0
+8|10187|Blizzard|Rank 6|42000|0|0|60|0
+8|10193|Mana Shield|Rank 6|42000|0|0|60|0
+8|10220|Ice Armor|Rank 4|42000|0|0|60|0
+8|10225|Fire Ward|Rank 5|42000|0|0|60|0
+8|12826|Polymorph|Rank 4|42000|0|0|60|0
+8|13021|Blast Wave|Rank 5|2100|0|0|60|0
+8|18809|Pyroblast|Rank 8|2100|0|0|60|0
+8|25304|Frostbolt|Rank 11|42000|0|0|60|0
+8|25345|Arcane Missiles|Rank 8|42000|0|0|60|0
+8|28609|Frost Ward|Rank 5|42000|0|0|60|0
+8|28612|Conjure Food|Rank 7|42000|0|0|60|0
+8|27078|Fire Blast|Rank 8|46000|0|0|61|0
+8|25306|Fireball|Rank 12|42000|0|0|62|0
+8|27080|Arcane Explosion|Rank 7|51000|0|0|62|0
+8|30482|Molten Armor|Rank 1|51000|0|0|62|0
+8|27071|Frostbolt|Rank 12|57000|0|0|63|0
+8|27075|Arcane Missiles|Rank 9|57000|0|0|63|0
+8|27130|Amplify Magic|Rank 5|57000|0|0|63|0
+8|27086|Flamestrike|Rank 7|63000|0|0|64|0
+8|27134|Ice Barrier|Rank 5|2500|0|0|64|0
+8|30451|Arcane Blast|Rank 1|63000|0|0|64|0
+8|33042|Dragon's Breath|Rank 3|2200|0|0|64|0
+8|27073|Scorch|Rank 8|70000|0|0|65|0
+8|27087|Cone of Cold|Rank 6|70000|0|0|65|0
+8|27133|Blast Wave|Rank 6|3500|0|0|65|0
+8|37420|Conjure Water|Rank 8|70000|0|0|65|0
+8|27070|Fireball|Rank 13|78000|0|0|66|0
+8|27132|Pyroblast|Rank 9|3900|0|0|66|0
+8|30455|Ice Lance|Rank 1|78000|0|0|66|0
+8|27088|Frost Nova|Rank 5|87000|0|0|67|0
+8|33944|Dampen Magic|Rank 6|100000|0|0|67|0
+8|66|Invisibility||96000|0|0|68|0
+8|27085|Blizzard|Rank 7|96000|0|0|68|0
+8|27101|Conjure Mana Gem|Rank 5|96000|0|0|68|0
+8|27131|Mana Shield|Rank 7|96000|0|0|68|0
+8|27072|Frostbolt|Rank 13|110000|0|0|69|0
+8|27124|Ice Armor|Rank 5|110000|0|0|69|0
+8|27125|Mage Armor|Rank 4|110000|0|0|69|0
+8|27128|Fire Ward|Rank 6|110000|0|0|69|0
+8|33946|Amplify Magic|Rank 6|110000|0|0|69|0
+8|38699|Arcane Missiles|Rank 10|87000|0|0|69|0
+8|27074|Scorch|Rank 9|120000|0|0|70|0
+8|27079|Fire Blast|Rank 9|120000|0|0|70|0
+8|27082|Arcane Explosion|Rank 8|120000|0|0|70|0
+8|27090|Conjure Water|Rank 9|150000|0|0|70|0
+8|27126|Arcane Intellect|Rank 6|120000|0|0|70|0
+8|27127|Arcane Brilliance|Rank 2|100000|0|0|70|0
+8|30449|Spellsteal||120000|0|0|70|0
+8|32796|Frost Ward|Rank 6|120000|0|0|70|0
+8|33043|Dragon's Breath|Rank 4|2500|0|0|70|0
+8|33405|Ice Barrier|Rank 6|6000|0|0|70|0
+8|33717|Conjure Food|Rank 8|150000|0|0|70|0
+8|33933|Blast Wave|Rank 7|6000|0|0|70|0
+8|33938|Pyroblast|Rank 10|7500|0|0|70|0
+8|38692|Fireball|Rank 14|150000|0|0|70|0
+8|38697|Frostbolt|Rank 14|150000|0|0|70|0
+8|38704|Arcane Missiles|Rank 11|100000|0|0|70|0
+8|43987|Ritual of Refreshment|Rank 1|120000|0|0|70|0
+8|44780|Arcane Barrage|Rank 2|10000|0|0|70|0
+8|55359|Living Bomb|Rank 2|5000|0|0|70|0
+8|42894|Arcane Blast|Rank 2|150000|0|0|71|0
+8|43023|Mage Armor|Rank 5|150000|0|0|71|0
+8|43045|Molten Armor|Rank 2|150000|0|0|71|0
+8|42913|Ice Lance|Rank 2|150000|0|0|72|0
+8|42925|Flamestrike|Rank 8|150000|0|0|72|0
+8|42930|Cone of Cold|Rank 7|150000|0|0|72|0
+8|42858|Scorch|Rank 10|150000|0|0|73|0
+8|42890|Pyroblast|Rank 11|7500|0|0|73|0
+8|43019|Mana Shield|Rank 8|150000|0|0|73|0
+8|42832|Fireball|Rank 15|150000|0|0|74|0
+8|42872|Fire Blast|Rank 10|150000|0|0|74|0
+8|42939|Blizzard|Rank 8|150000|0|0|74|0
+8|42841|Frostbolt|Rank 15|150000|0|0|75|0
+8|42843|Arcane Missiles|Rank 12|150000|0|0|75|0
+8|42917|Frost Nova|Rank 6|150000|0|0|75|0
+8|42944|Blast Wave|Rank 8|7500|0|0|75|0
+8|42949|Dragon's Breath|Rank 5|7500|0|0|75|0
+8|42955|Conjure Refreshment|Rank 1|150000|0|0|75|0
+8|43038|Ice Barrier|Rank 7|7500|0|0|75|0
+8|44614|Frostfire Bolt|Rank 1|150000|0|0|75|0
+8|42896|Arcane Blast|Rank 3|150000|0|0|76|0
+8|42920|Arcane Explosion|Rank 9|150000|0|0|76|0
+8|43015|Dampen Magic|Rank 7|150000|0|0|76|0
+8|42891|Pyroblast|Rank 12|7500|0|0|77|0
+8|42985|Conjure Mana Gem|Rank 6|150000|0|0|77|0
+8|43017|Amplify Magic|Rank 7|150000|0|0|77|0
+8|42833|Fireball|Rank 16|150000|0|0|78|0
+8|42859|Scorch|Rank 11|150000|0|0|78|0
+8|42914|Ice Lance|Rank 3|150000|0|0|78|0
+8|43010|Fire Ward|Rank 7|150000|0|0|78|0
+8|42842|Frostbolt|Rank 16|150000|0|0|79|0
+8|42846|Arcane Missiles|Rank 13|150000|0|0|79|0
+8|42926|Flamestrike|Rank 9|150000|0|0|79|0
+8|42931|Cone of Cold|Rank 8|150000|0|0|79|0
+8|43008|Ice Armor|Rank 6|150000|0|0|79|0
+8|43012|Frost Ward|Rank 7|150000|0|0|79|0
+8|43020|Mana Shield|Rank 9|150000|0|0|79|0
+8|43024|Mage Armor|Rank 6|150000|0|0|79|0
+8|43046|Molten Armor|Rank 3|150000|0|0|79|0
+8|42873|Fire Blast|Rank 11|150000|0|0|80|0
+8|42897|Arcane Blast|Rank 4|150000|0|0|80|0
+8|42921|Arcane Explosion|Rank 10|150000|0|0|80|0
+8|42940|Blizzard|Rank 9|150000|0|0|80|0
+8|42945|Blast Wave|Rank 9|7500|0|0|80|0
+8|42950|Dragon's Breath|Rank 6|7500|0|0|80|0
+8|42956|Conjure Refreshment|Rank 2|150000|0|0|80|0
+8|42995|Arcane Intellect|Rank 7|150000|0|0|80|0
+8|43002|Arcane Brilliance|Rank 3|150000|0|0|80|0
+8|43039|Ice Barrier|Rank 8|7500|0|0|80|0
+8|44781|Arcane Barrage|Rank 3|15000|0|0|80|0
+8|47610|Frostfire Bolt|Rank 2|150000|0|0|80|0
+8|55342|Mirror Image||150000|0|0|80|0
+8|55360|Living Bomb|Rank 3|7500|0|0|80|0
+8|58659|Ritual of Refreshment|Rank 2|150000|0|0|80|0
+9|688|Summon Imp|Summon|100|0|0|1|0
+9|348|Immolate|Rank 1|10|0|0|3|0
+9|172|Corruption|Rank 1|100|0|0|4|0
+9|702|Curse of Weakness|Rank 1|100|0|0|4|0
+9|695|Shadow Bolt|Rank 2|100|0|0|6|0
+9|1454|Life Tap|Rank 1|100|0|0|6|0
+9|980|Curse of Agony|Rank 1|200|0|0|8|0
+9|5782|Fear|Rank 1|200|0|0|8|0
+9|696|Demon Skin|Rank 2|300|0|0|10|0
+9|707|Immolate|Rank 2|300|0|0|10|0
+9|1120|Drain Soul|Rank 1|300|0|0|10|0
+9|6201|Create Healthstone|Rank 1|300|0|0|10|0
+9|705|Shadow Bolt|Rank 3|600|0|0|12|0
+9|755|Health Funnel|Rank 1|600|0|0|12|0
+9|1108|Curse of Weakness|Rank 2|600|0|0|12|0
+9|689|Drain Life|Rank 1|900|0|0|14|0
+9|6222|Corruption|Rank 2|900|0|0|14|0
+9|1455|Life Tap|Rank 2|1080|0|0|16|0
+9|5697|Unending Breath||1200|0|0|16|0
+9|693|Create Soulstone|Rank 1|1500|0|0|18|0
+9|1014|Curse of Agony|Rank 2|1500|0|0|18|0
+9|5676|Searing Pain|Rank 1|1500|0|0|18|0
+9|698|Ritual of Summoning||2000|0|0|20|0
+9|706|Demon Armor|Rank 1|2000|0|0|20|0
+9|1088|Shadow Bolt|Rank 4|2000|0|0|20|0
+9|1094|Immolate|Rank 3|2000|0|0|20|0
+9|1710|Summon Felsteed|Summon|10000|0|0|20|0
+9|3698|Health Funnel|Rank 2|2000|0|0|20|0
+9|5740|Rain of Fire|Rank 1|2000|0|0|20|0
+9|126|Eye of Kilrogg|Summon|2500|0|0|22|0
+9|699|Drain Life|Rank 2|2500|0|0|22|0
+9|6202|Create Healthstone|Rank 2|2500|0|0|22|0
+9|6205|Curse of Weakness|Rank 3|2500|0|0|22|0
+9|5138|Drain Mana||3000|0|0|24|0
+9|5500|Sense Demons||3000|0|0|24|0
+9|6223|Corruption|Rank 3|3000|0|0|24|0
+9|8288|Drain Soul|Rank 2|3000|0|0|24|0
+9|18867|Shadowburn|Rank 2|148|0|0|24|0
+9|132|Detect Invisibility||4000|0|0|26|0
+9|1456|Life Tap|Rank 3|3600|0|0|26|0
+9|1714|Curse of Tongues|Rank 1|4000|0|0|26|0
+9|17919|Searing Pain|Rank 2|4000|0|0|26|0
+9|710|Banish|Rank 1|5000|0|0|28|0
+9|1106|Shadow Bolt|Rank 5|5000|0|0|28|0
+9|3699|Health Funnel|Rank 3|5000|0|0|28|0
+9|6217|Curse of Agony|Rank 3|5000|0|0|28|0
+9|6366|Create Firestone|Rank 1|5000|0|0|28|0
+9|709|Drain Life|Rank 3|6000|0|0|30|0
+9|1086|Demon Armor|Rank 2|6000|0|0|30|0
+9|1098|Enslave Demon|Rank 1|6000|0|0|30|0
+9|1949|Hellfire|Rank 1|6000|0|0|30|0
+9|2941|Immolate|Rank 4|6000|0|0|30|0
+9|20752|Create Soulstone|Rank 2|6000|0|0|30|0
+9|1490|Curse of the Elements|Rank 1|7000|0|0|32|0
+9|6213|Fear|Rank 2|7000|0|0|32|0
+9|6229|Shadow Ward|Rank 1|7000|0|0|32|0
+9|7646|Curse of Weakness|Rank 4|7000|0|0|32|0
+9|18868|Shadowburn|Rank 3|348|0|0|32|0
+9|5699|Create Healthstone|Rank 3|8000|0|0|34|0
+9|6219|Rain of Fire|Rank 2|8000|0|0|34|0
+9|7648|Corruption|Rank 4|8000|0|0|34|0
+9|17920|Searing Pain|Rank 3|8000|0|0|34|0
+9|2362|Create Spellstone|Rank 1|9000|0|0|36|0
+9|3700|Health Funnel|Rank 4|9000|0|0|36|0
+9|7641|Shadow Bolt|Rank 6|9000|0|0|36|0
+9|11687|Life Tap|Rank 4|8100|0|0|36|0
+9|17951|Create Firestone|Rank 2|9000|0|0|36|0
+9|7651|Drain Life|Rank 4|10000|0|0|38|0
+9|8289|Drain Soul|Rank 3|10000|0|0|38|0
+9|11711|Curse of Agony|Rank 4|10000|0|0|38|0
+9|5484|Howl of Terror|Rank 1|11000|0|0|40|0
+9|11665|Immolate|Rank 5|11000|0|0|40|0
+9|11733|Demon Armor|Rank 3|11000|0|0|40|0
+9|18869|Shadowburn|Rank 4|548|0|0|40|0
+9|20755|Create Soulstone|Rank 3|11000|0|0|40|0
+9|23161|Dreadsteed|Summon|100000|0|0|40|0
+9|6789|Death Coil|Rank 1|11000|0|0|42|0
+9|11683|Hellfire|Rank 2|11000|0|0|42|0
+9|11707|Curse of Weakness|Rank 5|11000|0|0|42|0
+9|11739|Shadow Ward|Rank 2|11000|0|0|42|0
+9|17921|Searing Pain|Rank 4|11000|0|0|42|0
+9|11659|Shadow Bolt|Rank 7|12000|0|0|44|0
+9|11671|Corruption|Rank 5|12000|0|0|44|0
+9|11693|Health Funnel|Rank 5|12000|0|0|44|0
+9|11725|Enslave Demon|Rank 2|12000|0|0|44|0
+9|11677|Rain of Fire|Rank 3|13000|0|0|46|0
+9|11688|Life Tap|Rank 5|11700|0|0|46|0
+9|11699|Drain Life|Rank 5|13000|0|0|46|0
+9|11721|Curse of the Elements|Rank 2|13000|0|0|46|0
+9|11729|Create Healthstone|Rank 4|13000|0|0|46|0
+9|17952|Create Firestone|Rank 3|13000|0|0|46|0
+9|6353|Soul Fire|Rank 1|14000|0|0|48|0
+9|11712|Curse of Agony|Rank 5|14000|0|0|48|0
+9|17727|Create Spellstone|Rank 2|14000|0|0|48|0
+9|18647|Banish|Rank 2|14000|0|0|48|0
+9|18870|Shadowburn|Rank 5|700|0|0|48|0
+9|11667|Immolate|Rank 6|15000|0|0|50|0
+9|11719|Curse of Tongues|Rank 2|15000|0|0|50|0
+9|11734|Demon Armor|Rank 4|15000|0|0|50|0
+9|17922|Searing Pain|Rank 5|15000|0|0|50|0
+9|17925|Death Coil|Rank 2|15000|0|0|50|0
+9|18937|Dark Pact|Rank 2|748|0|0|50|0
+9|20756|Create Soulstone|Rank 4|15000|0|0|50|0
+9|11660|Shadow Bolt|Rank 8|18000|0|0|52|0
+9|11675|Drain Soul|Rank 4|18000|0|0|52|0
+9|11694|Health Funnel|Rank 6|18000|0|0|52|0
+9|11708|Curse of Weakness|Rank 6|18000|0|0|52|0
+9|11740|Shadow Ward|Rank 3|18000|0|0|52|0
+9|11672|Corruption|Rank 6|20000|0|0|54|0
+9|11684|Hellfire|Rank 3|20000|0|0|54|0
+9|11700|Drain Life|Rank 6|20000|0|0|54|0
+9|17928|Howl of Terror|Rank 2|20000|0|0|54|0
+9|6215|Fear|Rank 3|22000|0|0|56|0
+9|11689|Life Tap|Rank 6|19800|0|0|56|0
+9|17924|Soul Fire|Rank 2|22000|0|0|56|0
+9|17953|Create Firestone|Rank 4|22000|0|0|56|0
+9|18871|Shadowburn|Rank 6|1100|0|0|56|0
+9|11678|Rain of Fire|Rank 4|24000|0|0|58|0
+9|11713|Curse of Agony|Rank 6|24000|0|0|58|0
+9|11726|Enslave Demon|Rank 3|24000|0|0|58|0
+9|11730|Create Healthstone|Rank 5|24000|0|0|58|0
+9|17923|Searing Pain|Rank 6|24000|0|0|58|0
+9|17926|Death Coil|Rank 3|24000|0|0|58|0
+9|603|Curse of Doom|Rank 1|26000|0|0|60|0
+9|11661|Shadow Bolt|Rank 9|26000|0|0|60|0
+9|11668|Immolate|Rank 7|26000|0|0|60|0
+9|11695|Health Funnel|Rank 7|26000|0|0|60|0
+9|11722|Curse of the Elements|Rank 3|26000|0|0|60|0
+9|11735|Demon Armor|Rank 5|26000|0|0|60|0
+9|17728|Create Spellstone|Rank 3|26000|0|0|60|0
+9|18938|Dark Pact|Rank 3|1300|0|0|60|0
+9|20757|Create Soulstone|Rank 5|26000|0|0|60|0
+9|25309|Immolate|Rank 8|26000|0|0|60|0
+9|25311|Corruption|Rank 7|26000|0|0|60|0
+9|28610|Shadow Ward|Rank 4|34000|0|0|60|0
+9|30404|Unstable Affliction|Rank 2|2500|0|0|60|0
+9|30413|Shadowfury|Rank 2|2500|0|0|60|0
+9|27224|Curse of Weakness|Rank 7|30000|0|0|61|0
+9|25307|Shadow Bolt|Rank 10|26000|0|0|62|0
+9|27219|Drain Life|Rank 7|30000|0|0|62|0
+9|28176|Fel Armor|Rank 1|34000|0|0|62|0
+9|27263|Shadowburn|Rank 7|1300|0|0|63|0
+9|27211|Soul Fire|Rank 3|42000|0|0|64|0
+9|29722|Incinerate|Rank 1|42000|0|0|64|0
+9|27210|Searing Pain|Rank 7|46000|0|0|65|0
+9|27216|Corruption|Rank 8|46000|0|0|65|0
+9|27250|Create Firestone|Rank 5|51000|0|0|66|0
+9|28172|Create Spellstone|Rank 4|51000|0|0|66|0
+9|29858|Soulshatter||51000|0|0|66|0
+9|27217|Drain Soul|Rank 5|57000|0|0|67|0
+9|27218|Curse of Agony|Rank 7|57000|0|0|67|0
+9|27259|Health Funnel|Rank 8|57000|0|0|67|0
+9|27213|Hellfire|Rank 4|63000|0|0|68|0
+9|27222|Life Tap|Rank 7|56700|0|0|68|0
+9|27223|Death Coil|Rank 4|63000|0|0|68|0
+9|27230|Create Healthstone|Rank 6|63000|0|0|68|0
+9|29893|Ritual of Souls|Rank 1|63000|0|0|68|0
+9|27209|Shadow Bolt|Rank 11|70000|0|0|69|0
+9|27212|Rain of Fire|Rank 5|70000|0|0|69|0
+9|27215|Immolate|Rank 9|70000|0|0|69|0
+9|27220|Drain Life|Rank 8|70000|0|0|69|0
+9|27228|Curse of the Elements|Rank 4|70000|0|0|69|0
+9|28189|Fel Armor|Rank 2|70000|0|0|69|0
+9|30909|Curse of Weakness|Rank 8|70000|0|0|69|0
+9|27238|Create Soulstone|Rank 6|78000|0|0|70|0
+9|27243|Seed of Corruption|Rank 1|78000|0|0|70|0
+9|27260|Demon Armor|Rank 6|78000|0|0|70|0
+9|27265|Dark Pact|Rank 4|1300|0|0|70|0
+9|30405|Unstable Affliction|Rank 3|2500|0|0|70|0
+9|30414|Shadowfury|Rank 3|2500|0|0|70|0
+9|30459|Searing Pain|Rank 8|78000|0|0|70|0
+9|30545|Soul Fire|Rank 4|78000|0|0|70|0
+9|30546|Shadowburn|Rank 8|3900|0|0|70|0
+9|30910|Curse of Doom|Rank 2|78000|0|0|70|0
+9|32231|Incinerate|Rank 2|78000|0|0|70|0
+9|59161|Haunt|Rank 2|2500|0|0|70|0
+9|59170|Chaos Bolt|Rank 2|2500|0|0|70|0
+9|47812|Corruption|Rank 9|160000|0|0|71|0
+9|50511|Curse of Weakness|Rank 9|160000|0|0|71|0
+9|47819|Rain of Fire|Rank 6|160000|0|0|72|0
+9|47886|Create Spellstone|Rank 5|160000|0|0|72|0
+9|47890|Shadow Ward|Rank 5|160000|0|0|72|0
+9|61191|Enslave Demon|Rank 4|70000|0|0|72|0
+9|47859|Death Coil|Rank 5|160000|0|0|73|0
+9|47863|Curse of Agony|Rank 8|160000|0|0|73|0
+9|47871|Create Healthstone|Rank 7|160000|0|0|73|0
+9|47808|Shadow Bolt|Rank 12|160000|0|0|74|0
+9|47814|Searing Pain|Rank 9|160000|0|0|74|0
+9|47837|Incinerate|Rank 3|100000|0|0|74|0
+9|47892|Fel Armor|Rank 3|160000|0|0|74|0
+9|60219|Create Firestone|Rank 6|160000|0|0|74|0
+9|47810|Immolate|Rank 10|160000|0|0|75|0
+9|47824|Soul Fire|Rank 5|160000|0|0|75|0
+9|47826|Shadowburn|Rank 9|8000|0|0|75|0
+9|47835|Seed of Corruption|Rank 2|160000|0|0|75|0
+9|47841|Unstable Affliction|Rank 4|8000|0|0|75|0
+9|47846|Shadowfury|Rank 4|8000|0|0|75|0
+9|47897|Shadowflame|Rank 1|10000|0|0|75|0
+9|59163|Haunt|Rank 3|8000|0|0|75|0
+9|59171|Chaos Bolt|Rank 3|8000|0|0|75|0
+9|47793|Demon Armor|Rank 7|160000|0|0|76|0
+9|47856|Health Funnel|Rank 9|160000|0|0|76|0
+9|47884|Create Soulstone|Rank 7|160000|0|0|76|0
+9|47813|Corruption|Rank 10|160000|0|0|77|0
+9|47855|Drain Soul|Rank 6|160000|0|0|77|0
+9|47823|Hellfire|Rank 5|160000|0|0|78|0
+9|47857|Drain Life|Rank 9|160000|0|0|78|0
+9|47860|Death Coil|Rank 6|160000|0|0|78|0
+9|47865|Curse of the Elements|Rank 5|160000|0|0|78|0
+9|47888|Create Spellstone|Rank 6|160000|0|0|78|0
+9|47891|Shadow Ward|Rank 6|160000|0|0|78|0
+9|47809|Shadow Bolt|Rank 13|160000|0|0|79|0
+9|47815|Searing Pain|Rank 10|160000|0|0|79|0
+9|47820|Rain of Fire|Rank 7|160000|0|0|79|0
+9|47864|Curse of Agony|Rank 9|160000|0|0|79|0
+9|47878|Create Healthstone|Rank 8|160000|0|0|79|0
+9|47893|Fel Armor|Rank 4|160000|0|0|79|0
+9|47811|Immolate|Rank 11|160000|0|0|80|0
+9|47825|Soul Fire|Rank 6|160000|0|0|80|0
+9|47827|Shadowburn|Rank 10|8000|0|0|80|0
+9|47836|Seed of Corruption|Rank 3|160000|0|0|80|0
+9|47838|Incinerate|Rank 4|100000|0|0|80|0
+9|47843|Unstable Affliction|Rank 5|8000|0|0|80|0
+9|47847|Shadowfury|Rank 5|8000|0|0|80|0
+9|47867|Curse of Doom|Rank 3|160000|0|0|80|0
+9|47889|Demon Armor|Rank 8|160000|0|0|80|0
+9|48018|Demonic Circle: Summon||160000|0|0|80|0
+9|48020|Demonic Circle: Teleport||160000|0|0|80|0
+9|57946|Life Tap|Rank 8|160000|0|0|80|0
+9|58887|Ritual of Souls|Rank 2|160000|0|0|80|0
+9|59092|Dark Pact|Rank 5|160000|0|0|80|0
+9|59164|Haunt|Rank 4|8000|0|0|80|0
+9|59172|Chaos Bolt|Rank 4|8000|0|0|80|0
+9|60220|Create Firestone|Rank 7|160000|0|0|80|0
+9|61290|Shadowflame|Rank 2|10000|0|0|80|0
+11|1126|Mark of the Wild|Rank 1|10|0|0|1|0
+11|774|Rejuvenation|Rank 1|100|0|0|4|0
+11|8921|Moonfire|Rank 1|100|0|0|4|0
+11|467|Thorns|Rank 1|100|0|0|6|0
+11|5177|Wrath|Rank 2|100|0|0|6|0
+11|339|Entangling Roots|Rank 1|200|0|0|8|0
+11|5186|Healing Touch|Rank 2|200|0|0|8|0
+11|99|Demoralizing Roar|Rank 1|300|0|0|10|0
+11|1058|Rejuvenation|Rank 2|300|0|0|10|0
+11|5232|Mark of the Wild|Rank 2|300|0|0|10|0
+11|8924|Moonfire|Rank 2|300|0|0|10|0
+11|16689|Nature's Grasp|Rank 1|300|0|0|10|0
+11|5229|Enrage||800|0|0|12|0
+11|8936|Regrowth|Rank 1|800|0|0|12|0
+11|50769|Revive|Rank 1|800|0|0|12|0
+11|782|Thorns|Rank 2|900|0|0|14|0
+11|5178|Wrath|Rank 3|900|0|0|14|0
+11|5187|Healing Touch|Rank 3|900|0|0|14|0
+11|5211|Bash|Rank 1|900|0|0|14|0
+11|779|Swipe (Bear)|Rank 1|1800|0|0|16|0
+11|783|Travel Form|Shapeshift|6000|0|0|16|0
+11|1066|Aquatic Form|Shapeshift|900|0|0|16|0
+11|1430|Rejuvenation|Rank 3|1800|0|0|16|0
+11|8925|Moonfire|Rank 3|1800|0|0|16|0
+11|770|Faerie Fire||1900|0|0|18|0
+11|1062|Entangling Roots|Rank 2|1900|0|0|18|0
+11|2637|Hibernate|Rank 1|1900|0|0|18|0
+11|6808|Maul|Rank 2|1900|0|0|18|0
+11|8938|Regrowth|Rank 2|1900|0|0|18|0
+11|16810|Nature's Grasp|Rank 2|1900|0|0|18|0
+11|16857|Faerie Fire (Feral)||1900|0|0|18|0
+11|768|Cat Form|Shapeshift|2000|0|0|20|0
+11|1079|Rip|Rank 1|2000|0|0|20|0
+11|1082|Claw|Rank 1|2000|0|0|20|0
+11|1735|Demoralizing Roar|Rank 2|2000|0|0|20|0
+11|2912|Starfire|Rank 1|2000|0|0|20|0
+11|5188|Healing Touch|Rank 4|2000|0|0|20|0
+11|5215|Prowl||2000|0|0|20|0
+11|6756|Mark of the Wild|Rank 3|2000|0|0|20|0
+11|20484|Rebirth|Rank 1|2000|0|0|20|0
+11|2090|Rejuvenation|Rank 4|3000|0|0|22|0
+11|2908|Soothe Animal|Rank 1|3000|0|0|22|0
+11|5179|Wrath|Rank 4|3000|0|0|22|0
+11|5221|Shred|Rank 1|3000|0|0|22|0
+11|8926|Moonfire|Rank 4|3000|0|0|22|0
+11|780|Swipe (Bear)|Rank 2|4000|0|0|24|0
+11|1075|Thorns|Rank 3|4000|0|0|24|0
+11|1822|Rake|Rank 1|4000|0|0|24|0
+11|2782|Remove Curse||4000|0|0|24|0
+11|5217|Tiger's Fury|Rank 1|4000|0|0|24|0
+11|8939|Regrowth|Rank 3|4000|0|0|24|0
+11|50768|Revive|Rank 2|4000|0|0|24|0
+11|1850|Dash|Rank 1|4500|0|0|26|0
+11|2893|Abolish Poison||4500|0|0|26|0
+11|5189|Healing Touch|Rank 5|4500|0|0|26|0
+11|6809|Maul|Rank 3|4500|0|0|26|0
+11|8949|Starfire|Rank 2|4500|0|0|26|0
+11|2091|Rejuvenation|Rank 5|5000|0|0|28|0
+11|3029|Claw|Rank 2|5000|0|0|28|0
+11|5195|Entangling Roots|Rank 3|5000|0|0|28|0
+11|5209|Challenging Roar||5000|0|0|28|0
+11|8927|Moonfire|Rank 5|5000|0|0|28|0
+11|8998|Cower|Rank 1|5000|0|0|28|0
+11|9492|Rip|Rank 2|5000|0|0|28|0
+11|16811|Nature's Grasp|Rank 3|5000|0|0|28|0
+11|740|Tranquility|Rank 1|6000|0|0|30|0
+11|5180|Wrath|Rank 5|6000|0|0|30|0
+11|5234|Mark of the Wild|Rank 4|6000|0|0|30|0
+11|6798|Bash|Rank 2|6000|0|0|30|0
+11|6800|Shred|Rank 2|6000|0|0|30|0
+11|8940|Regrowth|Rank 4|6000|0|0|30|0
+11|20739|Rebirth|Rank 2|6000|0|0|30|0
+11|24974|Insect Swarm|Rank 2|6000|0|0|30|0
+11|5225|Track Humanoids||8000|0|0|32|0
+11|6778|Healing Touch|Rank 6|8000|0|0|32|0
+11|6785|Ravage|Rank 1|8000|0|0|32|0
+11|9490|Demoralizing Roar|Rank 3|8000|0|0|32|0
+11|22568|Ferocious Bite|Rank 1|8000|0|0|32|0
+11|769|Swipe (Bear)|Rank 3|10000|0|0|34|0
+11|1823|Rake|Rank 2|10000|0|0|34|0
+11|3627|Rejuvenation|Rank 6|10000|0|0|34|0
+11|8914|Thorns|Rank 4|10000|0|0|34|0
+11|8928|Moonfire|Rank 6|10000|0|0|34|0
+11|8950|Starfire|Rank 3|10000|0|0|34|0
+11|8972|Maul|Rank 4|10000|0|0|34|0
+11|6793|Tiger's Fury|Rank 2|11000|0|0|36|0
+11|8941|Regrowth|Rank 5|11000|0|0|36|0
+11|9005|Pounce|Rank 1|11000|0|0|36|0
+11|9493|Rip|Rank 3|11000|0|0|36|0
+11|22842|Frenzied Regeneration||11000|0|0|36|0
+11|50767|Revive|Rank 3|11000|0|0|36|0
+11|5196|Entangling Roots|Rank 4|12000|0|0|38|0
+11|5201|Claw|Rank 3|12000|0|0|38|0
+11|6780|Wrath|Rank 6|12000|0|0|38|0
+11|8903|Healing Touch|Rank 7|12000|0|0|38|0
+11|8955|Soothe Animal|Rank 2|12000|0|0|38|0
+11|8992|Shred|Rank 3|12000|0|0|38|0
+11|16812|Nature's Grasp|Rank 4|12000|0|0|38|0
+11|18657|Hibernate|Rank 2|12000|0|0|38|0
+11|8907|Mark of the Wild|Rank 5|14000|0|0|40|0
+11|8910|Rejuvenation|Rank 7|14000|0|0|40|0
+11|8918|Tranquility|Rank 2|14000|0|0|40|0
+11|8929|Moonfire|Rank 7|14000|0|0|40|0
+11|9000|Cower|Rank 2|14000|0|0|40|0
+11|9634|Dire Bear Form|Shapeshift|14000|0|0|40|0
+11|16914|Hurricane|Rank 1|14000|0|0|40|0
+11|20719|Feline Grace|Passive|14000|0|0|40|0
+11|20742|Rebirth|Rank 3|14000|0|0|40|0
+11|22827|Ferocious Bite|Rank 2|14000|0|0|40|0
+11|24975|Insect Swarm|Rank 3|14000|0|0|40|0
+11|29166|Innervate||14000|0|0|40|0
+11|62600|Savage Defense|Passive|4500|0|0|40|0
+11|6787|Ravage|Rank 2|16000|0|0|42|0
+11|8951|Starfire|Rank 4|16000|0|0|42|0
+11|9745|Maul|Rank 5|16000|0|0|42|0
+11|9747|Demoralizing Roar|Rank 4|16000|0|0|42|0
+11|9750|Regrowth|Rank 6|16000|0|0|42|0
+11|1824|Rake|Rank 3|18000|0|0|44|0
+11|9752|Rip|Rank 4|18000|0|0|44|0
+11|9754|Swipe (Bear)|Rank 4|18000|0|0|44|0
+11|9756|Thorns|Rank 5|18000|0|0|44|0
+11|9758|Healing Touch|Rank 8|18000|0|0|44|0
+11|22812|Barkskin||18000|0|0|44|0
+11|8905|Wrath|Rank 7|20000|0|0|46|0
+11|8983|Bash|Rank 3|20000|0|0|46|0
+11|9821|Dash|Rank 2|20000|0|0|46|0
+11|9823|Pounce|Rank 2|20000|0|0|46|0
+11|9829|Shred|Rank 4|20000|0|0|46|0
+11|9833|Moonfire|Rank 8|20000|0|0|46|0
+11|9839|Rejuvenation|Rank 8|20000|0|0|46|0
+11|9845|Tiger's Fury|Rank 3|22000|0|0|48|0
+11|9849|Claw|Rank 4|22000|0|0|48|0
+11|9852|Entangling Roots|Rank 5|22000|0|0|48|0
+11|9856|Regrowth|Rank 7|22000|0|0|48|0
+11|16813|Nature's Grasp|Rank 5|22000|0|0|48|0
+11|22828|Ferocious Bite|Rank 3|22000|0|0|48|0
+11|50766|Revive|Rank 4|22000|0|0|48|0
+11|9862|Tranquility|Rank 3|23000|0|0|50|0
+11|9866|Ravage|Rank 3|23000|0|0|50|0
+11|9875|Starfire|Rank 5|23000|0|0|50|0
+11|9880|Maul|Rank 6|23000|0|0|50|0
+11|9884|Mark of the Wild|Rank 6|23000|0|0|50|0
+11|9888|Healing Touch|Rank 9|23000|0|0|50|0
+11|17401|Hurricane|Rank 2|23000|0|0|50|0
+11|20747|Rebirth|Rank 4|23000|0|0|50|0
+11|21849|Gift of the Wild|Rank 1|23000|0|0|50|0
+11|24976|Insect Swarm|Rank 4|12000|0|0|50|0
+11|9834|Moonfire|Rank 9|26000|0|0|52|0
+11|9840|Rejuvenation|Rank 9|26000|0|0|52|0
+11|9892|Cower|Rank 3|26000|0|0|52|0
+11|9894|Rip|Rank 5|26000|0|0|52|0
+11|9898|Demoralizing Roar|Rank 5|26000|0|0|52|0
+11|9830|Shred|Rank 5|28000|0|0|54|0
+11|9857|Regrowth|Rank 8|28000|0|0|54|0
+11|9901|Soothe Animal|Rank 3|28000|0|0|54|0
+11|9904|Rake|Rank 4|28000|0|0|54|0
+11|9908|Swipe (Bear)|Rank 5|28000|0|0|54|0
+11|9910|Thorns|Rank 6|28000|0|0|54|0
+11|9912|Wrath|Rank 8|28000|0|0|54|0
+11|9827|Pounce|Rank 3|30000|0|0|56|0
+11|9889|Healing Touch|Rank 10|30000|0|0|56|0
+11|22829|Ferocious Bite|Rank 4|30000|0|0|56|0
+11|9835|Moonfire|Rank 10|32000|0|0|58|0
+11|9841|Rejuvenation|Rank 10|32000|0|0|58|0
+11|9850|Claw|Rank 5|32000|0|0|58|0
+11|9853|Entangling Roots|Rank 6|32000|0|0|58|0
+11|9867|Ravage|Rank 4|32000|0|0|58|0
+11|9876|Starfire|Rank 6|32000|0|0|58|0
+11|9881|Maul|Rank 7|32000|0|0|58|0
+11|17329|Nature's Grasp|Rank 6|32000|0|0|58|0
+11|18658|Hibernate|Rank 3|32000|0|0|58|0
+11|33982|Mangle (Cat)|Rank 2|1700|0|0|58|0
+11|33986|Mangle (Bear)|Rank 2|1700|0|0|58|0
+11|9846|Tiger's Fury|Rank 4|34000|0|0|60|0
+11|9858|Regrowth|Rank 9|34000|0|0|60|0
+11|9863|Tranquility|Rank 4|34000|0|0|60|0
+11|9885|Mark of the Wild|Rank 7|34000|0|0|60|0
+11|9896|Rip|Rank 6|34000|0|0|60|0
+11|17402|Hurricane|Rank 3|34000|0|0|60|0
+11|20748|Rebirth|Rank 5|34000|0|0|60|0
+11|21850|Gift of the Wild|Rank 2|34000|0|0|60|0
+11|24977|Insect Swarm|Rank 5|34000|0|0|60|0
+11|25297|Healing Touch|Rank 11|34000|0|0|60|0
+11|25298|Starfire|Rank 7|34000|0|0|60|0
+11|25299|Rejuvenation|Rank 11|34000|0|0|60|0
+11|31018|Ferocious Bite|Rank 5|30000|0|0|60|0
+11|31709|Cower|Rank 4|34000|0|0|60|0
+11|33950|Flight Form|Shapeshift|34000|0|0|60|0
+11|50765|Revive|Rank 5|34000|0|0|60|0
+11|53223|Typhoon|Rank 2|600|0|0|60|0
+11|26984|Wrath|Rank 9|39000|0|0|61|0
+11|27001|Shred|Rank 6|39000|0|0|61|0
+11|22570|Maim|Rank 1|43000|0|0|62|0
+11|26978|Healing Touch|Rank 12|43000|0|0|62|0
+11|26998|Demoralizing Roar|Rank 6|43000|0|0|62|0
+11|24248|Ferocious Bite|Rank 6|48000|0|0|63|0
+11|26981|Rejuvenation|Rank 12|48000|0|0|63|0
+11|26987|Moonfire|Rank 11|48000|0|0|63|0
+11|26992|Thorns|Rank 7|53000|0|0|64|0
+11|26997|Swipe (Bear)|Rank 6|53000|0|0|64|0
+11|27003|Rake|Rank 5|53000|0|0|64|0
+11|33763|Lifebloom|Rank 1|53000|0|0|64|0
+11|26980|Regrowth|Rank 10|59000|0|0|65|0
+11|33357|Dash|Rank 3|59000|0|0|65|0
+11|27005|Ravage|Rank 5|66000|0|0|66|0
+11|27006|Pounce|Rank 4|66000|0|0|66|0
+11|33745|Lacerate|Rank 1|66000|0|0|66|0
+11|26986|Starfire|Rank 8|73000|0|0|67|0
+11|26996|Maul|Rank 8|73000|0|0|67|0
+11|27000|Claw|Rank 6|73000|0|0|67|0
+11|27008|Rip|Rank 7|73000|0|0|67|0
+11|26989|Entangling Roots|Rank 7|81000|0|0|68|0
+11|27009|Nature's Grasp|Rank 7|81000|0|0|68|0
+11|33983|Mangle (Cat)|Rank 3|1700|0|0|68|0
+11|33987|Mangle (Bear)|Rank 3|1900|0|0|68|0
+11|26979|Healing Touch|Rank 13|90000|0|0|69|0
+11|26982|Rejuvenation|Rank 13|90000|0|0|69|0
+11|26985|Wrath|Rank 10|90000|0|0|69|0
+11|26994|Rebirth|Rank 6|90000|0|0|69|0
+11|27004|Cower|Rank 5|90000|0|0|69|0
+11|50764|Revive|Rank 6|90000|0|0|69|0
+11|26983|Tranquility|Rank 5|100000|0|0|70|0
+11|26988|Moonfire|Rank 12|100000|0|0|70|0
+11|26990|Mark of the Wild|Rank 8|100000|0|0|70|0
+11|26991|Gift of the Wild|Rank 3|100000|0|0|70|0
+11|26995|Soothe Animal|Rank 4|100000|0|0|70|0
+11|27002|Shred|Rank 7|100000|0|0|70|0
+11|27012|Hurricane|Rank 4|100000|0|0|70|0
+11|27013|Insect Swarm|Rank 6|200000|0|0|70|0
+11|33786|Cyclone||100000|0|0|70|0
+11|53199|Starfall|Rank 2|10000|0|0|70|0
+11|53225|Typhoon|Rank 3|1700|0|0|70|0
+11|53248|Wild Growth|Rank 2|1700|0|0|70|0
+11|40120|Swift Flight Form|Shapeshift|200000|762|300|71|0
+11|48442|Regrowth|Rank 11|200000|0|0|71|0
+11|48559|Demoralizing Roar|Rank 7|200000|0|0|71|0
+11|49799|Rip|Rank 8|200000|0|0|71|0
+11|50212|Tiger's Fury|Rank 5|200000|0|0|71|0
+11|62078|Swipe (Cat)|Rank 1|200000|0|0|71|0
+11|48450|Lifebloom|Rank 2|200000|0|0|72|0
+11|48464|Starfire|Rank 9|200000|0|0|72|0
+11|48561|Swipe (Bear)|Rank 7|200000|0|0|72|0
+11|48573|Rake|Rank 6|200000|0|0|72|0
+11|48576|Ferocious Bite|Rank 7|200000|0|0|72|0
+11|48479|Maul|Rank 9|200000|0|0|73|0
+11|48567|Lacerate|Rank 2|200000|0|0|73|0
+11|48569|Claw|Rank 7|200000|0|0|73|0
+11|48578|Ravage|Rank 6|200000|0|0|73|0
+11|48377|Healing Touch|Rank 14|200000|0|0|74|0
+11|48459|Wrath|Rank 11|200000|0|0|74|0
+11|49802|Maim|Rank 2|200000|0|0|74|0
+11|53307|Thorns|Rank 8|200000|0|0|74|0
+11|48440|Rejuvenation|Rank 14|200000|0|0|75|0
+11|48446|Tranquility|Rank 6|200000|0|0|75|0
+11|48462|Moonfire|Rank 13|200000|0|0|75|0
+11|48563|Mangle (Bear)|Rank 4|10000|0|0|75|0
+11|48565|Mangle (Cat)|Rank 4|10000|0|0|75|0
+11|48571|Shred|Rank 8|200000|0|0|75|0
+11|52610|Savage Roar|Rank 1|200000|0|0|75|0
+11|53200|Starfall|Rank 3|10000|0|0|75|0
+11|53226|Typhoon|Rank 4|10000|0|0|75|0
+11|53249|Wild Growth|Rank 3|10000|0|0|75|0
+11|48575|Cower|Rank 6|200000|0|0|76|0
+11|48443|Regrowth|Rank 12|200000|0|0|77|0
+11|48560|Demoralizing Roar|Rank 8|200000|0|0|77|0
+11|48562|Swipe (Bear)|Rank 8|200000|0|0|77|0
+11|49803|Pounce|Rank 5|200000|0|0|77|0
+11|48465|Starfire|Rank 10|200000|0|0|78|0
+11|48574|Rake|Rank 7|200000|0|0|78|0
+11|48577|Ferocious Bite|Rank 8|200000|0|0|78|0
+11|53308|Entangling Roots|Rank 8|200000|0|0|78|0
+11|53312|Nature's Grasp|Rank 8|200000|0|0|78|0
+11|48378|Healing Touch|Rank 15|200000|0|0|79|0
+11|48461|Wrath|Rank 12|200000|0|0|79|0
+11|48477|Rebirth|Rank 7|200000|0|0|79|0
+11|48480|Maul|Rank 10|200000|0|0|79|0
+11|48570|Claw|Rank 8|200000|0|0|79|0
+11|48579|Ravage|Rank 7|200000|0|0|79|0
+11|50213|Tiger's Fury|Rank 6|200000|0|0|79|0
+11|48441|Rejuvenation|Rank 15|200000|0|0|80|0
+11|48447|Tranquility|Rank 7|200000|0|0|80|0
+11|48451|Lifebloom|Rank 3|200000|0|0|80|0
+11|48463|Moonfire|Rank 14|200000|0|0|80|0
+11|48467|Hurricane|Rank 5|200000|0|0|80|0
+11|48468|Insect Swarm|Rank 7|200000|0|0|80|0
+11|48469|Mark of the Wild|Rank 9|200000|0|0|80|0
+11|48470|Gift of the Wild|Rank 4|200000|0|0|80|0
+11|48564|Mangle (Bear)|Rank 5|10000|0|0|80|0
+11|48566|Mangle (Cat)|Rank 5|10000|0|0|80|0
+11|48568|Lacerate|Rank 3|200000|0|0|80|0
+11|48572|Shred|Rank 9|200000|0|0|80|0
+11|49800|Rip|Rank 9|200000|0|0|80|0
+11|50464|Nourish|Rank 1|200000|0|0|80|0
+11|50763|Revive|Rank 7|200000|0|0|80|0
+11|53201|Starfall|Rank 4|10000|0|0|80|0
+11|53251|Wild Growth|Rank 4|10000|0|0|80|0
+11|61384|Typhoon|Rank 5|10000|0|0|80|0
