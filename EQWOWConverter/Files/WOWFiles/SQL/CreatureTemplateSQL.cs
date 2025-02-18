@@ -37,7 +37,12 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(CreatureTemplate creatureTemplate, float scale)
         {
             // Determine flags and types
+            int typeFlags = 0;
             int npcFlags = 0;
+            int trainerType = 0;
+            int trainerClass = 0;
+            int gossipMenuID = 0;
+            string iconName = string.Empty;
             if (creatureTemplate.MerchantID != 0)
                 npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
             if (creatureTemplate.IsBanker == true)
@@ -45,22 +50,17 @@ namespace EQWOWConverter.WOWFiles
             if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
             {
                 npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
+                npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
+                npcFlags = 179;
+                gossipMenuID = 4471;
+                trainerType = 0;    // 0 = Class Trainer
+                trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
+                iconName = "Trainer";
             }
-            
-            int typeFlags = 0;
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
 
-            int trainerType = 0;
-            int trainerClass = 0;
-            int gossipMenuID = 0;
-            if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
-            {
-                trainerType = 0;    // 0 = Class Trainer
-                gossipMenuID = 4662;
-                trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
-            }
 
             int unitFlags = 0;
 
@@ -74,7 +74,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("KillCredit2", 0);
             newRow.AddString("name", 100, creatureTemplate.Name);
             newRow.AddString("subname", 100, creatureTemplate.SubName);
-            newRow.AddString("IconName", 100, string.Empty);
+            newRow.AddString("IconName", 100, iconName);
             newRow.AddInt("gossip_menu_id", gossipMenuID);
             newRow.AddInt("minlevel", creatureTemplate.Level);
             newRow.AddInt("maxlevel", creatureTemplate.Level);

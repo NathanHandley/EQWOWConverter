@@ -1402,7 +1402,7 @@ namespace EQWOWConverter
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate, scale);
                     creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
-
+                    
                     // If it's a vendor, add the vendor records too
                     if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
                     {
@@ -1418,8 +1418,12 @@ namespace EQWOWConverter
                         }
                     }
 
+                    // Trainers need a line in the npc trainers table
+                    if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                        npcTrainerSQL.AddRowForClassTrainer(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+
                     // Kill rewards
-                    foreach(CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
+                    foreach (CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
                         modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
                 }
             }
@@ -1553,7 +1557,7 @@ namespace EQWOWConverter
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
 
-            // Class Trainers
+            // Trainer Abilities
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
                 if (classType == ClassType.All || classType == ClassType.None)
@@ -1561,7 +1565,7 @@ namespace EQWOWConverter
 
                 int lineID = SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(classType);
                 foreach (SpellClassTrainerAbility trainerAbility in SpellClassTrainerAbility.GetTrainerSpellsForClass(classType))
-                    npcTrainerSQL.AddRow(lineID, trainerAbility);
+                    npcTrainerSQL.AddRowForClassAbility(lineID, trainerAbility);
             }
 
             // Output them

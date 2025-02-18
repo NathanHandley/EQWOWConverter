@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Spells;
+using System.Text;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -22,10 +23,26 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_START.ToString() + " AND `ID` <= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_END + ";";
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_START.ToString() + " AND `ID` <= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_END + ";");
+            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `ID` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
+            return stringBuilder.ToString();
         }
 
-        public void AddRow(int lineID, SpellClassTrainerAbility trainerAbility)
+        public void AddRowForClassTrainer(int spellLinesID, int creatureTemplateEntryID)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("ID", creatureTemplateEntryID);
+            newRow.AddInt("SpellID", spellLinesID * -1); // Making it a negative number forces a reference group lookup at the end
+            newRow.AddInt("MoneyCost", 0);
+            newRow.AddInt("ReqSkillLine", 0);
+            newRow.AddInt("ReqSkillRank", 0);
+            newRow.AddInt("ReqLevel", 0);
+            newRow.AddInt("ReqSpell", 0);
+            Rows.Add(newRow);
+        }
+
+        public void AddRowForClassAbility(int lineID, SpellClassTrainerAbility trainerAbility)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", lineID);
