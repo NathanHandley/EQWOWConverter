@@ -298,7 +298,6 @@ namespace EQWOWConverter
         public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_ELITE = 20f;
         public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_ELITERARE = 80f;
         public static readonly float CONFIG_CREATURE_STAT_MOD_HP_SET_BOSS = 200f;
-
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_ADD = 0.2f;
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_MIN = 0.8f;
         public static readonly float CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL = 1.5f;
@@ -321,6 +320,18 @@ namespace EQWOWConverter
 
         // Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)
         public static readonly float CONFIG_CREATURE_DEFAULT_DETECTION_RANGE = 20f;
+
+        // ID for the class trainer menu text (328 exists already and is just "Greetings, $n")
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_NPC_TEXT_ID = 328;
+
+        // ID for the class trainer menu broadcast texts 
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID = 2548; // Pre-exists, "I would like to train."
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID = 62295; // Pre-exists, "I wish to unlearn my talents."
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID = 33762; // Pre-exists, "I wish to know about Dual Talent Specialization."
+
+        // IDs for menus specific to class trainer
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists
+        public static readonly int CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = 10371; // Pre-exists
 
         //=====================================================================
         // Items
@@ -434,6 +445,10 @@ namespace EQWOWConverter
         // Start row for `game_tele` records. (~2000-2400)
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_START = 2000;
         public static readonly int CONFIG_SQL_GAMETELE_ROWID_END = 2400;
+
+        // Start and end IDs for custom gossip menu records
+        public static readonly int CONFIG_SQL_GOSSIPMENU_MENUID_START = 62000;
+        public static readonly int CONFIG_SQL_GOSSIPMENU_MENUID_END = 69999;
 
         // Start and end IDs for template entries
         public static readonly int CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START = 85000;

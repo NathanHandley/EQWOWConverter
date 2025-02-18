@@ -1342,6 +1342,8 @@ namespace EQWOWConverter
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
+            GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
+            GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
@@ -1388,6 +1390,27 @@ namespace EQWOWConverter
                 }
             }
 
+            // Pre-generate class trainer menus
+            Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
+            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            {
+                if (classType == ClassType.All || classType == ClassType.None)
+                    continue;
+
+                // Base menu
+                int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
+                classTrainerMenuIDs.Add(classType, gossipMenuID);
+                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CONFIG_CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
+
+                // Menu options
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 0, 3, "I would like to train.", 
+                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 1, 0, "I wish to unlearn my talents", 
+                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
+                gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.", 
+                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
+            }
+
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
@@ -1398,6 +1421,16 @@ namespace EQWOWConverter
                 {
                     // Calculate the scale
                     float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
+
+                    // Class Trainers
+                    if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                    {
+                        // Trainers need a line in the npc trainers table
+                        npcTrainerSQL.AddRowForClassTrainer(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+
+                        // Associate the menu
+                        creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                    }
 
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate, scale);
@@ -1416,11 +1449,7 @@ namespace EQWOWConverter
 
                             npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
                         }
-                    }
-
-                    // Trainers need a line in the npc trainers table
-                    if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
-                        npcTrainerSQL.AddRowForClassTrainer(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+                    }                      
 
                     // Kill rewards
                     foreach (CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
@@ -1578,6 +1607,8 @@ namespace EQWOWConverter
             creatureTemplateSQL.SaveToDisk("creature_template");
             creatureTemplateModelSQL.SaveToDisk("creature_template_model");
             gameTeleSQL.SaveToDisk("game_tele");
+            gossipMenuSQL.SaveToDisk("gossip_menu");
+            gossipMenuOptionSQL.SaveToDisk("gossip_menu_option");
             instanceTemplateSQL.SaveToDisk("instance_template");
             itemTemplateSQL.SaveToDisk("item_template");
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation");

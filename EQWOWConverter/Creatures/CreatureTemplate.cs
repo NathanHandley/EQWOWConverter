@@ -61,6 +61,7 @@ namespace EQWOWConverter.Creatures
         public bool CanAssist = false;
         public bool IsBanker = false;
         public ClassType ClassTrainerType = ClassType.None;
+        public int GossipMenuID = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
         private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
