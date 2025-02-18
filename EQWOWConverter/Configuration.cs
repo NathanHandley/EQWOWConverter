@@ -441,6 +441,7 @@ namespace EQWOWConverter
 
         // Start ID for npc_trainer entries
         public static readonly int CONFIG_SQL_NPCTRAINER_ID_START = 210000;
+        public static readonly int CONFIG_SQL_NPCTRAINER_ID_END = 211000;
 
         // Start ID for pool_template data rows (reserve 40k records)
         public static readonly int CONFIG_SQL_POOL_TEMPLATE_ID_START = 110000;

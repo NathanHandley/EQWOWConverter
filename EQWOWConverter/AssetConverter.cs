@@ -19,6 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.Spells;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
@@ -1344,6 +1345,7 @@ namespace EQWOWConverter
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+            NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
             NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
@@ -1551,6 +1553,17 @@ namespace EQWOWConverter
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
 
+            // Class Trainers
+            foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
+            {
+                if (classType == ClassType.All || classType == ClassType.None)
+                    continue;
+
+                int lineID = SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(classType);
+                foreach (SpellClassTrainerAbility trainerAbility in SpellClassTrainerAbility.GetTrainerSpellsForClass(classType))
+                    npcTrainerSQL.AddRow(lineID, trainerAbility);
+            }
+
             // Output them
             areaTriggerSQL.SaveToDisk("areatrigger");
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport");
@@ -1565,6 +1578,7 @@ namespace EQWOWConverter
             itemTemplateSQL.SaveToDisk("item_template");
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation");
             npcVendorSQL.SaveToDisk("npc_vendor");
+            npcTrainerSQL.SaveToDisk("npc_trainer");
             poolCreatureSQL.SaveToDisk("pool_creature");
             poolPoolSQL.SaveToDisk("pool_pool");
             poolTemplateSQL.SaveToDisk("pool_template");

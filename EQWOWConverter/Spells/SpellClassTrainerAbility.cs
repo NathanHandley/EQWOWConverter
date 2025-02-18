@@ -47,14 +47,14 @@ namespace EQWOWConverter.Spells
 
         private static void PopulateClassTrainerAbilities()
         {
-            // Generate the IDs on a per-class basis (always negative)
-            int curID = Configuration.CONFIG_SQL_NPCTRAINER_ID_START * -1;
+            // Generate the IDs on a per-class basis
+            int curID = Configuration.CONFIG_SQL_NPCTRAINER_ID_START;
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
                 if (classType == ClassType.All || classType == ClassType.None)
                     continue;
                 TrainerSpellIDsByClassType.Add(classType, curID);
-                curID--;
+                curID++;
             }
 
             // Read in the spell list
