@@ -424,9 +424,9 @@ namespace EQWOWConverter
         public static readonly int CONFIG_SQL_CREATURE_GUID_LOW = 310000;
         public static readonly int CONFIG_SQL_CREATURE_GUID_HIGH = 399999;
 
-        // Record identifier for the creature template SQL table, need at least 25k
-        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 210000;
-        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 249999;
+        // Record identifier for the creature template SQL table, Need just under 11k
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW = 45000;
+        public static readonly int CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
 
         // Start GUIDs for gameobjects
         public static readonly int CONFIG_SQL_GAMEOBJECT_GUID_START = 310000;
