@@ -1365,6 +1365,13 @@ namespace EQWOWConverter
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
                     gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
 
+                // Spirit Healers for graveyards
+                ZonePropertiesGraveyard graveyard = ZonePropertiesGraveyard.GetGraveyardByShortName(zone.ShortName);
+                int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                creatureSQL.AddRow(spiritHealerGUID, Configuration.CONFIG_ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, zone.ZoneProperties.DBCMapID,
+                    Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), 
+                    graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None);
+
                 // Zone lines
                 foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {

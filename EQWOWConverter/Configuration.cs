@@ -182,6 +182,12 @@ namespace EQWOWConverter
         // BSP tree nodes won't generate deeper than this many iterations
         public static readonly int CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH = 50;
 
+        // Which ID to use if a graveyard isn't mapped for a zone.  13 is in east commons next to EC tunnel.
+        public static readonly int CONFIG_ZONE_DEFAULT_GRAVEYARD_ID = 13;
+
+        // ID for the creature template for the spirit healer.
+        public static readonly int CONFIG_ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = 6491;
+
         //=====================================================================
         // Liquid
         //=====================================================================
