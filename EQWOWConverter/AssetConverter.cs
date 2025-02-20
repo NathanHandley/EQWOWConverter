@@ -1109,6 +1109,8 @@ namespace EQWOWConverter
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
+            WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
+            worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
             wmoAreaTableDBC.LoadFromDisk(dbcInputFolder, "WMOAreaTable.dbc");
             ZoneMusicDBC zoneMusicDBC = new ZoneMusicDBC();
@@ -1273,6 +1275,13 @@ namespace EQWOWConverter
                 }
             }
 
+            // Graveyards
+            foreach(ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
+            {
+                int mapID = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName).DBCMapID;
+                worldSafeLocsDBC.AddRow(graveyard, mapID);
+            }
+
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
@@ -1314,6 +1323,8 @@ namespace EQWOWConverter
             soundAmbienceDBC.SaveToDisk(dbcOutputServerFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
+            worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
+            worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);            
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
             wmoAreaTableDBC.SaveToDisk(dbcOutputServerFolder);
             zoneMusicDBC.SaveToDisk(dbcOutputClientFolder);
@@ -1341,9 +1352,11 @@ namespace EQWOWConverter
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+            GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
             GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
+            GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
@@ -1593,6 +1606,19 @@ namespace EQWOWConverter
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
 
+            // Graveyards
+            foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
+            {
+                // Should be one for each ghost zone
+                foreach(string zoneShortName in graveyard.GhostZoneShortNames)
+                {
+                    int areaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortName).DefaultZoneArea.DBCAreaTableID);
+                    graveyardZoneSQL.AddRow(graveyard, areaID);
+                }
+                int mapID = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName).DBCMapID;
+                gameGraveyardSQL.AddRow(graveyard, mapID);
+            }            
+
             // Trainer Abilities
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
@@ -1613,9 +1639,11 @@ namespace EQWOWConverter
             creatureModelInfoSQL.SaveToDisk("creature_model_info");
             creatureTemplateSQL.SaveToDisk("creature_template");
             creatureTemplateModelSQL.SaveToDisk("creature_template_model");
+            gameGraveyardSQL.SaveToDisk("game_graveyard");
             gameTeleSQL.SaveToDisk("game_tele");
             gossipMenuSQL.SaveToDisk("gossip_menu");
             gossipMenuOptionSQL.SaveToDisk("gossip_menu_option");
+            graveyardZoneSQL.SaveToDisk("graveyard_zone");
             instanceTemplateSQL.SaveToDisk("instance_template");
             itemTemplateSQL.SaveToDisk("item_template");
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation");
