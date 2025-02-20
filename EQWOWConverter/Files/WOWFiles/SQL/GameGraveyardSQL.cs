@@ -30,9 +30,9 @@ namespace EQWOWConverter.WOWFiles
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", graveyard.WorldSafeLocsDBCID);
             newRow.AddInt("Map", mapID);
-            newRow.AddFloat("x", graveyard.RespawnX);
-            newRow.AddFloat("y", graveyard.RespawnY);
-            newRow.AddFloat("z", graveyard.RespawnZ);
+            newRow.AddFloat("x", MathF.Round(graveyard.RespawnX, 6));
+            newRow.AddFloat("y", MathF.Round(graveyard.RespawnY, 6));
+            newRow.AddFloat("z", MathF.Round(graveyard.RespawnZ, 6));
             newRow.AddString("Comment", 255, graveyard.Description);
             Rows.Add(newRow);
         }

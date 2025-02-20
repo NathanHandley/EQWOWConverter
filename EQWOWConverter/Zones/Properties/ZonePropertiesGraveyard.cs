@@ -86,6 +86,9 @@ namespace EQWOWConverter.Zones
                 GraveyardsByID.Add(graveyard.ID, graveyard);
 
                 CUR_WORLDSAFELOCS_ID++;
+
+                // Map self
+                graveyard.GhostZoneShortNames.Add(graveyard.LocationShortName);
             }
 
             // Load the zone mapping
@@ -96,7 +99,20 @@ namespace EQWOWConverter.Zones
             {
                 string zoneShortName = columns["ZoneShortName"];
                 int graveyardID = int.Parse(columns["GraveyardID"]);
+                if (graveyardID == -1)
+                {
+                    Logger.WriteDetail("Graveyard for zone '" + zoneShortName + "' is -1, so wow will search for the nearest on death in that zone");
+                    continue;
+                }
                 ZonePropertiesGraveyard curGraveyard = GetGraveyardByID(graveyardID);
+
+                // Skip cases where the ghost zone and the spawn zone match (since that would already be mapped)
+                if (curGraveyard.LocationShortName.ToLower() == zoneShortName.ToLower())
+                {
+                    Logger.WriteDetail("Graveyard for zone '" + zoneShortName + "' had a mapping to itself, so skipping the map step");
+                    continue;
+                }
+
                 curGraveyard.GhostZoneShortNames.Add(zoneShortName);
             }
         }

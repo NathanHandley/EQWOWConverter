@@ -1605,7 +1605,8 @@ namespace EQWOWConverter
                 // Should be one for each ghost zone
                 foreach(string zoneShortName in graveyard.GhostZoneShortNames)
                 {
-                    int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortName).DefaultZoneArea.DBCAreaTableID);
+                    string zoneShortNameLower = zoneShortName.ToLower();
+                    int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortNameLower).DefaultZoneArea.DBCAreaTableID);
                     graveyardZoneSQL.AddRow(graveyard, ghostZoneAreaID);
                 }
 

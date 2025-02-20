@@ -25,9 +25,9 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt(graveyard.WorldSafeLocsDBCID); // ID
             newRow.AddInt(mapID); // Continent (MapID)
-            newRow.AddFloat(graveyard.RespawnX); // X
-            newRow.AddFloat(graveyard.RespawnY); // Y
-            newRow.AddFloat(graveyard.RespawnZ); // Z
+            newRow.AddFloat(MathF.Round(graveyard.RespawnX, 6)); // X
+            newRow.AddFloat(MathF.Round(graveyard.RespawnY, 6)); // Y
+            newRow.AddFloat(MathF.Round(graveyard.RespawnZ, 6)); // Z
             newRow.AddStringLang(graveyard.Description); // Description            
             Rows.Add(newRow);
         }

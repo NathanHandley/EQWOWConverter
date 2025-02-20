@@ -49,10 +49,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spawnMask", 1);
             newRow.AddInt("phaseMask", 1);
             newRow.AddInt("equipment_id", 0);
-            newRow.AddFloat("position_x", xPosition);
-            newRow.AddFloat("position_y", yPosition);
-            newRow.AddFloat("position_z", zPosition);
-            newRow.AddFloat("orientation", orientation);
+            newRow.AddFloat("position_x", MathF.Round(xPosition, 6));
+            newRow.AddFloat("position_y", MathF.Round(yPosition, 6));
+            newRow.AddFloat("position_z", MathF.Round(zPosition, 6));
+            newRow.AddFloat("orientation", MathF.Round(orientation, 6));
             newRow.AddInt("spawntimesecs", 300);
             newRow.AddFloat("wander_distance", 0);
             newRow.AddInt("currentwaypoint", currentWaypoint);
