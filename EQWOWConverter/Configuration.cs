@@ -422,6 +422,10 @@ namespace EQWOWConverter
         // ID for sounds found in SoundAmbience.dbc
         public static readonly int CONFIG_DBCID_SOUNDAMBIENCE_ID_START = 600;
 
+        // IDs for WorldSafeLocs.dbc
+        public static readonly int CONFIG_DBCID_WORLDSAFELOCS_ID_START = 1800;
+        public static readonly int CONFIG_DBCID_WORLDSAFELOCS_ID_END = 2000;
+
         // Specific rows in WMOAreaTable.dbc
         public static readonly int CONFIG_DBCID_WMOAREATABLE_ID_START = 52000;
 
