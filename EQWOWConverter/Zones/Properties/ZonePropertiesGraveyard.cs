@@ -21,7 +21,6 @@ namespace EQWOWConverter.Zones
     internal class ZonePropertiesGraveyard
     {
         private static Dictionary<int, ZonePropertiesGraveyard> GraveyardsByID = new Dictionary<int, ZonePropertiesGraveyard>();
-        private static Dictionary<string, ZonePropertiesGraveyard> GraveyardsByShortName = new Dictionary<string, ZonePropertiesGraveyard>();
 
         private static int CUR_WORLDSAFELOCS_ID = Configuration.CONFIG_DBCID_WORLDSAFELOCS_ID_START;
 
@@ -52,22 +51,9 @@ namespace EQWOWConverter.Zones
                 return GraveyardsByID[ID];
         }
 
-        public static ZonePropertiesGraveyard GetGraveyardByShortName(string shortName)
-        {
-            if (GraveyardsByShortName.Count == 0)
-                PopulateGraveyardData();
-            if (GraveyardsByShortName.ContainsKey(shortName) == false)
-            {
-                Logger.WriteError("Unable to find graveyard with shortname reference of '" + shortName + "', so returning default");
-                return GraveyardsByID[Configuration.CONFIG_ZONE_DEFAULT_GRAVEYARD_ID];
-            }
-            else
-                return GraveyardsByShortName[shortName];
-        }
-
         public static List<ZonePropertiesGraveyard> GetAllGraveyards()
         {
-            if (GraveyardsByShortName.Count == 0)
+            if (GraveyardsByID.Count == 0)
                 PopulateGraveyardData();
             return GraveyardsByID.Values.ToList();
         }
@@ -112,7 +98,6 @@ namespace EQWOWConverter.Zones
                 int graveyardID = int.Parse(columns["GraveyardID"]);
                 ZonePropertiesGraveyard curGraveyard = GetGraveyardByID(graveyardID);
                 curGraveyard.GhostZoneShortNames.Add(zoneShortName);
-                GraveyardsByShortName.Add(zoneShortName, curGraveyard);
             }
         }
     }
