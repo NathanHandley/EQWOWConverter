@@ -515,7 +515,6 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Creating icon image files...");
 
-            // Make sure the folder is there
             string miscImagesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
             if (Directory.Exists(miscImagesFolder) == false)
             {
@@ -523,27 +522,44 @@ namespace EQWOWConverter
                 return;
             }
 
-            // Clear out the destination foldre
+            // Item Icons
+            Logger.WriteDetail("Creating item icons.");
             string itemIconsFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
-            if (Directory.Exists(itemIconsFolder) == true)
-                Directory.Delete(itemIconsFolder, true);
-            Directory.CreateDirectory(itemIconsFolder);
-
-            // Slice up the images
             try
             {
+                if (Directory.Exists(itemIconsFolder) == true)
+                    Directory.Delete(itemIconsFolder, true);
+                Directory.CreateDirectory(itemIconsFolder);
                 string curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem01.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 0, itemIconsFolder);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 0, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem02.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 192, itemIconsFolder);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 192, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem03.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 384, itemIconsFolder);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 384, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem04.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 175, 576, itemIconsFolder);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 175, 576, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Logger.WriteError("Error occurred while creating icon files.");
+                Logger.WriteError("Error occurred while creating icon files.  Item icons threw an exception");
+                return;
+            }
+
+            // Spell Icons
+            Logger.WriteDetail("Creating spell icons.");
+            string spellIconsFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            try
+            {
+                if (Directory.Exists(spellIconsFolder) == true)
+                    Directory.Delete(spellIconsFolder, true);
+                Directory.CreateDirectory(spellIconsFolder);
+                string curIconImageSourceFile = Path.Combine(miscImagesFolder, "spelicon.png");
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 19, 0, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_X, 5, "Spell_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 4, 19, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_X, 5, "Spell_EQ_", 20);
+            }
+            catch (Exception)
+            {
+                Logger.WriteError("Error occurred while creating icon files.  Spell icons threw an exception");
                 return;
             }
 

@@ -33,7 +33,14 @@ namespace EQWOWConverter
         private static string InputCharacterTextureFolderPath = string.Empty;
         private static string BLPConverterFullPath = string.Empty;
 
-        public static void GenerateItemIconImagesFromFile(string inputImageToCutUp, int numberOfIconImagesToMake, int startingIconImageIndex, string outputFolderPath)
+        public enum IconSeriesDirection
+        {
+            ALONG_X,
+            ALONG_Y        
+        }
+
+        public static void GenerateItemIconImagesFromFile(string inputImageToCutUp, int numberOfIconImagesToMake, int valueToAddToOutputIndexNumber, string outputFolderPath,
+            int iconInitialWidth, int iconInitialHeight, IconSeriesDirection iconSeriesDirection, int iconsInSeries, string filePrefix, int startIndex)
         {
             Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp +"' started...");
 
@@ -69,7 +76,8 @@ namespace EQWOWConverter
             // Output the image
             using (Bitmap inputIconsMosaic = new Bitmap(inputImageToCutUp))
             {
-                for (int i = 0; i < numberOfIconImagesToMake; i++)
+                int numOfMade = 0;
+                for (int i = startIndex; i < numberOfIconImagesToMake + startIndex; i++)
                 {
                     // Reset the mask
                     for (int x = 0; x < 64; x++)
@@ -77,24 +85,34 @@ namespace EQWOWConverter
                             outputMask[x][y] = 0;
 
                     // Calculate the start position for this image
-                    int inputPixelStartX = (i / 12) * 40;
-                    int inputPixelStartY = (i % 12) * 40;
+                    int inputPixelStartX;
+                    int inputPixelStartY;
+                    if (iconSeriesDirection == IconSeriesDirection.ALONG_Y)
+                    {
+                        inputPixelStartX = (i / iconsInSeries) * iconInitialWidth;
+                        inputPixelStartY = (i % iconsInSeries) * iconInitialHeight;
+                    }
+                    else
+                    {
+                        inputPixelStartX = (i % iconsInSeries) * iconInitialWidth;
+                        inputPixelStartY = (i / iconsInSeries) * iconInitialHeight;
+                    }
 
                     // Create an image representing only the source image slice
-                    using (Bitmap sourceIconImage = new Bitmap(40, 40))
+                    using (Bitmap sourceIconImage = new Bitmap(iconInitialWidth, iconInitialHeight))
                     {
                         // Copy the pixel data into the source icon image
-                        for (int y = 0; y < 40; y++)
+                        for (int y = 0; y < iconInitialHeight; y++)
                         {
-                            for (int x = 0; x < 40; x++)
+                            for (int x = 0; x < iconInitialWidth; x++)
                             {
                                 int curInputPixelStartX = inputPixelStartX + x;
                                 int curInputPixelStartY = inputPixelStartY + y;
 
                                 // Add some offsets for specific icons that are not well centered
-                                int iconID = i + startingIconImageIndex;
+                                int iconID = i + valueToAddToOutputIndexNumber;
                                 int addedYOffset = 0;
-                                if (iconID == 13 || iconID == 33) // Wrist and a Belt
+                                if (filePrefix == "INV_EQ_" && (iconID == 13 || iconID == 33)) // Wrist and a Belt
                                     addedYOffset = 8;
 
                                 // Output only non-alpha pixels
@@ -108,9 +126,9 @@ namespace EQWOWConverter
                         }
 
                         // Create the border (layer 1)
-                        for (int x = 1; x < 39; x++)
+                        for (int x = 1; x < iconInitialWidth-1; x++)
                         {
-                            for (int y = 1; y < 39; y++)
+                            for (int y = 1; y < iconInitialHeight-1; y++)
                             {
                                 // Skip written-to
                                 if (outputMask[x][y] == 1)
@@ -126,9 +144,9 @@ namespace EQWOWConverter
                         }
 
                         // Create the border (layer 2)
-                        for (int x = 1; x < 39; x++)
+                        for (int x = 1; x < iconInitialWidth-1; x++)
                         {
-                            for (int y = 1; y <= 39; y++)
+                            for (int y = 1; y <= iconInitialHeight-1; y++)
                             {
                                 // Skip written-to
                                 if (outputMask[x][y] > 0)
@@ -202,12 +220,12 @@ namespace EQWOWConverter
                                         int blendedG = (int)((scaledPixelColor.G * scaledAlpha) + (targetPixelColor.G * targetAlpha * (1 - scaledAlpha)));
                                         int blendedB = (int)((scaledPixelColor.B * scaledAlpha) + (targetPixelColor.B * targetAlpha * (1 - scaledAlpha)));
                                         outputImage.SetPixel(curPixelOutputX, curPixelOutputY, Color.FromArgb((int)(blendedAlpha * 255), blendedR, blendedG, blendedB));
-                                        //outputImage.SetPixel(curPixelOutputX, curPixelOutputY, scaledPixelColor);
                                     }
                                 }
 
                                 // Output the image
-                                string outputFileName = Path.Combine(outputFolderPath, "INV_EQ_" + (i + startingIconImageIndex).ToString() + ".png");
+                                string outputFileName = Path.Combine(outputFolderPath, filePrefix + (numOfMade + valueToAddToOutputIndexNumber).ToString() + ".png");
+                                numOfMade++;
                                 outputImage.Save(outputFileName);
                             }
                         }
