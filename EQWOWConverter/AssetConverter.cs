@@ -1130,6 +1130,8 @@ namespace EQWOWConverter
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
+            SpellDBC spellDBC = new SpellDBC();
+            spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -1344,6 +1346,8 @@ namespace EQWOWConverter
             soundAmbienceDBC.SaveToDisk(dbcOutputServerFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
+            spellDBC.SaveToDisk(dbcOutputClientFolder);
+            spellDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);            
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
