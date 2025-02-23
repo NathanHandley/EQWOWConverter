@@ -77,6 +77,9 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
 
+            // Icons
+            CopyIconFiles();
+
             // Items
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertItemsAndLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
@@ -503,9 +506,6 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Converting items and loot...");
             
-            // Icons
-            CreateItemIconFiles();
-
             // Generate item templates
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
@@ -1846,12 +1846,9 @@ namespace EQWOWConverter
             Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
         }
 
-        public void CreateItemIconFiles()
+        public void CopyIconFiles()
         {
-            Logger.WriteInfo("Copying item icon files...");
-
-            // Make sure items are created
-            SortedDictionary<int, ItemTemplate> itemTemplates = ItemTemplate.GetItemTemplatesByEQDBIDs();
+            Logger.WriteInfo("Copying icon files...");
 
             // Clear and create the directory
             string iconOutputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Interface", "ICONS");
@@ -1859,12 +1856,23 @@ namespace EQWOWConverter
                 Directory.Delete(iconOutputFolder, true);
             Directory.CreateDirectory(iconOutputFolder);
 
-            // Copy all of the icons
-            string iconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            // Items
+            SortedDictionary<int, ItemTemplate> itemTemplates = ItemTemplate.GetItemTemplatesByEQDBIDs();       
+            string itemIconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
             {
-                string sourceIconFile = Path.Combine(iconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
+                string sourceIconFile = Path.Combine(itemIconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
                 string outputIconFile = Path.Combine(iconOutputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
+                File.Copy(sourceIconFile, outputIconFile, true);
+            }
+
+            // Spells
+            string spellIconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            string[] spellIconFiles = Directory.GetFiles(spellIconInputFolder);
+            foreach(string spellIconFile in spellIconFiles)
+            {
+                string sourceIconFile = spellIconFile;
+                string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileNameWithoutExtension(spellIconFile) + ".blp");
                 File.Copy(sourceIconFile, outputIconFile, true);
             }
         }
