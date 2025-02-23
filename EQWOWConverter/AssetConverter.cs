@@ -895,21 +895,42 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Deploying sql to server...");
 
-            // Verify there is a scripts folder
-            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
-            if (Directory.Exists(sqlScriptFolder) == false)
-            {
-                Logger.WriteError("Could not deploy SQL scripts to server. Path '" + sqlScriptFolder + "' did not exist");
-                return;
-            }
-
             // Deploy all of the scripts
             try
             {
+                // Character scripts
+                string charactersSQLScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.Characters.ToString());
+                if (Directory.Exists(charactersSQLScriptFolder) == false)
+                {
+                    Logger.WriteError("Could not deploy SQL scripts to server. Path '" + charactersSQLScriptFolder + "' did not exist");
+                    return;
+                }
+                using (MySqlConnection connection = new MySqlConnection(Configuration.CONFIG_DEPLOY_SQL_CONNECTION_STRING_CHARACTERS))
+                {
+                    connection.Open();
+                    string[] sqlFiles = Directory.GetFiles(charactersSQLScriptFolder);
+                    foreach (string sqlFile in sqlFiles)
+                    {
+                        MySqlCommand command = new MySqlCommand();
+                        command.Connection = connection;
+                        command.CommandTimeout = 288000;
+                        command.CommandText = FileTool.ReadAllDataFromFile(sqlFile);
+                        command.ExecuteNonQuery();
+                    }
+                    connection.Close();
+                }
+
+                // World scripts
+                string worldSQLScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.World.ToString());
+                if (Directory.Exists(worldSQLScriptFolder) == false)
+                {
+                    Logger.WriteError("Could not deploy SQL scripts to server. Path '" + worldSQLScriptFolder + "' did not exist");
+                    return;
+                }
                 using (MySqlConnection connection = new MySqlConnection(Configuration.CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD))
                 {
                     connection.Open();
-                    string[] sqlFiles = Directory.GetFiles(sqlScriptFolder);
+                    string[] sqlFiles = Directory.GetFiles(worldSQLScriptFolder);
                     foreach(string sqlFile in sqlFiles)
                     {
                         MySqlCommand command = new MySqlCommand();
@@ -1344,6 +1365,9 @@ namespace EQWOWConverter
                 Directory.Delete(sqlScriptFolder, true);
 
             // Create the SQL Scripts
+            // Characters
+            ModEverquestCharacterHomebindSQL modEverquestCharacterHomebindSQL = new ModEverquestCharacterHomebindSQL();            
+            // World
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
             CreatureSQL creatureSQL = new CreatureSQL();
@@ -1633,28 +1657,31 @@ namespace EQWOWConverter
             }
 
             // Output them
-            areaTriggerSQL.SaveToDisk("areatrigger");
-            areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport");
-            creatureSQL.SaveToDisk("creature");
-            creatureAddonSQL.SaveToDisk("creature_addon");
-            creatureLootTableSQL.SaveToDisk("creature_loot_template");
-            creatureModelInfoSQL.SaveToDisk("creature_model_info");
-            creatureTemplateSQL.SaveToDisk("creature_template");
-            creatureTemplateModelSQL.SaveToDisk("creature_template_model");
-            gameGraveyardSQL.SaveToDisk("game_graveyard");
-            gameTeleSQL.SaveToDisk("game_tele");
-            gossipMenuSQL.SaveToDisk("gossip_menu");
-            gossipMenuOptionSQL.SaveToDisk("gossip_menu_option");
-            graveyardZoneSQL.SaveToDisk("graveyard_zone");
-            instanceTemplateSQL.SaveToDisk("instance_template");
-            itemTemplateSQL.SaveToDisk("item_template");
-            modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation");
-            npcVendorSQL.SaveToDisk("npc_vendor");
-            npcTrainerSQL.SaveToDisk("npc_trainer");
-            poolCreatureSQL.SaveToDisk("pool_creature");
-            poolPoolSQL.SaveToDisk("pool_pool");
-            poolTemplateSQL.SaveToDisk("pool_template");
-            waypointDataSQL.SaveToDisk("waypoint_data");
+            // Characters
+            modEverquestCharacterHomebindSQL.SaveToDisk("mod_everquest_character_homebind", SQLFileType.Characters);
+            // World
+            areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
+            areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
+            creatureSQL.SaveToDisk("creature", SQLFileType.World);
+            creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
+            creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
+            creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
+            creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
+            creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
+            gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
+            gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);
+            gossipMenuSQL.SaveToDisk("gossip_menu", SQLFileType.World);
+            gossipMenuOptionSQL.SaveToDisk("gossip_menu_option", SQLFileType.World);
+            graveyardZoneSQL.SaveToDisk("graveyard_zone", SQLFileType.World);
+            instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
+            itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
+            modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
+            npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
+            poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
+            poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
+            poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
+            waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,

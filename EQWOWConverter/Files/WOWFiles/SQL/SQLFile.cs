@@ -109,12 +109,12 @@ namespace EQWOWConverter.WOWFiles
 
         public abstract string DeleteRowSQL();
 
-        public void SaveToDisk(string tableName)
+        public void SaveToDisk(string tableName, SQLFileType fileType)
         {
             Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' started...");
 
             // Determine the path and create the folder if needed
-            string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
+            string outputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts", fileType.ToString());
             FileTool.CreateBlankDirectory(outputFolder, true);
 
             // Generate the leading part of the SQL statement
