@@ -1132,6 +1132,8 @@ namespace EQWOWConverter
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
             SpellDBC spellDBC = new SpellDBC();
             spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
+            SpellIconDBC spellIconDBC = new SpellIconDBC();
+            spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -1305,6 +1307,10 @@ namespace EQWOWConverter
                 worldSafeLocsDBC.AddRow(graveyard, mapID);
             }
 
+            // Spell Icons (there are 23 base ones)
+            for(int i = 0; i < 23; i++)
+                spellIconDBC.AddRow(i);
+
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
@@ -1348,6 +1354,8 @@ namespace EQWOWConverter
             soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
             spellDBC.SaveToDisk(dbcOutputClientFolder);
             spellDBC.SaveToDisk(dbcOutputServerFolder);
+            spellIconDBC.SaveToDisk(dbcOutputClientFolder);
+            spellIconDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);            
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);

@@ -14,18 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Google.Protobuf.WellKnownTypes;
-using System.Xml.Linq;
-using System;
+using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow()
+        public void AddRow(SpellTemplate spellTemplate)
         {
             DBCRow newRow = new DBCRow();            
-            newRow.AddInt(0); // ID
+            newRow.AddInt(spellTemplate.ID); // ID
             newRow.AddInt(0); // Category
             newRow.AddInt(0); // DispelType
             newRow.AddInt(0); // Mechanic
@@ -58,7 +56,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // AuraInterruptFlags
             newRow.AddInt(0); // ChannelInterruptFlags
             newRow.AddInt(0); // ProcTypeMask
-            newRow.AddInt(0); // ProcChance
+            newRow.AddInt(101); // ProcChance
             newRow.AddInt(0); // ProcCharges
             newRow.AddInt(0); // MaxLevel
             newRow.AddInt(0); // BaseLevel
@@ -156,12 +154,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt(0); // EffectSpellClassMaskC2
             newRow.AddInt(0); // SpellVisualID1
             newRow.AddInt(0); // SpellVisualID2
-            newRow.AddInt(0); // SpellIconID
+            newRow.AddInt(spellTemplate.SpellIconID); // SpellIconID
             newRow.AddInt(0); // ActiveIconID
             newRow.AddInt(0); // SpellPriority
-            newRow.AddStringLang(""); // Name_Lang
+            newRow.AddStringLang(spellTemplate.Name); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
-            newRow.AddStringLang(""); // Description_Lang
+            newRow.AddStringLang(spellTemplate.Description); // Description_Lang
             newRow.AddStringLang(""); // AuraDescription_Lang
             newRow.AddInt(0); // ManaCostPct
             newRow.AddInt(0); // StartRecoveryCategory
