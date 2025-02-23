@@ -88,7 +88,8 @@ namespace EQWOWConverter
         // If true and when deploying client files, clear the cache
         public static readonly bool CONFIG_DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
 
-        // If deploying to SQL, you need to set this to something real that points to your world database
+        // If deploying to SQL, you need to set these to something real that points to your databases
+        public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
         public static readonly string CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
 
         // ====================================================================
