@@ -604,7 +604,7 @@ namespace EQWOWConverter
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";
             gateSpellTemplate.ID = Configuration.CONFIG_SPELLS_GATE_SPELLDBC_ID;
-            gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath";
+            gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             spellTemplates.Add(gateSpellTemplate);
@@ -613,7 +613,7 @@ namespace EQWOWConverter
             SpellTemplate bineAffinitySpellTemplate = new SpellTemplate();
             bineAffinitySpellTemplate.Name = "Bind Affinity";
             bineAffinitySpellTemplate.ID = Configuration.CONFIG_SPELLS_BIND_SPELLDBC_ID;
-            bineAffinitySpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath";
+            bineAffinitySpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bineAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
             bineAffinitySpellTemplate.CastTimeInMS = 6000;
             spellTemplates.Add(bineAffinitySpellTemplate);
@@ -1920,7 +1920,7 @@ namespace EQWOWConverter
 
             // Spells
             string spellIconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
-            string[] spellIconFiles = Directory.GetFiles(spellIconInputFolder);
+            string[] spellIconFiles = Directory.GetFiles(spellIconInputFolder, "*.blp");
             foreach(string spellIconFile in spellIconFiles)
             {
                 string sourceIconFile = spellIconFile;
