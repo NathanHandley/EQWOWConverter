@@ -607,6 +607,7 @@ namespace EQWOWConverter
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
+            gateSpellTemplate.RecoveryTimeInMS = 8000;
             spellTemplates.Add(gateSpellTemplate);
 
             // Bind Affinity
@@ -616,6 +617,7 @@ namespace EQWOWConverter
             bineAffinitySpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bineAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
             bineAffinitySpellTemplate.CastTimeInMS = 6000;
+            bineAffinitySpellTemplate.RecoveryTimeInMS = 12000;
             spellTemplates.Add(bineAffinitySpellTemplate);
 
             Logger.WriteDetail("Generating spells completed.");

@@ -50,9 +50,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(0); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex
-            newRow.AddUInt32(0); // RecoveryTime
+            newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
-            newRow.AddUInt32(0); // InterruptFlags
+            newRow.AddUInt32(15); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
             newRow.AddUInt32(0); // AuraInterruptFlags
             newRow.AddUInt32(0); // ChannelInterruptFlags
             newRow.AddUInt32(0); // ProcTypeMask

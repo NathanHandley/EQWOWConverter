@@ -41,6 +41,7 @@ namespace EQWOWConverter.Spells
         protected int _SpellCastTimeDBCID = 1; // First row, instant cast
         public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
         public int RangeIndexDBCID = 1; // 1 = self for now
+        public UInt32 RecoveryTimeInMS = 0;
 
         public static int GenerateID()
         {
