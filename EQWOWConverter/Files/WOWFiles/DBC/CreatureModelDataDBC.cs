@@ -29,20 +29,20 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(CreatureModelTemplate creatureModelTemplate, string modelName)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(creatureModelTemplate.DBCCreatureModelDataID); // ID
+            newRow.AddInt32(creatureModelTemplate.DBCCreatureModelDataID); // ID
             newRow.AddPackedFlags(0); // Flags,0x40: ?, 0x80: Can Form Mount, 0x10000: Has Wheels
             newRow.AddString(modelName); // Model Path ("Creature\....mdx), always ending in mdx
-            newRow.AddInt(1); // SizeClass (Big models are ~4, most 1)
+            newRow.AddInt32(1); // SizeClass (Big models are ~4, most 1)
             newRow.AddFloat(1); // ModelScale
-            newRow.AddInt(1); // BloodID (UnitBloodLevels.dbc)
-            newRow.AddInt(-1); // FootprintTextureID, -1 is none and references FootprintTextures.dbc
+            newRow.AddInt32(1); // BloodID (UnitBloodLevels.dbc)
+            newRow.AddInt32(-1); // FootprintTextureID, -1 is none and references FootprintTextures.dbc
             newRow.AddFloat(18); // FootprintTextureLength, almost always 18
             newRow.AddFloat(12); // FootprintTextureWidth, most 12, but 0 - 20
             newRow.AddFloat(1); // FootprintParticleScale, most 1, but 0 - 5
-            newRow.AddInt(0); // FoleyMaterialID, always 0
-            newRow.AddInt(0); // FootstepShakeSize, references CameraShakes.dbc
-            newRow.AddInt(0); // DeathThudShakeSize, references CameraShakes.dbc
-            newRow.AddInt(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
+            newRow.AddInt32(0); // FoleyMaterialID, always 0
+            newRow.AddInt32(0); // FootstepShakeSize, references CameraShakes.dbc
+            newRow.AddInt32(0); // DeathThudShakeSize, references CameraShakes.dbc
+            newRow.AddInt32(creatureModelTemplate.DBCCreatureSoundDataID); // SoundID, references CreatureSoundData.dbc
             newRow.AddFloat(0.6944f); // CollisionWidth, must be > 0.41670012920929
             newRow.AddFloat(2.083f); // CollisionHeight
             newRow.AddFloat(0); // MountHeight

@@ -29,21 +29,21 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ItemDisplayInfo itemDisplayInfo)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(itemDisplayInfo.DBCID);
+            newRow.AddInt32(itemDisplayInfo.DBCID);
             newRow.AddString(string.Empty); // ModelName 1
             newRow.AddString(string.Empty); // ModelName 2
             newRow.AddString(string.Empty); // ModelTexture 1
             newRow.AddString(string.Empty); // ModelTexture 2
             newRow.AddString(itemDisplayInfo.IconFileNameNoExt); // InventoryIcon 1
             newRow.AddString(string.Empty); // InventoryIcon 2
-            newRow.AddInt(0); // GeosetGroup 1
-            newRow.AddInt(0); // GeosetGroup 2
-            newRow.AddInt(0); // GeosetGroup 3
-            newRow.AddInt(0); // Flags
-            newRow.AddInt(0); // SpellVisualID
-            newRow.AddInt(7); // GroupSoundIndex (comes from ItemGroupSounds.dbc)
-            newRow.AddInt(0); // HelmetGeosetVis 1
-            newRow.AddInt(0); // HelmetGeosetVis 2
+            newRow.AddInt32(0); // GeosetGroup 1
+            newRow.AddInt32(0); // GeosetGroup 2
+            newRow.AddInt32(0); // GeosetGroup 3
+            newRow.AddInt32(0); // Flags
+            newRow.AddInt32(0); // SpellVisualID
+            newRow.AddInt32(7); // GroupSoundIndex (comes from ItemGroupSounds.dbc)
+            newRow.AddInt32(0); // HelmetGeosetVis 1
+            newRow.AddInt32(0); // HelmetGeosetVis 2
             newRow.AddString(string.Empty); // Texture 1
             newRow.AddString(string.Empty); // Texture 2
             newRow.AddString(string.Empty); // Texture 3
@@ -52,8 +52,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString(string.Empty); // Texture 6
             newRow.AddString(string.Empty); // Texture 7
             newRow.AddString(string.Empty); // Texture 8
-            newRow.AddInt(0); // ItemVisual
-            newRow.AddInt(0); // ParticleColorID
+            newRow.AddInt32(0); // ItemVisual
+            newRow.AddInt32(0); // ParticleColorID
             Rows.Add(newRow);
         }
     }

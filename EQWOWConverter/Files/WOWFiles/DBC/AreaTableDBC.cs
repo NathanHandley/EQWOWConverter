@@ -54,26 +54,26 @@ namespace EQWOWConverter.WOWFiles
                 ambienceID = areaSound.DBCID;
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(id);
-            newRow.AddInt(mapID); // Continent ID
-            newRow.AddInt(parentAreaID);
-            newRow.AddInt(areaBit);
+            newRow.AddInt32(id);
+            newRow.AddInt32(mapID); // Continent ID
+            newRow.AddInt32(parentAreaID);
+            newRow.AddInt32(areaBit);
             newRow.AddPackedFlags(0); // Flags
-            newRow.AddInt(0); // Sound Provider Preferences
-            newRow.AddInt(0); // Sound Provider Preferences - Underwater
-            newRow.AddInt(ambienceID);
-            newRow.AddInt(zoneMusicID);
-            newRow.AddInt(0); // IntroSound
-            newRow.AddInt(0); // Exploration Level
+            newRow.AddInt32(0); // Sound Provider Preferences
+            newRow.AddInt32(0); // Sound Provider Preferences - Underwater
+            newRow.AddInt32(ambienceID);
+            newRow.AddInt32(zoneMusicID);
+            newRow.AddInt32(0); // IntroSound
+            newRow.AddInt32(0); // Exploration Level
             newRow.AddStringLang(areaName);
-            newRow.AddInt(0); // Faction Group Mask
-            newRow.AddInt(0); // LiquidTypeID 1
-            newRow.AddInt(0); // LiquidTypeID 2
-            newRow.AddInt(0); // LiquidTypeID 3
-            newRow.AddInt(0); // LiquidTypeID 4
+            newRow.AddInt32(0); // Faction Group Mask
+            newRow.AddInt32(0); // LiquidTypeID 1
+            newRow.AddInt32(0); // LiquidTypeID 2
+            newRow.AddInt32(0); // LiquidTypeID 3
+            newRow.AddInt32(0); // LiquidTypeID 4
             newRow.AddFloat(-5000f); // Minimum Elevation
             newRow.AddFloat(0); // Ambient Multiplier
-            newRow.AddInt(0); // LightID
+            newRow.AddInt32(0); // LightID
             Rows.Add(newRow);
         }
     }

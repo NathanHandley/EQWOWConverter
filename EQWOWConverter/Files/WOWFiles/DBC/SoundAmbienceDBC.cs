@@ -28,9 +28,9 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int Id, int daySoundAmbienceID, int nightSoundAmbienceID)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(Id);
-            newRow.AddInt(daySoundAmbienceID);
-            newRow.AddInt(nightSoundAmbienceID);
+            newRow.AddInt32(Id);
+            newRow.AddInt32(daySoundAmbienceID);
+            newRow.AddInt32(nightSoundAmbienceID);
             Rows.Add(newRow);
         }
     }

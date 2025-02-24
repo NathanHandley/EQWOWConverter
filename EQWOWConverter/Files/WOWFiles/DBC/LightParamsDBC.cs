@@ -28,10 +28,10 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ZoneEnvironmentSettings.ZoneEnvironmentParameters environmentParameters)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(environmentParameters.DBCLightParamsID);
-            newRow.AddInt(environmentParameters.HighlightSky);
-            newRow.AddInt(0); // Light Skybox ID
-            newRow.AddInt(0); // Cloud Type ID
+            newRow.AddInt32(environmentParameters.DBCLightParamsID);
+            newRow.AddInt32(environmentParameters.HighlightSky);
+            newRow.AddInt32(0); // Light Skybox ID
+            newRow.AddInt32(0); // Cloud Type ID
             newRow.AddFloat(environmentParameters.Glow);
             newRow.AddFloat(0.5f); // Water Shallow Alpha
             newRow.AddFloat(1f); // Water Deep Alpha

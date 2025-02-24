@@ -27,10 +27,10 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int id, string name, string fileName)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(id);
+            newRow.AddInt32(id);
             newRow.AddString(name);
             newRow.AddString(fileName);
-            newRow.AddInt(0); // HasWideScreen
+            newRow.AddInt32(0); // HasWideScreen
             Rows.Add(newRow);
         }
     }

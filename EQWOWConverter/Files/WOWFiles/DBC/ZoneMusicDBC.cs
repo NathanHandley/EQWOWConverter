@@ -28,14 +28,14 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int Id, string setName, int soundIDDay, int soundIDNight)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(Id);
+            newRow.AddInt32(Id);
             newRow.AddString(setName);
-            newRow.AddInt(180000); // Silence Interval Min - Day
-            newRow.AddInt(180000); // Silence Interval Min - Night
-            newRow.AddInt(300000); // Silence Interval Max - Day
-            newRow.AddInt(300000); // Silence Interval Max - Night
-            newRow.AddInt(soundIDDay);
-            newRow.AddInt(soundIDNight);
+            newRow.AddInt32(180000); // Silence Interval Min - Day
+            newRow.AddInt32(180000); // Silence Interval Min - Night
+            newRow.AddInt32(300000); // Silence Interval Max - Day
+            newRow.AddInt32(300000); // Silence Interval Max - Night
+            newRow.AddInt32(soundIDDay);
+            newRow.AddInt32(soundIDNight);
             Rows.Add(newRow);
         }
     }

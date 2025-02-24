@@ -30,25 +30,25 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int id, string modelNameAndRelativePath, int loopSoundEntryID, BoundingBox geoBoundingBox)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(id);
+            newRow.AddInt32(id);
             newRow.AddString(modelNameAndRelativePath);
-            newRow.AddInt(0); // Stand SoundEntries.ID
-            newRow.AddInt(0); // Open SoundEntries.ID
-            newRow.AddInt(loopSoundEntryID); // Loop SoundEntries.ID
-            newRow.AddInt(0); // Close SoundEntries.ID
-            newRow.AddInt(0); // Destroy SoundEntries.ID
-            newRow.AddInt(0); // Opened SoundEntries.ID
-            newRow.AddInt(0); // Custom0 SoundEntries.ID
-            newRow.AddInt(0); // Custom1 SoundEntries.ID
-            newRow.AddInt(0); // Custom2 SoundEntries.ID
-            newRow.AddInt(0); // Custom3 SoundEntries.ID
+            newRow.AddInt32(0); // Stand SoundEntries.ID
+            newRow.AddInt32(0); // Open SoundEntries.ID
+            newRow.AddInt32(loopSoundEntryID); // Loop SoundEntries.ID
+            newRow.AddInt32(0); // Close SoundEntries.ID
+            newRow.AddInt32(0); // Destroy SoundEntries.ID
+            newRow.AddInt32(0); // Opened SoundEntries.ID
+            newRow.AddInt32(0); // Custom0 SoundEntries.ID
+            newRow.AddInt32(0); // Custom1 SoundEntries.ID
+            newRow.AddInt32(0); // Custom2 SoundEntries.ID
+            newRow.AddInt32(0); // Custom3 SoundEntries.ID
             newRow.AddFloat(geoBoundingBox.BottomCorner.X); // GeoBox Min X
             newRow.AddFloat(geoBoundingBox.BottomCorner.Y); // GeoBox Min Y
             newRow.AddFloat(geoBoundingBox.BottomCorner.Z); // GeoBox Min Z
             newRow.AddFloat(geoBoundingBox.TopCorner.X); // GeoBox Max X
             newRow.AddFloat(geoBoundingBox.TopCorner.Y); // GeoBox Max Y
             newRow.AddFloat(geoBoundingBox.TopCorner.Z); // GeoBox Max Z
-            newRow.AddInt(0); // ObjectEffectPackageID (?)
+            newRow.AddInt32(0); // ObjectEffectPackageID (?)
             Rows.Add(newRow);
         }
     }

@@ -28,12 +28,12 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int mapID, int mapDifficultyID)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(mapDifficultyID);
-            newRow.AddInt(mapID);
-            newRow.AddInt(0); // Difficulty, not 100% sure what this should be
+            newRow.AddInt32(mapDifficultyID);
+            newRow.AddInt32(mapID);
+            newRow.AddInt32(0); // Difficulty, not 100% sure what this should be
             newRow.AddStringLang(""); // Rejection Message
-            newRow.AddInt(0); // Raid Duration
-            newRow.AddInt(0); // Max Players
+            newRow.AddInt32(0); // Raid Duration
+            newRow.AddInt32(0); // Max Players
             newRow.AddString(""); // Difficulty String (?)
             Rows.Add(newRow);
         }

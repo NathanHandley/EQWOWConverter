@@ -23,10 +23,10 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int dbcID, int castTime)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(dbcID); // ID
-            newRow.AddInt(castTime); // Base Casting Time in milliseconds
-            newRow.AddInt(0); // Amount of milliseconds deducted per spell level
-            newRow.AddInt(0); // Minimum cast time in milliseconds
+            newRow.AddInt32(dbcID); // ID
+            newRow.AddInt32(castTime); // Base Casting Time in milliseconds
+            newRow.AddInt32(0); // Amount of milliseconds deducted per spell level
+            newRow.AddInt32(0); // Minimum cast time in milliseconds
             Rows.Add(newRow);
         }
 

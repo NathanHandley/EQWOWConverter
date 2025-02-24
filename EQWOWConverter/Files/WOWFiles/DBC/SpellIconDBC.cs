@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
             string textureFileName = "INTERFACE\\ICONS\\Spell_EQ_" + iconID.ToString();
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(dbcID);
+            newRow.AddInt32(dbcID);
             newRow.AddString(textureFileName);
             Rows.Add(newRow);
         }

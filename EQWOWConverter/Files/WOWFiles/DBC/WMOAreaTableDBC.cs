@@ -33,17 +33,17 @@ namespace EQWOWConverter.WOWFiles
             CURRENT_ID++;
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(ID);
-            newRow.AddInt(wmoID);
-            newRow.AddInt(0); // NameSetID
-            newRow.AddInt(wmoGroupID);
-            newRow.AddInt(0); // SoundProviderPref
-            newRow.AddInt(0); // SoundProviderPref - Underwater
-            newRow.AddInt(0); // AmbienceID
-            newRow.AddInt(zoneMusic);
-            newRow.AddInt(0); // Intro Sound
+            newRow.AddInt32(ID);
+            newRow.AddInt32(wmoID);
+            newRow.AddInt32(0); // NameSetID
+            newRow.AddInt32(wmoGroupID);
+            newRow.AddInt32(0); // SoundProviderPref
+            newRow.AddInt32(0); // SoundProviderPref - Underwater
+            newRow.AddInt32(0); // AmbienceID
+            newRow.AddInt32(zoneMusic);
+            newRow.AddInt32(0); // Intro Sound
             newRow.AddPackedFlags(0); // Flags
-            newRow.AddInt(areaTableID);
+            newRow.AddInt32(areaTableID);
             newRow.AddStringLang(areaName);            
             Rows.Add(newRow);
         }      

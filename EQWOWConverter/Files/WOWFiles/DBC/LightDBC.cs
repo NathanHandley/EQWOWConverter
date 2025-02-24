@@ -36,21 +36,21 @@ namespace EQWOWConverter.WOWFiles
             CURRENT_LIGHTID++;
 
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(lightID);
-            newRow.AddInt(mapId); // "ContinentID" (map ID)
+            newRow.AddInt32(lightID);
+            newRow.AddInt32(mapId); // "ContinentID" (map ID)
             newRow.AddFloat(zoneEnvironmentSettings.PositionX);
             newRow.AddFloat(zoneEnvironmentSettings.PositionY);
             newRow.AddFloat(zoneEnvironmentSettings.PositionZ);
             newRow.AddFloat(zoneEnvironmentSettings.FalloffStart);
             newRow.AddFloat(zoneEnvironmentSettings.FalloffEnd);
-            newRow.AddInt(zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID);
-            newRow.AddInt(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID);
-            newRow.AddInt(zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID);
-            newRow.AddInt(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater.DBCLightParamsID);
-            newRow.AddInt(4); // Death Parameters ID
-            newRow.AddInt(0); // Unknown 1
-            newRow.AddInt(0); // Unknown 2
-            newRow.AddInt(0); // Unknown 3
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeather.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersClearWeatherUnderwater.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersStormyWeather.DBCLightParamsID);
+            newRow.AddInt32(zoneEnvironmentSettings.ParamatersStormyWeatherUnderwater.DBCLightParamsID);
+            newRow.AddInt32(4); // Death Parameters ID
+            newRow.AddInt32(0); // Unknown 1
+            newRow.AddInt32(0); // Unknown 2
+            newRow.AddInt32(0); // Unknown 3
             Rows.Add(newRow);
         }
     }

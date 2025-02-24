@@ -36,8 +36,8 @@ namespace EQWOWConverter.WOWFiles
             float boxLength, float boxWidth, float boxHeight, float boxOrientation)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(areaTriggerID);
-            newRow.AddInt(mapID);
+            newRow.AddInt32(areaTriggerID);
+            newRow.AddInt32(mapID);
             newRow.AddFloat(positionX);
             newRow.AddFloat(positionY);
             newRow.AddFloat(positionZ);

@@ -31,8 +31,8 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(Sound sound, string fileNameWithExt, string directory)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(sound.DBCID);
-            newRow.AddInt(Convert.ToInt32(sound.Type));
+            newRow.AddInt32(sound.DBCID);
+            newRow.AddInt32(Convert.ToInt32(sound.Type));
             newRow.AddString(sound.Name);
             newRow.AddString(fileNameWithExt);
             newRow.AddString(string.Empty); // FileName 2
@@ -44,16 +44,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString(string.Empty); // FileName 8
             newRow.AddString(string.Empty); // FileName 9
             newRow.AddString(string.Empty); // FileName 10
-            newRow.AddInt(1); // Frequency 1
-            newRow.AddInt(0); // Frequency 2
-            newRow.AddInt(0); // Frequency 3
-            newRow.AddInt(0); // Frequency 4
-            newRow.AddInt(0); // Frequency 5
-            newRow.AddInt(0); // Frequency 6
-            newRow.AddInt(0); // Frequency 7
-            newRow.AddInt(0); // Frequency 8
-            newRow.AddInt(0); // Frequency 9
-            newRow.AddInt(0); // Frequency 10
+            newRow.AddInt32(1); // Frequency 1
+            newRow.AddInt32(0); // Frequency 2
+            newRow.AddInt32(0); // Frequency 3
+            newRow.AddInt32(0); // Frequency 4
+            newRow.AddInt32(0); // Frequency 5
+            newRow.AddInt32(0); // Frequency 6
+            newRow.AddInt32(0); // Frequency 7
+            newRow.AddInt32(0); // Frequency 8
+            newRow.AddInt32(0); // Frequency 9
+            newRow.AddInt32(0); // Frequency 10
             newRow.AddString(directory);
             newRow.AddFloat(sound.GetVolume());
             int flags = 0;
@@ -64,8 +64,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddPackedFlags(flags);
             newRow.AddFloat(sound.MinDistance);
             newRow.AddFloat(sound.DistanceCutoff);
-            newRow.AddInt(2);
-            newRow.AddInt(0); // SoundEntriesAdvancedID
+            newRow.AddInt32(2);
+            newRow.AddInt32(0); // SoundEntriesAdvancedID
             Rows.Add(newRow);
         }
     }

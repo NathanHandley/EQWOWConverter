@@ -34,23 +34,23 @@ namespace EQWOWConverter.WOWFiles
 
             // Fill the row
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(creatureFaction.FactionTemplateID); // ID
-            newRow.AddInt(creatureFaction.FactionID); // Faction.ID
-            newRow.AddInt(flags); // Flags
-            newRow.AddInt(8); // FactionGroup.ID (lots of 0, 1, 8)
-            newRow.AddInt(0); // FriendGroup (bitmask field)
+            newRow.AddInt32(creatureFaction.FactionTemplateID); // ID
+            newRow.AddInt32(creatureFaction.FactionID); // Faction.ID
+            newRow.AddInt32(flags); // Flags
+            newRow.AddInt32(8); // FactionGroup.ID (lots of 0, 1, 8)
+            newRow.AddInt32(0); // FriendGroup (bitmask field)
             if (creatureFaction.ForceAgro == false && creatureFaction.ReputationIndex < 0)
-                newRow.AddInt(0); // EnemyGroup (bitmask field)
+                newRow.AddInt32(0); // EnemyGroup (bitmask field)
             else
-                newRow.AddInt(1); // EnemyGroup (bitmask field) - 1 = All players (and pets)
-            newRow.AddInt(creatureFaction.EnemyFaction1); // Enemies 1
-            newRow.AddInt(creatureFaction.EnemyFaction2); // Enemies 2
-            newRow.AddInt(creatureFaction.EnemyFaction3); // Enemies 3
-            newRow.AddInt(creatureFaction.EnemyFaction4); // Enemies 4
-            newRow.AddInt(creatureFaction.FactionID); // Friend 1 (help self)
-            newRow.AddInt(0); // Friend 2
-            newRow.AddInt(0); // Friend 3
-            newRow.AddInt(0); // Friend 4
+                newRow.AddInt32(1); // EnemyGroup (bitmask field) - 1 = All players (and pets)
+            newRow.AddInt32(creatureFaction.EnemyFaction1); // Enemies 1
+            newRow.AddInt32(creatureFaction.EnemyFaction2); // Enemies 2
+            newRow.AddInt32(creatureFaction.EnemyFaction3); // Enemies 3
+            newRow.AddInt32(creatureFaction.EnemyFaction4); // Enemies 4
+            newRow.AddInt32(creatureFaction.FactionID); // Friend 1 (help self)
+            newRow.AddInt32(0); // Friend 2
+            newRow.AddInt32(0); // Friend 3
+            newRow.AddInt32(0); // Friend 4
             Rows.Add(newRow);
         }
     }

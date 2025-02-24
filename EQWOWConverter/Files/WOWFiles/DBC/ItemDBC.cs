@@ -31,14 +31,14 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ItemTemplate itemTemplate)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(itemTemplate.WOWEntryID);
-            newRow.AddInt(itemTemplate.ClassID);
-            newRow.AddInt(itemTemplate.SubClassID);
-            newRow.AddInt(-1); // Sound Override SubclassID
-            newRow.AddInt(itemTemplate.Material);
-            newRow.AddInt(itemTemplate.DisplayID);
-            newRow.AddInt(Convert.ToInt32(itemTemplate.InventoryType));
-            newRow.AddInt(itemTemplate.SheatheType);
+            newRow.AddInt32(itemTemplate.WOWEntryID);
+            newRow.AddInt32(itemTemplate.ClassID);
+            newRow.AddInt32(itemTemplate.SubClassID);
+            newRow.AddInt32(-1); // Sound Override SubclassID
+            newRow.AddInt32(itemTemplate.Material);
+            newRow.AddInt32(itemTemplate.DisplayID);
+            newRow.AddInt32(Convert.ToInt32(itemTemplate.InventoryType));
+            newRow.AddInt32(itemTemplate.SheatheType);
             Rows.Add(newRow);
         }
     }

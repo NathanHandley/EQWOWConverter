@@ -67,20 +67,20 @@ namespace EQWOWConverter.WOWFiles
             {
             }
 
-            public class DBCFieldInt : DBCField
+            public class DBCFieldInt32 : DBCField
             {
-                public DBCFieldInt(Int32 value) { Value = value; }
+                public DBCFieldInt32(Int32 value) { Value = value; }
                 public Int32 Value;
             }
 
-            public void AddInt(Int32 value)
+            public void AddInt32(Int32 value)
             {
-                AddedFields.Add(new DBCFieldInt(value));
+                AddedFields.Add(new DBCFieldInt32(value));
             }
 
             public void AddPackedFlags(Int32 value)
             {
-                AddedFields.Add(new DBCFieldInt(value));
+                AddedFields.Add(new DBCFieldInt32(value));
             }
 
             public void AddIntFromSourceRawBytes(ref int offsetCursor)
@@ -98,8 +98,41 @@ namespace EQWOWConverter.WOWFiles
 
                 // Add it
                 byte[] intBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
-                AddedFields.Add(new DBCFieldInt(BitConverter.ToInt32(intBytes, 0)));
+                AddedFields.Add(new DBCFieldInt32(BitConverter.ToInt32(intBytes, 0)));
                 offsetCursor += 4;
+            }
+
+            public class DBCFieldUInt32 : DBCField
+            {
+                public DBCFieldUInt32(UInt32 value) { Value = value; }
+                public UInt32 Value;
+            }
+
+            public void AddUInt32(UInt32 value)
+            {
+                AddedFields.Add(new DBCFieldUInt32(value));
+            }
+
+            public class DBCFieldInt64 : DBCField
+            {
+                public DBCFieldInt64(Int64 value) { Value = value; }
+                public Int64 Value;
+            }
+
+            public void AddInt64(Int64 value)
+            {
+                AddedFields.Add(new DBCFieldInt64(value));
+            }
+
+            public class DBCFieldUInt64 : DBCField
+            {
+                public DBCFieldUInt64(UInt64 value) { Value = value; }
+                public UInt64 Value;
+            }
+
+            public void AddUInt64(UInt64 value)
+            {
+                AddedFields.Add(new DBCFieldUInt64(value));
             }
 
             public class DBCFieldFloat : DBCField
@@ -281,9 +314,24 @@ namespace EQWOWConverter.WOWFiles
                 {
                     foreach (var addedField in row.AddedFields)
                     {
-                        if (addedField.GetType() == typeof(DBCRow.DBCFieldInt))
+                        if (addedField.GetType() == typeof(DBCRow.DBCFieldInt32))
                         {
-                            DBCRow.DBCFieldInt rowField = (DBCRow.DBCFieldInt)addedField;
+                            DBCRow.DBCFieldInt32 rowField = (DBCRow.DBCFieldInt32)addedField;
+                            contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                        }
+                        else if (addedField.GetType() == typeof(DBCRow.DBCFieldUInt32))
+                        {
+                            DBCRow.DBCFieldUInt32 rowField = (DBCRow.DBCFieldUInt32)addedField;
+                            contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                        }
+                        else if (addedField.GetType() == typeof(DBCRow.DBCFieldInt64))
+                        {
+                            DBCRow.DBCFieldInt64 rowField = (DBCRow.DBCFieldInt64)addedField;
+                            contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                        }
+                        else if (addedField.GetType() == typeof(DBCRow.DBCFieldUInt64))
+                        {
+                            DBCRow.DBCFieldUInt64 rowField = (DBCRow.DBCFieldUInt64)addedField;
                             contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldFloat))

@@ -30,29 +30,29 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(CreatureFaction creatureFaction)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(creatureFaction.FactionID); // ID
-            newRow.AddInt(creatureFaction.ReputationIndex); // ReputationIndex (Must be a unique number, max 127, no gain -1)
-            newRow.AddInt(creatureFaction.GetRaceMask1()); // Reputation Race Mask 1 (Netherwing has "1791")
-            newRow.AddInt(creatureFaction.GetRaceMask2()); // Reputation Race Mask 2
-            newRow.AddInt(creatureFaction.GetRaceMask3()); // Reputation Race Mask 3
-            newRow.AddInt(creatureFaction.GetRaceMask4()); // Reputation Race Mask 4
-            newRow.AddInt(creatureFaction.GetClassMask1()); // Reputation Class Mask 1 (Note: Netherwing has "1535")
-            newRow.AddInt(creatureFaction.GetClassMask2()); // Reputation Class Mask 2
-            newRow.AddInt(creatureFaction.GetClassMask3()); // Reputation Class Mask 3
-            newRow.AddInt(creatureFaction.GetClassMask4()); // Reputation Class Mask 4
-            newRow.AddInt(creatureFaction.GetBaseRep1()); // Reputation Base 1 (Used by Race/Class Mask 1)
-            newRow.AddInt(creatureFaction.GetBaseRep2()); // Reputation Base 2 (Used by Race/Class Mask 2)
-            newRow.AddInt(creatureFaction.GetBaseRep3()); // Reputation Base 3 (Used by Race/Class Mask 3)
-            newRow.AddInt(creatureFaction.GetBaseRep4()); // Reputation Base 4 (Used by Race/Class Mask 4)
-            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep1())); // Reputation Flags 1
-            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep2())); // Reputation Flags 2
-            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep3())); // Reputation Flags 3
-            newRow.AddInt(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep4())); // Reputation Flags 4
-            newRow.AddInt(creatureFaction.ParentFactionID); // Parent Faction ID (Faction.ID)
+            newRow.AddInt32(creatureFaction.FactionID); // ID
+            newRow.AddInt32(creatureFaction.ReputationIndex); // ReputationIndex (Must be a unique number, max 127, no gain -1)
+            newRow.AddInt32(creatureFaction.GetRaceMask1()); // Reputation Race Mask 1 (Netherwing has "1791")
+            newRow.AddInt32(creatureFaction.GetRaceMask2()); // Reputation Race Mask 2
+            newRow.AddInt32(creatureFaction.GetRaceMask3()); // Reputation Race Mask 3
+            newRow.AddInt32(creatureFaction.GetRaceMask4()); // Reputation Race Mask 4
+            newRow.AddInt32(creatureFaction.GetClassMask1()); // Reputation Class Mask 1 (Note: Netherwing has "1535")
+            newRow.AddInt32(creatureFaction.GetClassMask2()); // Reputation Class Mask 2
+            newRow.AddInt32(creatureFaction.GetClassMask3()); // Reputation Class Mask 3
+            newRow.AddInt32(creatureFaction.GetClassMask4()); // Reputation Class Mask 4
+            newRow.AddInt32(creatureFaction.GetBaseRep1()); // Reputation Base 1 (Used by Race/Class Mask 1)
+            newRow.AddInt32(creatureFaction.GetBaseRep2()); // Reputation Base 2 (Used by Race/Class Mask 2)
+            newRow.AddInt32(creatureFaction.GetBaseRep3()); // Reputation Base 3 (Used by Race/Class Mask 3)
+            newRow.AddInt32(creatureFaction.GetBaseRep4()); // Reputation Base 4 (Used by Race/Class Mask 4)
+            newRow.AddInt32(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep1())); // Reputation Flags 1
+            newRow.AddInt32(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep2())); // Reputation Flags 2
+            newRow.AddInt32(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep3())); // Reputation Flags 3
+            newRow.AddInt32(GetFlagsForRep(creatureFaction.Name, creatureFaction.ReputationIndex, creatureFaction.GetBaseRep4())); // Reputation Flags 4
+            newRow.AddInt32(creatureFaction.ParentFactionID); // Parent Faction ID (Faction.ID)
             newRow.AddFloat(0); // ParentFactionMod 1
             newRow.AddFloat(0); // ParentFactionMod 2
-            newRow.AddInt(5); // Parent Faction Cap 1 // Unsure why this is 5, but most rows are
-            newRow.AddInt(5); // Parent Faction Cap 2 // Unsure why this is 5, but most rows are
+            newRow.AddInt32(5); // Parent Faction Cap 1 // Unsure why this is 5, but most rows are
+            newRow.AddInt32(5); // Parent Faction Cap 2 // Unsure why this is 5, but most rows are
             newRow.AddStringLang(creatureFaction.Name); // Name
             newRow.AddStringLang(creatureFaction.Description); // Description
             Rows.Add(newRow);
@@ -133,7 +133,7 @@ namespace EQWOWConverter.WOWFiles
                 // "Sunreavers Conversion" (103)
 
                 // Clear out specific rep index fields
-                DBCRow.DBCFieldInt repIndexField = (DBCRow.DBCFieldInt)row.AddedFields[1];
+                DBCRow.DBCFieldInt32 repIndexField = (DBCRow.DBCFieldInt32)row.AddedFields[1];
                 if (repIndexField.Value == 8 || repIndexField.Value == 34 || repIndexField.Value == 82 || repIndexField.Value == 85
                     || repIndexField.Value == 86 || repIndexField.Value == 87 || repIndexField.Value == 100
                     || repIndexField.Value == 101 || repIndexField.Value == 102 || repIndexField.Value == 103)

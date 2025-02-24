@@ -35,11 +35,11 @@ namespace EQWOWConverter.WOWFiles
                 int curID = CURRENT_ID;
                 CURRENT_ID++;
                 DBCRow newRow = new DBCRow();
-                newRow.AddInt(curID); // ID
-                newRow.AddInt(creatureFootstepID);
-                newRow.AddInt(terrainTypeSoundID); // TerrainType.ID
-                newRow.AddInt(soundID);
-                newRow.AddInt(0); // SoundIDSplash
+                newRow.AddInt32(curID); // ID
+                newRow.AddInt32(creatureFootstepID);
+                newRow.AddInt32(terrainTypeSoundID); // TerrainType.ID
+                newRow.AddInt32(soundID);
+                newRow.AddInt32(0); // SoundIDSplash
                 Rows.Add(newRow);
             }
         }

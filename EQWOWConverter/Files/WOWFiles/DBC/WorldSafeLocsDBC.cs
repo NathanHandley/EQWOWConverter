@@ -23,8 +23,8 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ZonePropertiesGraveyard graveyard, int mapID)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(graveyard.WorldSafeLocsDBCID); // ID
-            newRow.AddInt(mapID); // Continent (MapID)
+            newRow.AddInt32(graveyard.WorldSafeLocsDBCID); // ID
+            newRow.AddInt32(mapID); // Continent (MapID)
             newRow.AddFloat(MathF.Round(graveyard.RespawnX, 6)); // X
             newRow.AddFloat(MathF.Round(graveyard.RespawnY, 6)); // Y
             newRow.AddFloat(MathF.Round(graveyard.RespawnZ, 6)); // Z

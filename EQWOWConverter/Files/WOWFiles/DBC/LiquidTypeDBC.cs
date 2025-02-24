@@ -31,29 +31,29 @@ namespace EQWOWConverter.WOWFiles
         {
             // Water
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(200); // ID
+            newRow.AddInt32(200); // ID
             newRow.AddString("EverQuest Water"); // Name
             newRow.AddPackedFlags(15); // Flags
-            newRow.AddInt(0); // Type
-            newRow.AddInt(1111); // SoundID
-            newRow.AddInt(0); // SpellID
+            newRow.AddInt32(0); // Type
+            newRow.AddInt32(1111); // SoundID
+            newRow.AddInt32(0); // SpellID
             newRow.AddFloat(0); // Max Darken Depth
             newRow.AddFloat(0); // Fog Darken Intensity
             newRow.AddFloat(0); // Ambience Darken Intensity
             newRow.AddFloat(0); // Direction Darken Intensity
-            newRow.AddInt(0); // Light ID
+            newRow.AddInt32(0); // Light ID
             newRow.AddFloat(1); // Particle Scale
-            newRow.AddInt(0); // Particle Movement
-            newRow.AddInt(0); // Particle Texture Slots
-            newRow.AddInt(1); // Material ID
+            newRow.AddInt32(0); // Particle Movement
+            newRow.AddInt32(0); // Particle Texture Slots
+            newRow.AddInt32(1); // Material ID
             newRow.AddString("XTextures\\everquest\\eqclear.%d.blp"); // Texture 1
             newRow.AddString(""); // Texture 2 
             newRow.AddString(""); // Texture 3
             newRow.AddString(""); // Texture 4
             newRow.AddString(""); // Texture 5
             newRow.AddString(""); // Texture 6
-            newRow.AddInt(0); // Color 1 
-            newRow.AddInt(0); // Color 2
+            newRow.AddInt32(0); // Color 1 
+            newRow.AddInt32(0); // Color 2
             newRow.AddFloat(1); // Float 1
             newRow.AddFloat(0); // Float 2
             newRow.AddFloat(1); // Float 3 
@@ -72,36 +72,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Float 16
             newRow.AddFloat(0); // Float 17
             newRow.AddFloat(0); // Float 18
-            newRow.AddInt(1); // Int 1
-            newRow.AddInt(1250); // Int 2
-            newRow.AddInt(0); // Int 3
-            newRow.AddInt(0); // Int 4
+            newRow.AddInt32(1); // Int 1
+            newRow.AddInt32(1250); // Int 2
+            newRow.AddInt32(0); // Int 3
+            newRow.AddInt32(0); // Int 4
             Rows.Add(newRow);
 
             newRow = new DBCRow();
-            newRow.AddInt(201); // ID
+            newRow.AddInt32(201); // ID
             newRow.AddString("EverQuest Green Water"); // Name
             newRow.AddPackedFlags(15); // Flags
-            newRow.AddInt(0); // Type
-            newRow.AddInt(1111); // SoundID
-            newRow.AddInt(0); // SpellID
+            newRow.AddInt32(0); // Type
+            newRow.AddInt32(1111); // SoundID
+            newRow.AddInt32(0); // SpellID
             newRow.AddFloat(0); // Max Darken Depth
             newRow.AddFloat(0); // Fog Darken Intensity
             newRow.AddFloat(0); // Ambience Darken Intensity
             newRow.AddFloat(0); // Direction Darken Intensity
-            newRow.AddInt(0); // Light ID
+            newRow.AddInt32(0); // Light ID
             newRow.AddFloat(1); // Particle Scale
-            newRow.AddInt(0); // Particle Movement
-            newRow.AddInt(0); // Particle Texture Slots
-            newRow.AddInt(1); // Material ID
+            newRow.AddInt32(0); // Particle Movement
+            newRow.AddInt32(0); // Particle Texture Slots
+            newRow.AddInt32(1); // Material ID
             newRow.AddString("XTextures\\everquest\\eqclear.%d.blp"); // Texture 1
             newRow.AddString(""); // Texture 2 
             newRow.AddString(""); // Texture 3
             newRow.AddString(""); // Texture 4
             newRow.AddString(""); // Texture 5
             newRow.AddString(""); // Texture 6
-            newRow.AddInt(0); // Color 1 
-            newRow.AddInt(0); // Color 2
+            newRow.AddInt32(0); // Color 1 
+            newRow.AddInt32(0); // Color 2
             newRow.AddFloat(1); // Float 1
             newRow.AddFloat(0); // Float 2
             newRow.AddFloat(1); // Float 3 
@@ -120,36 +120,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Float 16
             newRow.AddFloat(0); // Float 17
             newRow.AddFloat(0); // Float 18
-            newRow.AddInt(1); // Int 1
-            newRow.AddInt(1250); // Int 2
-            newRow.AddInt(0); // Int 3
-            newRow.AddInt(0); // Int 4
+            newRow.AddInt32(1); // Int 1
+            newRow.AddInt32(1250); // Int 2
+            newRow.AddInt32(0); // Int 3
+            newRow.AddInt32(0); // Int 4
             Rows.Add(newRow);
 
             newRow = new DBCRow();
-            newRow.AddInt(202); // ID
+            newRow.AddInt32(202); // ID
             newRow.AddString("EverQuest Magma"); // Name
             newRow.AddPackedFlags(120); // Flags
-            newRow.AddInt(2); // Type
-            newRow.AddInt(3072); // SoundID
-            newRow.AddInt(0); // SpellID
+            newRow.AddInt32(2); // Type
+            newRow.AddInt32(3072); // SoundID
+            newRow.AddInt32(0); // SpellID
             newRow.AddFloat(0); // Max Darken Depth
             newRow.AddFloat(0); // Fog Darken Intensity
             newRow.AddFloat(0); // Ambience Darken Intensity
             newRow.AddFloat(0); // Direction Darken Intensity
-            newRow.AddInt(7); // Light ID
+            newRow.AddInt32(7); // Light ID
             newRow.AddFloat(4); // Particle Scale
-            newRow.AddInt(1); // Particle Movement
-            newRow.AddInt(1); // Particle Texture Slots
-            newRow.AddInt(1); // Material ID
+            newRow.AddInt32(1); // Particle Movement
+            newRow.AddInt32(1); // Particle Texture Slots
+            newRow.AddInt32(1); // Material ID
             newRow.AddString("XTextures\\everquest\\eqclear.%d.blp"); // Texture 1
             newRow.AddString(""); // Texture 2 
             newRow.AddString(""); // Texture 3
             newRow.AddString(""); // Texture 4
             newRow.AddString(""); // Texture 5
             newRow.AddString(""); // Texture 6
-            newRow.AddInt(0); // Color 1 
-            newRow.AddInt(0); // Color 2
+            newRow.AddInt32(0); // Color 1 
+            newRow.AddInt32(0); // Color 2
             newRow.AddFloat(0); // Float 1
             newRow.AddFloat(0.1f); // Float 2
             newRow.AddFloat(0); // Float 3 
@@ -168,36 +168,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Float 16
             newRow.AddFloat(0); // Float 17
             newRow.AddFloat(0); // Float 18
-            newRow.AddInt(0); // Int 1
-            newRow.AddInt(0); // Int 2
-            newRow.AddInt(0); // Int 3
-            newRow.AddInt(0); // Int 4
+            newRow.AddInt32(0); // Int 1
+            newRow.AddInt32(0); // Int 2
+            newRow.AddInt32(0); // Int 3
+            newRow.AddInt32(0); // Int 4
             Rows.Add(newRow);
 
             newRow = new DBCRow();
-            newRow.AddInt(203); // ID
+            newRow.AddInt32(203); // ID
             newRow.AddString("EverQuest Slime"); // Name
             newRow.AddPackedFlags(322); // Flags
-            newRow.AddInt(3); // Type
-            newRow.AddInt(3880); // SoundID
-            newRow.AddInt(0); // SpellID
+            newRow.AddInt32(3); // Type
+            newRow.AddInt32(3880); // SoundID
+            newRow.AddInt32(0); // SpellID
             newRow.AddFloat(0); // Max Darken Depth
             newRow.AddFloat(0); // Fog Darken Intensity
             newRow.AddFloat(0); // Ambience Darken Intensity
             newRow.AddFloat(0); // Direction Darken Intensity
-            newRow.AddInt(6); // Light ID
+            newRow.AddInt32(6); // Light ID
             newRow.AddFloat(0); // Particle Scale
-            newRow.AddInt(0); // Particle Movement
-            newRow.AddInt(0); // Particle Texture Slots
-            newRow.AddInt(1); // Material ID
+            newRow.AddInt32(0); // Particle Movement
+            newRow.AddInt32(0); // Particle Texture Slots
+            newRow.AddInt32(1); // Material ID
             newRow.AddString("XTextures\\everquest\\eqclear.%d.blp"); // Texture 1
             newRow.AddString(""); // Texture 2 
             newRow.AddString(""); // Texture 3
             newRow.AddString(""); // Texture 4
             newRow.AddString(""); // Texture 5
             newRow.AddString(""); // Texture 6
-            newRow.AddInt(0); // Color 1 
-            newRow.AddInt(0); // Color 2
+            newRow.AddInt32(0); // Color 1 
+            newRow.AddInt32(0); // Color 2
             newRow.AddFloat(0); // Float 1
             newRow.AddFloat(0.1f); // Float 2
             newRow.AddFloat(0); // Float 3 
@@ -216,36 +216,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Float 16
             newRow.AddFloat(0); // Float 17
             newRow.AddFloat(0); // Float 18
-            newRow.AddInt(0); // Int 1
-            newRow.AddInt(0); // Int 2
-            newRow.AddInt(0); // Int 3
-            newRow.AddInt(0); // Int 4
+            newRow.AddInt32(0); // Int 1
+            newRow.AddInt32(0); // Int 2
+            newRow.AddInt32(0); // Int 3
+            newRow.AddInt32(0); // Int 4
             Rows.Add(newRow);
 
             newRow = new DBCRow();
-            newRow.AddInt(204); // ID
+            newRow.AddInt32(204); // ID
             newRow.AddString("EverQuest Blood Water"); // Name
             newRow.AddPackedFlags(15); // Flags
-            newRow.AddInt(0); // Type
-            newRow.AddInt(1111); // SoundID
-            newRow.AddInt(0); // SpellID
+            newRow.AddInt32(0); // Type
+            newRow.AddInt32(1111); // SoundID
+            newRow.AddInt32(0); // SpellID
             newRow.AddFloat(0); // Max Darken Depth
             newRow.AddFloat(0); // Fog Darken Intensity
             newRow.AddFloat(0); // Ambience Darken Intensity
             newRow.AddFloat(0); // Direction Darken Intensity
-            newRow.AddInt(0); // Light ID
+            newRow.AddInt32(0); // Light ID
             newRow.AddFloat(1); // Particle Scale
-            newRow.AddInt(0); // Particle Movement
-            newRow.AddInt(0); // Particle Texture Slots
-            newRow.AddInt(1); // Material ID
+            newRow.AddInt32(0); // Particle Movement
+            newRow.AddInt32(0); // Particle Texture Slots
+            newRow.AddInt32(1); // Material ID
             newRow.AddString("XTextures\\everquest\\eqclear.%d.blp"); // Texture 1
             newRow.AddString(""); // Texture 2 
             newRow.AddString(""); // Texture 3
             newRow.AddString(""); // Texture 4
             newRow.AddString(""); // Texture 5
             newRow.AddString(""); // Texture 6
-            newRow.AddInt(0); // Color 1 
-            newRow.AddInt(0); // Color 2
+            newRow.AddInt32(0); // Color 1 
+            newRow.AddInt32(0); // Color 2
             newRow.AddFloat(1); // Float 1
             newRow.AddFloat(0); // Float 2
             newRow.AddFloat(1); // Float 3 
@@ -264,10 +264,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // Float 16
             newRow.AddFloat(0); // Float 17
             newRow.AddFloat(0); // Float 18
-            newRow.AddInt(1); // Int 1
-            newRow.AddInt(1250); // Int 2
-            newRow.AddInt(0); // Int 3
-            newRow.AddInt(0); // Int 4
+            newRow.AddInt32(1); // Int 1
+            newRow.AddInt32(1250); // Int 2
+            newRow.AddInt32(0); // Int 3
+            newRow.AddInt32(0); // Int 4
             Rows.Add(newRow);
         }
     }
