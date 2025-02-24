@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(spellTemplate.ID); // ID
-            newRow.AddUInt32(0); // Category
+            newRow.AddUInt32(1); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
             newRow.AddUInt32(0); // Attributes
@@ -67,7 +67,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ManaCostPerLevel
             newRow.AddUInt32(0); // ManaPerSecond
             newRow.AddUInt32(0); // ManaPerSecondPerLevel
-            newRow.AddUInt32(0); // RangeIndex
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.RangeIndexDBCID)); // RangeIndex (SpellRange.ID)
             newRow.AddFloat(0); // Speed
             newRow.AddUInt32(0); // ModalNextSpell
             newRow.AddUInt32(0); // CumulativeAura
@@ -89,7 +89,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // ReagentCount6
             newRow.AddInt32(0); // ReagentCount7
             newRow.AddInt32(0); // ReagentCount8
-            newRow.AddInt32(0); // EquippedItemClass
+            newRow.AddInt32(-1); // EquippedItemClass
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes
             newRow.AddInt32(0); // Effect1
