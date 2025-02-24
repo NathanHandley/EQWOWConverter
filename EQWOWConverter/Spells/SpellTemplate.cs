@@ -14,16 +14,32 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.WOWFiles;
+
 namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
         private static int CUR_SPELL_DBCID = Configuration.CONFIG_DBCID_SPELL_ID_START;
+        public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
 
         public int ID = 0;
         public string Name = string.Empty;
         public string Description = string.Empty;
         public int SpellIconID = 0;
+        protected int _CastTimeInMS = 0;
+        public int CastTimeInMS
+        {
+            get { return _CastTimeInMS; }
+            set
+            {
+                if (SpellCastTimeDBCIDsByCastTime.ContainsKey(value) == false)
+                    SpellCastTimeDBCIDsByCastTime.Add(value, SpellCastTimesDBC.GenerateDBCID());
+                _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
+            }
+        }
+        protected int _SpellCastTimeDBCID = 1; // First row, instant cast
+        public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
 
         public static int GenerateID()
         {

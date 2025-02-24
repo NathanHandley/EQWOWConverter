@@ -359,6 +359,13 @@ namespace EQWOWConverter
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
         public static readonly int CONFIG_ITEM_BAG_SLOT_MULTIPLIER = 2;
 
+        //=====================================================================
+        // Spells
+        //=====================================================================
+        // IDs for special spells that need an exact match of ID between this and mod-everquest
+        public static readonly int CONFIG_SPELLS_GATE_SPELLDBC_ID = 86900;
+        public static readonly int CONFIG_SPELLS_BIND_SPELLDBC_ID = 86901;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
@@ -422,6 +429,16 @@ namespace EQWOWConverter
 
         // ID for sounds found in SoundAmbience.dbc
         public static readonly int CONFIG_DBCID_SOUNDAMBIENCE_ID_START = 600;
+
+        // ID for spells found in Spell.dbc
+        // Note: There is a block of manually assigned spell IDs starting at 86900.  See "Spells"
+        public static readonly int CONFIG_DBCID_SPELL_ID_START = 87000;
+
+        // ID for spellcasttimes.dbc
+        public static readonly int CONFIG_DBCID_SPELLCASTTIME_ID_START = 215;
+
+        // ID for spellicon.dbc
+        public static readonly int CONFIG_DBCID_SPELLICON_ID_START = 4400;
 
         // IDs for WorldSafeLocs.dbc
         public static readonly int CONFIG_DBCID_WORLDSAFELOCS_ID_START = 1800;

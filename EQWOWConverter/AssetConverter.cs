@@ -84,6 +84,10 @@ namespace EQWOWConverter
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertItemsAndLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
+            // Spells
+            List<SpellTemplate> spellTemplates;
+            GenerateSpells(out spellTemplates);
+
             // Copy the loading screens
             CreateLoadingScreens();
 
@@ -91,7 +95,7 @@ namespace EQWOWConverter
             CreateLiquidMaterials();
 
             // Create the DBC files
-            CreateDBCFiles(zones, creatureModelTemplates);
+            CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
             // Create the SQL Scripts (note: this must always be after DBC files)
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
@@ -589,6 +593,32 @@ namespace EQWOWConverter
             Logger.WriteInfo("Item and loot conversion complete.");
         }
 
+        public void GenerateSpells(out List<SpellTemplate> spellTemplates)
+        {
+            Logger.WriteInfo("Generating spells...");
+            spellTemplates = new List<SpellTemplate>();
+
+            Logger.WriteDetail("Creating custom spells");
+
+            // Gate
+            SpellTemplate gateSpellTemplate = new SpellTemplate();
+            gateSpellTemplate.Name = "Gate";
+            gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath";
+            gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
+            gateSpellTemplate.CastTimeInMS = 5000;
+            spellTemplates.Add(gateSpellTemplate);
+
+            // Bind Affinity
+            SpellTemplate bineAffinitySpellTemplate = new SpellTemplate();
+            bineAffinitySpellTemplate.Name = "Bind Affinity";
+            bineAffinitySpellTemplate.Description = "Binds the soul of the caster to their current location, if in Norrath";
+            bineAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
+            bineAffinitySpellTemplate.CastTimeInMS = 6000;
+            spellTemplates.Add(bineAffinitySpellTemplate);
+
+            Logger.WriteDetail("Generating spells completed.");
+        }
+
         public void ExtractClientDBCFiles()
         {
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
@@ -1063,7 +1093,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates)
+        public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
         {
             string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
 
@@ -1132,6 +1162,8 @@ namespace EQWOWConverter
             soundEntriesDBC.LoadFromDisk(dbcInputFolder, "SoundEntries.dbc");
             SpellDBC spellDBC = new SpellDBC();
             spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
+            SpellCastTimesDBC spellCastTimesDBC = new SpellCastTimesDBC();
+            spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
@@ -1307,9 +1339,13 @@ namespace EQWOWConverter
                 worldSafeLocsDBC.AddRow(graveyard, mapID);
             }
 
-            // Spell Icons (there are 23 base ones)
+            // Spells
             for(int i = 0; i < 23; i++)
                 spellIconDBC.AddRow(i);
+            foreach(SpellTemplate spellTemplate in spellTemplates)
+                spellDBC.AddRow(spellTemplate);
+            foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
+                spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
 
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
@@ -1354,6 +1390,8 @@ namespace EQWOWConverter
             soundEntriesDBC.SaveToDisk(dbcOutputServerFolder);
             spellDBC.SaveToDisk(dbcOutputClientFolder);
             spellDBC.SaveToDisk(dbcOutputServerFolder);
+            spellCastTimesDBC.SaveToDisk(dbcOutputClientFolder);
+            spellCastTimesDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);

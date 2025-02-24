@@ -16,22 +16,25 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class SpellIconDBC : DBCFile
+    internal class SpellCastTimesDBC : DBCFile
     {
-        public void AddRow(int iconID)
-        {
-            int dbcID = GetDBCIDForIconID(iconID);
-            string textureFileName = "INTERFACE\\ICONS\\Spell_EQ_" + iconID.ToString();
+        private static int CUR_DBCID = Configuration.CONFIG_DBCID_SPELLCASTTIME_ID_START;
 
+        public void AddRow(int dbcID, int castTime)
+        {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt(dbcID);
-            newRow.AddString(textureFileName);
+            newRow.AddInt(dbcID); // ID
+            newRow.AddInt(castTime); // Base Casting Time in milliseconds
+            newRow.AddInt(0); // Amount of milliseconds deducted per spell level
+            newRow.AddInt(0); // Minimum cast time in milliseconds
             Rows.Add(newRow);
         }
 
-        public static int GetDBCIDForIconID(int iconID)
+        public static int GenerateDBCID()
         {
-            return Configuration.CONFIG_DBCID_SPELLICON_ID_START + iconID;
+            int newDBCID = CUR_DBCID;
+            CUR_DBCID++;
+            return newDBCID;
         }
     }
 }
