@@ -608,17 +608,34 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
+            gateSpellTemplate.TargetType = SpellTargetType.SelfSingle;
+            gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
             spellTemplates.Add(gateSpellTemplate);
 
+            // Bind Affinity (Self)
+            SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
+            bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
+            bindAffinitySelfSpellTemplate.ID = Configuration.CONFIG_SPELLS_BINDSELF_SPELLDBC_ID;
+            bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
+            bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
+            bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
+            bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
+            bindAffinitySelfSpellTemplate.TargetType = SpellTargetType.SelfSingle;
+            bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            spellTemplates.Add(bindAffinitySelfSpellTemplate);
+
             // Bind Affinity
-            SpellTemplate bineAffinitySpellTemplate = new SpellTemplate();
-            bineAffinitySpellTemplate.Name = "Bind Affinity";
-            bineAffinitySpellTemplate.ID = Configuration.CONFIG_SPELLS_BIND_SPELLDBC_ID;
-            bineAffinitySpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
-            bineAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
-            bineAffinitySpellTemplate.CastTimeInMS = 6000;
-            bineAffinitySpellTemplate.RecoveryTimeInMS = 12000;
-            spellTemplates.Add(bineAffinitySpellTemplate);
+            SpellTemplate bindAffinitySpellTemplate = new SpellTemplate();
+            bindAffinitySpellTemplate.Name = "Bind Affinity";
+            bindAffinitySpellTemplate.ID = Configuration.CONFIG_SPELLS_BINDANY_SPELLDBC_ID;
+            bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
+            bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
+            bindAffinitySpellTemplate.CastTimeInMS = 6000;
+            bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
+            bindAffinitySpellTemplate.RangeIndexDBCID = 4; // Medium Range - 30 yards
+            bindAffinitySpellTemplate.TargetType = SpellTargetType.AllyGroupedSingle;
+            bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            spellTemplates.Add(bindAffinitySpellTemplate);
 
             Logger.WriteDetail("Generating spells completed.");
         }

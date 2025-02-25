@@ -364,7 +364,8 @@ namespace EQWOWConverter
         //=====================================================================
         // IDs for special spells that need an exact match of ID between this and mod-everquest
         public static readonly int CONFIG_SPELLS_GATE_SPELLDBC_ID = 86900;
-        public static readonly int CONFIG_SPELLS_BIND_SPELLDBC_ID = 86901;
+        public static readonly int CONFIG_SPELLS_BINDSELF_SPELLDBC_ID = 86901;
+        public static readonly int CONFIG_SPELLS_BINDANY_SPELLDBC_ID = 86902;
 
         // ====================================================================
         // WOW DBC/File IDs

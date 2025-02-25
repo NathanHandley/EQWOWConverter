@@ -42,6 +42,9 @@ namespace EQWOWConverter.Spells
         public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
         public int RangeIndexDBCID = 1; // 1 = self for now
         public UInt32 RecoveryTimeInMS = 0;
+        public SpellTargetType TargetType = SpellTargetType.SelfSingle;
+        public UInt32 SpellVisualID1 = 0;
+        public UInt32 SpellVisualID2 = 0;
 
         public static int GenerateID()
         {

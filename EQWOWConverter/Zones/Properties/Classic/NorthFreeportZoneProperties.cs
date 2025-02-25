@@ -56,16 +56,17 @@ namespace EQWOWConverter.Zones.Properties
 
             if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
             {
-                AddZoneArea("Hall of Truth", "freportn-14", "freportn-14");
+                //AddZoneArea("Hall of Truth", "freportn-14", "freportn-14");
                 AddZoneArea("Office of the People", "freportn-04", "freportn-04");
                 AddZoneArea("The Jade Tiger's Den", "freportn-01", "freportn-01");
             }
             else
             {
-                AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", false);
+                //AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", false);
                 AddZoneArea("Office of the People");     
                 AddZoneArea("The Jade Tiger's Den");
             }
+            AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", false);
             AddZoneAreaBox("Hall of Truth", 349.568451f, 174.375458f, 1000f, 126.620598f, 15.954200f, -1000f);
             AddZoneAreaBox("Hall of Truth", 349.568451f, 27.683069f, 1000f, 98.723747f, -230.993713f, -1000f);
             AddZoneAreaBox("Hall of Truth", 349.568451f, -124.064507f, 1000f, 85.137863f, -230.993713f, -1000f);
