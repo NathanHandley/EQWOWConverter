@@ -45,6 +45,7 @@ namespace EQWOWConverter.Spells
         public SpellTargetType TargetType = SpellTargetType.SelfSingle;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
+        public bool PlayerLearnableByClassTrainer = false;
 
         public static int GenerateID()
         {

@@ -367,6 +367,16 @@ namespace EQWOWConverter
         public static readonly int CONFIG_SPELLS_BINDSELF_SPELLDBC_ID = 86901;
         public static readonly int CONFIG_SPELLS_BINDANY_SPELLDBC_ID = 86902;
 
+        // These are the levels in which casters and melee can learn gate and bind. Setting to 0 or lower means
+        // that can never be learned by that group.  If both melee and casters can learn bind, then a self-only
+        // version of bind is learned
+        public static readonly int CONFIG_SPELLS_GATE_CASTER_LEARN_LEVEL = 4; // Set to 4 to be like EQ
+        public static readonly int CONFIG_SPELLS_GATE_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ
+        public static readonly int CONFIG_SPELLS_GATE_SPELL_LEARN_COST = 100;
+        public static readonly int CONFIG_SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 to be like EQ
+        public static readonly int CONFIG_SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to 6 to be like EQ
+        public static readonly int CONFIG_SPELLS_BIND_SPELL_LEARN_COST = 100;
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
@@ -424,6 +434,14 @@ namespace EQWOWConverter
 
         // Specific rows in MapDifficulty.dbc. (~800-922)
         public static readonly int CONFIG_DBCID_MAPDIFFICULTY_ID_START = 800;
+
+        // ID for general/shared skill line holding EverQuest alteration abilities like
+        //  gate found in SkillLine and SkillLineAbility.
+        // NOTE BUG: Class trainers filter out most skill lines, so using "Defense" which should work for all
+        public static readonly int CONFIG_DBCID_SKILLLINE_ALTERATION_ID = 95;
+
+        // ID for skill line abilities found in SkillLineAbility.dbc
+        public static readonly int CONFIG_DBCID_SKILLLINEABILITY_ID_START = 25000;
 
         // ID for sounds found in SoundEntries.dbc
         public static readonly int CONFIG_DBCID_SOUNDENTRIES_ID_START = 22000;

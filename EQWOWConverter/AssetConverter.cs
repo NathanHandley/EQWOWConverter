@@ -599,6 +599,8 @@ namespace EQWOWConverter
             spellTemplates = new List<SpellTemplate>();
 
             Logger.WriteDetail("Creating custom spells");
+            List<ClassType> casterClassTypes = new List<ClassType> { ClassType.Priest, ClassType.Shaman, ClassType.Mage, ClassType.Druid, ClassType.Warlock };
+            List<ClassType> meleeClassTypes = new List<ClassType> { ClassType.Warrior, ClassType.Paladin, ClassType.Hunter, ClassType.Rogue, ClassType.DeathKnight };
 
             // Gate
             SpellTemplate gateSpellTemplate = new SpellTemplate();
@@ -610,7 +612,8 @@ namespace EQWOWConverter
             gateSpellTemplate.RecoveryTimeInMS = 8000;
             gateSpellTemplate.TargetType = SpellTargetType.SelfSingle;
             gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
-            spellTemplates.Add(gateSpellTemplate);
+            gateSpellTemplate.PlayerLearnableByClassTrainer = true;
+            spellTemplates.Add(gateSpellTemplate);            
 
             // Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
@@ -622,6 +625,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySelfSpellTemplate.TargetType = SpellTargetType.SelfSingle;
             bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -635,6 +639,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.RangeIndexDBCID = 4; // Medium Range - 30 yards
             bindAffinitySpellTemplate.TargetType = SpellTargetType.AllyGroupedSingle;
             bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             Logger.WriteDetail("Generating spells completed.");
@@ -1177,6 +1182,10 @@ namespace EQWOWConverter
             mapDBCServer.LoadFromDisk(dbcInputFolder, "Map.dbc");
             MapDifficultyDBC mapDifficultyDBC = new MapDifficultyDBC();
             mapDifficultyDBC.LoadFromDisk(dbcInputFolder, "MapDifficulty.dbc");
+            //SkillLineDBC skillLineDBC = new SkillLineDBC();
+            //skillLineDBC.LoadFromDisk(dbcInputFolder, "SkillLine.dbc");
+            SkillLineAbilityDBC skillLineAbilityDBC = new SkillLineAbilityDBC();
+            skillLineAbilityDBC.LoadFromDisk(dbcInputFolder, "SkillLineAbility.dbc");
             SoundAmbienceDBC soundAmbienceDBC = new SoundAmbienceDBC();
             soundAmbienceDBC.LoadFromDisk(dbcInputFolder, "SoundAmbience.dbc");
             SoundEntriesDBC soundEntriesDBC = new SoundEntriesDBC();
@@ -1360,11 +1369,17 @@ namespace EQWOWConverter
                 worldSafeLocsDBC.AddRow(graveyard, mapID);
             }
 
+            // SkillLine
+            //skillLineDBC.AddRow(Configuration.CONFIG_DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
+
             // Spells
             for(int i = 0; i < 23; i++)
                 spellIconDBC.AddRow(i);
-            foreach(SpellTemplate spellTemplate in spellTemplates)
+            foreach (SpellTemplate spellTemplate in spellTemplates)
+            {
                 spellDBC.AddRow(spellTemplate);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), Configuration.CONFIG_DBCID_SKILLLINE_ALTERATION_ID, spellTemplate.ID);
+            }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
 
@@ -1405,6 +1420,10 @@ namespace EQWOWConverter
             mapDBCServer.SaveToDisk(dbcOutputServerFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputClientFolder);
             mapDifficultyDBC.SaveToDisk(dbcOutputServerFolder);
+            //skillLineDBC.SaveToDisk(dbcOutputClientFolder);
+            //skillLineDBC.SaveToDisk(dbcOutputServerFolder);
+            skillLineAbilityDBC.SaveToDisk(dbcOutputClientFolder);
+            skillLineAbilityDBC.SaveToDisk(dbcOutputServerFolder);
             soundAmbienceDBC.SaveToDisk(dbcOutputClientFolder);
             soundAmbienceDBC.SaveToDisk(dbcOutputServerFolder);
             soundEntriesDBC.SaveToDisk(dbcOutputClientFolder);
