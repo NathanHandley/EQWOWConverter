@@ -64,14 +64,7 @@ namespace EQWOWConverter.Creatures
         public int GossipMenuID = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
-        private static int CURRENT_SQL_CREATURETEMPLATEID = Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW;
         
-        public CreatureTemplate()
-        {
-            WOWCreatureTemplateID = CURRENT_SQL_CREATURETEMPLATEID;
-            CURRENT_SQL_CREATURETEMPLATEID++;
-        }
-
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
             if (CreatureTemplateListByEQID.Count == 0)
@@ -99,7 +92,10 @@ namespace EQWOWConverter.Creatures
             {
                 // Load the row
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
-                newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["id"]);
+                newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["eq_id"]);
+                newCreatureTemplate.WOWCreatureTemplateID = int.Parse(columns["wow_id"]);
+                if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH)
+                    Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
                 newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
                 newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
