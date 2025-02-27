@@ -357,7 +357,7 @@ namespace EQWOWConverter
         public static readonly float ITEMS_STATS_LOW_BIAS_WEIGHT = 2.5f;
 
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
-        public static readonly int ITEM_BAG_SLOT_MULTIPLIER = 2;
+        public static readonly int ITEMS_BAG_SLOT_MULTIPLIER = 2;
 
         //=====================================================================
         // Spells
@@ -478,6 +478,10 @@ namespace EQWOWConverter
         // ====================================================================
         // SQL IDs
         // ====================================================================
+        // Start and end IDs for broadcast_text sql records
+        public static readonly int SQL_BROADCASTTEXT_ID_START = 80000;
+        public static readonly int SQL_BROADCASTTEXT_ID_END = 99999;
+
         // Record identifier for the creature sql table, need at least 31k
         public static readonly int SQL_CREATURE_GUID_LOW = 310000;
         public static readonly int SQL_CREATURE_GUID_HIGH = 399999;
@@ -500,6 +504,10 @@ namespace EQWOWConverter
         // Start and end IDs for template entries
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
+
+        // Stand and end IDs for npc_text sql records
+        public static readonly int SQL_NPCTEXT_ID_START = 80000;
+        public static readonly int SQL_NPCTEXT_ID_END = 99999;
 
         // Start ID for npc_trainer entries
         public static readonly int SQL_NPCTRAINER_ID_START = 210000;
