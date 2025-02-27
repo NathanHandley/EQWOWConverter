@@ -41,7 +41,7 @@ namespace EQWOWConverter
         {
             SpawnEntryList.Clear();
 
-            string spawnEntriesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnEntries.csv");
+            string spawnEntriesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnEntries.csv");
             Logger.WriteDetail("Populating Spawn Entry list via file '" + spawnEntriesFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(spawnEntriesFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
@@ -76,9 +76,9 @@ namespace EQWOWConverter
                 // Skip any invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[5]);
                 int maxExpansion = int.Parse(rowBlocks[6]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 SpawnEntryList.Add(newSpawnEntry);

@@ -53,7 +53,7 @@ namespace EQWOWConverter.Creatures
         {
             SpawnInstanceListByID.Clear();
 
-            string spawnDetailsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpawnInstances.csv");
+            string spawnDetailsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnInstances.csv");
             Logger.WriteDetail("Populating Spawn Detail list via file '" + spawnDetailsFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(spawnDetailsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
@@ -96,9 +96,9 @@ namespace EQWOWConverter.Creatures
                 // Skip any invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[18]);
                 int maxExpansion = int.Parse(rowBlocks[19]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
@@ -109,9 +109,9 @@ namespace EQWOWConverter.Creatures
 
                 // Modify by world scale
                 // IMPORTANT: The X and Y data was swapped in the SpawnInstances.CSV due to orientation differences between EQ and WoW
-                newSpawnDetail.SpawnXPosition = spawnX * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newSpawnDetail.SpawnYPosition = spawnY * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newSpawnDetail.SpawnZPosition = spawnZ * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newSpawnDetail.SpawnXPosition = spawnX * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnDetail.SpawnYPosition = spawnY * Configuration.GENERATE_WORLD_SCALE;
+                newSpawnDetail.SpawnZPosition = spawnZ * Configuration.GENERATE_WORLD_SCALE;
 
                 if (SpawnInstanceListByID.ContainsKey(newSpawnDetail.ID))
                 {

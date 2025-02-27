@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class FootstepTerrainLookupDBC : DBCFile
     {
-        public static int CURRENT_ID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_ID_START;
+        public static int CURRENT_ID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_ID_START;
 
         public void AddRow(int creatureFootstepID, int soundID)
         {

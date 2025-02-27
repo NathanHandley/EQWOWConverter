@@ -43,7 +43,7 @@ namespace EQWOWConverter.Items
         private static void PopulateItemLootTableDataFromDisk()
         {
             // Populate the loot tables
-            string itemLootTablesFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemLootTables.csv");
+            string itemLootTablesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootTables.csv");
             Logger.WriteDetail("Populating Item Loot Tables via file '" + itemLootTablesFileName + "'");
             List<string> lootTableInputRows = FileTool.ReadAllStringLinesFromFile(itemLootTablesFileName, true, true);
             foreach (string row in lootTableInputRows)
@@ -53,9 +53,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[6]);
                 int maxExpansion = int.Parse(rowBlocks[7]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 // Create the item loot table object
@@ -69,7 +69,7 @@ namespace EQWOWConverter.Items
             }
 
             // Populate the entries, and map them to loot tables
-            string itemLootTableEntriesFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemLootTableEntries.csv");
+            string itemLootTableEntriesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootTableEntries.csv");
             Logger.WriteDetail("Populating Item Loot Table Entries via file '" + itemLootTableEntriesFileName + "'");
             List<string> lootTableEntryInputRows = FileTool.ReadAllStringLinesFromFile(itemLootTableEntriesFileName, true, true);
             foreach (string row in lootTableEntryInputRows)

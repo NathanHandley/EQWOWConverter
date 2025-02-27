@@ -24,11 +24,11 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameTeleSQL : SQLFile
     {
-        private static int CURRENT_ROWID = Configuration.CONFIG_SQL_GAMETELE_ROWID_START;
+        private static int CURRENT_ROWID = Configuration.SQL_GAMETELE_ROWID_START;
 
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_START + " AND `id` <= " + Configuration.CONFIG_SQL_GAMETELE_ROWID_END + ";";
+            return "DELETE FROM `game_tele` WHERE `id` >= " + Configuration.SQL_GAMETELE_ROWID_START + " AND `id` <= " + Configuration.SQL_GAMETELE_ROWID_END + ";";
         }
 
         public void AddRow(int mapID, string name, float x, float y, float z)

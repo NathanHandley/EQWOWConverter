@@ -18,7 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellCastTimesDBC : DBCFile
     {
-        private static int CUR_DBCID = Configuration.CONFIG_DBCID_SPELLCASTTIME_ID_START;
+        private static int CUR_DBCID = Configuration.DBCID_SPELLCASTTIME_ID_START;
 
         public void AddRow(int dbcID, int castTime)
         {

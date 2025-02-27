@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
 
         public static int GetDBCIDForIconID(int iconID)
         {
-            return Configuration.CONFIG_DBCID_SPELLICON_ID_START + iconID;
+            return Configuration.DBCID_SPELLICON_ID_START + iconID;
         }
     }
 }

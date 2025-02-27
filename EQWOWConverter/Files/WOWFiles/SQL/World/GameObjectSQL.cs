@@ -28,11 +28,11 @@ namespace EQWOWConverter.WOWFiles
     internal class GameObjectSQL : SQLFile
     {
         // Row GUID
-        private static int CURRENT_GUIDID = Configuration.CONFIG_SQL_GAMEOBJECT_GUID_START;
+        private static int CURRENT_GUIDID = Configuration.SQL_GAMEOBJECT_GUID_START;
 
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM gameobject WHERE `id` >= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END + ";";
+            return "DELETE FROM gameobject WHERE `id` >= " + Configuration.DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.DBCID_GAMEOBJECT_ID_END + ";";
         }
 
         public void AddRow(int gameObjectID, int mapID, int parentAreaID, int areaID, Vector3 position, float orientation)

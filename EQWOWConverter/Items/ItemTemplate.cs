@@ -28,7 +28,7 @@ namespace EQWOWConverter.Items
     {
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
-        private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.CONFIG_SQL_ITEM_TEMPLATE_ENTRY_START;
+        private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_START;
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -158,7 +158,7 @@ namespace EQWOWConverter.Items
             float normalizedModOfHigh = ((eqStatValue - statEqLow) / (statEqHigh - statEqLow));
             float calcBiasFactor = 1;
             if (normalizedModOfHigh < 1)
-                calcBiasFactor = ((1 - normalizedModOfHigh) * (Configuration.CONFIG_ITEMS_STATS_LOW_BIAS_WEIGHT - 1)) + 1;
+                calcBiasFactor = ((1 - normalizedModOfHigh) * (Configuration.ITEMS_STATS_LOW_BIAS_WEIGHT - 1)) + 1;
             float biasedNormalizedModOfHigh = normalizedModOfHigh / calcBiasFactor;
             float calculatedStat = (biasedNormalizedModOfHigh * statWowHigh) + ((1 - biasedNormalizedModOfHigh) * statWowLow);
 
@@ -621,7 +621,7 @@ namespace EQWOWConverter.Items
                 classTypes.Add(ClassType.Priest);
 
             // If set, collapse common armors and weapons
-            if (Configuration.CONFIG_ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP == true)
+            if (Configuration.ITEMS_ALLOW_ALL_CLASSES_ON_GENERIC_EQUIP == true)
             {
                 // Weapon
                 if (classID == 2)
@@ -1005,7 +1005,7 @@ namespace EQWOWConverter.Items
         static public void PopulateItemTemplateListFromDisk()
         {
             // Load in item data
-            string itemsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
+            string itemsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(itemsFileName, "|");
 
@@ -1042,7 +1042,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
 
                 // Other
-                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.CONFIG_ITEM_BAG_SLOT_MULTIPLIER;
+                newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEM_BAG_SLOT_MULTIPLIER;
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
@@ -1052,7 +1052,7 @@ namespace EQWOWConverter.Items
                 {
                     float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
                     float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", dps);
-                    float calcDelay = Convert.ToSingle(delay) * (1 - Configuration.CONFIG_ITEMS_WEAPON_DELAY_REDUCTION_AMT);
+                    float calcDelay = Convert.ToSingle(delay) * (1 - Configuration.ITEMS_WEAPON_DELAY_REDUCTION_AMT);
                     float calcDamage = calcDps * (calcDelay / 1000);
                     if (calcDps != 0)
                     {
@@ -1102,7 +1102,7 @@ namespace EQWOWConverter.Items
 
         private static void PopulateStatBaselinesBySlot()
         {
-            string itemStatBaselineFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemStatBaselines.csv");
+            string itemStatBaselineFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemStatBaselines.csv");
             Logger.WriteDetail("Populating Item Stat Baselines list via file '" + itemStatBaselineFile + "'");
             List<string> itemStatBaselineRows = FileTool.ReadAllStringLinesFromFile(itemStatBaselineFile, false, true);
             bool isFirstRow = true;

@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
     internal class LightDBC : DBCFile
     {
         // DBCIDs
-        private static int CURRENT_LIGHTID = Configuration.CONFIG_DBCID_LIGHT_ID_START;
+        private static int CURRENT_LIGHTID = Configuration.DBCID_LIGHT_ID_START;
 
         public void AddRow(int mapId, ZoneEnvironmentSettings zoneEnvironmentSettings)
         {

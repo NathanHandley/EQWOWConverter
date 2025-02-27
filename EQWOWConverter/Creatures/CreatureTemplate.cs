@@ -63,7 +63,7 @@ namespace EQWOWConverter.Creatures
         public ClassType ClassTrainerType = ClassType.None;
         public int GossipMenuID = 0;
 
-        private static int CURRENT_SQL_CREATURE_GUID = Configuration.CONFIG_SQL_CREATURE_GUID_LOW;
+        private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
         public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByEQID()
         {
@@ -85,7 +85,7 @@ namespace EQWOWConverter.Creatures
             PopulateStatBaselinesByLevel();
 
             // Load all of the creature data
-            string creatureTemplatesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
+            string creatureTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
             Logger.WriteDetail("Populating Creature Template list via file '" + creatureTemplatesFile + "'");           
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureTemplatesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
@@ -94,7 +94,7 @@ namespace EQWOWConverter.Creatures
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["eq_id"]);
                 newCreatureTemplate.WOWCreatureTemplateID = int.Parse(columns["wow_id"]);
-                if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH)
+                if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
                     Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
                 newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
@@ -136,9 +136,9 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.DamageMod = GetStatMod("avgdmg", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["avgdmg"]));
                 float detectionRange = float.Parse(columns["aggroradius"]);
                 if (detectionRange > 0)
-                    newCreatureTemplate.DetectionRange = detectionRange * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                    newCreatureTemplate.DetectionRange = detectionRange * Configuration.GENERATE_WORLD_SCALE;
                 else
-                    newCreatureTemplate.DetectionRange = Configuration.CONFIG_CREATURE_DEFAULT_DETECTION_RANGE;
+                    newCreatureTemplate.DetectionRange = Configuration.CREATURE_DEFAULT_DETECTION_RANGE;
                 newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                 ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);              
 
@@ -182,7 +182,7 @@ namespace EQWOWConverter.Creatures
                 }
 
                 // Add ID if debugging for it is true
-                if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
                 //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 
@@ -297,7 +297,7 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateStatBaselinesByLevel()
         {
-            string creatureStatBaselineFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureStatBaselines.csv");
+            string creatureStatBaselineFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureStatBaselines.csv");
             Logger.WriteDetail("Populating Creature Stat Baselines list via file '" + creatureStatBaselineFile + "'");
             List<string> creatureStatBaselineRows = FileTool.ReadAllStringLinesFromFile(creatureStatBaselineFile, true, true);
             foreach (string row in creatureStatBaselineRows)
@@ -331,21 +331,21 @@ namespace EQWOWConverter.Creatures
             {
                 case "hp":
                     {
-                        modAdd = Configuration.CONFIG_CREATURE_STAT_MOD_HP_ADD;
-                        modMin = Configuration.CONFIG_CREATURE_STAT_MOD_HP_MIN;
-                        modMax = GetValueForRank(creatureRank, Configuration.CONFIG_CREATURE_STAT_MOD_HP_MAX_NORMAL,
-                            -1, -1, -1, Configuration.CONFIG_CREATURE_STAT_MOD_HP_MAX_RARE);
-                        modSet = GetValueForRank(creatureRank, -1, Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_ELITE,
-                            Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_ELITERARE, Configuration.CONFIG_CREATURE_STAT_MOD_HP_SET_BOSS, -1);
+                        modAdd = Configuration.CREATURE_STAT_MOD_HP_ADD;
+                        modMin = Configuration.CREATURE_STAT_MOD_HP_MIN;
+                        modMax = GetValueForRank(creatureRank, Configuration.CREATURE_STAT_MOD_HP_MAX_NORMAL,
+                            -1, -1, -1, Configuration.CREATURE_STAT_MOD_HP_MAX_RARE);
+                        modSet = GetValueForRank(creatureRank, -1, Configuration.CREATURE_STAT_MOD_HP_SET_ELITE,
+                            Configuration.CREATURE_STAT_MOD_HP_SET_ELITERARE, Configuration.CREATURE_STAT_MOD_HP_SET_BOSS, -1);
                     } break;
                 case "avgdmg":
                     {
-                        modAdd = Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_ADD;
-                        modMin = Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MIN;
-                        modMax = GetValueForRank(creatureRank, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL,
-                            -1, -1, -1, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_MAX_RARE);
-                        modSet = GetValueForRank(creatureRank, -1, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITE,
-                            Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, Configuration.CONFIG_CREATURE_STAT_MOD_AVGDMG_SET_BOSS, -1);
+                        modAdd = Configuration.CREATURE_STAT_MOD_AVGDMG_ADD;
+                        modMin = Configuration.CREATURE_STAT_MOD_AVGDMG_MIN;
+                        modMax = GetValueForRank(creatureRank, Configuration.CREATURE_STAT_MOD_AVGDMG_MAX_NORMAL,
+                            -1, -1, -1, Configuration.CREATURE_STAT_MOD_AVGDMG_MAX_RARE);
+                        modSet = GetValueForRank(creatureRank, -1, Configuration.CREATURE_STAT_MOD_AVGDMG_SET_ELITE,
+                            Configuration.CREATURE_STAT_MOD_AVGDMG_SET_ELITERARE, Configuration.CREATURE_STAT_MOD_AVGDMG_SET_BOSS, -1);
                     } break;
                 default:
                     {

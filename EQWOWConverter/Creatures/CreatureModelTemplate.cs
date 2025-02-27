@@ -40,9 +40,9 @@ namespace EQWOWConverter.Creatures
         public int ColorTintID = 0;
         public CreatureTemplateColorTint? ColorTint = null;
 
-        private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.CONFIG_DBCID_CREATUREMODELDATA_ID_START;
-        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START;
-        private static int CURRENT_DBCID_CREATURESOUNDDATAID = Configuration.CONFIG_DBCID_CREATURESOUNDDATA_ID_START;
+        private static int CURRENT_DBCID_CREATUREMODELDATAID = Configuration.DBCID_CREATUREMODELDATA_ID_START;
+        private static int CURRENT_DBCID_CREATUREDISPLAYINFOID = Configuration.DBCID_CREATUREDISPLAYINFO_ID_START;
+        private static int CURRENT_DBCID_CREATURESOUNDDATAID = Configuration.DBCID_CREATURESOUNDDATA_ID_START;
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
@@ -129,7 +129,7 @@ namespace EQWOWConverter.Creatures
             }
 
             // Make sure the source folder path exists
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             if (Directory.Exists(charactersFolderRoot) == false)
             {
@@ -138,14 +138,14 @@ namespace EQWOWConverter.Creatures
             }
 
             // Base paths
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
             string outputObjectFolderName = GetCreatureModelFolderName();
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
             string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolderName);
             string outputFullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolderName);
             string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
-            string generatedTexturesFolderPath = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
+            string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Create folder if it doesn't exist
             if (Directory.Exists(outputFullMPQPath) == false)

@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `instance_template` WHERE `map` >= " + Configuration.CONFIG_DBCID_MAP_ID_START + " AND `map` <= " + (ZoneProperties.CURRENT_MAPID) + ";";
+            return "DELETE FROM `instance_template` WHERE `map` >= " + Configuration.DBCID_MAP_ID_START + " AND `map` <= " + (ZoneProperties.CURRENT_MAPID) + ";";
         }
 
         public void AddRow(int mapID)

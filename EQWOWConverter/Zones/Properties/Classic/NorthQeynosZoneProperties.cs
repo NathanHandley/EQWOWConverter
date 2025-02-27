@@ -40,7 +40,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("North Field", 2004.056274f, 1189.263184f, 100f, 156.620407f, 409.904510f, -2f);
             AddZoneAreaBox("North Field", 489.984772f, -106.924026f, 100f, 141.125656f, -660.864868f, -2f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("Qeynos Underbelly", "qeynos2-03", "qeynos2-03");
             else
                 AddZoneArea("Qeynos Underbelly");

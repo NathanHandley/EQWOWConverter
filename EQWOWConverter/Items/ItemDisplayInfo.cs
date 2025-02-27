@@ -25,7 +25,7 @@ namespace EQWOWConverter.Items
     internal class ItemDisplayInfo
     {
         public static List<ItemDisplayInfo> ItemDisplayInfos = new List<ItemDisplayInfo>();
-        private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.CONFIG_DBCID_ITEMDISPLAYINFO_START;
+        private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.DBCID_ITEMDISPLAYINFO_START;
 
         public int DBCID = 0;
         public string IconFileNameNoExt = string.Empty;

@@ -137,9 +137,9 @@ namespace EQWOWConverter.ObjectModels
             // Perform EQ->WoW translations if this is coming from a raw EQ object
             if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
             {
-                float scaleAmount = ModelScalePreWorldScale * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                float scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
                 if (ModelType == ObjectModelType.Skeletal)
-                    scaleAmount = ModelScalePreWorldScale * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                    scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                 // Regular
                 meshData.ApplyEQToWoWGeometryTranslationsAndScale(ModelType != ObjectModelType.Skeletal, scaleAmount);
@@ -232,7 +232,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Fill out the nameplate bone translation
-                if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+                if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.GENERATE_FLOAT_EPSILON)
                 {
                     // Set the adjustment vector
                     ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
@@ -421,7 +421,7 @@ namespace EQWOWConverter.ObjectModels
             if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
             {
                 // Update timers
-                int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CONFIG_CREATURE_FIDGET_TIME_PERCENT) / 100));
+                int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
                 int nonFidgetSliceAll = 32767 - fidgetSliceAll;
                 int nonFidgetSlice1 = nonFidgetSliceAll / 2;
                 int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
@@ -576,9 +576,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.YPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.ZPosition * Configuration.CONFIG_GENERATE_CREATURE_SCALE * ModelScalePreWorldScale);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.YPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
+                                                                       animationFrame.ZPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation;
                                 frameRotation = new QuaternionShort(-animationFrame.XRotation,
@@ -597,7 +597,7 @@ namespace EQWOWConverter.ObjectModels
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
-                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.CONFIG_GENERATE_CREATURE_SCALE;
+                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                                 // Calculate the frame start time
                                 UInt32 curTimestamp = 0;
@@ -832,7 +832,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            if (Configuration.CONFIG_OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
+            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -1050,8 +1050,8 @@ namespace EQWOWConverter.ObjectModels
                         BoundingBox workingBoundingBox = BoundingBox.GenerateBoxFromVectors(collisionVertices, 0.01f);
 
                         // Control for world scaling
-                        float extendDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                        float stepDistance = Configuration.CONFIG_OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                        float extendDistance = Configuration.OBJECT_STATIC_LADDER_EXTEND_DISTANCE * Configuration.GENERATE_WORLD_SCALE;
+                        float stepDistance = Configuration.OBJECT_STATIC_LADDER_STEP_DISTANCE * Configuration.GENERATE_WORLD_SCALE;
 
                         // Purge the existing collision data
                         collisionVertices.Clear();
@@ -1272,9 +1272,9 @@ namespace EQWOWConverter.ObjectModels
 
         private void CalculateBoundingBoxesAndRadii()
         {
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.CONFIG_OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
-            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
         }
 

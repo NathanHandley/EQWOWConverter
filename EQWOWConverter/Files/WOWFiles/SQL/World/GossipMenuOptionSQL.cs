@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `gossip_menu_option` WHERE `MenuID` >= " + Configuration.CONFIG_SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.CONFIG_SQL_GOSSIPMENU_MENUID_END + ";";
+            return "DELETE FROM `gossip_menu_option` WHERE `MenuID` >= " + Configuration.SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.SQL_GOSSIPMENU_MENUID_END + ";";
         }
 
         public void AddRowForClassTrainer(int menuID, int optionID, int optionIcon, string optionText, int optionBroadcastTextID, int optionType,

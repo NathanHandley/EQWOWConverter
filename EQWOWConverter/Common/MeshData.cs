@@ -302,7 +302,7 @@ namespace EQWOWConverter.Common
 
         public void ApplyEQToWoWVertexColor(ZoneProperties zoneProperties)
         {
-            double intensityAmount = Configuration.CONFIG_LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY;
+            double intensityAmount = Configuration.LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY;
             if (zoneProperties.VertexColorIntensityOverride >= 0)
                 intensityAmount = zoneProperties.VertexColorIntensityOverride;
 
@@ -889,9 +889,9 @@ namespace EQWOWConverter.Common
             int finalTriangleCount = curTriangleFaces.Count * curMaterial.NumOfAnimationFrames();
 
             // If the box is too big, cut it up
-            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.CONFIG_ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
-                || finalTriangleCount >= Configuration.CONFIG_ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT)
+            if (curBoundingBox.FurthestPointDistanceFromCenterXOnly() >= Configuration.ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || curBoundingBox.FurthestPointDistanceFromCenterYOnly() >= Configuration.ZONE_MATERIAL_TO_OBJECT_SPLIT_MIN_XY_CENTER_TO_EDGE_DISTANCE
+                || finalTriangleCount >= Configuration.ZONE_MAX_FACES_PER_ZONE_MATERIAL_OBJECT)
             {
                 // Create two new bounding boxes based on the longest edge
                 SplitBox splitBox = SplitBox.GenerateXYSplitBox(curBoundingBox);
@@ -962,7 +962,7 @@ namespace EQWOWConverter.Common
                 pendingChunkQueue.RemoveAt(pendingChunkQueue.Count - 1);
 
                 // If a max span is violated, split the box into two and add both to the pending chunk queue
-                BoundingBox curMeshBox = BoundingBox.GenerateBoxFromVectors(curMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+                BoundingBox curMeshBox = BoundingBox.GenerateBoxFromVectors(curMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
                 if ((maxSpanPerCubiod > 0 && (curMeshBox.GetXDistance() > maxSpanPerCubiod || curMeshBox.GetYDistance() > maxSpanPerCubiod || curMeshBox.GetZDistance() > maxSpanPerCubiod))
                     || (maxFaceCountPerCubiod > 0 && curMeshData.TriangleFaces.Count > maxFaceCountPerCubiod))
                 {

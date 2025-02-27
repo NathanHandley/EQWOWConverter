@@ -28,7 +28,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneObjectModel
     {
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOGROUPID_START;
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
 
         public UInt32 WMOGroupID;
         public string DisplayName = string.Empty;
@@ -62,7 +62,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.Rendered;
             MeshData = meshData;
             Materials = materials;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
             GenerateRenderBatches(materials, zoneProperties);
             for (UInt16 i = 0; i < lightInstances.Count; i++)
             //    if (BoundingBox.ContainsPoint(lightInstances[i].Position))
@@ -96,7 +96,7 @@ namespace EQWOWConverter.Zones
             WMOType = ZoneObjectModelType.ShadowBox;
             BoundingBox = boundingBox;
             Materials = materials;
-            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.CONFIG_ZONE_SHADOW_BOX_ADDED_SIZE, MeshBoxRenderType.Outward);
+            ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.ZONE_SHADOW_BOX_ADDED_SIZE, MeshBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
             GenerateRenderBatches(materials, zoneProperties);
             IsLoaded = true;
@@ -105,7 +105,7 @@ namespace EQWOWConverter.Zones
         private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties)
         {
             // Don't make a render batch if static rendering is disabled
-            if (Configuration.CONFIG_ZONE_SHOW_STATIC_GEOMETRY == false)
+            if (Configuration.ZONE_SHOW_STATIC_GEOMETRY == false)
                 return;
 
             // Reorder the faces and related objects

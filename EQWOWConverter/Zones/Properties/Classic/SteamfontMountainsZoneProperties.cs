@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Dragon Skeleton", "steamfont-06", "steamfont-06", false);
             AddZoneAreaBox("Dragon Skeleton", -905.103760f, -333.562561f, 43.232040f, -1528.842773f, -1015.249390f, -195.124466f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("North Kobold Camp", "steamfont-05", "steamfont-05");
             else
                 AddZoneArea("North Kobold Camp");

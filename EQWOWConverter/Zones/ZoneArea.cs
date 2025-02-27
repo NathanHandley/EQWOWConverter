@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneArea
     {
-        private static UInt32 CURRENT_AREATABLEID = Configuration.CONFIG_DBCID_AREATABLE_ID_START;
+        private static UInt32 CURRENT_AREATABLEID = Configuration.DBCID_AREATABLE_ID_START;
 
         public UInt32 DBCAreaTableID;
         public UInt32 DBCParentAreaTableID = 0; // Zero is no parent
@@ -58,12 +58,12 @@ namespace EQWOWConverter.Zones
             if (scaleAndRotate == true)
             {
                 BoundingBox newBox = new BoundingBox();
-                newBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newBox.TopCorner.X = boundingBox.BottomCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+                newBox.TopCorner.Y = boundingBox.BottomCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+                newBox.TopCorner.Z = boundingBox.TopCorner.Z * Configuration.GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.X = boundingBox.TopCorner.X * -Configuration.GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.Y = boundingBox.TopCorner.Y * -Configuration.GENERATE_WORLD_SCALE;
+                newBox.BottomCorner.Z = boundingBox.BottomCorner.Z * Configuration.GENERATE_WORLD_SCALE;
                 BoundingBoxes.Add(newBox);
             }
             else

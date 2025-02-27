@@ -35,7 +35,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Entry", "felwithea-01", "felwithea-01", false);
             AddZoneAreaBox("Entry", 117.707916f, 462.981293f, 186.264618f, -86.893219f, 30.036381f, -100f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == false)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == false)
                 AddZoneArea("Water Outlook", "felwithea-02", "felwithea-02");
             else
                 AddZoneArea("Water Outlook");

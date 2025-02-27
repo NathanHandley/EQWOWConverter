@@ -27,8 +27,8 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            int idLow = Configuration.CONFIG_SQL_CREATURE_GUID_LOW * 1000;
-            int idHigh = Configuration.CONFIG_SQL_CREATURE_GUID_HIGH * 1000;
+            int idLow = Configuration.SQL_CREATURE_GUID_LOW * 1000;
+            int idHigh = Configuration.SQL_CREATURE_GUID_HIGH * 1000;
             return "DELETE FROM waypoint_data WHERE `id` >= " + idLow.ToString() + " AND `id` <= " + idHigh + ";";
         }
 

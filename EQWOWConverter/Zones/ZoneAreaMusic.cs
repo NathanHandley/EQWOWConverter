@@ -25,7 +25,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneAreaMusic
     {
-        private static int CURRENT_ZONEMUSICSTARTID = Configuration.CONFIG_DBCID_ZONEMUSIC_START;
+        private static int CURRENT_ZONEMUSICSTARTID = Configuration.DBCID_ZONEMUSIC_START;
 
         public int DBCID;
         public string Name;

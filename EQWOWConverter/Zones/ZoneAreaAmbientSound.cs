@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneAreaAmbientSound
     {
-        private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.CONFIG_DBCID_SOUNDAMBIENCE_ID_START;
+        private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.DBCID_SOUNDAMBIENCE_ID_START;
 
         public int DBCID;
         public string FileNameNoExtDay = string.Empty;

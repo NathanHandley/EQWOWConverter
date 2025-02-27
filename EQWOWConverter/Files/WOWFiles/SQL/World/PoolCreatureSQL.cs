@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM pool_creature WHERE pool_entry >= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_entry <= " + Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
+            return "DELETE FROM pool_creature WHERE pool_entry >= " + Configuration.SQL_POOL_TEMPLATE_ID_START.ToString() + " AND pool_entry <= " + Configuration.SQL_POOL_TEMPLATE_ID_END.ToString() + ";";
         }
 
         public void AddRow(int creatureGUID, int poolTemplateEntryID, float chance, string description)

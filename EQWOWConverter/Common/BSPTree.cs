@@ -46,7 +46,7 @@ namespace EQWOWConverter.Common
             List<UInt32> faceIndices = new List<UInt32>();
             for (uint i = 0; i < collisionMeshData.TriangleFaces.Count; i++)
                 faceIndices.Add(i);
-            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
             BSPNode rootNode = new BSPNode(0, boundingBox, faceIndices, 0);
             Nodes.Add(rootNode);
             InsertNodeIntoProcessQueue(rootNode);
@@ -81,9 +81,9 @@ namespace EQWOWConverter.Common
             curNode.TotalDistance = totalDistance;
 
             // If this node already breached the minimim split OR uses a bounding box that is too small, then terminate as a leaf
-            if (curNode.TreeGenFaceIndices.Count <= Configuration.CONFIG_ZONE_BTREE_MIN_SPLIT_SIZE
-                || totalDistance < Configuration.CONFIG_ZONE_BTREE_MIN_BOX_SIZE_TOTAL
-                || curNode.Depth >= Configuration.CONFIG_ZONE_BTREE_MAX_NODE_GEN_DEPTH)
+            if (curNode.TreeGenFaceIndices.Count <= Configuration.ZONE_BTREE_MIN_SPLIT_SIZE
+                || totalDistance < Configuration.ZONE_BTREE_MIN_BOX_SIZE_TOTAL
+                || curNode.Depth >= Configuration.ZONE_BTREE_MAX_NODE_GEN_DEPTH)
             {
                 // Store the faces on the master list
                 UInt32 curFaceStartIndex = Convert.ToUInt32(FaceTriangleIndices.Count);

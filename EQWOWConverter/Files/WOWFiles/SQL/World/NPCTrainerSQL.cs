@@ -24,8 +24,8 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_START.ToString() + " AND `ID` <= " + Configuration.CONFIG_SQL_NPCTRAINER_ID_END + ";");
-            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `ID` <= " + Configuration.CONFIG_SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
+            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.SQL_NPCTRAINER_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_NPCTRAINER_ID_END + ";");
+            stringBuilder.AppendLine("DELETE FROM `npc_trainer` WHERE `ID` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `ID` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";");
             return stringBuilder.ToString();
         }
 

@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class AreaTriggerDBC : DBCFile
     {
-        public static int CURRENT_AREATRIGGER_ID = Configuration.CONFIG_DBCID_AREATRIGGER_ID_START;
+        public static int CURRENT_AREATRIGGER_ID = Configuration.DBCID_AREATRIGGER_ID_START;
         public static int GetGeneratedAreaTriggerID()
         {
             int generatedID = CURRENT_AREATRIGGER_ID;

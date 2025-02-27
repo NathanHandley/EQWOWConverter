@@ -50,13 +50,13 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Inner Caves", 116.320702f, -101.356247f, 40.723801f, 61.063919f, -117.019707f, -22.047810f);
             AddZoneAreaBox("Inner Caves", 187.795578f, -53.726349f, 58.342331f, 150.526154f, -163.406158f, -23.697611f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("Prison", "najena-00", "najena-00");
             else
                 AddZoneArea("Prison");
             AddZoneAreaBox("Prison", 21.234501f, 25.369350f, -14.850650f, -205.015564f, -312.356842f, -53.671120f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("Slaughter Halls", "najena-06", "najena-06");
             else
                 AddZoneArea("Slaughter Halls");
@@ -64,7 +64,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneAreaBox("Slaughter Halls", 375.946014f, 281.867737f, 30.997030f, 42.580471f, 157.239090f, -45);
             AddZoneAreaBox("Slaughter Halls", 378.851807f, 307.444977f, -1.1f, 24.694099f, 125.745117f, -30.448811f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("Torture Halls", "najena-02", "najena-02");
             else
                 AddZoneArea("Torture Halls");

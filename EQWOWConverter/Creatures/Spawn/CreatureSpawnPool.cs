@@ -24,7 +24,7 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnPool
     {
-        private static int CURRENT_POOL_TEMPLATE_ENTRYID = Configuration.CONFIG_SQL_POOL_TEMPLATE_ID_START;
+        private static int CURRENT_POOL_TEMPLATE_ENTRYID = Configuration.SQL_POOL_TEMPLATE_ID_START;
 
         public List<CreatureSpawnInstance> CreatureSpawnInstances = new List<CreatureSpawnInstance>();
         public List<CreatureTemplate> CreatureTemplates = new List<CreatureTemplate>();

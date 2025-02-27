@@ -45,7 +45,7 @@ namespace EQWOWConverter.Items
             float totalChance = 0;
             foreach(ItemLootDropEntry entry in ItemLootDropEntries)
                 totalChance += entry.Chance;
-            if (totalChance - Configuration.CONFIG_GENERATE_FLOAT_EPSILON < 100)
+            if (totalChance - Configuration.GENERATE_FLOAT_EPSILON < 100)
                 return;
 
             // Reduce the amounts proportional to the overage and round it
@@ -73,7 +73,7 @@ namespace EQWOWConverter.Items
         private static void PopulateItemLootDropDataFromDisk()
         {
             // Populate the loot drops
-            string itemLootDropsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemLootDrops.csv");
+            string itemLootDropsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootDrops.csv");
             Logger.WriteDetail("Populating Item Loot Drops via file '" + itemLootDropsFileName + "'");
             List<string> lootDropsInputRows = FileTool.ReadAllStringLinesFromFile(itemLootDropsFileName, true, true);
             foreach (string row in lootDropsInputRows)
@@ -83,9 +83,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[2]);
                 int maxExpansion = int.Parse(rowBlocks[3]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 // Create the item loot drop object
@@ -96,7 +96,7 @@ namespace EQWOWConverter.Items
             }
 
             // Populate the entries, and map them to loot drops
-            string itemLootDropEntriesFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ItemLootDropEntries.csv");
+            string itemLootDropEntriesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootDropEntries.csv");
             Logger.WriteDetail("Populating Item Loot Drop Entries via file '" + itemLootDropEntriesFileName + "'");
             List<string> lootDropEntryInputRows = FileTool.ReadAllStringLinesFromFile(itemLootDropEntriesFileName, true, true);
             foreach (string row in lootDropEntryInputRows)
@@ -106,9 +106,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[7]);
                 int maxExpansion = int.Parse(rowBlocks[8]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 // Create the entry record

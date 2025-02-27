@@ -46,7 +46,7 @@ namespace EQWOWConverter
 
             // Read in the backdrop data first
             List<List<Color>> backdropPixels = new List<List<Color>>();
-            string backdropTextureFullPath = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "item", "ItemIconBackdrop.png");
+            string backdropTextureFullPath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "ItemIconBackdrop.png");
             if (Path.Exists(backdropTextureFullPath) == false)
             {
                 Logger.WriteError("Failed to generate item icons since the backdrop image of '" + backdropTextureFullPath + "' did not exist");
@@ -244,9 +244,9 @@ namespace EQWOWConverter
             if (FirstColorTextureGeneration == true)
             {
                 // Generate folder paths
-                GeneratedFolderPath = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
-                InputCharacterTextureFolderPath = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
-                BLPConverterFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+                GeneratedFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
+                InputCharacterTextureFolderPath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+                BLPConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
 
                 // Clear directory
                 Logger.WriteDetail("Clearing the generation folder located at '" + GeneratedFolderPath + "'");

@@ -34,21 +34,21 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting from EQ to WoW...");
 
             // Verify Input Path
-            if (Directory.Exists(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER) == false)
+            if (Directory.Exists(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER) == false)
             {
-                Logger.WriteError("Error - Conditioned path of '" + Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER + "' does not exist.");
+                Logger.WriteError("Error - Conditioned path of '" + Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER + "' does not exist.");
                 Logger.WriteError("Conversion Failed!");
                 return false;
             }
 
             // Extract
-            if (Configuration.CONFIG_EXTRACT_DBC_FILES == true)
+            if (Configuration.EXTRACT_DBC_FILES == true)
                 ExtractClientDBCFiles();
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
             // Objects (must always come before zones)
-            if (Configuration.CONFIG_GENERATE_OBJECTS == true)
+            if (Configuration.GENERATE_OBJECTS == true)
             {
                 if (ConvertEQObjectsToWOW() == false)
                     return false;
@@ -67,7 +67,7 @@ namespace EQWOWConverter
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
-            if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
+            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
             {
                 if (ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools, zones) == false)
                     return false;
@@ -101,22 +101,22 @@ namespace EQWOWConverter
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
             // Create or update the MPQ
-            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
                 CreatePatchMPQ();
             else
                 UpdatePatchMPQ();
 
             // Deploy 
-            if (Configuration.CONFIG_DEPLOY_CLIENT_FILES == true)
+            if (Configuration.DEPLOY_CLIENT_FILES == true)
             {
                 DeployClient();
-                if (Configuration.CONFIG_DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
+                if (Configuration.DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
                     ClearClientCache();
             }
-            if (Configuration.CONFIG_DEPLOY_SERVER_FILES == true)
+            if (Configuration.DEPLOY_SERVER_FILES == true)
                 DeployServerFiles();
-            if (Configuration.CONFIG_DEPLOY_SERVER_SQL == true)
+            if (Configuration.DEPLOY_SERVER_SQL == true)
                 DeployServerSQL();
 
             Logger.WriteInfo("Conversion of data complete");
@@ -125,8 +125,8 @@ namespace EQWOWConverter
 
         public bool ConvertEQObjectsToWOW()
         {
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
             Logger.WriteInfo("Converting EQ objects to WOW objects...");
 
@@ -190,34 +190,34 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
+            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
             {
-                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", false);
-                foreach (string zoneShortName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+                Logger.WriteInfo("- Note: GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", false);
+                foreach (string zoneShortName in Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
                     Logger.WriteInfo(zoneShortName + " ", false, false);
                 Logger.WriteInfo(string.Empty, true, false);
             }
 
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true)
-                Logger.WriteInfo("- Note: CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL is TRUE");
+            if (Configuration.GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true)
+                Logger.WriteInfo("- Note: GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL is TRUE");
 
             // Build paths
-            string inputZoneFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
-            string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
-            string inputMusicFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
-            string inputObjectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
-            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            string inputZoneFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
+            string inputSoundFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            string inputMusicFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "music");
+            string inputObjectTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             string exportMapsFolder = Path.Combine(exportMPQRootFolder, "World", "Maps");
             string exportWMOFolder = Path.Combine(exportMPQRootFolder, "World", "wmo");
             string exportZonesTexturesFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneTextures");
             string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Clear folders if it's a fresh build
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0
+            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0
                 || File.Exists(exportMPQFileName) == false)
             {
                 if (Directory.Exists(exportMapsFolder))
@@ -254,12 +254,12 @@ namespace EQWOWConverter
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Skip any disabled expansions
-                if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == false && Configuration.CONFIG_GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                if (Configuration.GENERATE_KUNARK_ZONES == false && Configuration.GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
-                if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                if (Configuration.GENERATE_VELIOUS_ZONES == false && Configuration.GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
-                if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true &&
-                    Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
+                if (Configuration.GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true &&
+                    Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
                     continue;
 
                 Logger.WriteInfo(" - Processing zone '" + zoneDirectory.Name + "'");
@@ -277,8 +277,8 @@ namespace EQWOWConverter
                 CreateWoWZoneFromEQZone(curZone, exportMPQRootFolder, relativeStaticDoodadsPath, relativeZoneObjectsPath);
 
                 // Copy/move files if needed
-                if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
-                    Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
+                    Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                 {
                     // Place the related textures
                     ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneObjectsPath, inputObjectTexturesFolder);
@@ -290,7 +290,7 @@ namespace EQWOWConverter
                     ExportAmbientSoundForZone(curZone, inputSoundFolderRoot, exportMPQRootFolder);
                 }
                 else
-                    Logger.WriteDetail("For zone '" + zoneDirectory.Name + "', skipped texture and music copy since it wasn't in CONFIG_GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
+                    Logger.WriteDetail("For zone '" + zoneDirectory.Name + "', skipped texture and music copy since it wasn't in GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
 
                 zones.Add(curZone);
             }
@@ -300,13 +300,13 @@ namespace EQWOWConverter
         public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
             ref List<CreatureSpawnPool> creatureSpawnPools, List<Zone> zones)
         {
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
-            if (Configuration.CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME == true)
-                Logger.WriteInfo("- Note: CONFIG_CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
+            if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                Logger.WriteInfo("- Note: CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
 
             // Recreate the output folder to clean it out
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
@@ -488,8 +488,8 @@ namespace EQWOWConverter
 
             // Copy all of the sound files
             Logger.WriteInfo("Copying creature sound files...");
-            string inputSoundFolderRoot = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
-            string exportCreatureSoundsDirectory = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Sound", "Creature", "Everquest");
+            string inputSoundFolderRoot = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            string exportCreatureSoundsDirectory = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Sound", "Creature", "Everquest");
             if (Directory.Exists(exportCreatureSoundsDirectory) == true)
                 Directory.Delete(exportCreatureSoundsDirectory, true);
             FileTool.CreateBlankDirectory(exportCreatureSoundsDirectory, false);
@@ -605,7 +605,7 @@ namespace EQWOWConverter
             // Gate
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";
-            gateSpellTemplate.ID = Configuration.CONFIG_SPELLS_GATE_SPELLDBC_ID;
+            gateSpellTemplate.ID = Configuration.SPELLS_GATE_SPELLDBC_ID;
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
@@ -618,7 +618,7 @@ namespace EQWOWConverter
             // Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
-            bindAffinitySelfSpellTemplate.ID = Configuration.CONFIG_SPELLS_BINDSELF_SPELLDBC_ID;
+            bindAffinitySelfSpellTemplate.ID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
             bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
@@ -631,7 +631,7 @@ namespace EQWOWConverter
             // Bind Affinity
             SpellTemplate bindAffinitySpellTemplate = new SpellTemplate();
             bindAffinitySpellTemplate.Name = "Bind Affinity";
-            bindAffinitySpellTemplate.ID = Configuration.CONFIG_SPELLS_BINDANY_SPELLDBC_ID;
+            bindAffinitySpellTemplate.ID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
             bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
             bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
@@ -647,21 +647,21 @@ namespace EQWOWConverter
 
         public void ExtractClientDBCFiles()
         {
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
             Logger.WriteInfo("Extracting client DBC files...");
 
             // Make sure the patches folder is correct
-            string wowPatchesFolder = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
+            string wowPatchesFolder = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
             if (Directory.Exists(wowPatchesFolder) == false)
-                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER?");
+                throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set PATH_WOW_ENUS_CLIENT_FOLDER?");
 
             // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
             List<string> patchFileNames = new List<string>();
             patchFileNames.Add(Path.Combine(wowPatchesFolder, "patch-enUS.MPQ"));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
@@ -687,9 +687,9 @@ namespace EQWOWConverter
 
             // Extract the files using the script
             Logger.WriteDetail("Extracting DBC files");
-            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
-                throw new Exception("Failed to extract DBC files. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                throw new Exception("Failed to extract DBC files. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
             string args = "console \"" + dbcExtractionScriptFileName + "\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
@@ -706,21 +706,21 @@ namespace EQWOWConverter
             Logger.WriteInfo("Building patch MPQ...");
 
             // Make sure the output folder exists
-            if (Directory.Exists(Configuration.CONFIG_PATH_EXPORT_FOLDER) == false)
-                throw new Exception("Export folder '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "' did not exist, make sure you set CONFIG_PATH_EXPORT_FOLDER");
+            if (Directory.Exists(Configuration.PATH_EXPORT_FOLDER) == false)
+                throw new Exception("Export folder '" + Configuration.PATH_EXPORT_FOLDER + "' did not exist, make sure you set PATH_EXPORT_FOLDER");
 
             // Delete the old patch file, if it exists
             Logger.WriteDetail("Deleting old patch file if it exists");
-            string outputPatchFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
             // Generate a script to generate the mpq file
             Logger.WriteDetail("Generating script to generate MPQ file");
-            string mpqReadyFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(mpqReadyFolder) == false)
-                throw new Exception("There was no MPQReady folder inside of '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "'");
-            string workingGeneratedScriptsFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
+                throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder mpqCreateScriptText = new StringBuilder();
             mpqCreateScriptText.AppendLine("new \"" + outputPatchFileName + "\" 65536");
@@ -731,9 +731,9 @@ namespace EQWOWConverter
 
             // Generate the new MPQ using the script
             Logger.WriteDetail("Generating MPQ file");
-            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
-                throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
             string args = "console \"" + mpqNewScriptFileName + "\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
@@ -748,7 +748,7 @@ namespace EQWOWConverter
         public void UpdatePatchMPQ()
         {
             Logger.WriteInfo("Updating patch MPQ...");
-            string exportMPQFileName = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
             if (File.Exists(exportMPQFileName) == false)
             {
                 Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
@@ -757,15 +757,15 @@ namespace EQWOWConverter
 
             // Generate a script to update the new MPQ
             Logger.WriteDetail("Generating script to update the MPQ file");
-            string mpqReadyFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(mpqReadyFolder) == false)
-                throw new Exception("There was no MPQReady folder inside of '" + Configuration.CONFIG_PATH_EXPORT_FOLDER + "'");
-            string workingGeneratedScriptsFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
+                throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder mpqUpdateScriptText = new StringBuilder();
             
             // Zones
-            foreach(string zoneName in Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+            foreach(string zoneName in Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
             {
                 // Add zone-specific folders
                 // ZoneObjects
@@ -795,7 +795,7 @@ namespace EQWOWConverter
             }
 
             // Objects
-            if (Configuration.CONFIG_GENERATE_OBJECTS == true)
+            if (Configuration.GENERATE_OBJECTS == true)
             {                
                 string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
@@ -803,7 +803,7 @@ namespace EQWOWConverter
             }
 
             // Creatures
-            if (Configuration.CONFIG_GENERATE_CREATURES_AND_SPAWNS == true)
+            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
             {   
                 string relativeCreaturePath = Path.Combine("Creature", "Everquest");
                 string fullCreaturePath = Path.Combine(mpqReadyFolder, relativeCreaturePath);
@@ -849,9 +849,9 @@ namespace EQWOWConverter
 
             // Update the MPQ using the script
             Logger.WriteDetail("Updating MPQ file");
-            string mpqEditorFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
-                throw new Exception("Failed to update MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                throw new Exception("Failed to update MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
             string args = "console \"" + mpqUpdateScriptFileName + "\"";
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
@@ -868,7 +868,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying to client...");
 
             // Make sure a patch was created
-            string sourcePatchFileNameAndPath = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(sourcePatchFileNameAndPath) == false)
             {
                 Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
@@ -876,7 +876,7 @@ namespace EQWOWConverter
             }
 
             // Delete the old one if it's already deployed on the client
-            string targetPatchFileNameAndPath = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS", Configuration.CONFIG_PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS", Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(targetPatchFileNameAndPath) == true)
             {
                 try
@@ -904,7 +904,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Clearing client cache...");
 
             // If there is a folder, delete it
-            string folderToDelete = Path.Combine(Configuration.CONFIG_PATH_WOW_ENUS_CLIENT_FOLDER, "Cache", "WDB");
+            string folderToDelete = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Cache", "WDB");
             if (Directory.Exists(folderToDelete) == true)
             {
                 Logger.WriteDetail("Client cache WDB folder found, so deleting...");
@@ -922,15 +922,15 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying files to server...");
 
             // Make sure source and target paths are good for DBC files
-            string sourceServerDBCFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "DBCFilesServer");
+            string sourceServerDBCFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "DBCFilesServer");
             if (Directory.Exists(sourceServerDBCFolder) == false)
             {
                 Logger.WriteError("Could not deploy DBC files to the server, no folder existed at '" + sourceServerDBCFolder + "'");
                 return;
             }
-            if (Directory.Exists(Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER) == false)
+            if (Directory.Exists(Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER) == false)
             {
-                Logger.WriteError("Could not deploy DBC files to the server, no target folder existed at '" + Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER + "'. Check that you set Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER properly");
+                Logger.WriteError("Could not deploy DBC files to the server, no target folder existed at '" + Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER + "'. Check that you set Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER properly");
                 return;
             }
 
@@ -939,7 +939,7 @@ namespace EQWOWConverter
             string[] dbcFiles = Directory.GetFiles(sourceServerDBCFolder);
             foreach (string dbcFile in dbcFiles)
             {
-                string targetFileName = Path.Combine(Configuration.CONFIG_PATH_DEPLOY_SERVER_DBC_FILES_FOLDER, Path.GetFileName(dbcFile));
+                string targetFileName = Path.Combine(Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER, Path.GetFileName(dbcFile));
                 File.Copy(dbcFile, targetFileName, true);
             }
 
@@ -955,13 +955,13 @@ namespace EQWOWConverter
             try
             {
                 // Character scripts
-                string charactersSQLScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.Characters.ToString());
+                string charactersSQLScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.Characters.ToString());
                 if (Directory.Exists(charactersSQLScriptFolder) == false)
                 {
                     Logger.WriteError("Could not deploy SQL scripts to server. Path '" + charactersSQLScriptFolder + "' did not exist");
                     return;
                 }
-                using (MySqlConnection connection = new MySqlConnection(Configuration.CONFIG_DEPLOY_SQL_CONNECTION_STRING_CHARACTERS))
+                using (MySqlConnection connection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_CHARACTERS))
                 {
                     connection.Open();
                     string[] sqlFiles = Directory.GetFiles(charactersSQLScriptFolder);
@@ -977,13 +977,13 @@ namespace EQWOWConverter
                 }
 
                 // World scripts
-                string worldSQLScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.World.ToString());
+                string worldSQLScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", SQLFileType.World.ToString());
                 if (Directory.Exists(worldSQLScriptFolder) == false)
                 {
                     Logger.WriteError("Could not deploy SQL scripts to server. Path '" + worldSQLScriptFolder + "' did not exist");
                     return;
                 }
-                using (MySqlConnection connection = new MySqlConnection(Configuration.CONFIG_DEPLOY_SQL_CONNECTION_STRING_WORLD))
+                using (MySqlConnection connection = new MySqlConnection(Configuration.DEPLOY_SQL_CONNECTION_STRING_WORLD))
                 {
                     connection.Open();
                     string[] sqlFiles = Directory.GetFiles(worldSQLScriptFolder);
@@ -1017,8 +1017,8 @@ namespace EQWOWConverter
             // Generate the WOW zone data first, always do it since IDs are based on it
             zone.LoadFromEQZone();
 
-            if (Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
-                Configuration.CONFIG_GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zone.ShortName))
+            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
+                Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zone.ShortName))
             {
                 // Create the zone WMO objects
                 WMO zoneWMO = new WMO(zone, exportMPQRootFolder, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
@@ -1063,15 +1063,15 @@ namespace EQWOWConverter
                 }
             }
             else
-                Logger.WriteDetail("For zone '" + zone.ShortName + "', skipped wow file generation since it wasn't in CONFIG_GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
+                Logger.WriteDetail("For zone '" + zone.ShortName + "', skipped wow file generation since it wasn't in GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
 
             Logger.WriteDetail("- [" + zone.ShortName + "]: Converting of zone '" + zone.ShortName + "' complete");
         }
 
         public void CreateLoadingScreens()
         {
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
 
             Logger.WriteInfo("Copying loading screens");
             string loadingScreensTextureFolder = Path.Combine(exportMPQRootFolder, "Interface", "Glues", "LoadingScreens");
@@ -1106,8 +1106,8 @@ namespace EQWOWConverter
 
         public void CreateLiquidMaterials()
         {
-            string eqExportsConditionedPath = Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string exportMPQRootFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady");
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
 
             Logger.WriteInfo("Copying liquid material textures");
 
@@ -1121,7 +1121,7 @@ namespace EQWOWConverter
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
         {
-            string wowExportPath = Configuration.CONFIG_PATH_EXPORT_FOLDER;
+            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
             Logger.WriteInfo("Creating DBC Files...");
 
@@ -1221,13 +1221,13 @@ namespace EQWOWConverter
             liquidTypeDBC.AddRows();
 
             // LoadingScreens is common
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
-            loadingScreensDBC.AddRow(Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
+            loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START, "EQAntonica", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQClassic.blp");
+            loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 1, "EQKunark", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQKunark.blp");
+            loadingScreensDBC.AddRow(Configuration.DBCID_LOADINGSCREEN_ID_START + 2, "EQVelious", "Interface\\Glues\\LoadingScreens\\LoadingScreenEQVelious.blp");
 
             // Creatures sounds
             Dictionary<string, int> creatureFootstepIDBySoundNames = new Dictionary<string, int>();
-            int curCreatureFootstepID = Configuration.CONFIG_DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
+            int curCreatureFootstepID = Configuration.DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START;
             foreach (CreatureModelTemplate creatureModelTemplate in creatureModelTemplates)
             {
                 creatureDisplayInfoDBC.AddRow(creatureModelTemplate.DBCCreatureDisplayID, creatureModelTemplate.DBCCreatureModelDataID);
@@ -1240,7 +1240,7 @@ namespace EQWOWConverter
             foreach(CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
             {
                 factionDBC.AddRow(creatureFaction);
-                if (creatureFaction.Name != Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                if (creatureFaction.Name != Configuration.CREATURE_FACTION_ROOT_NAME)
                     factionTemplateDBC.AddRow(creatureFaction);
             }
 
@@ -1370,7 +1370,7 @@ namespace EQWOWConverter
             }
 
             // SkillLine
-            //skillLineDBC.AddRow(Configuration.CONFIG_DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
+            //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
 
             // Spells
             for(int i = 0; i < 23; i++)
@@ -1378,7 +1378,7 @@ namespace EQWOWConverter
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 spellDBC.AddRow(spellTemplate);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), Configuration.CONFIG_DBCID_SKILLLINE_ALTERATION_ID, spellTemplate.ID);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), Configuration.DBCID_SKILLLINE_ALTERATION_ID, spellTemplate.ID);
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
@@ -1450,7 +1450,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Creating SQL Scripts...");
 
             // Clean the folder
-            string sqlScriptFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "SQLScripts");
+            string sqlScriptFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts");
             if (Directory.Exists(sqlScriptFolder))
                 Directory.Delete(sqlScriptFolder, true);
 
@@ -1527,15 +1527,15 @@ namespace EQWOWConverter
                 // Base menu
                 int gossipMenuID = GossipMenuSQL.GenerateUniqueMenuID();
                 classTrainerMenuIDs.Add(classType, gossipMenuID);
-                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CONFIG_CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
+                gossipMenuSQL.AddRow(gossipMenuID, Configuration.CREATURE_CLASS_TRAINER_NPC_TEXT_ID);
 
                 // Menu options
                 gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 0, 3, "I would like to train.", 
-                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
+                    Configuration.CREATURE_CLASS_TRAINER_TRAIN_BROADCAST_TEXT_ID, 5, 16, 0);
                 gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 1, 0, "I wish to unlearn my talents", 
-                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CONFIG_CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
+                    Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
                 gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.", 
-                    Configuration.CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CONFIG_CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
+                    Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
             }
 
             // Creature Templates
@@ -1731,7 +1731,7 @@ namespace EQWOWConverter
                 // And there should be one spirit healer per graveyard
                 int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                 int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
-                creatureSQL.AddRow(spiritHealerGUID, Configuration.CONFIG_ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID, 
+                creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID, 
                     graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None);
             }         
 
@@ -1819,10 +1819,10 @@ namespace EQWOWConverter
             }
 
             // Finally copy the textures for any sound instance objects
-            string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+            string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
             foreach (ObjectModel zoneObject in zone.SoundInstanceObjectModels)
             {
-                string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+                string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
                 if (File.Exists(soundInstanceInputTextureFullPath) == false)
                 {
                     Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
@@ -1941,14 +1941,14 @@ namespace EQWOWConverter
             Logger.WriteInfo("Copying icon files...");
 
             // Clear and create the directory
-            string iconOutputFolder = Path.Combine(Configuration.CONFIG_PATH_EXPORT_FOLDER, "MPQReady", "Interface", "ICONS");
+            string iconOutputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Interface", "ICONS");
             if (Directory.Exists(iconOutputFolder) == true)
                 Directory.Delete(iconOutputFolder, true);
             Directory.CreateDirectory(iconOutputFolder);
 
             // Items
             SortedDictionary<int, ItemTemplate> itemTemplates = ItemTemplate.GetItemTemplatesByEQDBIDs();       
-            string itemIconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            string itemIconInputFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
             {
                 string sourceIconFile = Path.Combine(itemIconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
@@ -1957,7 +1957,7 @@ namespace EQWOWConverter
             }
 
             // Spells
-            string spellIconInputFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            string spellIconInputFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
             string[] spellIconFiles = Directory.GetFiles(spellIconInputFolder, "*.blp");
             foreach(string spellIconFile in spellIconFiles)
             {

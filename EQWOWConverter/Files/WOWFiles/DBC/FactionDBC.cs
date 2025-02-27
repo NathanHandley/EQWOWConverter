@@ -61,11 +61,11 @@ namespace EQWOWConverter.WOWFiles
         protected int GetFlagsForRep(string creatureFactionName, int reputationIndex, int baseReputation)
         {
             int reputationFlags = 0;
-            if (creatureFactionName == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+            if (creatureFactionName == Configuration.CREATURE_FACTION_ROOT_NAME)
                 reputationFlags = 12;
             else
             {
-                if (Configuration.CONFIG_CREATURE_FACTION_SHOW_ALL == true)
+                if (Configuration.CREATURE_FACTION_SHOW_ALL == true)
                     reputationFlags |= 0x01; // Show by default
                 if (baseReputation <= -3000 || reputationIndex == -1)
                     reputationFlags |= 0x02; // FACTION_FLAG_AT_WAR

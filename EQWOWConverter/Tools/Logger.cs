@@ -59,27 +59,27 @@ namespace EQWOWConverter
                 outputLine = "[ ] Info | " + text;
             else
                 outputLine = text;
-            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
+            if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 WriteToConsole(outputLine, outputNewLine);
-            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 1)
+            if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
 
         public static void WriteDetail(string text)
         {
             string outputLine = "[.] Detail| " + text;
-            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 3)
+            if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
                 WriteToConsole(outputLine);
-            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 3)
+            if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
 
         public static void WriteError(string text)
         {
             string outputLine = "[*] Error| " + text;
-            if (Configuration.CONFIG_LOGGING_CONSOLE_MIN_LEVEL >= 2)
+            if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 2)
                 WriteToConsole(outputLine);
-            if (Configuration.CONFIG_LOGGING_FILE_MIN_LEVEL >= 2)
+            if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)
                 File.AppendAllText("log.txt", outputLine + "\n");
         }
 

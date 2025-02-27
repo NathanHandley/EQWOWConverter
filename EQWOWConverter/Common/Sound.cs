@@ -24,7 +24,7 @@ namespace EQWOWConverter.Common
 {
     internal class Sound
     {
-        private static int CURRENT_SOUNDENTRY_ID = Configuration.CONFIG_DBCID_SOUNDENTRIES_ID_START;
+        private static int CURRENT_SOUNDENTRY_ID = Configuration.DBCID_SOUNDENTRIES_ID_START;
 
         public int DBCID;
         public string Name = string.Empty;
@@ -104,17 +104,17 @@ namespace EQWOWConverter.Common
                         break;
                 }
                 if (Type == SoundType.GameObject)
-                    return volume * Configuration.CONFIG_AUDIO_SOUNDINSTANCE_VOLUME_MOD;
+                    return volume * Configuration.AUDIO_SOUNDINSTANCE_VOLUME_MOD;
                 else
-                    return volume * Configuration.CONFIG_AUDIO_AMBIENT_SOUND_VOLUME_MOD;
+                    return volume * Configuration.AUDIO_AMBIENT_SOUND_VOLUME_MOD;
             }
             else if (Type == SoundType.ZoneMusic)
             {
-                return volume * Configuration.CONFIG_AUDIO_MUSIC_VOLUME_MOD;
+                return volume * Configuration.AUDIO_MUSIC_VOLUME_MOD;
             }
             else if (Type == SoundType.NPCCombat)
             {
-                return Configuration.CONFIG_AUDIO_CREATURE_SOUND_VOLUME;
+                return Configuration.AUDIO_CREATURE_SOUND_VOLUME;
             }
 
             Logger.WriteError("Type of SoundType is not handled, so volume will be 1");

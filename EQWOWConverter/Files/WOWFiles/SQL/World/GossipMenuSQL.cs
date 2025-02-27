@@ -21,11 +21,11 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GossipMenuSQL : SQLFile
     {
-        private static int CUR_MENU_ID = Configuration.CONFIG_SQL_GOSSIPMENU_MENUID_START;
+        private static int CUR_MENU_ID = Configuration.SQL_GOSSIPMENU_MENUID_START;
 
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `gossip_menu` WHERE `MenuID` >= " + Configuration.CONFIG_SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.CONFIG_SQL_GOSSIPMENU_MENUID_END + ";";
+            return "DELETE FROM `gossip_menu` WHERE `MenuID` >= " + Configuration.SQL_GOSSIPMENU_MENUID_START.ToString() + " AND `MenuID` <= " + Configuration.SQL_GOSSIPMENU_MENUID_END + ";";
         }
 
         public void AddRow(int menuID, int textID)

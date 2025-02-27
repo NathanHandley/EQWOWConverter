@@ -22,7 +22,7 @@ namespace EQWOWConverter.Zones
     {
         private static Dictionary<int, ZonePropertiesGraveyard> GraveyardsByID = new Dictionary<int, ZonePropertiesGraveyard>();
 
-        private static int CUR_WORLDSAFELOCS_ID = Configuration.CONFIG_DBCID_WORLDSAFELOCS_ID_START;
+        private static int CUR_WORLDSAFELOCS_ID = Configuration.DBCID_WORLDSAFELOCS_ID_START;
 
         public int ID = 0;
         public string LocationShortName = string.Empty;
@@ -45,7 +45,7 @@ namespace EQWOWConverter.Zones
             if (GraveyardsByID.ContainsKey(ID) == false)
             {
                 Logger.WriteError("Unable to find graveyard with ID '" + ID + "', so returning default");
-                return GraveyardsByID[Configuration.CONFIG_ZONE_DEFAULT_GRAVEYARD_ID];
+                return GraveyardsByID[Configuration.ZONE_DEFAULT_GRAVEYARD_ID];
             }
             else
                 return GraveyardsByID[ID];
@@ -61,7 +61,7 @@ namespace EQWOWConverter.Zones
         private static void PopulateGraveyardData()
         {
             // Load the graveyards
-            string graveyardFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyards.csv");
+            string graveyardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyards.csv");
             Logger.WriteDetail("Populating zone graveyards via file '" + graveyardFile + "'");
             List<Dictionary<string, string>> zoneGraveyardRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardFile, "|");
             foreach (Dictionary<string, string> columns in zoneGraveyardRows)
@@ -69,13 +69,13 @@ namespace EQWOWConverter.Zones
                 ZonePropertiesGraveyard graveyard = new ZonePropertiesGraveyard();
                 graveyard.ID = int.Parse(columns["ID"]);
                 graveyard.LocationShortName = columns["ZoneShortName"];
-                graveyard.RespawnX = float.Parse(columns["RespawnX"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                graveyard.RespawnY = float.Parse(columns["RespawnY"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                graveyard.RespawnZ = float.Parse(columns["RespawnZ"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                graveyard.RespawnX = float.Parse(columns["RespawnX"]) * Configuration.GENERATE_WORLD_SCALE;
+                graveyard.RespawnY = float.Parse(columns["RespawnY"]) * Configuration.GENERATE_WORLD_SCALE;
+                graveyard.RespawnZ = float.Parse(columns["RespawnZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 graveyard.RespawnOrientation = float.Parse(columns["RespawnOrientation"]);
-                graveyard.SpiritHealerX = float.Parse(columns["SpiritHealerX"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                graveyard.SpiritHealerY = float.Parse(columns["SpiritHealerY"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                graveyard.SpiritHealerZ = float.Parse(columns["SpiritHealerZ"]) * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                graveyard.SpiritHealerX = float.Parse(columns["SpiritHealerX"]) * Configuration.GENERATE_WORLD_SCALE;
+                graveyard.SpiritHealerY = float.Parse(columns["SpiritHealerY"]) * Configuration.GENERATE_WORLD_SCALE;
+                graveyard.SpiritHealerZ = float.Parse(columns["SpiritHealerZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 graveyard.SpiritHealerOrientation = float.Parse(columns["SpiritHealerOrientation"]);
                 string areaNameDescription = graveyard.LocationShortName;
                 string comments = columns["Comments"];
@@ -92,7 +92,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Load the zone mapping
-            string graveyardMapFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyardMap.csv");
+            string graveyardMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyardMap.csv");
             Logger.WriteDetail("Populating zone graveyard map via file '" + graveyardMapFile + "'");
             List<Dictionary<string, string>> zoneGraveyardMapRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardMapFile, "|");
             foreach (Dictionary<string, string> columns in zoneGraveyardMapRows)

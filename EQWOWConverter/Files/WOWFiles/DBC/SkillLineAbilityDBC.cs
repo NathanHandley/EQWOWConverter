@@ -18,7 +18,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineAbilityDBC : DBCFile
     {
-        private static int CUR_SPELL_DBCID = Configuration.CONFIG_DBCID_SKILLLINEABILITY_ID_START;
+        private static int CUR_SPELL_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
 
         public void AddRow(int id, int skillLineID, int spellID)
         {

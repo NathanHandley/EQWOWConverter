@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature_model_info WHERE `DisplayID` >= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_START.ToString() + " AND `DisplayID` <= " + Configuration.CONFIG_DBCID_CREATUREDISPLAYINFO_ID_END.ToString() + ";";
+            return "DELETE FROM creature_model_info WHERE `DisplayID` >= " + Configuration.DBCID_CREATUREDISPLAYINFO_ID_START.ToString() + " AND `DisplayID` <= " + Configuration.DBCID_CREATUREDISPLAYINFO_ID_END.ToString() + ";";
         }
 
         public void AddRow(int displayID, int gender)

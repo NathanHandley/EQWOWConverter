@@ -41,7 +41,7 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateCreatureVendorItems()
         {
-            string creatureVendorItemsFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
+            string creatureVendorItemsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
             Logger.WriteDetail("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(creatureVendorItemsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
@@ -78,9 +78,9 @@ namespace EQWOWConverter.Creatures
                 // Only add if it's within this target expansion
                 int minExpansion = int.Parse(rowBlocks[5]);
                 int maxExpansion = int.Parse(rowBlocks[6]);
-                if (minExpansion != -1 && minExpansion > Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.CONFIG_GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
                 if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)
                     CreatureVendorItemsByMerchantID.Add(newVendorItem.MerchantID, new List<CreatureVendorItem>());

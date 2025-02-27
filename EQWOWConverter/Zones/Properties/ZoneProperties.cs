@@ -46,10 +46,10 @@ namespace EQWOWConverter.Zones
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
 
         // DBCIDs
-        public static int CURRENT_MAPID = Configuration.CONFIG_DBCID_MAP_ID_START;
-        private static UInt32 CURRENT_WMOID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOID_START;
-        private static int CURRENT_MAPDIFFICULTYID = Configuration.CONFIG_DBCID_MAPDIFFICULTY_ID_START;        
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.CONFIG_DBCID_WMOAREATABLE_WMOGROUPID_START;
+        public static int CURRENT_MAPID = Configuration.DBCID_MAP_ID_START;
+        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
+        private static int CURRENT_MAPDIFFICULTYID = Configuration.DBCID_MAPDIFFICULTY_ID_START;        
+        private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
         public UInt32 DBCWMOID;
@@ -68,7 +68,7 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOGROUPID++;
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinentType continent)
         {
             ShortName = shortName;
@@ -101,9 +101,9 @@ namespace EQWOWConverter.Zones
                 Logger.WriteInfo("Warning: Environment set as indoor foggy, but the zonewide environment settings were already set. There could be issues.");
             CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
             CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType,
-                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE,
-                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE,
-                Configuration.CONFIG_LIGHT_DEFAULT_INDOOR_AMBIENCE);
+                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE);
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, byte ambientRed, byte ambientGreen, byte ambientBlue)
@@ -164,7 +164,7 @@ namespace EQWOWConverter.Zones
                 newZoneArea.SetAmbientSound(ambientSoundFileNameNoExtDay, ambientSoundFileNameNoExtNight);            
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddZoneAreaBox(string zoneAreaName, float nwCornerX, float nwCornerY, float nwCornerZ, float seCornerX, float seCornerY, float seCornerZ)
         {
             BoundingBox boundingBox = new BoundingBox(seCornerX, seCornerY, seCornerZ, nwCornerX, nwCornerY, nwCornerZ);
@@ -180,7 +180,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddZoneAreaOctagonBox(string zoneAreaName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float topZ, float bottomZ)
         {
@@ -269,7 +269,7 @@ namespace EQWOWConverter.Zones
                 AlwaysBrightMaterialsByName.Add(materialName);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         // The box is oriented when facing north (when using .gps, orientation = 0 and no tilt) since zone lines are axis aligned in EQ
         protected void AddZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
             float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY, 
@@ -281,7 +281,7 @@ namespace EQWOWConverter.Zones
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ, 
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth)
@@ -291,7 +291,7 @@ namespace EQWOWConverter.Zones
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, int liquidGroupID = -1)
         {
@@ -306,7 +306,7 @@ namespace EQWOWConverter.Zones
                 LiquidGroups[liquidGroupID].AddLiquidChunk(liquidVolume);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlane(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, ZoneLiquidSlantType slantType, float minDepth, int liquidGroupID = -1, string forcedAreaAlignment = "")
         {
@@ -328,7 +328,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddLiquidPlaneZLevel(ZoneLiquidType liquidType, string materialName, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float fixedZ, float minDepth, int liquidGroupID = -1)
         {
@@ -359,7 +359,7 @@ namespace EQWOWConverter.Zones
             return m * testX + c;
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth, float northXLimit, float westYLimit,
             float southXLimit, float eastYLimit, float stepSize)
@@ -420,11 +420,11 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddTriangleLiquidShapeSouthEdgeAligned(ZoneLiquidType liquidType, string materialName, float northX, float northY, float southEdgeX, float southWestY,
             float southEastY, float allCornerZ, float minDepth, float stepSize)
         {
@@ -463,11 +463,11 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornerZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         // TODO: BUG: The plane may be inverted, but seems to work properly in WoW
         protected void AddLiquidCylinder(ZoneLiquidType liquidType, string materialName, float centerX, float centerY, float radius, float topZ,
             float height, float maxX, float maxY, float minX, float minY, float stepSize)
@@ -505,7 +505,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddTrapezoidLiquidAxisAlignedZLevelShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float northWestY, float northEastY,
             float southWestY, float southEastY, float topZ, float height, float stepSize)
         {
@@ -538,27 +538,27 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, topZ, height, curLiquidGroupID);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddQuadrilateralLiquidShapeZLevel(ZoneLiquidType liquidType, string materialName, float northMostX, float northMostY, float westMostX, float westMostY,
             float southMostX, float southMostY, float eastMostX, float eastMostY, float allCornersZ, float minDepth)
         {
             AddQuadrilateralLiquidShapeZLevel(liquidType, materialName, northMostX, northMostY, westMostX, westMostY, southMostX, southMostY,
-                eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.CONFIG_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+                eastMostX, eastMostY, allCornersZ, minDepth, northMostX, westMostY, southMostX, eastMostY, Configuration.LIQUID_QUADGEN_EDGE_WALK_SIZE);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth)
         {
             AddOctagonLiquidShape(liquidType, materialName, northEdgeX, southEdgeX, westEdgeY, eastEdgeY, northWestY, northEastY, southWestY, southEastY, westNorthX,
-                westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.CONFIG_LIQUID_QUADGEN_EDGE_WALK_SIZE);
+                westSouthX, eastNorthX, eastSouthX, allCornersZ, minDepth, Configuration.LIQUID_QUADGEN_EDGE_WALK_SIZE);
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         protected void AddOctagonLiquidShape(ZoneLiquidType liquidType, string materialName, float northEdgeX, float southEdgeX, float westEdgeY, float eastEdgeY, float northWestY, float northEastY,
             float southWestY, float southEastY, float westNorthX, float westSouthX, float eastNorthX, float eastSouthX, float allCornersZ, float minDepth, float stepSize)
         {
@@ -626,7 +626,7 @@ namespace EQWOWConverter.Zones
                     AddLiquidPlaneZLevel(liquidType, materialName, nwX, nwY, seX, seY, allCornersZ, minDepth, curLiquidGroupID);
 
                 // Set new top factoring for overlap
-                curXTop = curXBottom -= Configuration.CONFIG_LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
+                curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
 

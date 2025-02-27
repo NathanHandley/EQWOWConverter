@@ -81,7 +81,7 @@ namespace EQWOWConverter.Creatures
 
             foreach (CreatureFaction creatureFaction in CreatureFactionsByWOWFactionID.Values)
             {
-                if (creatureFaction.Name == Configuration.CONFIG_CREATURE_FACTION_ROOT_NAME)
+                if (creatureFaction.Name == Configuration.CREATURE_FACTION_ROOT_NAME)
                     return creatureFaction.FactionID;
             }
 
@@ -98,7 +98,7 @@ namespace EQWOWConverter.Creatures
             else
             {
                 Logger.WriteDetail("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
-                return Configuration.CONFIG_CREATURE_FACTION_TEMPLATE_DEFAULT;
+                return Configuration.CREATURE_FACTION_TEMPLATE_DEFAULT;
             }
         }
 
@@ -163,7 +163,7 @@ namespace EQWOWConverter.Creatures
         private static void PopulateFactionData()
         {
             // Load in the class alignments
-            string factionClassAlignmentFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionClassAlignment.csv");
+            string factionClassAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionClassAlignment.csv");
             Logger.WriteDetail("Populating creature faction class alignments via file '" + factionClassAlignmentFile + "'");
             List<Dictionary<string, string>> classAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionClassAlignmentFile, "|");
             HashSet<ClassType> evilClasses = new HashSet<ClassType>();
@@ -199,7 +199,7 @@ namespace EQWOWConverter.Creatures
             }
 
             // Load in the race alignments
-            string factionRaceAlignmentFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
+            string factionRaceAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
             Logger.WriteDetail("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
             List<Dictionary<string, string>> raceAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionRaceAlignmentFile, "|");
             HashSet<RaceType> evilRaces = new HashSet<RaceType>();
@@ -233,7 +233,7 @@ namespace EQWOWConverter.Creatures
             }
 
             // Load in faction list
-            string factionListFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactions.csv");
+            string factionListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactions.csv");
             Logger.WriteDetail("Populating creature factions via file '" + factionListFile + "'");
             List<Dictionary<string, string>> listRows = FileTool.ReadAllRowsFromFileWithHeader(factionListFile, "|");
             foreach (Dictionary<string, string> columns in listRows)
@@ -277,7 +277,7 @@ namespace EQWOWConverter.Creatures
                 Logger.WriteError("Creature Faction - Could not assign parent ID to faction since no parent faction ID could be found");
 
             // Load the faction mappings
-            string factionMapListFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionMap.csv");
+            string factionMapListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionMap.csv");
             Logger.WriteDetail("Populating creature factions map via file '" + factionMapListFile + "'");
             List<Dictionary<string, string>> mapRows = FileTool.ReadAllRowsFromFileWithHeader(factionMapListFile, "|");
             foreach (Dictionary<string, string> columns in mapRows)
@@ -305,7 +305,7 @@ namespace EQWOWConverter.Creatures
             }
 
             // Load in faction kill reward list
-            string factionKillRewardFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionKillRewards.csv");
+            string factionKillRewardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionKillRewards.csv");
             Logger.WriteDetail("Populating creature faction kill rewards via file '" + factionKillRewardFile + "'");
             List<Dictionary<string, string>> factionKillRewardRows = FileTool.ReadAllRowsFromFileWithHeader(factionKillRewardFile, "|");
             foreach (Dictionary<string, string> columns in factionKillRewardRows)
@@ -315,7 +315,7 @@ namespace EQWOWConverter.Creatures
                 creatureFactionKillReward.EQNPCFactionID = int.Parse(columns["npc_faction_id"]);
                 creatureFactionKillReward.EQFactionID = int.Parse(columns["faction_id"]);
                 creatureFactionKillReward.SortOrder = int.Parse(columns["sort_order"]);
-                creatureFactionKillReward.KillRewardValue = int.Parse(columns["value"]) * Configuration.CONFIG_CREATURE_KILL_REWARD_REP_MULTIPLIER;
+                creatureFactionKillReward.KillRewardValue = int.Parse(columns["value"]) * Configuration.CREATURE_KILL_REWARD_REP_MULTIPLIER;
 
                 // Add it
                 if (CreatureWOWFactionIDByEQFactionID.ContainsKey(creatureFactionKillReward.EQFactionID))

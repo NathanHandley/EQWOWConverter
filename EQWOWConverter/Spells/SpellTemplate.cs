@@ -20,7 +20,7 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
-        private static int CUR_SPELL_DBCID = Configuration.CONFIG_DBCID_SPELL_ID_START;
+        private static int CUR_SPELL_DBCID = Configuration.DBCID_SPELL_ID_START;
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
 
         public int ID = 0;

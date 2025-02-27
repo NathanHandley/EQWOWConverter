@@ -62,17 +62,17 @@ namespace EQWOWConverter.Zones
             MaterialName = materialName;
 
             // Add additional height for ripple rendering
-            highZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
-            lowZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            highZ += Configuration.LIQUID_SURFACE_ADD_Z_HEIGHT;
+            lowZ += Configuration.LIQUID_SURFACE_ADD_Z_HEIGHT;
 
             // Scale and save the coordinates, rotated
-            nwCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            nwCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            seCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            seCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            highZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            lowZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            minDepth *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            nwCornerX *= -Configuration.GENERATE_WORLD_SCALE;
+            nwCornerY *= -Configuration.GENERATE_WORLD_SCALE;
+            seCornerX *= -Configuration.GENERATE_WORLD_SCALE;
+            seCornerY *= -Configuration.GENERATE_WORLD_SCALE;
+            highZ *= Configuration.GENERATE_WORLD_SCALE;
+            lowZ *= Configuration.GENERATE_WORLD_SCALE;
+            minDepth *= Configuration.GENERATE_WORLD_SCALE;
 
             MinDepth = minDepth;           
             HighZ = highZ;
@@ -95,15 +95,15 @@ namespace EQWOWConverter.Zones
             LiquidShape = shapeType;
 
             // Add additional height for ripple rendering
-            allCornersZ += Configuration.CONFIG_LIQUID_SURFACE_ADD_Z_HEIGHT;
+            allCornersZ += Configuration.LIQUID_SURFACE_ADD_Z_HEIGHT;
 
             // Scale and save the coordinates, rotated
-            nwCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            nwCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            seCornerX *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            seCornerY *= -Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            allCornersZ *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            minDepth *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            nwCornerX *= -Configuration.GENERATE_WORLD_SCALE;
+            nwCornerY *= -Configuration.GENERATE_WORLD_SCALE;
+            seCornerX *= -Configuration.GENERATE_WORLD_SCALE;
+            seCornerY *= -Configuration.GENERATE_WORLD_SCALE;
+            allCornersZ *= Configuration.GENERATE_WORLD_SCALE;
+            minDepth *= Configuration.GENERATE_WORLD_SCALE;
 
             MinDepth = minDepth;
             HighZ = allCornersZ;
@@ -198,7 +198,7 @@ namespace EQWOWConverter.Zones
 
         public ZoneLiquid GeneratePartialFromScaledTransformedBoundingBox(BoundingBox scaledTransformedBoundingBox)
         {
-            if (scaledTransformedBoundingBox.DoesIntersectBox(BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
+            if (scaledTransformedBoundingBox.DoesIntersectBox(BoundingBox, Configuration.GENERATE_FLOAT_EPSILON) == false)
                 throw new Exception("Attempted to generate a partial zone liquid plane but the passed bounding box didn't intersect with it");
             if (SlantType != ZoneLiquidSlantType.None)
                 Logger.WriteError("Warning!  Unhandled slanting type for ZoneLiquid::GeneratePartialFromBoundingBox, which could cause errors");

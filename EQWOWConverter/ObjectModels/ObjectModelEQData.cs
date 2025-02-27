@@ -153,7 +153,7 @@ namespace EQWOWConverter.ObjectModels
                         string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
 
                         // Only switch if that texture exists
-                        if (File.Exists(Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
+                        if (File.Exists(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
                             material.TextureNames[0] = newFaceTextureName;
                     }
                 }

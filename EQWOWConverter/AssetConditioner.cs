@@ -100,9 +100,9 @@ namespace EQWOWConverter
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
                 // Skip any disabled expansions
-                if (Configuration.CONFIG_GENERATE_KUNARK_ZONES == false && Configuration.CONFIG_GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.GENERATE_KUNARK_ZONES == false && Configuration.GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
-                if (Configuration.CONFIG_GENERATE_VELIOUS_ZONES == false && Configuration.CONFIG_GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.GENERATE_VELIOUS_ZONES == false && Configuration.GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
 
                 // Bring in the objects of this directory
@@ -363,10 +363,10 @@ namespace EQWOWConverter
             Logger.WriteInfo("Performing texture replacements with any custom textures...");
 
             // Characters
-            string characterTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "character");
+            string characterTexturesFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "character");
             if (Directory.Exists(characterTexturesFolder) == false)
             {
-                Logger.WriteError("Failed to perform character texture replacements, as '" + characterTexturesFolder + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to perform character texture replacements, as '" + characterTexturesFolder + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
             }
             else
             {
@@ -382,10 +382,10 @@ namespace EQWOWConverter
             }
 
             // Objects
-            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "CustomTextures", "object");
+            string objectTexturesFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "object");
             if (Directory.Exists(objectTexturesFolder) == false)
             {
-                Logger.WriteError("Failed to perform object texture replacements, as '" + objectTexturesFolder + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to perform object texture replacements, as '" + objectTexturesFolder + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
             }
             else
             {
@@ -427,28 +427,28 @@ namespace EQWOWConverter
             Logger.WriteDetail("There are '" + musicXMIFiles.Count() + "' music .xmi files to process into .mid");
 
             // Establish paths to tool files
-            string ssplayerFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
+            string ssplayerFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
             if (File.Exists(ssplayerFileFullPath) == false)
             {
-                Logger.WriteError("Failed to process music files. '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to process music files. '" + ssplayerFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return;
             }
-            string fluidsynthFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "fluidsynth", "fluidsynth.exe");
+            string fluidsynthFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "fluidsynth", "fluidsynth.exe");
             if (File.Exists(fluidsynthFileFullPath) == false)
             {
-                Logger.WriteError("Failed to process music files. '" + fluidsynthFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to process music files. '" + fluidsynthFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return;
             }
-            string soundfontFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "soundfont", Configuration.CONFIG_AUDIO_SOUNDFONT_FILE_NAME);
+            string soundfontFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "soundfont", Configuration.AUDIO_SOUNDFONT_FILE_NAME);
             if (File.Exists(soundfontFileFullPath) == false)
             {
-                Logger.WriteError("Failed to process music files. '" + soundfontFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to process music files. '" + soundfontFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return;
             }
-            string ffmpegFileFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "ffmpeg", "ffmpeg.exe");
+            string ffmpegFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ffmpeg", "ffmpeg.exe");
             if (File.Exists(ffmpegFileFullPath) == false)
             {
-                Logger.WriteError("Failed to process music files. '" + ffmpegFileFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to process music files. '" + ffmpegFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return;
             }
 
@@ -480,7 +480,7 @@ namespace EQWOWConverter
                     // Create the .wav
                     string tempWavFileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".wav");
                     Logger.WriteDetail("Converting .mid file at '" + musicMidiFile + "' to .wav");
-                    args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\" -g " + Configuration.CONFIG_AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT.ToString();
+                    args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\" -g " + Configuration.AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT.ToString();
                     process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
                     process.StartInfo.Arguments = args;
@@ -515,7 +515,7 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Creating icon image files...");
 
-            string miscImagesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
+            string miscImagesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
             if (Directory.Exists(miscImagesFolder) == false)
             {
                 Logger.WriteError("Icon Image creation failed.  Could not find the miscimages folder at '', ensure you have exported the EQ content");
@@ -524,7 +524,7 @@ namespace EQWOWConverter
 
             // Item Icons
             Logger.WriteDetail("Creating item icons.");
-            string itemIconsFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            string itemIconsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             try
             {
                 if (Directory.Exists(itemIconsFolder) == true)
@@ -547,7 +547,7 @@ namespace EQWOWConverter
 
             // Spell Icons
             Logger.WriteDetail("Creating spell icons.");
-            string spellIconsFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            string spellIconsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
             try
             {
                 if (Directory.Exists(spellIconsFolder) == true)
@@ -569,58 +569,58 @@ namespace EQWOWConverter
         public bool ConvertPNGFilesToBLP()
         {
             // Make sure the tool is there
-            string blpConverterFullPath = Path.Combine(Configuration.CONFIG_PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
             if (File.Exists(blpConverterFullPath) == false)
             {
-                Logger.WriteError("Failed to convert images files. '" + blpConverterFullPath + "' does not exist. (Be sure to set your Configuration.CONFIG_PATH_TOOLS_FOLDER properly)");
+                Logger.WriteError("Failed to convert images files. '" + blpConverterFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return false;
             }
 
             // Build paths and store in a process array
             List<string> textureFoldersToProcess = new List<string>();
-            string characterTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+            string characterTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
             if (Directory.Exists(characterTexturesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the character textures folder did not exist at '" + characterTexturesFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(characterTexturesFolder);
-            string equipmentTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+            string equipmentTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
             if (Directory.Exists(characterTexturesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the equipment textures folder did not exist at '" + equipmentTexturesFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(equipmentTexturesFolder);
-            string liquidSurfacesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "liquidsurfaces");
+            string liquidSurfacesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "liquidsurfaces");
             if (Directory.Exists(liquidSurfacesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the liquid surfaces folder did not exist at '" + liquidSurfacesFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(liquidSurfacesFolder);
-            string miscImagesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
+            string miscImagesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "miscimages");
             if (Directory.Exists(miscImagesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the misc images folder did not exist at '" + miscImagesFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(miscImagesFolder);
-            string objectTexturesFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
+            string objectTexturesFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "objects", "textures");
             if (Directory.Exists(objectTexturesFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the object textures folder did not exist at '" + objectTexturesFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(objectTexturesFolder);
-            string itemIconFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
+            string itemIconFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             if (Directory.Exists(itemIconFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + itemIconFolder + "'");
                 return false;
             }
             textureFoldersToProcess.Add(itemIconFolder);
-            string zonesRootFolder = Path.Combine(Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
+            string zonesRootFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             if (Directory.Exists(zonesRootFolder) == false)
             {
                 Logger.WriteError("Failed to convert png files to blp, as the zones root folder did not exist at '" + zonesRootFolder + "'");
@@ -666,7 +666,7 @@ namespace EQWOWConverter
                 curFileArgListSB.Append(" \"");
                 curFileArgListSB.Append(curFile);
                 curFileArgListSB.Append("\"");
-                if (i != 0 && i % Configuration.CONFIG_GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
+                if (i != 0 && i % Configuration.GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
                 {
                     Logger.WriteDetail("Converting png files '" + curFileArgListSB.ToString() + "'");
                     string args = "/M /FBLP_DXT5 " + curFileArgListSB.ToString();

@@ -24,8 +24,8 @@ namespace EQWOWConverter.Common
 {
     internal class SoundInstance
     {
-        protected static int CURRENT_GAMEOBJECTID = Configuration.CONFIG_DBCID_GAMEOBJECT_ID_START;
-        protected static int CURRENT_GAMEOBJECTDISPLAYINFOID = Configuration.CONFIG_DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
+        protected static int CURRENT_GAMEOBJECTID = Configuration.DBCID_GAMEOBJECT_ID_START;
+        protected static int CURRENT_GAMEOBJECTDISPLAYINFOID = Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
 
         public Vector3 Position = new Vector3();
         public bool Is2DSound = false;
@@ -123,8 +123,8 @@ namespace EQWOWConverter.Common
         {
             GameObjectID = CURRENT_GAMEOBJECTID;
             CURRENT_GAMEOBJECTID++;
-            if (CURRENT_GAMEOBJECTID > Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END)
-                throw new Exception("CURRENT_GAMEOBJECTID has extended the maximum set in Configuration.CONFIG_DBCID_GAMEOBJECT_ID_END");
+            if (CURRENT_GAMEOBJECTID > Configuration.DBCID_GAMEOBJECT_ID_END)
+                throw new Exception("CURRENT_GAMEOBJECTID has extended the maximum set in Configuration.DBCID_GAMEOBJECT_ID_END");
             GameObjectDisplayInfoID = CURRENT_GAMEOBJECTDISPLAYINFOID;
             CURRENT_GAMEOBJECTDISPLAYINFOID++;
         }

@@ -48,7 +48,7 @@ namespace EQWOWConverter.Spells
         private static void PopulateClassTrainerAbilities()
         {
             // Generate the IDs on a per-class basis
-            int curID = Configuration.CONFIG_SQL_NPCTRAINER_ID_START;
+            int curID = Configuration.SQL_NPCTRAINER_ID_START;
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
                 if (classType == ClassType.All || classType == ClassType.None)
@@ -58,7 +58,7 @@ namespace EQWOWConverter.Spells
             }
 
             // Read in the spell list
-            string classTrainerSpellsFileName = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "SpellClassTrainerSpells.csv");
+            string classTrainerSpellsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellClassTrainerSpells.csv");
             Logger.WriteDetail("Populating class trainer spells via file '" + classTrainerSpellsFileName + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(classTrainerSpellsFileName, "|");
             foreach (Dictionary<string, string> columns in rows)
@@ -79,54 +79,54 @@ namespace EQWOWConverter.Spells
             // Assign the bind and gate spells
             List<int> casterClassIDs = new List<int> { 5, 7, 8, 9, 11 };
             List<int> meleeClassIDs = new List<int> { 1, 2, 3, 4, 6 };
-            if (Configuration.CONFIG_SPELLS_GATE_CASTER_LEARN_LEVEL > 0)
+            if (Configuration.SPELLS_GATE_CASTER_LEARN_LEVEL > 0)
             {
                 foreach(int classTypeID in casterClassIDs)
                 {
                     SpellClassTrainerAbility curSpell = new SpellClassTrainerAbility();
                     curSpell.Class = (ClassType)classTypeID;
-                    curSpell.SpellID = Configuration.CONFIG_SPELLS_GATE_SPELLDBC_ID;
-                    curSpell.MoneyCost = Configuration.CONFIG_SPELLS_GATE_SPELL_LEARN_COST;
-                    curSpell.ReqLevel = Configuration.CONFIG_SPELLS_GATE_CASTER_LEARN_LEVEL;
+                    curSpell.SpellID = Configuration.SPELLS_GATE_SPELLDBC_ID;
+                    curSpell.MoneyCost = Configuration.SPELLS_GATE_SPELL_LEARN_COST;
+                    curSpell.ReqLevel = Configuration.SPELLS_GATE_CASTER_LEARN_LEVEL;
                     TrainerAbilitiesByClassType[curSpell.Class].Add(curSpell);
                 }
             }
-            if (Configuration.CONFIG_SPELLS_GATE_MELEE_LEARN_LEVEL > 0)
+            if (Configuration.SPELLS_GATE_MELEE_LEARN_LEVEL > 0)
             {
                 foreach (int classTypeID in meleeClassIDs)
                 {
                     SpellClassTrainerAbility curSpell = new SpellClassTrainerAbility();
                     curSpell.Class = (ClassType)classTypeID;
-                    curSpell.SpellID = Configuration.CONFIG_SPELLS_GATE_SPELLDBC_ID;
-                    curSpell.MoneyCost = Configuration.CONFIG_SPELLS_GATE_SPELL_LEARN_COST;
-                    curSpell.ReqLevel = Configuration.CONFIG_SPELLS_GATE_MELEE_LEARN_LEVEL;
+                    curSpell.SpellID = Configuration.SPELLS_GATE_SPELLDBC_ID;
+                    curSpell.MoneyCost = Configuration.SPELLS_GATE_SPELL_LEARN_COST;
+                    curSpell.ReqLevel = Configuration.SPELLS_GATE_MELEE_LEARN_LEVEL;
                     TrainerAbilitiesByClassType[curSpell.Class].Add(curSpell);
                 }
             }
-            int bindSpellID = Configuration.CONFIG_SPELLS_BINDANY_SPELLDBC_ID;
-            if (Configuration.CONFIG_SPELLS_BIND_CASTER_LEARN_LEVEL > 0 && Configuration.CONFIG_SPELLS_BIND_MELEE_LEARN_LEVEL > 0)
-                bindSpellID = Configuration.CONFIG_SPELLS_BINDSELF_SPELLDBC_ID;
-            if (Configuration.CONFIG_SPELLS_BIND_CASTER_LEARN_LEVEL > 0)
+            int bindSpellID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
+            if (Configuration.SPELLS_BIND_CASTER_LEARN_LEVEL > 0 && Configuration.SPELLS_BIND_MELEE_LEARN_LEVEL > 0)
+                bindSpellID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
+            if (Configuration.SPELLS_BIND_CASTER_LEARN_LEVEL > 0)
             {
                 foreach (int classTypeID in casterClassIDs)
                 {
                     SpellClassTrainerAbility curSpell = new SpellClassTrainerAbility();
                     curSpell.Class = (ClassType)classTypeID;
                     curSpell.SpellID = bindSpellID;
-                    curSpell.MoneyCost = Configuration.CONFIG_SPELLS_BIND_SPELL_LEARN_COST;
-                    curSpell.ReqLevel = Configuration.CONFIG_SPELLS_BIND_CASTER_LEARN_LEVEL;
+                    curSpell.MoneyCost = Configuration.SPELLS_BIND_SPELL_LEARN_COST;
+                    curSpell.ReqLevel = Configuration.SPELLS_BIND_CASTER_LEARN_LEVEL;
                     TrainerAbilitiesByClassType[curSpell.Class].Add(curSpell);
                 }
             }
-            if (Configuration.CONFIG_SPELLS_BIND_MELEE_LEARN_LEVEL > 0)
+            if (Configuration.SPELLS_BIND_MELEE_LEARN_LEVEL > 0)
             {
                 foreach (int classTypeID in meleeClassIDs)
                 {
                     SpellClassTrainerAbility curSpell = new SpellClassTrainerAbility();
                     curSpell.Class = (ClassType)classTypeID;
                     curSpell.SpellID = bindSpellID;
-                    curSpell.MoneyCost = Configuration.CONFIG_SPELLS_BIND_SPELL_LEARN_COST;
-                    curSpell.ReqLevel = Configuration.CONFIG_SPELLS_BIND_MELEE_LEARN_LEVEL;
+                    curSpell.MoneyCost = Configuration.SPELLS_BIND_SPELL_LEARN_COST;
+                    curSpell.ReqLevel = Configuration.SPELLS_BIND_MELEE_LEARN_LEVEL;
                     TrainerAbilitiesByClassType[curSpell.Class].Add(curSpell);
                 }
             }

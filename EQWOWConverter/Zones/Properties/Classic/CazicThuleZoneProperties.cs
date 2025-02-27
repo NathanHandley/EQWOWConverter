@@ -108,7 +108,7 @@ namespace EQWOWConverter.Zones.Properties
             AddCazicThuleLiquidSphere(ZoneLiquidType.GreenWater, "t50_grnwtr1");
         }
 
-        // Values should be pre-Scaling (before * CONFIG_EQTOWOW_WORLD_SCALE)
+        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         public void AddCazicThuleLiquidSphere(ZoneLiquidType liquidType, string materialName)
         {
             // TODO: Redo this to be calculated smarter. It's very hacky now. Consider that the "sphere" is wider than it is tall.

@@ -83,10 +83,10 @@ namespace EQWOWConverter.Zones
 
             // Get and convert/translate the EverQuest mesh data
             MeshData renderMeshData = EQZoneData.RenderMeshData;
-            renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.CONFIG_GENERATE_WORLD_SCALE);
+            renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
             renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties);
             MeshData collisionMeshData = EQZoneData.CollisionMeshData;
-            collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.CONFIG_GENERATE_WORLD_SCALE);
+            collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
             // Update the materials
             Materials = EQZoneData.Materials;
@@ -175,7 +175,7 @@ namespace EQWOWConverter.Zones
                     return;
 
                 // Do nothing if there is no intersection
-                if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
+                if (area.MaxBoundingBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.GENERATE_FLOAT_EPSILON) == false)
                     return;
 
                 // Try every box in the area
@@ -184,7 +184,7 @@ namespace EQWOWConverter.Zones
                     // If it intersects, split it up
                     ZoneLiquidGroup liquidChunksOutsideAreaBox = new ZoneLiquidGroup();
                     ZoneLiquidGroup liquidChunksInsideAreaBox = new ZoneLiquidGroup();
-                    if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == true)
+                    if (areaBox.DoesIntersectBox(curLiquidGroup.BoundingBox, Configuration.GENERATE_FLOAT_EPSILON) == true)
                     { 
                         // Process all chunks
                         for (int i = curLiquidGroup.GetLiquidChunks().Count - 1; i >= 0; i--)
@@ -194,7 +194,7 @@ namespace EQWOWConverter.Zones
                             curLiquidGroup.DeleteLiquidChunkAtIndex(i);
 
                             // Ignore the chunk if there's no intersection
-                            if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
+                            if (areaBox.DoesIntersectBox(liquidChunk.BoundingBox, Configuration.GENERATE_FLOAT_EPSILON) == false)
                             {
                                 liquidChunksOutsideAreaBox.AddLiquidChunk(liquidChunk);
                                 continue;
@@ -299,10 +299,10 @@ namespace EQWOWConverter.Zones
 
                 ZoneDoodadInstance doodadInstance = new ZoneDoodadInstance(ZoneDoodadInstanceType.StaticObject);
                 doodadInstance.ObjectName = objectInstance.ModelName;
-                doodadInstance.Position.X = objectInstance.Position.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                doodadInstance.Position.X = objectInstance.Position.X * Configuration.GENERATE_WORLD_SCALE;
                 // Invert Z and Y because of mapping differences
-                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                doodadInstance.Position.Z = objectInstance.Position.Y * Configuration.GENERATE_WORLD_SCALE;
+                doodadInstance.Position.Y = objectInstance.Position.Z * Configuration.GENERATE_WORLD_SCALE;
 
                 // Also rotate the X and Y positions around Z axis 180 degrees
                 doodadInstance.Position.X = -doodadInstance.Position.X;
@@ -331,7 +331,7 @@ namespace EQWOWConverter.Zones
                     GenerateAndAddDoodadsForZoneMaterial(material, renderMeshData);
 
             // If enabled, show light instances as torches for debugging
-            if (Configuration.CONFIG_LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
+            if (Configuration.LIGHT_INSTANCES_DRAWN_AS_TORCHES == true)
             {
                 foreach (LightInstance lightInstance in LightInstances)
                 {
@@ -346,7 +346,7 @@ namespace EQWOWConverter.Zones
         private void GenerateLightInstances(List<LightInstance> eqLightInstances)
         {
             // Add light instances
-            if (Configuration.CONFIG_LIGHT_INSTANCES_ENABLED == true)
+            if (Configuration.LIGHT_INSTANCES_ENABLED == true)
             {
                 LightInstances = eqLightInstances;
 
@@ -354,10 +354,10 @@ namespace EQWOWConverter.Zones
                 foreach (LightInstance lightInstance in LightInstances)
                 {
                     Vector3 originalPosition = new Vector3(lightInstance.Position);
-                    lightInstance.Position.X = originalPosition.X * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                    lightInstance.Position.X = originalPosition.X * Configuration.GENERATE_WORLD_SCALE;
                     // Invert Z and Y because of mapping differences
-                    lightInstance.Position.Z = originalPosition.Y * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                    lightInstance.Position.Y = originalPosition.Z * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                    lightInstance.Position.Z = originalPosition.Y * Configuration.GENERATE_WORLD_SCALE;
+                    lightInstance.Position.Y = originalPosition.Z * Configuration.GENERATE_WORLD_SCALE;
 
                     // Also rotate the X and Y positions around Z axis 180 degrees
                     lightInstance.Position.X = -lightInstance.Position.X;
@@ -368,7 +368,7 @@ namespace EQWOWConverter.Zones
 
         private void GenerateCollidableWorldObjectModels(MeshData renderMeshData, MeshData collisionMeshData)
         {
-            if (Configuration.CONFIG_ZONE_COLLISION_ENABLED == false)
+            if (Configuration.ZONE_COLLISION_ENABLED == false)
                 return;
 
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
@@ -392,7 +392,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Grab the collision data from the doodads and bake into the zone's collision map
-            if (Configuration.CONFIG_GENERATE_OBJECTS == true && ObjectModel.StaticObjectModelsByName.Count != 0)
+            if (Configuration.GENERATE_OBJECTS == true && ObjectModel.StaticObjectModelsByName.Count != 0)
             {
                 MeshData allObjectMeshData = new MeshData();
                 foreach (ZoneDoodadInstance doodadInstance in DoodadInstances)
@@ -457,7 +457,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Split the collision geometry into cubiods
-            //collisionMeshData.SplitGeometryIntoCubiods(Configuration.CONFIG_ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
+            //collisionMeshData.SplitGeometryIntoCubiods(Configuration.ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
@@ -518,7 +518,7 @@ namespace EQWOWConverter.Zones
                 GenerateLiquidCollisionAreas(DefaultArea, liquidGroup);
 
             // Everything left goes to the default area
-            DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT), false);
+            DefaultArea.AddBoundingBox(BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT), false);
             GenerateCollisionWorldObjectModelsForCollidableArea(collisionMeshData, DefaultArea, null);
         }
 
@@ -541,10 +541,10 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(collisionMeshData, Configuration.CONFIG_ZONE_SPLIT_COLLISION_CUBOID_MAX_EDGE_LEGNTH, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
+            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(collisionMeshData, Configuration.ZONE_SPLIT_COLLISION_CUBOID_MAX_EDGE_LEGNTH, Configuration.ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Build the bounding box, which must always be at least as high as the liquid
-            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+            BoundingBox boundingBox = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
             if (liquid != null)
                 boundingBox.TopCorner.Z = float.Max(boundingBox.TopCorner.Z, liquid.BoundingBox.TopCorner.Z);
 
@@ -563,7 +563,7 @@ namespace EQWOWConverter.Zones
                 if (meshDataChunks.Count > 1 && chunkLiquid != null)
                 {
                     // If liquid and geometry are both here, then the geometry's bounding top must be at least as high as the liquid
-                    boundingBox = BoundingBox.GenerateBoxFromVectors(meshDataChunk.Vertices, Configuration.CONFIG_GENERATE_ADDED_BOUNDARY_AMOUNT);
+                    boundingBox = BoundingBox.GenerateBoxFromVectors(meshDataChunk.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
                     boundingBox.TopCorner.Z = float.Max(boundingBox.TopCorner.Z, chunkLiquid.BoundingBox.TopCorner.Z);
 
                     // Find out the intersecting liquid areas
@@ -589,7 +589,7 @@ namespace EQWOWConverter.Zones
             MeshData staticMeshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
 
             // If set, show the area box
-            if (Configuration.CONFIG_ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES == true)
+            if (Configuration.ZONE_DRAW_COLLIDABLE_SUB_AREAS_AS_BOXES == true)
             {
                 foreach(ZoneArea zoneArea in SubAreas)
                 {
@@ -605,7 +605,7 @@ namespace EQWOWConverter.Zones
             }
 
             // Break the geometry into as many parts as limited by the system
-            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(staticMeshData, 0, Configuration.CONFIG_ZONE_MAX_FACES_PER_WMOGROUP);
+            List<MeshData> meshDataChunks = MeshData.GetGeometrySplitIntoCubiods(staticMeshData, 0, Configuration.ZONE_MAX_FACES_PER_WMOGROUP);
 
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
@@ -702,17 +702,17 @@ namespace EQWOWConverter.Zones
                 case ZoneContinentType.Development:
                 case ZoneContinentType.Odus:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START;
+                        LoadingScreenID = Configuration.DBCID_LOADINGSCREEN_ID_START;
                     }
                     break;
                 case ZoneContinentType.Kunark:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 1;
+                        LoadingScreenID = Configuration.DBCID_LOADINGSCREEN_ID_START + 1;
                     }
                     break;
                 case ZoneContinentType.Velious:
                     {
-                        LoadingScreenID = Configuration.CONFIG_DBCID_LOADINGSCREEN_ID_START + 2;
+                        LoadingScreenID = Configuration.DBCID_LOADINGSCREEN_ID_START + 2;
                     }
                     break;
                 default:
@@ -827,12 +827,12 @@ namespace EQWOWConverter.Zones
         private void ProcessSoundInstance(SoundInstance soundInstance)
         {
             // Create the sound
-            float radius = soundInstance.Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            float radius = soundInstance.Radius * Configuration.GENERATE_WORLD_SCALE;
             float minDistance = radius;
             if (soundInstance.Is2DSound)
-                minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD;
+                minDistance *= Configuration.AUDIO_SOUNDINSTANCE_2D_MIN_DISTANCE_MOD;
             else
-                minDistance *= Configuration.CONFIG_AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
+                minDistance *= Configuration.AUDIO_SOUNDINSTANCE_3D_MIN_DISTANCE_MOD;
 
             soundInstance.Sound = new Sound(soundInstance.GenerateDBCName(ShortName, SoundInstances.Count), soundInstance.SoundFileNameDayNoExt,
                 SoundType.GameObject, minDistance, radius, true);
@@ -843,9 +843,9 @@ namespace EQWOWConverter.Zones
             soundInstance.Position.Y = yPosition;
 
             // Apply world scale to position
-            soundInstance.Position.X *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            soundInstance.Position.Y *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            soundInstance.Position.Z *= Configuration.CONFIG_GENERATE_WORLD_SCALE;
+            soundInstance.Position.X *= Configuration.GENERATE_WORLD_SCALE;
+            soundInstance.Position.Y *= Configuration.GENERATE_WORLD_SCALE;
+            soundInstance.Position.Z *= Configuration.GENERATE_WORLD_SCALE;
 
             // Generate a unique ID
             soundInstance.GenerateGameObjectIDs();
@@ -855,10 +855,10 @@ namespace EQWOWConverter.Zones
 
             // Generate a model to represent it for emitting
             string objectModelName = soundInstance.GenerateModelName(ShortName, SoundInstances.Count);
-            Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true);
+            Material material = new Material("default", "default", 0, MaterialType.Diffuse, new List<string> { Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME }, 0, 64, 64, true);
             MeshData objectModelMesh = new MeshData();
-            BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.CONFIG_AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
-            if (Configuration.CONFIG_AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
+            BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
+            if (Configuration.AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
                 objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
             ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"), ObjectModelType.SoundInstance);
             soundInstanceObjectModel.Load(objectModelName, new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>());

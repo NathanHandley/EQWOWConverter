@@ -54,7 +54,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("West Block", "freportn-09", "freportn-13");
             AddZoneAreaBox("West Block", 13.415270f, 593.730652f, 1000f, -300.651031f, 426.265411f, -1000f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
             {
                 //AddZoneArea("Hall of Truth", "freportn-14", "freportn-14");
                 AddZoneArea("Office of the People", "freportn-04", "freportn-04");

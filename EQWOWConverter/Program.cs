@@ -41,7 +41,7 @@ internal class Program
         string? enteredCommand = Console.ReadLine();
         if (enteredCommand == null || enteredCommand.Length == 0 || enteredCommand[0] == ' ' || enteredCommand.ToUpper()[0] == 'X')
         {
-            if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+            if (Configuration.CONSOLE_BEEP_ON_COMPLETE)
                 Console.Beep();
             Console.WriteLine("");
             Console.WriteLine("Press any key to exit");
@@ -72,7 +72,7 @@ internal class Program
 
                                 // Extraction
                                 Logger.WriteInfo("Extracting EQ files...");
-                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.CONFIG_PATH_EQTRILOGY_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER) == true)
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EQTRILOGY_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
                                     Logger.WriteInfo("Extraction completed successfully.");
                                 else
                                 {
@@ -82,7 +82,7 @@ internal class Program
 
                                 // Condition
                                 AssetConditioner conditioner = new AssetConditioner();
-                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.PATH_EQEXPORTSRAW_FOLDER, Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER);
                                 if (condenseResult == false)
                                 {
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
@@ -107,7 +107,7 @@ internal class Program
                         case "2":
                             {
                                 Logger.WriteInfo("Extracting EQ files...");
-                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.CONFIG_PATH_EQTRILOGY_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER) == true)
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EQTRILOGY_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
                                     Logger.WriteInfo("Extraction completed successfully.");
                                 else
                                     Logger.WriteError("Extraction failed!");
@@ -116,7 +116,7 @@ internal class Program
                         case "3":
                             {
                                 AssetConditioner conditioner = new AssetConditioner();
-                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.CONFIG_PATH_EQEXPORTSRAW_FOLDER, Configuration.CONFIG_PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.PATH_EQEXPORTSRAW_FOLDER, Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER);
                                 if (condenseResult == false)
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
                                 else
@@ -150,7 +150,7 @@ internal class Program
             }
         }
 
-        if (Configuration.CONFIG_CONSOLE_BEEP_ON_COMPLETE)
+        if (Configuration.CONSOLE_BEEP_ON_COMPLETE)
             Console.Beep();
         Console.WriteLine("");
         Console.WriteLine("Press any key to exit");

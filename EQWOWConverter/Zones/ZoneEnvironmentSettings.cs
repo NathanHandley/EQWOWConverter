@@ -92,7 +92,7 @@ namespace EQWOWConverter.Zones
             }
 
             // DBCIDs
-            private static int CURRENT_LIGHTPARAMSID = Configuration.CONFIG_DBCID_LIGHTPARAMS_ID_START;
+            private static int CURRENT_LIGHTPARAMSID = Configuration.DBCID_LIGHTPARAMS_ID_START;
             public int DBCLightParamsID;
             public float Glow = 0.5f;
             public int HighlightSky = 0; // Boolean, 1 or 0
@@ -624,22 +624,22 @@ namespace EQWOWConverter.Zones
             }
 
             // Calculate the fog colors based on time of day, using the max as the base brightness
-            float fogColorTime0BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_0) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime0BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_0) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime0 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime0BrightMod);
-            float fogColorTime3BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_3) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime3BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_3) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime3 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime3BrightMod);
-            float fogColorTime6BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_6) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime6BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_6) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime6 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime6BrightMod);
-            float fogColorTime12BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime12BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime12 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime12BrightMod);
-            float fogColorTime21BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_21) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime21BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_21) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime21 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime21BrightMod);
-            float fogColorTime22BrightMod = Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22) / Convert.ToSingle(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12);
+            float fogColorTime22BrightMod = Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_22) / Convert.ToSingle(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12);
             ColorRGBA fogColorTime22 = new ColorRGBA(fogRedNoon, fogGreenNoon, fogBlueNoon).ApplyMod(fogColorTime22BrightMod);
 
             // Clear Weather
             ParamatersClearWeather.ParametersTimeSlices.Clear();
-            ParamatersClearWeather.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER;
+            ParamatersClearWeather.Glow = Configuration.LIGHT_OUTSIDE_GLOW_CLEAR_WEATHER;
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -772,24 +772,24 @@ namespace EQWOWConverter.Zones
             ParamatersClearWeather.ParametersTimeSlices[3].SkyCastDiffuseLightColor = new ColorRGBA(128, 96, 64).ApplyMod(ambientBrightnessMod);
             ParamatersClearWeather.ParametersTimeSlices[4].SkyCastDiffuseLightColor = new ColorRGBA(128, 110, 113).ApplyMod(ambientBrightnessMod);
             ParamatersClearWeather.ParametersTimeSlices[5].SkyCastDiffuseLightColor = new ColorRGBA(97, 130, 162).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_0,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_0,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_0).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_3,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_3,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_3).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_6,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_6,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_6).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_12).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_21,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_21,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_21).ApplyMod(ambientBrightnessMod);
-            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = new ColorRGBA(Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22,
-                                                                                             Configuration.CONFIG_LIGHT_OUTSIDE_AMBIENT_TIME_22).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[0].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_0,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_0,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_0).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[1].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_3,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_3,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_3).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[2].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_6,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_6,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_6).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[3].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_12).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[4].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_21,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_21,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_21).ApplyMod(ambientBrightnessMod);
+            ParamatersClearWeather.ParametersTimeSlices[5].AmbientLightColor = new ColorRGBA(Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_22,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_22,
+                                                                                             Configuration.LIGHT_OUTSIDE_AMBIENT_TIME_22).ApplyMod(ambientBrightnessMod);
             ParamatersClearWeather.ParametersTimeSlices[0].FogColor = fogColorTime0;
             ParamatersClearWeather.ParametersTimeSlices[1].FogColor = fogColorTime3;
             ParamatersClearWeather.ParametersTimeSlices[2].FogColor = fogColorTime6;
@@ -811,7 +811,7 @@ namespace EQWOWConverter.Zones
 
             // Clear Weather - Underwater
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Clear();
-            ParamatersClearWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
+            ParamatersClearWeatherUnderwater.Glow = Configuration.LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersClearWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));
@@ -912,7 +912,7 @@ namespace EQWOWConverter.Zones
             // Stormy Weather
             // TODO
             ParamatersStormyWeather.ParametersTimeSlices.Clear();
-            ParamatersStormyWeather.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_STORMY_WEATHER;
+            ParamatersStormyWeather.Glow = Configuration.LIGHT_OUTSIDE_GLOW_STORMY_WEATHER;
             ParamatersStormyWeather.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             //ParamatersStormyWeather.ParametersTimeSlices[0].FogDistance = 278f;
             //ParamatersStormyWeather.ParametersTimeSlices[0].FogMultiplier = -0.5f;
@@ -941,7 +941,7 @@ namespace EQWOWConverter.Zones
             // Stormy Weather - Underwater
             // TODO
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Clear();
-            ParamatersStormyWeatherUnderwater.Glow = Configuration.CONFIG_LIGHT_OUTSIDE_GLOW_UNDERWATER;
+            ParamatersStormyWeatherUnderwater.Glow = Configuration.LIGHT_OUTSIDE_GLOW_UNDERWATER;
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(0));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(3));
             ParamatersStormyWeatherUnderwater.ParametersTimeSlices.Add(new ZoneEnvironmentParameters.ZoneEnvironmentParametersTimeSlice(6));

@@ -46,7 +46,7 @@ namespace EQWOWConverter.Creatures
         {
             PathGridEntries.Clear();
 
-            string pathGridEntriesFile = Path.Combine(Configuration.CONFIG_PATH_ASSETS_FOLDER, "WorldData", "PathGridEntries.csv");
+            string pathGridEntriesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PathGridEntries.csv");
             Logger.WriteDetail("Populating Path Grid Entires list via file '" + pathGridEntriesFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(pathGridEntriesFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
@@ -83,7 +83,7 @@ namespace EQWOWConverter.Creatures
                 newPathGridEntry.PauseInSec = int.Parse(rowBlocks[6]);
 
                 // Remove 2 units of z (unsure if this is proper amount)
-                //nodeZ -= 2f * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                //nodeZ -= 2f * Configuration.GENERATE_WORLD_SCALE;
 
                 // Skip any -1 number entries
                 if (newPathGridEntry.Number == -1)
@@ -91,9 +91,9 @@ namespace EQWOWConverter.Creatures
 
                 // Modify by world scale
                 // IMPORTANT: The X and Y data was swapped in the SpawnInstances.CSV due to orientation differences between EQ and WoW
-                newPathGridEntry.NodeX = nodeX * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newPathGridEntry.NodeY = nodeY * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-                newPathGridEntry.NodeZ = nodeZ * Configuration.CONFIG_GENERATE_WORLD_SCALE;
+                newPathGridEntry.NodeX = nodeX * Configuration.GENERATE_WORLD_SCALE;
+                newPathGridEntry.NodeY = nodeY * Configuration.GENERATE_WORLD_SCALE;
+                newPathGridEntry.NodeZ = nodeZ * Configuration.GENERATE_WORLD_SCALE;
 
                 PathGridEntries.Add(newPathGridEntry);
             }

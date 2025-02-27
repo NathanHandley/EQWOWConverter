@@ -170,7 +170,7 @@ namespace EQWOWConverter.Common
 
         public bool ContainsBox(BoundingBox other)
         {
-            float edgePad = Configuration.CONFIG_GENERATE_FLOAT_EPSILON;
+            float edgePad = Configuration.GENERATE_FLOAT_EPSILON;
             if (TopCorner.X + edgePad < other.TopCorner.X)
                 return false;
             if (TopCorner.Y + edgePad < other.TopCorner.Y)
@@ -333,35 +333,35 @@ namespace EQWOWConverter.Common
         public bool DoesIntersectTriangle(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             // Vertices contained in the box are given collisions, and should be checked first
-            if (IsPointInside(v1, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) || 
-                IsPointInside(v2, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) || 
-                IsPointInside(v3, Configuration.CONFIG_GENERATE_FLOAT_EPSILON))
+            if (IsPointInside(v1, Configuration.GENERATE_FLOAT_EPSILON) || 
+                IsPointInside(v2, Configuration.GENERATE_FLOAT_EPSILON) || 
+                IsPointInside(v3, Configuration.GENERATE_FLOAT_EPSILON))
                 return true;
 
             // Since the box is axis aligned, any triangle with all points outside of one axis cannot collide
-            if (v1.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.X > TopCorner.X + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.X > TopCorner.X + Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.X > TopCorner.X + Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.X > TopCorner.X + Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
-            if (v1.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.X < BottomCorner.X - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.X < BottomCorner.X - Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.X < BottomCorner.X - Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.X < BottomCorner.X - Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
-            if (v1.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.Y > TopCorner.Y + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.Y > TopCorner.Y + Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.Y > TopCorner.Y + Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.Y > TopCorner.Y + Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
-            if (v1.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.Y < BottomCorner.Y - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.Y < BottomCorner.Y - Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.Y < BottomCorner.Y - Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.Y < BottomCorner.Y - Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
-            if (v1.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.Z > TopCorner.Z + Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.Z > TopCorner.Z + Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.Z > TopCorner.Z + Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.Z > TopCorner.Z + Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
-            if (v1.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v2.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON &&
-                v3.Z < BottomCorner.Z - Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (v1.Z < BottomCorner.Z - Configuration.GENERATE_FLOAT_EPSILON &&
+                v2.Z < BottomCorner.Z - Configuration.GENERATE_FLOAT_EPSILON &&
+                v3.Z < BottomCorner.Z - Configuration.GENERATE_FLOAT_EPSILON)
                 return false;
 
             // Check if box intersects triangle plane
@@ -408,7 +408,7 @@ namespace EQWOWConverter.Common
         private bool OverlapOnAxis(Vector3 axis, Vector3 v1, Vector3 v2, Vector3 v3)
         {
             // Degenerate axis, discard
-            if (axis.GetLengthSquared() < Configuration.CONFIG_GENERATE_FLOAT_EPSILON)
+            if (axis.GetLengthSquared() < Configuration.GENERATE_FLOAT_EPSILON)
                 return true;
 
             // Project triangle vertices onto axis
@@ -450,7 +450,7 @@ namespace EQWOWConverter.Common
             box2SubBoxes = new List<BoundingBox>();
 
             // Exit if nothing intersects
-            if (box1.DoesIntersectBox(box2, Configuration.CONFIG_GENERATE_FLOAT_EPSILON) == false)
+            if (box1.DoesIntersectBox(box2, Configuration.GENERATE_FLOAT_EPSILON) == false)
             {
                 box1SubBoxes.Add(box1);
                 box2SubBoxes.Add(box2);

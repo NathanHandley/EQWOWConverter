@@ -35,7 +35,7 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneArea("Gemstone Mine");
             AddZoneAreaBox("Gemstone Mine", 795.009949f, 457.298615f, -38.483971f, 520.949097f, 140.156342f, -133.599564f);
 
-            if (Configuration.CONFIG_AUDIO_USE_ALTERNATE_TRACKS == true)
+            if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
                 AddZoneArea("Temple of Brell Serilis", "kaladima-02", "kaladima-02");
             else
                 AddZoneArea("Temple of Brell Serilis");

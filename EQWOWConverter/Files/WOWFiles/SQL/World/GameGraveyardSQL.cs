@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM game_graveyard WHERE `ID` >= " + Configuration.CONFIG_DBCID_WORLDSAFELOCS_ID_START + " AND `ID` <= " + Configuration.CONFIG_DBCID_WORLDSAFELOCS_ID_END + ";";
+            return "DELETE FROM game_graveyard WHERE `ID` >= " + Configuration.DBCID_WORLDSAFELOCS_ID_START + " AND `ID` <= " + Configuration.DBCID_WORLDSAFELOCS_ID_END + ";";
         }
 
         public void AddRow(ZonePropertiesGraveyard graveyard, int mapID)

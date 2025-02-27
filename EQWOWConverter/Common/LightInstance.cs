@@ -38,8 +38,8 @@ namespace EQWOWConverter.Common
         public List<byte> ToBytes()
         {
             // Calculate attentuation, factoring for world scale
-            float attentuationEnd = Radius * Configuration.CONFIG_GENERATE_WORLD_SCALE;
-            float attentuationStart = Configuration.CONFIG_LIGHT_INSTANCE_ATTENUATION_START_PROPORTION * attentuationEnd;
+            float attentuationEnd = Radius * Configuration.GENERATE_WORLD_SCALE;
+            float attentuationStart = Configuration.LIGHT_INSTANCE_ATTENUATION_START_PROPORTION * attentuationEnd;
 
             // Write the bytes
             List<byte> returnBytes = new List<byte>();
