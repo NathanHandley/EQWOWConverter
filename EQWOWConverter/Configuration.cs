@@ -147,6 +147,9 @@ namespace EQWOWConverter
         // What edge buffer to add when doing floating point month
         public static readonly float GENERATE_FLOAT_EPSILON = 0.001f;
 
+        // If this is true then NPCs are spawned to supplement boats that are not yet implemented
+        public static readonly bool GENERATE_BOAT_REPLACEMENT_NPCS = true;
+
         //=====================================================================
         // Zone General
         //=====================================================================
@@ -339,6 +342,17 @@ namespace EQWOWConverter
         // IDs for menus specific to class trainer
         public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists
         public static readonly int CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = 10371; // Pre-exists
+
+        // IDs specific to the boat replacement npcs
+        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_TEXT_ID = 328; // (328 exists already and is just "Greetings, $n")
+        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_EAST_GOSSIPMENU_ID = 69900;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_WEST_GOSSIPMENU_ID = 69901;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_EASTFREEPORT_MENUOPTIONID = 0;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTWEST_MENUOPTIONID = 1;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTEASTGOOD_MENUOPTIONID = 2;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTEASTEVIL_MENUOPTIONID = 3;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_BUTCHERGOOD_MENUOPTIONID = 4;
+        public static readonly int CREATURE_BOAT_REPLACEMENT_BUTCHEREVIL_MENUOPTIONID = 5;
 
         //=====================================================================
         // Items

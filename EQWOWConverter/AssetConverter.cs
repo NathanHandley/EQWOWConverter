@@ -1460,6 +1460,7 @@ namespace EQWOWConverter
             // World
             AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
             AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
+            BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
             CreatureSQL creatureSQL = new CreatureSQL();
             CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
             CreatureLootTableSQL creatureLootTableSQL = new CreatureLootTableSQL();
@@ -1474,7 +1475,8 @@ namespace EQWOWConverter
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
-            NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
+            NPCTextSQL npcTextSQL = new NPCTextSQL();
+            NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();            
             NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
@@ -1536,6 +1538,14 @@ namespace EQWOWConverter
                     Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
                 gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.", 
                     Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
+            }
+
+            // Create the boat replacement NPCs
+            if (Configuration.GENERATE_BOAT_REPLACEMENT_NPCS == true)
+            {
+                // East
+                //gossipMenuSQL.AddRow(Configuration.CREATURE_BOAT_REPLACEMENT_NPCS_EAST_GOSSIPMENU_ID, Configuration.CREATURE_BOAT_REPLACEMENT_NPCS_TEXT_ID);
+                Logger.WriteInfo("GENERATE_BOAT_REPLACEMENT_NPCS NYI");
             }
 
             // Creature Templates
@@ -1752,6 +1762,7 @@ namespace EQWOWConverter
             // World
             areaTriggerSQL.SaveToDisk("areatrigger", SQLFileType.World);
             areaTriggerTeleportSQL.SaveToDisk("areatrigger_teleport", SQLFileType.World);
+            broadcastTextSQL.SaveToDisk("broadcast_text", SQLFileType.World);
             creatureSQL.SaveToDisk("creature", SQLFileType.World);
             creatureAddonSQL.SaveToDisk("creature_addon", SQLFileType.World);
             creatureLootTableSQL.SaveToDisk("creature_loot_template", SQLFileType.World);
@@ -1766,8 +1777,9 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
-            npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
+            npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
+            npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);            
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
