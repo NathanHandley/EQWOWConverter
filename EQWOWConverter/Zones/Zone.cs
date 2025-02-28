@@ -847,9 +847,6 @@ namespace EQWOWConverter.Zones
             soundInstance.Position.Y *= Configuration.GENERATE_WORLD_SCALE;
             soundInstance.Position.Z *= Configuration.GENERATE_WORLD_SCALE;
 
-            // Generate a unique ID
-            soundInstance.GenerateGameObjectIDs();
-
             // Add it
             SoundInstances.Add(soundInstance);
 

@@ -27,42 +27,35 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectSQL : SQLFile
     {
-        // Row GUID
-        private static int CURRENT_GUIDID = Configuration.SQL_GAMEOBJECT_GUID_START;
-
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM gameobject WHERE `id` >= " + Configuration.DBCID_GAMEOBJECT_ID_START.ToString() + " AND `id` <= " + Configuration.DBCID_GAMEOBJECT_ID_END + ";";
+            return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectID, int mapID, int parentAreaID, int areaID, Vector3 position, float orientation)
+        public void AddRow(int gameObjectTemplateID, int mapID, int parentAreaID, int areaID, Vector3 position, float orientation)
         {
-            // Generate the unique GUID
-            int rowGUID = CURRENT_GUIDID;
-            CURRENT_GUIDID++;
-
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("guid", rowGUID);
-            newRow.AddInt("id", gameObjectID);
-            newRow.AddInt("map", mapID);
-            newRow.AddInt("zoneId", parentAreaID);
-            newRow.AddInt("areaId", areaID);
-            newRow.AddInt("spawnMask", 1);
-            newRow.AddInt("phaseMask", 1);
-            newRow.AddFloat("position_x", position.X);
-            newRow.AddFloat("position_y", position.Y);
-            newRow.AddFloat("position_z", position.Z);
-            newRow.AddFloat("orientation", orientation);
-            newRow.AddFloat("rotation0", 0);
-            newRow.AddFloat("rotation1", 0);
-            newRow.AddFloat("rotation2", 0);
-            newRow.AddFloat("rotation3", 0);
-            newRow.AddInt("spawntimesecs", 900);
-            newRow.AddInt("animprogress", 0);
-            newRow.AddInt("state", 1);
-            newRow.AddString("ScriptName", 64, string.Empty);
-            newRow.AddInt("VerifiedBuild", 0);
-            newRow.AddString("Comment", string.Empty);
+            //newRow.AddInt("guid", rowGUID);
+            //newRow.AddInt("id", gameObjectID);
+            //newRow.AddInt("map", mapID);
+            //newRow.AddInt("zoneId", parentAreaID);
+            //newRow.AddInt("areaId", areaID);
+            //newRow.AddInt("spawnMask", 1);
+            //newRow.AddInt("phaseMask", 1);
+            //newRow.AddFloat("position_x", position.X);
+            //newRow.AddFloat("position_y", position.Y);
+            //newRow.AddFloat("position_z", position.Z);
+            //newRow.AddFloat("orientation", orientation);
+            //newRow.AddFloat("rotation0", 0);
+            //newRow.AddFloat("rotation1", 0);
+            //newRow.AddFloat("rotation2", 0);
+            //newRow.AddFloat("rotation3", 0);
+            //newRow.AddInt("spawntimesecs", 900);
+            //newRow.AddInt("animprogress", 0);
+            //newRow.AddInt("state", 1);
+            //newRow.AddString("ScriptName", 64, string.Empty);
+            //newRow.AddInt("VerifiedBuild", 0);
+            //newRow.AddString("Comment", string.Empty);
             Rows.Add(newRow);
         }
     }

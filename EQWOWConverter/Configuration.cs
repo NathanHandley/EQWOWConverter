@@ -424,10 +424,6 @@ namespace EQWOWConverter
         public static readonly int DBCID_FOOTSTEPTERRAINLOOKUP_ID_START = 600;
         public static readonly int DBCID_FOOTSTEPTERRAINLOOKUP_CREATUREFOOTSTEPID_START = 250;
 
-        // IDs for GameObjects found in GameObject.dbc (Reserving 10k)
-        public static readonly int DBCID_GAMEOBJECT_ID_START = 270000;
-        public static readonly int DBCID_GAMEOBJECT_ID_END = 279999;
-
         // IDs for rows inside GameObjectDisplayInfo.dbc
         public static readonly int DBCID_GAMEOBJECTDISPLAYINFO_ID_START = 11000;
 
@@ -505,7 +501,12 @@ namespace EQWOWConverter
         public static readonly int SQL_CREATURETEMPLATE_ENTRY_HIGH = 60000;
 
         // Start GUIDs for gameobjects
-        public static readonly int SQL_GAMEOBJECT_GUID_START = 310000;
+        public static readonly int SQL_GAMEOBJECT_GUID_ID_START = 310000;
+        public static readonly int SQL_GAMEOBJECT_GUID_ID_END = 319999;
+
+        // Start and end IDs for gameobject_template rows
+        public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_START = 270000;
+        public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_END = 279999;
 
         // Start row for `game_tele` records. (~2000-2400)
         public static readonly int SQL_GAMETELE_ROWID_START = 2000;
