@@ -49,11 +49,9 @@ namespace EQWOWConverter.Zones
         public static int CURRENT_MAPID = Configuration.DBCID_MAP_ID_START;
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
         private static int CURRENT_MAPDIFFICULTYID = Configuration.DBCID_MAPDIFFICULTY_ID_START;        
-        private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
         public int DBCMapID;
         public int DBCMapDifficultyID;
         public UInt32 DBCWMOID;
-        public UInt32 DBCWMOGroupStartID;
 
         protected ZoneProperties()
         {
@@ -64,8 +62,6 @@ namespace EQWOWConverter.Zones
             CURRENT_WMOID++;
             DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
             CURRENT_MAPDIFFICULTYID++;
-            DBCWMOGroupStartID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID++;
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)

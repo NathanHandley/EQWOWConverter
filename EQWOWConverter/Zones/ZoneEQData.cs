@@ -35,7 +35,6 @@ namespace EQWOWConverter.Zones
 
         public ColorRGBA AmbientLight = new ColorRGBA();
         public List<LightInstance> LightInstances = new List<LightInstance>();
-        //public List<MusicInstance> MusicInstances = new List<MusicInstance>();
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
         public List<SoundInstance> Sound2DInstances = new List<SoundInstance>();
         public List<SoundInstance> Sound3DInstances = new List<SoundInstance>();
@@ -60,7 +59,6 @@ namespace EQWOWConverter.Zones
             LoadLightInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadSound2DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadSound3DInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
-            //LoadMusicInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             LoadObjectInstanceData(inputZoneFolderName, inputZoneFolderFullPath);
             IsLoaded = true;
         }
@@ -211,24 +209,5 @@ namespace EQWOWConverter.Zones
                 Sound3DInstances = sound3DInstances.SoundInstances;
             }
         }
-
-        //private void LoadMusicInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
-        //{
-        //    // Get the music instances
-        //    Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading music instances...");
-        //    string musicInstancesFileName = Path.Combine(inputZoneFolderFullPath, "music_instances.txt");
-        //    if (File.Exists(musicInstancesFileName) == false)
-        //        Logger.WriteDetail("- [" + inputZoneFolder + "]: No music instance data found.");
-        //    else
-        //    {
-        //        EQMusicInstances musicInstances = new EQMusicInstances();
-        //        if (musicInstances.LoadFromDisk(musicInstancesFileName) == false)
-        //        {
-        //            Logger.WriteError("- [" + inputZoneFolder + "]: Error loading music instances at '" + musicInstancesFileName + "'");
-        //            return;
-        //        }
-        //        MusicInstances = musicInstances.MusicInstances;
-        //    }
-        //}
     }
 }

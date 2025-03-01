@@ -35,12 +35,9 @@ namespace EQWOWConverter.WOWFiles
         public List<string> DoodadPathStrings = new List<string>();
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
-        public ZoneProperties ZoneProperties;
 
         public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
-            ZoneProperties = zone.ZoneProperties;
-
             PopulateDoodadPathStringOffsets(zone, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
