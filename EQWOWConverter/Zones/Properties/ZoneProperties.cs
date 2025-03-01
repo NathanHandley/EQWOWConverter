@@ -55,12 +55,16 @@ namespace EQWOWConverter.Zones
 
         protected ZoneProperties()
         {
-            // Generate zone-specific IDs
-            DBCMapID = CURRENT_MAPID;
+            GenerateIDS(out DBCMapID, out DBCWMOID, out DBCMapDifficultyID);
+        }
+
+        public static void GenerateIDS(out int dbcMapID, out UInt32 dbcWMOID, out int dbcMapDifficultyID)
+        {
+            dbcMapID = CURRENT_MAPID;
             CURRENT_MAPID++;
-            DBCWMOID = CURRENT_WMOID;
+            dbcWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
-            DBCMapDifficultyID = CURRENT_MAPDIFFICULTYID;
+            dbcMapDifficultyID = CURRENT_MAPDIFFICULTYID;
             CURRENT_MAPDIFFICULTYID++;
         }
 

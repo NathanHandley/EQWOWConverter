@@ -64,19 +64,16 @@ namespace EQWOWConverter.Zones
             SubAreas = zoneProperties.ZoneAreas;
         }
 
-        public void LoadEQZoneData(string inputZoneFolderName, string inputZoneFolderFullPath)
-        {
-            // Load
-            EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
-        } 
-
-        public void LoadFromEQZone()
+        public void LoadFromEQZone(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             if (IsLoaded == true)
             {
                 Logger.WriteInfo("LoadFromEQZone called for zone '" + ShortName + "' when the zone was already loaded");
                 return;
             }
+
+            // Load the EQ data
+            EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
 
             // Clear any prior world object model data
             ZoneObjectModels.Clear();
