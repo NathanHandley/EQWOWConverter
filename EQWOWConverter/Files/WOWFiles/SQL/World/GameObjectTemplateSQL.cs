@@ -18,29 +18,31 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectTemplateSQL : SQLFile
     {
+        private static int CUR_ID = Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START;
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow()
+        public void AddRowForTransport(int entryID, int displayID, string name, int taxiPathID, int moveSpeed, int accelRate, int spawnMap)
         {
             SQLRow newRow = new SQLRow();
-			newRow.AddInt("entry", 0);
-            newRow.AddInt("type", 0);
-            newRow.AddInt("displayId", 0);
-			newRow.AddString("name", 100, string.Empty);
+			newRow.AddInt("entry", entryID);
+            newRow.AddInt("type", 15); // 15 = TransportShip
+            newRow.AddInt("displayId", displayID);
+			newRow.AddString("name", 100, name);
             newRow.AddString("IconName", 100, string.Empty);
             newRow.AddString("castBarCaption", 100, string.Empty);
             newRow.AddString("unk1", 100, string.Empty);
 			newRow.AddFloat("size", 1);
-            newRow.AddInt("Data0", 0);
-            newRow.AddInt("Data1", 0);
-            newRow.AddInt("Data2", 0);
+            newRow.AddInt("Data0", taxiPathID);
+            newRow.AddInt("Data1", moveSpeed); // 30 is typical
+            newRow.AddInt("Data2", accelRate); // 1 is typical
             newRow.AddInt("Data3", 0);
             newRow.AddInt("Data4", 0);
-            newRow.AddInt("Data5", 0);
-            newRow.AddInt("Data6", 0);
+            newRow.AddInt("Data5", 0); // Transport physics, 0 or 1
+            newRow.AddInt("Data6", spawnMap);
             newRow.AddInt("Data7", 0);
             newRow.AddInt("Data8", 0);
             newRow.AddInt("Data9", 0);
@@ -62,6 +64,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);            
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            int id = CUR_ID;
+            CUR_ID++;
+            return id;
         }
     }
 }

@@ -14,13 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 namespace EQWOWConverter.Transports
 {
-    internal class TransportShipPathNode
+    internal class TransportShipPathNode : IComparable, IEquatable<TransportShipPathNode>
     {
         private static Dictionary<int, List<TransportShipPathNode>> TransportShipPathNodesByGroupID = new Dictionary<int, List<TransportShipPathNode>>();
 
         public int PathGroup = 0;
+        public int WOWPathID = 0;
         public string MapShortName = string.Empty;
         public int StepNumber = 0;
         public float XPosition = 0;
@@ -28,14 +32,24 @@ namespace EQWOWConverter.Transports
         public float ZPosition = 0;
         public int PauseTimeInSec = 0;
 
-        public static List<TransportShipPathNode> GetPathNodesForGroup(int groupID)
+        public static void SetPathIDForNodeGroup(int groupID, int wowPathID)
         {
             if (TransportShipPathNodesByGroupID.Count == 0)
                 PopulatePathNodes();
-            if (TransportShipPathNodesByGroupID.ContainsKey(groupID) == false)
-                return new List<TransportShipPathNode>();
-            else
-                return TransportShipPathNodesByGroupID[groupID];
+            if (TransportShipPathNodesByGroupID.ContainsKey(groupID) == true)
+                foreach(TransportShipPathNode node in TransportShipPathNodesByGroupID[groupID])
+                    node.WOWPathID = wowPathID;
+        }
+
+        public static List<TransportShipPathNode> GetAllPathNodesSorted()
+        {
+            if (TransportShipPathNodesByGroupID.Count == 0)
+                PopulatePathNodes();
+            List<TransportShipPathNode> returnList = new List<TransportShipPathNode>();
+            foreach (var transportShipPathNodes in TransportShipPathNodesByGroupID.Values)
+                returnList.AddRange(transportShipPathNodes);
+            returnList.Sort();
+            return returnList;
         }
 
         private static void PopulatePathNodes()
@@ -51,14 +65,35 @@ namespace EQWOWConverter.Transports
                 curNode.PathGroup = int.Parse(columns["path_group"]);
                 curNode.MapShortName = columns["map_short_name"];
                 curNode.StepNumber = int.Parse(columns["step_num"]);
-                curNode.XPosition = float.Parse(columns["x"]);
-                curNode.YPosition = float.Parse(columns["y"]);
-                curNode.ZPosition = float.Parse(columns["z"]);
+                curNode.XPosition = float.Parse(columns["x"]) * Configuration.GENERATE_WORLD_SCALE;
+                curNode.YPosition = float.Parse(columns["y"]) * Configuration.GENERATE_WORLD_SCALE;
+                curNode.ZPosition = float.Parse(columns["z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.PauseTimeInSec = int.Parse(columns["pause"]);
                 if (TransportShipPathNodesByGroupID.ContainsKey(curNode.PathGroup) == false)
                     TransportShipPathNodesByGroupID.Add(curNode.PathGroup, new List<TransportShipPathNode>());
                 TransportShipPathNodesByGroupID[curNode.PathGroup].Add(curNode);
             }
+        }
+        public int CompareTo(object? obj)
+        {
+            if (obj == null) return 1;
+            TransportShipPathNode? otherShipPathNode = obj as TransportShipPathNode;
+            if (otherShipPathNode != null)
+            {
+                if (PathGroup != otherShipPathNode.PathGroup)
+                    return PathGroup.CompareTo(otherShipPathNode.PathGroup);
+                else return StepNumber.CompareTo(otherShipPathNode.StepNumber);
+            }
+            else
+                throw new ArgumentException("Object is not a CreaturePathGridEntry");
+        }
+
+        public bool Equals(TransportShipPathNode? other)
+        {
+            if (other == null) return false;
+            if (PathGroup != other.PathGroup) return false;
+            if (StepNumber != other.StepNumber) return false;
+            return true;
         }
     }
 }

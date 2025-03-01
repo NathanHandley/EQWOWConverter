@@ -14,8 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.ObjectModels;
-using EQWOWConverter.Zones;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Transports
@@ -34,6 +32,7 @@ namespace EQWOWConverter.Transports
         public float SpawnZ = 0;
         public int SpawnHeading = 0;
         public string SpawnZoneShortName = string.Empty;
+        public string TouchedZones = string.Empty;
         public int EQRace = 0;
         public int EQGender = 0;
         public int EQTexture = 0;
@@ -42,6 +41,13 @@ namespace EQWOWConverter.Transports
         public string MeshName = string.Empty;
         public List<TransportShipPathNode> PathNodes = new List<TransportShipPathNode>();
         public int GameObjectDisplayInfoID = 0;
+        public int TaxiPathID = 0;
+        public int MapID = 0;
+
+        public List<string> GetTouchedZonesSplitOut()
+        {
+            return TouchedZones.Split(",").ToList();
+        }
 
         public static List<TransportShip> GetAllTransportShips()
         {
@@ -74,22 +80,25 @@ namespace EQWOWConverter.Transports
                 curTransportShip.MeshName = columns["mesh"];
                 curTransportShip.PathGroupID = int.Parse(columns["path_group"]);
                 curTransportShip.SpawnZoneShortName = columns["spawn_zone"];
-                curTransportShip.SpawnX = float.Parse(columns["spawn_x"]);
-                curTransportShip.SpawnY = float.Parse(columns["spawn_y"]);
-                curTransportShip.SpawnZ = float.Parse(columns["spawn_z"]);
+                curTransportShip.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
+                curTransportShip.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
+                curTransportShip.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportShip.SpawnHeading = int.Parse(columns["heading"]);
                 curTransportShip.EQRace = int.Parse(columns["race"]);
                 curTransportShip.EQGender = int.Parse(columns["gender"]);
                 curTransportShip.EQTexture = int.Parse(columns["texture"]);
                 curTransportShip.EQWalkSpeed = float.Parse(columns["walkspeed"]);
                 curTransportShip.EQRunSpeed = float.Parse(columns["runspeed"]);
+                curTransportShip.TouchedZones = columns["touchedzones"];
+                curTransportShip.TaxiPathID = TaxiPathDBC.GenerateID();
+                curTransportShip.MapID = MapDBC.GenerateID();
                 TransportShips.Add(curTransportShip);
             }
 
-            // Fill the path nodes
+            // Fill the path node IDs
             foreach (TransportShip transportShip in TransportShips)
                 if (transportShip.PathGroupID > 0)
-                    transportShip.PathNodes = TransportShipPathNode.GetPathNodesForGroup(transportShip.PathGroupID);
+                    TransportShipPathNode.SetPathIDForNodeGroup(transportShip.PathGroupID, transportShip.TaxiPathID);
         }
     }
 }

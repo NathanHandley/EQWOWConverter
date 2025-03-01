@@ -25,6 +25,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class MapDBC : DBCFile
     {
+        private static int CUR_ID = Configuration.DBCID_MAP_ID_START;
+
         public void AddRow(int id, string directory, string mapName, int areaTableID, int loadingScreenID)
         {
             DBCRow newRow = new DBCRow();
@@ -47,6 +49,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // RaidOffset (?)
             newRow.AddInt32(0); // Max Players (0 if no max?)
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            int dbcMapID = CUR_ID;
+            CUR_ID++;
+            return dbcMapID;
         }
     }
 }

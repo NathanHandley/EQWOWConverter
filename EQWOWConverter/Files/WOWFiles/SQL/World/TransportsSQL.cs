@@ -18,19 +18,22 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TransportsSQL : SQLFile
     {
+        private static int CUR_GUID = Configuration.SQL_TRANSPORTS_GUID_START;
+
         public override string DeleteRowSQL()
         {
-            return "";
+            return "DELETE FROM transports WHERE guid >= " + Configuration.SQL_TRANSPORTS_GUID_START.ToString() + " AND guid <= " + Configuration.SQL_TRANSPORTS_GUID_END.ToString() + ";";
         }
 
-        public void AddRow()
+        public void AddRow(int entry, string name)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("GUID", 0);
-            newRow.AddInt("Entry", 0);
-            newRow.AddString("Name", string.Empty);
+            newRow.AddInt("GUID", CUR_GUID);
+            newRow.AddInt("Entry", entry);
+            newRow.AddString("Name", name);
             newRow.AddString("ScriptName", 64, string.Empty);
             Rows.Add(newRow);
+            CUR_GUID++;
         }
     }
 }

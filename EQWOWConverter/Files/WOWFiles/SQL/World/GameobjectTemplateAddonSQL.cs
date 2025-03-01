@@ -16,19 +16,19 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class GameobjectTemplateAddonSQL : SQLFile
+    internal class GameObjectTemplateAddonSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
             return "DELETE FROM gameobject_template_addon WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int entryID, int displayID, string name)
+        public void AddRowForTransport(int entryID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", 0);
+            newRow.AddInt("entry", entryID);
             newRow.AddInt("faction", 0);
-            newRow.AddInt("flags", 0);
+            newRow.AddInt("flags", 40); // 8 = GO_FLAG_TRANSPORT, 32 = GO_FLAG_NODESPAWN
             newRow.AddInt("mingold", 0);
             newRow.AddInt("maxgold", 0);
             newRow.AddInt("artkit0", 0);

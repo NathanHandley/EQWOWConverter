@@ -466,6 +466,12 @@ namespace EQWOWConverter
         // ID for spellicon.dbc
         public static readonly int DBCID_SPELLICON_ID_START = 4400;
 
+        // ID for TaxiPath.dbc
+        public static readonly int DBCID_TAXIPATH_ID_START = 2000;
+
+        // ID for TaxiPathNode.dbc
+        public static readonly int DBCID_TAXIPATHNODE_ID_START = 48000;
+
         // IDs for WorldSafeLocs.dbc
         public static readonly int DBCID_WORLDSAFELOCS_ID_START = 1800;
         public static readonly int DBCID_WORLDSAFELOCS_ID_END = 2000;
@@ -528,5 +534,9 @@ namespace EQWOWConverter
         // Start ID for pool_template data rows (reserve 40k records)
         public static readonly int SQL_POOL_TEMPLATE_ID_START = 110000;
         public static readonly int SQL_POOL_TEMPLATE_ID_END = 150000;
+
+        // Start and end IDs for transports
+        public static readonly int SQL_TRANSPORTS_GUID_START = 21;
+        public static readonly int SQL_TRANSPORTS_GUID_END = 41;
     }
 }

@@ -18,21 +18,26 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TaxiPathNodeDBC : DBCFile
     {
-        public void AddRow()
+        private static int CUR_ID = Configuration.DBCID_TAXIPATHNODE_ID_START;
+
+        public void AddRow(int pathID, int nodeIndex, int mapID, float posX, float posY, float posZ,
+            int delayInSeconds)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(0); // ID
-            newRow.AddInt32(0); // PathID
-            newRow.AddInt32(0); // NodeIndex
-            newRow.AddInt32(0); // ContinentID
-            newRow.AddFloat(0); // LocX
-            newRow.AddFloat(0); // LocY
-            newRow.AddFloat(0); // LocZ
+            newRow.AddInt32(CUR_ID); // ID
+            newRow.AddInt32(pathID); // PathID
+            newRow.AddInt32(nodeIndex); // NodeIndex
+            newRow.AddInt32(mapID); // ContinentID
+            newRow.AddFloat(posX); // LocX
+            newRow.AddFloat(posY); // LocY
+            newRow.AddFloat(posZ); // LocZ
             newRow.AddInt32(0); // Flags
-            newRow.AddInt32(0); // Delay
+            newRow.AddInt32(delayInSeconds); // Delay in seconds
             newRow.AddInt32(0); // ArrivalEventID
             newRow.AddInt32(0); // DepatureEventID
             Rows.Add(newRow);
+
+            CUR_ID++;
         }
     }
 }

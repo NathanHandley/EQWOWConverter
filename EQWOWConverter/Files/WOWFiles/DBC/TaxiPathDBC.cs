@@ -18,14 +18,23 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class TaxiPathDBC : DBCFile
     {
-        public void AddRow()
+        private static int CUR_ID = Configuration.DBCID_TAXIPATH_ID_START;
+
+        public void AddRow(int id)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(0); // ID
+            newRow.AddInt32(id); // ID
             newRow.AddInt32(0); // FromTaxiNode
             newRow.AddInt32(0); // ToTaxiNode
             newRow.AddInt32(0); // Cost
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            int id = CUR_ID;
+            CUR_ID++;
+            return id;
         }
     }
 }

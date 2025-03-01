@@ -1268,6 +1268,10 @@ namespace EQWOWConverter
             spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
+            TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
+            taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
+            TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
+            taxiPathNodeDBC.LoadFromDisk(dbcInputFolder, "TaxiPathNode.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -1456,11 +1460,22 @@ namespace EQWOWConverter
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
 
             // Transports
-            foreach(var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
+            foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
                 gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
-            foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+            foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
+                taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+            foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
             {
-                //gameObjectDisplayInfoDBC.AddRow(transportShi)
+                if (mapIDsByShortName.ContainsKey(shipNode.MapShortName.ToLower().Trim()) == false)
+                {
+                    Logger.WriteDetail("Skipping shipNode with mapshortname as '" + shipNode.MapShortName + "' as it wasn't a valid map short name");
+                    continue;
+                }
+                int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
+                taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, shipNode.ZPosition, shipNode.PauseTimeInSec);
             }
 
             // Save the files
@@ -1516,6 +1531,10 @@ namespace EQWOWConverter
             spellCastTimesDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
+            taxiPathDBC.SaveToDisk(dbcOutputClientFolder);
+            taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
+            taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);
+            taxiPathNodeDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);            
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
@@ -1554,6 +1573,8 @@ namespace EQWOWConverter
             GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
             GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
             GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
+            GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
+            GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
@@ -1563,6 +1584,7 @@ namespace EQWOWConverter
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
+            TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
             // Zones
@@ -1830,6 +1852,33 @@ namespace EQWOWConverter
                     npcTrainerSQL.AddRowForClassAbility(lineID, trainerAbility);
             }
 
+            // Transports
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+            foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+            {
+                // Only add this transport ship if the full path is zones that are loaded
+                bool zonesAreLoaded = true;
+                foreach(string touchedZone in transportShip.GetTouchedZonesSplitOut())
+                {
+                    if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
+                    {
+                        zonesAreLoaded = false;
+                        Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                        break;
+                    }
+                }
+                if (zonesAreLoaded == false)
+                    continue;
+                string name = "Ship EQ (" + transportShip.Name + ")";
+                string longName = transportShip.TouchedZones + "(" + name + ")";
+                transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
+                gameObjectTemplateSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
+                    transportShip.TaxiPathID, 30, 1, mapIDsByShortName[transportShip.SpawnZoneShortName.ToLower().Trim()]);
+                gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
+            }
+
             // Output them
             // Characters
             modEverquestCharacterHomebindSQL.SaveToDisk("mod_everquest_character_homebind", SQLFileType.Characters);
@@ -1844,6 +1893,8 @@ namespace EQWOWConverter
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
+            gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
+            gameObjectTemplateAddonSQL.SaveToDisk("gameobject_template_addon", SQLFileType.World);
             gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);
             gossipMenuSQL.SaveToDisk("gossip_menu", SQLFileType.World);
             gossipMenuOptionSQL.SaveToDisk("gossip_menu_option", SQLFileType.World);
@@ -1857,6 +1908,7 @@ namespace EQWOWConverter
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
+            transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
         }
 

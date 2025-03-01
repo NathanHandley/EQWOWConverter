@@ -46,7 +46,6 @@ namespace EQWOWConverter.Zones
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
 
         // DBCIDs
-        public static int CURRENT_MAPID = Configuration.DBCID_MAP_ID_START;
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
         private static int CURRENT_MAPDIFFICULTYID = Configuration.DBCID_MAPDIFFICULTY_ID_START;        
         public int DBCMapID;
@@ -55,16 +54,9 @@ namespace EQWOWConverter.Zones
 
         protected ZoneProperties()
         {
-            DBCMapID = GenerateDBCMapID();
+            DBCMapID = MapDBC.GenerateID();
             DBCWMOID = GenerateDBCWMOID();
             DBCMapDifficultyID = GenerateDBCMapDifficultyID();
-        }
-
-        public static int GenerateDBCMapID()
-        {
-            int dbcMapID = CURRENT_MAPID;
-            CURRENT_MAPID++;
-            return dbcMapID;
         }
 
         public static UInt32 GenerateDBCWMOID()
