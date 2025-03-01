@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
@@ -34,8 +35,25 @@ namespace EQWOWConverter.WOWFiles
             RootObject = new WMORoot(zone, exportStaticDoodadsFolder, exportZoneObjectsFolder);
 
             // Create the groups
-            foreach(ZoneObjectModel curWorldObjectModel in zone.ZoneObjectModels)
+            foreach(ZoneModelObject curWorldObjectModel in zone.ZoneObjectModels)
                 GroupObjects.Add(new WMOGroup(RootObject, curWorldObjectModel));
+
+            // Generate the root file name
+            FullWMOFolderPath = Path.Combine(baseFolderPath, "World", "wmo", "Everquest", BaseFileName);
+            RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName, BaseFileName + ".wmo");
+        }
+
+        public WMO(string transportName, string baseFolderPath, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
+            List<Material> materials, uint dbcWMOID, BoundingBox boundingBox)
+        {
+            BaseFileName = transportName;
+
+            // Create root object
+            RootObject = new WMORoot(transportName, renderModelObject, collisionModelObject, materials, dbcWMOID, boundingBox);
+
+            // Create the groups
+            GroupObjects.Add(new WMOGroup(RootObject, renderModelObject)); // Make sure this is first (before collision)
+            GroupObjects.Add(new WMOGroup(RootObject, collisionModelObject));
 
             // Generate the root file name
             FullWMOFolderPath = Path.Combine(baseFolderPath, "World", "wmo", "Everquest", BaseFileName);

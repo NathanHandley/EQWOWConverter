@@ -147,9 +147,6 @@ namespace EQWOWConverter
         // What edge buffer to add when doing floating point month
         public static readonly float GENERATE_FLOAT_EPSILON = 0.001f;
 
-        // If this is true then NPCs are spawned to supplement boats that are not yet implemented
-        public static readonly bool GENERATE_BOAT_REPLACEMENT_NPCS = true;
-
         //=====================================================================
         // Zone General
         //=====================================================================

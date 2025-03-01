@@ -69,6 +69,7 @@ namespace EQWOWConverter.ObjectModels
         public int NumOfFidgetSounds = 0;
         public Vector3 PortraitCameraPosition = new Vector3();
         public Vector3 PortraitCameraTargetPosition = new Vector3();
+        public MeshData MeshData = new MeshData();
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
@@ -180,6 +181,9 @@ namespace EQWOWConverter.ObjectModels
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
                 GlobalLoopSequenceLimits.Add(0);
+
+            // Store the final state mesh data
+            MeshData = meshData;
         }
 
         private void ProcessBonesAndAnimation()

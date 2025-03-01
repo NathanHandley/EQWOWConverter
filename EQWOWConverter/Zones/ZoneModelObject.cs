@@ -26,7 +26,7 @@ using System.Diagnostics.Tracing;
 
 namespace EQWOWConverter.Zones
 {
-    internal class ZoneObjectModel
+    internal class ZoneModelObject
     {
         private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
 
@@ -49,7 +49,7 @@ namespace EQWOWConverter.Zones
         public List<UInt16> LightInstanceIDs = new List<UInt16>();
         public ZoneAreaMusic? ZoneMusic = null;
 
-        public ZoneObjectModel(UInt16 groupIndex, UInt32 areaTableID)
+        public ZoneModelObject(UInt16 groupIndex, UInt32 areaTableID)
         {
             WMOGroupID = CURRENT_WMOGROUPID;
             CURRENT_WMOGROUPID++;
@@ -57,21 +57,17 @@ namespace EQWOWConverter.Zones
             AreaTableID = areaTableID;
         }
 
-        public void LoadAsRendered(MeshData meshData, List<Material> materials, List<LightInstance> lightInstances, ZoneProperties zoneProperties)
+        public void LoadAsRendered(MeshData meshData, List<Material> materials)
         {
             WMOType = ZoneObjectModelType.Rendered;
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
-            GenerateRenderBatches(materials, zoneProperties);
-            for (UInt16 i = 0; i < lightInstances.Count; i++)
-            //    if (BoundingBox.ContainsPoint(lightInstances[i].Position))
-                    LightInstanceIDs.Add(i);
+            GenerateRenderBatches(materials);
             IsLoaded = true;
         }
 
-        public void LoadAsCollidableArea(MeshData collisionMeshData, BoundingBox boundingBox, string displayName, ZoneAreaMusic? zoneMusic, ZoneLiquid? liquid,
-            ZoneProperties zoneProperties)
+        public void LoadAsCollidableArea(MeshData collisionMeshData, BoundingBox boundingBox, string displayName, ZoneAreaMusic? zoneMusic, ZoneLiquid? liquid)
         {
             WMOType = ZoneObjectModelType.Collidable;
             DisplayName = displayName;
@@ -98,11 +94,11 @@ namespace EQWOWConverter.Zones
             Materials = materials;
             ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.ZONE_SHADOW_BOX_ADDED_SIZE, MeshBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
-            GenerateRenderBatches(materials, zoneProperties);
+            GenerateRenderBatches(materials);
             IsLoaded = true;
         }
 
-        private void GenerateRenderBatches(List<Material> materials, ZoneProperties zoneProperties)
+        private void GenerateRenderBatches(List<Material> materials)
         {
             // Don't make a render batch if static rendering is disabled
             if (Configuration.ZONE_SHOW_STATIC_GEOMETRY == false)

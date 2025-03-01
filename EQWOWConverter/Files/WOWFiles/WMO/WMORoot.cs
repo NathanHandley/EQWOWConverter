@@ -16,13 +16,8 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
-using EQWOWConverter.WOWFiles;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
-using System.Security.AccessControl;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -38,25 +33,26 @@ namespace EQWOWConverter.WOWFiles
 
         public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
-            PopulateDoodadPathStringOffsets(zone, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
+            PopulateDoodadPathStringOffsets(zone.DoodadInstances, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
             // MVER (Version) ---------------------------------------------------------------------
             RootBytes.AddRange(GenerateMVERChunk());
 
             // MOHD (Header) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOHDChunk(zone));
+            RootBytes.AddRange(GenerateMOHDChunk(zone.Materials, zone.ZoneObjectModels.Count(), zone.LightInstances.Count(),
+                DoodadPathOffsetsByName.Count(), zone.ZoneProperties.DBCWMOID, zone.BoundingBox));
 
             // MOTX (Textures) --------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOTXChunk(zone));
+            RootBytes.AddRange(GenerateMOTXChunk("WORLD\\EVERQUEST\\ZONETEXTURES", zone.ShortName, zone.Materials));
 
             // MOMT (Materials) -------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOMTChunk(zone));
+            RootBytes.AddRange(GenerateMOMTChunk(zone.ShortName, zone.Materials));
 
             // MOGN (Groups) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGNChunk(zone));
+            RootBytes.AddRange(GenerateMOGNChunk(zone.DescriptiveName));
 
             // MOGI (Group Information) -----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGIChunk(zone));
+            RootBytes.AddRange(GenerateMOGIChunk(zone.ZoneObjectModels));
 
             // MOSB (Skybox, optional) ------------------------------------------------------------
             RootBytes.AddRange(GenerateMOSBChunk());
@@ -77,19 +73,75 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMOVBChunk());
 
             // MOLT (Lighting Information) --------------------------------------------------------
-            RootBytes.AddRange(GenerateMOLTChunk(zone));
+            RootBytes.AddRange(GenerateMOLTChunk(zone.LightInstances));
 
             // MODS (Doodad Set Definitions) ------------------------------------------------------
-            RootBytes.AddRange(GenerateMODSChunk(zone));
+            RootBytes.AddRange(GenerateMODSChunk(zone.DoodadInstances));
 
             // MODN (List of M2s) -----------------------------------------------------------------
             RootBytes.AddRange(GenerateMODNChunk());
 
             // MODD (Doodad Instance Information) -------------------------------------------------
-            RootBytes.AddRange(GenerateMODDChunk(zone));
+            RootBytes.AddRange(GenerateMODDChunk(zone.DoodadInstances));
 
             // MFOG (Fog Information) -------------------------------------------------------------
-            RootBytes.AddRange(GenerateMFOGChunk(zone));
+            RootBytes.AddRange(GenerateMFOGChunk());
+        }
+
+        public WMORoot(string transportName, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
+            List<Material> materials, uint dbcWMOID, BoundingBox boundingBox)
+        {
+            // MVER (Version) ---------------------------------------------------------------------
+            RootBytes.AddRange(GenerateMVERChunk());
+
+            // MOHD (Header) ----------------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOHDChunk(materials, 2, 0, 0, dbcWMOID, boundingBox));
+
+            // MOTX (Textures) --------------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOTXChunk("WORLD\\EVERQUEST\\TRANSPORTTEXTURES", transportName, materials));
+
+            // MOMT (Materials) -------------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOMTChunk(transportName, materials));
+
+            // MOGN (Groups) ----------------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOGNChunk(transportName));
+
+            // MOGI (Group Information) -----------------------------------------------------------
+            List<ZoneModelObject> zoneModelObjects = new List<ZoneModelObject> { renderModelObject, collisionModelObject };
+            RootBytes.AddRange(GenerateMOGIChunk(zoneModelObjects));
+
+            // MOSB (Skybox, optional) ------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOSBChunk());
+
+            // MOPV (Portal Vertices) ------------------------------------------------------------
+            RootBytes.AddRange(GenerateMOPVChunk());
+
+            // MOPT (Portal Information) ----------------------------------------------------------
+            RootBytes.AddRange(GenerateMOPTChunk());
+
+            // MOPR (Map Object Portal References) ------------------------------------------------
+            RootBytes.AddRange(GenerateMOPRChunk());
+
+            // MOVV (Visible Block Vertices) -----------------------------------------------------
+            RootBytes.AddRange(GenerateMOVVChunk());
+
+            // MOVB (Visible Block List) ----------------------------------------------------------
+            RootBytes.AddRange(GenerateMOVBChunk());
+
+            // MOLT (Lighting Information) --------------------------------------------------------
+            RootBytes.AddRange(GenerateMOLTChunk(new List<LightInstance>()));
+
+            // MODS (Doodad Set Definitions) ------------------------------------------------------
+            RootBytes.AddRange(GenerateMODSChunk(new List<ZoneDoodadInstance>()));
+
+            // MODN (List of M2s) -----------------------------------------------------------------
+            RootBytes.AddRange(GenerateMODNChunk());
+
+            // MODD (Doodad Instance Information) -------------------------------------------------
+            RootBytes.AddRange(GenerateMODDChunk(new List<ZoneDoodadInstance>()));
+
+            // MFOG (Fog Information) -------------------------------------------------------------
+            RootBytes.AddRange(GenerateMFOGChunk());
         }
 
         /// <summary>
@@ -104,13 +156,14 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOHD (Header)
         /// </summary>
-        private List<byte> GenerateMOHDChunk(Zone zone)
+        private List<byte> GenerateMOHDChunk(List<Material> materials, int numOfZoneObjectModels, int numOfLightInstances,
+            int numOfDoodadInstances, uint dbcWMOID, BoundingBox boundingBox)
         {
             List<byte> chunkBytes = new List<byte>();
 
             // Number of Textures
             UInt32 numOfTextures = 0;
-            foreach (Material material in zone.Materials)
+            foreach (Material material in materials)
             {
                 if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
                     continue;
@@ -120,19 +173,19 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(numOfTextures));          
 
             // Number of Groups
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.ZoneObjectModels.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(numOfZoneObjectModels)));
 
             // Number of Portals
             chunkBytes.AddRange(BitConverter.GetBytes(0));    
 
             // Number of Lights
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.LightInstances.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(numOfLightInstances)));
 
             // Number of Doodad Names
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(DoodadPathOffsetsByName.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(numOfDoodadInstances)));
 
             // Number of Doodad Definitions
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.DoodadInstances.Count())));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(numOfDoodadInstances)));
 
             // Number of Doodad Sets (first is the global)
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(1)));
@@ -141,10 +194,10 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(new ColorRGBA().ToBytesBGRA());
 
             // WMOID (inside WMOAreaTable.dbc)
-            chunkBytes.AddRange(BitConverter.GetBytes(zone.ZoneProperties.DBCWMOID));
+            chunkBytes.AddRange(BitConverter.GetBytes(dbcWMOID));
 
             // Axis aligned bounding box for the zone mesh(es)
-            chunkBytes.AddRange(zone.BoundingBox.ToBytesHighRes());      
+            chunkBytes.AddRange(boundingBox.ToBytesHighRes());      
 
             // Set any flags
             WMORootFlags rootFlags = WMORootFlags.UseLiquidTypeDBCID;
@@ -157,12 +210,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOTX (Textures)
         /// </summary>
-        private List<byte> GenerateMOTXChunk(Zone zone)
+        private List<byte> GenerateMOTXChunk(string relativeTextureFolder, string name, List<Material> materials)
         {
-            //  Store in "WORLD\EVERQUEST\ZONETEXTURES\<zone>\<texture>.BLP"
             //  Pad to make the lengths multiples of 4, with a buffer at the end
             List<byte> textureBuffer = new List<byte>();
-            foreach (Material material in zone.Materials)
+            foreach (Material material in materials)
             {
                 // Don't add the texture if the material won't be used anyway
                 if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
@@ -173,7 +225,7 @@ namespace EQWOWConverter.WOWFiles
                     // TODO: Account for more texture names when texture animation is fully implemented
                     string textureName = material.TextureNames[0];
                     TextureNameOffsets[textureName] = Convert.ToUInt32(textureBuffer.Count());
-                    string curTextureFullPath = "WORLD\\EVERQUEST\\ZONETEXTURES\\" + zone.ShortName.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
+                    string curTextureFullPath = relativeTextureFolder + "\\" + name.ToUpper() + "\\" + textureName.ToUpper() + ".BLP\0\0\0\0\0";
                     textureBuffer.AddRange(Encoding.ASCII.GetBytes(curTextureFullPath));
                     while (textureBuffer.Count() % 4 != 0)
                         textureBuffer.AddRange(Encoding.ASCII.GetBytes("\0"));
@@ -189,20 +241,20 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOMT (Materials)
         /// </summary>
-        private List<byte> GenerateMOMTChunk(Zone zone)
+        private List<byte> GenerateMOMTChunk(string name, List<Material> materials)
         {
             List<byte> chunkBytes = new List<byte>();
             int curBatchMaterialID = 0;
-            for (int i = 0; i < zone.Materials.Count; ++i)
+            for (int i = 0; i < materials.Count; ++i)
             {
-                Material material = zone.Materials[i];
+                Material material = materials[i];
 
                 // Skip any non-rendered materials
                 if (material.IsAnimated() || material.HasTransparency() || material.IsRenderable() == false)
                     continue;
 
                 // For kedge, put in the front
-                if (zone.ShortName == "kedge")
+                if (name == "kedge")
                     BatchMaterialIDsByMaterialIndex.Add(0, curBatchMaterialID);
                 else
                     BatchMaterialIDsByMaterialIndex.Add(i, curBatchMaterialID);
@@ -303,7 +355,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGN (Groups)
         /// </summary>
-        private List<byte> GenerateMOGNChunk(Zone zone)
+        private List<byte> GenerateMOGNChunk(string descriptiveName)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -312,12 +364,12 @@ namespace EQWOWConverter.WOWFiles
 
             // Zone Name
             GroupNameOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupName = zone.DescriptiveName + "\0";
+            string zoneGroupName = descriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupName));            
 
             // Descriptive Name
             GroupNameDescriptiveOffset = Convert.ToUInt32(chunkBytes.Count);
-            string zoneGroupNameDescriptive = zone.DescriptiveName + "\0";
+            string zoneGroupNameDescriptive = descriptiveName + "\0";
             chunkBytes.AddRange(Encoding.ASCII.GetBytes(zoneGroupNameDescriptive));
 
             // Align the chunk with empty
@@ -329,12 +381,12 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGI (Group Information)
         /// </summary>
-        private List<byte> GenerateMOGIChunk(Zone zone)
+        private List<byte> GenerateMOGIChunk(List<ZoneModelObject> zoneModelObjects)
         {
             // TODO: Break up interior vs exterior?
             List<byte> chunkBytes = new List<byte>();
 
-            foreach(ZoneObjectModel curWorldObjectModel in zone.ZoneObjectModels)
+            foreach(ZoneModelObject curWorldObjectModel in zoneModelObjects)
             {
                 // Header flags
                 chunkBytes.AddRange(BitConverter.GetBytes(curWorldObjectModel.GenerateWMOHeaderFlags()));
@@ -428,10 +480,10 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOLT (Lighting Information)
         /// </summary>
-        private List<byte> GenerateMOLTChunk(Zone zone)
+        private List<byte> GenerateMOLTChunk(List<LightInstance> lightInstances)
         {
             List<byte> chunkBytes = new List<byte>();
-            foreach (LightInstance lightInstance in zone.LightInstances)
+            foreach (LightInstance lightInstance in lightInstances)
                 chunkBytes.AddRange(lightInstance.ToBytes());
             return WrapInChunk("MOLT", chunkBytes.ToArray());
         }
@@ -439,7 +491,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODS (Doodad Set Definitions)
         /// </summary>
-        private List<byte> GenerateMODSChunk(Zone zone)
+        private List<byte> GenerateMODSChunk(List<ZoneDoodadInstance> doodadInstances)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -451,7 +503,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(0)));
 
             // Number of doodads
-            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(zone.DoodadInstances.Count)));
+            chunkBytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(doodadInstances.Count)));
 
             // Padding
             chunkBytes.AddRange(Encoding.ASCII.GetBytes("\0\0\0\0"));
@@ -476,11 +528,11 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MODD (Doodad Instance Information)
         /// </summary>
-        private List<byte> GenerateMODDChunk(Zone zone)
+        private List<byte> GenerateMODDChunk(List<ZoneDoodadInstance> doodadInstances)
         {
             List<byte> chunkBytes = new List<byte>();
 
-            foreach (ZoneDoodadInstance doodadInstance in zone.DoodadInstances)
+            foreach (ZoneDoodadInstance doodadInstance in doodadInstances)
             {
                 doodadInstance.ObjectNameOffset = DoodadPathOffsetsByName[doodadInstance.ObjectName];
                 chunkBytes.AddRange(doodadInstance.ToBytes());
@@ -495,7 +547,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MFOG (Fog Information)
         /// </summary>
-        private List<byte> GenerateMFOGChunk(Zone zone)
+        private List<byte> GenerateMFOGChunk()
         {
             // Hard coded defaults since we won't be using this block
             List<byte> chunkBytes = new List<byte>();
@@ -512,10 +564,10 @@ namespace EQWOWConverter.WOWFiles
             return WrapInChunk("MFOG", chunkBytes.ToArray());
         }
 
-        private void PopulateDoodadPathStringOffsets(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
+        private void PopulateDoodadPathStringOffsets(List<ZoneDoodadInstance> objectInstances, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
             int curPathOffset = 0;
-            foreach (ZoneDoodadInstance objectInstance in zone.DoodadInstances)
+            foreach (ZoneDoodadInstance objectInstance in objectInstances)
             {
                 string objectName = objectInstance.ObjectName;
                 string objectFullPath = string.Empty;

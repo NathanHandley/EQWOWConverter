@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public List<byte> GroupBytes = new List<byte>();
 
-        public WMOGroup(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
+        public WMOGroup(WMORoot wmoRoot, ZoneModelObject worldObjectModel)
         {
             // MVER (Version) ---------------------------------------------------------------------
             GroupBytes.AddRange(GenerateMVERChunk());
@@ -49,7 +49,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOGP (Main container for all other chunks)
         /// </summary>
-        private List<byte> GenerateMOGPChunk(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOGPChunk(WMORoot wmoRoot, ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -165,7 +165,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOPY (Material info for triangles)
         /// </summary>
-        private List<byte> GenerateMOPYChunk(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOPYChunk(WMORoot wmoRoot, ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -189,7 +189,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVI (MapObject Vertex Indices)
         /// </summary>
-        private List<byte> GenerateMOVIChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOVIChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -202,7 +202,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOVT (Vertices)
         /// </summary>
-        private List<byte> GenerateMOVTChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOVTChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -215,7 +215,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MONR (Normals)
         /// </summary>
-        private List<byte> GenerateMONRChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMONRChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -228,7 +228,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOTV (Texture Coordinates)
         /// </summary>
-        private List<byte> GenerateMOTVChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOTVChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -241,7 +241,7 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MOBA (Render Batches)
         /// </summary>
-        private List<byte> GenerateMOBAChunk(WMORoot wmoRoot, ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOBAChunk(WMORoot wmoRoot, ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (ZoneRenderBatch renderBatch in worldObjectModel.RenderBatches)
@@ -275,7 +275,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOLR (Light References)
         /// Optional.  Only if it has lights
         /// </summary>
-        private List<byte> GenerateMOLRChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOLRChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (UInt16 lightInstanceID in worldObjectModel.LightInstanceIDs)
@@ -287,7 +287,7 @@ namespace EQWOWConverter.WOWFiles
         /// MODR (Doodad References)
         /// Optional.  If has Doodads
         /// </summary>
-        private List<byte> GenerateMODRChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMODRChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (var doodadInstanceReference in worldObjectModel.DoodadInstances)
@@ -299,7 +299,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBN (Nodes of the BSP tree, collision)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBNChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOBNChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -313,7 +313,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOBR (Face / Triangle Incidies)
         /// Optional.  If HasBSPTree flag.
         /// </summary>
-        private List<byte> GenerateMOBRChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOBRChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 
@@ -327,7 +327,7 @@ namespace EQWOWConverter.WOWFiles
         /// MOCV (Vertex Colors)
         /// Optional.  If HasVertexColor Flag
         /// </summary>
-        private List<byte> GenerateMOCVChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMOCVChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
             foreach (ColorRGBA vertexColor in worldObjectModel.MeshData.VertexColors)
@@ -339,7 +339,7 @@ namespace EQWOWConverter.WOWFiles
         /// MLIQ (Liquid/Water details)
         /// Optional.  If HasWater flag
         /// </summary>
-        private List<byte> GenerateMLIQChunk(ZoneObjectModel worldObjectModel)
+        private List<byte> GenerateMLIQChunk(ZoneModelObject worldObjectModel)
         {
             List<byte> chunkBytes = new List<byte>();
 

@@ -34,7 +34,7 @@ namespace EQWOWConverter.Zones
         public string DescriptiveNameOnlyLetters = string.Empty;
         public ZoneEQData EQZoneData = new ZoneEQData();
         private bool IsLoaded = false;
-        public List<ZoneObjectModel> ZoneObjectModels = new List<ZoneObjectModel>();
+        public List<ZoneModelObject> ZoneObjectModels = new List<ZoneModelObject>();
         public List<ObjectModel> GeneratedZoneObjects = new List<ObjectModel>();
         public List<Material> Materials = new List<Material>();
         public List<LightInstance> LightInstances = new List<LightInstance>();
@@ -132,7 +132,7 @@ namespace EQWOWConverter.Zones
 
             // Rebuild the bounding box
             List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
-            foreach(ZoneObjectModel zoneObject in ZoneObjectModels)
+            foreach(ZoneModelObject zoneObject in ZoneObjectModels)
                 allBoundingBoxes.Add(zoneObject.BoundingBox);
             BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
 
@@ -142,7 +142,7 @@ namespace EQWOWConverter.Zones
             // If set, generate a shadowbox
             if (ZoneProperties.HasShadowBox == true)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
@@ -267,7 +267,7 @@ namespace EQWOWConverter.Zones
                 float currentDistance = 1000000;
                 for (int i = 0; i < ZoneObjectModels.Count; i++)
                 {
-                    ZoneObjectModel curZoneObjectModel = ZoneObjectModels[i];
+                    ZoneModelObject curZoneObjectModel = ZoneObjectModels[i];
                     if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered)
                         continue;
 
@@ -573,9 +573,9 @@ namespace EQWOWConverter.Zones
                     chunkLiquid = chunkLiquid.GeneratePartialFromScaledTransformedBoundingBox(intersectingBox[0]);
                 }
 
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), zoneArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
-                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, boundingBox, zoneArea.DisplayName, areaMusic, chunkLiquid, ZoneProperties);
+                curWorldObjectModel.LoadAsCollidableArea(meshDataChunk, boundingBox, zoneArea.DisplayName, areaMusic, chunkLiquid);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }
@@ -607,9 +607,9 @@ namespace EQWOWConverter.Zones
             // Create a group for each chunk
             foreach (MeshData meshDataChunk in meshDataChunks)
             {
-                ZoneObjectModel curWorldObjectModel = new ZoneObjectModel(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+                ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
                 meshDataChunk.CondenseAndRenumberVertexIndices();
-                curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials, LightInstances, ZoneProperties);
+                curWorldObjectModel.LoadAsRendered(meshDataChunk, Materials);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
         }

@@ -20,6 +20,7 @@ using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Spells;
+using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
@@ -77,6 +78,9 @@ namespace EQWOWConverter
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
             }
 
+            // Transports (make sure it's after zones)
+            ConvertTransports();
+
             // Icons
             CopyIconFiles();
 
@@ -121,6 +125,72 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
+        }
+
+        public void ConvertTransports()
+        {
+            Logger.WriteInfo("Converting Transports...");
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+
+            // Ships
+            Logger.WriteDetail("Loading transport ships...");
+            List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
+            Dictionary<string, ObjectModel> transportShipObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
+            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
+            foreach (TransportShip transportShip in transportShips)
+            {
+                // Load the mesh if it hasen't been yet
+                ObjectModel curObject;
+                if (transportShipObjectModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
+                {
+                    // Load object
+                    ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(transportShip.MeshName);
+                    curObject = new ObjectModel(transportShip.MeshName, objectProperties, ObjectModelType.SimpleDoodad);
+                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship static object '" + transportShip.MeshName + "'");
+                    curObject.LoadStaticEQObjectFromFile(charactersFolderRoot, transportShip.MeshName);
+                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship static object '" + transportShip.MeshName + "' complete");
+
+                    // Generate model objects for the wmo
+                    ZoneModelObject renderModelObject = new ZoneModelObject(0, 0);
+                    List<Material> renderModelMaterials = new List<Material>();
+                    foreach (ObjectModelMaterial objectMaterial in curObject.ModelMaterials)
+                        renderModelMaterials.Add(objectMaterial.Material);
+                    renderModelObject.LoadAsRendered(curObject.MeshData, renderModelMaterials);
+                    ZoneModelObject collisionModelObject = new ZoneModelObject(1, 0);
+                    collisionModelObject.LoadAsCollidableArea(curObject.MeshData, curObject.BoundingBox, string.Empty, null, null);
+
+                    // Convert to WMO
+                    UInt32 wmoID = ZoneProperties.GenerateDBCWMOID();
+                    WMO transportWMO = new WMO(transportShip.MeshName, exportMPQRootFolder, renderModelObject, collisionModelObject, renderModelMaterials, wmoID, curObject.BoundingBox);
+                    transportWMO.WriteToDisk(exportMPQRootFolder);
+
+                    // Copy the textures
+                    string transportOutputTextureFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "TransportTextures", transportShip.MeshName);
+                    if (Directory.Exists(transportOutputTextureFolder) == false)
+                        FileTool.CreateBlankDirectory(transportOutputTextureFolder, true);
+                    foreach (Material material in renderModelMaterials)
+                    {
+                        foreach (string textureName in material.TextureNames)
+                        {
+                            string sourceTextureFullPath = Path.Combine(charactersFolderRoot, "Textures", textureName + ".blp");
+                            string outputTextureFullPath = Path.Combine(transportOutputTextureFolder, textureName + ".blp");
+                            if (File.Exists(sourceTextureFullPath) == false)
+                            {
+                                Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
+                                continue;
+                            }
+                            File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
+                            Logger.WriteDetail("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
+                        }
+                    }
+                    transportShipObjectModelsByMeshName.Add(transportShip.MeshName, curObject);
+                }
+                else
+                    curObject = transportShipObjectModelsByMeshName[transportShip.MeshName];
+
+                // Do other stuff...
+            }
         }
 
         public bool ConvertEQObjectsToWOW()
@@ -834,6 +904,20 @@ namespace EQWOWConverter
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullZoneMusicPath + "\" \"" + relativeZoneMusicPath + "\" /r");
             }
 
+            // Transports
+            foreach(TransportShip transportShip in TransportShip.GetAllTransportShips())
+            {
+                // WMO
+                string relativeTransportWmoPath = Path.Combine("World", "wmo", "Everquest", transportShip.MeshName);
+                string fullTransportWmoPath = Path.Combine(mpqReadyFolder, relativeTransportWmoPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportWmoPath + "\" \"" + relativeTransportWmoPath + "\" /r");
+
+                // ZoneTextures
+                string relativeTransportTexturesPath = Path.Combine("World", "Everquest", "TransportTextures", transportShip.MeshName);
+                string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
+            }
+
             // Objects
             if (Configuration.GENERATE_OBJECTS == true)
             {                
@@ -1327,7 +1411,7 @@ namespace EQWOWConverter
 
                 // WMOAreaTable (Header than groups)
                 wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zone.DescriptiveName); // Header record
-                foreach (ZoneObjectModel wmo in zone.ZoneObjectModels)
+                foreach (ZoneModelObject wmo in zone.ZoneObjectModels)
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(zoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, Convert.ToInt32(wmo.AreaTableID), wmo.DisplayName);
 
                 // ZoneMusic
@@ -1519,14 +1603,6 @@ namespace EQWOWConverter
                     Configuration.CREATURE_CLASS_TRAINER_UNLEARN_BROADCAST_TEXT_ID, 16, 16, Configuration.CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID);
                 gossipMenuOptionSQL.AddRowForClassTrainer(gossipMenuID, 2, 0, "I wish to know about Dual Talent Specialization.", 
                     Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_BROADCAST_TEXT_ID, 20, 1, Configuration.CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID);
-            }
-
-            // Create the boat replacement NPCs
-            if (Configuration.GENERATE_BOAT_REPLACEMENT_NPCS == true)
-            {
-                // East
-                //gossipMenuSQL.AddRow(Configuration.CREATURE_BOAT_REPLACEMENT_NPCS_EAST_GOSSIPMENU_ID, Configuration.CREATURE_BOAT_REPLACEMENT_NPCS_TEXT_ID);
-                Logger.WriteInfo("GENERATE_BOAT_REPLACEMENT_NPCS NYI");
             }
 
             // Creature Templates

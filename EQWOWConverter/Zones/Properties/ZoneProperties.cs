@@ -55,17 +55,30 @@ namespace EQWOWConverter.Zones
 
         protected ZoneProperties()
         {
-            GenerateIDS(out DBCMapID, out DBCWMOID, out DBCMapDifficultyID);
+            DBCMapID = GenerateDBCMapID();
+            DBCWMOID = GenerateDBCWMOID();
+            DBCMapDifficultyID = GenerateDBCMapDifficultyID();
         }
 
-        public static void GenerateIDS(out int dbcMapID, out UInt32 dbcWMOID, out int dbcMapDifficultyID)
+        public static int GenerateDBCMapID()
         {
-            dbcMapID = CURRENT_MAPID;
+            int dbcMapID = CURRENT_MAPID;
             CURRENT_MAPID++;
-            dbcWMOID = CURRENT_WMOID;
+            return dbcMapID;
+        }
+
+        public static UInt32 GenerateDBCWMOID()
+        {
+            UInt32 dbcWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
-            dbcMapDifficultyID = CURRENT_MAPDIFFICULTYID;
+            return dbcWMOID;
+        }
+
+        public static int GenerateDBCMapDifficultyID()
+        {
+            int dbcMapDifficultyID = CURRENT_MAPDIFFICULTYID;
             CURRENT_MAPDIFFICULTYID++;
+            return dbcMapDifficultyID;
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
