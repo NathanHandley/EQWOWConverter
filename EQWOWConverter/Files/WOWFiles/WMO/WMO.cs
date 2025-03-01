@@ -26,10 +26,12 @@ namespace EQWOWConverter.WOWFiles
         private string BaseFileName;
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
+        public BoundingBox BoundingBox;
 
         public WMO(Zone zone, string baseFolderPath, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
         {
             BaseFileName = zone.ShortName;
+            BoundingBox = zone.BoundingBox;
 
             // Create root object
             RootObject = new WMORoot(zone, exportStaticDoodadsFolder, exportZoneObjectsFolder);
@@ -43,13 +45,14 @@ namespace EQWOWConverter.WOWFiles
             RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName, BaseFileName + ".wmo");
         }
 
-        public WMO(string transportName, string baseFolderPath, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
+        public WMO(string transportMeshName, string baseFolderPath, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
             List<Material> materials, uint dbcWMOID, BoundingBox boundingBox)
         {
-            BaseFileName = transportName;
+            BaseFileName = transportMeshName;
+            BoundingBox = boundingBox;
 
             // Create root object
-            RootObject = new WMORoot(transportName, renderModelObject, collisionModelObject, materials, dbcWMOID, boundingBox);
+            RootObject = new WMORoot(transportMeshName, renderModelObject, collisionModelObject, materials, dbcWMOID, boundingBox);
 
             // Create the groups
             GroupObjects.Add(new WMOGroup(RootObject, renderModelObject)); // Make sure this is first (before collision)

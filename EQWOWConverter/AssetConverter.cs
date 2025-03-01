@@ -136,6 +136,7 @@ namespace EQWOWConverter
             // Ships
             Logger.WriteDetail("Loading transport ships...");
             List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
+            Dictionary<string, int> GameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
             Dictionary<string, ObjectModel> transportShipObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             foreach (TransportShip transportShip in transportShips)
@@ -184,10 +185,14 @@ namespace EQWOWConverter
                             Logger.WriteDetail("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
                         }
                     }
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                     transportShipObjectModelsByMeshName.Add(transportShip.MeshName, curObject);
+                    GameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
+                    TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
                 }
                 else
                     curObject = transportShipObjectModelsByMeshName[transportShip.MeshName];
+                transportShip.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
 
                 // Do other stuff...
             }
@@ -1225,6 +1230,8 @@ namespace EQWOWConverter
             factionTemplateDBC.LoadFromDisk(dbcInputFolder, "FactionTemplate.dbc");
             FootstepTerrainLookupDBC footstepTerrainLookupDBC = new FootstepTerrainLookupDBC();
             footstepTerrainLookupDBC.LoadFromDisk(dbcInputFolder, "FootstepTerrainLookup.dbc");
+            GameObjectDisplayInfoDBC gameObjectDisplayInfoDBC = new GameObjectDisplayInfoDBC();
+            gameObjectDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "GameObjectDisplayInfo.dbc");
             ItemDBC itemDBC = new ItemDBC();
             itemDBC.LoadFromDisk(dbcInputFolder, "Item.dbc");
             ItemDisplayInfoDBC itemDisplayInfoDBC = new ItemDisplayInfoDBC();
@@ -1448,6 +1455,14 @@ namespace EQWOWConverter
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
 
+            // Transports
+            foreach(var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
+                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
+            foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+            {
+                //gameObjectDisplayInfoDBC.AddRow(transportShi)
+            }
+
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
@@ -1465,6 +1480,8 @@ namespace EQWOWConverter
             factionTemplateDBC.SaveToDisk(dbcOutputServerFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputClientFolder);
             footstepTerrainLookupDBC.SaveToDisk(dbcOutputServerFolder);
+            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
+            gameObjectDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             itemDBC.SaveToDisk(dbcOutputClientFolder);
             itemDBC.SaveToDisk(dbcOutputServerFolder);
             itemDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);

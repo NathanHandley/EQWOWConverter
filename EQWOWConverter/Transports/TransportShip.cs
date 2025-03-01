@@ -16,12 +16,14 @@
 
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.Zones;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Transports
 {
     internal class TransportShip
     {
         private static List<TransportShip> TransportShips = new List<TransportShip>();
+        public static Dictionary<int, WMO> TransportShipWMOsByGameObjectDisplayInfoID = new Dictionary<int, WMO>();
 
         public int EQNPCID = 0;
         public int WOWGameObjectTemplateID = 0;
@@ -39,6 +41,7 @@ namespace EQWOWConverter.Transports
         public float EQWalkSpeed = 0;
         public string MeshName = string.Empty;
         public List<TransportShipPathNode> PathNodes = new List<TransportShipPathNode>();
+        public int GameObjectDisplayInfoID = 0;
 
         public static List<TransportShip> GetAllTransportShips()
         {
