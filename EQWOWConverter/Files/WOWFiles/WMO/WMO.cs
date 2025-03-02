@@ -28,35 +28,17 @@ namespace EQWOWConverter.WOWFiles
         public string RootFileRelativePathWithFileName;
         public BoundingBox BoundingBox;
 
-        public WMO(Zone zone, string baseFolderPath, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
+        public WMO(Zone zone, string baseFolderPath, string textureRelativeOutputFolder, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
         {
             BaseFileName = zone.ShortName;
             BoundingBox = zone.BoundingBox;
 
             // Create root object
-            RootObject = new WMORoot(zone, exportStaticDoodadsFolder, exportZoneObjectsFolder);
+            RootObject = new WMORoot(zone, textureRelativeOutputFolder, exportStaticDoodadsFolder, exportZoneObjectsFolder);
 
             // Create the groups
             foreach(ZoneModelObject curWorldObjectModel in zone.ZoneObjectModels)
                 GroupObjects.Add(new WMOGroup(RootObject, curWorldObjectModel));
-
-            // Generate the root file name
-            FullWMOFolderPath = Path.Combine(baseFolderPath, "World", "wmo", "Everquest", BaseFileName);
-            RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName, BaseFileName + ".wmo");
-        }
-
-        public WMO(string transportMeshName, string baseFolderPath, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
-            List<Material> materials, uint dbcWMOID, BoundingBox boundingBox)
-        {
-            BaseFileName = transportMeshName;
-            BoundingBox = boundingBox;
-
-            // Create root object
-            RootObject = new WMORoot(transportMeshName, renderModelObject, collisionModelObject, materials, dbcWMOID, boundingBox);
-
-            // Create the groups
-            GroupObjects.Add(new WMOGroup(RootObject, renderModelObject)); // Make sure this is first (before collision)
-            GroupObjects.Add(new WMOGroup(RootObject, collisionModelObject));
 
             // Generate the root file name
             FullWMOFolderPath = Path.Combine(baseFolderPath, "World", "wmo", "Everquest", BaseFileName);

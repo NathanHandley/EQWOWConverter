@@ -63,6 +63,22 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
+        public void LoadDataFromObjectOnDisk(string inputObjectFileName, string inputObjectFolderFullPath)
+        {
+            if (IsLoaded == true)
+                return;
+            if (Directory.Exists(inputObjectFolderFullPath) == false)
+            {
+                Logger.WriteError("- [" + inputObjectFolderFullPath + "]: ERROR - Could not find path at '" + inputObjectFolderFullPath + "'");
+                return;
+            }
+
+            // Load the various blocks
+            LoadRenderMeshData(inputObjectFileName, inputObjectFolderFullPath);
+            LoadMaterialDataFromDisk(inputObjectFileName, inputObjectFolderFullPath);
+            IsLoaded = true;
+        }
+
         private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading render mesh data...");

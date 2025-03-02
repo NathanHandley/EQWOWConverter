@@ -52,6 +52,14 @@ namespace EQWOWConverter.Zones
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
 
+        public Zone(string shortName, string descriptiveName)
+        {
+            ShortName = shortName;
+            SetDescriptiveName(descriptiveName);
+            DefaultArea = new ZoneArea("", "");
+            ZoneProperties = new ZoneProperties();
+        }
+
         public Zone(string shortName, ZoneProperties zoneProperties)
         {
             ZoneProperties = zoneProperties;
@@ -75,13 +83,10 @@ namespace EQWOWConverter.Zones
             // Load the EQ data
             EQZoneData.LoadDataFromDisk(inputZoneFolderName, inputZoneFolderFullPath);
 
-            // Clear any prior world object model data
-            ZoneObjectModels.Clear();
-
             // Get and convert/translate the EverQuest mesh data
             MeshData renderMeshData = EQZoneData.RenderMeshData;
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
-            renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties);
+            renderMeshData.ApplyEQToWoWVertexColor(ZoneProperties.VertexColorIntensityOverride);
             MeshData collisionMeshData = EQZoneData.CollisionMeshData;
             collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
@@ -146,6 +151,52 @@ namespace EQWOWConverter.Zones
                 curWorldObjectModel.LoadAsShadowBox(Materials, BoundingBox, ZoneProperties);
                 ZoneObjectModels.Add(curWorldObjectModel);
             }
+
+            // Completely loaded
+            IsLoaded = true;
+        }
+
+        public void LoadFromEQObject(string inputObjectFileName, string inputObjectFolderFullPath)
+        {
+            if (IsLoaded == true)
+            {
+                Logger.WriteInfo("LoadFromEQObject called for zone '" + ShortName + "' when the zone was already loaded");
+                return;
+            }
+
+            // Load the EQ data
+            EQZoneData.LoadDataFromObjectOnDisk(inputObjectFileName, inputObjectFolderFullPath);
+
+            // Get and convert/translate the EverQuest mesh data
+            MeshData renderMeshData = EQZoneData.RenderMeshData;
+            renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
+            renderMeshData.ApplyEQToWoWVertexColor(-1);
+            MeshData collisionMeshData = EQZoneData.CollisionMeshData;
+            collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
+
+            // Update the materials
+            Materials = EQZoneData.Materials;
+
+            // Create doodad instances
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+
+            // Generate the collidable areas (zone areas, liquid)
+            GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
+
+            // Generate the render objects
+            GenerateRenderWorldObjectModels(renderMeshData);
+
+            // Bind doodads to wmos
+            AssociateDoodadsWithWMOs();
+
+            // Rebuild the bounding box
+            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
+            foreach (ZoneModelObject zoneObject in ZoneObjectModels)
+                allBoundingBoxes.Add(zoneObject.BoundingBox);
+            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
+
+            // Set any area parent relationships
+            SetAreaParentRelationships();
 
             // Completely loaded
             IsLoaded = true;

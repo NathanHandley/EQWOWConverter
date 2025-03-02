@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
 
-        public WMORoot(Zone zone, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
+        public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
         {
             PopulateDoodadPathStringOffsets(zone.DoodadInstances, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
@@ -43,7 +43,7 @@ namespace EQWOWConverter.WOWFiles
                 DoodadPathOffsetsByName.Count(), zone.ZoneProperties.DBCWMOID, zone.BoundingBox));
 
             // MOTX (Textures) --------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOTXChunk("WORLD\\EVERQUEST\\ZONETEXTURES", zone.ShortName, zone.Materials));
+            RootBytes.AddRange(GenerateMOTXChunk(textureRelativeOutputFolder, zone.ShortName, zone.Materials));
 
             // MOMT (Materials) -------------------------------------------------------------------
             RootBytes.AddRange(GenerateMOMTChunk(zone.ShortName, zone.Materials));
@@ -83,62 +83,6 @@ namespace EQWOWConverter.WOWFiles
 
             // MODD (Doodad Instance Information) -------------------------------------------------
             RootBytes.AddRange(GenerateMODDChunk(zone.DoodadInstances));
-
-            // MFOG (Fog Information) -------------------------------------------------------------
-            RootBytes.AddRange(GenerateMFOGChunk());
-        }
-
-        public WMORoot(string transportName, ZoneModelObject renderModelObject, ZoneModelObject collisionModelObject, 
-            List<Material> materials, uint dbcWMOID, BoundingBox boundingBox)
-        {
-            // MVER (Version) ---------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMVERChunk());
-
-            // MOHD (Header) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOHDChunk(materials, 2, 0, 0, dbcWMOID, boundingBox));
-
-            // MOTX (Textures) --------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOTXChunk("WORLD\\EVERQUEST\\TRANSPORTTEXTURES", transportName, materials));
-
-            // MOMT (Materials) -------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOMTChunk(transportName, materials));
-
-            // MOGN (Groups) ----------------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOGNChunk(transportName));
-
-            // MOGI (Group Information) -----------------------------------------------------------
-            List<ZoneModelObject> zoneModelObjects = new List<ZoneModelObject> { renderModelObject, collisionModelObject };
-            RootBytes.AddRange(GenerateMOGIChunk(zoneModelObjects));
-
-            // MOSB (Skybox, optional) ------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOSBChunk());
-
-            // MOPV (Portal Vertices) ------------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPVChunk());
-
-            // MOPT (Portal Information) ----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOPTChunk());
-
-            // MOPR (Map Object Portal References) ------------------------------------------------
-            RootBytes.AddRange(GenerateMOPRChunk());
-
-            // MOVV (Visible Block Vertices) -----------------------------------------------------
-            RootBytes.AddRange(GenerateMOVVChunk());
-
-            // MOVB (Visible Block List) ----------------------------------------------------------
-            RootBytes.AddRange(GenerateMOVBChunk());
-
-            // MOLT (Lighting Information) --------------------------------------------------------
-            RootBytes.AddRange(GenerateMOLTChunk(new List<LightInstance>()));
-
-            // MODS (Doodad Set Definitions) ------------------------------------------------------
-            RootBytes.AddRange(GenerateMODSChunk(new List<ZoneDoodadInstance>()));
-
-            // MODN (List of M2s) -----------------------------------------------------------------
-            RootBytes.AddRange(GenerateMODNChunk());
-
-            // MODD (Doodad Instance Information) -------------------------------------------------
-            RootBytes.AddRange(GenerateMODDChunk(new List<ZoneDoodadInstance>()));
 
             // MFOG (Fog Information) -------------------------------------------------------------
             RootBytes.AddRange(GenerateMFOGChunk());

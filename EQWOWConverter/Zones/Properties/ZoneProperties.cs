@@ -52,7 +52,7 @@ namespace EQWOWConverter.Zones
         public int DBCMapDifficultyID;
         public UInt32 DBCWMOID;
 
-        protected ZoneProperties()
+        public ZoneProperties()
         {
             DBCMapID = MapDBC.GenerateID();
             DBCWMOID = GenerateDBCWMOID();

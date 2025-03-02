@@ -300,11 +300,11 @@ namespace EQWOWConverter.Common
             }
         }
 
-        public void ApplyEQToWoWVertexColor(ZoneProperties zoneProperties)
+        public void ApplyEQToWoWVertexColor(double vertexColorIntensityOverride)
         {
             double intensityAmount = Configuration.LIGHT_DEFAULT_VERTEX_COLOR_INTENSITY;
-            if (zoneProperties.VertexColorIntensityOverride >= 0)
-                intensityAmount = zoneProperties.VertexColorIntensityOverride;
+            if (vertexColorIntensityOverride >= 0)
+                intensityAmount = vertexColorIntensityOverride;
 
             // Vertex colors are reduced for external areas due to the natural zone light
             foreach (ColorRGBA vertexColor in VertexColors)
