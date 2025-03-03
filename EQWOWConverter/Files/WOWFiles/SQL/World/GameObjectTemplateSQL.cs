@@ -25,7 +25,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject_template WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRowForTransport(int entryID, int displayID, string name, int taxiPathID, int moveSpeed, int accelRate, int spawnMap)
+        public void AddRowForTransport(int entryID, int displayID, string name, int taxiPathID, int spawnMap)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -37,8 +37,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("unk1", 100, string.Empty);
 			newRow.AddFloat("size", 1);
             newRow.AddInt("Data0", taxiPathID);
-            newRow.AddInt("Data1", moveSpeed); // 30 is typical
-            newRow.AddInt("Data2", accelRate); // 1 is typical
+            newRow.AddInt("Data1", Configuration.TRANSPORT_MOVE_SPEED); // 30 is typical
+            newRow.AddInt("Data2", Configuration.TRANSPORT_ACCELERATION); // 1 is typical
             newRow.AddInt("Data3", 0);
             newRow.AddInt("Data4", 0);
             newRow.AddInt("Data5", 0); // Transport physics, 0 or 1

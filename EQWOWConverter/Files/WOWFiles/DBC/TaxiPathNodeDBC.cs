@@ -23,9 +23,13 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int pathID, int nodeIndex, int mapID, float posX, float posY, float posZ,
             int delayInSeconds)
         {
+            // Generate flags
             int flags = 0;
             if (delayInSeconds > 0)
                 flags = 2;
+
+            // Calculate the delay
+            int delayInSecCalc = delayInSecCalc = Convert.ToInt32(MathF.Round(Convert.ToSingle(delayInSeconds) * Configuration.TRANSPORT_PAUSE_MULTIPLIER));            
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(CUR_ID); // ID
@@ -36,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(posY); // LocY
             newRow.AddFloat(posZ); // LocZ
             newRow.AddInt32(flags); // Flags
-            newRow.AddInt32(delayInSeconds); // Delay in seconds
+            newRow.AddInt32(delayInSecCalc); // Delay in seconds
             newRow.AddInt32(0); // ArrivalEventID
             newRow.AddInt32(0); // DepatureEventID
             Rows.Add(newRow);

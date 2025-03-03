@@ -1865,7 +1865,7 @@ namespace EQWOWConverter
                 string longName = transportShip.TouchedZones + " (" + name + ")";
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, 30, 1, mapIDsByShortName[transportShip.SpawnZoneShortName.ToLower().Trim()]);
+                    transportShip.TaxiPathID, mapIDsByShortName[transportShip.SpawnZoneShortName.ToLower().Trim()]);
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
             }
 
