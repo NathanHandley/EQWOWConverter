@@ -388,6 +388,13 @@ namespace EQWOWConverter
         public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
 
+        //=====================================================================
+        // Transports
+        //=====================================================================
+        public static readonly float TRANSPORT_PAUSE_MULTIPLIER = 1; // Pause as in 'stop at a port'. 1 will be EQ-like
+        public static readonly int TRANSPORT_MOVE_SPEED = 30; // Most boats are 30 in WoW, but a value of around 9 is EQ-like
+        public static readonly int TRANSPORT_ACCELERATION = 1; 
+
         // ====================================================================
         // WOW DBC/File IDs
         // ====================================================================
