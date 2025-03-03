@@ -1451,9 +1451,19 @@ namespace EQWOWConverter
 
             // Transports
             foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
-                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower());
+            {
+                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
+                wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, 0, transportWMOByID.Value.Zone.DescriptiveName); // Header record
+                foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
+            }
             foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
+            {
+                // TODO: Make loading screen configurable
+                mapDBCClient.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
+                mapDBCServer.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
                 taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
+            }
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
             foreach (Zone zone in zones)
                 mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
@@ -1866,7 +1876,7 @@ namespace EQWOWConverter
                 string longName = transportShip.TouchedZones + " (" + name + ")";
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, mapIDsByShortName[transportShip.SpawnZoneShortName.ToLower().Trim()]);
+                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
             }
 

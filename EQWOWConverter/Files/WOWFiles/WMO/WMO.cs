@@ -27,9 +27,11 @@ namespace EQWOWConverter.WOWFiles
         private string FullWMOFolderPath;
         public string RootFileRelativePathWithFileName;
         public BoundingBox BoundingBox;
+        public Zone Zone;
 
         public WMO(Zone zone, string baseFolderPath, string textureRelativeOutputFolder, string exportStaticDoodadsFolder, string exportZoneObjectsFolder)
         {
+            Zone = zone;
             BaseFileName = zone.ShortName;
             BoundingBox = zone.BoundingBox;
 
