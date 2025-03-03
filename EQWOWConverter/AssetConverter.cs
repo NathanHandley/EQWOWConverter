@@ -1465,7 +1465,8 @@ namespace EQWOWConverter
                     continue;
                 }
                 int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
-                taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, shipNode.ZPosition, shipNode.PauseTimeInSec);
+                taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, 
+                    shipNode.ZPosition, shipNode.PauseTimeInSec, shipNode.MapChangeAfterThis);
             }
 
             // Save the files

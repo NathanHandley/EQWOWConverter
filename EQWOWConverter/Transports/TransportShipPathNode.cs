@@ -31,6 +31,7 @@ namespace EQWOWConverter.Transports
         public float YPosition = 0;
         public float ZPosition = 0;
         public int PauseTimeInSec = 0;
+        public bool MapChangeAfterThis = false;
 
         public static void SetPathIDForNodeGroup(int groupID, int wowPathID)
         {
@@ -69,6 +70,7 @@ namespace EQWOWConverter.Transports
                 curNode.YPosition = float.Parse(columns["y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.ZPosition = float.Parse(columns["z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.PauseTimeInSec = int.Parse(columns["pause"]);
+                curNode.MapChangeAfterThis = int.Parse(columns["mapchange"]) == 1 ? true : false;                
                 if (TransportShipPathNodesByGroupID.ContainsKey(curNode.PathGroup) == false)
                     TransportShipPathNodesByGroupID.Add(curNode.PathGroup, new List<TransportShipPathNode>());
                 TransportShipPathNodesByGroupID[curNode.PathGroup].Add(curNode);
