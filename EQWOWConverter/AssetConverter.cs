@@ -1451,7 +1451,7 @@ namespace EQWOWConverter
 
             // Transports
             foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
-                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
+                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower());
             foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
                 taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
@@ -1862,7 +1862,7 @@ namespace EQWOWConverter
                 if (zonesAreLoaded == false)
                     continue;
                 string name = "Ship EQ (" + transportShip.Name + ")";
-                string longName = transportShip.TouchedZones + "(" + name + ")";
+                string longName = transportShip.TouchedZones + " (" + name + ")";
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
                 gameObjectTemplateSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
                     transportShip.TaxiPathID, 30, 1, mapIDsByShortName[transportShip.SpawnZoneShortName.ToLower().Trim()]);

@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Zones;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles

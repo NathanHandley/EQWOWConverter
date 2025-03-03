@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_ID = Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
 
-        public void AddRow(int id, string modelNameAndRelativePath, BoundingBox geoBoundingBox)
+        public void AddRow(int id, string modelNameAndRelativePath)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);
@@ -44,12 +44,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Custom1 SoundEntries.ID
             newRow.AddInt32(0); // Custom2 SoundEntries.ID
             newRow.AddInt32(0); // Custom3 SoundEntries.ID
-            newRow.AddFloat(geoBoundingBox.BottomCorner.X); // GeoBox Min X
-            newRow.AddFloat(geoBoundingBox.BottomCorner.Y); // GeoBox Min Y
-            newRow.AddFloat(geoBoundingBox.BottomCorner.Z); // GeoBox Min Z
-            newRow.AddFloat(geoBoundingBox.TopCorner.X); // GeoBox Max X
-            newRow.AddFloat(geoBoundingBox.TopCorner.Y); // GeoBox Max Y
-            newRow.AddFloat(geoBoundingBox.TopCorner.Z); // GeoBox Max Z
+            newRow.AddFloat(0); // GeoBox Min X
+            newRow.AddFloat(0); // GeoBox Min Y
+            newRow.AddFloat(0); // GeoBox Min Z
+            newRow.AddFloat(0); // GeoBox Max X
+            newRow.AddFloat(0); // GeoBox Max Y
+            newRow.AddFloat(0); // GeoBox Max Z
             newRow.AddInt32(0); // ObjectEffectPackageID (?)
             Rows.Add(newRow);
         }
