@@ -42,7 +42,6 @@ namespace EQWOWConverter.Zones
         public Dictionary<int, ZoneDoodadInstance> DoodadInstances = new Dictionary<int, ZoneDoodadInstance>();
         public BoundingBox BoundingBox = new BoundingBox();
         public BSPTree BSPTree = new BSPTree();
-        public bool IsCompletelyInLiquid = false;
         public bool IsExterior = true;
         public ZoneLiquidType LiquidType = ZoneLiquidType.None;
         public ZoneLiquid? Liquid = null;
@@ -63,7 +62,7 @@ namespace EQWOWConverter.Zones
             MeshData = meshData;
             Materials = materials;
             BoundingBox = BoundingBox.GenerateBoxFromVectors(meshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
-            GenerateRenderBatches(materials);
+            GenerateRenderBatches(materials, true);
             IsLoaded = true;
         }
 
@@ -87,6 +86,21 @@ namespace EQWOWConverter.Zones
             IsLoaded = true;
         }
 
+        public void LoadAsRenderedAndCollidableArea(MeshData meshData, BoundingBox boundingBox, List<Material> materials, string displayName)
+        {
+            WMOType = ZoneObjectModelType.RenderAndCollidable;
+            Materials = materials;
+            DisplayName = displayName;
+            MeshData = meshData;
+            BoundingBox = boundingBox;
+            List<UInt32> collisionTriangleIncidies = new List<UInt32>();
+            for (UInt32 i = 0; i < MeshData.TriangleFaces.Count; ++i)
+                collisionTriangleIncidies.Add(i);
+            BSPTree = new BSPTree(meshData);
+            GenerateRenderBatches(materials, false);
+            IsLoaded = true;
+        }
+
         public void LoadAsShadowBox(List<Material> materials, BoundingBox boundingBox, ZoneProperties zoneProperties)
         {
             WMOType = ZoneObjectModelType.ShadowBox;
@@ -94,18 +108,19 @@ namespace EQWOWConverter.Zones
             Materials = materials;
             ZoneBox shadowBox = new ZoneBox(boundingBox, materials, zoneProperties.ShortName, Configuration.ZONE_SHADOW_BOX_ADDED_SIZE, MeshBoxRenderType.Outward);
             MeshData = shadowBox.MeshData;
-            GenerateRenderBatches(materials);
+            GenerateRenderBatches(materials, true);
             IsLoaded = true;
         }
 
-        private void GenerateRenderBatches(List<Material> materials)
+        private void GenerateRenderBatches(List<Material> materials, bool doSortMaterials)
         {
             // Don't make a render batch if static rendering is disabled
             if (Configuration.ZONE_SHOW_STATIC_GEOMETRY == false)
                 return;
 
-            // Reorder the faces and related objects
-            MeshData.SortDataByMaterialAndBones();
+            // Reorder the faces and related objec
+            if (doSortMaterials == true)
+                MeshData.SortDataByMaterialAndBones();
 
             // Build a render batch per material
             Dictionary<int, ZoneRenderBatch> renderBatchesByMaterialID = new Dictionary<int, ZoneRenderBatch>();
@@ -157,17 +172,16 @@ namespace EQWOWConverter.Zones
         public UInt32 GenerateWMOHeaderFlags()
         {
             UInt32 headerFlags = Convert.ToUInt32(WMOGroupFlags.HasBSPTree);
+            headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (IsExterior == false)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsIndoors);
             else
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.IsOutdoors);
             if (DoodadInstances.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasDoodads);
-            if (IsCompletelyInLiquid == false)
-                headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasWater);
             if (LightInstanceIDs.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasLights);
-            if (WMOType == ZoneObjectModelType.Rendered && MeshData.VertexColors.Count > 0)
+            if ((WMOType == ZoneObjectModelType.Rendered || WMOType == ZoneObjectModelType.RenderAndCollidable) && MeshData.VertexColors.Count > 0)
                 headerFlags |= Convert.ToUInt32(WMOGroupFlags.HasVertexColors);
             return headerFlags;
         }

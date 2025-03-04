@@ -140,7 +140,7 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(dbcWMOID));
 
             // Axis aligned bounding box for the zone mesh(es)
-            chunkBytes.AddRange(boundingBox.ToBytesHighRes());      
+            chunkBytes.AddRange(boundingBox.ToBytesHighRes());
 
             // Set any flags
             WMORootFlags rootFlags = WMORootFlags.UseLiquidTypeDBCID;

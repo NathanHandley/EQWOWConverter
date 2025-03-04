@@ -51,6 +51,7 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> SubAreas = new List<ZoneArea>();
         public List<SoundInstance> SoundInstances = new List<SoundInstance>();
         public List<ObjectModel> SoundInstanceObjectModels = new List<ObjectModel>();
+        public bool IsFromEQObject = false;
 
         public Zone(string shortName, string descriptiveName)
         {
@@ -171,8 +172,6 @@ namespace EQWOWConverter.Zones
             MeshData renderMeshData = EQZoneData.RenderMeshData;
             renderMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
             renderMeshData.ApplyEQToWoWVertexColor(-1);
-            MeshData collisionMeshData = EQZoneData.CollisionMeshData;
-            collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(true, Configuration.GENERATE_WORLD_SCALE);
 
             // Update the materials
             Materials = EQZoneData.Materials;
@@ -180,26 +179,28 @@ namespace EQWOWConverter.Zones
             // Create doodad instances
             GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
 
-            // Generate the collidable areas (zone areas, liquid)
-            GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
+            // Create the bounding box
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(renderMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
 
-            // Generate the render objects
-            GenerateRenderWorldObjectModels(renderMeshData);
+            // Reduce meshdata to what will actually be rendered
+            MeshData meshData = renderMeshData.GetMeshDataExcludingNonRenderedAndAnimatedMaterials(Materials.ToArray());
+
+            // Create the object
+            ZoneModelObject curWorldObjectModel = new ZoneModelObject(Convert.ToUInt16(ZoneObjectModels.Count), DefaultArea.DBCAreaTableID);
+            meshData.CondenseAndRenumberVertexIndices();
+            meshData.SortDataByMaterialAndBones();
+            curWorldObjectModel.LoadAsRenderedAndCollidableArea(meshData, BoundingBox, Materials, DescriptiveName);
+            ZoneObjectModels.Add(curWorldObjectModel);
 
             // Bind doodads to wmos
             AssociateDoodadsWithWMOs();
-
-            // Rebuild the bounding box
-            List<BoundingBox> allBoundingBoxes = new List<BoundingBox>();
-            foreach (ZoneModelObject zoneObject in ZoneObjectModels)
-                allBoundingBoxes.Add(zoneObject.BoundingBox);
-            BoundingBox = BoundingBox.GenerateBoxFromBoxes(allBoundingBoxes);
 
             // Set any area parent relationships
             SetAreaParentRelationships();
 
             // Completely loaded
             IsLoaded = true;
+            IsFromEQObject = true;
         }
 
         private void AssignLiquidsToAreas()
@@ -319,7 +320,7 @@ namespace EQWOWConverter.Zones
                 for (int i = 0; i < ZoneObjectModels.Count; i++)
                 {
                     ZoneModelObject curZoneObjectModel = ZoneObjectModels[i];
-                    if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered)
+                    if (curZoneObjectModel.WMOType != ZoneObjectModelType.Rendered || curZoneObjectModel.WMOType != ZoneObjectModelType.RenderAndCollidable)
                         continue;
 
                     float thisDistance = doodadInstance.Position.GetDistance(curZoneObjectModel.BoundingBox.GetCenter());

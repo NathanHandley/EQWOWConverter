@@ -149,13 +149,11 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(GenerateMOBRChunk(worldObjectModel));
 
             // MOCV (Vertex Colors) ---------------------------------------------------------------
-            if (worldObjectModel.WMOType == ZoneObjectModelType.Rendered && worldObjectModel.MeshData.VertexColors.Count > 0)
+            if ((worldObjectModel.WMOType == ZoneObjectModelType.Rendered || worldObjectModel.WMOType == ZoneObjectModelType.RenderAndCollidable) && worldObjectModel.MeshData.VertexColors.Count > 0)
                 chunkBytes.AddRange(GenerateMOCVChunk(worldObjectModel));
 
-            // MLIQ (Liquid/Water details) --------------------------------------------------------
-            // If it's a liquid volume, not having a MLIQ causes the whole area to be liquid
-            if (worldObjectModel.IsCompletelyInLiquid == false)
-                chunkBytes.AddRange(GenerateMLIQChunk(worldObjectModel));
+            // MLIQ (Liquid/Water details) --------------------------------------------------------           
+            chunkBytes.AddRange(GenerateMLIQChunk(worldObjectModel));
 
             // Note: There can be two MOTV and MOCV blocks depending on flags.  May need to factor for that
 
