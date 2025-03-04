@@ -1469,6 +1469,8 @@ namespace EQWOWConverter
                 mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
             foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
             {
+                if (shipNode.WOWPathID == 0)
+                    continue;
                 if (mapIDsByShortName.ContainsKey(shipNode.MapShortName.ToLower().Trim()) == false)
                 {
                     Logger.WriteDetail("Skipping shipNode with mapshortname as '" + shipNode.MapShortName + "' as it wasn't a valid map short name");
