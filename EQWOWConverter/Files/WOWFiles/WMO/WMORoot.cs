@@ -85,6 +85,10 @@ namespace EQWOWConverter.WOWFiles
 
             // MFOG (Fog Information) -------------------------------------------------------------
             RootBytes.AddRange(GenerateMFOGChunk());
+
+            // MCVP (Convex Volume Planes (optional)) ---------------------------------------------
+            if (zone.ZoneProperties.ConvexVolumePlanes.Count > 0)
+                RootBytes.AddRange(GenerateMCVPChunk(zone.ZoneProperties.ConvexVolumePlanes));
         }
 
         /// <summary>
@@ -505,6 +509,17 @@ namespace EQWOWConverter.WOWFiles
             chunkBytes.AddRange(BitConverter.GetBytes(-0.5f)); // Underwater Fog Start Scalar
             chunkBytes.AddRange(new ColorRGBA(255, 0, 0, 255).ToBytesBGRA()); // Underwater Fog Color
             return WrapInChunk("MFOG", chunkBytes.ToArray());
+        }
+
+        /// <summary>
+        /// MCVP (Convex Volume Planes), optional
+        /// </summary>
+        private List<byte> GenerateMCVPChunk(List<Plane> convexVolumePlanes)
+        {
+            List<byte> chunkBytes = new List<byte>();
+            foreach (Plane plane in convexVolumePlanes)
+                chunkBytes.AddRange(plane.ToBytes());
+            return WrapInChunk("MCVP", chunkBytes.ToArray());
         }
 
         private void PopulateDoodadPathStringOffsets(List<ZoneDoodadInstance> objectInstances, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)

@@ -44,6 +44,7 @@ namespace EQWOWConverter.Zones
         public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty);
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
+        public List<Plane> ConvexVolumePlanes = new List<Plane>();
 
         // DBCIDs
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
@@ -98,6 +99,11 @@ namespace EQWOWConverter.Zones
                 if (Enabled2DSoundInstancesByDaySoundName.Contains(daySoundName) == false)
                     Enabled2DSoundInstancesByDaySoundName.Add(daySoundName);
             }
+        }
+
+        protected void AddConvexVolumePlane(float x, float y, float z, float distance)
+        {
+            ConvexVolumePlanes.Add(new Plane(x, y, z, distance));
         }
 
         protected void SetZonewideEnvironmentAsIndoors(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType)
@@ -773,6 +779,9 @@ namespace EQWOWConverter.Zones
             ZonePropertyListByShortName.Add("warrens", new WarrensZoneProperties());
             ZonePropertyListByShortName.Add("warslikswood", new WarsliksWoodsZoneProperties());
             ZonePropertyListByShortName.Add("westwastes", new WesternWastesZoneProperties());
+
+            // Transports
+            ZonePropertyListByShortName.Add("ship", new TransportShipProperties());
         }
     }
 }
