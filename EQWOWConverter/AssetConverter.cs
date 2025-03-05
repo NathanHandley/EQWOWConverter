@@ -147,6 +147,7 @@ namespace EQWOWConverter
                 if (transportShipZoneModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
                 {
                     // Load it
+                    //ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(transportShip.MeshName);
                     curZone = new Zone(transportShip.MeshName, transportShip.Name);
                     Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship static object '" + transportShip.MeshName + "'");
                     curZone.LoadFromEQObject(transportShip.MeshName, charactersFolderRoot);
@@ -154,7 +155,7 @@ namespace EQWOWConverter
 
                     // Convert to WMO
                     string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
-                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath);
+                    WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath, true);
                     transportWMO.WriteToDisk(exportMPQRootFolder);
 
                     // Copy the textures
@@ -342,7 +343,7 @@ namespace EQWOWConverter
                     curZone.LoadFromEQZone(zoneDirectory.Name, curZoneDirectory);
 
                     // Create the zone WMO objects
-                    WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath);
+                    WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
                     zoneWMO.WriteToDisk(exportMPQRootFolder);
 
                     // Create the WDT

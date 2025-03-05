@@ -30,7 +30,8 @@ namespace EQWOWConverter.WOWFiles
         public UInt32 GroupNameOffset = 0;
         public UInt32 GroupNameDescriptiveOffset = 0;
 
-        public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder)
+        public WMORoot(Zone zone, string textureRelativeOutputFolder, string relativeStaticDoodadsFolder, string relativeZoneObjectsFolder,
+            bool addConvexVolumePlanes)
         {
             PopulateDoodadPathStringOffsets(zone.DoodadInstances, relativeStaticDoodadsFolder, relativeZoneObjectsFolder);
 
@@ -87,8 +88,8 @@ namespace EQWOWConverter.WOWFiles
             RootBytes.AddRange(GenerateMFOGChunk());
 
             // MCVP (Convex Volume Planes (optional)) ---------------------------------------------
-            if (zone.ZoneProperties.ConvexVolumePlanes.Count > 0)
-                RootBytes.AddRange(GenerateMCVPChunk(zone.ZoneProperties.ConvexVolumePlanes));
+            if (addConvexVolumePlanes == true)
+                RootBytes.AddRange(GenerateMCVPChunk());
         }
 
         /// <summary>
@@ -514,8 +515,17 @@ namespace EQWOWConverter.WOWFiles
         /// <summary>
         /// MCVP (Convex Volume Planes), optional
         /// </summary>
-        private List<byte> GenerateMCVPChunk(List<Plane> convexVolumePlanes)
+        private List<byte> GenerateMCVPChunk()
         {
+            // This could be done better, but functions as desired
+            List<Plane> convexVolumePlanes = new List<Plane>();
+            convexVolumePlanes.Add(new Plane(0.000000f, 0.000000f, 1.000000f, -1f));
+            convexVolumePlanes.Add(new Plane(0.000000f, 0.000000f, -1.000000f, -1f));
+            convexVolumePlanes.Add(new Plane(0.000000f, 1.000000f, 0.000000f, -1f));
+            convexVolumePlanes.Add(new Plane(0.000000f, -1.000000f, 0.000000f, -1f));
+            convexVolumePlanes.Add(new Plane(1.000000f, 0.000000f, 0.000000f, -1f));
+            convexVolumePlanes.Add(new Plane(-1.000000f, 0.000000f, 0.000000f, -1f));
+
             List<byte> chunkBytes = new List<byte>();
             foreach (Plane plane in convexVolumePlanes)
                 chunkBytes.AddRange(plane.ToBytes());
