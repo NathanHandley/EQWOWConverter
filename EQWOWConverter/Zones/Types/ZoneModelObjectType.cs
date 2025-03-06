@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones
     {
         Rendered,
         Collidable,
-        RenderAndCollidable,
         ShadowBox
     }
 }
