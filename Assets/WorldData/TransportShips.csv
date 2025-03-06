@@ -1,8 +1,8 @@
 ﻿eq_npc_id|wow_gotemplate_id|enabled|name|mesh|touchedzones|path_group|spawn_zone|spawn_x|spawn_y|spawn_z|heading|prev_eq_z|race|gender|texture|runspeed|walkspeed|min_expansion|special_abilities|Comments
 770|279970|1|Stormbreaker|ship|butcher,freporte,oot|1|freporte|-748|-1853|-77|0|-77|72|2|2|3|1.5|0|"10|1^24|1^35|1"|
 771|279971|1|SirensBane|ship|butcher,freporte,oot|2|butcher|2090|4591|372.931091|0|-15|72|2|2|3|1.5|0|"10|1^24|1^35|1"|
-772|279972|0|Sea_King||erudnext,erudsxing,qeynos|3|erudnext|-584|-1606|0|-1|0|72|2|2|1.25|0.625|0|"10|1^24|1^35|1"|
-773|279973|0|Golden_Maiden||erudnext,erudsxing,qeynos|4|qeynos|260|775|-22|192|-22|72|2|2|1.25|0.625|0|"10|1^24|1^35|1"|
+772|279972|1|Sea_King|ship|erudnext,erudsxing,qeynos|3|erudnext|-584|-1606|0|-1|0|72|2|2|1.25|0.625|0|"10|1^24|1^35|1"|
+773|279973|1|Golden_Maiden|ship|erudnext,erudsxing,qeynos|4|qeynos|260|775|-22|192|-22|72|2|2|1.25|0.625|0|"10|1^24|1^35|1"|
 838|279974|0|Maidens_Voyage||firiona,timorous|5|firiona|-5685|4421|-143|0|-143|72|0|2|6.25|6.25|0|"10|1^19|1^20|1^24|1^35|1"|
 839|279975|0|Bloated_Belly||overthere,timorous|7|overthere|4846|1589|-181|0|-181|72|2|2|3|1.6|0|"19|1^20|1^24|1^35|1"|
 840|279976|0|Barrel_Barge||oasis,timorous|8|oasis|1568|-1185|-36.664532|165|-4|73|2|1|1.25|0.625|1|"10|1^19|1^20|1^24|1^35|1"|
@@ -14,7 +14,7 @@
 848|279982|0|Shuttle_III||butcher,timorous|-1|butcher|0|0|0|0|0|73|0|1|1.25|1.25|1|"19|1^20|1^24|1^35|1"|Shows 2 zones, but missing pathgrid
 849|279983|0|Shuttle_IV||butcher,timorous|-1|butcher|0|0|0|0|0|73|0|1|1.25|1.25|1|"19|1^20|1^24|1^35|1"|Shows 2 zones, but missing pathgrid
 24056|279984|0|Sabrina||erudnext|-1|erudnext|48|-350|0|192|0|73|2|0|1.25|0.5|0|"13|1^14|1^15|1^16|1^17|1^19|1^20|1^24|1^25|1^31|1^35|1"|
-29028|279985|1|The_Gwenavyne|hferry|halas|6|halas|-441|12|-4|17|-4|73|2|0|1.25|0.5|0|"19|1^20|1^24|1"|
+29028|279985|0|The_Gwenavyne|hferry|halas|6|halas|-441|12|-4|17|-4|73|2|0|1.25|0.5|0|"19|1^20|1^24|1"|
 82001|279986|0|Gondola||cabwest|11|cabwest|34|666|-14|0|-14|73|0|1|1.25|0.5|1|"1|1^5|1^7|1^12|1^13|1^14|1^15|1^16|1^17|1^10|1"|
 96075|279987|0|Island_Shuttle||timorous|-1|timorous|-4500|-3278|-4|196|-4|73|0|1|3|1.2|1|"1|1^5|1^7|1^12|1^13|1^14|1^15|1^16|1^17|1^10|1"|
 106015|279988|0|Gondola||cabeast|-1|cabeast|602|-400|-14|0|-14|73|0|1|1.25|0.5|1|"1|1^5|1^7|1^12|1^13|1^14|1^15|1^16|1^17|1^10|1"|
