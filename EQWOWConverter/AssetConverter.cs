@@ -106,7 +106,7 @@ namespace EQWOWConverter
 
             // Create or update the MPQ
             string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
-            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
+            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
                 CreatePatchMPQ();
             else
                 UpdatePatchMPQ();
@@ -256,16 +256,13 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Converting EQ zones to WOW zones...");
 
-            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count > 0)
+            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0)
             {
-                Logger.WriteInfo("- Note: GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES has values: ", false);
-                foreach (string zoneShortName in Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+                Logger.WriteInfo("- Note: GENERATE_ONLY_LISTED_ZONE_SHORTNAMES has values: ", false);
+                foreach (string zoneShortName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
                     Logger.WriteInfo(zoneShortName + " ", false, false);
                 Logger.WriteInfo(string.Empty, true, false);
             }
-
-            if (Configuration.GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true)
-                Logger.WriteInfo("- Note: GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL is TRUE");
 
             // Build paths
             string inputZoneFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
@@ -283,7 +280,7 @@ namespace EQWOWConverter
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Clear folders if it's a fresh build
-            if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0
+            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0
                 || File.Exists(exportMPQFileName) == false)
             {
                 if (Directory.Exists(exportMapsFolder))
@@ -324,8 +321,8 @@ namespace EQWOWConverter
                     continue;
                 if (Configuration.GENERATE_VELIOUS_ZONES == false && Configuration.GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
-                if (Configuration.GENERATE_UPDATE_BUILD_ONLY_HAVE_INCLUDED_ZONES_FUNCTIONAL == true &&
-                    Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
+                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
+                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
                     continue;
 
                 // Grab the zone properties to generate IDs, even for zones not being output
@@ -334,8 +331,8 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
 
                 // Create only zones configured to do so
-                if (Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Count == 0 ||
-                    Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES.Contains(zoneProperties.ShortName))
+                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 ||
+                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneProperties.ShortName))
                 {
                     Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
                     Logger.WriteDetail("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
@@ -871,7 +868,7 @@ namespace EQWOWConverter
             StringBuilder mpqUpdateScriptText = new StringBuilder();
             
             // Zones
-            foreach(string zoneName in Configuration.GENERATE_UPDATE_BUILD_INCLUDED_ZONE_SHORTNAMES)
+            foreach(string zoneName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
             {
                 // Add zone-specific folders
                 // ZoneObjects
@@ -1490,7 +1487,6 @@ namespace EQWOWConverter
                     continue;
                 if (validTransportGroupIDs.Contains(shipNode.PathGroup) == false)
                     continue;
-                }
                 int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
                 taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, 
                     shipNode.ZPosition, shipNode.PauseTimeInSec, shipNode.MapChangeAfterThis);
