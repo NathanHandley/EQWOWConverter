@@ -39,7 +39,6 @@ namespace EQWOWConverter.Transports
         public float EQRunSpeed = 0;
         public float EQWalkSpeed = 0;
         public string MeshName = string.Empty;
-        public List<TransportShipPathNode> PathNodes = new List<TransportShipPathNode>();
         public int GameObjectDisplayInfoID = 0;
         public int TaxiPathID = 0;
         public int MapID = 0;

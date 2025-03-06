@@ -1260,6 +1260,8 @@ namespace EQWOWConverter
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
             taxiPathNodeDBC.LoadFromDisk(dbcInputFolder, "TaxiPathNode.dbc");
+            TransportAnimationDBC transportAnimationDBC = new TransportAnimationDBC();
+            transportAnimationDBC.LoadFromDisk(dbcInputFolder, "TransportAnimation.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
             worldSafeLocsDBC.LoadFromDisk(dbcInputFolder, "WorldSafeLocs.dbc");
             WMOAreaTableDBC wmoAreaTableDBC = new WMOAreaTableDBC();
@@ -1549,6 +1551,8 @@ namespace EQWOWConverter
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputServerFolder);
+            transportAnimationDBC.SaveToDisk(dbcOutputClientFolder);
+            transportAnimationDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputServerFolder);            
             wmoAreaTableDBC.SaveToDisk(dbcOutputClientFolder);
