@@ -1458,23 +1458,37 @@ namespace EQWOWConverter
                 foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
                     wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
             }
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+            HashSet<int> validTransportGroupIDs = new HashSet<int>();
             foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
             {
+                // Only add this transport ship if the full path is zones that are loaded
+                bool zonesAreLoaded = true;
+                foreach (string touchedZone in curTransportShip.GetTouchedZonesSplitOut())
+                {
+                    if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
+                    {
+                        zonesAreLoaded = false;
+                        Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                        break;
+                    }
+                }
+                if (zonesAreLoaded == false)
+                    continue;
+                validTransportGroupIDs.Add(curTransportShip.PathGroupID);
+
                 // TODO: Make loading screen configurable
                 mapDBCClient.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
                 mapDBCServer.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
                 taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
             }
-            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
-                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
             foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
             {
                 if (shipNode.WOWPathID == 0)
                     continue;
-                if (mapIDsByShortName.ContainsKey(shipNode.MapShortName.ToLower().Trim()) == false)
-                {
-                    Logger.WriteDetail("Skipping shipNode with mapshortname as '" + shipNode.MapShortName + "' as it wasn't a valid map short name");
+                if (validTransportGroupIDs.Contains(shipNode.PathGroup) == false)
                     continue;
                 }
                 int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
