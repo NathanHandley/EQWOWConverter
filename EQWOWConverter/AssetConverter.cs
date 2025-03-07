@@ -945,6 +945,12 @@ namespace EQWOWConverter
                 string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
             }
+            foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
+            {
+                string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
+                string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
+            }
 
             // Objects
             if (Configuration.GENERATE_OBJECTS == true)
@@ -1538,7 +1544,7 @@ namespace EQWOWConverter
                 // Only add nodes for zones that are loaded
                 if (mapIDsByShortName.ContainsKey(pathNode.ZoneShortName.ToLower()) == false)
                     continue;
-                transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPosition, pathNode.YPosition, pathNode.ZPosition);
+                transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset);
             }
 
             // Save the files

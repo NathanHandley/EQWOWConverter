@@ -21,9 +21,9 @@ namespace EQWOWConverter.Transports
         private static List<TransportLiftPathNode> TransportLiftPathNodes = new List<TransportLiftPathNode>();
 
         public int PathGroup = 0;
-        public float XPosition = 0;
-        public float YPosition = 0;
-        public float ZPosition = 0;
+        public float XPositionOffset = 0;
+        public float YPositionOffset = 0;
+        public float ZPositionOffset = 0;
         public int TimestampInMS = 0;
         public int GameObjectTemplateEntryID = 0;
         public string ZoneShortName = string.Empty;
@@ -56,9 +56,9 @@ namespace EQWOWConverter.Transports
                 // TODO: Here
                 TransportLiftPathNode curNode = new TransportLiftPathNode();
                 curNode.PathGroup = int.Parse(columns["path_group"]);
-                curNode.XPosition = float.Parse(columns["x"]) * Configuration.GENERATE_WORLD_SCALE;
-                curNode.YPosition = float.Parse(columns["y"]) * Configuration.GENERATE_WORLD_SCALE;
-                curNode.ZPosition = float.Parse(columns["z"]) * Configuration.GENERATE_WORLD_SCALE;
+                curNode.XPositionOffset = float.Parse(columns["x"]) * Configuration.GENERATE_WORLD_SCALE;
+                curNode.YPositionOffset = float.Parse(columns["y"]) * Configuration.GENERATE_WORLD_SCALE;
+                curNode.ZPositionOffset = float.Parse(columns["z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.TimestampInMS = int.Parse(columns["timestamp"]);
                 curNode.ZoneShortName = columns["zone_shortname"];
                 TransportLiftPathNodes.Add(curNode);
