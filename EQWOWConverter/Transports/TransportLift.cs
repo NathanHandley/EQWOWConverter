@@ -69,7 +69,7 @@ namespace EQWOWConverter.Transports
                 curTransportLift.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
-                curTransportLift.Orientation = int.Parse(columns["orientation"]);
+                curTransportLift.Orientation = float.Parse(columns["orientation"]);
                 TransportLifts.Add(curTransportLift);
             }
         }
