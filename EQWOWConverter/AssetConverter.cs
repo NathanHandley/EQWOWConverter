@@ -137,26 +137,25 @@ namespace EQWOWConverter
             // Ships
             Logger.WriteDetail("Loading transport ships...");
             List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
-            Dictionary<string, int> GameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
+            Dictionary<string, int> gameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
             Dictionary<string, Zone> transportShipZoneModelsByMeshName = new Dictionary<string, Zone>();
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
             foreach (TransportShip transportShip in transportShips)
             {
                 // Load the mesh if it hasen't been yet
-                Zone curZone;
                 if (transportShipZoneModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
                 {
                     // Load it
                     //ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(transportShip.MeshName);
-                    curZone = new Zone(transportShip.MeshName, transportShip.Name);
-                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship static object '" + transportShip.MeshName + "'");
+                    Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
+                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
                     curZone.LoadFromEQObject(transportShip.MeshName, charactersFolderRoot);
-                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship static object '" + transportShip.MeshName + "' complete");
+                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
 
                     // Convert to WMO
                     string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
                     WMO transportWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\TRANSPORTTEXTURES", relativeStaticDoodadsPath, relativeTransportObjectsPath, true);
-                    transportWMO.WriteToDisk(exportMPQRootFolder);
+                    transportWMO.WriteToDisk();
 
                     // Copy the textures
                     string transportOutputTextureFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "TransportTextures", transportShip.MeshName);
@@ -180,13 +179,48 @@ namespace EQWOWConverter
 
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                     transportShipZoneModelsByMeshName.Add(transportShip.MeshName, curZone);
-                    GameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
+                    gameObjectDisplayInfoIDsByMeshName.Add(transportShip.MeshName, gameObjectDisplayInfoID);
                     TransportShip.TransportShipWMOsByGameObjectDisplayInfoID.Add(gameObjectDisplayInfoID, transportWMO);
                 }
-                else
-                    curZone = transportShipZoneModelsByMeshName[transportShip.MeshName];
-                transportShip.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
+                transportShip.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportShip.MeshName];
             }
+
+            // Lifts
+            Logger.WriteDetail("Loading transport lifts...");
+            List<TransportLift> transportLifts = TransportLift.GetAllTransportLifts();
+            gameObjectDisplayInfoIDsByMeshName.Clear();
+            Dictionary<string, ObjectModel> transportLiftObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
+            foreach (TransportLift transportLift in transportLifts)
+            {
+                // Load the object mesh if it hasn't been yet
+                if (transportLiftObjectModelsByMeshName.ContainsKey(transportLift.MeshName) == false)
+                {
+                    // Load it
+                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
+                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
+                    curObjectModel.LoadStaticEQObjectFromFile(charactersFolderRoot, transportLift.MeshName);
+                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
+
+                    // Create the M2 and Skin
+                    string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLift.MeshName);
+                    M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
+                    string curStaticObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Transports", transportLift.MeshName);
+                    objectM2.WriteToDisk(curObjectModel.Name, curStaticObjectOutputFolder);
+
+                    // Place the related textures
+                    string objectTextureFolder = Path.Combine(charactersFolderRoot, "textures");
+                    ExportTexturesForObject(curObjectModel, objectTextureFolder, curStaticObjectOutputFolder);
+
+                    // Store it
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                    transportLiftObjectModelsByMeshName.Add(transportLift.MeshName, curObjectModel);
+                    gameObjectDisplayInfoIDsByMeshName.Add(transportLift.MeshName, gameObjectDisplayInfoID);
+                    TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
+                }
+                transportLift.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.MeshName];
+            }
+
+            Logger.WriteDetail("Converting Transports complete.");
         }
 
         public bool ConvertEQObjectsToWOW()
@@ -341,7 +375,7 @@ namespace EQWOWConverter
 
                     // Create the zone WMO objects
                     WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
-                    zoneWMO.WriteToDisk(exportMPQRootFolder);
+                    zoneWMO.WriteToDisk();
 
                     // Create the WDT
                     WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName);
@@ -1492,6 +1526,11 @@ namespace EQWOWConverter
                 int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
                 taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, 
                     shipNode.ZPosition, shipNode.PauseTimeInSec, shipNode.MapChangeAfterThis);
+            }
+            foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
+            {
+                string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
+                gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
             }
 
             // Save the files

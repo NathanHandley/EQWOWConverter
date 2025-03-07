@@ -14,11 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.WOWFiles;
+
 namespace EQWOWConverter.Transports
 {
     internal class TransportLift
     {
         private static List<TransportLift> TransportLifts = new List<TransportLift>();
+        public static Dictionary<int, M2> ObjectModelM2ByMeshGameObjectDisplayID = new Dictionary<int, M2>();
 
         public int EQNPCID = 0;
         public int WOWGameObjectTemplateID = 0;

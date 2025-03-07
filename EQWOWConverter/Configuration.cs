@@ -469,6 +469,9 @@ namespace EQWOWConverter
         // ID for TaxiPathNode.dbc
         public static readonly int DBCID_TAXIPATHNODE_ID_START = 48000;
 
+        // ID for TransportAnimation.dbc
+        public static readonly int DBCID_TRANSPORTANIMATION_ID_START = 180000;
+
         // IDs for WorldSafeLocs.dbc
         public static readonly int DBCID_WORLDSAFELOCS_ID_START = 1800;
         public static readonly int DBCID_WORLDSAFELOCS_ID_END = 2000;

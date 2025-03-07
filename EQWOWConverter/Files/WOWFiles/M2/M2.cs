@@ -69,6 +69,7 @@ namespace EQWOWConverter.WOWFiles
         private M2GenericArrayByOffset<M2Dummy> SecondTextureMaterialOverrides = new M2GenericArrayByOffset<M2Dummy>(); // Multitexturing will use second material from here for blending with first
 
         public M2Skin Skin;
+        public ObjectModel ObjectModel;
 
         public M2(ObjectModel wowObjectModel, string mpqObjectFolder)
         {
@@ -77,6 +78,7 @@ namespace EQWOWConverter.WOWFiles
             Textures = new M2TextureArrayByOffset(mpqObjectFolder);
             PopulateElements(wowObjectModel);
             Skin = new M2Skin(wowObjectModel);
+            ObjectModel = wowObjectModel;
         }
 
         private void PopulateElements(ObjectModel wowObjectModel)

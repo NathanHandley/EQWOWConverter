@@ -48,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
             RootFileRelativePathWithFileName = Path.Combine("World", "wmo", "Everquest", BaseFileName, BaseFileName + ".wmo");
         }
 
-        public void WriteToDisk(string baseFolderPath)
+        public void WriteToDisk()
         {
             FileTool.CreateBlankDirectory(FullWMOFolderPath, true);
             string RootFileFullPathAndFileName = Path.Combine(FullWMOFolderPath, BaseFileName + ".wmo");
