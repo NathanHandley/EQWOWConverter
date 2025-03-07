@@ -27,35 +27,40 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectSQL : SQLFile
     {
+        private static int CUR_GUID = Configuration.SQL_GAMEOBJECT_GUID_ID_START;
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectTemplateID, int mapID, int parentAreaID, int areaID, Vector3 position, float orientation)
+        public void AddRow(int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation)
         {
+            int curGUID = CUR_GUID;
+            CUR_GUID++;
+
             SQLRow newRow = new SQLRow();
-            //newRow.AddInt("guid", rowGUID);
-            //newRow.AddInt("id", gameObjectID);
-            //newRow.AddInt("map", mapID);
-            //newRow.AddInt("zoneId", parentAreaID);
-            //newRow.AddInt("areaId", areaID);
-            //newRow.AddInt("spawnMask", 1);
-            //newRow.AddInt("phaseMask", 1);
-            //newRow.AddFloat("position_x", position.X);
-            //newRow.AddFloat("position_y", position.Y);
-            //newRow.AddFloat("position_z", position.Z);
-            //newRow.AddFloat("orientation", orientation);
-            //newRow.AddFloat("rotation0", 0);
-            //newRow.AddFloat("rotation1", 0);
-            //newRow.AddFloat("rotation2", 0);
-            //newRow.AddFloat("rotation3", 0);
-            //newRow.AddInt("spawntimesecs", 900);
-            //newRow.AddInt("animprogress", 0);
-            //newRow.AddInt("state", 1);
-            //newRow.AddString("ScriptName", 64, string.Empty);
-            //newRow.AddInt("VerifiedBuild", 0);
-            //newRow.AddString("Comment", string.Empty);
+            newRow.AddInt("guid", curGUID);
+            newRow.AddInt("id", gameObjectTemplateID);
+            newRow.AddInt("map", mapID);
+            newRow.AddInt("zoneId", areaID);
+            newRow.AddInt("areaId", areaID);
+            newRow.AddInt("spawnMask", 1);
+            newRow.AddInt("phaseMask", 1);
+            newRow.AddFloat("position_x", position.X);
+            newRow.AddFloat("position_y", position.Y);
+            newRow.AddFloat("position_z", position.Z);
+            newRow.AddFloat("orientation", orientation);
+            newRow.AddFloat("rotation0", 0);
+            newRow.AddFloat("rotation1", 0);
+            newRow.AddFloat("rotation2", 0);
+            newRow.AddFloat("rotation3", 0);
+            newRow.AddInt("spawntimesecs", 900);
+            newRow.AddInt("animprogress", 0);
+            newRow.AddInt("state", 1);
+            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddInt("VerifiedBuild", 0);
+            newRow.AddString("Comment", string.Empty);
             Rows.Add(newRow);
         }
     }

@@ -218,6 +218,7 @@ namespace EQWOWConverter
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
                 }
                 transportLift.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.MeshName];
+                TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.PathGroupID, transportLift.WOWGameObjectTemplateID);
             }
 
             Logger.WriteDetail("Converting Transports complete.");
@@ -1529,8 +1530,15 @@ namespace EQWOWConverter
             }
             foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
             {
-                string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
+                string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
                 gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
+            }
+            foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
+            {
+                // Only add nodes for zones that are loaded
+                if (mapIDsByShortName.ContainsKey(pathNode.ZoneShortName.ToLower()) == false)
+                    continue;
+                transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPosition, pathNode.YPosition, pathNode.ZPosition);
             }
 
             // Save the files
@@ -1630,6 +1638,7 @@ namespace EQWOWConverter
             GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
             GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
             GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
+            GameObjectSQL gameObjectSQL = new GameObjectSQL();
             GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
             GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
@@ -1931,9 +1940,29 @@ namespace EQWOWConverter
                 string name = "Ship EQ (" + transportShip.Name + ")";
                 string longName = transportShip.TouchedZones + " (" + name + ")";
                 transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
-                gameObjectTemplateSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
+                gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
                     transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
                 gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
+            }
+            foreach(TransportLift transportLift in TransportLift.GetAllTransportLifts())
+            {
+                // Only add this transport lift if the zone is loaded
+                if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
+                {
+                    Logger.WriteDetail("Skipping transport ship since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
+                    continue;
+                }
+                int areaID = 0;
+                foreach (Zone zone in zones)
+                    if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
+                        areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+
+                string name = "Lift EQ (" + transportLift.Name + ")";
+                string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
+                int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
+                gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
+                gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
+                gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
             }
 
             // Output them
@@ -1950,6 +1979,7 @@ namespace EQWOWConverter
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
+            gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
             gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
             gameObjectTemplateAddonSQL.SaveToDisk("gameobject_template_addon", SQLFileType.World);
             gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);

@@ -14,9 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Creatures;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 namespace EQWOWConverter.Transports
 {
     internal class TransportShipPathNode : IComparable, IEquatable<TransportShipPathNode>
@@ -76,6 +73,7 @@ namespace EQWOWConverter.Transports
                 TransportShipPathNodesByGroupID[curNode.PathGroup].Add(curNode);
             }
         }
+
         public int CompareTo(object? obj)
         {
             if (obj == null) return 1;

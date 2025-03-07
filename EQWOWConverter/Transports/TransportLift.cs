@@ -30,7 +30,7 @@ namespace EQWOWConverter.Transports
         public float SpawnX = 0;
         public float SpawnY = 0;
         public float SpawnZ = 0;
-        public int SpawnHeading = 0;
+        public float Orientation = 0;
         public string SpawnZoneShortName = string.Empty;
         public string MeshName = string.Empty;
         public int GameObjectDisplayInfoID = 0;
@@ -69,7 +69,7 @@ namespace EQWOWConverter.Transports
                 curTransportLift.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
-                curTransportLift.SpawnHeading = int.Parse(columns["heading"]);
+                curTransportLift.Orientation = int.Parse(columns["orientation"]);
                 TransportLifts.Add(curTransportLift);
             }
         }
