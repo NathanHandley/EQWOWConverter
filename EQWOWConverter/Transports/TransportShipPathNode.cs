@@ -66,8 +66,7 @@ namespace EQWOWConverter.Transports
                 curNode.XPosition = float.Parse(columns["x"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.YPosition = float.Parse(columns["y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curNode.ZPosition = float.Parse(columns["z"]) * Configuration.GENERATE_WORLD_SCALE;
-                curNode.PauseTimeInSec = int.Parse(columns["pause"]);
-                curNode.MapChangeAfterThis = int.Parse(columns["mapchange"]) == 1 ? true : false;                
+                curNode.PauseTimeInSec = int.Parse(columns["pause"]);            
                 if (TransportShipPathNodesByGroupID.ContainsKey(curNode.PathGroup) == false)
                     TransportShipPathNodesByGroupID.Add(curNode.PathGroup, new List<TransportShipPathNode>());
                 TransportShipPathNodesByGroupID[curNode.PathGroup].Add(curNode);
