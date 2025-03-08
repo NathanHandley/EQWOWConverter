@@ -21,12 +21,10 @@ namespace EQWOWConverter.WOWFiles
         private static int CUR_ID = Configuration.DBCID_TAXIPATHNODE_ID_START;
 
         public void AddRow(int pathID, int nodeIndex, int mapID, float posX, float posY, float posZ,
-            int delayInSeconds, bool isMapChangeAfterThis)
+            int delayInSeconds)
         {
             // Generate flags
             int flags = 0;
-            if (isMapChangeAfterThis == true)
-                flags += 1;
             if (delayInSeconds > 0)
                 flags += 2;
 

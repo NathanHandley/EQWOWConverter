@@ -93,36 +93,22 @@ namespace EQWOWConverter
         public static readonly float GENERATE_WORLD_SCALE = 0.29f;
         public static readonly float GENERATE_CREATURE_SCALE = 0.255f;
 
+        // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
+        public static readonly int GENERATE_EQ_EXPANSION_ID = 0;
+
         // If true, then objects are generated
         public static readonly bool GENERATE_OBJECTS = true;
 
         // If true, then creatures are generated
         public static readonly bool GENERATE_CREATURES_AND_SPAWNS = true;
 
+        // If true, transports (ships, ferries) will be generated
+        public static readonly bool GENERATE_TRANSPORTS = true;
+
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
         public static readonly List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "freporte" };
-
-        // If true, zones for Kunark are generated
-        public static readonly bool GENERATE_KUNARK_ZONES = false;
-
-        // Kunark zone shortnames
-        public static readonly List<string> GENERATE_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
-            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
-            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
-            "trakanon", "veeshan", "wakening", "warslikswood" };
-
-        // If true, zones for Velious are generated
-        public static readonly bool GENERATE_VELIOUS_ZONES = false;
-
-        // Velious zone shortnames
-        public static readonly List<string> GENERATE_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
-            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
-            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
-
-        // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
-        public static readonly int GENERATE_EQ_EXPANSION_ID = 0;
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
@@ -178,6 +164,17 @@ namespace EQWOWConverter
 
         // ID for the creature template for the spirit healer.
         public static readonly int ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = 6491;
+
+        // Kunark zone shortnames
+        public static readonly List<string> ZONE_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
+            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
+            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
+            "trakanon", "veeshan", "wakening", "warslikswood" };
+
+        // Velious zone shortnames
+        public static readonly List<string> ZONE_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
+            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
+            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
 
         //=====================================================================
         // Liquid
@@ -329,17 +326,6 @@ namespace EQWOWConverter
         // IDs for menus specific to class trainer
         public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists
         public static readonly int CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = 10371; // Pre-exists
-
-        // IDs specific to the boat replacement npcs
-        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_TEXT_ID = 328; // (328 exists already and is just "Greetings, $n")
-        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_EAST_GOSSIPMENU_ID = 69900;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_NPCS_WEST_GOSSIPMENU_ID = 69901;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_EASTFREEPORT_MENUOPTIONID = 0;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTWEST_MENUOPTIONID = 1;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTEASTGOOD_MENUOPTIONID = 2;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_OOTEASTEVIL_MENUOPTIONID = 3;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_BUTCHERGOOD_MENUOPTIONID = 4;
-        public static readonly int CREATURE_BOAT_REPLACEMENT_BUTCHEREVIL_MENUOPTIONID = 5;
 
         //=====================================================================
         // Items

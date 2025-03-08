@@ -28,7 +28,6 @@ namespace EQWOWConverter.Transports
         public float YPosition = 0;
         public float ZPosition = 0;
         public int PauseTimeInSec = 0;
-        public bool MapChangeAfterThis = false;
 
         public static void SetPathIDForNodeGroup(int groupID, int wowPathID)
         {

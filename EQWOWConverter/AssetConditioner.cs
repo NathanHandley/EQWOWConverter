@@ -100,9 +100,9 @@ namespace EQWOWConverter
                 string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
 
                 // Skip any disabled expansions
-                if (Configuration.GENERATE_KUNARK_ZONES == false && Configuration.GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
-                if (Configuration.GENERATE_VELIOUS_ZONES == false && Configuration.GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
                     continue;
 
                 // Bring in the objects of this directory

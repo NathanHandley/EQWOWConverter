@@ -55,9 +55,7 @@ namespace EQWOWConverter
                     return false;
             }
             else
-            {
                 Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
-            }
 
             // Zones
             List<Zone> zones;
@@ -74,12 +72,13 @@ namespace EQWOWConverter
                     return false;
             }
             else
-            {
                 Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
-            }
 
             // Transports (make sure it's after zones)
-            ConvertTransports();
+            if (Configuration.GENERATE_TRANSPORTS == true)
+                ConvertTransports();
+            else
+                Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
 
             // Icons
             CopyIconFiles();
@@ -352,9 +351,9 @@ namespace EQWOWConverter
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Skip any disabled expansions
-                if (Configuration.GENERATE_KUNARK_ZONES == false && Configuration.GENERATE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
-                if (Configuration.GENERATE_VELIOUS_ZONES == false && Configuration.GENERATE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
                     Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
@@ -933,23 +932,26 @@ namespace EQWOWConverter
             }
 
             // Transports
-            foreach(TransportShip transportShip in TransportShip.GetAllTransportShips())
+            if (Configuration.GENERATE_TRANSPORTS == true)
             {
-                // WMO
-                string relativeTransportWmoPath = Path.Combine("World", "wmo", "Everquest", transportShip.MeshName);
-                string fullTransportWmoPath = Path.Combine(mpqReadyFolder, relativeTransportWmoPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportWmoPath + "\" \"" + relativeTransportWmoPath + "\" /r");
+                foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+                {
+                    // WMO
+                    string relativeTransportWmoPath = Path.Combine("World", "wmo", "Everquest", transportShip.MeshName);
+                    string fullTransportWmoPath = Path.Combine(mpqReadyFolder, relativeTransportWmoPath);
+                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportWmoPath + "\" \"" + relativeTransportWmoPath + "\" /r");
 
-                // ZoneTextures
-                string relativeTransportTexturesPath = Path.Combine("World", "Everquest", "TransportTextures", transportShip.MeshName);
-                string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
-            }
-            foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
-            {
-                string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
-                string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
-                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
+                    // ZoneTextures
+                    string relativeTransportTexturesPath = Path.Combine("World", "Everquest", "TransportTextures", transportShip.MeshName);
+                    string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
+                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
+                }
+                foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
+                {
+                    string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
+                    string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
+                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
+                }
             }
 
             // Objects
@@ -1491,60 +1493,63 @@ namespace EQWOWConverter
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
 
             // Transports
-            foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
+            if (Configuration.GENERATE_TRANSPORTS == true)
             {
-                gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
-                wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, 0, transportWMOByID.Value.Zone.DescriptiveName); // Header record
-                foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
-                    wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
-            }
-            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
-                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
-            HashSet<int> validTransportGroupIDs = new HashSet<int>();
-            foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
-            {
-                // Only add this transport ship if the full path is zones that are loaded
-                bool zonesAreLoaded = true;
-                foreach (string touchedZone in curTransportShip.GetTouchedZonesSplitOut())
+                foreach (var transportWMOByID in TransportShip.TransportShipWMOsByGameObjectDisplayInfoID)
                 {
-                    if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
-                    {
-                        zonesAreLoaded = false;
-                        Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
-                        break;
-                    }
+                    gameObjectDisplayInfoDBC.AddRow(transportWMOByID.Key, transportWMOByID.Value.RootFileRelativePathWithFileName.ToLower(), transportWMOByID.Value.BoundingBox);
+                    wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(-1), 0, 0, transportWMOByID.Value.Zone.DescriptiveName); // Header record
+                    foreach (ZoneModelObject wmo in transportWMOByID.Value.Zone.ZoneObjectModels)
+                        wmoAreaTableDBC.AddRow(Convert.ToInt32(transportWMOByID.Value.Zone.ZoneProperties.DBCWMOID), Convert.ToInt32(wmo.WMOGroupID), 0, 0, wmo.DisplayName);
                 }
-                if (zonesAreLoaded == false)
-                    continue;
-                validTransportGroupIDs.Add(curTransportShip.PathGroupID);
+                Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+                foreach (Zone zone in zones)
+                    mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+                HashSet<int> validTransportGroupIDs = new HashSet<int>();
+                foreach (TransportShip curTransportShip in TransportShip.GetAllTransportShips())
+                {
+                    // Only add this transport ship if the full path is zones that are loaded
+                    bool zonesAreLoaded = true;
+                    foreach (string touchedZone in curTransportShip.GetTouchedZonesSplitOut())
+                    {
+                        if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
+                        {
+                            zonesAreLoaded = false;
+                            Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                            break;
+                        }
+                    }
+                    if (zonesAreLoaded == false)
+                        continue;
+                    validTransportGroupIDs.Add(curTransportShip.PathGroupID);
 
-                // TODO: Make loading screen configurable
-                mapDBCClient.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
-                mapDBCServer.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
-                taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
-            }
-            foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
-            {
-                if (shipNode.WOWPathID == 0)
-                    continue;
-                if (validTransportGroupIDs.Contains(shipNode.PathGroup) == false)
-                    continue;
-                int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
-                taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition, 
-                    shipNode.ZPosition, shipNode.PauseTimeInSec, shipNode.MapChangeAfterThis);
-            }
-            foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
-            {
-                string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
-                gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
-            }
-            foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
-            {
-                // Only add nodes for zones that are loaded
-                if (mapIDsByShortName.ContainsKey(pathNode.ZoneShortName.ToLower()) == false)
-                    continue;
-                transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset);
+                    // TODO: Make loading screen configurable
+                    mapDBCClient.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
+                    mapDBCServer.AddRow(Convert.ToInt32(curTransportShip.MapID), curTransportShip.MeshName, curTransportShip.Name, 0, Configuration.DBCID_LOADINGSCREEN_ID_START);
+                    taxiPathDBC.AddRow(curTransportShip.TaxiPathID);
+                }
+                foreach (TransportShipPathNode shipNode in TransportShipPathNode.GetAllPathNodesSorted())
+                {
+                    if (shipNode.WOWPathID == 0)
+                        continue;
+                    if (validTransportGroupIDs.Contains(shipNode.PathGroup) == false)
+                        continue;
+                    int mapID = mapIDsByShortName[shipNode.MapShortName.ToLower().Trim()];
+                    taxiPathNodeDBC.AddRow(shipNode.WOWPathID, shipNode.StepNumber, mapID, shipNode.XPosition, shipNode.YPosition,
+                        shipNode.ZPosition, shipNode.PauseTimeInSec);
+                }
+                foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
+                {
+                    string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
+                }
+                foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
+                {
+                    // Only add nodes for zones that are loaded
+                    if (mapIDsByShortName.ContainsKey(pathNode.ZoneShortName.ToLower()) == false)
+                        continue;
+                    transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset);
+                }
             }
 
             // Save the files
@@ -1925,50 +1930,53 @@ namespace EQWOWConverter
             }
 
             // Transports
-            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
-                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
-            foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+            if (Configuration.GENERATE_TRANSPORTS == true)
             {
-                // Only add this transport ship if the full path is zones that are loaded
-                bool zonesAreLoaded = true;
-                foreach(string touchedZone in transportShip.GetTouchedZonesSplitOut())
-                {
-                    if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
-                    {
-                        zonesAreLoaded = false;
-                        Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
-                        break;
-                    }
-                }
-                if (zonesAreLoaded == false)
-                    continue;
-                string name = "Ship EQ (" + transportShip.Name + ")";
-                string longName = transportShip.TouchedZones + " (" + name + ")";
-                transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
-                gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
-                gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
-            }
-            foreach(TransportLift transportLift in TransportLift.GetAllTransportLifts())
-            {
-                // Only add this transport lift if the zone is loaded
-                if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
-                {
-                    Logger.WriteDetail("Skipping transport ship since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
-                    continue;
-                }
-                int areaID = 0;
+                Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
                 foreach (Zone zone in zones)
-                    if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
-                        areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+                    mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+                foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+                {
+                    // Only add this transport ship if the full path is zones that are loaded
+                    bool zonesAreLoaded = true;
+                    foreach (string touchedZone in transportShip.GetTouchedZonesSplitOut())
+                    {
+                        if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
+                        {
+                            zonesAreLoaded = false;
+                            Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                            break;
+                        }
+                    }
+                    if (zonesAreLoaded == false)
+                        continue;
+                    string name = "Ship EQ (" + transportShip.Name + ")";
+                    string longName = transportShip.TouchedZones + " (" + name + ")";
+                    transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
+                    gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
+                        transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
+                    gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
+                }
+                foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
+                {
+                    // Only add this transport lift if the zone is loaded
+                    if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
+                    {
+                        Logger.WriteDetail("Skipping transport ship since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
+                        continue;
+                    }
+                    int areaID = 0;
+                    foreach (Zone zone in zones)
+                        if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
+                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
-                string name = "Lift EQ (" + transportLift.Name + ")";
-                string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
-                int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
-                gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
-                gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
-                gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                    string name = "Lift EQ (" + transportLift.Name + ")";
+                    string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
+                    int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
+                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
+                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
+                    gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                }
             }
 
             // Output them
@@ -1997,7 +2005,7 @@ namespace EQWOWConverter
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
-            npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);            
+            npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
