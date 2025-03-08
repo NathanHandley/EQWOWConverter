@@ -108,7 +108,7 @@ namespace EQWOWConverter
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
-        public static readonly List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "freporte" };
+        public static readonly List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;
