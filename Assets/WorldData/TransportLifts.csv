@@ -1,4 +1,6 @@
-﻿enabled|trigger_type|eq_npc_id|spawn_zone|lift_gotemplate_id|lift_name|lift_mesh|lift_path_group|lift_spawn_x|lift_spawn_y|lift_spawn_z|lift_orientation|trigger_gotemplate_id|trigger_name|trigger_mesh|trigger_path_group|trigger_spawn_x|trigger_spawn_y|trigger_spawn_z|trigger_orientation|min_expansion|Comments
-0|automatic|24056|erudnext|279900|Sabrina|erlaunch|2|96|-412.8|0|1.570795|-1|||-1|0|0|0|0|0|This was removed and the boat was brought in.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
-1|automatic|29028|halas|279901|The Gwenavyne|hferry|1|-441|12|-4|0|-1|||-1|0|0|0|0|0|
-1|toggle|0|gfaydark|279902|KelethinLift North|faylevator||||||279902|KelethinLift North|faylevator|||||||
+﻿enabled|trigger_type|eq_npc_id|spawn_zone|gotemplate_id|name|mesh|path_group|spawn_x|spawn_y|spawn_z|orientation|min_expansion|Comments
+0|automatic|24056|erudnext|279900|Sabrina|erlaunch|2|96|-412.8|0|1.570795|0|This was removed and the boat was brought in.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
+1|automatic|29028|halas|279901|The Gwenavyne|hferry|1|-441|12|-4|0|0|
+1|toggle|0|gfaydark|279902|Kelethin North Lift|faylevator|3|872.302|221.448|-27.6523|0||
+1|toggle|0|gfaydark|279903|Kelethin Center Lift|faylevator|4|137.463|350.014|2.1582|9.42477||
+1|toggle|0|gfaydark|279904|Kelethin East Lift|faylevator|5|-88.6519|-136.173|2.4082|0||
