@@ -35,11 +35,16 @@ namespace EQWOWConverter.WOWFiles
             AddRow(entryID, 11, displayID, name, 0, 0, 0, 0);
         }
 
+        public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name)
+        {
+            AddRow(entryID, 10, displayID, name, 0, 0, 0, 0);
+        }
+
         public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
-            newRow.AddInt("type", type); // 11 = Transport (lift), 15 = Mobile Transport (ship)
+            newRow.AddInt("type", type); // 10 = Goober (button / lever),  11 = Transport (lift), 15 = Mobile Transport (ship)
             newRow.AddInt("displayId", displayID);
 			newRow.AddString("name", 100, name);
             newRow.AddString("IconName", 100, string.Empty);

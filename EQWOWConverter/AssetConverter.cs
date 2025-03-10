@@ -139,6 +139,7 @@ namespace EQWOWConverter
             Dictionary<string, int> gameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
             Dictionary<string, Zone> transportShipZoneModelsByMeshName = new Dictionary<string, Zone>();
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
+            string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
             foreach (TransportShip transportShip in transportShips)
             {
                 // Load the mesh if it hasen't been yet
@@ -194,10 +195,15 @@ namespace EQWOWConverter
                 // Load the object mesh if it hasn't been yet
                 if (transportLiftObjectModelsByMeshName.ContainsKey(transportLift.MeshName) == false)
                 {
+                    // Different lift types have different source mesh data
+                    string folderRoot = objectsFolderRoot;
+                    if (transportLift.TriggerType == TransportLiftTriggerType.Automatic)
+                        folderRoot = charactersFolderRoot;
+
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(charactersFolderRoot, transportLift.MeshName);
+                    curObjectModel.LoadStaticEQObjectFromFile(folderRoot, transportLift.MeshName);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
 
                     // Create the M2 and Skin
@@ -207,7 +213,7 @@ namespace EQWOWConverter
                     objectM2.WriteToDisk(curObjectModel.Name, curStaticObjectOutputFolder);
 
                     // Place the related textures
-                    string objectTextureFolder = Path.Combine(charactersFolderRoot, "textures");
+                    string objectTextureFolder = Path.Combine(folderRoot, "textures");
                     ExportTexturesForObject(curObjectModel, objectTextureFolder, curStaticObjectOutputFolder);
 
                     // Store it
@@ -218,6 +224,41 @@ namespace EQWOWConverter
                 }
                 transportLift.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.MeshName];
                 TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.PathGroupID, transportLift.WOWGameObjectTemplateID);
+            }
+
+            // Lift Triggers
+            Logger.WriteDetail("Loading transport lift triggers...");
+            List<TransportLiftTrigger> transportLiftTriggers = TransportLiftTrigger.GetAllTransportLiftTriggers();
+            gameObjectDisplayInfoIDsByMeshName.Clear();
+            Dictionary<string, ObjectModel> transportLiftTriggerObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
+            foreach (TransportLiftTrigger transportLiftTrigger in transportLiftTriggers)
+            {
+                // Load the object mesh if it hasn't been yet
+                if (transportLiftTriggerObjectModelsByMeshName.ContainsKey(transportLiftTrigger.MeshName) == false)
+                {
+                    // Load it
+                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
+                    Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
+                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName);
+                    Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
+
+                    // Create the M2 and Skin
+                    string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLiftTrigger.MeshName);
+                    M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
+                    string curStaticObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Transports", transportLiftTrigger.MeshName);
+                    objectM2.WriteToDisk(curObjectModel.Name, curStaticObjectOutputFolder);
+
+                    // Place the related textures
+                    string objectTextureFolder = Path.Combine(objectsFolderRoot, "textures");
+                    ExportTexturesForObject(curObjectModel, objectTextureFolder, curStaticObjectOutputFolder);
+
+                    // Store it
+                    int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                    transportLiftTriggerObjectModelsByMeshName.Add(transportLiftTrigger.MeshName, curObjectModel);
+                    gameObjectDisplayInfoIDsByMeshName.Add(transportLiftTrigger.MeshName, gameObjectDisplayInfoID);
+                    TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
+                }
+                transportLiftTrigger.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLiftTrigger.MeshName];
             }
 
             Logger.WriteDetail("Converting Transports complete.");
@@ -1543,6 +1584,11 @@ namespace EQWOWConverter
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
                 }
+                foreach (var m2ByGameObjectID in TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID)
+                {
+                    string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
+                }
                 foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
                 {
                     // Only add nodes for zones that are loaded
@@ -1962,7 +2008,7 @@ namespace EQWOWConverter
                     // Only add this transport lift if the zone is loaded
                     if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
                     {
-                        Logger.WriteDetail("Skipping transport ship since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
+                        Logger.WriteDetail("Skipping transport lift since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
                         continue;
                     }
                     int areaID = 0;
@@ -1976,6 +2022,27 @@ namespace EQWOWConverter
                     gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
                     gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                }
+                foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
+                {
+                    // Only add this transport lift if the zone is loaded
+                    if (mapIDsByShortName.ContainsKey(transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()) == false)
+                    {
+                        Logger.WriteDetail("Skipping transport lift trigger since zone '" + transportLiftTrigger.SpawnZoneShortName + "' isn't being converted");
+                        continue;
+                    }
+                    int areaID = 0;
+                    foreach (Zone zone in zones)
+                        if (zone.ShortName.ToLower().Trim() == transportLiftTrigger.SpawnZoneShortName.ToLower().Trim())
+                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+
+                    string name = "Lift Trigger EQ (" + transportLiftTrigger.Name + ")";
+                    string longName = transportLiftTrigger.SpawnZoneShortName + " (" + name + ")";
+                    int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
+                    gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.WOWGameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name);
+                    //gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
+                    gameObjectSQL.AddRow(transportLiftTrigger.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
+                        transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
                 }
             }
 

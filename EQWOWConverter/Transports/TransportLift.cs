@@ -24,7 +24,7 @@ namespace EQWOWConverter.Transports
         public static Dictionary<int, M2> ObjectModelM2ByMeshGameObjectDisplayID = new Dictionary<int, M2>();
 
         public string SpawnZoneShortName = string.Empty;
-        TransportLiftTriggerType TriggerType = TransportLiftTriggerType.Automatic;
+        public TransportLiftTriggerType TriggerType = TransportLiftTriggerType.Automatic;
         public int WOWGameObjectTemplateID = 0;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
@@ -64,7 +64,7 @@ namespace EQWOWConverter.Transports
                 switch (columns["trigger_type"].ToLower().Trim())
                 {
                     case "automatic": curTransportLift.TriggerType = TransportLiftTriggerType.Automatic; break;
-                    case "toggle": curTransportLift.TriggerType = TransportLiftTriggerType.Automatic; break;
+                    case "toggle": curTransportLift.TriggerType = TransportLiftTriggerType.Toggle; break;
                     default: Logger.WriteError("Unable to load transport lift due to unhandled trigger type of '" + columns["trigger_type"] + "'"); continue;
                 }
                 curTransportLift.WOWGameObjectTemplateID = int.Parse(columns["gotemplate_id"]);

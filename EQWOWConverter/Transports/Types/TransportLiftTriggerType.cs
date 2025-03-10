@@ -19,6 +19,6 @@ namespace EQWOWConverter.Transports
     internal enum TransportLiftTriggerType
     {
         Automatic,
-        Button
+        Toggle
     }
 }

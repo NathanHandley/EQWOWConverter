@@ -74,7 +74,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
                 curLiftTrigger.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curLiftTrigger.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
-                curLiftTrigger.Orientation = float.Parse(columns["_orientation"]);
+                curLiftTrigger.Orientation = float.Parse(columns["orientation"]);
                 curLiftTrigger.AnimDistance = float.Parse(columns["anim_distance"]);
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
