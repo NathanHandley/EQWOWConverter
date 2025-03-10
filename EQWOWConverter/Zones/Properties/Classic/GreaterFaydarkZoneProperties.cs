@@ -54,9 +54,9 @@ namespace EQWOWConverter.Zones.Properties
             AddZoneLineBox("lfaydark", 2164.083984f, -1199.626953f, 0.000040f, ZoneLineOrientationType.South, -2623.411133f, -1084.083862f, 114.320740f, -2650.334229f, -1130.060669f, -0.499900f);
 
             // These three teleports are temp until the lifts are put in
-            AddTeleportPad("gfaydark", 946.531250f, 222.323135f, 73.968826f, ZoneLineOrientationType.South, 988.554749f, 220.978745f, -24.697590f, 10.0f);
-            AddTeleportPad("gfaydark", 138.929764f, 275.177704f, 73.969337f, ZoneLineOrientationType.West, 136.997269f, 234.183487f, 5.157810f, 10.0f);
-            AddTeleportPad("gfaydark", -16.362190f, -136.277435f, 73.968750f, ZoneLineOrientationType.South, 26.329359f, -138.125824f, 5.380220f, 10.0f);
+            //AddTeleportPad("gfaydark", 946.531250f, 222.323135f, 73.968826f, ZoneLineOrientationType.South, 988.554749f, 220.978745f, -24.697590f, 10.0f);
+            //AddTeleportPad("gfaydark", 138.929764f, 275.177704f, 73.969337f, ZoneLineOrientationType.West, 136.997269f, 234.183487f, 5.157810f, 10.0f);
+            //AddTeleportPad("gfaydark", -16.362190f, -136.277435f, 73.968750f, ZoneLineOrientationType.South, 26.329359f, -138.125824f, 5.380220f, 10.0f);
             ///
         }
     }

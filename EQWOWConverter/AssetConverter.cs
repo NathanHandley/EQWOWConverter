@@ -192,18 +192,18 @@ namespace EQWOWConverter
             foreach (TransportLift transportLift in transportLifts)
             {
                 // Load the object mesh if it hasn't been yet
-                if (transportLiftObjectModelsByMeshName.ContainsKey(transportLift.MeshName) == false)
+                if (transportLiftObjectModelsByMeshName.ContainsKey(transportLift.LiftMeshName) == false)
                 {
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
-                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(charactersFolderRoot, transportLift.MeshName);
-                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
+                    ObjectModel curObjectModel = new ObjectModel(transportLift.LiftMeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
+                    Logger.WriteDetail("- [" + transportLift.LiftMeshName + "]: Importing EQ transport lift object '" + transportLift.LiftMeshName + "'");
+                    curObjectModel.LoadStaticEQObjectFromFile(charactersFolderRoot, transportLift.LiftMeshName);
+                    Logger.WriteDetail("- [" + transportLift.LiftMeshName + "]: Importing EQ transport lift object '" + transportLift.LiftMeshName + "' complete");
 
                     // Create the M2 and Skin
-                    string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLift.MeshName);
+                    string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLift.LiftMeshName);
                     M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
-                    string curStaticObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Transports", transportLift.MeshName);
+                    string curStaticObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "Transports", transportLift.LiftMeshName);
                     objectM2.WriteToDisk(curObjectModel.Name, curStaticObjectOutputFolder);
 
                     // Place the related textures
@@ -212,12 +212,12 @@ namespace EQWOWConverter
 
                     // Store it
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
-                    transportLiftObjectModelsByMeshName.Add(transportLift.MeshName, curObjectModel);
-                    gameObjectDisplayInfoIDsByMeshName.Add(transportLift.MeshName, gameObjectDisplayInfoID);
+                    transportLiftObjectModelsByMeshName.Add(transportLift.LiftMeshName, curObjectModel);
+                    gameObjectDisplayInfoIDsByMeshName.Add(transportLift.LiftMeshName, gameObjectDisplayInfoID);
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
                 }
-                transportLift.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.MeshName];
-                TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.PathGroupID, transportLift.WOWGameObjectTemplateID);
+                transportLift.LiftGameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.LiftMeshName];
+                TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.LiftPathGroupID, transportLift.LiftWOWGameObjectTemplateID);
             }
 
             Logger.WriteDetail("Converting Transports complete.");
@@ -1970,12 +1970,12 @@ namespace EQWOWConverter
                         if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
                             areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
-                    string name = "Lift EQ (" + transportLift.Name + ")";
+                    string name = "Lift EQ (" + transportLift.LiftName + ")";
                     string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
-                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.LiftWOWGameObjectTemplateID, transportLift.LiftGameObjectDisplayInfoID, name);
+                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.LiftWOWGameObjectTemplateID);
+                    gameObjectSQL.AddRow(transportLift.LiftWOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.LiftSpawnX, transportLift.LiftSpawnY, transportLift.LiftSpawnZ), transportLift.LiftOrientation);
                 }
             }
 
