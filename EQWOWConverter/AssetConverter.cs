@@ -239,7 +239,7 @@ namespace EQWOWConverter
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName);
+                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName, false);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
 
                     // Create the M2 and Skin
@@ -987,8 +987,9 @@ namespace EQWOWConverter
                     string fullTransportTexturesPath = Path.Combine(mpqReadyFolder, relativeTransportTexturesPath);
                     mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportTexturesPath + "\" \"" + relativeTransportTexturesPath + "\" /r");
                 }
-                foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
+                if (TransportLift.GetAllTransportLifts().Count > 0)
                 {
+
                     string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
                     string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
                     mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
@@ -2040,7 +2041,7 @@ namespace EQWOWConverter
                     string longName = transportLiftTrigger.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
                     gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.WOWGameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name);
-                    //gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
+                    gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.WOWGameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLiftTrigger.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
                         transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
                 }

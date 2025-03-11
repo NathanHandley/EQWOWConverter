@@ -27,20 +27,20 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap);
+            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, string.Empty);
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name)
         {
-            AddRow(entryID, 11, displayID, name, 0, 0, 0, 0);
+            AddRow(entryID, 11, displayID, name, 0, 0, 0, 0, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name)
         {
-            AddRow(entryID, 10, displayID, name, 0, 0, 0, 0);
+            AddRow(entryID, 10, displayID, name, 0, 0, 0, 0, "SmartGameObjectAI");
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, string scriptName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -76,7 +76,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Data22", 0);
             newRow.AddInt("Data23", 0);
             newRow.AddString("AIName", 64, string.Empty);
-            newRow.AddString("ScriptName", 64, string.Empty);
+            newRow.AddString("ScriptName", 64, scriptName);
             newRow.AddInt("VerifiedBuild", 12340);            
             Rows.Add(newRow);
         }

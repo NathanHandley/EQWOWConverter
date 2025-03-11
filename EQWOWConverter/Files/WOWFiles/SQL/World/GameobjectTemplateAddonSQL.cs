@@ -23,18 +23,28 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject_template_addon WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
+        public void AddRowForLiftTrigger(int entryID)
+        {
+            AddRow(entryID, 0, 32, 0, 0, 0, 0, 0, 0); // Flag 1 = don't allow while in use, and 32 = nodespawn
+        }
+
         public void AddRowForTransport(int entryID)
+        {
+            AddRow(entryID, 0, 40, 0, 0, 0, 0, 0, 0);
+        }
+
+        public void AddRow(int entryID, int faction, int flags, int mingold, int maxgold, int artkit0, int artkit1, int artkit2, int artkit3)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entry", entryID);
-            newRow.AddInt("faction", 0);
-            newRow.AddInt("flags", 40); // 8 = GO_FLAG_TRANSPORT, 32 = GO_FLAG_NODESPAWN
-            newRow.AddInt("mingold", 0);
-            newRow.AddInt("maxgold", 0);
-            newRow.AddInt("artkit0", 0);
-            newRow.AddInt("artkit1", 0);
-            newRow.AddInt("artkit2", 0);
-            newRow.AddInt("artkit3", 0);
+            newRow.AddInt("faction", faction);
+            newRow.AddInt("flags", flags); // 8 = GO_FLAG_TRANSPORT, 32 = GO_FLAG_NODESPAWN
+            newRow.AddInt("mingold", mingold);
+            newRow.AddInt("maxgold", maxgold);
+            newRow.AddInt("artkit0", artkit0);
+            newRow.AddInt("artkit1", artkit1);
+            newRow.AddInt("artkit2", artkit2);
+            newRow.AddInt("artkit3", artkit3);
             Rows.Add(newRow);
         }
     }
