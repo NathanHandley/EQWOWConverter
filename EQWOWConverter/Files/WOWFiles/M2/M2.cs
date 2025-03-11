@@ -14,16 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Reflection.PortableExecutable;
 using System.Text;
-using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
-using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -131,7 +124,12 @@ namespace EQWOWConverter.WOWFiles
 
             // Bone Lookup
             if (wowObjectModel.BoneLookupsByMaterialIndex.Count == 0)
+            {
                 BoneLookup.Add(new M2Int16(0));
+                BoneLookup.Add(new M2Int16(0));
+                BoneLookup.Add(new M2Int16(0));
+                BoneLookup.Add(new M2Int16(0));
+            }
             else
             {
                 foreach (var boneLookupsPerMaterialIndex in wowObjectModel.BoneLookupsByMaterialIndex)
@@ -175,7 +173,6 @@ namespace EQWOWConverter.WOWFiles
 
             // Collision Face Normals
             CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
-
 
             // Attachments & Attachment ID
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)

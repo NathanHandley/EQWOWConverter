@@ -16,12 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
-using EQWOWConverter.WOWFiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.ObjectModels
 {

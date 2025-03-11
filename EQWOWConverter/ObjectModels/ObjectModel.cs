@@ -16,23 +16,8 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
-using EQWOWConverter.WOWFiles;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.Zones;
-using Mysqlx.Resultset;
-using Mysqlx.Session;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using System.Reflection.Metadata.Ecma335;
 using EQWOWConverter.Creatures;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -197,7 +182,6 @@ namespace EQWOWConverter.ObjectModels
                     Logger.WriteError("Object named '" + Name + "' is skeletal but has no animations, so loading as static");
 
                 // Create a base bone
-                AnimationLookups.Add(0); // Maps animations to the IDs in AnimationData.dbc - None for static
                 ModelBones.Add(new ObjectModelBone());
 
                 // Make one animation (standing)
