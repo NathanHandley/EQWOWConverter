@@ -24,7 +24,7 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_ID = Configuration.DBCID_TRANSPORTANIMATION_ID_START;
 
-        public void AddRow(int gameObjectTemplateID, int timestampInMS, float posX, float posY, float posZ)
+        public void AddRow(int gameObjectTemplateID, int timestampInMS, float posX, float posY, float posZ, int animationSequenceID)
         {
             int id = CUR_ID;
             CUR_ID++;
@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(posX); // PosX (delta move amount?  Is it absolute relative to 0,0 of object?)
             newRow.AddFloat(posY); // PosY (delta move amount?  Is it absolute relative to 0,0 of object?)
             newRow.AddFloat(posZ); // PosZ (delta move amount?  Is it absolute relative to 0,0 of object?)
-            newRow.AddInt32(0); // SequenceID (Animation type. 0 = standing)
+            newRow.AddInt32(animationSequenceID); // SequenceID (Animation type. 0 = standing)
             Rows.Add(newRow);
         }
     }

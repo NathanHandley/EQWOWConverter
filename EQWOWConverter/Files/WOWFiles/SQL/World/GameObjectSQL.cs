@@ -34,13 +34,10 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation)
+        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation)
         {
-            int curGUID = CUR_GUID;
-            CUR_GUID++;
-
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("guid", curGUID);
+            newRow.AddInt("guid", gameObjectGUID);
             newRow.AddInt("id", gameObjectTemplateID);
             newRow.AddInt("map", mapID);
             newRow.AddInt("zoneId", areaID);
@@ -62,6 +59,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("VerifiedBuild", 0);
             newRow.AddString("Comment", string.Empty);
             Rows.Add(newRow);
+        }
+
+        static public int GenerateGUID()
+        {
+            int curGUID = CUR_GUID;
+            CUR_GUID++;
+            return curGUID;
         }
     }
 }

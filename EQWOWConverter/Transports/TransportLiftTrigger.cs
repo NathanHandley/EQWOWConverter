@@ -25,8 +25,6 @@ namespace EQWOWConverter.Transports
         public static Dictionary<int, M2> ObjectModelM2ByMeshGameObjectDisplayID = new Dictionary<int, M2>();
 
         public string SpawnZoneShortName = string.Empty;
-        public int WOWGameObjectTemplateID = 0;
-        public int WOWLiftGameObjectTemplateID = 0;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
         public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.UpDown;
@@ -35,7 +33,13 @@ namespace EQWOWConverter.Transports
         public float SpawnZ = 0;
         public float Orientation = 0;
         public float AnimMod = 0;
+        public int AnimTimeInMS = 0;
+        public int ResetTimeInMS = 0;
+        public int GameObjectGUID = 0;
+        public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
+        public int LiftGameObjectTemplateID = 0;
+        public int LiftGameObjectGUID = 0;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
         {
@@ -68,8 +72,8 @@ namespace EQWOWConverter.Transports
                     case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.UpDown; break;
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
-                curLiftTrigger.WOWGameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
-                curLiftTrigger.WOWLiftGameObjectTemplateID = int.Parse(columns["lift_gotemplate_id"]);
+                curLiftTrigger.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
+                curLiftTrigger.LiftGameObjectTemplateID = int.Parse(columns["lift_gotemplate_id"]);
                 curLiftTrigger.Name = columns["name"];
                 curLiftTrigger.MeshName = columns["mesh"];
                 curLiftTrigger.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
@@ -77,6 +81,9 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curLiftTrigger.Orientation = float.Parse(columns["orientation"]);
                 curLiftTrigger.AnimMod = float.Parse(columns["anim_mod"]);
+                curLiftTrigger.AnimTimeInMS = int.Parse(columns["anim_time_in_ms"]);
+                curLiftTrigger.ResetTimeInMS = int.Parse(columns["reset_in_ms"]);
+                curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
         }

@@ -26,40 +26,40 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM smart_scripts WHERE COMMENT LIKE 'EQ%';";
         }
 
-        public void AddRow()
+        public void AddRowForTriggerGoober(int triggerGameObjectTemplateEntryID, int targetGameObjectGUID, int targetGameObjectTemplateEntryID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entryorguid", 0);
-            newRow.AddInt("source_type", 0);
+            newRow.AddInt("entryorguid", triggerGameObjectTemplateEntryID);
+            newRow.AddInt("source_type", 1); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
             newRow.AddInt("id", 0);
             newRow.AddInt("link", 0);
-            newRow.AddInt("event_type", 0);
+            newRow.AddInt("event_type", 70);
             newRow.AddInt("event_phase_mask", 0);
-            newRow.AddInt("event_chance", 0);
+            newRow.AddInt("event_chance", 100);
             newRow.AddInt("event_flags", 0);
-            newRow.AddInt("event_param1", 0);
+            newRow.AddInt("event_param1", 2);
             newRow.AddInt("event_param2", 0);
             newRow.AddInt("event_param3", 0);
             newRow.AddInt("event_param4", 0);
             newRow.AddInt("event_param5", 0);
             newRow.AddInt("event_param6", 0);
-            newRow.AddInt("action_type", 0);
+            newRow.AddInt("action_type", 9); // SMART_ACTION_ACTIVATE_GOOBJECT
             newRow.AddInt("action_param1", 0);
             newRow.AddInt("action_param2", 0);
             newRow.AddInt("action_param3", 0);
             newRow.AddInt("action_param4", 0);
             newRow.AddInt("action_param5", 0);
             newRow.AddInt("action_param6", 0);
-            newRow.AddInt("target_type", 0);
-            newRow.AddInt("target_param1", 0);
-            newRow.AddInt("target_param2", 0);
+            newRow.AddInt("target_type", 14); // 14 = SMART_TARGET_GAMEOBJECT_GUID
+            newRow.AddInt("target_param1", targetGameObjectGUID);
+            newRow.AddInt("target_param2", targetGameObjectTemplateEntryID);
             newRow.AddInt("target_param3", 0);
             newRow.AddInt("target_param4", 0);
             newRow.AddFloat("target_x", 0);
             newRow.AddFloat("target_y", 0);
             newRow.AddFloat("target_z", 0);
             newRow.AddFloat("target_o", 0);
-            newRow.AddString("comment", string.Empty);
+            newRow.AddString("comment", "EQ On Gameobject State Changed - Activate GameObject");
             Rows.Add(newRow);
         }
     }

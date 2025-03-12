@@ -223,7 +223,7 @@ namespace EQWOWConverter
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
                 }
                 transportLift.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLift.MeshName];
-                TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.PathGroupID, transportLift.WOWGameObjectTemplateID);
+                TransportLiftPathNode.UpdateNodesWithGameObjectEntryIDByPathGroup(transportLift.PathGroupID, transportLift.GameObjectTemplateID);
             }
 
             // Lift Triggers
@@ -239,7 +239,7 @@ namespace EQWOWConverter
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod);
+                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
 
                     // Create the M2 and Skin
@@ -259,6 +259,7 @@ namespace EQWOWConverter
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
                 }
                 transportLiftTrigger.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLiftTrigger.MeshName];
+                transportLiftTrigger.LiftGameObjectGUID = TransportLift.GetTransportLiftGameObjectGUIDByTemplateID(transportLiftTrigger.LiftGameObjectTemplateID);
             }
 
             Logger.WriteDetail("Converting Transports complete.");
@@ -1595,7 +1596,7 @@ namespace EQWOWConverter
                     // Only add nodes for zones that are loaded
                     if (mapIDsByShortName.ContainsKey(pathNode.ZoneShortName.ToLower()) == false)
                         continue;
-                    transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset);
+                    transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset, pathNode.AnimationSequenceID);
                 }
             }
 
@@ -1708,6 +1709,7 @@ namespace EQWOWConverter
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
+            SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -2020,9 +2022,9 @@ namespace EQWOWConverter
                     string name = "Lift EQ (" + transportLift.Name + ")";
                     string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.WOWGameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
-                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.WOWGameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLift.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
+                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
+                    gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
                 }
                 foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
                 {
@@ -2037,13 +2039,14 @@ namespace EQWOWConverter
                         if (zone.ShortName.ToLower().Trim() == transportLiftTrigger.SpawnZoneShortName.ToLower().Trim())
                             areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
-                    string name = "Lift Trigger EQ (" + transportLiftTrigger.Name + ")";
-                    string longName = transportLiftTrigger.SpawnZoneShortName + " (" + name + ")";
+                    string name = transportLiftTrigger.Name;
+                    string longName = "EQ Lift Trigger " + transportLiftTrigger.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.WOWGameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name);
-                    gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.WOWGameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLiftTrigger.WOWGameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
+                    gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
+                    gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.GameObjectTemplateID);
+                    gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
                         transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
+                    smartScriptsSQL.AddRowForTriggerGoober(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.LiftGameObjectGUID, transportLiftTrigger.LiftGameObjectTemplateID);
                 }
             }
 
@@ -2077,6 +2080,7 @@ namespace EQWOWConverter
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
+            smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
         }

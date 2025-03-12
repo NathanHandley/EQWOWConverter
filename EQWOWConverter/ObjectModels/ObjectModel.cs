@@ -75,16 +75,19 @@ namespace EQWOWConverter.ObjectModels
             ModelLiftPreWorldScale = modelLift;
         }
 
-        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
+        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName, ActiveDoodadAnimType? activeDoodadAnimationType = null, 
+            float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadAllStaticObjectDataFromDisk(Name, inputRootFolder, meshName);
 
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType, activeDoodadAnimModValue);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType, 
+                    activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, activeDoodadAnimationType, activeDoodadAnimModValue);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, 
+                    activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
         public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
@@ -105,7 +108,7 @@ namespace EQWOWConverter.ObjectModels
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
+            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
         {
             // Save Name
             Name = name;
@@ -161,7 +164,7 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue);
+            ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
@@ -171,7 +174,7 @@ namespace EQWOWConverter.ObjectModels
             MeshData = meshData;
         }
 
-        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
+        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -195,7 +198,7 @@ namespace EQWOWConverter.ObjectModels
                 else
                 {
                     // For lift triggers, there is animation build-out that occurs specific to the behavior of it
-                    BuildAnimationsForActiveDoodad(activeDoodadAnimationType, activeDoodadAnimModValue);
+                    BuildAnimationsForActiveDoodad(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
                 }
             }
 
@@ -287,7 +290,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
+        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimModValue, float activeDoodadAnimTimeInMS)
         {
             // Associate all of the verts with the single bone that should already be set up
             if (ModelBones.Count == 0)
@@ -327,7 +330,7 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.UpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
                     } break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
             }
@@ -343,7 +346,7 @@ namespace EQWOWConverter.ObjectModels
             {
                 case ActiveDoodadAnimType.UpDown:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
                     } break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
             }
@@ -360,7 +363,7 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.UpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimModValue));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));
                     }
                     break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;

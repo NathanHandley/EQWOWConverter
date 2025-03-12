@@ -1,6 +1,6 @@
 ﻿enabled|trigger_type|eq_npc_id|spawn_zone|gotemplate_id|name|mesh|path_group|spawn_x|spawn_y|spawn_z|orientation|min_expansion|Comments
 0|automatic|24056|erudnext|279900|Sabrina|erlaunch|2|96|-412.8|0|1.570795|0|This was removed and the boat was brought in.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
 1|automatic|29028|halas|279901|The Gwenavyne|hferry|1|-441|12|-4|0|0|
-1|toggle|0|gfaydark|279902|Kelethin North Lift|faylevator|3|872.302|221.448|-27.6523|3.14159|0|
-1|toggle|0|gfaydark|279903|Kelethin Center Lift|faylevator|4|137.463|350.014|2.1582|1.570795|0|
+0|toggle|0|gfaydark|279902|Kelethin North Lift|faylevator|3|872.302|221.448|-27.6523|3.14159|0|
+0|toggle|0|gfaydark|279903|Kelethin Center Lift|faylevator|4|137.463|350.014|2.1582|1.570795|0|
 1|toggle|0|gfaydark|279904|Kelethin East Lift|faylevator|5|-88.6519|-136.173|2.4082|3.14159|0|

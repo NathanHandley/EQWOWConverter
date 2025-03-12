@@ -25,7 +25,6 @@ namespace EQWOWConverter.Transports
 
         public string SpawnZoneShortName = string.Empty;
         public TransportLiftTriggerType TriggerType = TransportLiftTriggerType.Automatic;
-        public int WOWGameObjectTemplateID = 0;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
         public int PathGroupID = 0;
@@ -33,13 +32,27 @@ namespace EQWOWConverter.Transports
         public float SpawnY = 0;
         public float SpawnZ = 0;
         public float Orientation = 0;
+        public int GameObjectGUID = 0;
+        public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
+
 
         public static List<TransportLift> GetAllTransportLifts()
         {
             if (TransportLifts.Count == 0)
                 PopulateTransportLiftList();
             return TransportLifts;
+        }
+
+        public static int GetTransportLiftGameObjectGUIDByTemplateID(int gameObjectTemplateID)
+        {
+            foreach(TransportLift transportLift in TransportLifts)
+            {
+                if (transportLift.GameObjectTemplateID == gameObjectTemplateID)
+                    return transportLift.GameObjectGUID;
+            }
+            Logger.WriteError("Failed to get GameObject GUID for transport lift with template id '" + gameObjectTemplateID + "'");
+            return 0;
         }
 
         private static void PopulateTransportLiftList()
@@ -67,7 +80,7 @@ namespace EQWOWConverter.Transports
                     case "toggle": curTransportLift.TriggerType = TransportLiftTriggerType.Toggle; break;
                     default: Logger.WriteError("Unable to load transport lift due to unhandled trigger type of '" + columns["trigger_type"] + "'"); continue;
                 }
-                curTransportLift.WOWGameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
+                curTransportLift.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
                 curTransportLift.Name = columns["name"];
                 curTransportLift.MeshName = columns["mesh"];
                 curTransportLift.PathGroupID = int.Parse(columns["path_group"]);                
@@ -75,6 +88,7 @@ namespace EQWOWConverter.Transports
                 curTransportLift.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.Orientation = float.Parse(columns["orientation"]);
+                curTransportLift.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 TransportLifts.Add(curTransportLift);
             }
         }

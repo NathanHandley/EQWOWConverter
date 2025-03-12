@@ -153,7 +153,7 @@ namespace EQWOWConverter.Common
         ChannelCastDirected = 124, // Channel 1
         ChannelCastOmni = 125, // Channel 2
         Whirlwind = 126, // Bladestorm
-        Birth = 127, // Emerge
+        Birth = 127, // Emerge 
         UseStandingStart = 128, // Craft (Begin)
         UseStandingEnd = 129, // Craft (End)
         CreatureSpecial = 130,

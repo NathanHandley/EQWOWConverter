@@ -35,9 +35,9 @@ namespace EQWOWConverter.WOWFiles
             AddRow(entryID, 11, displayID, name, 0, 0, 0, 0, string.Empty);
         }
 
-        public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name)
+        public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 10, displayID, name, 0, 0, 0, 0, "SmartGameObjectAI");
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, "SmartGameObjectAI");
         }
 
         public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, string scriptName)
@@ -52,8 +52,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("unk1", 100, string.Empty);
 			newRow.AddFloat("size", 1);
             newRow.AddInt("Data0", data0);
-            newRow.AddInt("Data1", data1); // 30 is typical
-            newRow.AddInt("Data2", data2); // 1 is typical
+            newRow.AddInt("Data1", data1);
+            newRow.AddInt("Data2", data2); 
             newRow.AddInt("Data3", 0);
             newRow.AddInt("Data4", 0);
             newRow.AddInt("Data5", 0); // Transport physics, 0 or 1
