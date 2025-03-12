@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
-            newRow.AddInt("type", type); // 10 = Goober (button / lever),  11 = Transport (lift), 15 = Mobile Transport (ship)
+            newRow.AddInt("type", type); // 10 = ActiveDoodad (button / lever),  11 = Transport (lift), 15 = Mobile Transport (ship)
             newRow.AddInt("displayId", displayID);
 			newRow.AddString("name", 100, name);
             newRow.AddString("IconName", 100, string.Empty);

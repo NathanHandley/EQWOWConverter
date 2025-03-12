@@ -239,7 +239,7 @@ namespace EQWOWConverter
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName);
+                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
 
                     // Create the M2 and Skin

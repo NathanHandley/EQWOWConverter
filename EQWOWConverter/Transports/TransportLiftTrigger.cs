@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Transports
@@ -28,12 +29,12 @@ namespace EQWOWConverter.Transports
         public int WOWLiftGameObjectTemplateID = 0;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
-        public TransportLiftTriggerAnimType AnimationType = TransportLiftTriggerAnimType.UpDown;
+        public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.UpDown;
         public float SpawnX = 0;
         public float SpawnY = 0;
         public float SpawnZ = 0;
         public float Orientation = 0;
-        public float AnimDistance = 0;
+        public float AnimMod = 0;
         public int GameObjectDisplayInfoID = 0;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
@@ -64,7 +65,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnZoneShortName = columns["spawn_zone"];
                 switch (columns["anim_type"].ToLower().Trim())
                 {
-                    case "up_down": curLiftTrigger.AnimationType = TransportLiftTriggerAnimType.UpDown; break;
+                    case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.UpDown; break;
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
                 curLiftTrigger.WOWGameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
@@ -75,7 +76,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curLiftTrigger.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curLiftTrigger.Orientation = float.Parse(columns["orientation"]);
-                curLiftTrigger.AnimDistance = float.Parse(columns["anim_distance"]);
+                curLiftTrigger.AnimMod = float.Parse(columns["anim_mod"]);
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
         }

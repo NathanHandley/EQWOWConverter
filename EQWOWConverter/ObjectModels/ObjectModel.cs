@@ -75,16 +75,16 @@ namespace EQWOWConverter.ObjectModels
             ModelLiftPreWorldScale = modelLift;
         }
 
-        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName)
+        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadAllStaticObjectDataFromDisk(Name, inputRootFolder, meshName);
 
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType, activeDoodadAnimModValue);
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, activeDoodadAnimationType, activeDoodadAnimModValue);
         }
 
         public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
@@ -105,7 +105,7 @@ namespace EQWOWConverter.ObjectModels
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces)
+            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
         {
             // Save Name
             Name = name;
@@ -161,7 +161,7 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(-1);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation();
+            ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue);
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
@@ -171,7 +171,7 @@ namespace EQWOWConverter.ObjectModels
             MeshData = meshData;
         }
 
-        private void ProcessBonesAndAnimation()
+        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -184,11 +184,19 @@ namespace EQWOWConverter.ObjectModels
                 // Create a base bone
                 ModelBones.Add(new ObjectModelBone());
 
-                // Make one animation (standing)
-                ModelAnimations.Add(new ObjectModelAnimation());
-                ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-                ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-                ModelAnimations[0].NumOfFrames = 1;
+                if (activeDoodadAnimationType == null)
+                {
+                    // Make one animation (standing) for normal static objects
+                    ModelAnimations.Add(new ObjectModelAnimation());
+                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
+                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations[0].NumOfFrames = 1;
+                }
+                else
+                {
+                    // For lift triggers, there is animation build-out that occurs specific to the behavior of it
+                    BuildAnimationsForActiveDoodad(activeDoodadAnimationType, activeDoodadAnimModValue);
+                }
             }
 
             // Skeletal
@@ -277,6 +285,103 @@ namespace EQWOWConverter.ObjectModels
                 // Set the portrait camera locations
                 SetupPortraitCamera();
             }
+        }
+
+        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0)
+        {
+            // Associate all of the verts with the single bone that should already be set up
+            if (ModelBones.Count == 0)
+            {
+                Logger.WriteError("Failed building animations for activeDoodad, as there are no bones");
+                return;
+            }
+            for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
+                ModelVertices[vertexIndex].BoneIndicesLookup[0] = 0;
+
+            // Lay out the bone tracks for the 5 animations
+            for (int i = 0; i < 5; i++)
+            {
+                ModelBones[0].ScaleTrack.AddSequence();
+                ModelBones[0].RotationTrack.AddSequence();
+                ModelBones[0].TranslationTrack.AddSequence();
+            }
+            ModelBones[0].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+            ModelBones[0].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+            ModelBones[0].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+
+            // Scale the mod value if translation
+            switch (activeDoodadAnimationType)
+            {
+                case ActiveDoodadAnimType.UpDown: activeDoodadAnimModValue *= Configuration.GENERATE_WORLD_SCALE; break;
+                default: break; // nothing
+            }
+
+            // Open
+            ObjectModelAnimation animationOpen = new ObjectModelAnimation();
+            animationOpen.AnimationType = AnimationType.Open;
+            animationOpen.BoundingBox = new BoundingBox(BoundingBox);
+            animationOpen.BoundingRadius = BoundingSphereRadius;
+            animationOpen.NumOfFrames = 2;
+            switch (activeDoodadAnimationType)
+            {
+                case ActiveDoodadAnimType.UpDown:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, activeDoodadAnimModValue));
+                    } break;
+                default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
+            }
+            ModelAnimations.Add(animationOpen);
+
+            // Opened
+            ObjectModelAnimation animationOpened = new ObjectModelAnimation();
+            animationOpened.AnimationType = AnimationType.Opened;
+            animationOpened.BoundingBox = new BoundingBox(BoundingBox);
+            animationOpened.BoundingRadius = BoundingSphereRadius;
+            animationOpened.NumOfFrames = 1;
+            switch (activeDoodadAnimationType)
+            {
+                case ActiveDoodadAnimType.UpDown:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, activeDoodadAnimModValue));
+                    } break;
+                default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
+            }
+            ModelAnimations.Add(animationOpened);
+
+            // Close
+            ObjectModelAnimation animationClose = new ObjectModelAnimation();
+            animationClose.AnimationType = AnimationType.Close;
+            animationClose.BoundingBox = new BoundingBox(BoundingBox);
+            animationClose.BoundingRadius = BoundingSphereRadius;
+            animationClose.NumOfFrames = 2;
+            switch (activeDoodadAnimationType)
+            {
+                case ActiveDoodadAnimType.UpDown:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, Configuration.OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS, new Vector3(0, 0, 0));
+                    }
+                    break;
+                default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
+            }
+            ModelAnimations.Add(animationClose);
+
+            // Stand
+            ObjectModelAnimation animationStand = new ObjectModelAnimation();
+            animationStand.AnimationType = AnimationType.Stand;
+            animationStand.BoundingBox = new BoundingBox(BoundingBox);
+            animationStand.BoundingRadius = BoundingSphereRadius;
+            animationStand.NumOfFrames = 1;
+            ModelAnimations.Add(animationStand);
+
+            // Closed
+            ObjectModelAnimation animationClosed = new ObjectModelAnimation();
+            animationClosed.AnimationType = AnimationType.Closed;
+            animationClosed.BoundingBox = new BoundingBox(BoundingBox);
+            animationClosed.BoundingRadius = BoundingSphereRadius;
+            animationClosed.NumOfFrames = 1;
+            ModelAnimations.Add(animationClosed);    
         }
 
         private bool BuildSkeletonBonesAndLookups()

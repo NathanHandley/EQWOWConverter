@@ -273,6 +273,9 @@ namespace EQWOWConverter
         // How much space between each step of a ladder along the Z axis (value is before world scaling)
         public static readonly float OBJECT_STATIC_LADDER_STEP_DISTANCE = 0.5f;
 
+        // How long an active doodad takes to change states
+        public static readonly UInt32 OBJECT_ACTIVE_DOODAD_ANIM_SPEED_DEFAULT_IN_MS = 1000;
+
         //=====================================================================
         // Creatures
         //=====================================================================
