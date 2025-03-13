@@ -37,7 +37,7 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, "SmartGameObjectAI");
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, string.Empty);
         }
 
         public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, string scriptName)

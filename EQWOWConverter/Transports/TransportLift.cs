@@ -43,17 +43,6 @@ namespace EQWOWConverter.Transports
             return TransportLifts;
         }
 
-        public static int GetTransportLiftGameObjectGUIDByTemplateID(int gameObjectTemplateID)
-        {
-            foreach(TransportLift transportLift in TransportLifts)
-            {
-                if (transportLift.GameObjectTemplateID == gameObjectTemplateID)
-                    return transportLift.GameObjectGUID;
-            }
-            Logger.WriteError("Failed to get GameObject GUID for transport lift with template id '" + gameObjectTemplateID + "'");
-            return 0;
-        }
-
         private static void PopulateTransportLiftList()
         {
             // Load all of transport lifts

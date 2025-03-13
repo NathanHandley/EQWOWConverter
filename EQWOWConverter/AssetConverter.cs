@@ -259,7 +259,6 @@ namespace EQWOWConverter
                     TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
                 }
                 transportLiftTrigger.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLiftTrigger.MeshName];
-                transportLiftTrigger.LiftGameObjectGUID = TransportLift.GetTransportLiftGameObjectGUIDByTemplateID(transportLiftTrigger.LiftGameObjectTemplateID);
             }
 
             Logger.WriteDetail("Converting Transports complete.");
@@ -1709,7 +1708,7 @@ namespace EQWOWConverter
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
-            SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+            //SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -2046,7 +2045,6 @@ namespace EQWOWConverter
                     gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.GameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
                         transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
-                    //smartScriptsSQL.AddRowForButtonTriggeringLift(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.LiftTriggerStateID, transportLiftTrigger.LiftGameObjectGUID, transportLiftTrigger.LiftGameObjectTemplateID);
                 }
             }
 
@@ -2080,7 +2078,7 @@ namespace EQWOWConverter
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
-            smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
+            //smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
         }

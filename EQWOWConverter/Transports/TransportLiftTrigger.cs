@@ -38,9 +38,6 @@ namespace EQWOWConverter.Transports
         public int GameObjectGUID = 0;
         public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
-        public int LiftGameObjectTemplateID = 0;
-        public int LiftGameObjectGUID = 0;
-        public int LiftTriggerStateID = 0;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
         {
@@ -74,7 +71,6 @@ namespace EQWOWConverter.Transports
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
                 curLiftTrigger.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
-                curLiftTrigger.LiftGameObjectTemplateID = int.Parse(columns["lift_gotemplate_id"]);
                 curLiftTrigger.Name = columns["name"];
                 curLiftTrigger.MeshName = columns["mesh"];
                 curLiftTrigger.SpawnX = float.Parse(columns["spawn_x"]) * Configuration.GENERATE_WORLD_SCALE;
@@ -85,7 +81,6 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.AnimTimeInMS = int.Parse(columns["anim_time_in_ms"]);
                 curLiftTrigger.ResetTimeInMS = int.Parse(columns["reset_in_ms"]);
                 curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
-                curLiftTrigger.LiftTriggerStateID = int.Parse(columns["lift_trigger_state"]);
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
         }

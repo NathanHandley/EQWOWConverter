@@ -14,9 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class SmartScriptsSQL : SQLFile
@@ -26,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM smart_scripts WHERE COMMENT LIKE 'EQ%';";
         }
 
-        public void AddRowForButtonTriggeringLift(int triggerGameObjectTemplateEntryID, int targetGameObjectStateOnTrigger, int targetGameObjectGUID, int targetGameObjectTemplateEntryID)
+        public void AddRow(int triggerGameObjectTemplateEntryID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", triggerGameObjectTemplateEntryID);
@@ -51,8 +48,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("action_param5", 0);
             newRow.AddInt("action_param6", 0);
             newRow.AddInt("target_type", 14); // 14 = SMART_TARGET_GAMEOBJECT_GUID
-            newRow.AddInt("target_param1", targetGameObjectGUID);
-            newRow.AddInt("target_param2", targetGameObjectTemplateEntryID);
+            newRow.AddInt("target_param1", 0);
+            newRow.AddInt("target_param2", 0);
             newRow.AddInt("target_param3", 0);
             newRow.AddInt("target_param4", 0);
             newRow.AddFloat("target_x", 0);
