@@ -238,7 +238,7 @@ namespace EQWOWConverter
         // Mod / multiplier to volumes (multiplies the volume by this value)
         // NOTE: Sound Instance volumes can be found in Sound.GetVolume
         public static readonly float AUDIO_AMBIENT_SOUND_VOLUME_MOD = 1f;
-        public static readonly float AUDIO_SOUNDINSTANCE_VOLUME_MOD = 1f;
+        public static readonly float AUDIO_SOUNDINSTANCE_VOLUME_MOD = 1f; // Also game objects
         public static readonly float AUDIO_MUSIC_VOLUME_MOD = 1f;
 
         // If this is 'true', draw any sound instances in a zone as a little box

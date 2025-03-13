@@ -23,6 +23,7 @@ namespace EQWOWConverter.Transports
     {
         private static List<TransportLiftTrigger> AllTransportLiftTriggers = new List<TransportLiftTrigger>();
         public static Dictionary<int, M2> ObjectModelM2ByMeshGameObjectDisplayID = new Dictionary<int, M2>();
+        public static Dictionary<int, Sound> SoundsByMeshGameObjectDisplayID = new Dictionary<int, Sound>();
 
         public string SpawnZoneShortName = string.Empty;
         public string Name = string.Empty;
@@ -38,6 +39,7 @@ namespace EQWOWConverter.Transports
         public int GameObjectGUID = 0;
         public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
+        public string SoundName = string.Empty;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
         {
@@ -80,6 +82,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.AnimMod = float.Parse(columns["anim_mod"]);
                 curLiftTrigger.AnimTimeInMS = int.Parse(columns["anim_time_in_ms"]);
                 curLiftTrigger.ResetTimeInMS = int.Parse(columns["reset_in_ms"]);
+                curLiftTrigger.SoundName = columns["sound_name"];
                 curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }

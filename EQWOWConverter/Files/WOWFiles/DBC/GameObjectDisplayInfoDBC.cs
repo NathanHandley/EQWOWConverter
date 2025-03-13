@@ -29,15 +29,15 @@ namespace EQWOWConverter.WOWFiles
     {
         private static int CUR_ID = Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
 
-        public void AddRow(int id, string modelNameAndRelativePath, BoundingBox boundingBox)
+        public void AddRow(int id, string modelNameAndRelativePath, BoundingBox boundingBox, int openSoundEntryID = 0, int closeSoundEntryID = 0)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);
             newRow.AddString(modelNameAndRelativePath);
             newRow.AddInt32(0); // Stand SoundEntries.ID
-            newRow.AddInt32(0); // Open SoundEntries.ID
+            newRow.AddInt32(openSoundEntryID); // Open SoundEntries.ID
             newRow.AddInt32(0); // Loop SoundEntries.ID
-            newRow.AddInt32(0); // Close SoundEntries.ID
+            newRow.AddInt32(closeSoundEntryID); // Close SoundEntries.ID
             newRow.AddInt32(0); // Destroy SoundEntries.ID
             newRow.AddInt32(0); // Opened SoundEntries.ID
             newRow.AddInt32(0); // Custom0 SoundEntries.ID

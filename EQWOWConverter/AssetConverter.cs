@@ -230,6 +230,7 @@ namespace EQWOWConverter
             Logger.WriteDetail("Loading transport lift triggers...");
             List<TransportLiftTrigger> transportLiftTriggers = TransportLiftTrigger.GetAllTransportLiftTriggers();
             gameObjectDisplayInfoIDsByMeshName.Clear();
+            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
             Dictionary<string, ObjectModel> transportLiftTriggerObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
             foreach (TransportLiftTrigger transportLiftTrigger in transportLiftTriggers)
             {
@@ -256,8 +257,28 @@ namespace EQWOWConverter
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                     transportLiftTriggerObjectModelsByMeshName.Add(transportLiftTrigger.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByMeshName.Add(transportLiftTrigger.MeshName, gameObjectDisplayInfoID);
-                    TransportLift.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
+                    TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
+
+                    // Also handle any sounds that would go with it
+                    if (transportLiftTrigger.SoundName.Length != 0)
+                    {
+                        // Load it
+                        string name = "EQ GameObject " + Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName);
+                        Sound triggerSound = new Sound(name, Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName), SoundType.GameObject, 8, 20, false);
+
+                        // Copy it
+                        string outputLiftSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "EQTransports");
+                        if (Directory.Exists(outputLiftSoundFolder) == false)
+                            FileTool.CreateBlankDirectory(outputLiftSoundFolder, true);
+                        string sourceFullPath = Path.Combine(inputSoundFolder, transportLiftTrigger.SoundName);
+                        string targetFullPath = Path.Combine(outputLiftSoundFolder, transportLiftTrigger.SoundName);
+                        File.Copy(sourceFullPath, targetFullPath, true);
+
+                        // Store it
+                        TransportLiftTrigger.SoundsByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, triggerSound);
+                    }
                 }
+
                 transportLiftTrigger.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLiftTrigger.MeshName];
             }
 
@@ -989,10 +1010,15 @@ namespace EQWOWConverter
                 }
                 if (TransportLift.GetAllTransportLifts().Count > 0)
                 {
-
+                    // Transport lift models
                     string relativeTransportsPath = Path.Combine("World", "Everquest", "Transports");
                     string fullTransportsPath = Path.Combine(mpqReadyFolder, relativeTransportsPath);
                     mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullTransportsPath + "\" \"" + relativeTransportsPath + "\" /r");
+
+                    // Transport lift sounds
+                    string relativeDoodadSoundsPath = Path.Combine("Sound", "EQTransports");
+                    string fullDoodadSoundsPath = Path.Combine(mpqReadyFolder, relativeDoodadSoundsPath);
+                    mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullDoodadSoundsPath + "\" \"" + relativeDoodadSoundsPath + "\" /r");
                 }
             }
 
@@ -1588,7 +1614,10 @@ namespace EQWOWConverter
                 foreach (var m2ByGameObjectID in TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID)
                 {
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
-                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
+                    int openSoundEntryID = 0;
+                    if (TransportLiftTrigger.SoundsByMeshGameObjectDisplayID.ContainsKey(m2ByGameObjectID.Key) == true)
+                        openSoundEntryID = TransportLiftTrigger.SoundsByMeshGameObjectDisplayID[m2ByGameObjectID.Key].DBCID;
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox, openSoundEntryID, 0);
                 }
                 foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
                 {
@@ -1597,6 +1626,9 @@ namespace EQWOWConverter
                         continue;
                     transportAnimationDBC.AddRow(pathNode.GameObjectTemplateEntryID, pathNode.TimestampInMS, pathNode.XPositionOffset, pathNode.YPositionOffset, pathNode.ZPositionOffset, pathNode.AnimationSequenceID);
                 }
+                string soundDirectoryRelative = Path.Combine("Sound", "EQTransports");
+                foreach (var sound in TransportLiftTrigger.SoundsByMeshGameObjectDisplayID)
+                    soundEntriesDBC.AddRow(sound.Value, sound.Value.AudioFileNameNoExt + ".wav", soundDirectoryRelative);
             }
 
             // Save the files

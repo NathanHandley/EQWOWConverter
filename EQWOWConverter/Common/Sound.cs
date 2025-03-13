@@ -36,12 +36,12 @@ namespace EQWOWConverter.Common
         public float MinDistance;
         public float DistanceCutoff;
 
-        public Sound(string name, string audioFileName, SoundType type, float minDistance, float distanceCutoff, bool loop, float volume = 1f)
+        public Sound(string name, string audioFileNameNoExt, SoundType type, float minDistance, float distanceCutoff, bool loop, float volume = 1f)
         {
             DBCID = CURRENT_SOUNDENTRY_ID;
             CURRENT_SOUNDENTRY_ID++;
             Name = name;
-            AudioFileNameNoExt = audioFileName;
+            AudioFileNameNoExt = audioFileNameNoExt;
             Type = type;
             MinDistance = minDistance;
             DistanceCutoff = distanceCutoff;
@@ -63,6 +63,7 @@ namespace EQWOWConverter.Common
                     case "caveloop": volume = 0.2f; break;
                     case "clock": volume = 0.2f; break;
                     case "dockbell": volume = 0.2f; break;
+                    case "elevloop": volume = 1f; break;
                     case "fire_lp": volume = 0.15f; break;
                     case "flagloop": volume = 0.2f; break;
                     case "lakelap1": volume = 0.2f; break;
