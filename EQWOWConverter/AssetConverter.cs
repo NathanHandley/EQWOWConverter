@@ -2022,7 +2022,7 @@ namespace EQWOWConverter
                     string name = "Lift EQ (" + transportLift.Name + ")";
                     string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name);
+                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
                     gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
                 }
@@ -2046,7 +2046,7 @@ namespace EQWOWConverter
                     gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.GameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
                         transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
-                    smartScriptsSQL.AddRowForTriggerGoober(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.LiftGameObjectGUID, transportLiftTrigger.LiftGameObjectTemplateID);
+                    //smartScriptsSQL.AddRowForButtonTriggeringLift(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.LiftTriggerStateID, transportLiftTrigger.LiftGameObjectGUID, transportLiftTrigger.LiftGameObjectTemplateID);
                 }
             }
 

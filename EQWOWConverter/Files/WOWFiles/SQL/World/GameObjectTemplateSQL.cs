@@ -30,9 +30,9 @@ namespace EQWOWConverter.WOWFiles
             AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, string.Empty);
         }
 
-        public void AddRowForTransportLift(int entryID, int displayID, string name)
+        public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)
         {
-            AddRow(entryID, 11, displayID, name, 0, 0, 0, 0, string.Empty);
+            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)

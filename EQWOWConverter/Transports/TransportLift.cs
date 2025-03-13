@@ -31,12 +31,11 @@ namespace EQWOWConverter.Transports
         public float SpawnX = 0;
         public float SpawnY = 0;
         public float SpawnZ = 0;
+        public int EndTimestamp = 0; // Half way point, if a lift goes from bottom to up then this would be the top
         public float Orientation = 0;
         public int GameObjectGUID = 0;
         public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
-
-
         public static List<TransportLift> GetAllTransportLifts()
         {
             if (TransportLifts.Count == 0)
@@ -88,6 +87,7 @@ namespace EQWOWConverter.Transports
                 curTransportLift.SpawnY = float.Parse(columns["spawn_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.SpawnZ = float.Parse(columns["spawn_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 curTransportLift.Orientation = float.Parse(columns["orientation"]);
+                curTransportLift.EndTimestamp = int.Parse(columns["end_timestamp"]);
                 curTransportLift.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 TransportLifts.Add(curTransportLift);
             }

@@ -26,14 +26,14 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM smart_scripts WHERE COMMENT LIKE 'EQ%';";
         }
 
-        public void AddRowForTriggerGoober(int triggerGameObjectTemplateEntryID, int targetGameObjectGUID, int targetGameObjectTemplateEntryID)
+        public void AddRowForButtonTriggeringLift(int triggerGameObjectTemplateEntryID, int targetGameObjectStateOnTrigger, int targetGameObjectGUID, int targetGameObjectTemplateEntryID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", triggerGameObjectTemplateEntryID);
             newRow.AddInt("source_type", 1); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
             newRow.AddInt("id", 0);
             newRow.AddInt("link", 0);
-            newRow.AddInt("event_type", 70);
+            newRow.AddInt("event_type", 70); // 70 = SMART_EVENT_GO_STATE_CHANGED
             newRow.AddInt("event_phase_mask", 0);
             newRow.AddInt("event_chance", 100);
             newRow.AddInt("event_flags", 0);
@@ -43,8 +43,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("event_param4", 0);
             newRow.AddInt("event_param5", 0);
             newRow.AddInt("event_param6", 0);
-            newRow.AddInt("action_type", 9); // SMART_ACTION_ACTIVATE_GOOBJECT
-            newRow.AddInt("action_param1", 0);
+            newRow.AddInt("action_type", 9); // 9 = Activate GO, 118 = SMART_ACTION_GO_SET_GO_STATE, 93 = SMART_ACTION_SEND_GO_CUSTOM_ANIM
+            newRow.AddInt("action_param1", 0); // targetGameObjectStateOnTrigger
             newRow.AddInt("action_param2", 0);
             newRow.AddInt("action_param3", 0);
             newRow.AddInt("action_param4", 0);

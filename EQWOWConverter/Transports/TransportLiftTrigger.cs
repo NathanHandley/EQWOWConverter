@@ -40,6 +40,7 @@ namespace EQWOWConverter.Transports
         public int GameObjectDisplayInfoID = 0;
         public int LiftGameObjectTemplateID = 0;
         public int LiftGameObjectGUID = 0;
+        public int LiftTriggerStateID = 0;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
         {
@@ -84,6 +85,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.AnimTimeInMS = int.Parse(columns["anim_time_in_ms"]);
                 curLiftTrigger.ResetTimeInMS = int.Parse(columns["reset_in_ms"]);
                 curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                curLiftTrigger.LiftTriggerStateID = int.Parse(columns["lift_trigger_state"]);
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
         }
