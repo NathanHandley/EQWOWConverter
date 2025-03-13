@@ -102,6 +102,32 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
+        public void PopulateAsGameObjectPlayAnimatedSoundOpenGO1(ObjectModel wowObjectModel)
+        {
+            Identifier = "$GO1";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("root"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.Open)           
+                    Timestamps[i].AddTimestamp(0);
+            }
+        }
+
+        public void PopulateAsGameObjectPlayAnimatedSoundCloseGO3(ObjectModel wowObjectModel)
+        {
+            Identifier = "$GO3";
+            ParentBoneID = Convert.ToUInt32(wowObjectModel.GetFirstBoneIndexForEQBoneNames("root"));
+
+            for (int i = 0; i < wowObjectModel.ModelAnimations.Count; i++)
+            {
+                Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
+                if (wowObjectModel.ModelAnimations[i].AnimationType == AnimationType.Close)
+                    Timestamps[i].AddTimestamp(0);
+            }
+        }
+
         public void PopulateAsPlayWoundAnimKitHIT(ObjectModel wowObjectModel)
         {
             Identifier = "$HIT";

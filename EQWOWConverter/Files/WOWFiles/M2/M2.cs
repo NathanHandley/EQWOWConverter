@@ -233,11 +233,25 @@ namespace EQWOWConverter.WOWFiles
 
         private void SetEvents(ObjectModel wowObjectModel)
         {
-            if (wowObjectModel.SoundIdleLoop != null)
+            if (wowObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Stand))
             {
                 // Idle Sound ($DSL)
                 M2Event newEvent = new M2Event();
-                newEvent.PopulateAsIdleSoundDSL(wowObjectModel.SoundIdleLoop);
+                newEvent.PopulateAsIdleSoundDSL(wowObjectModel.SoundsByAnimationType[AnimationType.Stand]);
+                Events.AddElement(newEvent);
+            }
+            if (wowObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Open))
+            {
+                // Open Sound ($GO1)
+                M2Event newEvent = new M2Event();
+                newEvent.PopulateAsGameObjectPlayAnimatedSoundOpenGO1(wowObjectModel);
+                Events.AddElement(newEvent);
+            }
+            if (wowObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Close))
+            {
+                // Open Sound ($GO3)
+                M2Event newEvent = new M2Event();
+                newEvent.PopulateAsGameObjectPlayAnimatedSoundCloseGO3(wowObjectModel);
                 Events.AddElement(newEvent);
             }
             if (wowObjectModel.ModelType == ObjectModelType.Skeletal)

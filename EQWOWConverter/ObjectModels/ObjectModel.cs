@@ -48,7 +48,7 @@ namespace EQWOWConverter.ObjectModels
         public List<string> GeneratedTextureNames = new List<string>();
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingSphereRadius = 0f;
-        public Sound? SoundIdleLoop = null;
+        public Dictionary<AnimationType, Sound> SoundsByAnimationType = new Dictionary<AnimationType, Sound>();
         public float ModelScalePreWorldScale = 1f;
         public float ModelLiftPreWorldScale = 0f;
         public int NumOfFidgetSounds = 0;
@@ -186,6 +186,7 @@ namespace EQWOWConverter.ObjectModels
 
                 // Create a base bone
                 ModelBones.Add(new ObjectModelBone());
+                ModelBones[0].BoneNameEQ = "root";
 
                 if (activeDoodadAnimationType == null)
                 {

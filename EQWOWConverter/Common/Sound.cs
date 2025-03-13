@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Common
 {
     internal class Sound
@@ -63,7 +57,7 @@ namespace EQWOWConverter.Common
                     case "caveloop": volume = 0.2f; break;
                     case "clock": volume = 0.2f; break;
                     case "dockbell": volume = 0.2f; break;
-                    case "elevloop": volume = 1f; break;
+                    case "elevloop": volume = 0.25f; break;
                     case "fire_lp": volume = 0.15f; break;
                     case "flagloop": volume = 0.2f; break;
                     case "lakelap1": volume = 0.2f; break;

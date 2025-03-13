@@ -237,11 +237,30 @@ namespace EQWOWConverter
                 // Load the object mesh if it hasn't been yet
                 if (transportLiftTriggerObjectModelsByMeshName.ContainsKey(transportLiftTrigger.MeshName) == false)
                 {
+                    // Load any sounds
+                    Sound? openSound = null;
+                    if (transportLiftTrigger.SoundName.Length != 0)
+                    {
+                        // Load it
+                        string name = "EQ GameObject " + Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName);
+                        openSound = new Sound(name, Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName), SoundType.GameObject, 8, 20, false);
+
+                        // Copy it
+                        string outputLiftSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "EQTransports");
+                        if (Directory.Exists(outputLiftSoundFolder) == false)
+                            FileTool.CreateBlankDirectory(outputLiftSoundFolder, true);
+                        string sourceFullPath = Path.Combine(inputSoundFolder, transportLiftTrigger.SoundName);
+                        string targetFullPath = Path.Combine(outputLiftSoundFolder, transportLiftTrigger.SoundName);
+                        File.Copy(sourceFullPath, targetFullPath, true);
+                    }
+
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
                     curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
+                    if (openSound != null)
+                        curObjectModel.SoundsByAnimationType.Add(AnimationType.Open, openSound);
 
                     // Create the M2 and Skin
                     string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLiftTrigger.MeshName);
@@ -258,25 +277,8 @@ namespace EQWOWConverter
                     transportLiftTriggerObjectModelsByMeshName.Add(transportLiftTrigger.MeshName, curObjectModel);
                     gameObjectDisplayInfoIDsByMeshName.Add(transportLiftTrigger.MeshName, gameObjectDisplayInfoID);
                     TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, objectM2);
-
-                    // Also handle any sounds that would go with it
-                    if (transportLiftTrigger.SoundName.Length != 0)
-                    {
-                        // Load it
-                        string name = "EQ GameObject " + Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName);
-                        Sound triggerSound = new Sound(name, Path.GetFileNameWithoutExtension(transportLiftTrigger.SoundName), SoundType.GameObject, 8, 20, false);
-
-                        // Copy it
-                        string outputLiftSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "EQTransports");
-                        if (Directory.Exists(outputLiftSoundFolder) == false)
-                            FileTool.CreateBlankDirectory(outputLiftSoundFolder, true);
-                        string sourceFullPath = Path.Combine(inputSoundFolder, transportLiftTrigger.SoundName);
-                        string targetFullPath = Path.Combine(outputLiftSoundFolder, transportLiftTrigger.SoundName);
-                        File.Copy(sourceFullPath, targetFullPath, true);
-
-                        // Store it
-                        TransportLiftTrigger.SoundsByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, triggerSound);
-                    }
+                    if (openSound != null)
+                        TransportLiftTrigger.SoundsByMeshGameObjectDisplayID.Add(gameObjectDisplayInfoID, openSound);
                 }
 
                 transportLiftTrigger.GameObjectDisplayInfoID = gameObjectDisplayInfoIDsByMeshName[transportLiftTrigger.MeshName];
@@ -1412,9 +1414,12 @@ namespace EQWOWConverter
                 creatureModelDataDBC.AddRow(creatureModelTemplate, relativeModelPath);
                 creatureSoundDataDBC.AddRow(creatureModelTemplate.DBCCreatureSoundDataID, creatureModelTemplate.Race, CreatureRace.FootstepIDBySoundName[creatureModelTemplate.Race.SoundWalkingName]);
             }
+            string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
+            foreach (var sound in CreatureRace.SoundsBySoundName)
+                soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
 
             // Faction
-            foreach(CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
+            foreach (CreatureFaction creatureFaction in CreatureFaction.GetCreatureFactionsByFactionID().Values)
             {
                 factionDBC.AddRow(creatureFaction);
                 if (creatureFaction.Name != Configuration.CREATURE_FACTION_ROOT_NAME)
@@ -1514,11 +1519,6 @@ namespace EQWOWConverter
                         string fileNameWithExt = soundInstance.Sound.AudioFileNameNoExt + ".wav";
                         soundEntriesDBC.AddRow(soundInstance.Sound, fileNameWithExt, ambientSoundsDirectory);
                     }
-                }
-                string creatureSoundsDirectory = "Sound\\Creature\\Everquest";
-                foreach (var sound in CreatureRace.SoundsBySoundName)
-                {
-                    soundEntriesDBC.AddRow(sound.Value, sound.Value.Name, creatureSoundsDirectory);
                 }
 
                 // WMOAreaTable (Header than groups)
