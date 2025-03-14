@@ -76,7 +76,7 @@ namespace EQWOWConverter.ObjectModels
         }
 
         public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName, ActiveDoodadAnimType? activeDoodadAnimationType = null, 
-            float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
+            float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
@@ -108,7 +108,7 @@ namespace EQWOWConverter.ObjectModels
 
         // TODO: Vertex Colors
         public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
+            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Save Name
             Name = name;
@@ -174,7 +174,7 @@ namespace EQWOWConverter.ObjectModels
             MeshData = meshData;
         }
 
-        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, float activeDoodadAnimTimeInMS = 0)
+        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
             if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
@@ -291,7 +291,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimModValue, float activeDoodadAnimTimeInMS)
+        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimModValue, int activeDoodadAnimTimeInMS)
         {
             // Associate all of the verts with the single bone that should already be set up
             if (ModelBones.Count == 0)
@@ -326,6 +326,7 @@ namespace EQWOWConverter.ObjectModels
             animationOpen.BoundingBox = new BoundingBox(BoundingBox);
             animationOpen.BoundingRadius = BoundingSphereRadius;
             animationOpen.NumOfFrames = 2;
+            animationOpen.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
                 case ActiveDoodadAnimType.UpDown:
@@ -343,6 +344,7 @@ namespace EQWOWConverter.ObjectModels
             animationOpened.BoundingBox = new BoundingBox(BoundingBox);
             animationOpened.BoundingRadius = BoundingSphereRadius;
             animationOpened.NumOfFrames = 1;
+            animationOpened.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
                 case ActiveDoodadAnimType.UpDown:
@@ -359,6 +361,7 @@ namespace EQWOWConverter.ObjectModels
             animationClose.BoundingBox = new BoundingBox(BoundingBox);
             animationClose.BoundingRadius = BoundingSphereRadius;
             animationClose.NumOfFrames = 2;
+            animationClose.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
                 case ActiveDoodadAnimType.UpDown:
@@ -377,6 +380,7 @@ namespace EQWOWConverter.ObjectModels
             animationStand.BoundingBox = new BoundingBox(BoundingBox);
             animationStand.BoundingRadius = BoundingSphereRadius;
             animationStand.NumOfFrames = 1;
+            animationStand.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             ModelAnimations.Add(animationStand);
 
             // Closed
@@ -385,6 +389,7 @@ namespace EQWOWConverter.ObjectModels
             animationClosed.BoundingBox = new BoundingBox(BoundingBox);
             animationClosed.BoundingRadius = BoundingSphereRadius;
             animationClosed.NumOfFrames = 1;
+            animationClosed.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             ModelAnimations.Add(animationClosed);    
         }
 
