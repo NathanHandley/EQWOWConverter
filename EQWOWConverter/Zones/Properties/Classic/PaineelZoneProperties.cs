@@ -83,11 +83,6 @@ namespace EQWOWConverter.Zones.Properties
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 940.828613f, 869.948547f, 937.455994f, 866.379211f, -65.978742f, 5f); // NW red roof house, bedroom water 2
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1001.873413f, 894.942810f, 998.371216f, 891.451416f, -65.978742f, 5f); // NW red roof house, bedroom water 3
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t50_w1", 1002.055908f, 848.042725f, 998.262268f, 844.184570f, -65.978742f, 5f); // NW red roof house, bedroom water 4
-
-            // This teleport is temp until the lift is put in
-            AddZoneLineBox("paineel", 628.220337f, 459.561157f, -27.999969f, ZoneLineOrientationType.East, 643.331970f, 489.505829f, -84.577217f, 613.275696f, 478.464996f, -102.468727f); // To top
-            AddZoneLineBox("paineel", 629.739441f, 493.080627f, -97.968727f, ZoneLineOrientationType.West, 657.893738f, 476.056213f, -12.802740f, 601.557678f, 461.619293f, -39.092232f); // To Bottom
-            ///
         }
     }
 }

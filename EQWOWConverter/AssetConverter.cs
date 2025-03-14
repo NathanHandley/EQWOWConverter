@@ -146,7 +146,6 @@ namespace EQWOWConverter
                 if (transportShipZoneModelsByMeshName.ContainsKey(transportShip.MeshName) == false)
                 {
                     // Load it
-                    //ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(transportShip.MeshName);
                     Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
                     Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
                     curZone.LoadFromEQObject(transportShip.MeshName, charactersFolderRoot);
