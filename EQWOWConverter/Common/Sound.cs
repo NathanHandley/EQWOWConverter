@@ -57,6 +57,8 @@ namespace EQWOWConverter.Common
                     case "caveloop": volume = 0.2f; break;
                     case "clock": volume = 0.2f; break;
                     case "dockbell": volume = 0.2f; break;
+                    case "doorst_o": volume = 0.2f; break;
+                    case "doorst_c": volume = 0.2f; break;
                     case "elevloop": volume = 0.25f; break;
                     case "fire_lp": volume = 0.15f; break;
                     case "flagloop": volume = 0.2f; break;

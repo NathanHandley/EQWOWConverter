@@ -18,6 +18,7 @@ namespace EQWOWConverter.Common
 {
     internal enum ActiveDoodadAnimType
     {
-        UpDown
+        SlideUpDown,
+        RotateAroundZ
     }
 }

@@ -23,12 +23,11 @@ namespace EQWOWConverter.Transports
     {
         private static List<TransportLiftTrigger> AllTransportLiftTriggers = new List<TransportLiftTrigger>();
         public static Dictionary<int, M2> ObjectModelM2ByMeshGameObjectDisplayID = new Dictionary<int, M2>();
-        public static Dictionary<int, Sound> SoundsByMeshGameObjectDisplayID = new Dictionary<int, Sound>();
-
+        public static Dictionary<string, Sound> AllSoundsBySoundName = new Dictionary<string, Sound>();
         public string SpawnZoneShortName = string.Empty;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
-        public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.UpDown;
+        public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.SlideUpDown;
         public float SpawnX = 0;
         public float SpawnY = 0;
         public float SpawnZ = 0;
@@ -39,7 +38,8 @@ namespace EQWOWConverter.Transports
         public int GameObjectGUID = 0;
         public int GameObjectTemplateID = 0;
         public int GameObjectDisplayInfoID = 0;
-        public string SoundName = string.Empty;
+        public Sound? OpenSound = null;
+        public Sound? CloseSound = null;
 
         public static List<TransportLiftTrigger> GetAllTransportLiftTriggers()
         {
@@ -69,7 +69,8 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnZoneShortName = columns["spawn_zone"];
                 switch (columns["anim_type"].ToLower().Trim())
                 {
-                    case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.UpDown; break;
+                    case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.SlideUpDown; break;
+                    case "rot_z": curLiftTrigger.AnimationType = ActiveDoodadAnimType.RotateAroundZ; break;
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
                 curLiftTrigger.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
@@ -82,10 +83,28 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.AnimMod = float.Parse(columns["anim_mod"]);
                 curLiftTrigger.AnimTimeInMS = int.Parse(columns["anim_time_in_ms"]);
                 curLiftTrigger.ResetTimeInMS = int.Parse(columns["reset_in_ms"]);
-                curLiftTrigger.SoundName = columns["sound_name"];
+                string openSoundName = columns["sound_open"].Trim();
+                if (openSoundName.Length > 0)
+                    curLiftTrigger.OpenSound = GetSound(openSoundName);
+                string closeSoundName = columns["sound_close"].Trim();
+                if (closeSoundName.Length > 0)
+                    curLiftTrigger.CloseSound = GetSound(closeSoundName);
                 curLiftTrigger.GameObjectGUID = GameObjectSQL.GenerateGUID();
                 AllTransportLiftTriggers.Add(curLiftTrigger);
             }
+        }
+        
+        private static Sound GetSound(string soundName)
+        {
+            if (AllSoundsBySoundName.ContainsKey(soundName.Trim()) == true)
+                return AllSoundsBySoundName[soundName.Trim()];
+            else
+            {
+                string name = "EQ TransportLiftTrigger " + Path.GetFileNameWithoutExtension(soundName);
+                Sound returnSound = new Sound(name, Path.GetFileNameWithoutExtension(soundName), SoundType.GameObject, 8, 20, false);
+                AllSoundsBySoundName.Add(soundName.Trim(), returnSound);
+                return returnSound;
+            }            
         }
     }
 }

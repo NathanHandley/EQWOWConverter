@@ -316,7 +316,7 @@ namespace EQWOWConverter.ObjectModels
             // Scale the mod value if translation
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.UpDown: activeDoodadAnimModValue *= Configuration.GENERATE_WORLD_SCALE; break;
+                case ActiveDoodadAnimType.SlideUpDown: activeDoodadAnimModValue *= Configuration.GENERATE_WORLD_SCALE; break;
                 default: break; // nothing
             }
 
@@ -329,10 +329,15 @@ namespace EQWOWConverter.ObjectModels
             animationOpen.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.UpDown:
+                case ActiveDoodadAnimType.SlideUpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
+                    } break;
+                case ActiveDoodadAnimType.RotateAroundZ:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, activeDoodadAnimModValue, 1));
                     } break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
             }
@@ -347,10 +352,15 @@ namespace EQWOWConverter.ObjectModels
             animationOpened.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.UpDown:
+                case ActiveDoodadAnimType.SlideUpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
                     } break;
+                case ActiveDoodadAnimType.RotateAroundZ:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, activeDoodadAnimModValue, 1));
+                    }
+                    break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
             }
             ModelAnimations.Add(animationOpened);
@@ -364,10 +374,16 @@ namespace EQWOWConverter.ObjectModels
             animationClose.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.UpDown:
+                case ActiveDoodadAnimType.SlideUpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimModValue));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));
+                    }
+                    break;
+                case ActiveDoodadAnimType.RotateAroundZ:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort(0, 0, activeDoodadAnimModValue * -1, 1));
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort());
                     }
                     break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
