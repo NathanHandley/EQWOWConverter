@@ -286,11 +286,14 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting EQ objects to WOW objects...");
 
             // Make sure the object folder path exists
-            string objectFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
-            if (Directory.Exists(objectFolderRoot) == false)
-                Directory.CreateDirectory(objectFolderRoot);
+            string conditionedObjectFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
+            if (Directory.Exists(conditionedObjectFolderRoot) == false)
+            {
+                Logger.WriteError("Failed to convert objects, as there is no object folder at '" + conditionedObjectFolderRoot + "', did you run the conditoning step?");
+                return false;
+            }
 
-            // Clean out the objects folder
+            // Clean out the target objects folder
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "StaticDoodads");
             if (Directory.Exists(exportObjectsFolder))
@@ -300,42 +303,33 @@ namespace EQWOWConverter
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
 
-            // Go through all of the object meshes and process them one at a time
-            string objectMeshFolderRoot = Path.Combine(objectFolderRoot, "meshes");
-            DirectoryInfo objectMeshDirectoryInfo = new DirectoryInfo(objectMeshFolderRoot);
-            FileInfo[] objectMeshFileInfos = objectMeshDirectoryInfo.GetFiles();
-            foreach (FileInfo objectMeshFileInfo in objectMeshFileInfos)
+            // Go through all of the static objects and process them one at a time
+            string staticObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "static_objects.txt");
+            List<string> staticObjectList = FileTool.ReadAllStringLinesFromFile(staticObjectListFileName, false, true);
+            foreach (string staticObjectName in staticObjectList)
             {
                 curProgress++;
-                string staticObjectMeshNameNoExt = Path.GetFileNameWithoutExtension(objectMeshFileInfo.FullName);
-                string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectMeshNameNoExt);
-
-                // Skip the collision mesh files
-                if (objectMeshFileInfo.Name.Contains("_collision"))
-                {
-                    Logger.WriteCounter(curProgress, curProgressOffset, objectMeshFileInfos.Length);
-                    continue;
-                }
+                string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectName);
 
                 // Load the EQ object
-                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectMeshNameNoExt);
-                ObjectModel curObject = new ObjectModel(staticObjectMeshNameNoExt, objectProperties, ObjectModelType.SimpleDoodad);
-                Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "'");
-                curObject.LoadStaticEQObjectFromFile(objectFolderRoot, staticObjectMeshNameNoExt);
-                Logger.WriteDetail("- [" + staticObjectMeshNameNoExt + "]: Importing EQ static object '" + staticObjectMeshNameNoExt + "' complete");
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
+                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.SimpleDoodad);
+                Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
+                curObject.LoadStaticEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
+                Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
 
                 // Create the M2 and Skin
-                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectMeshNameNoExt);
+                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectName);
                 M2 objectM2 = new M2(curObject, relativeMPQPath);
                 objectM2.WriteToDisk(curObject.Name, curStaticObjectOutputFolder);
 
                 // Place the related textures
-                string objectTextureFolder = Path.Combine(objectFolderRoot, "textures");
+                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
                 ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
-                Logger.WriteCounter(curProgress, curProgressOffset, objectMeshFileInfos.Length);
+                Logger.WriteCounter(curProgress, curProgressOffset, staticObjectList.Count);
             }
             return true;
         }
