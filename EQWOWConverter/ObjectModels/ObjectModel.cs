@@ -1322,7 +1322,7 @@ namespace EQWOWConverter.ObjectModels
                     }
                     if (materialFound == false)
                     {
-                        Logger.WriteError("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
+                        Logger.WriteDetail("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
                         continue;
                     }
                     if (curMaterial.HasTransparency() == true)
