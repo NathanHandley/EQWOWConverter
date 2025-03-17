@@ -82,7 +82,7 @@ internal class Program
 
                                 // Condition
                                 AssetConditioner conditioner = new AssetConditioner();
-                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.PATH_EQEXPORTSRAW_FOLDER, Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                bool condenseResult = conditioner.ConditionEQOutput();
                                 if (condenseResult == false)
                                 {
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
@@ -116,7 +116,7 @@ internal class Program
                         case "3":
                             {
                                 AssetConditioner conditioner = new AssetConditioner();
-                                bool condenseResult = conditioner.ConditionEQOutput(Configuration.PATH_EQEXPORTSRAW_FOLDER, Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER);
+                                bool condenseResult = conditioner.ConditionEQOutput();
                                 if (condenseResult == false)
                                     Logger.WriteInfo("Extracted EQ Data Conditioning Failed.");
                                 else

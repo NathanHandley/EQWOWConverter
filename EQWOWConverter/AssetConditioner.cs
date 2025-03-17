@@ -20,18 +20,12 @@ using System.Drawing.Drawing2D;
 using System.Text;
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.AccessControl;
 
 namespace EQWOWConverter
 {
     internal class AssetConditioner
     {
         public AssetConditioner() { }
-
-        private static uint objectMeshesCondensed = 0;
-        private static uint objectMaterialsCondensed = 0;
-        private static uint objectTexturesCondensed = 0;
 
         public bool ConditionEQOutput()
         {
@@ -45,11 +39,6 @@ namespace EQWOWConverter
                 Logger.WriteError("Conditioning Failed!");
                 return false;
             }
-
-            // Reset counters
-            objectMeshesCondensed = 0;
-            objectMaterialsCondensed = 0;
-            objectTexturesCondensed = 0;
 
             // Create the output folders
             string eqExportsCondensedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
@@ -84,6 +73,10 @@ namespace EQWOWConverter
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
             Logger.WriteCounter(curProgress, curProgressOffset);
 
+            // Keep a store of all objects found
+            SortedSet<string> staticObjectNames = new SortedSet<string>();
+            SortedSet<string> skeletalObjectNames = new SortedSet<string>();
+
             // Iterate through each exported directory and process objects and zones
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
             foreach (string topDirectory in topDirectories)
@@ -93,6 +86,10 @@ namespace EQWOWConverter
 
                 // Bring in the objects of this directory
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
+
+                // Skip client data and sky for now
+                if (topDirectoryFolderNameOnly == "clientdata" || topDirectoryFolderNameOnly == "sky")
+                    continue;
 
                 // If it's the character, music, equipment, or sound folder then copy it as-is
                 if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
@@ -139,9 +136,6 @@ namespace EQWOWConverter
                 // Process the object textures
                 ProcessAndCopyObjectTextures(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsTexturesFolderRoot);
 
-                // Process the object materials
-                //ProcessAndCopyObjectMaterials(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsMaterialsFolderRoot);
-
                 // Copy the core zone folder
                 string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
                 FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
@@ -155,9 +149,8 @@ namespace EQWOWConverter
                 }
 
                 // Process actor objects
-                Dictionary<string, string> oldToNewMeshRenames = new Dictionary<string, string>();
+                Dictionary<string, string> oldToNewObjectRenames = new Dictionary<string, string>();
                 string actorSkeletalFile = Path.Combine(tempObjectsFolder, "actors_skeletal.txt");
-                List<string> skeletalActors = new List<string>();
                 if (File.Exists(actorSkeletalFile))
                 {
                     foreach(string line in FileTool.ReadAllStringLinesFromFile(actorSkeletalFile, false, true))
@@ -165,25 +158,17 @@ namespace EQWOWConverter
                         if (line.Contains("#") == true)
                             continue;
                         string inputObjectName = line.Split(",")[0];
-                        if (oldToNewMeshRenames.ContainsKey(inputObjectName))
-                            inputObjectName = oldToNewMeshRenames[inputObjectName];
+                        if (oldToNewObjectRenames.ContainsKey(inputObjectName))
+                            inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
                         ProcessAndCopyObjectGeometry(topDirectory, tempObjectsFolder, outputZoneFolder, inputObjectName, outputObjectsFolderRoot, true, out outputObjectName);
                         if (inputObjectName != outputObjectName)
-                        {
-                            skeletalActors.Add(outputObjectName);
-                            oldToNewMeshRenames.Add(inputObjectName, outputObjectName);
-                        }
-                        else
-                            skeletalActors.Add(inputObjectName);
+                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
+                        if (skeletalObjectNames.Contains(outputObjectName) == false)
+                            skeletalObjectNames.Add(outputObjectName);
                     }
-                    string outputFileName = Path.Combine(outputZoneFolder, "skeletal_objects.txt");
-                    if (File.Exists(outputFileName))
-                        File.Delete(outputFileName);
-                    using (var outputFile = new StreamWriter(outputFileName))
-                        foreach (string line in skeletalActors)
-                            outputFile.WriteLine(line);
                 }
+                oldToNewObjectRenames.Clear();
                 string actorStaticFile = Path.Combine(tempObjectsFolder, "actors_static.txt");
                 if (File.Exists(actorStaticFile))
                 {
@@ -192,10 +177,14 @@ namespace EQWOWConverter
                         if (line.Contains("#") == true)
                             continue;
                         string inputObjectName = line.Split(",")[0];
-                        if (oldToNewMeshRenames.ContainsKey(inputObjectName))
-                            inputObjectName = oldToNewMeshRenames[inputObjectName];
+                        if (oldToNewObjectRenames.ContainsKey(inputObjectName))
+                            inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
                         ProcessAndCopyObjectGeometry(topDirectory, tempObjectsFolder, outputZoneFolder, inputObjectName, outputObjectsFolderRoot, false, out outputObjectName);
+                        if (inputObjectName != outputObjectName)
+                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
+                        if (staticObjectNames.Contains(outputObjectName) == false)
+                            staticObjectNames.Add(outputObjectName);
                     }
                 }
 
@@ -203,6 +192,16 @@ namespace EQWOWConverter
                 string sourceObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
                 string targetObjectInstancesFile = Path.Combine(outputZoneFolder, "object_instances.txt");
                 File.Copy(sourceObjectInstancesFile, targetObjectInstancesFile, true);
+
+                // Generate the object lists
+                string outputStaticObjectListFileName = Path.Combine(outputObjectsFolderRoot, "static_objects.txt");
+                using (var outputFile = new StreamWriter(outputStaticObjectListFileName))
+                    foreach (string line in staticObjectNames)
+                        outputFile.WriteLine(line);
+                string outputSkeletalObjectListFileName = Path.Combine(outputObjectsFolderRoot, "skeletal_objects.txt");
+                using (var outputFile = new StreamWriter(outputSkeletalObjectListFileName))
+                    foreach (string line in skeletalObjectNames)
+                        outputFile.WriteLine(line);
 
                 // Copy files that were missing in the original folders for some reason
                 if (topDirectoryFolderNameOnly == "fearplane")
@@ -233,8 +232,6 @@ namespace EQWOWConverter
 
             // Clean up the temp folder
             Directory.Delete(tempFolderRoot, true);
-
-            return true;
 
             // Save the texture coordinates in the material lists
             Logger.WriteInfo("Saving texture sizes in material lists...");
@@ -278,232 +275,7 @@ namespace EQWOWConverter
                 GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
             }
 
-            Logger.WriteInfo("Conditioning complete. Totals:");
-            Logger.WriteInfo(" - Object Meshes condensed: " + objectMeshesCondensed);
-            Logger.WriteInfo(" - Object Textures condensed: " + objectTexturesCondensed);
-            Logger.WriteInfo(" - Object Materials condensed: " + objectMaterialsCondensed);
-            return true;
-        }
-
-        public bool ConditionEQOutput(string eqExportsRawPath, string eqExportsCondensedPath)
-        {
-            Logger.WriteInfo("Conditioning EQ folders...");
-
-            // Reset counters
-            objectMeshesCondensed = 0;
-            objectMaterialsCondensed = 0;
-            objectTexturesCondensed = 0;
-
-            // Make sure the raw path exists
-            if (Directory.Exists(eqExportsRawPath) == false)
-            {
-                Logger.WriteError("Error - Raw input path of '" + eqExportsRawPath + "' does not exist.");
-                Logger.WriteError("Conditioning Failed!");
-                return false;
-            }
-
-            // Create base folder
-            FileTool.CreateBlankDirectory(eqExportsCondensedPath, false);
-
-            // Delete/Recreate the output folders
-            string outputObjectsFolderRoot = Path.Combine(eqExportsCondensedPath, "objects");
-            string outputObjectsTexturesFolderRoot = Path.Combine(outputObjectsFolderRoot, "textures");
-            string outputObjectsMeshesFolderRoot = Path.Combine(outputObjectsFolderRoot, "meshes");
-            string outputObjectsMaterialsFolderRoot = Path.Combine(outputObjectsFolderRoot, "materiallists");
-            string outputObjectsAnimationsFolderRoot = Path.Combine(outputObjectsFolderRoot, "animations");
-            string outputObjectsSkeletonsFolderRoot = Path.Combine(outputObjectsFolderRoot, "skeletons");
-            string outputCharactersFolderRoot = Path.Combine(eqExportsCondensedPath, "characters");
-            string outputSoundsFolderRoot = Path.Combine(eqExportsCondensedPath, "sounds");
-            string outputMusicFolderRoot = Path.Combine(eqExportsCondensedPath, "music");
-            string outputEquipmentFolderRoot = Path.Combine(eqExportsCondensedPath, "equipment");
-            string outputMiscImagesFolderRoot = Path.Combine(eqExportsCondensedPath, "miscimages");
-            string outputZoneFolderRoot = Path.Combine(eqExportsCondensedPath, "zones");
-            string outputLiquidSurfacesFolderRoot = Path.Combine(eqExportsCondensedPath, "liquidsurfaces");
-            string tempFolderRoot = Path.Combine(eqExportsCondensedPath, "temp");
-            FileTool.CreateBlankDirectory(outputObjectsFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputObjectsTexturesFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputObjectsMeshesFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputObjectsMaterialsFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputObjectsAnimationsFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputObjectsSkeletonsFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputCharactersFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputSoundsFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputMusicFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputEquipmentFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputMiscImagesFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputZoneFolderRoot, false);
-            FileTool.CreateBlankDirectory(outputLiquidSurfacesFolderRoot, false);
-            FileTool.CreateBlankDirectory(tempFolderRoot, false);
-
-            // For the counter
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset);
-
-            // Iterate through each exported directory and process objects and zones
-            string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
-            foreach (string topDirectory in topDirectories)
-            {
-                // Get just the folder name itself for later
-                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-
-                // Skip any disabled expansions
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
-                    continue;
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(topDirectoryFolderNameOnly))
-                    continue;
-
-                // Bring in the objects of this directory
-                FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
-
-                // If it's the character, music, equipment, or sound folder then copy it as-is
-                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
-                {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
-                    string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
-                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputFolder, true, true);
-                    continue;
-                }
-
-                // If it's a bmpwad (contains misc images) then copy that into the miscimages folder
-                if (topDirectoryFolderNameOnly.StartsWith("bmpwad"))
-                {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
-                    string outputMiscImagesFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
-                    FileTool.CopyDirectoryAndContents(tempFolderRoot, outputMiscImagesFolder, false, true);
-
-                    // Resize the loading screens
-                    if (topDirectoryFolderNameOnly == "bmpwad")
-                    {
-                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "logo03.png");
-                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "logo03resized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
-                    }
-                    else if (topDirectoryFolderNameOnly == "bmpwad4")
-                    {
-                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqkload.png");
-                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqkloadresized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
-                    }
-                    else if (topDirectoryFolderNameOnly == "bmpwad5")
-                    {
-                        string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqvload.png");
-                        string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqvloadresized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
-                    }
-                    continue;
-                }
-
-                // Determine what objects exist in this folder
-                string tempZoneFolder = Path.Combine(tempFolderRoot, "Zone");
-                string tempObjectsFolder = Path.Combine(tempFolderRoot, "Objects");
-                bool topDirectoryHasZone = Directory.Exists(tempZoneFolder);
-                bool topDirectoryHasObjects = Directory.Exists(tempObjectsFolder);
-
-                // Process objects
-                if (topDirectoryHasObjects)
-                {
-                    // Process the object textures
-                    ProcessAndCopyObjectTextures(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsTexturesFolderRoot);
-
-                    // Process the object materials
-                    ProcessAndCopyObjectMaterials(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsMaterialsFolderRoot);
-
-                    // Process the object meshes
-                    ProcessAndCopyObjectMeshes(topDirectoryFolderNameOnly, tempObjectsFolder, tempZoneFolder, outputObjectsMeshesFolderRoot);
-                }
-
-                // Process Zones
-                if (topDirectoryHasZone)
-                {
-                    // Copy the core zone folder
-                    string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
-                    FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
-
-                    // Bring over any object vertex colors
-                    string tempZoneObjectVertexColorFolder = Path.Combine(tempObjectsFolder, "VertexColors");
-                    if (Directory.Exists(tempZoneObjectVertexColorFolder))
-                    {
-                        string outputZoneObjectVertexColorFolder = Path.Combine(outputZoneFolder, "StaticObjectVertexColors");
-                        FileTool.CopyDirectoryAndContents(tempZoneObjectVertexColorFolder, outputZoneObjectVertexColorFolder, true, true);
-                    }
-
-                    // Copy files that were missing in the original folders for some reason
-                    if (topDirectoryFolderNameOnly == "fearplane")
-                    {
-                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
-                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "maywall.png");
-                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "maywall.png");
-                        File.Copy(inputFileName, outputFileName, true);
-                    }
-                    else if (topDirectoryFolderNameOnly == "oasis")
-                    {
-                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
-                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "canwall1.png");
-                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "canwall1.png");
-                        File.Copy(inputFileName, outputFileName, true);
-                    }
-                    else if (topDirectoryFolderNameOnly == "swampofnohope")
-                    {
-                        Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
-                        string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "kruphse3.png");
-                        string outputFileName = Path.Combine(outputZoneFolder, "Textures", "kruphse3.png");
-                        File.Copy(inputFileName, outputFileName, true);
-                    }
-                }
-                curProgress++;
-                Logger.WriteCounter(curProgress, curProgressOffset);
-            }
-
-            // Clean up the temp folder
-            Directory.Delete(tempFolderRoot, true);
-
-            // Save the texture coordinates in the material lists
-            Logger.WriteInfo("Saving texture sizes in material lists...");
-            topDirectories = Directory.GetDirectories(eqExportsCondensedPath);
-            foreach (string topDirectory in topDirectories)
-            {
-                // Get just the folder name itself for later
-                string topDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-
-                // Different logic based on type of folder
-                if (topDirectoryFolderNameOnly == "zones")
-                {
-                    string[] zoneDirectories = Directory.GetDirectories(topDirectory);
-                    foreach(string zoneDirectory in zoneDirectories)
-                    {
-                        // Get just the zone folder
-                        string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-                        SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);                    
-                    }
-                }
-                else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
-                {
-                    SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
-                }
-            }
-
-            // Replace the custom textures
-            ReplaceCustomTextures(outputCharactersFolderRoot, outputObjectsFolderRoot);
-
-            // Convert music
-            ConditionMusicFiles(outputMusicFolderRoot);
-
-            // Create icons
-            CreateIndividualIconFiles();
-
-            // Generate the liquid surfaces
-            Logger.WriteInfo("Generating liquid surface materials...");
-            for (int i = 1; i <= 30; i++)
-            {
-                string curFileName = "eqclear." + i + ".png";
-                GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
-            }
-
-            Logger.WriteInfo("Conditioning complete. Totals:");
-            Logger.WriteInfo(" - Object Meshes condensed: " + objectMeshesCondensed);
-            Logger.WriteInfo(" - Object Textures condensed: " + objectTexturesCondensed);
-            Logger.WriteInfo(" - Object Materials condensed: " + objectMaterialsCondensed);
+            Logger.WriteInfo("Conditioning complete.");
             return true;
         }
 
@@ -936,6 +708,26 @@ namespace EQWOWConverter
             return true;
         }
 
+        private void RenameMeshInSkeletonFile(string skeletonFileFullName, string oldMeshName, string newMeshName)
+        {
+            // Ensure file exists
+            if (File.Exists(skeletonFileFullName) == false)
+            {
+                Logger.WriteError("Failed to rename mesh in skeleton file, as file '" + skeletonFileFullName + "' did not exist");
+                return;
+            }
+
+            // Read all of the rows
+            List<string> fileLines = FileTool.ReadAllStringLinesFromFile(skeletonFileFullName, false, true);
+
+            // Output the rows, replacing the string
+            string replaceStringOld = "," + oldMeshName + ",";
+            string replaceStringNew = "," + newMeshName + ",";
+            using (var outputFile = new StreamWriter(skeletonFileFullName))
+                foreach (string line in fileLines)
+                    outputFile.WriteLine(line.Replace(replaceStringOld, replaceStringNew));
+        }
+
         private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
         {
             // Look for texture collisions for different texture files
@@ -1003,10 +795,6 @@ namespace EQWOWConverter
                             targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
                             doesUnresolvedFileCollisionExist = true;
                         }
-                        else
-                        {
-                            objectTexturesCondensed++;
-                        }
                     }
                 }
                 while (doesUnresolvedFileCollisionExist);
@@ -1071,10 +859,6 @@ namespace EQWOWConverter
                             targetObjectMaterialFile = Path.Combine(outputObjectsMaterialsFolderRoot, objectMaterialFileNameOnly);
                             doesUnresolvedFileCollisionExist = true;
                         }
-                        else
-                        {
-                            objectMaterialsCondensed++;
-                        }
                     }
                 }
                 while (doesUnresolvedFileCollisionExist);
@@ -1119,69 +903,120 @@ namespace EQWOWConverter
 
         private void ProcessAndCopyObjectGeometry(string topDirectory, string tempObjectsFolder, string tempZoneFolder, string objectName, string outputObjectsFolder, bool isSkeletal, out string revisedObjectName)
         {
-            // Collect source names
-            string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", objectName + ".txt");
-            string tempObjectMeshCollision = Path.Combine(tempObjectsFolder, "Meshes", objectName + "_collision.txt");
             string tempObjectMaterialList = Path.Combine(tempObjectsFolder, "MaterialLists", objectName + ".txt");
-            string tempObjectAnimationFile = Path.Combine(tempObjectsFolder, "Animations", objectName + "_pos.txt");
-            string tempObjectSkeletonFile = Path.Combine(tempObjectsFolder, "Skeletons", objectName + ".txt");
 
-            // Determine if any renames are required
-            int generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes"), 0);
-            generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists"), 0);
-            if (isSkeletal)
-            {                
-                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations"), 0);
-                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons"), 0);
-            }
-
-            // Copy the files, factoring for rename
-            revisedObjectName = objectName;
-            if (generatedID > 0)
-                revisedObjectName = objectName + "alt" + generatedID.ToString();
-            File.Copy(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + ".txt"), true);
-            File.Copy(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"), true);
-            if (File.Exists(tempObjectMeshCollision))
-                File.Copy(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + "_collision.txt"), true);
+            // Different logic for skeletal vs non-skeletal
             if (isSkeletal)
             {
+                // Collect source folder names                
+                string tempObjectAnimationFile = Path.Combine(tempObjectsFolder, "Animations", objectName + "_pos.txt");
+                string tempObjectSkeletonFile = Path.Combine(tempObjectsFolder, "Skeletons", objectName + ".txt");
+                List<string> tempMeshNames = new List<string>();
+                foreach (string line in FileTool.ReadAllStringLinesFromFile(tempObjectSkeletonFile, false, true))
+                {
+                    if (line.Contains("#") || line.StartsWith("root"))
+                        continue;
+                    string meshName = line.Split(",")[2];
+                    if (meshName.Length > 0)
+                        tempMeshNames.Add(meshName);
+                }
+
+                // Determine if any renames are required
+                Dictionary<string, int> generatedIDByOriginalMeshName = new Dictionary<string, int>();
+                foreach(string meshName in tempMeshNames)
+                {
+                    string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", meshName + ".txt");
+                    int generatedMeshID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes"), 0);
+                    if (generatedMeshID != 0)
+                        generatedIDByOriginalMeshName.Add(meshName, generatedMeshID);
+                }
+                int generatedID = 0;
+                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists"), generatedID);
+                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations"), generatedID);
+                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons"), generatedID);
+
+                // Update mesh names in the skeleton file, if needed
+                foreach (var idByOriginalMeshName in generatedIDByOriginalMeshName)
+                {
+                    string newMeshName = idByOriginalMeshName.Key + "alt" + generatedID.ToString();
+                    RenameMeshInSkeletonFile(tempObjectSkeletonFile, idByOriginalMeshName.Key, newMeshName);
+                }
+
+                // Copy the files, factoring for renames
+                foreach (string meshName in tempMeshNames)
+                {
+                    string targetMeshName = meshName;
+                    if (generatedIDByOriginalMeshName.ContainsKey(meshName))
+                        targetMeshName = meshName + "alt" + generatedID.ToString();
+                    string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", meshName + ".txt");
+                    string tempObjectMeshCollision = Path.Combine(tempObjectsFolder, "Meshes", meshName + "_collision.txt");
+                    File.Copy(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", targetMeshName + ".txt"), true);
+                    if (File.Exists(tempObjectMeshCollision))
+                        File.Copy(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", targetMeshName + "_collision.txt"), true);
+                }
+                revisedObjectName = objectName;
+                if (generatedID > 0)
+                    revisedObjectName = objectName + "alt" + generatedID.ToString();
+                File.Copy(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"), true);                
                 File.Copy(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations", revisedObjectName + "_pos.txt"), true);
                 File.Copy(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons", revisedObjectName + ".txt"), true);
             }
-
-            // If it was renamed, update the object instances file and either of the 
-            string tempObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
-            if (File.Exists(tempObjectInstancesFile) == false)
-                Logger.WriteDetail("- [" + topDirectory + "] No object_instances file to update");
             else
             {
-                EQObjectInstances eqObjectInstances = new EQObjectInstances();
-                if (eqObjectInstances.LoadFromDisk(tempObjectInstancesFile) == false)
-                    Logger.WriteError("- [" + topDirectory + "] Issue loading object instances file '" + tempObjectInstancesFile + "'");
+                // Collect source folder names
+                string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", objectName + ".txt");
+                string tempObjectMeshCollision = Path.Combine(tempObjectsFolder, "Meshes", objectName + "_collision.txt");
+
+                // Determine if any renames are required
+                int generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes"), 0);
+                generatedID = GetUniqueIDForAnyIncompatibleFileCollision(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists"), generatedID);
+
+                // Copy the files, factoring for rename
+                revisedObjectName = objectName;
+                if (generatedID > 0)
+                    revisedObjectName = objectName + "alt" + generatedID.ToString();
+                File.Copy(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + ".txt"), true);
+                File.Copy(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"), true);
+                if (File.Exists(tempObjectMeshCollision))
+                    File.Copy(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + "_collision.txt"), true);
+            }
+
+            // If the object itself was renamed, update the object instances file
+            if (objectName != revisedObjectName)
+            {
+                string tempObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
+                if (File.Exists(tempObjectInstancesFile) == false)
+                    Logger.WriteDetail("- [" + topDirectory + "] No object_instances file to update");
                 else
                 {
-                    bool meshFoundInFile = false;
-                    foreach (ObjectInstance objectInstance in eqObjectInstances.ObjectInstances)
+                    EQObjectInstances eqObjectInstances = new EQObjectInstances();
+                    if (eqObjectInstances.LoadFromDisk(tempObjectInstancesFile) == false)
+                        Logger.WriteError("- [" + topDirectory + "] Issue loading object instances file '" + tempObjectInstancesFile + "'");
+                    else
                     {
-                        if (objectInstance.ModelName == objectName)
+                        bool meshFoundInFile = false;
+                        foreach (ObjectInstance objectInstance in eqObjectInstances.ObjectInstances)
                         {
-                            meshFoundInFile = true;
-                            break;
+                            if (objectInstance.ModelName == objectName)
+                            {
+                                meshFoundInFile = true;
+                                break;
+                            }
                         }
-                    }
-                    if (meshFoundInFile == true)
-                    {
-                        string fileText = FileTool.ReadAllDataFromFile(tempObjectInstancesFile);
-                        if (fileText.Contains(objectName + ","))
+                        if (meshFoundInFile == true)
                         {
-                            string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(revisedObjectName);
-                            Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + tempObjectInstancesFile + "' contained mesh '" + objectName + "' which was renamed to '" + revisedObjectName + "'. Updating object_instances file...");
-                            fileText = fileText.Replace(objectName + ",", newObjectMeshFileNameNoExtension + ",");
-                            File.WriteAllText(tempObjectInstancesFile, fileText);
+                            string fileText = FileTool.ReadAllDataFromFile(tempObjectInstancesFile);
+                            if (fileText.Contains(objectName + ","))
+                            {
+                                string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(revisedObjectName);
+                                Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + tempObjectInstancesFile + "' contained mesh '" + objectName + "' which was renamed to '" + revisedObjectName + "'. Updating object_instances file...");
+                                fileText = fileText.Replace(objectName + ",", newObjectMeshFileNameNoExtension + ",");
+                                File.WriteAllText(tempObjectInstancesFile, fileText);
+                            }
                         }
                     }
                 }
-            }
+            }            
         }
 
         private void ProcessAndCopyObjectMeshes(string topDirectory, string tempObjectsFolder, string tempZoneFolder, string outputObjectsMeshesFolderRoot)
@@ -1273,10 +1108,6 @@ namespace EQWOWConverter
                             sourceObjectMeshFile = Path.Combine(tempObjectMeshesFolderName, objectMeshFileNameOnly);
                             targetObjectMeshFile = Path.Combine(outputObjectsMeshesFolderRoot, objectMeshFileNameOnly);
                             doesUnresolvedFileCollisionExist = true;
-                        }
-                        else
-                        {
-                            objectMeshesCondensed++;
                         }
                     }
                 }
