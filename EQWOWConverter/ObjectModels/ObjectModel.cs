@@ -191,7 +191,6 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-                    ModelAnimations[0].NumOfFrames = 1;
                 }
                 else
                 {
@@ -213,7 +212,6 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
-                    ModelAnimations[0].NumOfFrames = 1;
                     return;
                 }
 
@@ -328,7 +326,6 @@ namespace EQWOWConverter.ObjectModels
             animationOpen.AnimationType = AnimationType.Open;
             animationOpen.BoundingBox = new BoundingBox(BoundingBox);
             animationOpen.BoundingRadius = BoundingSphereRadius;
-            animationOpen.NumOfFrames = 2;
             animationOpen.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -351,7 +348,6 @@ namespace EQWOWConverter.ObjectModels
             animationOpened.AnimationType = AnimationType.Opened;
             animationOpened.BoundingBox = new BoundingBox(BoundingBox);
             animationOpened.BoundingRadius = BoundingSphereRadius;
-            animationOpened.NumOfFrames = 1;
             animationOpened.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -373,7 +369,6 @@ namespace EQWOWConverter.ObjectModels
             animationClose.AnimationType = AnimationType.Close;
             animationClose.BoundingBox = new BoundingBox(BoundingBox);
             animationClose.BoundingRadius = BoundingSphereRadius;
-            animationClose.NumOfFrames = 2;
             animationClose.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -398,7 +393,6 @@ namespace EQWOWConverter.ObjectModels
             animationStand.AnimationType = AnimationType.Stand;
             animationStand.BoundingBox = new BoundingBox(BoundingBox);
             animationStand.BoundingRadius = BoundingSphereRadius;
-            animationStand.NumOfFrames = 1;
             animationStand.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             ModelAnimations.Add(animationStand);
 
@@ -407,7 +401,6 @@ namespace EQWOWConverter.ObjectModels
             animationClosed.AnimationType = AnimationType.Closed;
             animationClosed.BoundingBox = new BoundingBox(BoundingBox);
             animationClosed.BoundingRadius = BoundingSphereRadius;
-            animationClosed.NumOfFrames = 1;
             animationClosed.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             ModelAnimations.Add(animationClosed);    
         }
@@ -569,6 +562,33 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
+            // For every bone that has animation frames, add the first one to the end to close the animation sequences
+            foreach (ObjectModelBone bone in ModelBones)
+            {
+                for (int i = 0; i < ModelAnimations.Count; i++)
+                {
+                    if (bone.ScaleTrack.Timestamps[i].Timestamps.Count > 1)
+                    {
+                        bone.ScaleTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
+                        bone.ScaleTrack.Values[i].Values.Add(bone.ScaleTrack.Values[i].Values[0]);
+                    }
+                    if (bone.RotationTrack.Timestamps[i].Timestamps.Count > 1)
+                    {
+                        QuaternionShort curRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[0]);
+                        QuaternionShort priorRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count-1]);
+                        curRotation.RecalculateToShortestFromOther(priorRotation);
+                        bone.RotationTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
+                        bone.RotationTrack.Values[i].Values.Add(curRotation);
+                    }
+                    if (bone.TranslationTrack.Timestamps[i].Timestamps.Count > 1)
+                    {
+                        bone.TranslationTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
+                        bone.TranslationTrack.Values[i].Values.Add(bone.TranslationTrack.Values[i].Values[0]);
+                    }
+                }
+            }
+
+
             if (ModelAnimations.Count == 0)
                 Logger.WriteError("Zero animations for skeletal model object '" + Name + "', so it will crash if you try to load it");
 
@@ -669,10 +689,6 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
                         ModelAnimations.Add(newAnimation);
 
-                        // If this has more than one frame, reduce the duration by 1 frame to allow for proper looping (TODO: Is this really needed?)
-                        if (animation.Value.FrameCount > 1)
-                            newAnimation.DurationInMS -= Convert.ToUInt32(animation.Value.AnimationFrames[0].FramesMS);
-
                         // Create an animation track sequence for each bone
                         foreach (ObjectModelBone bone in ModelBones)
                         {
@@ -683,9 +699,9 @@ namespace EQWOWConverter.ObjectModels
 
                         // Add the animation-bone transformations to the bone objects for each frame
                         Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
-                        foreach (Animation.BoneAnimationFrame animationFrame in animation.Value.AnimationFrames)
+                        for (int i = 0; i < animation.Value.AnimationFrames.Count; i++)
                         {
-                            newAnimation.NumOfFrames++;
+                            Animation.BoneAnimationFrame animationFrame = animationFrame = animation.Value.AnimationFrames[i];
                             if (DoesBoneExistForName(animationFrame.GetBoneName()) == false)
                             {
                                 Logger.WriteDetail("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
@@ -709,11 +725,10 @@ namespace EQWOWConverter.ObjectModels
                                                                        animationFrame.YPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
                                                                        animationFrame.ZPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
-                                QuaternionShort frameRotation;
-                                frameRotation = new QuaternionShort(-animationFrame.XRotation,
-                                                                    -animationFrame.YRotation,
-                                                                    -animationFrame.ZRotation,
-                                                                    animationFrame.WRotation);
+                                QuaternionShort frameRotation = new QuaternionShort(-animationFrame.XRotation,
+                                                                                    -animationFrame.YRotation,
+                                                                                    -animationFrame.ZRotation,
+                                                                                    animationFrame.WRotation);
 
                                 // SLERP the rotation to fix it on translation to WoW.  If there's a previous frame, base off that
                                 if (curBone.RotationTrack.Values.Count > 0 && curBone.RotationTrack.Values[curBone.RotationTrack.Values.Count-1].Values.Count > 0)

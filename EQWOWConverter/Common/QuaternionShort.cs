@@ -32,6 +32,15 @@ namespace EQWOWConverter.Common
         public float W = 1;
 
         public QuaternionShort() { }
+
+        public QuaternionShort(QuaternionShort other)
+        {
+            X = other.X;
+            Y = other.Y;
+            Z = other.Z;
+            W = other.W;
+        }
+
         public QuaternionShort(float x, float y, float z, float w)
         {
             X = x;

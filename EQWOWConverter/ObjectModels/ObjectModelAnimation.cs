@@ -36,7 +36,6 @@ namespace EQWOWConverter.ObjectModels
         public float BoundingRadius = 0f;
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
-        public int NumOfFrames = 0;
 
         static public List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
         {
