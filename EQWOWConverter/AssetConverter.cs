@@ -344,9 +344,9 @@ namespace EQWOWConverter
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
-                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodadSkeletal);
+                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.Skeletal);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
-                curObject.LoadStaticSkeletalEQObjectFromFile(conditionedObjectFolderRoot, skeletalObjectName);
+                curObject.LoadSkeletalEQObjectFromFile(conditionedObjectFolderRoot, null);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
 
                 // Create the M2 and Skin

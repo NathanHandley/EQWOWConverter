@@ -90,20 +90,7 @@ namespace EQWOWConverter.ObjectModels
                     activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
-        public void LoadStaticSkeletalEQObjectFromFile(string inputRootFolder, string skeletonName)
-        {
-            // Clear any old data and reload it
-            EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadAllStaticSkeletalObjectDataFromDisk(Name, inputRootFolder, skeletonName);
-
-            // Load it
-            //if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
-            //else
-            //    Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
-        }
-
-        public void LoadCreatureEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
+        public void LoadSkeletalEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
@@ -137,14 +124,14 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialAndBones();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal)
+            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad)
             {
                 float scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
                 if (ModelType == ObjectModelType.Skeletal)
                     scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal), scaleAmount);
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal), scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -152,7 +139,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal), scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal), scaleAmount);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -174,7 +161,7 @@ namespace EQWOWConverter.ObjectModels
             CalculateBoundingBoxesAndRadii();
 
             // No texture replacement lookup (yet)
-            ModelReplaceableTextureLookups.Add(-1);
+            ModelReplaceableTextureLookups.Add(0);
 
             // Build the bones and animation structures
             ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
@@ -190,12 +177,9 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
-            if ((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal) || EQObjectModelData.Animations.Count == 0)
+            if ((ModelType != ObjectModelType.Skeletal) || EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
-
-                if (ModelType == ObjectModelType.Skeletal)
-                    Logger.WriteError("Object named '" + Name + "' is skeletal but has no animations, so loading as static");
 
                 // Create a base bone
                 ModelBones.Add(new ObjectModelBone());
@@ -979,7 +963,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal))
+            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -1014,7 +998,7 @@ namespace EQWOWConverter.ObjectModels
         {
             // Purge any invalid material references
             // TODO: Look into making this work for non-skeletal
-            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodadSkeletal)
+            if (ModelType == ObjectModelType.Skeletal)
             {
                 List<Material> updatedMaterialList;
                 meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
@@ -1332,7 +1316,7 @@ namespace EQWOWConverter.ObjectModels
             CollisionTriangles.Clear();
 
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal))
+            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad))
             {
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();

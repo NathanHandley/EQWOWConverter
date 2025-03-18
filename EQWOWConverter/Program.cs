@@ -15,8 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter;
-using System.Runtime.CompilerServices;
-using static Mysqlx.Expect.Open.Types;
 
 internal class Program
 {

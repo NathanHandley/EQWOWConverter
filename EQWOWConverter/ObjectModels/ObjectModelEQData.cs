@@ -44,27 +44,7 @@ namespace EQWOWConverter.ObjectModels
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
         }
 
-        public void LoadAllStaticSkeletalObjectDataFromDisk(string inputObjectName, string inputObjectFolder, string inputSkeletonName)
-        {
-            if (Directory.Exists(inputObjectFolder) == false)
-            {
-                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
-                return;
-            }
-
-            // Load various data
-            LoadSkeletonData(inputObjectName, inputObjectFolder);
-            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder, 0);
-            Dictionary<byte, string> meshNamesByBoneIndex = new Dictionary<byte, string>();
-            for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
-                if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
-                    meshNamesByBoneIndex.Add(i, SkeletonData.BoneStructures[i].MeshName);
-            LoadRenderMeshData(inputObjectName, meshNamesByBoneIndex, inputObjectFolder);
-            // TODO: Collision
-            LoadAnimationData(inputObjectName, inputObjectFolder, string.Empty);
-        }
-
-        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate creatureModelTemplate)
+        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate, string skeletonNameOverride = "")
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -75,141 +55,162 @@ namespace EQWOWConverter.ObjectModels
             // Load skeleton
             LoadSkeletonData(inputObjectName, inputObjectFolder);
 
-            // Delete body mesh data for Dervish
-            int raceID = creatureModelTemplate.Race.ID;
-            if (raceID == 100)
-                SkeletonData.MeshNames.Remove("der");
-
-            // Determine what mesh names to use for a given variation
-            List<string> meshNames = new List<string>();
-            if (creatureModelTemplate.HelmTextureIndex == 0)
+            if (creatureModelTemplate != null)
             {
-                foreach (string meshName in SkeletonData.MeshNames)
-                    meshNames.Add(meshName);
-            }
-            else
-            {
-                // Collect all of the body and helm textures
-                List<string> bodyTextureNames = new List<string>();
-                List<string> helmTextureNames = new List<string>();
-                foreach (string meshName in SkeletonData.MeshNames)
-                {
-                    if (meshName.Contains("he0"))
-                        helmTextureNames.Add(meshName);
-                    else 
-                        bodyTextureNames.Add(meshName);
-                }
-                foreach (string meshName in SkeletonData.SecondaryMeshNames)
-                {
-                    if (meshName.Contains("he0"))
-                        helmTextureNames.Add(meshName);
-                    else
-                        bodyTextureNames.Add(meshName);
-                }
+                // Delete body mesh data for Dervish
+                int raceID = creatureModelTemplate.Race.ID;
+                if (raceID == 100)
+                    SkeletonData.MeshNames.Remove("der");
 
-                // Handle out-of-bounds
-                if (creatureModelTemplate.HelmTextureIndex >= helmTextureNames.Count)
+                // Determine what mesh names to use for a given variation
+                List<string> meshNames = new List<string>();
+                if (creatureModelTemplate.HelmTextureIndex == 0)
                 {
                     foreach (string meshName in SkeletonData.MeshNames)
                         meshNames.Add(meshName);
                 }
                 else
                 {
-                    if (bodyTextureNames.Count > 0)
-                        meshNames.Add(bodyTextureNames[0]);
-                    meshNames.Add(helmTextureNames[creatureModelTemplate.HelmTextureIndex]);
-                }
-            }
-
-            // Fix coldain's helm
-            foreach (string meshName in SkeletonData.SecondaryMeshNames)
-            {
-                if (meshName == "cokhe01" && meshNames.Contains("cokhe01") == false)
-                    meshNames.Add("cokhe01");
-            }
-
-            // Special mesh logic for 'eye'
-            if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
-                meshNames.Add("eye");
-
-            // For robe-capable races, swap the chest geometry
-            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
-            {
-                meshNames.Remove(inputObjectName.ToLower());
-                meshNames.Add(string.Concat(inputObjectName.ToLower(), "01"));
-            }
-
-            // Load the render meshes
-            LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
-
-            // Load the materials, with special logic for invisible man
-            if (creatureModelTemplate.Race.ID == 127)
-            {
-                EQMaterialList materialListData = new EQMaterialList();
-                materialListData.LoadForInvisibleMan();
-                Materials = materialListData.MaterialsByTextureVariation[0];
-            }
-            else
-                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
-
-            // For multi-face races, swap the faces
-            if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
-            {
-                string faceTextureStart = string.Concat(inputObjectName, "he00");
-                faceTextureStart = faceTextureStart.ToLower();
-                foreach (Material material in Materials)
-                {
-                    if (material.TextureNames.Count > 0 && material.TextureNames[0].ToLower().StartsWith(faceTextureStart))
+                    // Collect all of the body and helm textures
+                    List<string> bodyTextureNames = new List<string>();
+                    List<string> helmTextureNames = new List<string>();
+                    foreach (string meshName in SkeletonData.MeshNames)
                     {
-                        char curTextureLastID = material.TextureNames[0].Last();
-                        string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
+                        if (meshName.Contains("he0"))
+                            helmTextureNames.Add(meshName);
+                        else
+                            bodyTextureNames.Add(meshName);
+                    }
+                    foreach (string meshName in SkeletonData.SecondaryMeshNames)
+                    {
+                        if (meshName.Contains("he0"))
+                            helmTextureNames.Add(meshName);
+                        else
+                            bodyTextureNames.Add(meshName);
+                    }
 
-                        // Only switch if that texture exists
-                        if (File.Exists(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
-                            material.TextureNames[0] = newFaceTextureName;
+                    // Handle out-of-bounds
+                    if (creatureModelTemplate.HelmTextureIndex >= helmTextureNames.Count)
+                    {
+                        foreach (string meshName in SkeletonData.MeshNames)
+                            meshNames.Add(meshName);
+                    }
+                    else
+                    {
+                        if (bodyTextureNames.Count > 0)
+                            meshNames.Add(bodyTextureNames[0]);
+                        meshNames.Add(helmTextureNames[creatureModelTemplate.HelmTextureIndex]);
+                    }
+                }
+
+                // Fix coldain's helm
+                foreach (string meshName in SkeletonData.SecondaryMeshNames)
+                {
+                    if (meshName == "cokhe01" && meshNames.Contains("cokhe01") == false)
+                        meshNames.Add("cokhe01");
+                }
+
+                // Special mesh logic for 'eye'
+                if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
+                    meshNames.Add("eye");
+
+                // For robe-capable races, swap the chest geometry
+                if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+                {
+                    meshNames.Remove(inputObjectName.ToLower());
+                    meshNames.Add(string.Concat(inputObjectName.ToLower(), "01"));
+                }
+
+                // Load the render meshes
+                LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
+
+                // Load the materials, with special logic for invisible man
+                if (creatureModelTemplate.Race.ID == 127)
+                {
+                    EQMaterialList materialListData = new EQMaterialList();
+                    materialListData.LoadForInvisibleMan();
+                    Materials = materialListData.MaterialsByTextureVariation[0];
+                }
+                else
+                    LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, creatureModelTemplate.TextureIndex);
+
+                // For multi-face races, swap the faces
+                if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
+                {
+                    string faceTextureStart = string.Concat(inputObjectName, "he00");
+                    faceTextureStart = faceTextureStart.ToLower();
+                    foreach (Material material in Materials)
+                    {
+                        if (material.TextureNames.Count > 0 && material.TextureNames[0].ToLower().StartsWith(faceTextureStart))
+                        {
+                            char curTextureLastID = material.TextureNames[0].Last();
+                            string newFaceTextureName = string.Concat(faceTextureStart, creatureModelTemplate.FaceIndex.ToString(), curTextureLastID);
+
+                            // Only switch if that texture exists
+                            if (File.Exists(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures", newFaceTextureName + ".blp")))
+                                material.TextureNames[0] = newFaceTextureName;
+                        }
+                    }
+                }
+
+                // For robe-capable races, swap the textures
+                if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+                {
+                    // Calculate what body robe graphics to use
+                    int robeIndex = creatureModelTemplate.TextureIndex - 6;
+
+                    // Body graphics
+                    if (robeIndex >= 0 && robeIndex <= 10)
+                    {
+                        string replaceFromText = "clk04";
+                        string replaceToText;
+                        if (robeIndex == 10)
+                            replaceToText = "clk10";
+                        else
+                            replaceToText = string.Concat("clk0", robeIndex.ToString());
+
+                        foreach (Material material in Materials)
+                            if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
+                                material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
+                    }
+
+                    // Head graphics (erudite only)
+                    if (raceID == 3 && (robeIndex >= 0 && robeIndex <= 10))
+                    {
+                        string replaceFromText = string.Concat("clk", inputObjectName.ToLower(), "06");
+                        string replaceToText;
+                        if (robeIndex == 10)
+                            replaceToText = "clk1006";
+                        else
+                            replaceToText = string.Concat("clk0", robeIndex.ToString(), "06");
+
+                        foreach (Material material in Materials)
+                            if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
+                                material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
                     }
                 }
             }
-
-            // For robe-capable races, swap the textures
-            if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+            else
             {
-                // Calculate what body robe graphics to use
-                int robeIndex = creatureModelTemplate.TextureIndex - 6;
+                // Load render meshes....
+                Dictionary<byte, string> meshNamesByBoneIndex = new Dictionary<byte, string>();
+                for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
+                    if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
+                        meshNamesByBoneIndex.Add(i, SkeletonData.BoneStructures[i].MeshName);
+                LoadRenderMeshData(inputObjectName, meshNamesByBoneIndex, inputObjectFolder);
 
-                // Body graphics
-                if (robeIndex >= 0 && robeIndex <= 10)
-                {
-                    string replaceFromText = "clk04";
-                    string replaceToText;
-                    if (robeIndex == 10)
-                        replaceToText = "clk10";
-                    else
-                        replaceToText = string.Concat("clk0", robeIndex.ToString());
+                // Load Materials
+                MaterialListFileName = inputObjectName;
+                LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
 
-                    foreach (Material material in Materials)
-                        if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
-                            material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
-                }
-
-                // Head graphics (erudite only)
-                if (raceID == 3 && (robeIndex >= 0 && robeIndex <= 10))
-                {
-                    string replaceFromText = string.Concat("clk", inputObjectName.ToLower(), "06");
-                    string replaceToText;
-                    if (robeIndex == 10)
-                        replaceToText = "clk1006";
-                    else
-                        replaceToText = string.Concat("clk0", robeIndex.ToString(), "06");
-
-                    foreach (Material material in Materials)
-                        if (material.TextureNames.Count > 0 && material.TextureNames[0].StartsWith(replaceFromText))
-                            material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
-                }
+                // Load various data
             }
 
             // Load the rest
-            LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.Skeleton2Name);
+            string animationSupplimentName = string.Empty;
+            if (creatureModelTemplate != null)
+                animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
+            LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplimentName);
             LoadCollisionMeshData(inputObjectName, inputObjectFolder); // TODO: Work with muliple meshes
         }
 
