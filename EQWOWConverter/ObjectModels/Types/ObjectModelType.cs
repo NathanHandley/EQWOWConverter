@@ -24,7 +24,8 @@ namespace EQWOWConverter.ObjectModels
 {
     internal enum ObjectModelType
     {
-        SimpleDoodad,
+        StaticDoodad,
+        StaticDoodadSkeletal,
         ZoneModel,
         SoundInstance,
         Skeletal

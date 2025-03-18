@@ -17,14 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.EQFiles;
-using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static EQWOWConverter.EQFiles.EQMesh;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -50,6 +42,26 @@ namespace EQWOWConverter.ObjectModels
             LoadRenderMeshData(inputObjectName, new List<string>() { inputMeshName }, inputObjectFolder);
             LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
             LoadCollisionMeshData(inputObjectName, inputObjectFolder);
+        }
+
+        public void LoadAllStaticSkeletalObjectDataFromDisk(string inputObjectName, string inputObjectFolder, string inputSkeletonName)
+        {
+            if (Directory.Exists(inputObjectFolder) == false)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
+                return;
+            }
+
+            // Load various data
+            LoadSkeletonData(inputObjectName, inputObjectFolder);
+            LoadMaterialDataFromDisk(inputObjectName, inputObjectFolder, 0);
+            Dictionary<byte, string> meshNamesByBoneIndex = new Dictionary<byte, string>();
+            for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
+                if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
+                    meshNamesByBoneIndex.Add(i, SkeletonData.BoneStructures[i].MeshName);
+            LoadRenderMeshData(inputObjectName, meshNamesByBoneIndex, inputObjectFolder);
+            // TODO: Collision
+            LoadAnimationData(inputObjectName, inputObjectFolder, string.Empty);
         }
 
         public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate creatureModelTemplate)
@@ -198,7 +210,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Load the rest
             LoadAnimationData(inputObjectName, inputObjectFolder, creatureModelTemplate.Race.Skeleton2Name);
-            LoadCollisionMeshData(inputObjectName, inputObjectFolder);
+            LoadCollisionMeshData(inputObjectName, inputObjectFolder); // TODO: Work with muliple meshes
         }
 
         private void LoadRenderMeshData(string inputObjectName, List<string> inputMeshNames, string inputObjectFolder)
@@ -220,7 +232,7 @@ namespace EQWOWConverter.ObjectModels
                     for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
                     {
                         byte curBoneID = 0;
-                        foreach (BoneReference bone in eqMeshData.Bones)
+                        foreach (EQMesh.BoneReference bone in eqMeshData.Bones)
                         {
                             if (i >= bone.VertStart && (i < (bone.VertStart + bone.VertCount)))
                             {
@@ -242,6 +254,29 @@ namespace EQWOWConverter.ObjectModels
                     Logger.WriteError("- [" + inputObjectName + "]: ERROR - Mismatch material list file name provided changing '" + MaterialListFileName + "' to '" + eqMeshData.MaterialListFileName + "'");
                     MaterialListFileName = eqMeshData.MaterialListFileName;
                 }
+            }
+        }
+
+        private void LoadRenderMeshData(string inputObjectName, Dictionary<byte, string> meshNamesByBoneIndex, string inputObjectFolder)
+        {
+            Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
+            foreach(var meshNameByBoneIndex in meshNamesByBoneIndex)
+            {
+                // Load this mesh
+                string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Value + ".txt");
+                EQMesh eqMeshData = new EQMesh();
+                if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
+                {
+                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                    return;
+                }
+
+                // Associate bone refrences
+                for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
+                    eqMeshData.Meshdata.BoneIDs.Add(meshNameByBoneIndex.Key);
+
+                // Save the mesh data into the larger mesh data
+                MeshData.AddMeshData(eqMeshData.Meshdata);
             }
         }
 
@@ -271,13 +306,14 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
+        // TODO: Make this work with multiple meshes
         private void LoadCollisionMeshData(string inputObjectName, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading collision mesh data...");
             string collisionMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + "_collision.txt");
             if (File.Exists(collisionMeshFileName) == false)
             {
-                Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found, skipping for zone.");
+                Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found, skipping.");
                 return;
             }
             EQMesh meshData = new EQMesh();

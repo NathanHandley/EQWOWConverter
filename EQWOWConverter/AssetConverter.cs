@@ -200,7 +200,7 @@ namespace EQWOWConverter
                         folderRoot = charactersFolderRoot;
 
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
+                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
                     curObjectModel.LoadStaticEQObjectFromFile(folderRoot, transportLift.MeshName);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
@@ -237,7 +237,7 @@ namespace EQWOWConverter
                 if (transportLiftTriggerObjectModelsByMeshName.ContainsKey(transportLiftTrigger.MeshName) == false)
                 {
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.SimpleDoodad);
+                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
                     curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
@@ -299,21 +299,20 @@ namespace EQWOWConverter
             if (Directory.Exists(exportObjectsFolder))
                 Directory.Delete(exportObjectsFolder, true);
 
-            // For the counter
+            // Generate static EQ objects
+            Logger.WriteInfo("Converting static EQ objects...");
+            string staticObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "static_objects.txt");
             int curProgress = 0;
             int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-
-            // Go through all of the static objects and process them one at a time
-            string staticObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "static_objects.txt");
             List<string> staticObjectList = FileTool.ReadAllStringLinesFromFile(staticObjectListFileName, false, true);
             foreach (string staticObjectName in staticObjectList)
             {
                 curProgress++;
-                string curStaticObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectName);
+                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectName);
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
-                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.SimpleDoodad);
+                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad);
                 Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
                 curObject.LoadStaticEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
                 Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
@@ -321,16 +320,49 @@ namespace EQWOWConverter
                 // Create the M2 and Skin
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectName);
                 M2 objectM2 = new M2(curObject, relativeMPQPath);
-                objectM2.WriteToDisk(curObject.Name, curStaticObjectOutputFolder);
+                objectM2.WriteToDisk(curObject.Name, curObjectOutputFolder);
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, objectTextureFolder, curStaticObjectOutputFolder);
+                ExportTexturesForObject(curObject, objectTextureFolder, curObjectOutputFolder);
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
                 Logger.WriteCounter(curProgress, curProgressOffset, staticObjectList.Count);
             }
+
+            // Generate skeletal EQ objects
+            Logger.WriteInfo("Converting skeletal EQ objects...");
+            string skeletalObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "skeletal_objects.txt");
+            curProgress = 0;
+            curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            List<string> skeletalObjectList = FileTool.ReadAllStringLinesFromFile(skeletalObjectListFileName, false, true);
+            foreach (string skeletalObjectName in skeletalObjectList)
+            {
+                curProgress++;
+                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, skeletalObjectName);
+
+                // Load the EQ object
+                ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
+                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodadSkeletal);
+                Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
+                curObject.LoadStaticSkeletalEQObjectFromFile(conditionedObjectFolderRoot, skeletalObjectName);
+                Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
+
+                // Create the M2 and Skin
+                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", skeletalObjectName);
+                M2 objectM2 = new M2(curObject, relativeMPQPath);
+                objectM2.WriteToDisk(curObject.Name, curObjectOutputFolder);
+
+                // Place the related textures
+                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
+                ExportTexturesForObject(curObject, objectTextureFolder, curObjectOutputFolder);
+
+                // Save it for use elsewhere
+                ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
+                Logger.WriteCounter(curProgress, curProgressOffset, skeletalObjectList.Count);
+            }
+
             return true;
         }
 

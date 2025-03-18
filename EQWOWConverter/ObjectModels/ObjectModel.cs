@@ -90,7 +90,20 @@ namespace EQWOWConverter.ObjectModels
                     activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
-        public void LoadAnimateEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
+        public void LoadStaticSkeletalEQObjectFromFile(string inputRootFolder, string skeletonName)
+        {
+            // Clear any old data and reload it
+            EQObjectModelData = new ObjectModelEQData();
+            EQObjectModelData.LoadAllStaticSkeletalObjectDataFromDisk(Name, inputRootFolder, skeletonName);
+
+            // Load it
+            //if (EQObjectModelData.CollisionVertices.Count == 0)
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
+            //else
+            //    Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+        }
+
+        public void LoadCreatureEQObjectFromFile(string inputRootFolder, CreatureModelTemplate creatureModelTemplate)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
@@ -124,14 +137,14 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialAndBones();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad)
+            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal)
             {
                 float scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
                 if (ModelType == ObjectModelType.Skeletal)
                     scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale(ModelType != ObjectModelType.Skeletal, scaleAmount);
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal), scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -139,7 +152,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(ModelType != ObjectModelType.Skeletal, scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal), scaleAmount);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -177,7 +190,7 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
-            if (ModelType != ObjectModelType.Skeletal || EQObjectModelData.Animations.Count == 0)
+            if ((ModelType != ObjectModelType.Skeletal && ModelType != ObjectModelType.StaticDoodadSkeletal) || EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
 
@@ -204,7 +217,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Skeletal
-            else
+            else 
             {
                 // Build the skeleton
                 if (BuildSkeletonBonesAndLookups() == false)
@@ -231,29 +244,32 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                // Fill out the nameplate bone translation
-                if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.GENERATE_FLOAT_EPSILON)
+                if (ModelType == ObjectModelType.Skeletal)
                 {
-                    // Set the adjustment vector
-                    ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
-                    Vector3 adjustmentVector = new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight);
-                    int raceID = CreatureModelTemplate.Race.ID;
+                    // Fill out the nameplate bone translation
+                    if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.GENERATE_FLOAT_EPSILON)
+                    {
+                        // Set the adjustment vector
+                        ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
+                        Vector3 adjustmentVector = new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight);
+                        int raceID = CreatureModelTemplate.Race.ID;
 
-                    // These races project forward instead of up due to a rotation
-                    if (raceID == 31 || raceID == 66 || raceID == 126)
-                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+                        // These races project forward instead of up due to a rotation
+                        if (raceID == 31 || raceID == 66 || raceID == 126)
+                            adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
 
-                    // These races project to their right instead of up due to a rotation
-                    if (raceID == 107 || raceID == 135 || raceID == 154)
-                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+                        // These races project to their right instead of up due to a rotation
+                        if (raceID == 107 || raceID == 135 || raceID == 154)
+                            adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
 
-                    // These races project to their right, but rotated the other way
-                    if (raceID == 162 || raceID == 68)
-                        adjustmentVector = new Vector3(CreatureModelTemplate.Race.NameplateAddedHeight * -1, 0, 0);
+                        // These races project to their right, but rotated the other way
+                        if (raceID == 162 || raceID == 68)
+                            adjustmentVector = new Vector3(CreatureModelTemplate.Race.NameplateAddedHeight * -1, 0, 0);
 
-                    // Update all of the track sequences
-                    for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
-                        nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
+                        // Update all of the track sequences
+                        for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
+                            nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
+                    }
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
@@ -286,8 +302,11 @@ namespace EQWOWConverter.ObjectModels
                     ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
                 }
 
-                // Set the portrait camera locations
-                SetupPortraitCamera();
+                if (ModelType == ObjectModelType.Skeletal)
+                {
+                    // Set the portrait camera locations
+                    SetupPortraitCamera();
+                }
             }
         }
 
@@ -478,19 +497,6 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Create the nameplate bone
-            GenerateNameplateBone();
-
-            // Create the bones required for events
-            CreateEventBone("dth"); // DeathThud
-            //CreateEventBone("cah"); // HandleCombatAnim
-            CreateEventBone("css"); // PlayWeaponSwoosh
-            //CreateEventBone("cpp"); // PlayCombatActionAnim
-            CreateEventBone("fd1"); // PlayFidgetSound1
-            CreateEventBone("fd2"); // PlayFidgetSound2
-            CreateEventBone("fsd"); // HandleFootfallAnimEvent
-            CreateEventBone("hit"); // PlayWoundAnimKit
-
             // Set bone lookups
             ModelBoneKeyLookups.Clear();
 
@@ -498,12 +504,30 @@ namespace EQWOWConverter.ObjectModels
             for (int i = 0; i < 27; i++)
                 ModelBoneKeyLookups.Add(-1);
 
-            // Set any key bones
+            // Set root as a key
             SetKeyBone(KeyBoneType.Root);
-            SetKeyBone(KeyBoneType.Jaw);
-            SetKeyBone(KeyBoneType._Breath);
-            SetKeyBone(KeyBoneType._Name);
-            SetKeyBone(KeyBoneType.CCH);
+
+            if (ModelType == ObjectModelType.Skeletal)
+            {
+                // Create the nameplate bone
+                GenerateNameplateBone();
+
+                // Create the bones required for events
+                CreateEventBone("dth"); // DeathThud
+                //CreateEventBone("cah"); // HandleCombatAnim
+                CreateEventBone("css"); // PlayWeaponSwoosh
+                //CreateEventBone("cpp"); // PlayCombatActionAnim
+                CreateEventBone("fd1"); // PlayFidgetSound1
+                CreateEventBone("fd2"); // PlayFidgetSound2
+                CreateEventBone("fsd"); // HandleFootfallAnimEvent
+                CreateEventBone("hit"); // PlayWoundAnimKit
+
+                // Set any key bones
+                SetKeyBone(KeyBoneType.Jaw);
+                SetKeyBone(KeyBoneType._Breath);
+                SetKeyBone(KeyBoneType._Name);
+                SetKeyBone(KeyBoneType.CCH);
+            }
 
             return true;
         }
@@ -522,39 +546,43 @@ namespace EQWOWConverter.ObjectModels
         {
             // Set the various animations (note: Do not change the order of the first 4)
             FindAndSetAnimationForType(AnimationType.Stand);
-            FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
-            FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
-            FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
-            FindAndSetAnimationForType(AnimationType.AttackUnarmed);
-            FindAndSetAnimationForType(AnimationType.Walk);
-            FindAndSetAnimationForType(AnimationType.Run);
-            FindAndSetAnimationForType(AnimationType.ShuffleLeft);
-            FindAndSetAnimationForType(AnimationType.ShuffleRight);
-            FindAndSetAnimationForType(AnimationType.Swim);
-            FindAndSetAnimationForType(AnimationType.Death);
-            FindAndSetAnimationForType(AnimationType.CombatWound);
-            FindAndSetAnimationForType(AnimationType.CombatCritical);
-
-            // Update the stand/fidget animation timers so that there is a fidget sometimes
-            if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+            
+            if (ModelType == ObjectModelType.Skeletal)
             {
-                // Update timers
-                int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
-                int nonFidgetSliceAll = 32767 - fidgetSliceAll;
-                int nonFidgetSlice1 = nonFidgetSliceAll / 2;
-                int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
-                int fidgetSlice1 = fidgetSliceAll / 2;
-                int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
-                ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
-                ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
-                ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
-                ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
+                FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
+                FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
+                FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
+                FindAndSetAnimationForType(AnimationType.AttackUnarmed);
+                FindAndSetAnimationForType(AnimationType.Walk);
+                FindAndSetAnimationForType(AnimationType.Run);
+                FindAndSetAnimationForType(AnimationType.ShuffleLeft);
+                FindAndSetAnimationForType(AnimationType.ShuffleRight);
+                FindAndSetAnimationForType(AnimationType.Swim);
+                FindAndSetAnimationForType(AnimationType.Death);
+                FindAndSetAnimationForType(AnimationType.CombatWound);
+                FindAndSetAnimationForType(AnimationType.CombatCritical);
 
-                // Link animations
-                ModelAnimations[0].NextAnimation = 2;
-                ModelAnimations[1].NextAnimation = 3;
-                ModelAnimations[2].NextAnimation = 1;
-                ModelAnimations[3].NextAnimation = 0;
+                // Update the stand/fidget animation timers so that there is a fidget sometimes
+                if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)
+                {
+                    // Update timers
+                    int fidgetSliceAll = Convert.ToInt32(32767 * (Convert.ToDouble(Configuration.CREATURE_FIDGET_TIME_PERCENT) / 100));
+                    int nonFidgetSliceAll = 32767 - fidgetSliceAll;
+                    int nonFidgetSlice1 = nonFidgetSliceAll / 2;
+                    int nonFidgetSlice2 = nonFidgetSliceAll - nonFidgetSlice1;
+                    int fidgetSlice1 = fidgetSliceAll / 2;
+                    int fidgetSlice2 = fidgetSliceAll - fidgetSlice1;
+                    ModelAnimations[0].PlayFrequency = Convert.ToInt16(nonFidgetSlice1);
+                    ModelAnimations[1].PlayFrequency = Convert.ToInt16(nonFidgetSlice2);
+                    ModelAnimations[2].PlayFrequency = Convert.ToInt16(fidgetSlice1);
+                    ModelAnimations[3].PlayFrequency = Convert.ToInt16(fidgetSlice2);
+
+                    // Link animations
+                    ModelAnimations[0].NextAnimation = 2;
+                    ModelAnimations[1].NextAnimation = 3;
+                    ModelAnimations[2].NextAnimation = 1;
+                    ModelAnimations[3].NextAnimation = 0;
+                }
             }
 
             if (ModelAnimations.Count == 0)
@@ -562,7 +590,6 @@ namespace EQWOWConverter.ObjectModels
 
             // Set the animation lookups
             SetAllAnimationLookups();
-
 
             return true;
         }
@@ -883,14 +910,17 @@ namespace EQWOWConverter.ObjectModels
             for (Int16 i = 0; i <= 49; i++)
                 AnimationLookups.Add(-1);
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Stand);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Walk);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Run);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatWound);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatCritical);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.StandWound);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);
+            if (ModelType == ObjectModelType.Skeletal)
+            {
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Walk);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Run);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatWound);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatCritical);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.StandWound);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);
+            }
         }
 
         private void SetFirstUnusedAnimationIndexForAnimationType(AnimationType animationType)
@@ -906,7 +936,6 @@ namespace EQWOWConverter.ObjectModels
             }
             AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(firstAnimationIndex);
         }
-
 
         private int GetFirstAnimationIndexForEQAnimationTypes(params EQAnimationType[] eqAnimationTypes)
         {
@@ -950,7 +979,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
+            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -985,7 +1014,7 @@ namespace EQWOWConverter.ObjectModels
         {
             // Purge any invalid material references
             // TODO: Look into making this work for non-skeletal
-            if (ModelType == ObjectModelType.Skeletal)
+            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodadSkeletal)
             {
                 List<Material> updatedMaterialList;
                 meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
@@ -1303,7 +1332,7 @@ namespace EQWOWConverter.ObjectModels
             CollisionTriangles.Clear();
 
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.SimpleDoodad))
+            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.StaticDoodadSkeletal))
             {
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();
@@ -1504,6 +1533,10 @@ namespace EQWOWConverter.ObjectModels
                     meshData.Vertices.Add(new Vector3(meshData.Vertices[vi]));
                     meshData.Normals.Add(new Vector3(meshData.Normals[vi]));
                     meshData.TextureCoordinates.Add(new TextureCoordinates(meshData.TextureCoordinates[vi]));
+                    if (meshData.BoneIDs.Count > 0)
+                        meshData.BoneIDs.Add(meshData.BoneIDs[vi]);
+                    if (meshData.VertexColors.Count > 0)
+                        meshData.VertexColors.Add(new ColorRGBA(meshData.VertexColors[vi]));
                 }
             }
         }

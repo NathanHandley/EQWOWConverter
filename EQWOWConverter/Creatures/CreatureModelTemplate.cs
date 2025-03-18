@@ -155,7 +155,7 @@ namespace EQWOWConverter.Creatures
             float lift = Race.Lift;
             ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Skeletal, Race.ModelScale, lift);
-            curObject.LoadAnimateEQObjectFromFile(charactersFolderRoot, this);
+            curObject.LoadCreatureEQObjectFromFile(charactersFolderRoot, this);
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");
