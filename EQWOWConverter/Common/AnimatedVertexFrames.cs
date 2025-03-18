@@ -14,31 +14,17 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Common
 {
-    // TODO: May not need.  Consider deleting OR putting in the EQFiles section
-    internal class AnimatedVertices
+    internal class AnimatedVertexFrames
     {
-        public List<List<Vector3>> Frames = new List<List<Vector3>>();
-        public int FrameDelay = 0;
+        public List<Vector3> VertexOffsetFrames = new List<Vector3>();
 
-        public int GetFrameCount()
+        public AnimatedVertexFrames() { }
+        public AnimatedVertexFrames(AnimatedVertexFrames other)
         {
-            return Frames.Count;
-        }
-
-        public List<Vector3> GetVerticesAtFrame(int frame)
-        {
-            if (frame >= Frames.Count)
-                return new List<Vector3>();
-            else
-                return Frames[frame];
+            foreach (Vector3 frame in other.VertexOffsetFrames)
+                VertexOffsetFrames.Add(frame);
         }
     }
 }

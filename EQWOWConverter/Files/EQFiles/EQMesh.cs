@@ -15,11 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.EQFiles
 {
@@ -33,10 +28,8 @@ namespace EQWOWConverter.EQFiles
         }
 
         public MeshData Meshdata = new MeshData();
-        public AnimatedVertices AnimatedVertices = new AnimatedVertices();
         public string MaterialListFileName = string.Empty;       
         public List<BoneReference> Bones = new List<BoneReference>();
-
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -48,6 +41,8 @@ namespace EQWOWConverter.EQFiles
             }
 
             // Load the core data
+            int curAnimatedVertexFrame = -1;
+            int curAnimatedVertexIndex = -1;
             string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
             string[] inputRows = inputData.Split(Environment.NewLine);
             foreach (string inputRow in inputRows)
@@ -114,12 +109,12 @@ namespace EQWOWConverter.EQFiles
                         Logger.WriteError("- Animated head block was not 2 components");
                         continue;
                     }
-                    if (AnimatedVertices.FrameDelay != 0)
+                    if (Meshdata.AnimatedVerticesDelayInMS != 0)
                     {
                         Logger.WriteError("- There was already a read frame delay");
                         continue;
                     }
-                    AnimatedVertices.FrameDelay = int.Parse(blocks[1]);
+                    Meshdata.AnimatedVerticesDelayInMS = int.Parse(blocks[1]);
                 }
 
                 // av = Animation vertices
@@ -131,14 +126,20 @@ namespace EQWOWConverter.EQFiles
                         Logger.WriteError("- Animation vertices block was not 5 components");
                         continue;
                     }
-
                     int frameIndex = int.Parse(blocks[1]);
-                    if (frameIndex >= AnimatedVertices.GetFrameCount())
-                        AnimatedVertices.Frames.Add(new List<Vector3>());
                     float xPos = float.Parse(blocks[2]);
                     float zPos = float.Parse(blocks[3]);
-                    float yPos = float.Parse(blocks[4]);
-                    AnimatedVertices.Frames[frameIndex].Add(new Vector3(xPos, yPos, zPos));
+                    float yPos = float.Parse(blocks[4]);                    
+                    if (frameIndex != curAnimatedVertexFrame)
+                    {
+                        curAnimatedVertexFrame = frameIndex;
+                        curAnimatedVertexIndex = 0;
+                    }
+                    else
+                        curAnimatedVertexIndex++;
+                    if (frameIndex == 0)
+                        Meshdata.AnimatedVertexFramesByVertexIndex.Add(new AnimatedVertexFrames());
+                    Meshdata.AnimatedVertexFramesByVertexIndex[curAnimatedVertexIndex].VertexOffsetFrames.Add(new Vector3(xPos, yPos, zPos));
                 }
 
                 // uv = Texture Coordinates
@@ -213,6 +214,11 @@ namespace EQWOWConverter.EQFiles
             }
 
             Meshdata.DeleteInvalidTriangles();
+
+            if (Meshdata.AnimatedVertexFramesByVertexIndex.Count > 0)
+                if (Meshdata.AnimatedVertexFramesByVertexIndex.Count != Meshdata.Vertices.Count)
+                    Logger.WriteError("EQMesh loading issue for mesh '" + fileFullPath + "' Animated Vertex Frames did not match Vertices count");
+
             Logger.WriteDetail(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");
             return true;
         }
