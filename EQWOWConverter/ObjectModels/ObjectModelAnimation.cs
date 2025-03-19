@@ -21,8 +21,6 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelAnimation : IByteSerializable
     {
-        public AnimationType AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
-        public EQAnimationType EQAnimationType = EQAnimationType.Unknown;
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         public UInt32 DurationInMS = 10000;
         public float MoveSpeed = 2.5f;
@@ -31,11 +29,32 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 Padding = 0;
         public UInt32 ReplayMin = 0;
         public UInt32 ReplayMax = 0;
-        public UInt32 BlendTime = 150; 
+        public UInt32 BlendTime = 150;
         public BoundingBox BoundingBox = new BoundingBox();
         public float BoundingRadius = 0f;
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
+        public bool Loop = true;
+        public EQAnimationType EQAnimationType = EQAnimationType.Unknown;
+        private AnimationType _AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
+        public AnimationType AnimationType
+        {
+            get { return _AnimationType; }
+            set
+            {
+                switch (value)
+                {
+                    case AnimationType.Death: Loop = false; break;
+                    case AnimationType.Dead: Loop = false; break;
+                    case AnimationType.SitGroundDown: Loop = false; break;
+                    case AnimationType.SitGroundUp: Loop = false; break;
+                    case AnimationType.Opened: Loop = false; break;
+                    case AnimationType.Closed: Loop = false; break;
+                    default: break; // Do nothing
+                }
+                _AnimationType = value;
+            }
+        }
 
         static public List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
         {

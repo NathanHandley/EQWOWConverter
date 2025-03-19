@@ -553,7 +553,7 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // For every bone that has animation frames, add the first one to the end to close the animation sequences
+            // For every bone that has animation frames, add the first one to the end to close the animation sequences (if it loops)
             foreach (ObjectModelBone bone in ModelBones)
             {
                 for (int i = 0; i < ModelAnimations.Count; i++)
@@ -561,24 +561,34 @@ namespace EQWOWConverter.ObjectModels
                     if (bone.ScaleTrack.Timestamps[i].Timestamps.Count > 1)
                     {
                         bone.ScaleTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
-                        bone.ScaleTrack.Values[i].Values.Add(bone.ScaleTrack.Values[i].Values[0]);
+                        if (ModelAnimations[i].Loop)
+                            bone.ScaleTrack.Values[i].Values.Add(bone.ScaleTrack.Values[i].Values[0]);
+                        else
+                            bone.ScaleTrack.Values[i].Values.Add(bone.ScaleTrack.Values[i].Values[bone.ScaleTrack.Values[i].Values.Count - 1]);
                     }
                     if (bone.RotationTrack.Timestamps[i].Timestamps.Count > 1)
                     {
-                        QuaternionShort curRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[0]);
-                        QuaternionShort priorRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count-1]);
-                        curRotation.RecalculateToShortestFromOther(priorRotation);
                         bone.RotationTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
-                        bone.RotationTrack.Values[i].Values.Add(curRotation);
+                        if (ModelAnimations[i].Loop)
+                        {
+                            QuaternionShort curRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[0]);
+                            QuaternionShort priorRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count - 1]);
+                            curRotation.RecalculateToShortestFromOther(priorRotation);                            
+                            bone.RotationTrack.Values[i].Values.Add(curRotation);
+                        }
+                        else
+                            bone.RotationTrack.Values[i].Values.Add(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count - 1]);                       
                     }
                     if (bone.TranslationTrack.Timestamps[i].Timestamps.Count > 1)
                     {
                         bone.TranslationTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
-                        bone.TranslationTrack.Values[i].Values.Add(bone.TranslationTrack.Values[i].Values[0]);
+                        if (ModelAnimations[i].Loop)
+                            bone.TranslationTrack.Values[i].Values.Add(bone.TranslationTrack.Values[i].Values[0]);
+                        else
+                            bone.TranslationTrack.Values[i].Values.Add(bone.TranslationTrack.Values[i].Values[bone.TranslationTrack.Values[i].Values.Count - 1]);
                     }
                 }
             }
-
 
             if (ModelAnimations.Count == 0)
                 Logger.WriteError("Zero animations for skeletal model object '" + Name + "', so it will crash if you try to load it");
