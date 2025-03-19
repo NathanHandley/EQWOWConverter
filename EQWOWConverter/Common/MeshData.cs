@@ -333,6 +333,9 @@ namespace EQWOWConverter.Common
             VertexColors.AddRange(meshDataToAdd.VertexColors);
             TriangleFaces.AddRange(meshDataToAdd.TriangleFaces);
             BoneIDs.AddRange(meshDataToAdd.BoneIDs);
+            AnimatedVertexFramesByVertexIndex.AddRange(meshDataToAdd.AnimatedVertexFramesByVertexIndex);
+            if (AnimatedVerticesDelayInMS == 0)
+                AnimatedVerticesDelayInMS = meshDataToAdd.AnimatedVerticesDelayInMS;
         }
 
         public void RemoveInvalidMaterialReferences(List<Material> startingMaterialList, out List<Material> newMaterialList)

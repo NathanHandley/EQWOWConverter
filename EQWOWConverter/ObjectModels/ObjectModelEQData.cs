@@ -181,6 +181,13 @@ namespace EQWOWConverter.ObjectModels
                                 material.TextureNames[0] = material.TextureNames[0].Replace(replaceFromText, replaceToText);
                     }
                 }
+
+                // Load the rest
+                string animationSupplimentName = string.Empty;
+                if (creatureModelTemplate != null)
+                    animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
+
+                LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplimentName);
             }
             else
             {
@@ -196,13 +203,20 @@ namespace EQWOWConverter.ObjectModels
                 // Load Materials
                 MaterialListFileName = inputObjectName;
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
+
+                // Load the rest
+                // If this object uses animated vertices, then it should have a skeleton and animation generated
+                // TODO: Make this work with > 256 vertex frames
+                if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && MeshData.AnimatedVertexFramesByVertexIndex.Count < 255)
+                {
+                    ConvertAnimatedVerticesToSkeleton(inputObjectName);
+                    GenerateAnimationFromAnimatedVertexSkeleton(inputObjectName, MeshData);
+                }
+                else
+                    LoadAnimationData(inputObjectName, inputObjectFolder, string.Empty);
             }
 
-            // Load the rest
-            string animationSupplimentName = string.Empty;
-            if (creatureModelTemplate != null)
-                animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
-            LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplimentName);
+            // Load collision
             LoadCollisionMeshData(inputObjectName, inputObjectFolder); // TODO: Work with muliple meshes
         }
 
@@ -308,6 +322,75 @@ namespace EQWOWConverter.ObjectModels
                 Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
                 return;
             }
+        }
+
+        private void ConvertAnimatedVerticesToSkeleton(string inputObjectName)
+        {
+            Logger.WriteDetail("- [" + inputObjectName + "]: Converting animated vertices to skeleton data...");
+            SkeletonData = new EQSkeleton();
+            SkeletonData.LoadFromAnimatedVerticesData(ref MeshData);
+        }
+
+        private void GenerateAnimationFromAnimatedVertexSkeleton(string inputObjectName, MeshData meshData)
+        {
+            Logger.WriteDetail("- [" + inputObjectName + "]: Generating an animation based on an animated vertex skeleton...");
+            if (Animations.Count > 0)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Failed to generate the animation since animations already existed.");
+                return;
+            }
+            if (meshData.AnimatedVertexFramesByVertexIndex.Count == 0)
+            {
+                Logger.WriteError("- [" + inputObjectName + "]: Failed to generate the animation since there are no animated vertices.");
+                return;
+            }
+
+            // Create the new animation
+            int totalTime = meshData.AnimatedVerticesDelayInMS * meshData.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFrames.Count;
+            int totalFrameCount = meshData.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFrames.Count;
+            Animation newAnimation = new Animation("o01", AnimationType.Stand, EQAnimationType.o01StandIdle, totalFrameCount, totalTime);
+
+            // Build the root bone frame (always 1 at the start)
+            Animation.BoneAnimationFrame rootBoneFrame = new Animation.BoneAnimationFrame();
+            rootBoneFrame.BoneFullNameInPath = "root";
+            rootBoneFrame.FrameIndex = 0;
+            rootBoneFrame.XPosition = 0;
+            rootBoneFrame.ZPosition = 0;
+            rootBoneFrame.YPosition = 0;
+            rootBoneFrame.XRotation = 0;
+            rootBoneFrame.ZRotation = 0;
+            rootBoneFrame.YRotation = 0;
+            rootBoneFrame.WRotation = 1;
+            rootBoneFrame.Scale = 1;
+            rootBoneFrame.FramesMS = meshData.AnimatedVerticesDelayInMS;
+            newAnimation.AnimationFrames.Add(rootBoneFrame);
+
+            // Build the following frames
+            for (int vertexIndex = 0; vertexIndex < meshData.AnimatedVertexFramesByVertexIndex.Count; vertexIndex++)
+            {
+                AnimatedVertexFrames vertexFrames = meshData.AnimatedVertexFramesByVertexIndex[vertexIndex];
+                string boneFullName = "root/v" + vertexIndex;
+                for (int frameIndex = 0; frameIndex < vertexFrames.VertexOffsetFrames.Count; frameIndex++)
+                {
+                    Vector3 curPosOffset = vertexFrames.VertexOffsetFrames[frameIndex];
+                    Animation.BoneAnimationFrame curFrame = new Animation.BoneAnimationFrame();
+                    curFrame.BoneFullNameInPath = boneFullName;
+                    curFrame.FrameIndex = frameIndex;
+                    curFrame.XPosition = curPosOffset.X;
+                    curFrame.ZPosition = curPosOffset.Z;
+                    curFrame.YPosition = curPosOffset.Y;
+                    curFrame.XRotation = 0;
+                    curFrame.ZRotation = 0;
+                    curFrame.YRotation = 0;
+                    curFrame.WRotation = 1;
+                    curFrame.Scale = 1;
+                    curFrame.FramesMS = meshData.AnimatedVerticesDelayInMS;
+                    newAnimation.AnimationFrames.Add(curFrame);
+                }
+            }
+
+            // Save it
+            Animations.Add("pos", newAnimation);
         }
 
         private void LoadAnimationData(string inputObjectName, string inputObjectFolder, string animationSupplementalName)

@@ -79,14 +79,13 @@ namespace EQWOWConverter.ObjectModels
         public void LoadEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate, string meshNameOverride = "", 
             ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
-            // See if it's a skeletal object
-            string skeletonFileName = Path.Combine(inputRootFolder, "Skeletons", Name + ".txt");
-            if (File.Exists(skeletonFileName))
-                IsSkeletal = true;
-
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, meshNameOverride);
+
+            // Store if it had a skeleton
+            if (EQObjectModelData.SkeletonData.BoneStructures.Count > 0)
+                IsSkeletal = true;
 
             // Save the template
             CreatureModelTemplate = creatureModelTemplate;
@@ -243,6 +242,11 @@ namespace EQWOWConverter.ObjectModels
                     // Update all of the track sequences
                     for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
                         nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
+                }
+
+                if (Name == "pennant2")
+                {
+                    int x = 5;
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
