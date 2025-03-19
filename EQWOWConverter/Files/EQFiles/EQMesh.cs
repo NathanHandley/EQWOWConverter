@@ -140,6 +140,7 @@ namespace EQWOWConverter.EQFiles
                     if (frameIndex == 0)
                         Meshdata.AnimatedVertexFramesByVertexIndex.Add(new AnimatedVertexFrames());
                     Meshdata.AnimatedVertexFramesByVertexIndex[curAnimatedVertexIndex].VertexOffsetFrames.Add(new Vector3(xPos, yPos, zPos));
+                    Meshdata.AnimatedVertexFramesByVertexIndex[curAnimatedVertexIndex].VertexOffsetFramesInStringLiteral.Add(new AnimatedVertexFrames.Vector3StringLiteral(blocks[2], blocks[4], blocks[3]));
                 }
 
                 // uv = Texture Coordinates
@@ -247,6 +248,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
+            Meshdata.DeleteInvalidTriangles();
             if (Meshdata.AnimatedVertexFramesByVertexIndex.Count > 0)
                 if (Meshdata.AnimatedVertexFramesByVertexIndex.Count != Meshdata.Vertices.Count)
                     Logger.WriteError("EQMesh loading issue for mesh '" + fileFullPath + "' Animated Vertex Frames did not match Vertices count");
