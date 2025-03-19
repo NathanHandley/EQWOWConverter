@@ -124,7 +124,7 @@ namespace EQWOWConverter.ObjectModels
                     scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal, scaleAmount);
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal || ModelType == ObjectModelType.StaticDoodad, scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -132,7 +132,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal, scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal || ModelType == ObjectModelType.StaticDoodad, scaleAmount);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }

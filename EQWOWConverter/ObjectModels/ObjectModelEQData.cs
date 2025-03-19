@@ -207,6 +207,8 @@ namespace EQWOWConverter.ObjectModels
                 // Load the rest
                 // If this object uses animated vertices, then it should have a skeleton and animation generated
                 // TODO: Make this work with > 256 vertex frames
+                if (MeshData.AnimatedVertexFramesByVertexIndex.Count >= 255)
+                    Logger.WriteError("Object '" + inputObjectName + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count);
                 if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && MeshData.AnimatedVertexFramesByVertexIndex.Count < 255)
                 {
                     ConvertAnimatedVerticesToSkeleton(inputObjectName);
@@ -376,9 +378,9 @@ namespace EQWOWConverter.ObjectModels
                     Animation.BoneAnimationFrame curFrame = new Animation.BoneAnimationFrame();
                     curFrame.BoneFullNameInPath = boneFullName;
                     curFrame.FrameIndex = frameIndex;
-                    curFrame.XPosition = curPosOffset.X;
+                    curFrame.XPosition = curPosOffset.X * -1; // Rotate around Z axis
                     curFrame.ZPosition = curPosOffset.Z;
-                    curFrame.YPosition = curPosOffset.Y;
+                    curFrame.YPosition = curPosOffset.Y * -1; // Rotate around Z axis
                     curFrame.XRotation = 0;
                     curFrame.ZRotation = 0;
                     curFrame.YRotation = 0;
