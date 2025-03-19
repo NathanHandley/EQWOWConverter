@@ -202,7 +202,7 @@ namespace EQWOWConverter
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(folderRoot, transportLift.MeshName);
+                    curObjectModel.LoadEQObjectFromFile(folderRoot, null, transportLift.MeshName);
                     Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
 
                     // Create the M2 and Skin
@@ -239,7 +239,7 @@ namespace EQWOWConverter
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
-                    curObjectModel.LoadStaticEQObjectFromFile(objectsFolderRoot,transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
+                    curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, null, transportLiftTrigger.MeshName, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
                     Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
                     if (transportLiftTrigger.OpenSound != null)
                         curObjectModel.SoundsByAnimationType.Add(AnimationType.Open, transportLiftTrigger.OpenSound);
@@ -314,7 +314,7 @@ namespace EQWOWConverter
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
                 ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad);
                 Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
-                curObject.LoadStaticEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
+                curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, null, staticObjectName);
                 Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
 
                 // Create the M2 and Skin
@@ -346,7 +346,7 @@ namespace EQWOWConverter
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
                 ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.Skeletal);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
-                curObject.LoadSkeletalEQObjectFromFile(conditionedObjectFolderRoot, null);
+                curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, null);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
 
                 // Create the M2 and Skin

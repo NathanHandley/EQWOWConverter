@@ -30,7 +30,8 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadAllStaticObjectDataFromDisk(string inputObjectName, string inputObjectFolder, string inputMeshName)
+        public void LoadObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate, 
+            string meshNameOverride = "")
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -38,22 +39,10 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
-            // Load the various blocks
-            LoadRenderMeshData(inputObjectName, new List<string>() { inputMeshName }, inputObjectFolder);
-            LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
-            LoadCollisionMeshData(inputObjectName, inputObjectFolder);
-        }
-
-        public void LoadAllAnimateObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate, string skeletonNameOverride = "")
-        {
-            if (Directory.Exists(inputObjectFolder) == false)
-            {
-                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
-                return;
-            }
-
-            // Load skeleton
-            LoadSkeletonData(inputObjectName, inputObjectFolder);
+            // Load skeleton, if possible
+            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
+            if (File.Exists(skeletonFileName))
+                LoadSkeletonData(inputObjectName, inputObjectFolder);
 
             if (creatureModelTemplate != null)
             {
@@ -122,7 +111,10 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Load the render meshes
-                LoadRenderMeshData(inputObjectName, meshNames, inputObjectFolder);
+                Dictionary<string, byte> meshNamesInDictionary = new Dictionary<string, byte>();
+                foreach (string meshName in meshNames)
+                    meshNamesInDictionary.Add(meshName, 0);
+                LoadRenderMeshData(inputObjectName, meshNamesInDictionary, inputObjectFolder);
 
                 // Load the materials, with special logic for invisible man
                 if (creatureModelTemplate.Race.ID == 127)
@@ -193,17 +185,17 @@ namespace EQWOWConverter.ObjectModels
             else
             {
                 // Load render meshes....
-                Dictionary<byte, string> meshNamesByBoneIndex = new Dictionary<byte, string>();
+                Dictionary<string, byte> meshBoneIndexByName = new Dictionary<string, byte>();
                 for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
                     if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
-                        meshNamesByBoneIndex.Add(i, SkeletonData.BoneStructures[i].MeshName);
-                LoadRenderMeshData(inputObjectName, meshNamesByBoneIndex, inputObjectFolder);
+                        meshBoneIndexByName.Add(SkeletonData.BoneStructures[i].MeshName, i);
+                if (meshNameOverride != string.Empty)
+                    meshBoneIndexByName.Add(meshNameOverride, 0);
+                LoadRenderMeshData(inputObjectName, meshBoneIndexByName, inputObjectFolder);
 
                 // Load Materials
                 MaterialListFileName = inputObjectName;
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
-
-                // Load various data
             }
 
             // Load the rest
@@ -214,12 +206,13 @@ namespace EQWOWConverter.ObjectModels
             LoadCollisionMeshData(inputObjectName, inputObjectFolder); // TODO: Work with muliple meshes
         }
 
-        private void LoadRenderMeshData(string inputObjectName, List<string> inputMeshNames, string inputObjectFolder)
+        private void LoadRenderMeshData(string inputObjectName, Dictionary<string, byte> meshNamesByBoneIndex, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
-            foreach(string meshName in inputMeshNames)
+            foreach(var meshNameByBoneIndex in meshNamesByBoneIndex)
             {
-                string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshName + ".txt");
+                // Load this mesh
+                string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Key + ".txt");
                 EQMesh eqMeshData = new EQMesh();
                 if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
                 {
@@ -227,7 +220,7 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                // Bone references
+                // Associate bone references
                 if (eqMeshData.Bones.Count > 0)
                 {
                     for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
@@ -244,40 +237,18 @@ namespace EQWOWConverter.ObjectModels
                         eqMeshData.Meshdata.BoneIDs.Add(curBoneID);
                     }
                 }
-
-                // Save the mesh data and material list
-                MeshData.AddMeshData(eqMeshData.Meshdata);
-
-                if (MaterialListFileName == string.Empty)
-                    MaterialListFileName = eqMeshData.MaterialListFileName;
-                else if (MaterialListFileName != eqMeshData.MaterialListFileName)
+                else
                 {
-                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Mismatch material list file name provided changing '" + MaterialListFileName + "' to '" + eqMeshData.MaterialListFileName + "'");
-                    MaterialListFileName = eqMeshData.MaterialListFileName;
+                    for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
+                        eqMeshData.Meshdata.BoneIDs.Add(meshNameByBoneIndex.Value);
                 }
-            }
-        }
-
-        private void LoadRenderMeshData(string inputObjectName, Dictionary<byte, string> meshNamesByBoneIndex, string inputObjectFolder)
-        {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
-            foreach(var meshNameByBoneIndex in meshNamesByBoneIndex)
-            {
-                // Load this mesh
-                string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Value + ".txt");
-                EQMesh eqMeshData = new EQMesh();
-                if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
-                {
-                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
-                    return;
-                }
-
-                // Associate bone refrences
-                for (int i = 0; i < eqMeshData.Meshdata.Vertices.Count; i++)
-                    eqMeshData.Meshdata.BoneIDs.Add(meshNameByBoneIndex.Key);
 
                 // Save the mesh data into the larger mesh data
                 MeshData.AddMeshData(eqMeshData.Meshdata);
+
+                // Save material list
+                if (MaterialListFileName == string.Empty)
+                    MaterialListFileName = eqMeshData.MaterialListFileName;
             }
         }
 

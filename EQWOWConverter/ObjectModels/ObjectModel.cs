@@ -75,35 +75,23 @@ namespace EQWOWConverter.ObjectModels
             ModelLiftPreWorldScale = modelLift;
         }
 
-        public void LoadStaticEQObjectFromFile(string inputRootFolder, string meshName, ActiveDoodadAnimType? activeDoodadAnimationType = null, 
-            float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
+        public void LoadEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate, string meshNameOverride = "", 
+            ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadAllStaticObjectDataFromDisk(Name, inputRootFolder, meshName);
-
-            if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType, 
-                    activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
-            else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces, 
-                    activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
-        }
-
-        public void LoadSkeletalEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate)
-        {
-            // Clear any old data and reload it
-            EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadAllAnimateObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate);
+            EQObjectModelData.LoadObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, meshNameOverride);
 
             // Save the template
             CreatureModelTemplate = creatureModelTemplate;
 
             // Load it
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>());
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType,
+                    activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces);
+                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
+                    activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
         // TODO: Vertex Colors
