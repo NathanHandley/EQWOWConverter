@@ -55,6 +55,8 @@ namespace EQWOWConverter.Common
                 AnimatedVertexFramesByVertexIndex.Add(new AnimatedVertexFrames());
                 foreach (Vector3 frameVertex in frames.VertexOffsetFrames)
                     AnimatedVertexFramesByVertexIndex[AnimatedVertexFramesByVertexIndex.Count - 1].VertexOffsetFrames.Add(new Vector3(frameVertex));
+                foreach (AnimatedVertexFrames.Vector3StringLiteral frameLiteral in frames.VertexOffsetFramesInStringLiteral)
+                    AnimatedVertexFramesByVertexIndex[AnimatedVertexFramesByVertexIndex.Count - 1].VertexOffsetFramesInStringLiteral.Add(new AnimatedVertexFrames.Vector3StringLiteral(frameLiteral));
             }
         }
 

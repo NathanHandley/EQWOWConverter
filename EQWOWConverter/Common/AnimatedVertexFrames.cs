@@ -18,13 +18,29 @@ namespace EQWOWConverter.Common
 {
     internal class AnimatedVertexFrames
     {
+        public class Vector3StringLiteral
+        {
+            public Vector3StringLiteral(string x, string y, string z)
+            {
+                XString = x;
+                YString = y;
+                ZString = z;
+            }
+            public Vector3StringLiteral(Vector3StringLiteral other)
+            {
+                XString = other.XString;
+                YString = other.YString;
+                ZString = other.ZString;
+            }
+
+            public string XString = string.Empty;
+            public string YString = string.Empty;
+            public string ZString = string.Empty;
+        }
+
         public List<Vector3> VertexOffsetFrames = new List<Vector3>();
+        public List<Vector3StringLiteral> VertexOffsetFramesInStringLiteral = new List<Vector3StringLiteral>();
 
         public AnimatedVertexFrames() { }
-        public AnimatedVertexFrames(AnimatedVertexFrames other)
-        {
-            foreach (Vector3 frame in other.VertexOffsetFrames)
-                VertexOffsetFrames.Add(frame);
-        }
     }
 }
