@@ -175,7 +175,7 @@ namespace EQWOWConverter.WOWFiles
             CollisionFaceNormals.AddArray(wowObjectModel.CollisionFaceNormals);
 
             // Attachments & Attachment ID
-            if (wowObjectModel.ModelType == ObjectModelType.Skeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)
+            if (wowObjectModel.IsSkeletal && wowObjectModel.ModelBoneKeyLookups.Count > 26)
                 SetSkeletonAttachments(wowObjectModel);
 
             // Events
@@ -185,7 +185,7 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Cameras & ID Lookup
-            if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
+            if (wowObjectModel.IsSkeletal)
             {
                 Cameras.AddElement(new M2Camera(wowObjectModel.PortraitCameraPosition, wowObjectModel.PortraitCameraTargetPosition));
                 CamerasIndicesLookup.Add(new M2Int16(0)); // Portrait
@@ -254,7 +254,7 @@ namespace EQWOWConverter.WOWFiles
                 newEvent.PopulateAsGameObjectPlayAnimatedSoundCloseGO3(wowObjectModel);
                 Events.AddElement(newEvent);
             }
-            if (wowObjectModel.ModelType == ObjectModelType.Skeletal)
+            if (wowObjectModel.IsSkeletal)
             {
                 // DeathThud / LootEffect ($DTH)
                 M2Event deathThud = new M2Event();

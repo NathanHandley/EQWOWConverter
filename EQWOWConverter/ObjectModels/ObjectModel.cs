@@ -55,6 +55,7 @@ namespace EQWOWConverter.ObjectModels
         public Vector3 PortraitCameraPosition = new Vector3();
         public Vector3 PortraitCameraTargetPosition = new Vector3();
         public MeshData MeshData = new MeshData();
+        public bool IsSkeletal = false;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
@@ -78,6 +79,11 @@ namespace EQWOWConverter.ObjectModels
         public void LoadEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate, string meshNameOverride = "", 
             ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
+            // See if it's a skeletal object
+            string skeletonFileName = Path.Combine(inputRootFolder, "Skeletons", Name + ".txt");
+            if (File.Exists(skeletonFileName))
+                IsSkeletal = true;
+
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, meshNameOverride);
@@ -112,14 +118,14 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialAndBones();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad)
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport)
             {
                 float scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
-                if (ModelType == ObjectModelType.Skeletal)
+                if (ModelType == ObjectModelType.Creature)
                     scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
 
                 // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal), scaleAmount);
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal, scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -127,7 +133,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale((ModelType != ObjectModelType.Skeletal), scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal, scaleAmount);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -165,7 +171,7 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
-            if ((ModelType != ObjectModelType.Skeletal) || EQObjectModelData.Animations.Count == 0)
+            if ((!IsSkeletal) || EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
 
@@ -214,32 +220,29 @@ namespace EQWOWConverter.ObjectModels
                     return;
                 }
 
-                if (ModelType == ObjectModelType.Skeletal)
+                // Fill out the nameplate bone translation
+                if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.GENERATE_FLOAT_EPSILON)
                 {
-                    // Fill out the nameplate bone translation
-                    if (CreatureModelTemplate != null && CreatureModelTemplate.Race.NameplateAddedHeight > Configuration.GENERATE_FLOAT_EPSILON)
-                    {
-                        // Set the adjustment vector
-                        ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
-                        Vector3 adjustmentVector = new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight);
-                        int raceID = CreatureModelTemplate.Race.ID;
+                    // Set the adjustment vector
+                    ObjectModelBone nameplateBone = GetBoneWithName("nameplate");
+                    Vector3 adjustmentVector = new Vector3(0, 0, CreatureModelTemplate.Race.NameplateAddedHeight);
+                    int raceID = CreatureModelTemplate.Race.ID;
 
-                        // These races project forward instead of up due to a rotation
-                        if (raceID == 31 || raceID == 66 || raceID == 126)
-                            adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+                    // These races project forward instead of up due to a rotation
+                    if (raceID == 31 || raceID == 66 || raceID == 126)
+                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
 
-                        // These races project to their right instead of up due to a rotation
-                        if (raceID == 107 || raceID == 135 || raceID == 154)
-                            adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
+                    // These races project to their right instead of up due to a rotation
+                    if (raceID == 107 || raceID == 135 || raceID == 154)
+                        adjustmentVector = new Vector3(0, CreatureModelTemplate.Race.NameplateAddedHeight, 0);
 
-                        // These races project to their right, but rotated the other way
-                        if (raceID == 162 || raceID == 68)
-                            adjustmentVector = new Vector3(CreatureModelTemplate.Race.NameplateAddedHeight * -1, 0, 0);
+                    // These races project to their right, but rotated the other way
+                    if (raceID == 162 || raceID == 68)
+                        adjustmentVector = new Vector3(CreatureModelTemplate.Race.NameplateAddedHeight * -1, 0, 0);
 
-                        // Update all of the track sequences
-                        for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
-                            nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
-                    }
+                    // Update all of the track sequences
+                    for (int i = 0; i < nameplateBone.TranslationTrack.Values.Count; i++)
+                        nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
                 }
 
                 // Create bone lookups on a per submesh basis (which are grouped by material)
@@ -272,7 +275,7 @@ namespace EQWOWConverter.ObjectModels
                     ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
                 }
 
-                if (ModelType == ObjectModelType.Skeletal)
+                if (IsSkeletal)
                 {
                     // Set the portrait camera locations
                     SetupPortraitCamera();
@@ -472,7 +475,7 @@ namespace EQWOWConverter.ObjectModels
             // Set root as a key
             SetKeyBone(KeyBoneType.Root);
 
-            if (ModelType == ObjectModelType.Skeletal)
+            if (IsSkeletal)
             {
                 // Create the nameplate bone
                 GenerateNameplateBone();
@@ -512,7 +515,7 @@ namespace EQWOWConverter.ObjectModels
             // Set the various animations (note: Do not change the order of the first 4)
             FindAndSetAnimationForType(AnimationType.Stand);
             
-            if (ModelType == ObjectModelType.Skeletal)
+            if (IsSkeletal)
             {
                 FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
                 FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
@@ -897,7 +900,7 @@ namespace EQWOWConverter.ObjectModels
             for (Int16 i = 0; i <= 49; i++)
                 AnimationLookups.Add(-1);
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Stand);
-            if (ModelType == ObjectModelType.Skeletal)
+            if (IsSkeletal)
             {
                 SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Walk);
                 SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Run);
@@ -966,7 +969,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad))
+            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.StaticDoodad))
             {
                 foreach (TriangleFace face in collisionTriangleFaces)
                     ModelTriangles.Add(new TriangleFace(face));
@@ -1001,7 +1004,7 @@ namespace EQWOWConverter.ObjectModels
         {
             // Purge any invalid material references
             // TODO: Look into making this work for non-skeletal
-            if (ModelType == ObjectModelType.Skeletal)
+            if (IsSkeletal)
             {
                 List<Material> updatedMaterialList;
                 meshData.RemoveInvalidMaterialReferences(initialMaterials, out updatedMaterialList);
@@ -1319,7 +1322,7 @@ namespace EQWOWConverter.ObjectModels
             CollisionTriangles.Clear();
 
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && (ModelType == ObjectModelType.Skeletal || ModelType == ObjectModelType.StaticDoodad))
+            if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance))
             {
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();

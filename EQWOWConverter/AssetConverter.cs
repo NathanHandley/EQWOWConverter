@@ -344,7 +344,7 @@ namespace EQWOWConverter
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
-                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.Skeletal);
+                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodad);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
                 curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, null);
                 Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
