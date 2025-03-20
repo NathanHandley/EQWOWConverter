@@ -702,6 +702,10 @@ namespace EQWOWConverter.ObjectModels
                             bone.TranslationTrack.AddSequence();
                         }
 
+                        float worldScaleAmount = Configuration.GENERATE_CREATURE_SCALE;
+                        if (ModelType == ObjectModelType.StaticDoodad)
+                            worldScaleAmount = Configuration.GENERATE_WORLD_SCALE;
+
                         // Add the animation-bone transformations to the bone objects for each frame
                         Dictionary<string, int> curTimestampsByBoneName = new Dictionary<string, int>();
                         for (int i = 0; i < animation.Value.AnimationFrames.Count; i++)
@@ -726,9 +730,9 @@ namespace EQWOWConverter.ObjectModels
                             else
                             {
                                 // Format and transform the animation frame values from EQ to WoW
-                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.YPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale,
-                                                                       animationFrame.ZPosition * Configuration.GENERATE_CREATURE_SCALE * ModelScalePreWorldScale);
+                                Vector3 frameTranslation = new Vector3(animationFrame.XPosition * worldScaleAmount * ModelScalePreWorldScale,
+                                                                       animationFrame.YPosition * worldScaleAmount * ModelScalePreWorldScale,
+                                                                       animationFrame.ZPosition * worldScaleAmount * ModelScalePreWorldScale);
                                 Vector3 frameScale = new Vector3(animationFrame.Scale, animationFrame.Scale, animationFrame.Scale);
                                 QuaternionShort frameRotation = new QuaternionShort(-animationFrame.XRotation,
                                                                                     -animationFrame.YRotation,
@@ -746,7 +750,7 @@ namespace EQWOWConverter.ObjectModels
 
                                 // For bones that connect to root, add the height mod
                                 if (curBone.ParentBoneNameEQ == "root")
-                                    frameTranslation.Z += ModelLiftPreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
+                                    frameTranslation.Z += ModelLiftPreWorldScale * worldScaleAmount;
 
                                 // Calculate the frame start time
                                 UInt32 curTimestamp = 0;
