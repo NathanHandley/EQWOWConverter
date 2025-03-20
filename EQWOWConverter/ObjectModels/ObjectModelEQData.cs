@@ -188,6 +188,9 @@ namespace EQWOWConverter.ObjectModels
                     animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
 
                 LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplimentName);
+
+                // Load collision
+                LoadCollisionMeshData(inputObjectName, meshNamesInDictionary.Keys.ToList(), inputObjectFolder);
             }
             else
             {
@@ -212,7 +215,7 @@ namespace EQWOWConverter.ObjectModels
                     if (avFrames.VertexOffsetFrames.Count > 0)
                         numOfFilledAVs++;
                 if (numOfFilledAVs >= 255)
-                    Logger.WriteError("Object '" + inputObjectName + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count);
+                    Logger.WriteDetail("Object '" + inputObjectName + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
                 if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 255)
                 {
                     ConvertAnimatedVerticesToSkeleton(inputObjectName);
@@ -220,16 +223,16 @@ namespace EQWOWConverter.ObjectModels
                 }
                 else
                     LoadAnimationData(inputObjectName, inputObjectFolder, string.Empty);
-            }
 
-            // Load collision
-            LoadCollisionMeshData(inputObjectName, inputObjectFolder); // TODO: Work with muliple meshes
+                // Load collision
+                LoadCollisionMeshData(inputObjectName, meshBoneIndexByName.Keys.ToList(), inputObjectFolder);
+            }
         }
 
         private void LoadRenderMeshData(string inputObjectName, Dictionary<string, byte> meshNamesByBoneIndex, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
-            foreach(var meshNameByBoneIndex in meshNamesByBoneIndex)
+            foreach (var meshNameByBoneIndex in meshNamesByBoneIndex)
             {
                 // Load this mesh
                 string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Key + ".txt");
@@ -299,23 +302,28 @@ namespace EQWOWConverter.ObjectModels
         }
 
         // TODO: Make this work with multiple meshes
-        private void LoadCollisionMeshData(string inputObjectName, string inputObjectFolder)
+        private void LoadCollisionMeshData(string inputObjectName, List<string> meshNames, string inputObjectFolder)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading collision mesh data...");
-            string collisionMeshFileName = Path.Combine(inputObjectFolder, "Meshes", inputObjectName + "_collision.txt");
-            if (File.Exists(collisionMeshFileName) == false)
+            MeshData collisionMeshData = new MeshData();
+            foreach (string meshName in meshNames)
             {
-                Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found, skipping.");
-                return;
+                string collisionMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshName + "_collision.txt");
+                if (File.Exists(collisionMeshFileName) == false)
+                {
+                    Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found, skipping.");
+                    continue;
+                }
+                EQMesh meshData = new EQMesh();
+                if (meshData.LoadFromDisk(collisionMeshFileName) == false)
+                {
+                    Logger.WriteError("- [" + inputObjectName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
+                    continue;
+                }
+                collisionMeshData.AddMeshData(meshData.Meshdata);
             }
-            EQMesh meshData = new EQMesh();
-            if (meshData.LoadFromDisk(collisionMeshFileName) == false)
-            {
-                Logger.WriteError("- [" + inputObjectName + "]: Error loading collision mesh at '" + collisionMeshFileName + "'");
-                return;
-            }
-            CollisionTriangleFaces = meshData.Meshdata.TriangleFaces;
-            CollisionVertices = meshData.Meshdata.Vertices;
+            CollisionTriangleFaces = collisionMeshData.TriangleFaces;
+            CollisionVertices = collisionMeshData.Vertices;
         }
 
         private void LoadSkeletonData(string inputObjectName, string inputObjectFolder)

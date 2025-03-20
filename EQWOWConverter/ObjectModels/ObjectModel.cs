@@ -1368,6 +1368,30 @@ namespace EQWOWConverter.ObjectModels
                 if (foundMaterials.Count > 0)
                 {
                     MeshData collisionMesh = meshData.GetMeshDataForMaterials(foundMaterials.Values.ToList().ToArray());
+
+                    // Store the indices of valid verts, to avoid marking animated verts as collidable
+                    HashSet<int> collidableVerts = new HashSet<int>();
+                    for (int i = 0; i < collisionMesh.Vertices.Count; i++)
+                    {
+                        if (collisionMesh.AnimatedVertexFramesByVertexIndex.Count == 0)
+                            collidableVerts.Add(i);
+                        else if (collisionMesh.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Count == 0)
+                            collidableVerts.Add(i);
+                    }
+
+                    // Recompact the mesh data if there was a restricted vert set
+                    if (collidableVerts.Count < collisionMesh.Vertices.Count)
+                    {
+                        List<TriangleFace> validCollisionFaces = new List<TriangleFace>();
+                        foreach (TriangleFace face in collisionMesh.TriangleFaces)
+                        {
+                            if (collidableVerts.Contains(face.V1) && collidableVerts.Contains(face.V2) && collidableVerts.Contains(face.V3))
+                                validCollisionFaces.Add(face);
+                        }
+                        collisionMesh = collisionMesh.GetMeshDataForFaces(validCollisionFaces);
+                    }
+
+                    // Pull the mesh data
                     foreach (TriangleFace face in collisionMesh.TriangleFaces)
                         collisionTriangleFaces.Add(new TriangleFace(face));
                     foreach (Vector3 position in collisionMesh.Vertices)
