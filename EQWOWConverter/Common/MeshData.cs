@@ -417,6 +417,8 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
+                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
 
                 // Face vertex 2
@@ -441,6 +443,8 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
+                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
 
                 // Face vertex 3
@@ -465,11 +469,14 @@ namespace EQWOWConverter.Common
                         extractedMeshData.VertexColors.Add(VertexColors[oldVertIndex]);
                     if (BoneIDs.Count != 0)
                         extractedMeshData.BoneIDs.Add(BoneIDs[oldVertIndex]);
+                    if (AnimatedVertexFramesByVertexIndex.Count != 0)
+                        extractedMeshData.AnimatedVertexFramesByVertexIndex.Add(AnimatedVertexFramesByVertexIndex[oldVertIndex]);
                 }
 
                 // Save this updated triangle
                 extractedMeshData.TriangleFaces.Add(curTriangleFace);
             }
+            extractedMeshData.AnimatedVerticesDelayInMS = AnimatedVerticesDelayInMS;
             return extractedMeshData;
         }
 
@@ -589,6 +596,7 @@ namespace EQWOWConverter.Common
                 // Save this updated triangle
                 extractedMeshData.TriangleFaces.Add(curTriangleFace);
             }
+            extractedMeshData.AnimatedVerticesDelayInMS = AnimatedVerticesDelayInMS;
             return extractedMeshData;
         }
 

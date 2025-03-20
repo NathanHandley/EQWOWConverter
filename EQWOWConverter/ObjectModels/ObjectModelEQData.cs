@@ -207,9 +207,13 @@ namespace EQWOWConverter.ObjectModels
                 // Load the rest
                 // If this object uses animated vertices, then it should have a skeleton and animation generated
                 // TODO: Make this work with > 256 vertex frames
-                if (MeshData.AnimatedVertexFramesByVertexIndex.Count >= 255)
+                int numOfFilledAVs = 0;
+                foreach (var avFrames in MeshData.AnimatedVertexFramesByVertexIndex)
+                    if (avFrames.VertexOffsetFrames.Count > 0)
+                        numOfFilledAVs++;
+                if (numOfFilledAVs >= 255)
                     Logger.WriteError("Object '" + inputObjectName + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count);
-                if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && MeshData.AnimatedVertexFramesByVertexIndex.Count < 255)
+                if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 255)
                 {
                     ConvertAnimatedVerticesToSkeleton(inputObjectName);
                     GenerateAnimationFromAnimatedVertexSkeleton(inputObjectName, MeshData);
@@ -348,7 +352,15 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Create the new animation
-            int totalTime = meshData.AnimatedVerticesDelayInMS * meshData.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFrames.Count;
+            int totalTime = 0;
+            for (int i = 0; i < meshData.AnimatedVertexFramesByVertexIndex.Count; i++)
+            {
+                if (meshData.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Count > 0)
+                {
+                    totalTime = meshData.AnimatedVerticesDelayInMS * meshData.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Count;
+                    break;
+                }
+            }
             int totalFrameCount = meshData.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFrames.Count;
             Animation newAnimation = new Animation("o01", AnimationType.Stand, EQAnimationType.o01StandIdle, totalFrameCount, totalTime);
 

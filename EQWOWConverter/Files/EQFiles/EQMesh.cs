@@ -225,33 +225,6 @@ namespace EQWOWConverter.EQFiles
             // Clean up animated vertex information
             if (Meshdata.AnimatedVertexFramesByVertexIndex.Count > 0)
             {
-                // Remove frames where it's the same between two frames across all indices
-                List<int> framesToDelete = new List<int>();
-                for (int i = 1; i < Meshdata.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFramesInStringLiteral.Count; i++)
-                {
-                    bool allTheSame = true;
-                    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex.Count; j++)
-                    {
-                        if (Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i].XString != Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i-1].XString ||
-                            Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i].YString != Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i-1].YString ||
-                            Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i].ZString != Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral[i-1].ZString)
-                        {
-                            allTheSame = false;
-                            break;
-                        }
-                    }
-                    if (allTheSame == true)
-                        framesToDelete.Add(i);
-                }
-                for (int i = framesToDelete.Count - 1; i >= 0; i--)
-                {
-                    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex.Count; j++)
-                    {
-                        Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFrames.RemoveAt(framesToDelete[i]);
-                        Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral.RemoveAt(framesToDelete[i]);
-                    }
-                }
-
                 // Reduce all amounts by the actual vertex locations
                 for (int i = 0; i < Meshdata.AnimatedVertexFramesByVertexIndex.Count; i++)
                 {
@@ -263,37 +236,62 @@ namespace EQWOWConverter.EQFiles
                     }
                 }
 
-
+                // Remove frames that are zeroed but not the first
+                List<int> framesToDelete = new List<int>();
+                for (int i = 1; i < Meshdata.AnimatedVertexFramesByVertexIndex[0].VertexOffsetFramesInStringLiteral.Count; i++)
+                {
+                    bool hasNonZero = false;
+                    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex.Count; j++)
+                    {   
+                        if (MathF.Abs(Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFrames[i].X) > float.Epsilon ||
+                            MathF.Abs(Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFrames[i].Y) > float.Epsilon ||
+                            MathF.Abs(Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFrames[i].Z) > float.Epsilon)
+                        {
+                            hasNonZero = true;
+                            break;
+                        }
+                    }
+                    if (hasNonZero == false)
+                        framesToDelete.Add(i);
+                }
+                for (int i = framesToDelete.Count - 1; i >= 0; i--)
+                {
+                    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex.Count; j++)
+                    {
+                        Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFrames.RemoveAt(framesToDelete[i]);
+                        Meshdata.AnimatedVertexFramesByVertexIndex[j].VertexOffsetFramesInStringLiteral.RemoveAt(framesToDelete[i]);
+                    }
+                }
 
                 // Anywhere there is no movement at all, purge that list of offsets
-                //for (int i = 0; i < Meshdata.AnimatedVertexFramesByVertexIndex.Count; i++)
-                //{
-                //    bool allTheSame = true;
-                //    string xValue = string.Empty;
-                //    string yValue = string.Empty;
-                //    string zValue = string.Empty;
-                //    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral.Count; ++j)
-                //    {
-                //        if (j == 0)
-                //        {
-                //            xValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].XString;
-                //            yValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].YString;
-                //            zValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].ZString;
-                //        }
-                //        else if (Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].XString != xValue ||
-                //            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].YString != yValue ||
-                //            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].ZString != zValue)
-                //        {
-                //            allTheSame = false;
-                //            break;
-                //        }
-                //    }
-                //    if (allTheSame == true)
-                //    {
-                //        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Clear();
-                //        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral.Clear();
-                //    }
-                //}
+                for (int i = 0; i < Meshdata.AnimatedVertexFramesByVertexIndex.Count; i++)
+                {
+                    bool allTheSame = true;
+                    string xValue = string.Empty;
+                    string yValue = string.Empty;
+                    string zValue = string.Empty;
+                    for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral.Count; ++j)
+                    {
+                        if (j == 0)
+                        {
+                            xValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].XString;
+                            yValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].YString;
+                            zValue = Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].ZString;
+                        }
+                        else if (Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].XString != xValue ||
+                            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].YString != yValue ||
+                            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral[j].ZString != zValue)
+                        {
+                            allTheSame = false;
+                            break;
+                        }
+                    }
+                    if (allTheSame == true)
+                    {
+                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Clear();
+                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral.Clear();
+                    }
+                }
             }
 
             Logger.WriteDetail(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");

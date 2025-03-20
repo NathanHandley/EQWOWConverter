@@ -37,27 +37,36 @@ namespace EQWOWConverter.EQFiles
         {
             // Clear existing bones
             meshData.BoneIDs.Clear();
+            BoneStructures.Clear();
+            MeshNames.Clear();
+            SecondaryMeshNames.Clear();
 
             // There's always a root bone, and all animated vertices are children
             EQSkeletonBone rootBone = new EQSkeletonBone();
             rootBone.BoneName = "root";
-            for (int i = 0; i < meshData.AnimatedVertexFramesByVertexIndex.Count; i++)
-                rootBone.Children.Add(i + 1); // root reserves 0, so add one to each
             rootBone.MeshName = string.Empty;
             rootBone.AlternateMeshName = string.Empty;
             rootBone.ParticleCloudName = string.Empty;
             BoneStructures.Add(rootBone);
 
             // Every animated vertex gets a bone, and assign the bone ID to the mesh data accordingly
+            int curBoneID = 1;
             for (int i = 0; i < meshData.AnimatedVertexFramesByVertexIndex.Count; i++)
             {
-                EQSkeletonBone vertexBone = new EQSkeletonBone();
-                vertexBone.BoneName = "v" + i;
-                vertexBone.MeshName = string.Empty;
-                vertexBone.AlternateMeshName = string.Empty;
-                vertexBone.ParticleCloudName = string.Empty;
-                BoneStructures.Add(vertexBone);
-                meshData.BoneIDs.Add(Convert.ToByte(i + 1));
+                if (meshData.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFramesInStringLiteral.Count > 0)
+                {
+                    EQSkeletonBone vertexBone = new EQSkeletonBone();
+                    vertexBone.BoneName = "v" + i;
+                    vertexBone.MeshName = string.Empty;
+                    vertexBone.AlternateMeshName = string.Empty;
+                    vertexBone.ParticleCloudName = string.Empty;
+                    BoneStructures.Add(vertexBone);
+                    meshData.BoneIDs.Add(Convert.ToByte(curBoneID));
+                    rootBone.Children.Add(curBoneID);
+                    curBoneID++;
+                }
+                else
+                    meshData.BoneIDs.Add(0);
             }
         }
 

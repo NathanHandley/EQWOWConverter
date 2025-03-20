@@ -244,11 +244,6 @@ namespace EQWOWConverter.ObjectModels
                         nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
                 }
 
-                if (Name == "pennant2")
-                {
-                    int x = 5;
-                }
-
                 // Create bone lookups on a per submesh basis (which are grouped by material)
                 // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
                 List<int> vertexMaterialIDs = new List<int>();
@@ -577,11 +572,11 @@ namespace EQWOWConverter.ObjectModels
                         {
                             QuaternionShort curRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[0]);
                             QuaternionShort priorRotation = new QuaternionShort(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count - 1]);
-                            curRotation.RecalculateToShortestFromOther(priorRotation);                            
+                            curRotation.RecalculateToShortestFromOther(priorRotation);
                             bone.RotationTrack.Values[i].Values.Add(curRotation);
                         }
                         else
-                            bone.RotationTrack.Values[i].Values.Add(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count - 1]);                       
+                            bone.RotationTrack.Values[i].Values.Add(bone.RotationTrack.Values[i].Values[bone.RotationTrack.Values[i].Values.Count - 1]);
                     }
                     if (bone.TranslationTrack.Timestamps[i].Timestamps.Count > 1)
                     {
