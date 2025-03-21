@@ -14,12 +14,12 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.Drawing.Drawing2D;
-using System.Text;
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.Text;
 
 namespace EQWOWConverter
 {
@@ -131,9 +131,6 @@ namespace EQWOWConverter
                 string tempZoneFolder = Path.Combine(tempFolderRoot, "Zone");
                 string tempObjectsFolder = Path.Combine(tempFolderRoot, "Objects");
 
-                // Process the object textures
-                ProcessAndCopyObjectTextures(topDirectoryFolderNameOnly, tempObjectsFolder, outputObjectsTexturesFolderRoot);
-
                 // Copy the core zone folder
                 string outputZoneFolder = Path.Combine(eqExportsCondensedPath, "zones", topDirectoryFolderNameOnly);
                 FileTool.CopyDirectoryAndContents(tempZoneFolder, outputZoneFolder, true, true);
@@ -159,7 +156,7 @@ namespace EQWOWConverter
                         if (oldToNewObjectRenames.ContainsKey(inputObjectName))
                             inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
-                        ProcessAndCopyObjectGeometry(topDirectory, tempObjectsFolder, outputZoneFolder, inputObjectName, outputObjectsFolderRoot, true, out outputObjectName);
+                        ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, inputObjectName, outputObjectsFolderRoot, true, out outputObjectName);
                         if (inputObjectName != outputObjectName)
                             oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
                         if (skeletalObjectNames.Contains(outputObjectName) == false)
@@ -178,7 +175,7 @@ namespace EQWOWConverter
                         if (oldToNewObjectRenames.ContainsKey(inputObjectName))
                             inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
-                        ProcessAndCopyObjectGeometry(topDirectory, tempObjectsFolder, outputZoneFolder, inputObjectName, outputObjectsFolderRoot, false, out outputObjectName);
+                        ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, inputObjectName, outputObjectsFolderRoot, false, out outputObjectName);
                         if (inputObjectName != outputObjectName)
                             oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
                         if (staticObjectNames.Contains(outputObjectName) == false)
@@ -638,6 +635,13 @@ namespace EQWOWConverter
                 return false;
             }
             textureFoldersToProcess.Add(itemIconFolder);
+            string spellIconFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
+            if (Directory.Exists(spellIconFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + spellIconFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(spellIconFolder);
             string zonesRootFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             if (Directory.Exists(zonesRootFolder) == false)
             {
@@ -726,82 +730,6 @@ namespace EQWOWConverter
                     outputFile.WriteLine(line.Replace(replaceStringOld, replaceStringNew));
         }
 
-        private void ProcessAndCopyObjectTextures(string topDirectory, string tempObjectsFolder, string outputObjectsTexturesFolderRoot)
-        {
-            // Look for texture collisions for different texture files
-            string tempObjectTextureFolderName = Path.Combine(tempObjectsFolder, "Textures");
-            string tempMaterialsFolderName = Path.Combine(tempObjectsFolder, "MaterialLists");
-            string[] objectTexturesFiles = Directory.GetFiles(tempObjectTextureFolderName);
-            foreach (string objectTextureFile in objectTexturesFiles)
-            {
-                // Calculate the full paths for comparison
-                string objectTextureFileNameOnly = Path.GetFileName(objectTextureFile);
-                string originalObjectTextureFileNameOnlyNoExtension = Path.GetFileNameWithoutExtension(objectTextureFile);
-                string sourceObjectTextureFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
-                string targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
-
-                // Loop until there is no unresolved file collision
-                bool doesUnresolvedFileCollisionExist;
-                uint altIteration = 1;
-                do
-                {
-                    // Compare the files if the destination file already exist
-                    doesUnresolvedFileCollisionExist = false;
-                    if (File.Exists(targetObjectTextureFile) == true)
-                    {
-                        // If the files collide but are not the exact same, create a new version
-                        if (FileTool.AreFilesTheSame(targetObjectTextureFile, sourceObjectTextureFile) == false)
-                        {
-                            // Update the file name
-                            string newObjectTextureFileNameOnly = originalObjectTextureFileNameOnlyNoExtension + "alt" + altIteration.ToString() + Path.GetExtension(objectTextureFile);
-                            altIteration++;
-                            Logger.WriteDetail("- [" + topDirectory + "] Object Texture Collision with name '" + objectTextureFileNameOnly + "' but different contents so renaming to '" + newObjectTextureFileNameOnly + "'");
-                            File.Move(sourceObjectTextureFile, Path.Combine(tempObjectTextureFolderName, newObjectTextureFileNameOnly));
-
-                            // Update texture references in material files
-                            string[] objectMaterialFiles = Directory.GetFiles(tempMaterialsFolderName);
-                            foreach (string objectMaterialFile in objectMaterialFiles)
-                            {
-                                EQMaterialList eqMaterialList = new EQMaterialList();
-                                eqMaterialList.LoadFromDisk(objectMaterialFile);
-                                bool materialHasTextureName = false;
-                                string objectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(objectTextureFileNameOnly);
-                                if (eqMaterialList.MaterialsByTextureVariation.Count > 1)
-                                    Logger.WriteError("Unhandled material variation count for copying object textures!");
-                                foreach (Material material in eqMaterialList.MaterialsByTextureVariation[0])
-                                {
-                                    if (material.UniqueName == objectTextureFileNameNoExtension)
-                                        materialHasTextureName = true;
-                                    break;
-                                }
-                                if (materialHasTextureName)
-                                {
-                                    string fileText = FileTool.ReadAllDataFromFile(objectMaterialFile);
-                                    if (fileText.Contains(":" + objectTextureFileNameNoExtension))
-                                    {
-                                        string newObjectTextureFileNameNoExtension = Path.GetFileNameWithoutExtension(newObjectTextureFileNameOnly);
-                                        Logger.WriteDetail("- [" + topDirectory + "] Object material file '" + objectMaterialFile + "' contained texture '" + objectTextureFileNameNoExtension + "' which was renamed to '" + newObjectTextureFileNameNoExtension + "'. Updating material file...");
-                                        fileText = fileText.Replace(":" + objectTextureFileNameNoExtension, ":" + newObjectTextureFileNameNoExtension);
-                                        File.WriteAllText(objectMaterialFile, fileText);
-                                    }
-                                }
-                            }
-
-                            // Continue loop using this new file name as a base
-                            objectTextureFileNameOnly = newObjectTextureFileNameOnly;
-                            sourceObjectTextureFile = Path.Combine(tempObjectTextureFolderName, objectTextureFileNameOnly);
-                            targetObjectTextureFile = Path.Combine(outputObjectsTexturesFolderRoot, objectTextureFileNameOnly);
-                            doesUnresolvedFileCollisionExist = true;
-                        }
-                    }
-                }
-                while (doesUnresolvedFileCollisionExist);
-
-                // Copy the file
-                File.Copy(sourceObjectTextureFile, targetObjectTextureFile, true);
-            }
-        }
-
         private int GetUniqueIDForAnyIncompatibleFileCollision(string sourceFileFullPath, string targetFolder, int startUniqueIDToAdd)
         {
             // Pull out just the file name
@@ -835,9 +763,96 @@ namespace EQWOWConverter
             return calculatedUniqueIDToAdd;
         }
 
-        private void ProcessAndCopyObjectGeometry(string topDirectory, string tempObjectsFolder, string tempZoneFolder, string objectName, string outputObjectsFolder, bool isSkeletal, out string revisedObjectName)
+        private void ProcessAndCopyMaterialTextures(string topDirectory, string tempObjectsFolder, string materialListFullPath, string outputObjectsFolder)
+        {
+            string sourceTextureFolder = Path.Combine(tempObjectsFolder, "textures");
+            string targetTextureFolder = Path.Combine(outputObjectsFolder, "textures");
+
+            // Read each line of the material file looking for texture names
+            List<string> inMaterialListFileRows = FileTool.ReadAllStringLinesFromFile(materialListFullPath, false, false);
+            List<string> outMaterialListFileRows = new List<string>();
+            for (int mi = 0; mi < inMaterialListFileRows.Count; mi++)
+            {
+                string materialLine = inMaterialListFileRows[mi];
+
+                // Comment rows start with a pound
+                if (materialLine.StartsWith("#"))
+                {
+                    outMaterialListFileRows.Add(materialLine);
+                    continue;
+                }
+
+                // Remove any spaces or pound signs
+                materialLine = materialLine.Replace("#", "");
+                materialLine = materialLine.Replace(" ", "");
+
+                // Look for the section that has texture names
+                string[] workingRowBlocks = materialLine.Split(",");
+                for (int i = 0; i < workingRowBlocks.Length; i++)
+                {
+                    string block = workingRowBlocks[i];
+
+                    // Texture rows have the colon
+                    if (block.Contains(':'))
+                    {
+                        // Break it up, skipping the first since that's just the material name
+                        string[] workingTextureBlocks = block.Split(":");
+                        for (int j = 1; j < workingTextureBlocks.Length; j++)
+                        {
+                            string textureNameNoExt = workingTextureBlocks[j];
+
+                            // Rename anything that needs to be renamed
+                            string sourceTextureFileNameAndPath = Path.Combine(sourceTextureFolder, textureNameNoExt + ".png");
+                            int generatedID = GetUniqueIDForAnyIncompatibleFileCollision(sourceTextureFileNameAndPath, targetTextureFolder, 0);
+                            if (generatedID > 0)
+                            {
+                                textureNameNoExt = textureNameNoExt + "alt" + generatedID.ToString();
+                                Logger.WriteDetail("- [" + topDirectory + "] Texture collision occurred so renaming '" + workingTextureBlocks[j] + "' to '" + textureNameNoExt + "' for MaterialList '" + materialListFullPath + "'");
+                                workingTextureBlocks[j] = textureNameNoExt;
+                            }
+
+                            // Copy the texture
+                            string targetTextureFileNameAndPath = Path.Combine(targetTextureFolder, textureNameNoExt + ".png");
+                            File.Copy(sourceTextureFileNameAndPath, targetTextureFileNameAndPath, true);
+                        }
+
+                        // Put it back together
+                        StringBuilder composedTextureBlockSB = new StringBuilder();
+                        for (int j = 0; j < workingTextureBlocks.Length; j++)
+                        {
+                            composedTextureBlockSB.Append(workingTextureBlocks[j]);
+                            if (j < workingTextureBlocks.Length - 1)
+                                composedTextureBlockSB.Append(":");
+                        }
+                        block = composedTextureBlockSB.ToString();
+                    }
+
+                    workingRowBlocks[i] = block;
+                }
+
+                // Re-combine and add this row
+                StringBuilder composedLineSB = new StringBuilder();
+                for (int i = 0; i < workingRowBlocks.Length; i++)
+                {
+                    composedLineSB.Append(workingRowBlocks[i]);
+                    if (i < workingRowBlocks.Length - 1)
+                        composedLineSB.Append(",");
+                }
+                outMaterialListFileRows.Add(composedLineSB.ToString());
+            }
+
+            // Write the file
+            using (var outputMaterialList = new StreamWriter(materialListFullPath))
+                foreach (string block in outMaterialListFileRows)
+                    outputMaterialList.WriteLine(block);
+        }
+
+        private void ProcessAndCopyObject(string topDirectory, string tempObjectsFolder, string tempZoneFolder, string objectName, string outputObjectsFolder, bool isSkeletal, out string revisedObjectName)
         {
             string tempObjectMaterialList = Path.Combine(tempObjectsFolder, "MaterialLists", objectName + ".txt");
+
+            // Handle texture name collisions
+            ProcessAndCopyMaterialTextures(topDirectory, tempObjectsFolder, tempObjectMaterialList, outputObjectsFolder);
 
             // Different logic for skeletal vs non-skeletal
             if (isSkeletal)
