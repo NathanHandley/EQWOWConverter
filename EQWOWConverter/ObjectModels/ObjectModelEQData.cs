@@ -31,7 +31,7 @@ namespace EQWOWConverter.ObjectModels
         public EQSkeleton SkeletonData = new EQSkeleton();
 
         public void LoadObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate, 
-            string meshNameOverride = "")
+            string meshAndSkeletonNameOverrideForNonCreature = "")
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
@@ -40,9 +40,12 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Load skeleton, if possible
-            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
+            string skeletonName = inputObjectName;
+            if (meshAndSkeletonNameOverrideForNonCreature != "")
+                skeletonName = meshAndSkeletonNameOverrideForNonCreature;
+            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", skeletonName + ".txt");
             if (File.Exists(skeletonFileName))
-                LoadSkeletonData(inputObjectName, inputObjectFolder);
+                LoadSkeletonData(skeletonName, inputObjectFolder);
 
             if (creatureModelTemplate != null)
             {
@@ -199,12 +202,11 @@ namespace EQWOWConverter.ObjectModels
                 for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
                     if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
                         meshBoneIndexByName.Add(SkeletonData.BoneStructures[i].MeshName, i);
-                if (meshNameOverride != string.Empty)
-                    meshBoneIndexByName.Add(meshNameOverride, 0);
+                if (meshAndSkeletonNameOverrideForNonCreature != string.Empty)
+                    meshBoneIndexByName.Add(meshAndSkeletonNameOverrideForNonCreature, 0);
                 LoadRenderMeshData(inputObjectName, meshBoneIndexByName, inputObjectFolder);
 
                 // Load Materials
-                MaterialListFileName = inputObjectName;
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
 
                 // Load the rest
