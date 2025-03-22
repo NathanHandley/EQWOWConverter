@@ -1015,7 +1015,7 @@ namespace EQWOWConverter.Items
                 foreach (string line in FileTool.ReadAllStringLinesFromFile(staticListFileName, false, true))
                 {
                     string[] blocks = line.Split(',');
-                    string curCommonName = "EQ_" + blocks[0].Trim().ToLower();
+                    string curCommonName = "eq_" + blocks[0].Trim().ToLower();
                     string curFileName = blocks[1].Trim().ToLower();
                     staticFileNamesByCommonName.Add(curCommonName, curFileName);
                 }
@@ -1026,7 +1026,7 @@ namespace EQWOWConverter.Items
                 inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
                 inventoryType != ItemWOWInventoryType.Thrown)
             {
-                itemDisplayCommonName = "EQ_it63";
+                itemDisplayCommonName = "eq_it63";
             }
 
             // Get or load the model
@@ -1057,8 +1057,7 @@ namespace EQWOWConverter.Items
                     relativeMPQFolderName = Path.Combine("ITEM", "OBJECTCOMPONENTS", "WEAPON");
                 string fullOutputFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", relativeMPQFolderName);
 
-                // Create the model, M2, and skin
-                equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, null, eqAssetFileName);
+                // Create the output files
                 M2 objectM2 = new M2(equipmentModel, relativeMPQFolderName);
                 objectM2.WriteToDisk(itemDisplayCommonName, fullOutputFolderName);
 
@@ -1119,7 +1118,7 @@ namespace EQWOWConverter.Items
                 PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, damage);
 
                 // Model information
-                newItemTemplate.EQItemDisplayCommonName = "EQ_" + columns["item_display_file"].Trim().ToLower();
+                newItemTemplate.EQItemDisplayCommonName = "eq_" + columns["item_display_file"].Trim().ToLower();
                 newItemTemplate.EquipmentModel = GetOrCreateModelForHeldItem(newItemTemplate.EQItemDisplayCommonName, newItemTemplate.InventoryType);
                 ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(iconName, newItemTemplate.EquipmentModel.Name + ".mdx", string.Empty);
                 newItemTemplate.DisplayID = itemDisplayInfo.DBCID;

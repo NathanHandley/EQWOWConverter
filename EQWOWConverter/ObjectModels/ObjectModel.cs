@@ -56,6 +56,7 @@ namespace EQWOWConverter.ObjectModels
         public Vector3 PortraitCameraTargetPosition = new Vector3();
         public MeshData MeshData = new MeshData();
         public bool IsSkeletal = false;
+        public bool IsLoaded = false;
 
         public List<Vector3> CollisionPositions = new List<Vector3>();
         public List<Vector3> CollisionFaceNormals = new List<Vector3>();
@@ -79,6 +80,12 @@ namespace EQWOWConverter.ObjectModels
         public void LoadEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate, string meshNameOverride = "", 
             ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
+            if (IsLoaded == true)
+            {
+                Logger.WriteError("Failed to load EQ object data for object named '" + Name + "' as it was already loaded");
+                return;
+            }
+
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
             EQObjectModelData.LoadObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, meshNameOverride);
@@ -92,19 +99,22 @@ namespace EQWOWConverter.ObjectModels
 
             // Load it
             if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType,
+                Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType,
                     activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
             else
-                Load(Name, EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
+                Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
                     activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
         // TODO: Vertex Colors
-        public void Load(string name, List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
+        public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
             List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
-            // Save Name
-            Name = name;
+            if (IsLoaded == true)
+            {
+                Logger.WriteError("Failed to load object named '" + Name + "' as it was already loaded");
+                return;
+            }
 
             // Control for bad objects
             if (meshData.Vertices.Count != meshData.TextureCoordinates.Count && meshData.Vertices.Count != meshData.Normals.Count)
@@ -162,6 +172,9 @@ namespace EQWOWConverter.ObjectModels
 
             // Store the final state mesh data
             MeshData = meshData;
+
+            // Mark as loaded
+            IsLoaded = true;
         }
 
         private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
