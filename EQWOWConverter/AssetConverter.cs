@@ -196,7 +196,7 @@ namespace EQWOWConverter
                 {
                     // Different lift types have different source mesh data
                     string folderRoot = objectsFolderRoot;
-                    if (transportLift.TriggerType == TransportLiftTriggerType.Automatic)
+                    if (transportLift.IsSourceSkeletal == true)
                         folderRoot = charactersFolderRoot;
 
                     // Load it

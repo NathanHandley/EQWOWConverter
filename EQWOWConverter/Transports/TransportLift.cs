@@ -25,6 +25,7 @@ namespace EQWOWConverter.Transports
 
         public string SpawnZoneShortName = string.Empty;
         public TransportLiftTriggerType TriggerType = TransportLiftTriggerType.Automatic;
+        public bool IsSourceSkeletal = false;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
         public int PathGroupID = 0;
@@ -68,6 +69,7 @@ namespace EQWOWConverter.Transports
                     case "toggle": curTransportLift.TriggerType = TransportLiftTriggerType.Toggle; break;
                     default: Logger.WriteError("Unable to load transport lift due to unhandled trigger type of '" + columns["trigger_type"] + "'"); continue;
                 }
+                curTransportLift.IsSourceSkeletal = int.Parse(columns["is_source_skeletal"]) == 1 ? true : false;
                 curTransportLift.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);
                 curTransportLift.Name = columns["name"];
                 curTransportLift.MeshName = columns["mesh"];

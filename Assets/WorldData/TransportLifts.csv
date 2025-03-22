@@ -1,7 +1,8 @@
-﻿enabled|trigger_type|eq_npc_id|spawn_zone|gotemplate_id|name|mesh|path_group|spawn_x|spawn_y|spawn_z|orientation|end_timestamp|min_expansion|Comments
-0|automatic|24056|erudnext|279900|Sabrina|erlaunch|2|96|-412.8|0|1.570795|0|0|This was removed and the boat was brought in.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
-1|automatic|29028|halas|279901|The Gwenavyne|hferry|1|-441|12|-4|0|0|0|
-1|toggle|0|gfaydark|279902|Kelethin North Lift|faylevator|3|872.302|221.448|-27.6523|3.14159|2200|0|
-1|toggle|0|gfaydark|279903|Kelethin Center Lift|faylevator|4|137.463|350.014|2.1582|1.570795|2200|0|
-1|toggle|0|gfaydark|279904|Kelethin East Lift|faylevator|5|-88.6519|-136.173|2.4082|3.14159|2200|0|
-1|toggle|0|paineel|279911|Paineel Lift|palift101|6|629.886414|475.802198|-98.188221|7.853975|9300|0|
+﻿enabled|trigger_type|is_source_skeletal|eq_npc_id|spawn_zone|gotemplate_id|name|mesh|path_group|spawn_x|spawn_y|spawn_z|orientation|end_timestamp|min_expansion|Comments
+0|automatic|1|24056|erudnext|279900|Sabrina|erlaunch|2|96|-412.8|0|1.570795|0|0|This was removed and the boat was brought in.  This is due to a WOW client bug that will crash sometimes if a game object transport enters a WMO transport
+1|automatic|1|29028|halas|279901|The Gwenavyne|hferry|1|-441|12|-4|0|0|0|
+1|toggle|0|0|gfaydark|279902|Kelethin North Lift|faylevator|3|872.302|221.448|-27.6523|3.14159|2200|0|
+1|toggle|0|0|gfaydark|279903|Kelethin Center Lift|faylevator|4|137.463|350.014|2.1582|1.570795|2200|0|
+1|toggle|0|0|gfaydark|279904|Kelethin East Lift|faylevator|5|-88.6519|-136.173|2.4082|3.14159|2200|0|
+1|toggle|0|0|paineel|279911|Paineel Lift|palift101|6|629.886414|475.802198|-98.188221|7.853975|9300|0|Consider changing orientation to 4.712385
+1|automatic|0|0|mistmoore|279914|Mistmoore Tower Lift|mistlift|7|-243.779|357.845|-155.937|4.712385|0|0|
