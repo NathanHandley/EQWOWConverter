@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Items
 {
     internal class ItemDisplayInfo
@@ -34,7 +28,6 @@ namespace EQWOWConverter.Items
         {
             DBCID = CURRENT_DBCID_ITEMDISPLAYINFO;
             CURRENT_DBCID_ITEMDISPLAYINFO++;
-            ItemDisplayInfos.Add(this);
         }
 
         public static ItemDisplayInfo GetOrCreateItemDisplayInfo(string iconFileNameNoExt)

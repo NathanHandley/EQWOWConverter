@@ -1462,12 +1462,6 @@ namespace EQWOWConverter
                     areaTriggerDBC.AddRow(zoneLine.AreaTriggerID, zoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
                         zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
 
-                // Item data
-                foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
-                    itemDBC.AddRow(itemTemplate);
-                foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
-                    itemDisplayInfoDBC.AddRow(itemDisplayInfo);
-
                 // Light Tables
                 if (zoneProperties.CustomZonewideEnvironmentProperties != null)
                 {
@@ -1563,11 +1557,17 @@ namespace EQWOWConverter
                 worldSafeLocsDBC.AddRow(graveyard, mapID);
             }
 
+            // Item data
+            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
+                itemDBC.AddRow(itemTemplate);
+            foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
+                itemDisplayInfoDBC.AddRow(itemDisplayInfo);
+
             // SkillLine
             //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
 
             // Spells
-            for(int i = 0; i < 23; i++)
+            for (int i = 0; i < 23; i++)
                 spellIconDBC.AddRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
