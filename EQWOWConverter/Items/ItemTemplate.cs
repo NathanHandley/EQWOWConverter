@@ -1038,11 +1038,11 @@ namespace EQWOWConverter.Items
 
                 // Fallback the name if it's not known, or it's not a held type
                 string eqAssetFileName = "it63"; // Fallback/default
-                ObjectModelType modelType = ObjectModelType.StaticDoodad;
+                ObjectModelType modelType = ObjectModelType.EquipmentHeld;
                 if (staticFileNamesByCommonName.ContainsKey(itemDisplayCommonName) == true)
                 {
                     eqAssetFileName = staticFileNamesByCommonName[itemDisplayCommonName];
-                    modelType = ObjectModelType.StaticDoodad;
+                    modelType = ObjectModelType.EquipmentHeld;
                 }
 
                 // Create a new model

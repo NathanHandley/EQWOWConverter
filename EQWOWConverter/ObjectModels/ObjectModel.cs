@@ -127,14 +127,21 @@ namespace EQWOWConverter.ObjectModels
             meshData.SortDataByMaterialAndBones();
 
             // Perform EQ->WoW translations if this is coming from a raw EQ object
-            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport)
+            if (ModelType == ObjectModelType.Creature || ModelType == ObjectModelType.StaticDoodad || ModelType == ObjectModelType.Transport || ModelType == ObjectModelType.EquipmentHeld)
             {
                 float scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_WORLD_SCALE;
                 if (ModelType == ObjectModelType.Creature)
                     scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_CREATURE_SCALE;
+                else if (ModelType == ObjectModelType.EquipmentHeld)
+                    scaleAmount = ModelScalePreWorldScale * Configuration.GENERATE_EQUIPMENT_HELD_SCALE;
 
-                // Regular
-                meshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal || ModelType == ObjectModelType.StaticDoodad, scaleAmount);
+                // Determine if rotation is needed
+                bool doRotateOnZAxis = false;
+                if ((!IsSkeletal || ModelType == ObjectModelType.StaticDoodad) && ModelType != ObjectModelType.EquipmentHeld)
+                    doRotateOnZAxis = true;
+
+                // Mesh Data
+                meshData.ApplyEQToWoWGeometryTranslationsAndScale(doRotateOnZAxis, scaleAmount);
 
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
@@ -142,7 +149,7 @@ namespace EQWOWConverter.ObjectModels
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
-                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(!IsSkeletal || ModelType == ObjectModelType.StaticDoodad, scaleAmount);
+                    collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(doRotateOnZAxis, scaleAmount);
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }

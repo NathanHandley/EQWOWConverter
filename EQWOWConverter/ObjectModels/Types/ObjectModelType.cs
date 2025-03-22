@@ -23,7 +23,6 @@ namespace EQWOWConverter.ObjectModels
         SoundInstance,
         Creature,
         Transport,
-        EquipmentStatic,
-        EquipmentSkeletal
+        EquipmentHeld,
     }
 }
