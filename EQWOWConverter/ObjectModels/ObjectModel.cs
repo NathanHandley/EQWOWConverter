@@ -138,26 +138,23 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Collision data
-            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
-
             // Process materials
             ProcessMaterials(initialMaterials, ref meshData);
 
             // Create model vertices
-            GenerateModelVertices(meshData, collisionVertices, collisionTriangleFaces);
+            GenerateModelVertices(meshData);
 
             // Correct any texture coordinates
             CorrectTextureCoordinates();
-
-            // Process the rest
-            CalculateBoundingBoxesAndRadii();
 
             // No texture replacement lookup (yet)
             ModelReplaceableTextureLookups.Add(0);
 
             // Build the bones and animation structures
             ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
+
+            // Collision data
+            ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
@@ -980,37 +977,24 @@ namespace EQWOWConverter.ObjectModels
             return false;
         }
 
-        private void GenerateModelVertices(MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
+        private void GenerateModelVertices(MeshData meshData)
         {
-            if (Configuration.OBJECT_STATIC_RENDER_AS_COLLISION == true && (ModelType == ObjectModelType.StaticDoodad))
+            foreach (TriangleFace face in meshData.TriangleFaces)
+                ModelTriangles.Add(new TriangleFace(face));
+            for (int i = 0; i < meshData.Vertices.Count; i++)
             {
-                foreach (TriangleFace face in collisionTriangleFaces)
-                    ModelTriangles.Add(new TriangleFace(face));
-                for (int i = 0; i < collisionVertices.Count; i++)
-                {
-                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
-                    newModelVertex.Position = new Vector3(collisionVertices[i]);
-                    newModelVertex.Normal = new Vector3(0, 0, 0);
-                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(0f, 1f);
-                    newModelVertex.BoneIndicesTrue[0] = 0;
-                    ModelVertices.Add(newModelVertex);
-                }
+                ObjectModelVertex newModelVertex = new ObjectModelVertex();
+                newModelVertex.Position = new Vector3(meshData.Vertices[i]);
+                newModelVertex.Normal = new Vector3(meshData.Normals[i]);
+                newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
+                if (meshData.BoneIDs.Count > 0)
+                    newModelVertex.BoneIndicesTrue[0] = meshData.BoneIDs[i];
+                ModelVertices.Add(newModelVertex);
             }
-            else
-            {
-                foreach (TriangleFace face in meshData.TriangleFaces)
-                    ModelTriangles.Add(new TriangleFace(face));
-                for (int i = 0; i < meshData.Vertices.Count; i++)
-                {
-                    ObjectModelVertex newModelVertex = new ObjectModelVertex();
-                    newModelVertex.Position = new Vector3(meshData.Vertices[i]);
-                    newModelVertex.Normal = new Vector3(meshData.Normals[i]);
-                    newModelVertex.Texture1TextureCoordinates = new TextureCoordinates(meshData.TextureCoordinates[i]);
-                    if (meshData.BoneIDs.Count > 0)
-                        newModelVertex.BoneIndicesTrue[0] = meshData.BoneIDs[i];
-                    ModelVertices.Add(newModelVertex);
-                }
-            }
+
+            // Generate bounding box
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE);
+            BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
         }
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)
@@ -1442,12 +1426,8 @@ namespace EQWOWConverter.ObjectModels
                 Vector3 normal = new Vector3(normalizedNormalSystem.X, normalizedNormalSystem.Y, normalizedNormalSystem.Z);
                 CollisionFaceNormals.Add(normal);
             }
-        }
 
-        private void CalculateBoundingBoxesAndRadii()
-        {
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, Configuration.OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE);
-            BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
+            // Generate collision bounding box
             CollisionBoundingBox = BoundingBox.GenerateBoxFromVectors(CollisionPositions, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
             CollisionSphereRaidus = CollisionBoundingBox.FurthestPointDistanceFromCenter();
         }

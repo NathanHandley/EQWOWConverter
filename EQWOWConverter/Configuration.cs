@@ -263,10 +263,6 @@ namespace EQWOWConverter
         // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
         public static readonly float OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE = 25.1f;
 
-        // If set to true, the collision is rendered and not the actual render geometry. Leave false unless debugging.
-        // TODO: Add a custom material for this purpose, as some boundary boxes don't show
-        public static readonly bool OBJECT_STATIC_RENDER_AS_COLLISION = false;
-
         // For ladders, this is how far to extend out the steppable area in front and back of it (value is before world scaling)
         public static readonly float OBJECT_STATIC_LADDER_EXTEND_DISTANCE = 1.0f;
 
