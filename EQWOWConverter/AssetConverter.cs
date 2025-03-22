@@ -80,9 +80,6 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
 
-            // Icons
-            CopyIconFiles();
-
             // Items
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertItemsAndLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
@@ -90,6 +87,9 @@ namespace EQWOWConverter
             // Spells
             List<SpellTemplate> spellTemplates;
             GenerateSpells(out spellTemplates);
+
+            // Icons
+            CopyIconFiles();
 
             // Copy the loading screens
             CreateLoadingScreens();
@@ -727,7 +727,7 @@ namespace EQWOWConverter
         public void ConvertItemsAndLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
         {
             Logger.WriteInfo("Converting items and loot...");
-            
+
             // Generate item templates
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
@@ -1062,9 +1062,14 @@ namespace EQWOWConverter
             }
 
             // Items
-            string relativeItemIconsPath = Path.Combine("Interface", "ICONS");
-            string fullItemIconsPath = Path.Combine(mpqReadyFolder, relativeItemIconsPath);
-            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullItemIconsPath + "\" \"" + relativeItemIconsPath + "\" /r");
+            string relativeItemsPath = Path.Combine("Item");
+            string fullItemsPath = Path.Combine(mpqReadyFolder, relativeItemsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullItemsPath + "\" \"" + relativeItemsPath + "\" /r");
+
+            // Icons
+            string relativeIconsPath = Path.Combine("Interface", "ICONS");
+            string fullIconsPath = Path.Combine(mpqReadyFolder, relativeIconsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullIconsPath + "\" \"" + relativeIconsPath + "\" /r");
 
             // Ambient Sounds
             string relativeAmbientSoundsPath = Path.Combine("Sound", "Ambience", "Everquest");

@@ -23,6 +23,8 @@ namespace EQWOWConverter.Items
 
         public int DBCID = 0;
         public string IconFileNameNoExt = string.Empty;
+        public string ModelName = string.Empty;
+        public string ModelTexture1 = string.Empty;
 
         public ItemDisplayInfo()
         {
@@ -30,15 +32,17 @@ namespace EQWOWConverter.Items
             CURRENT_DBCID_ITEMDISPLAYINFO++;
         }
 
-        public static ItemDisplayInfo GetOrCreateItemDisplayInfo(string iconFileNameNoExt)
+        public static ItemDisplayInfo CreateItemDisplayInfo(string iconFileNameNoExt, string modelName, string modelTexture1)
         {
             foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfos)
             {
-                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt)
+                if (itemDisplayInfo.IconFileNameNoExt == iconFileNameNoExt && itemDisplayInfo.ModelName == modelName && itemDisplayInfo.ModelTexture1 == modelTexture1)
                     return itemDisplayInfo;
             }
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
+            newItemDisplayInfo.ModelName = modelName;
+            newItemDisplayInfo.ModelTexture1 = modelTexture1;
             ItemDisplayInfos.Add(newItemDisplayInfo);
             return newItemDisplayInfo;
         }

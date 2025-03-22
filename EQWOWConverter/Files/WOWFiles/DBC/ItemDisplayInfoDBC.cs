@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
@@ -30,9 +24,9 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(itemDisplayInfo.DBCID);
-            newRow.AddString(string.Empty); // ModelName 1
+            newRow.AddString(itemDisplayInfo.ModelName); // ModelName 1
             newRow.AddString(string.Empty); // ModelName 2
-            newRow.AddString(string.Empty); // ModelTexture 1
+            newRow.AddString(itemDisplayInfo.ModelTexture1); // ModelTexture 1
             newRow.AddString(string.Empty); // ModelTexture 2
             newRow.AddString(itemDisplayInfo.IconFileNameNoExt); // InventoryIcon 1
             newRow.AddString(string.Empty); // InventoryIcon 2

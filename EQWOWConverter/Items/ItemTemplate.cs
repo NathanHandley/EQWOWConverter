@@ -15,12 +15,8 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Creatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Items
 {
@@ -29,6 +25,9 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_START;
+        private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
+
+        private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -42,6 +41,8 @@ namespace EQWOWConverter.Items
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
+        public string EQItemDisplayCommonName = string.Empty;
+        public ObjectModel? EquipmentModel = null;
         public int StackSize = 1;
         public ItemWOWInventoryType InventoryType = ItemWOWInventoryType.NoEquip;
         public int WeaponMinDamage = 0;
@@ -1002,8 +1003,92 @@ namespace EQWOWConverter.Items
             }
         }
 
+        // TODO: Arrows
+        static private ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
+        {
+            // Make sure things are loaded
+            string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
+            if (staticFileNamesByCommonName.Count == 0)
+            {
+                Logger.WriteDetail("Loading equipment actors_static.txt...");
+                string staticListFileName = Path.Combine(equipmentSourceBasePath, "actors_static.txt");
+                foreach (string line in FileTool.ReadAllStringLinesFromFile(staticListFileName, false, true))
+                {
+                    string[] blocks = line.Split(',');
+                    string curCommonName = "EQ_" + blocks[0].Trim().ToLower();
+                    string curFileName = blocks[1].Trim().ToLower();
+                    staticFileNamesByCommonName.Add(curCommonName, curFileName);
+                }
+            }
+
+            // Fallback if it's not held
+            if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
+                inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
+                inventoryType != ItemWOWInventoryType.Thrown)
+            {
+                itemDisplayCommonName = "EQ_it63";
+            }
+
+            // Get or load the model
+            if (ObjectModelsByEQItemDisplayFileName.ContainsKey(itemDisplayCommonName) == true)
+                return ObjectModelsByEQItemDisplayFileName[itemDisplayCommonName];
+            else
+            {
+                Logger.WriteDetail("Creating equipment model object for '" + itemDisplayCommonName + "'...");
+
+                // Fallback the name if it's not known, or it's not a held type
+                string eqAssetFileName = "it63"; // Fallback/default
+                ObjectModelType modelType = ObjectModelType.StaticDoodad;
+                if (staticFileNamesByCommonName.ContainsKey(itemDisplayCommonName) == true)
+                {
+                    eqAssetFileName = staticFileNamesByCommonName[itemDisplayCommonName];
+                    modelType = ObjectModelType.StaticDoodad;
+                }
+
+                // Create a new model
+                ObjectModel equipmentModel = new ObjectModel(itemDisplayCommonName, new ObjectModels.Properties.ObjectModelProperties(), modelType);
+                equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, null, eqAssetFileName);
+
+                // Determine the output folder based on item type
+                string relativeMPQFolderName = string.Empty;
+                if (inventoryType == ItemWOWInventoryType.Shield)
+                    relativeMPQFolderName = Path.Combine("ITEM", "OBJECTCOMPONENTS", "Shield");
+                else
+                    relativeMPQFolderName = Path.Combine("ITEM", "OBJECTCOMPONENTS", "WEAPON");
+                string fullOutputFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", relativeMPQFolderName);
+
+                // Create the model, M2, and skin
+                equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, null, eqAssetFileName);
+                M2 objectM2 = new M2(equipmentModel, relativeMPQFolderName);
+                objectM2.WriteToDisk(itemDisplayCommonName, fullOutputFolderName);
+
+                // Copy the textures
+                foreach (ObjectModelTexture texture in equipmentModel.ModelTextures)
+                {
+                    string inputTextureName = Path.Combine(equipmentSourceBasePath, "Textures", texture.TextureName + ".blp");
+                    string outputTextureName = Path.Combine(fullOutputFolderName, texture.TextureName + ".blp");
+                    if (Path.Exists(outputTextureName) == false)
+                        File.Copy(inputTextureName, outputTextureName);
+                }
+
+                // Save it on the list and return it
+                ObjectModelsByEQItemDisplayFileName.Add(itemDisplayCommonName, equipmentModel);
+                return equipmentModel;
+            }
+        }
+
         static public void PopulateItemTemplateListFromDisk()
         {
+            // Clear the model directories and recreate if needed
+            string itemObjectDirectoryName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "OBJECTCOMPONENTS");
+            string itemObjectWeaponDirectoryName = Path.Combine(itemObjectDirectoryName, "WEAPON");
+            string itemObjectShieldDirectoryName = Path.Combine(itemObjectDirectoryName, "Shield");
+            if (Directory.Exists(itemObjectDirectoryName) == true)
+                Directory.Delete(itemObjectDirectoryName, true);
+            FileTool.CreateBlankDirectory(itemObjectDirectoryName, false);
+            FileTool.CreateBlankDirectory(itemObjectWeaponDirectoryName, false);
+            FileTool.CreateBlankDirectory(itemObjectShieldDirectoryName, false);
+
             // Load in item data
             string itemsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
             Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
@@ -1017,11 +1102,9 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQItemID = int.Parse(columns["id"]);
                 newItemTemplate.Name = columns["Name"];
 
-                // Icon
+                // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
-                string iconName = "INV_EQ_" + (iconID).ToString();
-                ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.GetOrCreateItemDisplayInfo(iconName);
-                newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
+                string iconName = "INV_EQ_" + (iconID).ToString();            
 
                 // Binding Properties
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
@@ -1034,6 +1117,12 @@ namespace EQWOWConverter.Items
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, damage);
+
+                // Model information
+                newItemTemplate.EQItemDisplayCommonName = "EQ_" + columns["item_display_file"].Trim().ToLower();
+                newItemTemplate.EquipmentModel = GetOrCreateModelForHeldItem(newItemTemplate.EQItemDisplayCommonName, newItemTemplate.InventoryType);
+                ItemDisplayInfo itemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(iconName, newItemTemplate.EquipmentModel.Name + ".mdx", string.Empty);
+                newItemTemplate.DisplayID = itemDisplayInfo.DBCID;
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);
