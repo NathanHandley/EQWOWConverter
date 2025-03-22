@@ -1311,6 +1311,31 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
+        private MeshData GenerateCollisionMeshDataForSkeletalModel(MeshData baseMeshData)
+        {
+            if (IsSkeletal == false)
+            {
+                Logger.WriteError("GenerateMeshDataForSkeletalModel failed as object '" + Name + "' was not skeletal");
+                return baseMeshData;
+            }
+
+            // Mesh data returned by this will be the first frame of a standing animation
+            MeshData collisionMeshData = new MeshData(baseMeshData);
+            for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
+            {
+                // Add 1 to the bone ID since there would have been an added bone
+                int boneID = collisionMeshData.BoneIDs[i] + 1;
+
+                // Only process if there was an animation frame here
+                if (ModelBones[boneID].TranslationTrack.Values.Count > 0 && ModelBones[boneID].TranslationTrack.Values[0].Values.Count > 0)
+                {
+                    Vector3 frame1Translation = ModelBones[boneID].TranslationTrack.Values[0].Values[0];
+                    collisionMeshData.Vertices[i] = collisionMeshData.Vertices[i] + frame1Translation;
+                }
+            }
+            return collisionMeshData;
+        }
+
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Purge prior data
@@ -1318,12 +1343,19 @@ namespace EQWOWConverter.ObjectModels
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
 
+            // Skeletal objects need specially generated mesh data utilizing the animation positioning
+            MeshData workingMeshData;
+            if (IsSkeletal == true && meshData.AnimatedVertexFramesByVertexIndex.Count == 0)
+                workingMeshData = GenerateCollisionMeshDataForSkeletalModel(meshData);
+            else
+                workingMeshData = meshData;
+
             // Generate collision data if there is none and it's from an EQ object
             if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance))
             {
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();
-                foreach (TriangleFace face in meshData.TriangleFaces)
+                foreach (TriangleFace face in workingMeshData.TriangleFaces)
                 {
                     Material curMaterial = new Material();
                     bool materialFound = false;
@@ -1351,7 +1383,7 @@ namespace EQWOWConverter.ObjectModels
                 // Build the collision data
                 if (foundMaterials.Count > 0)
                 {
-                    MeshData collisionMesh = meshData.GetMeshDataForMaterials(foundMaterials.Values.ToList().ToArray());
+                    MeshData collisionMesh = workingMeshData.GetMeshDataForMaterials(foundMaterials.Values.ToList().ToArray());
 
                     // Store the indices of valid verts, to avoid marking animated verts as collidable
                     HashSet<int> collidableVerts = new HashSet<int>();
