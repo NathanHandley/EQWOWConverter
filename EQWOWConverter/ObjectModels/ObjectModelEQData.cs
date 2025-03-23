@@ -30,22 +30,19 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadObjectDataFromDisk(string inputObjectName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate, 
-            string meshAndSkeletonNameOverrideForNonCreature = "")
+        public void LoadObjectDataFromDisk(string name, ObjectModelType modelType, string eqInputObjectFileName, 
+            string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {
-                Logger.WriteError("- [" + inputObjectName + "]: Error - Could not find path at '" + inputObjectFolder + "'");
+                Logger.WriteError("- [" + name + "]: Error - Could not find path at '" + inputObjectFolder + "'");
                 return;
             }
 
             // Load skeleton, if possible
-            string skeletonName = inputObjectName;
-            if (meshAndSkeletonNameOverrideForNonCreature != "")
-                skeletonName = meshAndSkeletonNameOverrideForNonCreature;
-            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", skeletonName + ".txt");
+            string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", eqInputObjectFileName + ".txt");
             if (File.Exists(skeletonFileName))
-                LoadSkeletonData(skeletonName, inputObjectFolder);
+                LoadSkeletonData(eqInputObjectFileName, inputObjectFolder);
 
             if (creatureModelTemplate != null)
             {
@@ -103,21 +100,21 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Special mesh logic for 'eye'
-                if (meshNames.Count == 0 && inputObjectName.ToUpper() == "EYE")
+                if (meshNames.Count == 0 && eqInputObjectFileName.ToLower() == "eye")
                     meshNames.Add("eye");
 
                 // For robe-capable races, swap the chest geometry
                 if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
                 {
-                    meshNames.Remove(inputObjectName.ToLower());
-                    meshNames.Add(string.Concat(inputObjectName.ToLower(), "01"));
+                    meshNames.Remove(eqInputObjectFileName.ToLower());
+                    meshNames.Add(string.Concat(eqInputObjectFileName.ToLower(), "01"));
                 }
 
                 // Load the render meshes
                 Dictionary<string, byte> meshNamesInDictionary = new Dictionary<string, byte>();
                 foreach (string meshName in meshNames)
                     meshNamesInDictionary.Add(meshName, 0);
-                LoadRenderMeshData(inputObjectName, meshNamesInDictionary, inputObjectFolder);
+                LoadRenderMeshData(name, meshNamesInDictionary, inputObjectFolder);
 
                 // Load the materials, with special logic for invisible man
                 if (creatureModelTemplate.Race.ID == 127)
@@ -132,7 +129,7 @@ namespace EQWOWConverter.ObjectModels
                 // For multi-face races, swap the faces
                 if (creatureModelTemplate.FaceIndex > 0 && (raceID < 13 || raceID == 70 || raceID == 128 || raceID == 130))
                 {
-                    string faceTextureStart = string.Concat(inputObjectName, "he00");
+                    string faceTextureStart = string.Concat(eqInputObjectFileName, "he00");
                     faceTextureStart = faceTextureStart.ToLower();
                     foreach (Material material in Materials)
                     {
@@ -172,7 +169,7 @@ namespace EQWOWConverter.ObjectModels
                     // Head graphics (erudite only)
                     if (raceID == 3 && (robeIndex >= 0 && robeIndex <= 10))
                     {
-                        string replaceFromText = string.Concat("clk", inputObjectName.ToLower(), "06");
+                        string replaceFromText = string.Concat("clk", eqInputObjectFileName.ToLower(), "06");
                         string replaceToText;
                         if (robeIndex == 10)
                             replaceToText = "clk1006";
@@ -190,21 +187,37 @@ namespace EQWOWConverter.ObjectModels
                 if (creatureModelTemplate != null)
                     animationSupplimentName = creatureModelTemplate.Race.Skeleton2Name;
 
-                LoadAnimationData(inputObjectName, inputObjectFolder, animationSupplimentName);
+                LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, animationSupplimentName);
 
                 // Load collision
-                LoadCollisionMeshData(inputObjectName, meshNamesInDictionary.Keys.ToList(), inputObjectFolder);
+                LoadCollisionMeshData(name, meshNamesInDictionary.Keys.ToList(), inputObjectFolder);
             }
             else
             {
                 // Load render meshes....
                 Dictionary<string, byte> meshBoneIndexByName = new Dictionary<string, byte>();
                 for (byte i = 0; i < SkeletonData.BoneStructures.Count; i++)
+                {
                     if (SkeletonData.BoneStructures[i].MeshName != string.Empty)
+                    {
+                        if (SkeletonData.BoneStructures[i].AlternateMeshName != string.Empty)
+                            Logger.WriteError("- [" + name + "]: Error - A bone had both a mesh and alternate mesh, so alternate is discarded");
                         meshBoneIndexByName.Add(SkeletonData.BoneStructures[i].MeshName, i);
-                if (meshAndSkeletonNameOverrideForNonCreature != string.Empty)
-                    meshBoneIndexByName.Add(meshAndSkeletonNameOverrideForNonCreature, 0);
-                LoadRenderMeshData(inputObjectName, meshBoneIndexByName, inputObjectFolder);
+                    }
+                    if (SkeletonData.BoneStructures[i].AlternateMeshName != string.Empty)
+                    {
+                        meshBoneIndexByName.Add(SkeletonData.BoneStructures[i].AlternateMeshName, i);
+                    }
+                }
+                foreach (string meshName in SkeletonData.MeshNames)
+                    if (meshBoneIndexByName.ContainsKey(meshName) == false)
+                        meshBoneIndexByName.Add(meshName, 0);
+                foreach (string meshName in SkeletonData.SecondaryMeshNames)
+                    if (meshBoneIndexByName.ContainsKey(meshName) == false)
+                        meshBoneIndexByName.Add(meshName, 0);
+                if (meshBoneIndexByName.Count == 0)
+                    meshBoneIndexByName.Add(eqInputObjectFileName, 0);
+                LoadRenderMeshData(name, meshBoneIndexByName, inputObjectFolder);
 
                 // Load Materials
                 LoadMaterialDataFromDisk(MaterialListFileName, inputObjectFolder, 0);
@@ -217,17 +230,17 @@ namespace EQWOWConverter.ObjectModels
                     if (avFrames.VertexOffsetFrames.Count > 0)
                         numOfFilledAVs++;
                 if (numOfFilledAVs >= 255)
-                    Logger.WriteDetail("Object '" + inputObjectName + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
+                    Logger.WriteDetail("Object '" + name + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
                 if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 255)
                 {
-                    ConvertAnimatedVerticesToSkeleton(inputObjectName);
-                    GenerateAnimationFromAnimatedVertexSkeleton(inputObjectName, MeshData);
+                    ConvertAnimatedVerticesToSkeleton(name);
+                    GenerateAnimationFromAnimatedVertexSkeleton(name, MeshData);
                 }
                 else
-                    LoadAnimationData(inputObjectName, inputObjectFolder, string.Empty);
+                    LoadAnimationData(name, eqInputObjectFileName, inputObjectFolder, string.Empty);
 
                 // Load collision
-                LoadCollisionMeshData(inputObjectName, meshBoneIndexByName.Keys.ToList(), inputObjectFolder);
+                LoadCollisionMeshData(name, meshBoneIndexByName.Keys.ToList(), inputObjectFolder);
             }
         }
 
@@ -417,7 +430,7 @@ namespace EQWOWConverter.ObjectModels
             Animations.Add("pos", newAnimation);
         }
 
-        private void LoadAnimationData(string inputObjectName, string inputObjectFolder, string animationSupplementalName)
+        private void LoadAnimationData(string inputObjectName, string eqInputObjectFileName, string inputObjectFolder, string animationSupplementalName)
         {
             Logger.WriteDetail("- [" + inputObjectName + "]: Reading animation data...");
 
@@ -425,7 +438,7 @@ namespace EQWOWConverter.ObjectModels
             Animations.Clear();
             string animationFolder = Path.Combine(inputObjectFolder, "Animations");
             DirectoryInfo animationDirectoryInfo = new DirectoryInfo(animationFolder);
-            FileInfo[] animationFileInfos = animationDirectoryInfo.GetFiles(inputObjectName + "_*.txt");
+            FileInfo[] animationFileInfos = animationDirectoryInfo.GetFiles(eqInputObjectFileName + "_*.txt");
             foreach(FileInfo animationFileInfo in animationFileInfos)
             {
                 string animationFileName = Path.GetFileNameWithoutExtension(animationFileInfo.FullName);

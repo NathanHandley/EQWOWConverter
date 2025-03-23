@@ -77,7 +77,7 @@ namespace EQWOWConverter.ObjectModels
             ModelLiftPreWorldScale = modelLift;
         }
 
-        public void LoadEQObjectFromFile(string inputRootFolder, CreatureModelTemplate? creatureModelTemplate, string meshNameOverride = "", 
+        public void LoadEQObjectFromFile(string inputRootFolder, string eqInputObjectFileName, CreatureModelTemplate? creatureModelTemplate = null,
             ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             if (IsLoaded == true)
@@ -88,7 +88,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadObjectDataFromDisk(Name, inputRootFolder, creatureModelTemplate, meshNameOverride);
+            EQObjectModelData.LoadObjectDataFromDisk(Name, ModelType, eqInputObjectFileName, inputRootFolder,  creatureModelTemplate);
 
             // Store if it had a skeleton
             if (EQObjectModelData.SkeletonData.BoneStructures.Count > 0)
@@ -187,7 +187,7 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
-            if ((!IsSkeletal) || EQObjectModelData.Animations.Count == 0)
+            if ((!IsSkeletal) && EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
 
@@ -682,10 +682,10 @@ namespace EQWOWConverter.ObjectModels
 
             // Determine what animations can work
             List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
-            if (overrideEQAnimationType == EQAnimationType.Unknown )
-                compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
-            else
+            if (ModelType == ObjectModelType.Creature && overrideEQAnimationType != EQAnimationType.Unknown)
                 compatibleAnimationTypes.Add(overrideEQAnimationType);
+            else
+                compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
             foreach(EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
                 // Look for a match, and process it if found
@@ -1363,16 +1363,16 @@ namespace EQWOWConverter.ObjectModels
             CollisionFaceNormals.Clear();
             CollisionTriangles.Clear();
 
-            // Skeletal objects need specially generated mesh data utilizing the animation positioning
-            MeshData workingMeshData;
-            if (IsSkeletal == true && meshData.AnimatedVertexFramesByVertexIndex.Count == 0)
-                workingMeshData = GenerateCollisionMeshDataForSkeletalModel(meshData);
-            else
-                workingMeshData = meshData;
-
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance))
+            if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
             {
+                // Skeletal objects need specially generated mesh data utilizing the animation positioning
+                MeshData workingMeshData;
+                if (IsSkeletal == true && meshData.AnimatedVertexFramesByVertexIndex.Count == 0)
+                    workingMeshData = GenerateCollisionMeshDataForSkeletalModel(meshData);
+                else
+                    workingMeshData = meshData;
+
                 // Take any non-transparent material geometry and use that to build a mesh
                 Dictionary<UInt32, Material> foundMaterials = new Dictionary<UInt32, Material>();
                 foreach (TriangleFace face in workingMeshData.TriangleFaces)

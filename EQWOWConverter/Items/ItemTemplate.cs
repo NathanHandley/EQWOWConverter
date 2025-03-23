@@ -28,6 +28,7 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
 
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
+        private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -1020,6 +1021,18 @@ namespace EQWOWConverter.Items
                     staticFileNamesByCommonName.Add(curCommonName, curFileName);
                 }
             }
+            if (skeletalFileNamesByCommonName.Count == 0)
+            {
+                Logger.WriteDetail("Loading equipment actors_skeletal.txt...");
+                string skeletalListFileName = Path.Combine(equipmentSourceBasePath, "actors_skeletal.txt");
+                foreach (string line in FileTool.ReadAllStringLinesFromFile(skeletalListFileName, false, true))
+                {
+                    string[] blocks = line.Split(',');
+                    string curCommonName = "eq_" + blocks[0].Trim().ToLower();
+                    string curFileName = blocks[1].Trim().ToLower();
+                    skeletalFileNamesByCommonName.Add(curCommonName, curFileName);
+                }
+            }
 
             // Fallback if it's not held
             if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
@@ -1044,10 +1057,15 @@ namespace EQWOWConverter.Items
                     eqAssetFileName = staticFileNamesByCommonName[itemDisplayCommonName];
                     modelType = ObjectModelType.EquipmentHeld;
                 }
+                if (skeletalFileNamesByCommonName.ContainsKey(itemDisplayCommonName) == true)
+                {
+                    eqAssetFileName = skeletalFileNamesByCommonName[itemDisplayCommonName];
+                    modelType = ObjectModelType.EquipmentHeld;
+                }
 
                 // Create a new model
                 ObjectModel equipmentModel = new ObjectModel(itemDisplayCommonName, new ObjectModels.Properties.ObjectModelProperties(), modelType);
-                equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, null, eqAssetFileName);
+                equipmentModel.LoadEQObjectFromFile(equipmentSourceBasePath, eqAssetFileName);
 
                 // Determine the output folder based on item type
                 string relativeMPQFolderName = string.Empty;

@@ -16,15 +16,8 @@
 
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.ObjectModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using EQWOWConverter.WOWFiles;
-using System.Reflection;
-using Org.BouncyCastle.Bcpg.OpenPgp;
-using System.Runtime.CompilerServices;
 
 namespace EQWOWConverter.Creatures
 {
@@ -155,7 +148,7 @@ namespace EQWOWConverter.Creatures
             float lift = Race.Lift;
             ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
             ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature, Race.ModelScale, lift);
-            curObject.LoadEQObjectFromFile(charactersFolderRoot, this);
+            curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName, this);
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");
