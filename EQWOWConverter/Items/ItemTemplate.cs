@@ -1066,8 +1066,10 @@ namespace EQWOWConverter.Items
                 {
                     string inputTextureName = Path.Combine(equipmentSourceBasePath, "Textures", texture.TextureName + ".blp");
                     string outputTextureName = Path.Combine(fullOutputFolderName, texture.TextureName + ".blp");
-                    if (Path.Exists(outputTextureName) == false)
-                        File.Copy(inputTextureName, outputTextureName);
+                    if (Path.Exists(inputTextureName) == false)
+                        Logger.WriteError("Error copying texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");
+                    else
+                        File.Copy(inputTextureName, outputTextureName, true);
                 }
 
                 // Save it on the list and return it
