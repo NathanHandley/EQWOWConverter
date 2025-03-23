@@ -244,12 +244,12 @@ namespace EQWOWConverter
                     {
                         // Get just the zone folder
                         string zoneDirectoryFolderNameOnly = topDirectory.Split('\\').Last();
-                        SaveTextureCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);
+                        ResizeTexturesAndSaveCoordinatesInMaterialLists(zoneDirectoryFolderNameOnly, zoneDirectory);
                     }
                 }
                 else if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "objects" || topDirectoryFolderNameOnly == "equipment")
                 {
-                    SaveTextureCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
+                    ResizeTexturesAndSaveCoordinatesInMaterialLists(topDirectoryFolderNameOnly, topDirectory);
                 }
             }
 
@@ -295,9 +295,11 @@ namespace EQWOWConverter
                     graphics.DrawImage(inputImage, outputRectangle, 0, 0, inputImage.Width, inputImage.Height, GraphicsUnit.Pixel, wrapMode);
                 }
             }
+            inputImage.Dispose();
+            if (File.Exists(outputFilePath) == true)
+                File.Delete(outputFilePath);
             outputImage.Save(outputFilePath);
             outputImage.Dispose();
-            inputImage.Dispose();
         }
 
         private bool GenerateNewTransparentImage(string outputFilePath, int width, int height)
@@ -319,7 +321,7 @@ namespace EQWOWConverter
             return true;
         }
 
-        private void SaveTextureCoordinatesInMaterialLists(string topFolderName, string workingRootFolderPath)
+        private void ResizeTexturesAndSaveCoordinatesInMaterialLists(string topFolderName, string workingRootFolderPath)
         {
             string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
             string textureFolder = Path.Combine(workingRootFolderPath, "Textures");
@@ -359,6 +361,17 @@ namespace EQWOWConverter
                             Logger.WriteError("Texture '" + textureFullPath + "' height is invalid with value '" + imageHeight + "', it must be a power of 2 and <= 1024");
                         if (validDimensions.Contains(imageWidth) == false)
                             Logger.WriteError("Texture '" + textureFullPath + "' width is invalid with value '" + imageWidth + "', it must be a power of 2 and <= 1024");
+
+                        // Resize if it's too small
+                        if (imageHeight < 8 || imageWidth < 8)
+                        {
+                            Logger.WriteDetail("Expanding texture at '" + textureFullPath + "' which has a height of '" + imageHeight + "' and width of '" + imageWidth + "'");
+                            if (imageHeight < 8)
+                                imageHeight = 8;
+                            if (imageWidth < 8)
+                                imageWidth = 8;
+                            GenerateResizedImage(textureFullPath, textureFullPath, imageWidth, imageHeight);
+                        }
 
                         // Write this to the end of the row
                         materialFileRowsForWrite[rowIndex] = materialFileRow + "," + imageWidth.ToString() + "," + imageHeight.ToString();
