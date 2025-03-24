@@ -222,6 +222,12 @@ namespace EQWOWConverter.WOWFiles
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellLeftHand);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.SpellRightHand);
             SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Chest);
+            if (wowObjectModel.ModelType == ObjectModelType.EquipmentHeld)
+            {
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.Shield_MountMain_ItemVisual0);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowRight_ItemVisual3);
+                SetSkeletonAttachment(wowObjectModel, ObjectModelAttachmentType.ElbowLeft_ItemVisual4);                
+            }
         }
 
         private void SetSkeletonAttachment(ObjectModel wowObjectModel, ObjectModelAttachmentType attachmentType)

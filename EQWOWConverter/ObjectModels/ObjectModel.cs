@@ -497,14 +497,22 @@ namespace EQWOWConverter.ObjectModels
                 GenerateNameplateBone();
 
                 // Create the bones required for events
-                CreateEventBone("dth"); // DeathThud
+                CreateEventOrAttachmentBone("dth"); // DeathThud
                 //CreateEventBone("cah"); // HandleCombatAnim
-                CreateEventBone("css"); // PlayWeaponSwoosh
+                CreateEventOrAttachmentBone("css"); // PlayWeaponSwoosh
                 //CreateEventBone("cpp"); // PlayCombatActionAnim
-                CreateEventBone("fd1"); // PlayFidgetSound1
-                CreateEventBone("fd2"); // PlayFidgetSound2
-                CreateEventBone("fsd"); // HandleFootfallAnimEvent
-                CreateEventBone("hit"); // PlayWoundAnimKit
+                CreateEventOrAttachmentBone("fd1"); // PlayFidgetSound1
+                CreateEventOrAttachmentBone("fd2"); // PlayFidgetSound2
+                CreateEventOrAttachmentBone("fsd"); // HandleFootfallAnimEvent
+                CreateEventOrAttachmentBone("hit"); // PlayWoundAnimKit
+
+                // Bones for attachments
+                if (ModelType == ObjectModelType.EquipmentHeld)
+                {
+                    CreateEventOrAttachmentBone("shield_mnt");
+                    CreateEventOrAttachmentBone("lbw_r");
+                    CreateEventOrAttachmentBone("lbw_l");
+                }
 
                 // Set any key bones
                 SetKeyBone(KeyBoneType.Jaw);
@@ -849,6 +857,19 @@ namespace EQWOWConverter.ObjectModels
                     {
                         returnValue = GetFirstBoneIndexForEQBoneNames("r_point", "pe", "root");
                     } break;
+                case ObjectModelAttachmentType.Shield_MountMain_ItemVisual0:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("shield_mnt", "pe", "root");
+                    } break;
+                case ObjectModelAttachmentType.ElbowRight_ItemVisual3:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("lbw_r", "pe", "root");
+                    } break;
+                case ObjectModelAttachmentType.ElbowLeft_ItemVisual4:
+                    {
+                        returnValue = GetFirstBoneIndexForEQBoneNames("lbw_l", "pe", "root");
+                    }
+                    break;
                 default:
                     {
                         Logger.WriteError("GetBoneIndexForAttachmentType error - Unhandled attachment type of '" + attachmentType.ToString() + "' for object model '" + Name + "'");
@@ -897,12 +918,12 @@ namespace EQWOWConverter.ObjectModels
             return returnValue;
         }
 
-        private void CreateEventBone(string eventBoneName)
+        private void CreateEventOrAttachmentBone(string newBoneName)
         {
             // Get parent bone
-            int parentBoneID = -1;
-            switch (eventBoneName.ToLower())
+            switch (newBoneName.ToLower())
             {
+                // Event Bones
                 case "cah":
                 case "css":
                 case "cpp":
@@ -910,17 +931,40 @@ namespace EQWOWConverter.ObjectModels
                 case "fd2":
                 case "fsd":
                 case "hit":
+                case "dth":
                     {
                         // For now, let's just use root
                         // TODO: Use something other than root?
-                        parentBoneID = GetFirstBoneIndexForEQBoneNames("root"); 
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
+                        ObjectModelBone eventBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        ModelBones.Add(eventBone);
                     } break;
-                default: parentBoneID = -1; break;
-            }
-
-            // Create the bone
-            ObjectModelBone eventBone = new ObjectModelBone(eventBoneName, Convert.ToInt16(parentBoneID));
-            ModelBones.Add(eventBone);
+                // Attachment Bones
+                case "shield_mnt": // Shield Mount
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
+                        ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        attachBone.PivotPoint = new Vector3(0.2012056f, -0.0001476863f, 0.003507267f); // From Sword_2H_Crystal_C_03.m2
+                    } break;
+                case "lbw_r": // Left Elbow Visual
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
+                        ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        attachBone.PivotPoint = new Vector3(0.9165421f, -0.0001476836f, 0.0009568771f); // From Sword_2H_Crystal_C_03.m2
+                    }
+                    break;
+                case "lbw_l": // Right Elbow Visual
+                    {
+                        int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
+                        ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
+                        attachBone.PivotPoint = new Vector3(1.189032f, -0.0001476824f, 0.001456708f); // From Sword_2H_Crystal_C_03.m2
+                    }
+                    break;
+                default:
+                    {
+                        Logger.WriteError("Error creating event or attachment bone with name '" + newBoneName + "' as it is unhandled");
+                    }break;
+            }            
         }
 
         private void SetAllAnimationLookups()

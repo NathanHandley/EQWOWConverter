@@ -1002,7 +1002,37 @@ namespace EQWOWConverter.Items
                         itemTemplate.SubClassID = 0;
                     } break;
             }
+
+            CalculateAndSetSheatheType(ref itemTemplate);
         }
+
+        static private void CalculateAndSetSheatheType(ref ItemTemplate itemTemplate)
+        {
+            if (itemTemplate.InventoryType == ItemWOWInventoryType.TwoHand)
+            {
+                if (itemTemplate.SubClassID == Convert.ToInt32(ItemWOWWeaponSubclassType.Staff))
+                    itemTemplate.SheatheType = 2; // Diagonally across the back pointing upwards
+                else
+                    itemTemplate.SheatheType = 1; // Diagonally across the back pointing downwards
+            }
+            else if (itemTemplate.InventoryType == ItemWOWInventoryType.Shield)
+            {
+                itemTemplate.SheatheType = 4; // Middle of the back
+            }
+            else if (itemTemplate.InventoryType == ItemWOWInventoryType.OneHand)
+            {
+                itemTemplate.SheatheType = 3; // On the left-hand side of the waist
+            }
+            else if (itemTemplate.InventoryType == ItemWOWInventoryType.HeldInOffHand)
+            {
+                itemTemplate.SheatheType = 6; // On the right-hand side of the waist
+            }
+            else
+            {
+                itemTemplate.SheatheType = 0; // None / hide when put away
+            }
+        }             
+
 
         // TODO: Arrows
         static private ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
