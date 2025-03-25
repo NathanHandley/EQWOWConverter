@@ -13,11 +13,6 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.Items;
 
@@ -38,7 +33,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("subclass", itemTemplate.SubClassID);
             newRow.AddInt("SoundOverrideSubclass", -1);
             newRow.AddString("name", 255, itemTemplate.Name);
-            newRow.AddInt("displayid", itemTemplate.DisplayID);
+            if (itemTemplate.ItemDisplayInfo != null)
+                newRow.AddInt("displayid", itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
+            else
+                newRow.AddInt("displayid", 0);
             newRow.AddInt("Quality", Convert.ToInt32(itemTemplate.Quality));
             newRow.AddInt("Flags", itemTemplate.DoesVanishOnLogout == true ? 2 : 0);
             newRow.AddInt("FlagsExtra", 0);

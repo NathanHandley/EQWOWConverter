@@ -14,14 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
@@ -36,7 +28,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(itemTemplate.SubClassID);
             newRow.AddInt32(-1); // Sound Override SubclassID
             newRow.AddInt32(itemTemplate.Material);
-            newRow.AddInt32(itemTemplate.DisplayID);
+            if (itemTemplate.ItemDisplayInfo != null)
+                newRow.AddInt32(itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
+            else
+                newRow.AddInt32(0);
             newRow.AddInt32(Convert.ToInt32(itemTemplate.InventoryType));
             newRow.AddInt32(itemTemplate.SheatheType);
             Rows.Add(newRow);

@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(ItemDisplayInfo itemDisplayInfo)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(itemDisplayInfo.DBCID);
+            newRow.AddInt32(itemDisplayInfo.ItemDisplayInfoDBCID);
             newRow.AddString(itemDisplayInfo.ModelName); // ModelName 1
             newRow.AddString(string.Empty); // ModelName 2
             newRow.AddString(itemDisplayInfo.ModelTexture1); // ModelTexture 1
