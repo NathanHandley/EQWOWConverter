@@ -23,10 +23,10 @@ namespace EQWOWConverter.Items
     {
         public static List<ItemDisplayInfo> ItemDisplayInfos = new List<ItemDisplayInfo>();
         private static int CURRENT_DBCID_ITEMDISPLAYINFO = Configuration.DBCID_ITEMDISPLAYINFO_START;
-
         private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
+        private static List<int> GeneratedRobeIDs = new List<int>();
 
         public int ItemDisplayInfoDBCID = 0;
         public string IconFileNameNoExt = string.Empty;
@@ -52,6 +52,67 @@ namespace EQWOWConverter.Items
             CURRENT_DBCID_ITEMDISPLAYINFO++;
         }
 
+        private static void BuildAndCopyTexturesForRobe(int robeID)
+        {
+            // TEMP: Force ID to 1
+            robeID = 1;
+
+            // Done do anything if this was already generated
+            if (GeneratedRobeIDs.Contains(robeID))
+                return;
+
+            // Make temp folder if it's not there yet
+            string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
+            if (Directory.Exists(workingFolderPath) == false)
+                Directory.CreateDirectory(workingFolderPath);
+
+            // Build the robe parts
+            BuildAndCopyTexturesForRobePart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeID, false);
+            BuildAndCopyTexturesForRobePart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeID, false);
+            BuildAndCopyTexturesForRobePart("LegLowerTexture", "EQ_Robe_Legs_LL", robeID, false);
+            BuildAndCopyTexturesForRobePart("LegUpperTexture", "EQ_Robe_Legs_LU", robeID, false);
+            BuildAndCopyTexturesForRobePart("TorsoLowerTexture", "EQ_Robe_Chest_TL", robeID, true);
+            BuildAndCopyTexturesForRobePart("TorsoUpperTexture", "EQ_Robe_Chest_TU", robeID, true);
+
+            // Add it as generated
+            GeneratedRobeIDs.Add(robeID);
+        }
+
+        private static void BuildAndCopyTexturesForRobePart(string subfolderName, string fileNamePrefix, int robeID, bool doGenerateBothMaleAndFemale)
+        {
+            // Build the subfolder if it doesn't exist
+            string workingFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
+            if (Directory.Exists(workingFolderName) == false)
+                Directory.CreateDirectory(workingFolderName);
+
+            // Generate and check that the filename is good
+            string fileNameNoExt;
+            if (robeID < 10)
+                fileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
+            else
+                fileNameNoExt = fileNamePrefix + "_" + robeID.ToString();
+            string sourceFileNameAndPathNoExt = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents", fileNameNoExt);
+            if (File.Exists(sourceFileNameAndPathNoExt + ".png") == false)
+            {
+                Logger.WriteError("Unable to copy the textures for robe part as '" + sourceFileNameAndPathNoExt + "' did not exist");
+                return;
+            }
+
+            // Depending on the config, either 1 or 2 needs to be generated
+            if (doGenerateBothMaleAndFemale == true)
+            {
+                string targetMaleFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_M.png");
+                File.Copy(sourceFileNameAndPathNoExt + ".png", targetMaleFileNameAndPath, true);
+                string targetFemaleFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_F.png");
+                File.Copy(sourceFileNameAndPathNoExt + ".png", targetFemaleFileNameAndPath, true);
+            }
+            else
+            {
+                string targetFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_U.png");
+                File.Copy(sourceFileNameAndPathNoExt + ".png", targetFileNameAndPath, true);
+            }
+        }
+
         public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, ItemWOWInventoryType inventoryType, 
             int materialTypeID)
         {
@@ -71,43 +132,27 @@ namespace EQWOWConverter.Items
             // If a robe, set the texture properties and copy the textures
             if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10)
             {
+                // Generate the robe geometry, if needed
+                //int robeID = materialTypeID - 6;
+                int robeID = 1;
+                BuildAndCopyTexturesForRobe(robeID);
+                string robeIDString;
+                if (robeID < 10)
+                    robeIDString = "0" + robeID.ToString();
+                else
+                    robeIDString = robeID.ToString();
+
                 // Robes use geosets 1 and 3
                 newItemDisplayInfo.GeosetGroup1 = 1;
                 newItemDisplayInfo.GeosetGroup3 = 1;
 
-                // Set the armor textures (temp, make this better)
-                newItemDisplayInfo.ArmorTexture1 = "EQ_Robe_01_Sleeve_AU".ToLower();
-                newItemDisplayInfo.ArmorTexture2 = "EQ_Robe_01_Sleeve_AL".ToLower();
-                newItemDisplayInfo.ArmorTexture4 = "EQ_Robe_01_Chest_TU".ToLower();
-                newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_01_Chest_TL".ToLower();
-                newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_01_Robe_LU".ToLower();
-                newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_01_Robe_LL".ToLower();
-
-                // Build output directories if they don't exist
-                string textureOutputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "ArmLowerTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "ArmLowerTexture"));
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "ArmUpperTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "ArmUpperTexture"));
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "LegLowerTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "LegLowerTexture"));
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "LegUpperTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "LegUpperTexture"));
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture"));
-                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture")) == false)
-                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture"));
-
-                // Copy the textures (temp, make this better)
-                string textureInputFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Sleeve_AL_U.blp"), Path.Combine(textureOutputFolderRoot, "ArmLowerTexture", "EQ_Robe_01_Sleeve_AL_U.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Sleeve_AU_U.blp"), Path.Combine(textureOutputFolderRoot, "ArmUpperTexture", "EQ_Robe_01_Sleeve_AU_U.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Robe_LL_U.blp"), Path.Combine(textureOutputFolderRoot, "LegLowerTexture", "EQ_Robe_01_Robe_LL_U.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Robe_LU_U.blp"), Path.Combine(textureOutputFolderRoot, "LegUpperTexture", "EQ_Robe_01_Robe_LU_U.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TL.blp"), Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture", "EQ_Robe_01_Chest_TL_F.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TL.blp"), Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture", "EQ_Robe_01_Chest_TL_M.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TU.blp"), Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture", "EQ_Robe_01_Chest_TU_F.blp"), true);
-                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TU.blp"), Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture", "EQ_Robe_01_Chest_TU_M.blp"), true);
+                // Set the armor texture names
+                newItemDisplayInfo.ArmorTexture1 = "EQ_Robe_Sleeve_AU_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture2 = "EQ_Robe_Sleeve_AL_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture4 = "EQ_Robe_Chest_TU_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_Chest_TL_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString;
             }
 
             // Held objects have models

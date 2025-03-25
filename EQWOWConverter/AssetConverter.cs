@@ -728,6 +728,11 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Converting items and loot...");
 
+            // Clear out the working texture folder for character clothes
+            string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
+            if (Directory.Exists(wornEquipmentTexturesWorkingFullPath) == true)
+                Directory.Delete(wornEquipmentTexturesWorkingFullPath, true);
+
             // Generate item templates
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
@@ -808,7 +813,34 @@ namespace EQWOWConverter
                 }
             }
 
+            // Build output directory
+            Logger.WriteInfo("Generating and copying blp files for equipment...");
+            string outputFolderPathRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
+            if (Directory.Exists(outputFolderPathRoot) == true)
+                Directory.Delete(outputFolderPathRoot, true);
+            Directory.CreateDirectory(outputFolderPathRoot);
+
+            // Convert and copy all of the BLP files
+            ConvertAndCopyEquipmentTextures("ArmLowerTexture");
+            ConvertAndCopyEquipmentTextures("ArmUpperTexture");
+            ConvertAndCopyEquipmentTextures("LegLowerTexture");
+            ConvertAndCopyEquipmentTextures("LegUpperTexture");
+            ConvertAndCopyEquipmentTextures("TorsoLowerTexture");
+            ConvertAndCopyEquipmentTextures("TorsoUpperTexture");
+
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        private void ConvertAndCopyEquipmentTextures(string subfolderName)
+        {
+            string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
+            string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS", subfolderName);
+            if (Directory.Exists(outputFolder) == true)
+                Directory.Delete(outputFolder, true);
+            Directory.CreateDirectory(outputFolder);
+            string[] pngFileNamesWithPath = Directory.GetFiles(workingFolder, "*.png");
+            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageSourceType.Clothing);
+            FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
         public void GenerateSpells(out List<SpellTemplate> spellTemplates)

@@ -26,7 +26,6 @@ namespace EQWOWConverter
         private static bool FirstColorTextureGeneration = true;
         private static string GeneratedFolderPath = string.Empty;
         private static string InputCharacterTextureFolderPath = string.Empty;
-        private static string BLPConverterFullPath = string.Empty;
 
         public enum IconSeriesDirection
         {
@@ -288,7 +287,6 @@ namespace EQWOWConverter
                 // Generate folder paths
                 GeneratedFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
                 InputCharacterTextureFolderPath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
-                BLPConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
 
                 // Clear directory
                 Logger.WriteDetail("Clearing the generation folder located at '" + GeneratedFolderPath + "'");
@@ -317,10 +315,11 @@ namespace EQWOWConverter
             {
                 Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the input texture '" + inputPNGFullPath + "' did not exist");
                 return;
-            }            
-            if (File.Exists(BLPConverterFullPath) == false)
+            }
+            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            if (File.Exists(blpConverterFullPath) == false)
             {
-                Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the BLPConverter could not be found here '" + BLPConverterFullPath + "'");
+                Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the BLPConverter could not be found here '" + blpConverterFullPath + "'");
                 return;
             }
 
@@ -358,13 +357,54 @@ namespace EQWOWConverter
             System.Diagnostics.Process process = new System.Diagnostics.Process();
             process.StartInfo.RedirectStandardOutput = true;
             process.StartInfo.Arguments = args;
-            process.StartInfo.FileName = BLPConverterFullPath;
+            process.StartInfo.FileName = blpConverterFullPath;
             process.Start();
             //process.WaitForExit();
             Logger.WriteDetail(process.StandardOutput.ReadToEnd());
             Console.Title = "EverQuest to WoW Converter";
 
             Logger.WriteDetail("Generating colored texture completed for '" + outputBLPFullPath + "'");
+        }
+
+        public enum ImageSourceType
+        {
+            Creature,
+            Clothing        
+        }
+
+        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageSourceType imageType)
+        {
+            string formatArg = "/FBLP_DXT5";
+            switch (imageType)
+            {
+                case ImageSourceType.Clothing:
+                    {
+                        formatArg = "/FBLP_PAL_A8";
+                    } break;
+                case ImageSourceType.Creature:
+                    {
+                        formatArg = "/FBLP_DXT5"; // TODO: Look into this, it may be the wrong format
+                    } break;
+                default:
+                    {
+                        Logger.WriteError("ConvertPNGTexturesToBLP failed. Unhandled image type of '" + imageType + "'");
+                    } break;
+            }
+
+            // Output a BLP file for each passed path
+            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
+            foreach (string file in fullFileInputPaths)
+            {
+                // Generate the BLP files
+                string args = "/M " + formatArg + " \"" + file + "\"";
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.Arguments = args;
+                process.StartInfo.FileName = blpConverterFullPath;
+                process.Start();
+                Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                Console.Title = "EverQuest to WoW Converter";
+            }
         }
     }
 }
