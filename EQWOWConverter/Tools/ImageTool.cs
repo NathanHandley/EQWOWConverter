@@ -15,14 +15,9 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter
 {
@@ -35,8 +30,8 @@ namespace EQWOWConverter
 
         public enum IconSeriesDirection
         {
-            ALONG_X,
-            ALONG_Y        
+            AlongX,
+            AlongY
         }
 
         public static void GenerateItemIconImagesFromFile(string inputImageToCutUp, int numberOfIconImagesToMake, int valueToAddToOutputIndexNumber, string outputFolderPath,
@@ -87,7 +82,7 @@ namespace EQWOWConverter
                     // Calculate the start position for this image
                     int inputPixelStartX;
                     int inputPixelStartY;
-                    if (iconSeriesDirection == IconSeriesDirection.ALONG_Y)
+                    if (iconSeriesDirection == IconSeriesDirection.AlongY)
                     {
                         inputPixelStartX = (i / iconsInSeries) * iconInitialWidth;
                         inputPixelStartY = (i % iconsInSeries) * iconInitialHeight;
@@ -234,6 +229,53 @@ namespace EQWOWConverter
             }
 
             Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp + "' completed.");
+        }
+
+        // TODO: Look for solution to image operations.  These image methods are why this project is windows only.
+        public static void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
+        {
+            // Resize the image to the passed parameters
+            Bitmap inputImage = new Bitmap(inputFilePath);
+            Bitmap outputImage = new Bitmap(newWidth, newHeight);
+            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
+            using (var graphics = Graphics.FromImage(outputImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                using (ImageAttributes wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    Rectangle outputRectangle = new Rectangle(0, 0, newWidth, newHeight);
+                    graphics.DrawImage(inputImage, outputRectangle, 0, 0, inputImage.Width, inputImage.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+            inputImage.Dispose();
+            if (File.Exists(outputFilePath) == true)
+                File.Delete(outputFilePath);
+            outputImage.Save(outputFilePath);
+            outputImage.Dispose();
+        }
+
+        public static bool GenerateNewTransparentImage(string outputFilePath, int width, int height)
+        {
+            // Resize the image to the passed parameters
+            Bitmap outputImage = new Bitmap(width, height);
+            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
+            using (var graphics = Graphics.FromImage(outputImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+            }
+            outputImage.Save(outputFilePath);
+            outputImage.Dispose();
+
+            return true;
         }
 
         public static void GenerateColoredCreatureTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)

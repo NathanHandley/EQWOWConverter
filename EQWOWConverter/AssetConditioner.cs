@@ -110,19 +110,19 @@ namespace EQWOWConverter
                     {
                         string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "logo03.png");
                         string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "logo03resized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                        ImageTool.GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
                     }
                     else if (topDirectoryFolderNameOnly == "bmpwad4")
                     {
                         string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqkload.png");
                         string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqkloadresized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                        ImageTool.GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
                     }
                     else if (topDirectoryFolderNameOnly == "bmpwad5")
                     {
                         string inputLoadingScreenFileName = Path.Combine(tempFolderRoot, "eqvload.png");
                         string outputLoadingScreenFileName = Path.Combine(outputMiscImagesFolder, "eqvloadresized.png");
-                        GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
+                        ImageTool.GenerateResizedImage(inputLoadingScreenFileName, outputLoadingScreenFileName, 1024, 1024);
                     }
                     continue;
                 }
@@ -267,57 +267,10 @@ namespace EQWOWConverter
             for (int i = 1; i <= 30; i++)
             {
                 string curFileName = "eqclear." + i + ".png";
-                GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
+                ImageTool.GenerateNewTransparentImage(Path.Combine(outputLiquidSurfacesFolderRoot, curFileName), 256, 256);
             }
 
             Logger.WriteInfo("Conditioning complete.");
-            return true;
-        }
-
-        // TODO: Look for solution to image operations.  These image methods are why this project is windows only.
-        private void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
-        {
-            // Resize the image to the passed parameters
-            Bitmap inputImage = new Bitmap(inputFilePath);
-            Bitmap outputImage = new Bitmap(newWidth, newHeight);
-            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
-            using (var graphics = Graphics.FromImage(outputImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                using (ImageAttributes wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    Rectangle outputRectangle = new Rectangle(0, 0, newWidth, newHeight);
-                    graphics.DrawImage(inputImage, outputRectangle, 0, 0, inputImage.Width, inputImage.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-            inputImage.Dispose();
-            if (File.Exists(outputFilePath) == true)
-                File.Delete(outputFilePath);
-            outputImage.Save(outputFilePath);
-            outputImage.Dispose();
-        }
-
-        private bool GenerateNewTransparentImage(string outputFilePath, int width, int height)
-        {
-            // Resize the image to the passed parameters
-            Bitmap outputImage = new Bitmap(width, height);
-            outputImage.SetResolution(outputImage.HorizontalResolution, outputImage.VerticalResolution);
-            using (var graphics = Graphics.FromImage(outputImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-            }
-            outputImage.Save(outputFilePath);
-            outputImage.Dispose();
-
             return true;
         }
 
@@ -370,7 +323,7 @@ namespace EQWOWConverter
                                 imageHeight = 8;
                             if (imageWidth < 8)
                                 imageWidth = 8;
-                            GenerateResizedImage(textureFullPath, textureFullPath, imageWidth, imageHeight);
+                            ImageTool.GenerateResizedImage(textureFullPath, textureFullPath, imageWidth, imageHeight);
                         }
 
                         // Write this to the end of the row
@@ -559,13 +512,13 @@ namespace EQWOWConverter
                     Directory.Delete(itemIconsFolder, true);
                 Directory.CreateDirectory(itemIconsFolder);
                 string curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem01.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 0, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 0, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongY, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem02.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 192, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 192, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongY, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem03.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 384, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 192, 384, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongY, 12, "INV_EQ_", 0);
                 curIconImageSourceFile = Path.Combine(miscImagesFolder, "dragitem04.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 175, 576, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_Y, 12, "INV_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 175, 576, itemIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongY, 12, "INV_EQ_", 0);
             }
             catch (Exception)
             {
@@ -582,8 +535,8 @@ namespace EQWOWConverter
                     Directory.Delete(spellIconsFolder, true);
                 Directory.CreateDirectory(spellIconsFolder);
                 string curIconImageSourceFile = Path.Combine(miscImagesFolder, "spelicon.png");
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 19, 0, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_X, 5, "Spell_EQ_", 0);
-                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 4, 19, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.ALONG_X, 5, "Spell_EQ_", 20);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 19, 0, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongX, 5, "Spell_EQ_", 0);
+                ImageTool.GenerateItemIconImagesFromFile(curIconImageSourceFile, 4, 19, spellIconsFolder, 40, 40, ImageTool.IconSeriesDirection.AlongX, 5, "Spell_EQ_", 20);
             }
             catch (Exception)
             {
