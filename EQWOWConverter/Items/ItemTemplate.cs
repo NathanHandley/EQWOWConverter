@@ -31,7 +31,8 @@ namespace EQWOWConverter.Items
         public string Name = string.Empty;
         public ItemWOWQuality Quality = ItemWOWQuality.Poor;
         public int SheatheType = 0;
-        public int Material = -1;
+        public int WOWItemMaterialType = 0;
+        public int EQArmorMaterialType = 0;
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
@@ -1071,7 +1072,9 @@ namespace EQWOWConverter.Items
                 PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, damage);
 
                 // Model information
-                newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName, newItemTemplate.InventoryType);
+                newItemTemplate.EQArmorMaterialType = int.Parse(columns["material"]);
+                newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName, 
+                    newItemTemplate.InventoryType, newItemTemplate.EQArmorMaterialType);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);

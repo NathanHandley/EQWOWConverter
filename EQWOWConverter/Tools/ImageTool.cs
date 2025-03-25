@@ -41,7 +41,7 @@ namespace EQWOWConverter
 
             // Read in the backdrop data first
             List<List<Color>> backdropPixels = new List<List<Color>>();
-            string backdropTextureFullPath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "ItemIconBackdrop.png");
+            string backdropTextureFullPath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "icons", "ItemIconBackdrop.png");
             if (Path.Exists(backdropTextureFullPath) == false)
             {
                 Logger.WriteError("Failed to generate item icons since the backdrop image of '" + backdropTextureFullPath + "' did not exist");

@@ -32,6 +32,18 @@ namespace EQWOWConverter.Items
         public string IconFileNameNoExt = string.Empty;
         public string ModelName = string.Empty;
         public string ModelTexture1 = string.Empty;
+        public string ModelTexture2 = string.Empty;
+        public int GeosetGroup1 = 0;
+        public int GeosetGroup2 = 0;
+        public int GeosetGroup3 = 0;
+        public string ArmorTexture1 = string.Empty;
+        public string ArmorTexture2 = string.Empty;
+        public string ArmorTexture3 = string.Empty;
+        public string ArmorTexture4 = string.Empty;
+        public string ArmorTexture5 = string.Empty;
+        public string ArmorTexture6 = string.Empty;
+        public string ArmorTexture7 = string.Empty;
+        public string ArmorTexture8 = string.Empty;
         public ObjectModel? EquipmentModel = null;
 
         public ItemDisplayInfo()
@@ -40,7 +52,8 @@ namespace EQWOWConverter.Items
             CURRENT_DBCID_ITEMDISPLAYINFO++;
         }
 
-        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, ItemWOWInventoryType inventoryType)
+        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, ItemWOWInventoryType inventoryType, 
+            int materialTypeID)
         {
             // Pull if it already exists
             string modelFileName = itemDisplayCommonName + ".mdx";
@@ -50,14 +63,59 @@ namespace EQWOWConverter.Items
                     return itemDisplayInfo;
             }
 
-            // Grab the model
-            ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayCommonName, inventoryType);
-
             // Create the item display record
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
-            newItemDisplayInfo.ModelName = modelFileName;
             ItemDisplayInfos.Add(newItemDisplayInfo);
+
+            // If a robe, set the texture properties and copy the textures
+            if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10)
+            {
+                // Robes use geosets 1 and 3
+                newItemDisplayInfo.GeosetGroup1 = 1;
+                newItemDisplayInfo.GeosetGroup3 = 1;
+
+                // Set the armor textures (temp, make this better)
+                newItemDisplayInfo.ArmorTexture1 = "EQ_Robe_01_Sleeve_AU".ToLower();
+                newItemDisplayInfo.ArmorTexture2 = "EQ_Robe_01_Sleeve_AL".ToLower();
+                newItemDisplayInfo.ArmorTexture4 = "EQ_Robe_01_Chest_TU".ToLower();
+                newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_01_Chest_TL".ToLower();
+                newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_01_Robe_LU".ToLower();
+                newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_01_Robe_LL".ToLower();
+
+                // Build output directories if they don't exist
+                string textureOutputFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "ArmLowerTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "ArmLowerTexture"));
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "ArmUpperTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "ArmUpperTexture"));
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "LegLowerTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "LegLowerTexture"));
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "LegUpperTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "LegUpperTexture"));
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture"));
+                if (Directory.Exists(Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture")) == false)
+                    Directory.CreateDirectory(Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture"));
+
+                // Copy the textures (temp, make this better)
+                string textureInputFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Sleeve_AL_U.blp"), Path.Combine(textureOutputFolderRoot, "ArmLowerTexture", "EQ_Robe_01_Sleeve_AL_U.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Sleeve_AU_U.blp"), Path.Combine(textureOutputFolderRoot, "ArmUpperTexture", "EQ_Robe_01_Sleeve_AU_U.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Robe_LL_U.blp"), Path.Combine(textureOutputFolderRoot, "LegLowerTexture", "EQ_Robe_01_Robe_LL_U.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Robe_LU_U.blp"), Path.Combine(textureOutputFolderRoot, "LegUpperTexture", "EQ_Robe_01_Robe_LU_U.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TL.blp"), Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture", "EQ_Robe_01_Chest_TL_F.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TL.blp"), Path.Combine(textureOutputFolderRoot, "TorsoLowerTexture", "EQ_Robe_01_Chest_TL_M.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TU.blp"), Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture", "EQ_Robe_01_Chest_TU_F.blp"), true);
+                File.Copy(Path.Combine(textureInputFolder, "EQ_Robe_01_Chest_TU.blp"), Path.Combine(textureOutputFolderRoot, "TorsoUpperTexture", "EQ_Robe_01_Chest_TU_M.blp"), true);
+            }
+
+            // Held objects have models
+            if (IsHeld(inventoryType) == true)
+            {
+                ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayCommonName, inventoryType);
+                newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
+            }
             return newItemDisplayInfo;
         }
 
@@ -91,12 +149,8 @@ namespace EQWOWConverter.Items
             }
 
             // Fallback if it's not held
-            if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
-                inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
-                inventoryType != ItemWOWInventoryType.Thrown)
-            {
+            if (IsHeld(inventoryType) == false)
                 itemDisplayCommonName = "eq_it63";
-            }
 
             // Get or load the model
             if (ObjectModelsByEQItemDisplayFileName.ContainsKey(itemDisplayCommonName) == true)
@@ -150,6 +204,18 @@ namespace EQWOWConverter.Items
                 ObjectModelsByEQItemDisplayFileName.Add(itemDisplayCommonName, equipmentModel);
                 return equipmentModel;
             }
+        }
+
+        static private bool IsHeld(ItemWOWInventoryType inventoryType)
+        {
+            // Fallback if it's not held
+            if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
+                inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
+                inventoryType != ItemWOWInventoryType.Thrown)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

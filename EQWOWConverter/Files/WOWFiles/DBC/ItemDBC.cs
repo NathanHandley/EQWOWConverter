@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(itemTemplate.ClassID);
             newRow.AddInt32(itemTemplate.SubClassID);
             newRow.AddInt32(-1); // Sound Override SubclassID
-            newRow.AddInt32(itemTemplate.Material);
+            newRow.AddInt32(itemTemplate.WOWItemMaterialType);
             if (itemTemplate.ItemDisplayInfo != null)
                 newRow.AddInt32(itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
             else

@@ -133,7 +133,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("PageMaterial", 0);
             newRow.AddInt("startquest", 0);
             newRow.AddInt("lockid", 0);
-            newRow.AddInt("Material", itemTemplate.Material);
+            newRow.AddInt("Material", itemTemplate.WOWItemMaterialType);
             newRow.AddInt("sheath", itemTemplate.SheatheType);
             newRow.AddInt("RandomProperty", 0);
             newRow.AddInt("RandomSuffix", 0);

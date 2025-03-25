@@ -27,25 +27,25 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString(itemDisplayInfo.ModelName); // ModelName 1
             newRow.AddString(string.Empty); // ModelName 2
             newRow.AddString(itemDisplayInfo.ModelTexture1); // ModelTexture 1
-            newRow.AddString(string.Empty); // ModelTexture 2
+            newRow.AddString(itemDisplayInfo.ModelTexture2); // ModelTexture 2
             newRow.AddString(itemDisplayInfo.IconFileNameNoExt); // InventoryIcon 1
             newRow.AddString(string.Empty); // InventoryIcon 2
-            newRow.AddInt32(0); // GeosetGroup 1
-            newRow.AddInt32(0); // GeosetGroup 2
-            newRow.AddInt32(0); // GeosetGroup 3
+            newRow.AddInt32(itemDisplayInfo.GeosetGroup1); // GeosetGroup 1
+            newRow.AddInt32(itemDisplayInfo.GeosetGroup2); // GeosetGroup 2
+            newRow.AddInt32(itemDisplayInfo.GeosetGroup3); // GeosetGroup 3
             newRow.AddInt32(0); // Flags
             newRow.AddInt32(0); // SpellVisualID
             newRow.AddInt32(7); // GroupSoundIndex (comes from ItemGroupSounds.dbc)
             newRow.AddInt32(0); // HelmetGeosetVis 1
             newRow.AddInt32(0); // HelmetGeosetVis 2
-            newRow.AddString(string.Empty); // Texture 1
-            newRow.AddString(string.Empty); // Texture 2
-            newRow.AddString(string.Empty); // Texture 3
-            newRow.AddString(string.Empty); // Texture 4
-            newRow.AddString(string.Empty); // Texture 5
-            newRow.AddString(string.Empty); // Texture 6
-            newRow.AddString(string.Empty); // Texture 7
-            newRow.AddString(string.Empty); // Texture 8
+            newRow.AddString(itemDisplayInfo.ArmorTexture1); // Texture 1
+            newRow.AddString(itemDisplayInfo.ArmorTexture2); // Texture 2
+            newRow.AddString(itemDisplayInfo.ArmorTexture3); // Texture 3
+            newRow.AddString(itemDisplayInfo.ArmorTexture4); // Texture 4
+            newRow.AddString(itemDisplayInfo.ArmorTexture5); // Texture 5
+            newRow.AddString(itemDisplayInfo.ArmorTexture6); // Texture 6
+            newRow.AddString(itemDisplayInfo.ArmorTexture7); // Texture 7
+            newRow.AddString(itemDisplayInfo.ArmorTexture8); // Texture 8
             newRow.AddInt32(0); // ItemVisual
             newRow.AddInt32(0); // ParticleColorID
             Rows.Add(newRow);
