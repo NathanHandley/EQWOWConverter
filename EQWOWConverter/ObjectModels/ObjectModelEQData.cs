@@ -104,7 +104,7 @@ namespace EQWOWConverter.ObjectModels
                     meshNames.Add("eye");
 
                 // For robe-capable races, swap the chest geometry
-                if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+                if (creatureModelTemplate.TextureIndex >= 10 && creatureModelTemplate.TextureIndex < 24 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
                 {
                     meshNames.Remove(eqInputObjectFileName.ToLower());
                     meshNames.Add(string.Concat(eqInputObjectFileName.ToLower(), "01"));
@@ -146,7 +146,7 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // For robe-capable races, swap the textures
-                if (creatureModelTemplate.TextureIndex >= 10 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
+                if (creatureModelTemplate.TextureIndex >= 10 && creatureModelTemplate.TextureIndex < 24 && (raceID == 1 || raceID == 3 || raceID == 5 || raceID == 6 || raceID == 12 || raceID == 128))
                 {
                     // Calculate what body robe graphics to use
                     int robeIndex = creatureModelTemplate.TextureIndex - 6;
