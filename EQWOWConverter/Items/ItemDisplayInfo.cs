@@ -55,7 +55,8 @@ namespace EQWOWConverter.Items
         private static void BuildAndCopyTexturesForRobe(int robeID)
         {
             // TEMP: Force ID to 1
-            robeID = 1;
+            if (robeID != 7)
+                robeID = 1;
 
             // Done do anything if this was already generated
             if (GeneratedRobeIDs.Contains(robeID))
@@ -133,8 +134,9 @@ namespace EQWOWConverter.Items
             if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10)
             {
                 // Generate the robe geometry, if needed
-                //int robeID = materialTypeID - 6;
-                int robeID = 1;
+                int robeID = materialTypeID - 6;
+                if (robeID != 7)
+                    robeID = 1;
                 BuildAndCopyTexturesForRobe(robeID);
                 string robeIDString;
                 if (robeID < 10)
