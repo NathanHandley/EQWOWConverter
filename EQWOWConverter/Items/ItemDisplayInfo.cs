@@ -54,10 +54,6 @@ namespace EQWOWConverter.Items
 
         private static void BuildAndCopyTexturesForRobe(int robeID)
         {
-            // TEMP: Force ID to 1
-            if (robeID != 7)
-                robeID = 1;
-
             // Done do anything if this was already generated
             if (GeneratedRobeIDs.Contains(robeID))
                 return;
@@ -87,11 +83,7 @@ namespace EQWOWConverter.Items
                 Directory.CreateDirectory(workingFolderName);
 
             // Generate and check that the filename is good
-            string fileNameNoExt;
-            if (robeID < 10)
-                fileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
-            else
-                fileNameNoExt = fileNamePrefix + "_" + robeID.ToString();
+            string fileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
             string sourceFileNameAndPathNoExt = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents", fileNameNoExt);
             if (File.Exists(sourceFileNameAndPathNoExt + ".png") == false)
             {
@@ -131,18 +123,14 @@ namespace EQWOWConverter.Items
             ItemDisplayInfos.Add(newItemDisplayInfo);
 
             // If a robe, set the texture properties and copy the textures
-            if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10)
+            if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10 && materialTypeID <= 16)
             {
                 // Generate the robe geometry, if needed
-                int robeID = materialTypeID - 6;
-                if (robeID != 7)
-                    robeID = 1;
+                int robeID = materialTypeID - 9;
+                if (robeID != 4)
+                    robeID = 7;
                 BuildAndCopyTexturesForRobe(robeID);
-                string robeIDString;
-                if (robeID < 10)
-                    robeIDString = "0" + robeID.ToString();
-                else
-                    robeIDString = robeID.ToString();
+                string robeIDString = "0" + robeID.ToString();
 
                 // Robes use geosets 1 and 3
                 newItemDisplayInfo.GeosetGroup1 = 1;
