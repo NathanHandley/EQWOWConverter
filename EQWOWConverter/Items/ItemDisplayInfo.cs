@@ -127,7 +127,7 @@ namespace EQWOWConverter.Items
             {
                 // Generate the robe geometry, if needed
                 int robeID = materialTypeID - 9;
-                if (robeID != 4 && robeID != 1)
+                if (robeID != 4 && robeID != 1 && robeID != 2)
                     robeID = 7;
                 BuildAndCopyTexturesForRobe(robeID);
                 string robeIDString = "0" + robeID.ToString();
