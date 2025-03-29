@@ -1207,13 +1207,16 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetMaterialColorByTextureNameFragment(string textureNameFragmentToMatch, int colorID, ColorRGBA color)
         {
+            string inputTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+            string workingTextureFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
             foreach (ObjectModelMaterial objectModelMaterial in ModelMaterials)
             {
                 if (objectModelMaterial.Material.TextureNames.Count > 0 &&
                     objectModelMaterial.Material.TextureNames[0].Contains(textureNameFragmentToMatch) == true)
                 {
                     string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
-                    ImageTool.GenerateColoredCreatureTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    ImageTool.GenerateColoredTintedTexture(inputTextureFolder, objectModelMaterial.Material.TextureNames[0],
+                        workingTextureFolder, newTextureName, color, ImageTool.ImageAssociationType.Creature, true);
                     objectModelMaterial.Material.TextureNames[0] = newTextureName;
                     if (GeneratedTextureNames.Contains(newTextureName) == false)
                         GeneratedTextureNames.Add(newTextureName);
@@ -1223,6 +1226,8 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetMaterialColorByTextureNameFragmentAtPosition(string textureNameFragmentToMatch, int positionOffset, int colorID, ColorRGBA color)
         {
+            string inputTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+            string workingTextureFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
             foreach (ObjectModelMaterial objectModelMaterial in ModelMaterials)
             {
                 if (objectModelMaterial.Material.TextureNames.Count > 0 &&
@@ -1230,7 +1235,9 @@ namespace EQWOWConverter.ObjectModels
                     objectModelMaterial.Material.TextureNames[0].Substring(positionOffset, textureNameFragmentToMatch.Length) == textureNameFragmentToMatch)
                 {
                     string newTextureName = objectModelMaterial.Material.TextureNames[0] + "_c" + colorID;
-                    ImageTool.GenerateColoredCreatureTexture(objectModelMaterial.Material.TextureNames[0], newTextureName, color);
+                    string inputTexturePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
+                    ImageTool.GenerateColoredTintedTexture(inputTextureFolder, objectModelMaterial.Material.TextureNames[0], 
+                        workingTextureFolder, newTextureName, color, ImageTool.ImageAssociationType.Creature, true);
                     objectModelMaterial.Material.TextureNames[0] = newTextureName;
                     if (GeneratedTextureNames.Contains(newTextureName) == false)
                         GeneratedTextureNames.Add(newTextureName);

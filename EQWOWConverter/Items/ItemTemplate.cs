@@ -33,6 +33,7 @@ namespace EQWOWConverter.Items
         public int SheatheType = 0;
         public int WOWItemMaterialType = 0;
         public int EQArmorMaterialType = 0;
+        public Int64 ColorPacked = 0;
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
@@ -1073,8 +1074,9 @@ namespace EQWOWConverter.Items
 
                 // Model information
                 newItemTemplate.EQArmorMaterialType = int.Parse(columns["material"]);
+                newItemTemplate.ColorPacked = Int64.Parse(columns["color"]);
                 newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName, 
-                    newItemTemplate.InventoryType, newItemTemplate.EQArmorMaterialType);
+                    newItemTemplate.InventoryType, newItemTemplate.EQArmorMaterialType, newItemTemplate.ColorPacked);
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);

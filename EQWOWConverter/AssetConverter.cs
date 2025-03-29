@@ -518,6 +518,14 @@ namespace EQWOWConverter
         public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
             ref List<CreatureSpawnPool> creatureSpawnPools, List<Zone> zones)
         {
+            // Clear out / build the texture working folder
+            
+            // Generate folder paths
+            string workingTexturePath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
+            if (Directory.Exists(workingTexturePath))
+                Directory.Delete(workingTexturePath, true);
+            Directory.CreateDirectory(workingTexturePath);
+
             string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
 
@@ -839,7 +847,7 @@ namespace EQWOWConverter
                 Directory.Delete(outputFolder, true);
             Directory.CreateDirectory(outputFolder);
             string[] pngFileNamesWithPath = Directory.GetFiles(workingFolder, "*.png");
-            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageSourceType.Clothing);
+            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing);
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 

@@ -23,10 +23,6 @@ namespace EQWOWConverter
 {
     internal class ImageTool
     {
-        private static bool FirstColorTextureGeneration = true;
-        private static string GeneratedFolderPath = string.Empty;
-        private static string InputCharacterTextureFolderPath = string.Empty;
-
         public enum IconSeriesDirection
         {
             AlongX,
@@ -277,33 +273,24 @@ namespace EQWOWConverter
             return true;
         }
 
-        public static void GenerateColoredCreatureTexture(string inputTextureFileNameNoExt, string outputTextureFileNameNoExt, ColorRGBA color)
+        public enum ImageAssociationType
+        {
+            Creature,
+            Clothing
+        }
+
+        public static void GenerateColoredTintedTexture(string inputTextureFolder, string inputTextureFileNameNoExt, string workingDirectory,
+            string outputTextureFileNameNoExt, ColorRGBA color, ImageAssociationType imageAssociationType, bool doGenerateBLP)
         {
             Logger.WriteDetail("Generating colored texture from '" + inputTextureFileNameNoExt + "' to '" + outputTextureFileNameNoExt + "'");
 
-            // If first run, clear the directory and generate paths
-            if (FirstColorTextureGeneration == true)
-            {
-                // Generate folder paths
-                GeneratedFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
-                InputCharacterTextureFolderPath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "characters", "Textures");
-
-                // Clear directory
-                Logger.WriteDetail("Clearing the generation folder located at '" + GeneratedFolderPath + "'");
-                if (Directory.Exists(GeneratedFolderPath))
-                    Directory.Delete(GeneratedFolderPath, true);
-                Directory.CreateDirectory(GeneratedFolderPath);
-
-                FirstColorTextureGeneration = false;
-            }
-
             // Generate names
             string inputPNGName = inputTextureFileNameNoExt + ".png";
-            string inputPNGFullPath = Path.Combine(InputCharacterTextureFolderPath, inputPNGName);
+            string inputPNGFullPath = Path.Combine(inputTextureFolder, inputPNGName);
             string outputPNGName = outputTextureFileNameNoExt + ".png";
-            string outputPNGFullPath = Path.Combine(GeneratedFolderPath, outputPNGName);
+            string outputPNGFullPath = Path.Combine(workingDirectory, outputPNGName);
             string outputBLPName = outputTextureFileNameNoExt + ".blp";
-            string outputBLPFullPath = Path.Combine(GeneratedFolderPath, outputBLPName);
+            string outputBLPFullPath = Path.Combine(workingDirectory, outputBLPName);
 
             // Do existance checks for early exits
             if (File.Exists(outputBLPFullPath) == true)
@@ -314,12 +301,6 @@ namespace EQWOWConverter
             if (File.Exists(inputPNGFullPath) == false)
             {
                 Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the input texture '" + inputPNGFullPath + "' did not exist");
-                return;
-            }
-            string blpConverterFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "blpconverter", "BLPConverter.exe");
-            if (File.Exists(blpConverterFullPath) == false)
-            {
-                Logger.WriteError("Failed to create '" + outputBLPFullPath + "' because the BLPConverter could not be found here '" + blpConverterFullPath + "'");
                 return;
             }
 
@@ -352,36 +333,22 @@ namespace EQWOWConverter
                 }
             }
 
-            // Generate the BLP file
-            string args = "/M /FBLP_DXT5 \"" + outputPNGFullPath + "\"";
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            process.StartInfo.RedirectStandardOutput = true;
-            process.StartInfo.Arguments = args;
-            process.StartInfo.FileName = blpConverterFullPath;
-            process.Start();
-            //process.WaitForExit();
-            Logger.WriteDetail(process.StandardOutput.ReadToEnd());
-            Console.Title = "EverQuest to WoW Converter";
-
+            // Generate the BLP file, if needed
+            if (doGenerateBLP == true)
+                ConvertPNGTexturesToBLP(new List<string>() { outputPNGFullPath }, imageAssociationType);
             Logger.WriteDetail("Generating colored texture completed for '" + outputBLPFullPath + "'");
         }
 
-        public enum ImageSourceType
-        {
-            Creature,
-            Clothing        
-        }
-
-        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageSourceType imageType)
+        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType)
         {
             string formatArg = "/FBLP_DXT5";
             switch (imageType)
             {
-                case ImageSourceType.Clothing:
+                case ImageAssociationType.Clothing:
                     {
                         formatArg = "/FBLP_PAL_A8";
                     } break;
-                case ImageSourceType.Creature:
+                case ImageAssociationType.Creature:
                     {
                         formatArg = "/FBLP_DXT5"; // TODO: Look into this, it may be the wrong format
                     } break;

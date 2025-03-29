@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.WOWFiles;
 
@@ -26,7 +27,7 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
-        private static List<int> GeneratedRobeIDs = new List<int>();
+        private static Dictionary<int, List<Int64>> GeneratedRobesByIDThenColor = new Dictionary<int, List<Int64>>();
 
         public int ItemDisplayInfoDBCID = 0;
         public string IconFileNameNoExt = string.Empty;
@@ -52,11 +53,12 @@ namespace EQWOWConverter.Items
             CURRENT_DBCID_ITEMDISPLAYINFO++;
         }
 
-        private static void BuildAndCopyTexturesForRobe(int robeID)
+        private static void BuildAndCopyTexturesForRobe(int robeID, Int64 colorPacked)
         {
-            // Done do anything if this was already generated
-            if (GeneratedRobeIDs.Contains(robeID))
-                return;
+            // Don't do anything if this was already generated
+            if (GeneratedRobesByIDThenColor.ContainsKey(robeID) == true)
+                if (GeneratedRobesByIDThenColor[robeID].Contains(colorPacked) == true)
+                    return;
 
             // Make temp folder if it's not there yet
             string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
@@ -64,50 +66,68 @@ namespace EQWOWConverter.Items
                 Directory.CreateDirectory(workingFolderPath);
 
             // Build the robe parts
-            BuildAndCopyTexturesForRobePart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeID, false);
-            BuildAndCopyTexturesForRobePart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeID, false);
-            BuildAndCopyTexturesForRobePart("LegLowerTexture", "EQ_Robe_Legs_LL", robeID, false);
-            BuildAndCopyTexturesForRobePart("LegUpperTexture", "EQ_Robe_Legs_LU", robeID, false);
-            BuildAndCopyTexturesForRobePart("TorsoLowerTexture", "EQ_Robe_Chest_TL", robeID, true);
-            BuildAndCopyTexturesForRobePart("TorsoUpperTexture", "EQ_Robe_Chest_TU", robeID, true);
+            BuildAndCopyTexturesForRobePart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeID, false, colorPacked);
+            BuildAndCopyTexturesForRobePart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeID, false, colorPacked);
+            BuildAndCopyTexturesForRobePart("LegLowerTexture", "EQ_Robe_Legs_LL", robeID, false, colorPacked);
+            BuildAndCopyTexturesForRobePart("LegUpperTexture", "EQ_Robe_Legs_LU", robeID, false, colorPacked);
+            BuildAndCopyTexturesForRobePart("TorsoLowerTexture", "EQ_Robe_Chest_TL", robeID, true, colorPacked);
+            BuildAndCopyTexturesForRobePart("TorsoUpperTexture", "EQ_Robe_Chest_TU", robeID, true, colorPacked);
 
             // Add it as generated
-            GeneratedRobeIDs.Add(robeID);
+            if (GeneratedRobesByIDThenColor.ContainsKey(robeID) == false)
+                GeneratedRobesByIDThenColor.Add(robeID, new List<Int64>());
+            GeneratedRobesByIDThenColor[robeID].Add(colorPacked);
         }
 
-        private static void BuildAndCopyTexturesForRobePart(string subfolderName, string fileNamePrefix, int robeID, bool doGenerateBothMaleAndFemale)
+        private static void BuildAndCopyTexturesForRobePart(string subfolderName, string fileNamePrefix, int robeID, 
+            bool doGenerateBothMaleAndFemale, Int64 colorPacked)
         {
             // Build the subfolder if it doesn't exist
             string workingFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
             if (Directory.Exists(workingFolderName) == false)
                 Directory.CreateDirectory(workingFolderName);
 
-            // Generate and check that the filename is good
-            string fileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
-            string sourceFileNameAndPathNoExt = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents", fileNameNoExt);
-            if (File.Exists(sourceFileNameAndPathNoExt + ".png") == false)
+            // Generate the color if needed
+            ColorRGBA colorTint = new ColorRGBA();
+            if (colorPacked != 0)
             {
-                Logger.WriteError("Unable to copy the textures for robe part as '" + sourceFileNameAndPathNoExt + "' did not exist");
-                return;
+                colorTint.A = (byte)((colorPacked >> 24) & 0xFF);
+                colorTint.R = (byte)((colorPacked >> 16) & 0xFF);
+                colorTint.G = (byte)((colorPacked >> 8) & 0xFF);
+                colorTint.B = (byte)(colorPacked & 0xFF);
             }
 
             // Depending on the config, either 1 or 2 needs to be generated
+            string sourceFileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
             if (doGenerateBothMaleAndFemale == true)
             {
-                string targetMaleFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_M.png");
-                File.Copy(sourceFileNameAndPathNoExt + ".png", targetMaleFileNameAndPath, true);
-                string targetFemaleFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_F.png");
-                File.Copy(sourceFileNameAndPathNoExt + ".png", targetFemaleFileNameAndPath, true);
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "M", colorPacked, colorTint);
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "F", colorPacked, colorTint);
+            }
+            else
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "U", colorPacked, colorTint);
+        }
+
+        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string genderIdentifier, Int64 colorPacked, ColorRGBA colorTint)
+        {
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
+            string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, sourceFileNameNoExt + "_C" + colorPacked + "_" + genderIdentifier);
+
+            // Copy the texture, or generate a colored version
+            if (colorPacked == 0)
+            {
+                string sourceFileNameAndPath = Path.Combine(sourceTextureFolder, sourceFileNameNoExt + ".png");
+                File.Copy(sourceFileNameAndPath, targetFileNameAndPathNoExt + ".png", true);
             }
             else
             {
-                string targetFileNameAndPath = Path.Combine(workingFolderName, fileNameNoExt + "_U.png");
-                File.Copy(sourceFileNameAndPathNoExt + ".png", targetFileNameAndPath, true);
+                ImageTool.GenerateColoredTintedTexture(sourceTextureFolder, sourceFileNameNoExt, workingFolderName, targetFileNameAndPathNoExt,
+                    colorTint, ImageTool.ImageAssociationType.Clothing, false);
             }
         }
 
-        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, ItemWOWInventoryType inventoryType, 
-            int materialTypeID)
+        public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, 
+            ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
         {
             // Pull if it already exists
             string modelFileName = itemDisplayCommonName + ".mdx";
@@ -127,7 +147,7 @@ namespace EQWOWConverter.Items
             {
                 // Generate the robe geometry, if needed
                 int robeID = materialTypeID - 9;
-                BuildAndCopyTexturesForRobe(robeID);
+                BuildAndCopyTexturesForRobe(robeID, colorPacked);
                 string robeIDString = "0" + robeID.ToString();
 
                 // Robes use geosets 1 and 3
@@ -135,12 +155,12 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.GeosetGroup3 = 1;
 
                 // Set the armor texture names
-                newItemDisplayInfo.ArmorTexture1 = "EQ_Robe_Sleeve_AU_" + robeIDString;
-                newItemDisplayInfo.ArmorTexture2 = "EQ_Robe_Sleeve_AL_" + robeIDString;
-                newItemDisplayInfo.ArmorTexture4 = "EQ_Robe_Chest_TU_" + robeIDString;
-                newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_Chest_TL_" + robeIDString;
-                newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString;
-                newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString;
+                newItemDisplayInfo.ArmorTexture1 = "EQ_Robe_Sleeve_AU_" + robeIDString + "_C" + colorPacked;
+                newItemDisplayInfo.ArmorTexture2 = "EQ_Robe_Sleeve_AL_" + robeIDString + "_C" + colorPacked;
+                newItemDisplayInfo.ArmorTexture4 = "EQ_Robe_Chest_TU_" + robeIDString + "_C" + colorPacked;
+                newItemDisplayInfo.ArmorTexture5 = "EQ_Robe_Chest_TL_" + robeIDString + "_C" + colorPacked;
+                newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString + "_C" + colorPacked;
+                newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString + "_C" + colorPacked;
             }
 
             // Held objects have models
