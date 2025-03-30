@@ -181,9 +181,13 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
             }
             // Armor
-            else if (IsVisableArmor(inventoryType) == true && materialTypeID <= 4)
+            else if (IsVisableArmor(inventoryType) == true && (materialTypeID <= 4 || materialTypeID == 7 || (materialTypeID >= 17 && materialTypeID <= 23)))
             {
-                int armorID = 1; //materialTypeID;
+                int armorID = materialTypeID + 1; // <= 4
+                if (materialTypeID == 7)
+                    armorID = 3; // TODO: Confirm if this is right. Fungis Covered Scale Tunic is a 7, for example
+                else if (materialTypeID >= 17)
+                    armorID = materialTypeID - 11;         
                 string armorIDString;
                 if (armorID < 10)
                     armorIDString = "0" + armorID.ToString();
