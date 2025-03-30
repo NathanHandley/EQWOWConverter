@@ -341,6 +341,12 @@ namespace EQWOWConverter
 
         static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType)
         {
+            int workingCounter = -1;
+            ConvertPNGTexturesToBLP(fullFileInputPaths, imageType, -1, 0, ref workingCounter);
+        }
+
+        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, int counterCursorOffset, int counterTotalCount, ref int counterWorkingCount)
+        {
             string formatArg = "/FBLP_DXT5";
             switch (imageType)
             {
@@ -371,6 +377,12 @@ namespace EQWOWConverter
                 process.Start();
                 Logger.WriteDetail(process.StandardOutput.ReadToEnd());
                 Console.Title = "EverQuest to WoW Converter";
+
+                if (counterCursorOffset != -1)
+                {
+                    ++counterWorkingCount;
+                    Logger.WriteCounter(counterWorkingCount, counterCursorOffset, counterTotalCount);
+                }
             }
         }
     }

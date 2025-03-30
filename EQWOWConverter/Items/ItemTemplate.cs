@@ -1045,8 +1045,13 @@ namespace EQWOWConverter.Items
 
             // Load in item data
             string itemsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
-            Logger.WriteDetail("Populating item templates via file '" + itemsFileName + "'");
+            Logger.WriteInfo("Populating item templates... ");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(itemsFileName, "|");
+
+            // For the counter
+            int curProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            Logger.WriteCounter(curProgress, curProgressOffset, rows.Count);
 
             // Load all of the data
             foreach (Dictionary<string, string> columns in rows)
@@ -1132,6 +1137,9 @@ namespace EQWOWConverter.Items
                 // Set the quality
                 newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease,
                     resistFire, resistCold);
+
+                ++curProgress;
+                Logger.WriteCounter(curProgress, curProgressOffset, rows.Count);
 
                 // Add
                 if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))

@@ -829,20 +829,24 @@ namespace EQWOWConverter
             Directory.CreateDirectory(outputFolderPathRoot);
 
             // Convert and copy all of the BLP files
-            ConvertAndCopyEquipmentTextures("ArmLowerTexture");
-            ConvertAndCopyEquipmentTextures("ArmUpperTexture");
-            ConvertAndCopyEquipmentTextures("LegLowerTexture");
-            ConvertAndCopyEquipmentTextures("LegUpperTexture");
-            ConvertAndCopyEquipmentTextures("TorsoLowerTexture");
-            ConvertAndCopyEquipmentTextures("TorsoUpperTexture");
-            ConvertAndCopyEquipmentTextures("HandTexture");
-            ConvertAndCopyEquipmentTextures("FootTexture");
+            Logger.WriteInfo("Converting and copying equipment textures... ");
+            int cursorCurProgress = 0;
+            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
+            ConvertAndCopyEquipmentTextures("ArmLowerTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("ArmUpperTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("LegLowerTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("LegUpperTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("TorsoLowerTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("TorsoUpperTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("HandTexture", ref cursorCurProgress, curProgressOffset);
+            ConvertAndCopyEquipmentTextures("FootTexture", ref cursorCurProgress, curProgressOffset);
 
             Logger.WriteInfo("Item and loot conversion complete.");
         }
 
-        private void ConvertAndCopyEquipmentTextures(string subfolderName)
+        private void ConvertAndCopyEquipmentTextures(string subfolderName, ref int curCount, int curProgressOffset)
         {
+            Logger.WriteDetail("Converting and copying equipment textures for '" + subfolderName + "'... ");
             string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
             string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS", subfolderName);
             if (Directory.Exists(workingFolder) == false)
@@ -854,7 +858,9 @@ namespace EQWOWConverter
                 Directory.Delete(outputFolder, true);
             Directory.CreateDirectory(outputFolder);
             string[] pngFileNamesWithPath = Directory.GetFiles(workingFolder, "*.png");
-            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing);
+            
+            Logger.WriteCounter(curCount, curProgressOffset);
+            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing, curProgressOffset, 0, ref curCount);
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
