@@ -845,6 +845,11 @@ namespace EQWOWConverter
         {
             string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
             string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS", subfolderName);
+            if (Directory.Exists(workingFolder) == false)
+            {
+                Logger.WriteInfo("Note: Not copying armor texture data due to there not being any for '" + subfolderName + "'");
+                return;
+            }
             if (Directory.Exists(outputFolder) == true)
                 Directory.Delete(outputFolder, true);
             Directory.CreateDirectory(outputFolder);

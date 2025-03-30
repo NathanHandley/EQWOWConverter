@@ -28,7 +28,7 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<int, List<Int64>> GeneratedRobesByIDThenColor = new Dictionary<int, List<Int64>>();
-
+        private static bool IsFirstCreate = true;
 
         private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
 
@@ -109,6 +109,12 @@ namespace EQWOWConverter.Items
             }
         }
 
+        private static bool DoTexturesExist()
+        {
+            string sourceTextureTestName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents", "EQ_Robe_Chest_TU_01.png");
+            return File.Exists(sourceTextureTestName);
+        }
+
         public static ItemDisplayInfo CreateItemDisplayInfo(string itemDisplayCommonName, string iconFileNameNoExt, 
             ItemWOWInventoryType inventoryType, int materialTypeID, Int64 colorPacked)
         {
@@ -129,6 +135,17 @@ namespace EQWOWConverter.Items
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
+
+            // Test for a texture file.  If none, the graphics will be blank
+            if (DoTexturesExist() == false)
+            {
+                if (IsFirstCreate == true)
+                {
+                    Logger.WriteInfo("Note: There will be no armor textures, because Assets\\CustomTextures\\item\\texturecomponents is missing.  Install a texture pack here if you desire visable armor.");
+                    IsFirstCreate = false;
+                }
+                return newItemDisplayInfo;
+            }
 
             // If a robe, set the texture properties and copy the textures
             if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10 && materialTypeID <= 16)

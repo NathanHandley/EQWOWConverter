@@ -28,13 +28,15 @@ What's currently missing:
 - Windows build environment
 - AzerothCore based WoW 3.3.5 server, with the mod-everquest mod installed (https://github.com/NathanHandley/mod-everquest)
 - Installed and unpatched client of the EverQuest Trilogy
-- Installed 3.3.5 WoW client, US version (with nosignature patch)
+- Installed 3.3.5 WoW client, US version (with nosignature patch) 
+- If you want armor textures, install a texture pack.  A human one can be found here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
 
 # Instructions
 1. Set all of your paths propertly in Configuration.cs ("Paths and Files" section)
-2. Build and use EQWOWConverter and run the command "Perform Everything"
-3. Deploy your files. Alternately, you can set the configs in Deployment Rules so that they deploy for you
-4. Regenerate map/vmap files for the server
+2. (Optional) Install a texture pack, such as one here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
+3. Build and use EQWOWConverter and run the command "Perform Everything"
+4. Deploy your files. Alternately, you can set the configs in Deployment Rules so that they deploy for you
+5. Regenerate map/vmap files for the server
 
 # Special Thanks
 In no particular order...
