@@ -29,6 +29,9 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<int, List<Int64>> GeneratedRobesByIDThenColor = new Dictionary<int, List<Int64>>();
 
+
+        private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
+
         public int ItemDisplayInfoDBCID = 0;
         public string IconFileNameNoExt = string.Empty;
         public string ModelName = string.Empty;
@@ -60,11 +63,6 @@ namespace EQWOWConverter.Items
                 if (GeneratedRobesByIDThenColor[robeID].Contains(colorPacked) == true)
                     return;
 
-            // Make temp folder if it's not there yet
-            string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
-            if (Directory.Exists(workingFolderPath) == false)
-                Directory.CreateDirectory(workingFolderPath);
-
             // Build the robe parts
             BuildAndCopyTexturesForRobePart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeID, false, colorPacked);
             BuildAndCopyTexturesForRobePart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeID, false, colorPacked);
@@ -79,6 +77,7 @@ namespace EQWOWConverter.Items
             GeneratedRobesByIDThenColor[robeID].Add(colorPacked);
         }
 
+        // TODO: Look into removing Male vs Female, as robes don't seem to differ
         private static void BuildAndCopyTexturesForRobePart(string subfolderName, string fileNamePrefix, int robeID, 
             bool doGenerateBothMaleAndFemale, Int64 colorPacked)
         {
@@ -87,6 +86,42 @@ namespace EQWOWConverter.Items
             if (Directory.Exists(workingFolderName) == false)
                 Directory.CreateDirectory(workingFolderName);
 
+            // Depending on the config, either 1 or 2 needs to be generated
+            string sourceFileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
+            if (doGenerateBothMaleAndFemale == true)
+            {
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "M", colorPacked);
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "F", colorPacked);
+            }
+            else
+                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "U", colorPacked);
+        }
+
+        private static void BuildAndCopyTexturesForArmorPart(string subfolderName, string fileNamePrefix, string armorIdentifier, string genderIdentifier, Int64 colorPacked)
+        {
+            // Build the subfolder if it doesn't exist
+            string workingFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
+            if (Directory.Exists(workingFolderName) == false)
+                Directory.CreateDirectory(workingFolderName);
+
+            // Don't generate anything if it's already been generated
+            string sourceFileNameNoExt = fileNamePrefix + "_" + armorIdentifier + "_" + genderIdentifier;
+            if (GeneratedArmorPartBySourceNameThenColorID.ContainsKey(sourceFileNameNoExt) == true)
+                if (GeneratedArmorPartBySourceNameThenColorID[sourceFileNameNoExt].Contains(colorPacked) == true)
+                    return;
+
+            // Copy and tint
+            string targetFileNameNoExt = fileNamePrefix + "_" + armorIdentifier + "_C" + colorPacked + "_" + genderIdentifier;
+            TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, targetFileNameNoExt, genderIdentifier, colorPacked);
+
+            // Save to prevent regeneration
+            if (GeneratedArmorPartBySourceNameThenColorID.ContainsKey(sourceFileNameNoExt) == false)
+                GeneratedArmorPartBySourceNameThenColorID.Add(sourceFileNameNoExt, new List<long>());
+            GeneratedArmorPartBySourceNameThenColorID[sourceFileNameNoExt].Add(colorPacked);
+        }
+
+        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string targetFileNameNoExt, string genderIdentifier, Int64 colorPacked)
+        {
             // Generate the color if needed
             ColorRGBA colorTint = new ColorRGBA();
             if (colorPacked != 0)
@@ -97,19 +132,34 @@ namespace EQWOWConverter.Items
                 colorTint.B = (byte)(colorPacked & 0xFF);
             }
 
-            // Depending on the config, either 1 or 2 needs to be generated
-            string sourceFileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
-            if (doGenerateBothMaleAndFemale == true)
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
+            string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, targetFileNameNoExt);
+
+            // Copy the texture, or generate a colored version
+            if (colorPacked == 0)
             {
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "M", colorPacked, colorTint);
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "F", colorPacked, colorTint);
+                string sourceFileNameAndPath = Path.Combine(sourceTextureFolder, sourceFileNameNoExt + ".png");
+                File.Copy(sourceFileNameAndPath, targetFileNameAndPathNoExt + ".png", true);
             }
             else
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "U", colorPacked, colorTint);
+            {
+                ImageTool.GenerateColoredTintedTexture(sourceTextureFolder, sourceFileNameNoExt, workingFolderName, targetFileNameAndPathNoExt,
+                    colorTint, ImageTool.ImageAssociationType.Clothing, false);
+            }
         }
 
-        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string genderIdentifier, Int64 colorPacked, ColorRGBA colorTint)
+        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string genderIdentifier, Int64 colorPacked)
         {
+            // Generate the color if needed
+            ColorRGBA colorTint = new ColorRGBA();
+            if (colorPacked != 0)
+            {
+                colorTint.A = (byte)((colorPacked >> 24) & 0xFF);
+                colorTint.R = (byte)((colorPacked >> 16) & 0xFF);
+                colorTint.G = (byte)((colorPacked >> 8) & 0xFF);
+                colorTint.B = (byte)(colorPacked & 0xFF);
+            }
+
             string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
             string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, sourceFileNameNoExt + "_C" + colorPacked + "_" + genderIdentifier);
 
@@ -137,6 +187,11 @@ namespace EQWOWConverter.Items
                     return itemDisplayInfo;
             }
 
+            // Make temp folder if it's not there yet
+            string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
+            if (Directory.Exists(workingFolderPath) == false)
+                Directory.CreateDirectory(workingFolderPath);
+
             // Create the item display record
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
@@ -162,13 +217,79 @@ namespace EQWOWConverter.Items
                 newItemDisplayInfo.ArmorTexture6 = "EQ_Robe_Legs_LU_" + robeIDString + "_C" + colorPacked;
                 newItemDisplayInfo.ArmorTexture7 = "EQ_Robe_Legs_LL_" + robeIDString + "_C" + colorPacked;
             }
-
             // Held objects have models
-            if (IsHeld(inventoryType) == true)
+            else if (IsHeld(inventoryType) == true)
             {
                 ObjectModel objectModel = GetOrCreateModelForHeldItem(itemDisplayCommonName, inventoryType);
                 newItemDisplayInfo.ModelName = objectModel.Name + ".mdx";
             }
+            // Armor
+            else if (IsVisableArmor(inventoryType) == true && materialTypeID <= 4)
+            {
+                int armorID = 1; //materialTypeID;
+                string armorIDString;
+                if (armorID < 10)
+                    armorIDString = "0" + armorID.ToString();
+                else
+                    armorIDString = armorID.ToString();
+                switch (inventoryType)
+                {
+                    case ItemWOWInventoryType.Chest:
+                        {
+                            newItemDisplayInfo.ArmorTexture4 = "EQ_Armor_Chest_TU_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Armor_Chest_TU", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Armor_Chest_TU", armorIDString, "F", colorPacked);
+                            newItemDisplayInfo.ArmorTexture5 = "EQ_Armor_Chest_TL_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("TorsoLowerTexture", "EQ_Armor_Chest_TL", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Armor_Chest_TU", armorIDString, "F", colorPacked);
+
+                            // TODO: See if it's possible to amke this work for shoulder
+                            newItemDisplayInfo.ArmorTexture1 = "EQ_Armor_Arms_AU_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("ArmUpperTexture", "EQ_Armor_Arms_AU", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("ArmUpperTexture", "EQ_Armor_Arms_AU", armorIDString, "F", colorPacked);
+
+                        } break;
+                    case ItemWOWInventoryType.Legs:
+                        {
+                            newItemDisplayInfo.ArmorTexture6 = "EQ_Armor_Legs_LU_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("LegUpperTexture", "EQ_Armor_Legs_LU", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("LegUpperTexture", "EQ_Armor_Legs_LU", armorIDString, "F", colorPacked);
+                            newItemDisplayInfo.ArmorTexture7 = "EQ_Armor_Legs_LL_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("LegLowerTexture", "EQ_Armor_Legs_LL", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("LegLowerTexture", "EQ_Armor_Legs_LL", armorIDString, "F", colorPacked);
+                        } break;
+                    case ItemWOWInventoryType.Feet:
+                        {
+                            newItemDisplayInfo.ArmorTexture8 = "EQ_Armor_Feet_FO_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("FootTexture", "EQ_Armor_Feet_FO", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("FootTexture", "EQ_Armor_Feet_FO", armorIDString, "F", colorPacked);
+                        } break;
+                    case ItemWOWInventoryType.Hands:
+                        {
+                            newItemDisplayInfo.ArmorTexture3 = "EQ_Armor_Hand_HA_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("HandTexture", "EQ_Armor_Hand_HA", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("HandTexture", "EQ_Armor_Hand_HA", armorIDString, "F", colorPacked);
+                        } break;
+                    case ItemWOWInventoryType.Shoulder:
+                        {
+                            // Doesn't work.  Look for a solution
+                            //newItemDisplayInfo.ArmorTexture1 = "EQ_Armor_Arms_AU_" + armorIDString + "_C" + colorPacked;
+                            //BuildAndCopyTexturesForArmorPart("ArmUpperTexture", "EQ_Armor_Arms_AU", armorIDString, "M", colorPacked);
+                            //BuildAndCopyTexturesForArmorPart("ArmUpperTexture", "EQ_Armor_Arms_AU", armorIDString, "F", colorPacked);
+                        } break;
+                    case ItemWOWInventoryType.Wrists:
+                        {
+                            newItemDisplayInfo.ArmorTexture2 = "EQ_Armor_Wrist_AL_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("ArmLowerTexture", "EQ_Armor_Wrist_AL", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("ArmLowerTexture", "EQ_Armor_Wrist_AL", armorIDString, "F", colorPacked);
+                        } break;
+                    default:
+                        {
+                            Logger.WriteError("Unable to set DisplayInfo for equipment with name '" + itemDisplayCommonName + "' due to unhandled inventory type of '" + inventoryType.ToString() + "'");
+                        } break;              
+                }
+            }
+
             return newItemDisplayInfo;
         }
 
@@ -265,6 +386,16 @@ namespace EQWOWConverter.Items
             if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
                 inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
                 inventoryType != ItemWOWInventoryType.Thrown)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        static private bool IsVisableArmor(ItemWOWInventoryType inventoryType)
+        {
+            if (inventoryType != ItemWOWInventoryType.Shoulder && inventoryType != ItemWOWInventoryType.Chest && inventoryType != ItemWOWInventoryType.Legs &&
+                inventoryType != ItemWOWInventoryType.Wrists && inventoryType != ItemWOWInventoryType.Hands && inventoryType != ItemWOWInventoryType.Feet)
             {
                 return false;
             }

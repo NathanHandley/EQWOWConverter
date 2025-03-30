@@ -835,6 +835,8 @@ namespace EQWOWConverter
             ConvertAndCopyEquipmentTextures("LegUpperTexture");
             ConvertAndCopyEquipmentTextures("TorsoLowerTexture");
             ConvertAndCopyEquipmentTextures("TorsoUpperTexture");
+            ConvertAndCopyEquipmentTextures("HandTexture");
+            ConvertAndCopyEquipmentTextures("FootTexture");
 
             Logger.WriteInfo("Item and loot conversion complete.");
         }
