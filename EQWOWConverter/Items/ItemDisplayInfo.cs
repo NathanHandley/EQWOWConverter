@@ -56,47 +56,6 @@ namespace EQWOWConverter.Items
             CURRENT_DBCID_ITEMDISPLAYINFO++;
         }
 
-        private static void BuildAndCopyTexturesForRobe(int robeID, Int64 colorPacked)
-        {
-            // Don't do anything if this was already generated
-            if (GeneratedRobesByIDThenColor.ContainsKey(robeID) == true)
-                if (GeneratedRobesByIDThenColor[robeID].Contains(colorPacked) == true)
-                    return;
-
-            // Build the robe parts
-            BuildAndCopyTexturesForRobePart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeID, false, colorPacked);
-            BuildAndCopyTexturesForRobePart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeID, false, colorPacked);
-            BuildAndCopyTexturesForRobePart("LegLowerTexture", "EQ_Robe_Legs_LL", robeID, false, colorPacked);
-            BuildAndCopyTexturesForRobePart("LegUpperTexture", "EQ_Robe_Legs_LU", robeID, false, colorPacked);
-            BuildAndCopyTexturesForRobePart("TorsoLowerTexture", "EQ_Robe_Chest_TL", robeID, true, colorPacked);
-            BuildAndCopyTexturesForRobePart("TorsoUpperTexture", "EQ_Robe_Chest_TU", robeID, true, colorPacked);
-
-            // Add it as generated
-            if (GeneratedRobesByIDThenColor.ContainsKey(robeID) == false)
-                GeneratedRobesByIDThenColor.Add(robeID, new List<Int64>());
-            GeneratedRobesByIDThenColor[robeID].Add(colorPacked);
-        }
-
-        // TODO: Look into removing Male vs Female, as robes don't seem to differ
-        private static void BuildAndCopyTexturesForRobePart(string subfolderName, string fileNamePrefix, int robeID, 
-            bool doGenerateBothMaleAndFemale, Int64 colorPacked)
-        {
-            // Build the subfolder if it doesn't exist
-            string workingFolderName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
-            if (Directory.Exists(workingFolderName) == false)
-                Directory.CreateDirectory(workingFolderName);
-
-            // Depending on the config, either 1 or 2 needs to be generated
-            string sourceFileNameNoExt = fileNamePrefix + "_0" + robeID.ToString();
-            if (doGenerateBothMaleAndFemale == true)
-            {
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "M", colorPacked);
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "F", colorPacked);
-            }
-            else
-                TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, "U", colorPacked);
-        }
-
         private static void BuildAndCopyTexturesForArmorPart(string subfolderName, string fileNamePrefix, string armorIdentifier, string genderIdentifier, Int64 colorPacked)
         {
             // Build the subfolder if it doesn't exist
@@ -105,14 +64,16 @@ namespace EQWOWConverter.Items
                 Directory.CreateDirectory(workingFolderName);
 
             // Don't generate anything if it's already been generated
-            string sourceFileNameNoExt = fileNamePrefix + "_" + armorIdentifier + "_" + genderIdentifier;
+            string sourceFileNameNoExt = fileNamePrefix + "_" + armorIdentifier;
+            if (genderIdentifier != "U")
+                sourceFileNameNoExt += "_" + genderIdentifier;
             if (GeneratedArmorPartBySourceNameThenColorID.ContainsKey(sourceFileNameNoExt) == true)
                 if (GeneratedArmorPartBySourceNameThenColorID[sourceFileNameNoExt].Contains(colorPacked) == true)
                     return;
 
             // Copy and tint
             string targetFileNameNoExt = fileNamePrefix + "_" + armorIdentifier + "_C" + colorPacked + "_" + genderIdentifier;
-            TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, targetFileNameNoExt, genderIdentifier, colorPacked);
+            TintAndCopyTexture(workingFolderName, sourceFileNameNoExt, targetFileNameNoExt, colorPacked);
 
             // Save to prevent regeneration
             if (GeneratedArmorPartBySourceNameThenColorID.ContainsKey(sourceFileNameNoExt) == false)
@@ -120,7 +81,7 @@ namespace EQWOWConverter.Items
             GeneratedArmorPartBySourceNameThenColorID[sourceFileNameNoExt].Add(colorPacked);
         }
 
-        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string targetFileNameNoExt, string genderIdentifier, Int64 colorPacked)
+        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string targetFileNameNoExt, Int64 colorPacked)
         {
             // Generate the color if needed
             ColorRGBA colorTint = new ColorRGBA();
@@ -134,34 +95,6 @@ namespace EQWOWConverter.Items
 
             string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
             string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, targetFileNameNoExt);
-
-            // Copy the texture, or generate a colored version
-            if (colorPacked == 0)
-            {
-                string sourceFileNameAndPath = Path.Combine(sourceTextureFolder, sourceFileNameNoExt + ".png");
-                File.Copy(sourceFileNameAndPath, targetFileNameAndPathNoExt + ".png", true);
-            }
-            else
-            {
-                ImageTool.GenerateColoredTintedTexture(sourceTextureFolder, sourceFileNameNoExt, workingFolderName, targetFileNameAndPathNoExt,
-                    colorTint, ImageTool.ImageAssociationType.Clothing, false);
-            }
-        }
-
-        private static void TintAndCopyTexture(string workingFolderName, string sourceFileNameNoExt, string genderIdentifier, Int64 colorPacked)
-        {
-            // Generate the color if needed
-            ColorRGBA colorTint = new ColorRGBA();
-            if (colorPacked != 0)
-            {
-                colorTint.A = (byte)((colorPacked >> 24) & 0xFF);
-                colorTint.R = (byte)((colorPacked >> 16) & 0xFF);
-                colorTint.G = (byte)((colorPacked >> 8) & 0xFF);
-                colorTint.B = (byte)(colorPacked & 0xFF);
-            }
-
-            string sourceTextureFolder = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "CustomTextures", "item", "texturecomponents");
-            string targetFileNameAndPathNoExt = Path.Combine(workingFolderName, sourceFileNameNoExt + "_C" + colorPacked + "_" + genderIdentifier);
 
             // Copy the texture, or generate a colored version
             if (colorPacked == 0)
@@ -202,8 +135,15 @@ namespace EQWOWConverter.Items
             {
                 // Generate the robe geometry, if needed
                 int robeID = materialTypeID - 9;
-                BuildAndCopyTexturesForRobe(robeID, colorPacked);
                 string robeIDString = "0" + robeID.ToString();
+
+                // Build the robe parts
+                BuildAndCopyTexturesForArmorPart("ArmLowerTexture", "EQ_Robe_Sleeve_AL", robeIDString, "U", colorPacked);
+                BuildAndCopyTexturesForArmorPart("ArmUpperTexture", "EQ_Robe_Sleeve_AU", robeIDString, "U", colorPacked);
+                BuildAndCopyTexturesForArmorPart("LegLowerTexture", "EQ_Robe_Legs_LL", robeIDString, "U", colorPacked);
+                BuildAndCopyTexturesForArmorPart("LegUpperTexture", "EQ_Robe_Legs_LU", robeIDString, "U", colorPacked);
+                BuildAndCopyTexturesForArmorPart("TorsoLowerTexture", "EQ_Robe_Chest_TL", robeIDString, "U", colorPacked);
+                BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Robe_Chest_TU", robeIDString, "U", colorPacked);
 
                 // Robes use geosets 1 and 3
                 newItemDisplayInfo.GeosetGroup1 = 1;
