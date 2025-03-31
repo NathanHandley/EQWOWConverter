@@ -221,6 +221,9 @@ namespace EQWOWConverter.Items
                         } break;
                     case ItemWOWInventoryType.Feet:
                         {
+                            newItemDisplayInfo.ArmorTexture7 = "EQ_Armor_Feet_LL_" + armorIDString + "_C" + colorPacked;
+                            BuildAndCopyTexturesForArmorPart("LegLowerTexture", "EQ_Armor_Feet_LL", armorIDString, "M", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("LegLowerTexture", "EQ_Armor_Feet_LL", armorIDString, "F", colorPacked);
                             newItemDisplayInfo.ArmorTexture8 = "EQ_Armor_Feet_FO_" + armorIDString + "_C" + colorPacked;
                             BuildAndCopyTexturesForArmorPart("FootTexture", "EQ_Armor_Feet_FO", armorIDString, "M", colorPacked);
                             BuildAndCopyTexturesForArmorPart("FootTexture", "EQ_Armor_Feet_FO", armorIDString, "F", colorPacked);
