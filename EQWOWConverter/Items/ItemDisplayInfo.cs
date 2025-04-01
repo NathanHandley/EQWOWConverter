@@ -202,7 +202,7 @@ namespace EQWOWConverter.Items
                             BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Armor_Chest_TU", armorIDString, "F", colorPacked);
                             newItemDisplayInfo.ArmorTexture5 = "EQ_Armor_Chest_TL_" + armorIDString + "_C" + colorPacked;
                             BuildAndCopyTexturesForArmorPart("TorsoLowerTexture", "EQ_Armor_Chest_TL", armorIDString, "M", colorPacked);
-                            BuildAndCopyTexturesForArmorPart("TorsoUpperTexture", "EQ_Armor_Chest_TU", armorIDString, "F", colorPacked);
+                            BuildAndCopyTexturesForArmorPart("TorsoLowerTexture", "EQ_Armor_Chest_TL", armorIDString, "F", colorPacked);
 
                             // TODO: See if it's possible to amke this work for shoulder
                             newItemDisplayInfo.ArmorTexture1 = "EQ_Armor_Arms_AU_" + armorIDString + "_C" + colorPacked;
