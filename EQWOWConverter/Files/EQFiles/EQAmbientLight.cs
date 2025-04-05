@@ -30,7 +30,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Object Instances Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Object Instances Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find object instances file that should be at '" + fileFullPath + "'");
@@ -63,7 +63,7 @@ namespace EQWOWConverter.EQFiles
                 return true;
             }
 
-            Logger.WriteDetail(" - Done reading ambient light data from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading ambient light data from '" + fileFullPath + "'");
             return true;
         }
     }

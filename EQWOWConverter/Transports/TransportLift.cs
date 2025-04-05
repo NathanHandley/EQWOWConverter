@@ -48,7 +48,7 @@ namespace EQWOWConverter.Transports
         {
             // Load all of transport lifts
             string transportLiftsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TransportLifts.csv");
-            Logger.WriteDetail("Populating Transport Lifts list via file '" + transportLiftsFile + "'");
+            Logger.WriteDebug("Populating Transport Lifts list via file '" + transportLiftsFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportLiftsFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

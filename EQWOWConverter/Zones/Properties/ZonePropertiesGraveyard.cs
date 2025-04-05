@@ -62,7 +62,7 @@ namespace EQWOWConverter.Zones
         {
             // Load the graveyards
             string graveyardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyards.csv");
-            Logger.WriteDetail("Populating zone graveyards via file '" + graveyardFile + "'");
+            Logger.WriteDebug("Populating zone graveyards via file '" + graveyardFile + "'");
             List<Dictionary<string, string>> zoneGraveyardRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardFile, "|");
             foreach (Dictionary<string, string> columns in zoneGraveyardRows)
             {
@@ -93,7 +93,7 @@ namespace EQWOWConverter.Zones
 
             // Load the zone mapping
             string graveyardMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyardMap.csv");
-            Logger.WriteDetail("Populating zone graveyard map via file '" + graveyardMapFile + "'");
+            Logger.WriteDebug("Populating zone graveyard map via file '" + graveyardMapFile + "'");
             List<Dictionary<string, string>> zoneGraveyardMapRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardMapFile, "|");
             foreach (Dictionary<string, string> columns in zoneGraveyardMapRows)
             {
@@ -101,7 +101,7 @@ namespace EQWOWConverter.Zones
                 int graveyardID = int.Parse(columns["GraveyardID"]);
                 if (graveyardID == -1)
                 {
-                    Logger.WriteDetail("Graveyard for zone '" + zoneShortName + "' is -1, so wow will search for the nearest on death in that zone");
+                    Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' is -1, so wow will search for the nearest on death in that zone");
                     continue;
                 }
                 ZonePropertiesGraveyard curGraveyard = GetGraveyardByID(graveyardID);
@@ -109,7 +109,7 @@ namespace EQWOWConverter.Zones
                 // Skip cases where the ghost zone and the spawn zone match (since that would already be mapped)
                 if (curGraveyard.LocationShortName.ToLower() == zoneShortName.ToLower())
                 {
-                    Logger.WriteDetail("Graveyard for zone '" + zoneShortName + "' had a mapping to itself, so skipping the map step");
+                    Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' had a mapping to itself, so skipping the map step");
                     continue;
                 }
 

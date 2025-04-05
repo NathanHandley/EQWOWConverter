@@ -81,7 +81,7 @@ namespace EQWOWConverter.Zones
 
         private void LoadRenderMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading render mesh data...");
+            Logger.WriteDebug("- [" + inputZoneFolderName + "]: Reading render mesh data...");
             string renderMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + ".txt");
             EQMesh meshData = new EQMesh();
             if (meshData.LoadFromDisk(renderMeshFileName) == false)
@@ -95,11 +95,11 @@ namespace EQWOWConverter.Zones
 
         private void LoadCollisionMeshData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
+            Logger.WriteDebug("- [" + inputZoneFolderName + "]: Reading collision mesh data...");
             string collisionMeshFileName = Path.Combine(inputZoneFolderFullPath, "Meshes", inputZoneFolderName + "_collision.txt");
             if (File.Exists(collisionMeshFileName) == false)
             {
-                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No collision mesh found, skipping for zone.");
+                Logger.WriteDebug("- [" + inputZoneFolderName + "]: No collision mesh found, skipping for zone.");
                 return;
             }
             EQMesh meshData = new EQMesh();
@@ -113,7 +113,7 @@ namespace EQWOWConverter.Zones
 
         private void LoadMaterialDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading materials...");
+            Logger.WriteDebug("- [" + inputZoneFolderName + "]: Reading materials...");
             if (MaterialListFileName == string.Empty)
             {
                 Logger.WriteError("- [" + inputZoneFolderName + "]: No material file name found");
@@ -122,7 +122,7 @@ namespace EQWOWConverter.Zones
             string materialListFileName = Path.Combine(inputZoneFolderFullPath, "MaterialLists", MaterialListFileName + ".txt");
             EQMaterialList materialListData = new EQMaterialList();
             if (materialListData.LoadFromDisk(materialListFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No material data found.");
+                Logger.WriteDebug("- [" + inputZoneFolderName + "]: No material data found.");
             else
             {
                 if (materialListData.MaterialsByTextureVariation.Count > 1)
@@ -134,10 +134,10 @@ namespace EQWOWConverter.Zones
         private void LoadAmbientLightData(string inputZoneFolderName, string inputZoneFolderFullPath)
         {
             // Get the ambient light
-            Logger.WriteDetail("- [" + inputZoneFolderName + "]: Reading ambient light data...");
+            Logger.WriteDebug("- [" + inputZoneFolderName + "]: Reading ambient light data...");
             string ambientLightFileName = Path.Combine(inputZoneFolderFullPath, "ambient_light.txt");
             if (File.Exists(ambientLightFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolderName + "]: No ambient light data found.");
+                Logger.WriteDebug("- [" + inputZoneFolderName + "]: No ambient light data found.");
             else
             {
                 EQAmbientLight ambientLight = new EQAmbientLight();
@@ -153,10 +153,10 @@ namespace EQWOWConverter.Zones
         private void LoadObjectInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the object instances
-            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading object instances data...");
+            Logger.WriteDebug("- [" + inputZoneFolder + "]: Reading object instances data...");
             string objectInstancesFileName = Path.Combine(inputZoneFolderFullPath, "object_instances.txt");
             if (File.Exists(objectInstancesFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolder + "]: No object instances data found.");
+                Logger.WriteDebug("- [" + inputZoneFolder + "]: No object instances data found.");
             else
             {
                 EQObjectInstances objectInstances = new EQObjectInstances();
@@ -172,10 +172,10 @@ namespace EQWOWConverter.Zones
         private void LoadLightInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the light instances
-            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading light instances...");
+            Logger.WriteDebug("- [" + inputZoneFolder + "]: Reading light instances...");
             string lightInstancesFileName = Path.Combine(inputZoneFolderFullPath, "light_instances.txt");
             if (File.Exists(lightInstancesFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolder + "]: No light instance data found.");
+                Logger.WriteDebug("- [" + inputZoneFolder + "]: No light instance data found.");
             else
             {
                 EQLightInstances lightInstances = new EQLightInstances();
@@ -191,10 +191,10 @@ namespace EQWOWConverter.Zones
         private void LoadSound2DInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the 2D sound instances
-            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading 2D sound instances...");
+            Logger.WriteDebug("- [" + inputZoneFolder + "]: Reading 2D sound instances...");
             string sound2DInstancesFileName = Path.Combine(inputZoneFolderFullPath, "sound2d_instances.txt");
             if (File.Exists(sound2DInstancesFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolder + "]: No 2D sound instance data found.");
+                Logger.WriteDebug("- [" + inputZoneFolder + "]: No 2D sound instance data found.");
             else
             {
                 EQSound2DInstances sound2DInstances = new EQSound2DInstances();
@@ -210,10 +210,10 @@ namespace EQWOWConverter.Zones
         private void LoadSound3DInstanceData(string inputZoneFolder, string inputZoneFolderFullPath)
         {
             // Get the 3D sound instances
-            Logger.WriteDetail("- [" + inputZoneFolder + "]: Reading 3D sound instances...");
+            Logger.WriteDebug("- [" + inputZoneFolder + "]: Reading 3D sound instances...");
             string sound3DInstancesFileName = Path.Combine(inputZoneFolderFullPath, "sound3d_instances.txt");
             if (File.Exists(sound3DInstancesFileName) == false)
-                Logger.WriteDetail("- [" + inputZoneFolder + "]: No 3D sound instance data found.");
+                Logger.WriteDebug("- [" + inputZoneFolder + "]: No 3D sound instance data found.");
             else
             {
                 EQSound3DInstances sound3DInstances = new EQSound3DInstances();

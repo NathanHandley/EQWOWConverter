@@ -260,7 +260,7 @@ namespace EQWOWConverter.Common
             // Only rebuild if things are different, and there's at least one
             if (keepTriangleFaces.Count != TriangleFaces.Count)
             {
-                Logger.WriteDetail("DeleteInvalidTriangles found a mesh with invalid triangles, changing count from '" + TriangleFaces.Count + "' to '" + keepTriangleFaces.Count + "'");
+                Logger.WriteDebug("DeleteInvalidTriangles found a mesh with invalid triangles, changing count from '" + TriangleFaces.Count + "' to '" + keepTriangleFaces.Count + "'");
                 MeshData newMeshData = GetMeshDataForFaces(keepTriangleFaces);
                 newMeshData.CondenseAndRenumberVertexIndices();
                 Vertices = newMeshData.Vertices;

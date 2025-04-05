@@ -135,7 +135,7 @@ namespace EQWOWConverter.Items
             // Ignore any rows that are without stat
             if (statEqHigh <= 0 || statEqLow <= 0 || statWowHigh <= 0 || statWowLow <= 0)
             {
-                Logger.WriteDetail("Could not pull stat for slot '" + slotNameLower + "' as one of the 4 values was <= 0 from TtemStatBaselines");
+                Logger.WriteDebug("Could not pull stat for slot '" + slotNameLower + "' as one of the 4 values was <= 0 from TtemStatBaselines");
                 return 0;
             }
 
@@ -1153,7 +1153,7 @@ namespace EQWOWConverter.Items
         private static void PopulateStatBaselinesBySlot()
         {
             string itemStatBaselineFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemStatBaselines.csv");
-            Logger.WriteDetail("Populating Item Stat Baselines list via file '" + itemStatBaselineFile + "'");
+            Logger.WriteDebug("Populating Item Stat Baselines list via file '" + itemStatBaselineFile + "'");
             List<string> itemStatBaselineRows = FileTool.ReadAllStringLinesFromFile(itemStatBaselineFile, false, true);
             bool isFirstRow = true;
             List<string> stats = new List<string>();

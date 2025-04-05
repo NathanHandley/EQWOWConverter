@@ -53,7 +53,7 @@ namespace EQWOWConverter.Transports
         {
             // Load all of transport ship nodes
             string transportShipPathNodesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TransportShipPathNodes.csv");
-            Logger.WriteDetail("Populating Transport Ship Path Nodes list via file '" + transportShipPathNodesFile + "'");
+            Logger.WriteDebug("Populating Transport Ship Path Nodes list via file '" + transportShipPathNodesFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportShipPathNodesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

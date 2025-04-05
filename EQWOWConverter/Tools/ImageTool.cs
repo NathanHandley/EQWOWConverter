@@ -32,7 +32,7 @@ namespace EQWOWConverter
         public static void GenerateItemIconImagesFromFile(string inputImageToCutUp, int numberOfIconImagesToMake, int valueToAddToOutputIndexNumber, string outputFolderPath,
             int iconInitialWidth, int iconInitialHeight, IconSeriesDirection iconSeriesDirection, int iconsInSeries, string filePrefix, int startIndex)
         {
-            Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp +"' started...");
+            Logger.WriteDebug("Generating item icons from '" + inputImageToCutUp +"' started...");
 
             // Read in the backdrop data first
             List<List<Color>> backdropPixels = new List<List<Color>>();
@@ -223,7 +223,7 @@ namespace EQWOWConverter
                 }
             }
 
-            Logger.WriteDetail("Generating item icons from '" + inputImageToCutUp + "' completed.");
+            Logger.WriteDebug("Generating item icons from '" + inputImageToCutUp + "' completed.");
         }
 
         // TODO: Look for solution to image operations.  These image methods are why this project is windows only.
@@ -282,7 +282,7 @@ namespace EQWOWConverter
         public static void GenerateColoredTintedTexture(string inputTextureFolder, string inputTextureFileNameNoExt, string workingDirectory,
             string outputTextureFileNameNoExt, ColorRGBA color, ImageAssociationType imageAssociationType, bool doGenerateBLP)
         {
-            Logger.WriteDetail("Generating colored texture from '" + inputTextureFileNameNoExt + "' to '" + outputTextureFileNameNoExt + "'");
+            Logger.WriteDebug("Generating colored texture from '" + inputTextureFileNameNoExt + "' to '" + outputTextureFileNameNoExt + "'");
 
             // Generate names
             string inputPNGName = inputTextureFileNameNoExt + ".png";
@@ -295,7 +295,7 @@ namespace EQWOWConverter
             // Do existance checks for early exits
             if (File.Exists(outputBLPFullPath) == true)
             {
-                Logger.WriteDetail("No need to created '" + outputBLPFullPath + "' as it already exists");
+                Logger.WriteDebug("No need to created '" + outputBLPFullPath + "' as it already exists");
                 return;
             }
             if (File.Exists(inputPNGFullPath) == false)
@@ -336,7 +336,7 @@ namespace EQWOWConverter
             // Generate the BLP file, if needed
             if (doGenerateBLP == true)
                 ConvertPNGTexturesToBLP(new List<string>() { outputPNGFullPath }, imageAssociationType);
-            Logger.WriteDetail("Generating colored texture completed for '" + outputBLPFullPath + "'");
+            Logger.WriteDebug("Generating colored texture completed for '" + outputBLPFullPath + "'");
         }
 
         static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType)
@@ -375,7 +375,7 @@ namespace EQWOWConverter
                 process.StartInfo.Arguments = args;
                 process.StartInfo.FileName = blpConverterFullPath;
                 process.Start();
-                Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                Logger.WriteDebug(process.StandardOutput.ReadToEnd());
                 Console.Title = "EverQuest to WoW Converter";
 
                 if (counterCursorOffset != -1)

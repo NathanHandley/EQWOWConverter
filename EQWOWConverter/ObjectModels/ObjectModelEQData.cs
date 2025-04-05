@@ -230,7 +230,7 @@ namespace EQWOWConverter.ObjectModels
                     if (avFrames.VertexOffsetFrames.Count > 0)
                         numOfFilledAVs++;
                 if (numOfFilledAVs >= 255)
-                    Logger.WriteDetail("Object '" + name + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
+                    Logger.WriteDebug("Object '" + name + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
                 if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 255)
                 {
                     ConvertAnimatedVerticesToSkeleton(name);
@@ -246,7 +246,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void LoadRenderMeshData(string inputObjectName, Dictionary<string, byte> meshNamesByBoneIndex, string inputObjectFolder)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading render mesh data...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading render mesh data...");
             foreach (var meshNameByBoneIndex in meshNamesByBoneIndex)
             {
                 // Load this mesh
@@ -292,7 +292,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void LoadMaterialDataFromDisk(string inputObjectName, string inputObjectFolder, int materialIndex)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading materials...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading materials...");
             string materialListFileName = Path.Combine(inputObjectFolder, "MaterialLists", inputObjectName + ".txt");
             EQMaterialList materialListData = new EQMaterialList();
             if (materialListData.LoadFromDisk(materialListFileName) == false)
@@ -304,7 +304,7 @@ namespace EQWOWConverter.ObjectModels
                     if (materialListData.MaterialsByTextureVariation.Count > 0)
                     {
                         Materials = materialListData.MaterialsByTextureVariation[0];
-                        Logger.WriteDetail("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "', so fell back to 0.");
+                        Logger.WriteDebug("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "', so fell back to 0.");
                     }
                     else
                         Logger.WriteError("- [" + inputObjectName + "]: materialIndex of value '" + materialIndex + "' exceeded count of MaterialsByTextureVariation of value '" + materialListData.MaterialsByTextureVariation.Count + "'.");
@@ -319,14 +319,14 @@ namespace EQWOWConverter.ObjectModels
         // TODO: Make this work with multiple meshes
         private void LoadCollisionMeshData(string inputObjectName, List<string> meshNames, string inputObjectFolder)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading collision mesh data...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading collision mesh data...");
             MeshData collisionMeshData = new MeshData();
             foreach (string meshName in meshNames)
             {
                 string collisionMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshName + "_collision.txt");
                 if (File.Exists(collisionMeshFileName) == false)
                 {
-                    Logger.WriteDetail("- [" + inputObjectName + "]: No collision mesh found, skipping.");
+                    Logger.WriteDebug("- [" + inputObjectName + "]: No collision mesh found, skipping.");
                     continue;
                 }
                 EQMesh meshData = new EQMesh();
@@ -343,7 +343,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void LoadSkeletonData(string inputObjectName, string inputObjectFolder)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading skeleton data...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading skeleton data...");
             string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
             SkeletonData = new EQSkeleton();
             if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
@@ -355,14 +355,14 @@ namespace EQWOWConverter.ObjectModels
 
         private void ConvertAnimatedVerticesToSkeleton(string inputObjectName)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Converting animated vertices to skeleton data...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Converting animated vertices to skeleton data...");
             SkeletonData = new EQSkeleton();
             SkeletonData.LoadFromAnimatedVerticesData(ref MeshData);
         }
 
         private void GenerateAnimationFromAnimatedVertexSkeleton(string inputObjectName, MeshData meshData)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Generating an animation based on an animated vertex skeleton...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Generating an animation based on an animated vertex skeleton...");
             if (Animations.Count > 0)
             {
                 Logger.WriteError("- [" + inputObjectName + "]: Failed to generate the animation since animations already existed.");
@@ -432,7 +432,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void LoadAnimationData(string inputObjectName, string eqInputObjectFileName, string inputObjectFolder, string animationSupplementalName)
         {
-            Logger.WriteDetail("- [" + inputObjectName + "]: Reading animation data...");
+            Logger.WriteDebug("- [" + inputObjectName + "]: Reading animation data...");
 
             // Animations are split by animation name
             Animations.Clear();

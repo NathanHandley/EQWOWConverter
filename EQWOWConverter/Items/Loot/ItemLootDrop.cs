@@ -74,7 +74,7 @@ namespace EQWOWConverter.Items
         {
             // Populate the loot drops
             string itemLootDropsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootDrops.csv");
-            Logger.WriteDetail("Populating Item Loot Drops via file '" + itemLootDropsFileName + "'");
+            Logger.WriteDebug("Populating Item Loot Drops via file '" + itemLootDropsFileName + "'");
             List<string> lootDropsInputRows = FileTool.ReadAllStringLinesFromFile(itemLootDropsFileName, true, true);
             foreach (string row in lootDropsInputRows)
             {
@@ -97,7 +97,7 @@ namespace EQWOWConverter.Items
 
             // Populate the entries, and map them to loot drops
             string itemLootDropEntriesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootDropEntries.csv");
-            Logger.WriteDetail("Populating Item Loot Drop Entries via file '" + itemLootDropEntriesFileName + "'");
+            Logger.WriteDebug("Populating Item Loot Drop Entries via file '" + itemLootDropEntriesFileName + "'");
             List<string> lootDropEntryInputRows = FileTool.ReadAllStringLinesFromFile(itemLootDropEntriesFileName, true, true);
             foreach (string row in lootDropEntryInputRows)
             {
@@ -124,7 +124,7 @@ namespace EQWOWConverter.Items
                 // Map it to a table
                 if (ItemLootDropsByEQID.ContainsKey(curLootDropEntry.LootDropID) == false)
                 {
-                    Logger.WriteDetail("LootDropEntry could not find a valid LootDrop with ID '" + curLootDropEntry.LootDropID + "', which probably means it's for a different expansion");
+                    Logger.WriteDebug("LootDropEntry could not find a valid LootDrop with ID '" + curLootDropEntry.LootDropID + "', which probably means it's for a different expansion");
                     continue;
                 }
                 else

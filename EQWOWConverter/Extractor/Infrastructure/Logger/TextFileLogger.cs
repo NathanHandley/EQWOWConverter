@@ -60,7 +60,7 @@ namespace LanternExtractor.Infrastructure.Logger
             {
                 return;
             }
-            EQWOWConverter.Logger.WriteDetail(message);
+            EQWOWConverter.Logger.WriteDebug(message);
         }
 
         public void LogWarning(string message)
@@ -70,12 +70,12 @@ namespace LanternExtractor.Infrastructure.Logger
                 return;
             }
 
-            EQWOWConverter.Logger.WriteDetail(message + " (warning)");
+            EQWOWConverter.Logger.WriteDebug(message + " (warning)");
         }
 
         public void LogError(string message)
         {
-            EQWOWConverter.Logger.WriteDetail(message + "(error)");
+            EQWOWConverter.Logger.WriteDebug(message + "(error)");
         }
     }
 }

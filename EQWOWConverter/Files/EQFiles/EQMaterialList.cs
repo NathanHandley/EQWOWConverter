@@ -25,7 +25,7 @@ namespace EQWOWConverter.EQFiles
         // Invisible Man (Race 127) has no textures, so need to create blank ones
         public void LoadForInvisibleMan()
         {
-            Logger.WriteDetail(" - Creating EQ Material List Data for Invisible Man (IVM)...");
+            Logger.WriteDebug(" - Creating EQ Material List Data for Invisible Man (IVM)...");
             MaterialsByTextureVariation.Add(new List<Material>());
             MaterialsByTextureVariation[0].Add(new Material("00", "00", 0, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
             MaterialsByTextureVariation[0].Add(new Material("01", "01", 1, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
@@ -44,12 +44,12 @@ namespace EQWOWConverter.EQFiles
             MaterialsByTextureVariation[0].Add(new Material("14", "14", 14, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
             MaterialsByTextureVariation[0].Add(new Material("15", "15", 15, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
             MaterialsByTextureVariation[0].Add(new Material("16", "16", 16, MaterialType.TransparentAdditive, new List<string> { "clear" }, 0, 256, 256, false));
-            Logger.WriteDetail(" - Done creating material list data for IVM");
+            Logger.WriteDebug(" - Done creating material list data for IVM");
         }
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Material List Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Material List Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find material list file that should be at '" + fileFullPath + "'");
@@ -118,7 +118,7 @@ namespace EQWOWConverter.EQFiles
                     {
                         workingVariationIndex = variationIndex;
                         if (variationParts.Length > 1)
-                            Logger.WriteDetail("There are at least '" + variationParts.Length + "' variations");
+                            Logger.WriteDebug("There are at least '" + variationParts.Length + "' variations");
                     }
                     string[] nameAndTextureParts = variationParts[workingVariationIndex].Split(':');
                     string name = nameAndTextureParts[0];
@@ -182,7 +182,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            Logger.WriteDetail(" - Done reading EQ Material List Data from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Material List Data from '" + fileFullPath + "'");
             return true;
         }
     }

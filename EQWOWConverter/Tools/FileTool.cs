@@ -129,7 +129,7 @@ namespace EQWOWConverter
             foreach (string file in files)
             {
                 File.Delete(file);
-                Logger.WriteDetail("Deleted file '" + file + "' in folder '" + directory + "'");
+                Logger.WriteDebug("Deleted file '" + file + "' in folder '" + directory + "'");
             }
 
             if (recursive)
@@ -164,7 +164,7 @@ namespace EQWOWConverter
         public static List<string> ReadAllStringLinesFromFile(string fileName, bool stripHeader, bool removeBlankRows)
         {
             // Load in item data
-            Logger.WriteDetail("Reading all string lines from file '" + fileName + "'");
+            Logger.WriteDebug("Reading all string lines from file '" + fileName + "'");
             string inputData = FileTool.ReadAllDataFromFile(fileName);
             List<string> inputRows = new List<string>(inputData.Split(Environment.NewLine));
             if (stripHeader == true)
@@ -177,7 +177,7 @@ namespace EQWOWConverter
                 else
                 {
                     inputRows.RemoveAt(0);
-                    Logger.WriteDetail("stripHeaders was true, so the first row is deleted from file '" + fileName + "'");
+                    Logger.WriteDebug("stripHeaders was true, so the first row is deleted from file '" + fileName + "'");
                 }
             }
             if (removeBlankRows == true)
@@ -188,7 +188,7 @@ namespace EQWOWConverter
                         inputRows.RemoveAt(i);
                 }
             }
-            Logger.WriteDetail("All rows read from '" + fileName + "', which has '" + inputRows.Count + "' content rows");
+            Logger.WriteDebug("All rows read from '" + fileName + "', which has '" + inputRows.Count + "' content rows");
             return inputRows;
         }
 

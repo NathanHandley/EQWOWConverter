@@ -134,7 +134,7 @@ namespace EQWOWConverter
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Ships
-            Logger.WriteDetail("Loading transport ships...");
+            Logger.WriteDebug("Loading transport ships...");
             List<TransportShip> transportShips = TransportShip.GetAllTransportShips();
             Dictionary<string, int> gameObjectDisplayInfoIDsByMeshName = new Dictionary<string, int>();
             Dictionary<string, Zone> transportShipZoneModelsByMeshName = new Dictionary<string, Zone>();
@@ -147,9 +147,9 @@ namespace EQWOWConverter
                 {
                     // Load it
                     Zone curZone = new Zone(transportShip.MeshName, transportShip.Name);
-                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
+                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "'");
                     curZone.LoadFromEQObject(transportShip.MeshName, charactersFolderRoot);
-                    Logger.WriteDetail("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
+                    Logger.WriteDebug("- [" + transportShip.MeshName + "]: Importing EQ transport ship object '" + transportShip.MeshName + "' complete");
 
                     // Convert to WMO
                     string relativeTransportObjectsPath = Path.Combine("World", "Everquest", "TransportObjects", transportShip.MeshName);
@@ -172,7 +172,7 @@ namespace EQWOWConverter
                                 continue;
                             }
                             File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
-                            Logger.WriteDetail("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
+                            Logger.WriteDebug("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
                         }
                     }
 
@@ -185,7 +185,7 @@ namespace EQWOWConverter
             }
 
             // Lifts
-            Logger.WriteDetail("Loading transport lifts...");
+            Logger.WriteDebug("Loading transport lifts...");
             List<TransportLift> transportLifts = TransportLift.GetAllTransportLifts();
             gameObjectDisplayInfoIDsByMeshName.Clear();
             Dictionary<string, ObjectModel> transportLiftObjectModelsByMeshName = new Dictionary<string, ObjectModel>();
@@ -201,9 +201,9 @@ namespace EQWOWConverter
 
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
-                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
+                    Logger.WriteDebug("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
                     curObjectModel.LoadEQObjectFromFile(folderRoot, transportLift.MeshName);
-                    Logger.WriteDetail("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
+                    Logger.WriteDebug("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
 
                     // Create the M2 and Skin
                     string relativeMPQPath = Path.Combine("World", "Everquest", "Transports", transportLift.MeshName);
@@ -226,7 +226,7 @@ namespace EQWOWConverter
             }
 
             // Lift Triggers
-            Logger.WriteDetail("Loading transport lift triggers...");
+            Logger.WriteDebug("Loading transport lift triggers...");
             List<TransportLiftTrigger> transportLiftTriggers = TransportLiftTrigger.GetAllTransportLiftTriggers();
             gameObjectDisplayInfoIDsByMeshName.Clear();
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
@@ -238,9 +238,9 @@ namespace EQWOWConverter
                 {
                     // Load it
                     ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
-                    Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
+                    Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
                     curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName, null, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
-                    Logger.WriteDetail("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
+                    Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
                     if (transportLiftTrigger.OpenSound != null)
                         curObjectModel.SoundsByAnimationType.Add(AnimationType.Open, transportLiftTrigger.OpenSound);
                     if (transportLiftTrigger.CloseSound != null)
@@ -275,7 +275,7 @@ namespace EQWOWConverter
                 File.Copy(sourceFullPath, targetFullPath, true);
             }
 
-            Logger.WriteDetail("Converting Transports complete.");
+            Logger.WriteDebug("Converting Transports complete.");
         }
 
         public bool ConvertEQObjectsToWOW()
@@ -313,9 +313,9 @@ namespace EQWOWConverter
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
                 ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad);
-                Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
+                Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
                 curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
-                Logger.WriteDetail("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
+                Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
 
                 // Create the M2 and Skin
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", staticObjectName);
@@ -345,9 +345,9 @@ namespace EQWOWConverter
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
                 ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodad);
-                Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
+                Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
                 curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, skeletalObjectName);
-                Logger.WriteDetail("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
+                Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
 
                 // Create the M2 and Skin
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", skeletalObjectName);
@@ -450,7 +450,7 @@ namespace EQWOWConverter
                     Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneProperties.ShortName))
                 {
                     Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
-                    Logger.WriteDetail("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
+                    Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
                     string curZoneDirectory = Path.Combine(inputZoneFolder, zoneDirectory.Name);
                     curZone.LoadFromEQZone(zoneDirectory.Name, curZoneDirectory);
 
@@ -505,12 +505,12 @@ namespace EQWOWConverter
                     // Place the related ambience files
                     ExportAmbientSoundForZone(curZone, inputSoundFolderRoot, exportMPQRootFolder);
 
-                    Logger.WriteDetail("- [" + curZone.ShortName + "]: Converting of zone '" + curZone.ShortName + "' complete");
+                    Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting of zone '" + curZone.ShortName + "' complete");
 
                     zones.Add(curZone);
                 }
                 else
-                    Logger.WriteDetail("For zone '" + zoneProperties.ShortName + "', skipped wow file generation since it wasn't in GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
+                    Logger.WriteDebug("For zone '" + zoneProperties.ShortName + "', skipped wow file generation since it wasn't in GENERATE_UPDATE_INCLUDED_ZONE_SHORTNAMES");
             }
             return true;
         }
@@ -631,19 +631,19 @@ namespace EQWOWConverter
                 // Make sure there is at least one element
                 if (curSpawnPool.CreatureSpawnInstances.Count == 0)
                 {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
+                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no creature spawn instances. Skipping.");
                     continue;
                 }
                 if (curSpawnPool.CreatureTemplates.Count == 0)
                 {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
+                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key+ "', as there are no valid creature templates. Skipping.");
                     continue;
                 }
 
                 // Validate the chances
                 if (curSpawnPool.DoChancesAddTo100() == false)
                 {
-                    Logger.WriteDetail("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
+                    Logger.WriteDebug("Invalid creature spawn pool with groupID '" + spawnGroup.Key + "', as chances did not add to 100. Rebalancing.");
                     curSpawnPool.BalanceChancesTo100();
                 }
 
@@ -697,12 +697,12 @@ namespace EQWOWConverter
                     {
                         if (creaturePathGridEntriesByIDAndMapID.ContainsKey(creatureSpawnInstance.PathGridID) == false)
                         {
-                            Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
+                            Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "'");
                             continue;
                         }
                         if (creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID].ContainsKey(creatureSpawnInstance.MapID) == false)
                         {
-                            Logger.WriteDetail("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
+                            Logger.WriteDebug("CreatureSpawnInstance with ID '" + creatureSpawnInstance.ID + "' could not find a PathGridEntry with ID '" + creatureSpawnInstance.PathGridID + "' and mapID of '" + creatureSpawnInstance.MapID + "'");
                             continue;
                         }
 
@@ -756,7 +756,7 @@ namespace EQWOWConverter
                 if (itemLootTablesByEQID.ContainsKey(creatureTemplate.EQLootTableID) == false)
                 {
                     // In review, these errors have to do with future expansions that this code won't support
-                    Logger.WriteDetail("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
+                    Logger.WriteDebug("For creature template '" + creatureTemplate.EQCreatureTemplateID + "' named '" + creatureTemplate.Name + "', lootTableID of '" + creatureTemplate.EQLootTableID + "' was not found");
                     continue;
                 }
                 ItemLootTable curItemLootTable = itemLootTablesByEQID[creatureTemplate.EQLootTableID];
@@ -774,7 +774,7 @@ namespace EQWOWConverter
                     if (itemLootDropsByEQID.ContainsKey(lootTableEntry.LootDropID) == false)
                     {
                         // In review, these errors have to do with future expansions that this code won't support
-                        Logger.WriteDetail("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
+                        Logger.WriteDebug("ItemLootTable with ID '" + lootTableEntry.LootTableID + "' references ItemLootDrop with ID '" + lootTableEntry.LootDropID + "', but it did not exist");
                         continue;
                     }
 
@@ -796,7 +796,7 @@ namespace EQWOWConverter
                             if (itemTemplatesByEQDBID.ContainsKey(itemDropEntry.ItemIDEQ) == false)
                             {
                                 // In review, these errors have to do with items in future expansions
-                                Logger.WriteDetail("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
+                                Logger.WriteDebug("ItemDropEntry with ID '" + itemDropEntry.LootDropID + "' references ItemID of '" + itemDropEntry.ItemIDEQ + "', but it did not exist");
                                 continue;
                             }
                             ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
@@ -846,7 +846,7 @@ namespace EQWOWConverter
 
         private void ConvertAndCopyEquipmentTextures(string subfolderName, ref int curCount, int curProgressOffset)
         {
-            Logger.WriteDetail("Converting and copying equipment textures for '" + subfolderName + "'... ");
+            Logger.WriteDebug("Converting and copying equipment textures for '" + subfolderName + "'... ");
             string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
             string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS", subfolderName);
             if (Directory.Exists(workingFolder) == false)
@@ -869,7 +869,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Generating spells...");
             spellTemplates = new List<SpellTemplate>();
 
-            Logger.WriteDetail("Creating custom spells");
+            Logger.WriteDebug("Creating custom spells");
             List<ClassType> casterClassTypes = new List<ClassType> { ClassType.Priest, ClassType.Shaman, ClassType.Mage, ClassType.Druid, ClassType.Warlock };
             List<ClassType> meleeClassTypes = new List<ClassType> { ClassType.Warrior, ClassType.Paladin, ClassType.Hunter, ClassType.Rogue, ClassType.DeathKnight };
 
@@ -913,7 +913,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
-            Logger.WriteDetail("Generating spells completed.");
+            Logger.WriteDebug("Generating spells completed.");
         }
 
         public void ExtractClientDBCFiles()
@@ -941,12 +941,12 @@ namespace EQWOWConverter
                     throw new Exception("Patch file named '" + patchFileName + "' was locked and in use by another application");
 
             // Clear out any previously extracted DBC files
-            Logger.WriteDetail("Deleting previously extracted DBC files");
+            Logger.WriteDebug("Deleting previously extracted DBC files");
             string exportedDBCFolder = Path.Combine(wowExportPath, "ExportedDBCFiles");
             FileTool.CreateBlankDirectory(exportedDBCFolder, false);
 
             // Generate a script to extract the DBC files
-            Logger.WriteDetail("Generating script to extract DBC files");
+            Logger.WriteDebug("Generating script to extract DBC files");
             string workingGeneratedScriptsFolder = Path.Combine(wowExportPath, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder dbcExtractScriptText = new StringBuilder();
@@ -957,7 +957,7 @@ namespace EQWOWConverter
                 dbcExtractionScriptFile.WriteLine(dbcExtractScriptText.ToString());
 
             // Extract the files using the script
-            Logger.WriteDetail("Extracting DBC files");
+            Logger.WriteDebug("Extracting DBC files");
             string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
                 throw new Exception("Failed to extract DBC files. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
@@ -969,7 +969,7 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDetail("Extracting client DBC files complete");
+            Logger.WriteDebug("Extracting client DBC files complete");
         }
 
         public void CreatePatchMPQ()
@@ -981,13 +981,13 @@ namespace EQWOWConverter
                 throw new Exception("Export folder '" + Configuration.PATH_EXPORT_FOLDER + "' did not exist, make sure you set PATH_EXPORT_FOLDER");
 
             // Delete the old patch file, if it exists
-            Logger.WriteDetail("Deleting old patch file if it exists");
+            Logger.WriteDebug("Deleting old patch file if it exists");
             string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
             // Generate a script to generate the mpq file
-            Logger.WriteDetail("Generating script to generate MPQ file");
+            Logger.WriteDebug("Generating script to generate MPQ file");
             string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(mpqReadyFolder) == false)
                 throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
@@ -1001,7 +1001,7 @@ namespace EQWOWConverter
                 mpqNewScriptFile.WriteLine(mpqCreateScriptText.ToString());
 
             // Generate the new MPQ using the script
-            Logger.WriteDetail("Generating MPQ file");
+            Logger.WriteDebug("Generating MPQ file");
             string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
                 throw new Exception("Failed to generate MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
@@ -1013,7 +1013,7 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDetail("Building patch MPQ complete");
+            Logger.WriteDebug("Building patch MPQ complete");
         }
 
         public void UpdatePatchMPQ()
@@ -1027,7 +1027,7 @@ namespace EQWOWConverter
             }
 
             // Generate a script to update the new MPQ
-            Logger.WriteDetail("Generating script to update the MPQ file");
+            Logger.WriteDebug("Generating script to update the MPQ file");
             string mpqReadyFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             if (Directory.Exists(mpqReadyFolder) == false)
                 throw new Exception("There was no MPQReady folder inside of '" + Configuration.PATH_EXPORT_FOLDER + "'");
@@ -1153,7 +1153,7 @@ namespace EQWOWConverter
                 mpqUpdateScriptFile.WriteLine(mpqUpdateScriptText.ToString());
 
             // Update the MPQ using the script
-            Logger.WriteDetail("Updating MPQ file");
+            Logger.WriteDebug("Updating MPQ file");
             string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
             if (File.Exists(mpqEditorFullPath) == false)
                 throw new Exception("Failed to update MPQ file. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
@@ -1165,7 +1165,7 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            Logger.WriteDetail("Building patch MPQ complete");
+            Logger.WriteDebug("Building patch MPQ complete");
         }
 
         public void DeployClient()
@@ -1192,7 +1192,7 @@ namespace EQWOWConverter
                 {
                     Logger.WriteError("Failed to delete the file at '" + targetPatchFileNameAndPath + "', it may be in use (client running, open in MPQ editor, etc)");
                     if (ex.StackTrace != null)
-                        Logger.WriteDetail(ex.StackTrace.ToString());
+                        Logger.WriteDebug(ex.StackTrace.ToString());
                     Logger.WriteError("Deploying to client failed");
                     return;
                 }
@@ -1201,7 +1201,7 @@ namespace EQWOWConverter
             // Copy it
             File.Copy(sourcePatchFileNameAndPath, targetPatchFileNameAndPath, true);
 
-            Logger.WriteDetail("Deploying to client complete");
+            Logger.WriteDebug("Deploying to client complete");
         }
 
         public void ClearClientCache()
@@ -1212,14 +1212,14 @@ namespace EQWOWConverter
             string folderToDelete = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Cache", "WDB");
             if (Directory.Exists(folderToDelete) == true)
             {
-                Logger.WriteDetail("Client cache WDB folder found, so deleting...");
+                Logger.WriteDebug("Client cache WDB folder found, so deleting...");
                 Directory.Delete(folderToDelete, true);
-                Logger.WriteDetail("Client cache WDB deleted.");
+                Logger.WriteDebug("Client cache WDB deleted.");
             }
             else
-                Logger.WriteDetail("No client cache WDB folder detected");
+                Logger.WriteDebug("No client cache WDB folder detected");
 
-            Logger.WriteDetail("Clearing client cache complete");
+            Logger.WriteDebug("Clearing client cache complete");
         }
 
         public void DeployServerFiles()
@@ -1240,7 +1240,7 @@ namespace EQWOWConverter
             }
 
             // Deploy the DBC files
-            Logger.WriteDetail("Deploying DBC files to the server...");
+            Logger.WriteDebug("Deploying DBC files to the server...");
             string[] dbcFiles = Directory.GetFiles(sourceServerDBCFolder);
             foreach (string dbcFile in dbcFiles)
             {
@@ -1249,7 +1249,7 @@ namespace EQWOWConverter
             }
 
 
-            Logger.WriteDetail("Deploying files to server complete");
+            Logger.WriteDebug("Deploying files to server complete");
         }
         
         public void DeployServerSQL()
@@ -1307,11 +1307,11 @@ namespace EQWOWConverter
             {
                 Logger.WriteError("Error occurred when executing a script: '" + ex.Message + "'");
                 if (ex.StackTrace != null)
-                    Logger.WriteDetail(ex.StackTrace.ToString());
+                    Logger.WriteDebug(ex.StackTrace.ToString());
                 Logger.WriteError("Deploying sql to server failed.");
             }
 
-            Logger.WriteDetail("Deploying sql to server complete");
+            Logger.WriteDebug("Deploying sql to server complete");
         }
 
         public void CreateLoadingScreens()
@@ -1658,7 +1658,7 @@ namespace EQWOWConverter
                         if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
                         {
                             zonesAreLoaded = false;
-                            Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                            Logger.WriteDebug("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
                             break;
                         }
                     }
@@ -1775,7 +1775,7 @@ namespace EQWOWConverter
             zoneMusicDBC.SaveToDisk(dbcOutputClientFolder);
             zoneMusicDBC.SaveToDisk(dbcOutputServerFolder);
 
-            Logger.WriteDetail("Creating DBC Files complete");
+            Logger.WriteDebug("Creating DBC Files complete");
         }
 
         public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
@@ -2102,7 +2102,7 @@ namespace EQWOWConverter
                         if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
                         {
                             zonesAreLoaded = false;
-                            Logger.WriteDetail("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                            Logger.WriteDebug("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
                             break;
                         }
                     }
@@ -2120,7 +2120,7 @@ namespace EQWOWConverter
                     // Only add this transport lift if the zone is loaded
                     if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
                     {
-                        Logger.WriteDetail("Skipping transport lift since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
+                        Logger.WriteDebug("Skipping transport lift since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
                         continue;
                     }
                     int areaID = 0;
@@ -2140,7 +2140,7 @@ namespace EQWOWConverter
                     // Only add this transport lift if the zone is loaded
                     if (mapIDsByShortName.ContainsKey(transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()) == false)
                     {
-                        Logger.WriteDetail("Skipping transport lift trigger since zone '" + transportLiftTrigger.SpawnZoneShortName + "' isn't being converted");
+                        Logger.WriteDebug("Skipping transport lift trigger since zone '" + transportLiftTrigger.SpawnZoneShortName + "' isn't being converted");
                         continue;
                     }
                     int areaID = 0;
@@ -2196,7 +2196,7 @@ namespace EQWOWConverter
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
             string inputObjectTextureFolder)
         {
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
 
             // Create the folder to output
             string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.ShortName);
@@ -2216,7 +2216,7 @@ namespace EQWOWConverter
                         continue;
                     }
                     File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
-                    Logger.WriteDetail("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
+                    Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
                 }
             }
 
@@ -2233,7 +2233,7 @@ namespace EQWOWConverter
                         continue;
                     }
                     File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
-                    Logger.WriteDetail("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
+                    Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
                 }
             }
 
@@ -2250,16 +2250,16 @@ namespace EQWOWConverter
                 File.Copy(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath, true);
             }
 
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
         }
 
         public void ExportMusicForZone(Zone zone, string musicInputFolder, string wowExportPath)
         {
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
 
             if (zone.ZoneAreaMusics.Count == 0)
             {
-                Logger.WriteDetail("- [" + zone.ShortName + "]: No music found for this zone");
+                Logger.WriteDebug("- [" + zone.ShortName + "]: No music found for this zone");
                 return;
             }
 
@@ -2279,14 +2279,14 @@ namespace EQWOWConverter
                     continue;
                 }
                 File.Copy(sourceFullPath, targetFullPath, true);
-                Logger.WriteDetail("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
+                Logger.WriteDebug("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
         }
 
         public void ExportAmbientSoundForZone(Zone zone, string soundInputFolder, string wowExportPath)
         {
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Exporting ambient sound for zone '" + zone.ShortName + "'...");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting ambient sound for zone '" + zone.ShortName + "'...");
 
             // Create the folder to output
             string zoneOutputAmbienceFolder = Path.Combine(wowExportPath, "Sound", "Ambience", "Everquest");
@@ -2299,7 +2299,7 @@ namespace EQWOWConverter
                 // Skip the sound file for silence
                 if (ambientSoundByFileName.Key.ToUpper() == "SILENCE")
                 {
-                    Logger.WriteDetail("Skipping sound file named '" + ambientSoundByFileName + "' since it is just silence");
+                    Logger.WriteDebug("Skipping sound file named '" + ambientSoundByFileName + "' since it is just silence");
                     continue;
                 }
                 string sourceFullPath = Path.Combine(soundInputFolder, ambientSoundByFileName.Value.AudioFileNameNoExt + ".wav");
@@ -2310,7 +2310,7 @@ namespace EQWOWConverter
                     continue;
                 }
                 File.Copy(sourceFullPath, targetFullPath, true);
-                Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
+                Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
             foreach (SoundInstance soundInstance in zone.SoundInstances)
             {
@@ -2327,16 +2327,16 @@ namespace EQWOWConverter
                         continue;
                     }
                     File.Copy(sourceFullPath, targetFullPath, true);
-                    Logger.WriteDetail("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
+                    Logger.WriteDebug("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
                 }
             }
 
-            Logger.WriteDetail("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
+            Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
         }
 
         public void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
         {
-            Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
+            Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
 
             // Go through every texture and copy it
             foreach(ObjectModelTexture texture in wowObjectModelData.ModelTextures)
@@ -2349,10 +2349,10 @@ namespace EQWOWConverter
                     return;
                 }
                 File.Copy(inputTextureName, outputTextureName, true);
-                Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }
 
-            Logger.WriteDetail("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
+            Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Texture output for object '" + wowObjectModelData.Name + "' complete");
         }
 
         public void CopyIconFiles()

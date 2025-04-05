@@ -44,7 +44,7 @@ namespace EQWOWConverter.Items
         {
             // Populate the loot tables
             string itemLootTablesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootTables.csv");
-            Logger.WriteDetail("Populating Item Loot Tables via file '" + itemLootTablesFileName + "'");
+            Logger.WriteDebug("Populating Item Loot Tables via file '" + itemLootTablesFileName + "'");
             List<string> lootTableInputRows = FileTool.ReadAllStringLinesFromFile(itemLootTablesFileName, true, true);
             foreach (string row in lootTableInputRows)
             {
@@ -70,7 +70,7 @@ namespace EQWOWConverter.Items
 
             // Populate the entries, and map them to loot tables
             string itemLootTableEntriesFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemLootTableEntries.csv");
-            Logger.WriteDetail("Populating Item Loot Table Entries via file '" + itemLootTableEntriesFileName + "'");
+            Logger.WriteDebug("Populating Item Loot Table Entries via file '" + itemLootTableEntriesFileName + "'");
             List<string> lootTableEntryInputRows = FileTool.ReadAllStringLinesFromFile(itemLootTableEntriesFileName, true, true);
             foreach (string row in lootTableEntryInputRows)
             {
@@ -89,7 +89,7 @@ namespace EQWOWConverter.Items
                 // Map it to a table
                 if (ItemLootTablesByEQID.ContainsKey(curLootTableEntry.LootTableID) == false)
                 {
-                    Logger.WriteDetail("LootTableEntry could not find a valid LootTable with ID '" + curLootTableEntry.LootTableID + "', which probably means it is for a different expansion");
+                    Logger.WriteDebug("LootTableEntry could not find a valid LootTable with ID '" + curLootTableEntry.LootTableID + "', which probably means it is for a different expansion");
                     continue;
                 }
                 else

@@ -29,7 +29,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Light Instances Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Light Instances Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find light instances file that should be at '" + fileFullPath + "'");
@@ -68,7 +68,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            Logger.WriteDetail(" - Done reading EQ Light Instances from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Light Instances from '" + fileFullPath + "'");
             return true;
         }
     }

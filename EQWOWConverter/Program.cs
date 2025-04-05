@@ -143,7 +143,7 @@ internal class Program
                 {
                     Logger.WriteError("Exception Occurred: " + ex.Message);
                     if (ex.StackTrace != null)
-                        Logger.WriteDetail(ex.StackTrace);
+                        Logger.WriteDebug(ex.StackTrace);
                 }
             }
         }

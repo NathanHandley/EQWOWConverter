@@ -233,12 +233,12 @@ namespace EQWOWConverter.WOWFiles
 
         public void LoadFromDisk(string fileFolder, string fileName)
         {
-            Logger.WriteDetail("Loading dbc '" + fileName + "' started...");
+            Logger.WriteDebug("Loading dbc '" + fileName + "' started...");
 
             // Clear data if already loaded
             if (IsLoaded == true)
             {
-                Logger.WriteDetail("DBC file was already loaded, so unloading first");
+                Logger.WriteDebug("DBC file was already loaded, so unloading first");
                 DBCHeader header = new DBCHeader();
                 Rows.Clear();
                 StringBlock.Clear();
@@ -278,7 +278,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Done loading
             IsLoaded = true;
-            Logger.WriteDetail("Loading dbc '" + fileName + "' completed");
+            Logger.WriteDebug("Loading dbc '" + fileName + "' completed");
 
             // Call post load event for hooks later
             OnPostLoadDataFromDisk();
@@ -286,7 +286,7 @@ namespace EQWOWConverter.WOWFiles
 
         public void SaveToDisk(string fileFolder)
         {
-            Logger.WriteDetail("Saving dbc at '" + FileName + "' started...");
+            Logger.WriteDebug("Saving dbc at '" + FileName + "' started...");
 
             // Don't try to save files not loaded
             if (IsLoaded == false)
@@ -300,7 +300,7 @@ namespace EQWOWConverter.WOWFiles
             if (File.Exists(fullFilePath))
             {
                 File.Delete(fullFilePath);
-                Logger.WriteDetail("File already exists, so deleting");
+                Logger.WriteDebug("File already exists, so deleting");
             }
 
             // Build the output file payload
@@ -383,7 +383,7 @@ namespace EQWOWConverter.WOWFiles
             // Write it
             File.WriteAllBytes(fullFilePath, outputBytes.ToArray());
 
-            Logger.WriteDetail("Saving dbc at '" + FileName + "' completed");
+            Logger.WriteDebug("Saving dbc at '" + FileName + "' completed");
         }
 
         private int PutStringInStringBlockAndGetOffset(string stringToInsert)

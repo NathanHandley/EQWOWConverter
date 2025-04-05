@@ -29,7 +29,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading 2D Sound Instances Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading 2D Sound Instances Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find 2D Sound Instances file that should be at '" + fileFullPath + "'");
@@ -76,7 +76,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            Logger.WriteDetail(" - Done reading 2D Sound Instances from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading 2D Sound Instances from '" + fileFullPath + "'");
             return true;
         }
     }

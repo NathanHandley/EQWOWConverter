@@ -24,7 +24,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find EQ Animation file that should be at '" + fileFullPath + "'");
@@ -97,7 +97,7 @@ namespace EQWOWConverter.EQFiles
                 Animation.AnimationFrames.Add(animationFrame);
             }
 
-            Logger.WriteDetail(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
             return true;
         }
 

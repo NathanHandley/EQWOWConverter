@@ -59,7 +59,7 @@ namespace EQWOWConverter.Spells
 
             // Read in the spell list
             string classTrainerSpellsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellClassTrainerSpells.csv");
-            Logger.WriteDetail("Populating class trainer spells via file '" + classTrainerSpellsFileName + "'");
+            Logger.WriteDebug("Populating class trainer spells via file '" + classTrainerSpellsFileName + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(classTrainerSpellsFileName, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

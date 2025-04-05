@@ -52,7 +52,7 @@ namespace EQWOWConverter.Transports
         {
             // Load all of transport lift triggers
             string transportLiftTriggersFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TransportLiftTriggers.csv");
-            Logger.WriteDetail("Populating Transport Lift Triggers list via file '" + transportLiftTriggersFile + "'");
+            Logger.WriteDebug("Populating Transport Lift Triggers list via file '" + transportLiftTriggersFile + "'");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(transportLiftTriggersFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {

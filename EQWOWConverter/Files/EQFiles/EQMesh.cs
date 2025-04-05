@@ -33,7 +33,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Mesh Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Mesh Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find mesh file that should be at '" + fileFullPath + "'");
@@ -294,7 +294,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            Logger.WriteDetail(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Mesh Data from '" + fileFullPath + "'");
             return true;
         }
     }

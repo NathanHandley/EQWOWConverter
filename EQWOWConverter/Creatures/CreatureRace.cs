@@ -141,7 +141,7 @@ namespace EQWOWConverter.Creatures
 
             // Load in base race data
             string raceDataFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureRaces.csv");
-            Logger.WriteDetail("Populating CreatureRace list via file '" + raceDataFileName + "'");
+            Logger.WriteDebug("Populating CreatureRace list via file '" + raceDataFileName + "'");
             string inputData = FileTool.ReadAllDataFromFile(raceDataFileName);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)

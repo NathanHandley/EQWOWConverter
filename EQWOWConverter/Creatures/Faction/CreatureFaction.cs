@@ -97,7 +97,7 @@ namespace EQWOWConverter.Creatures
                 return CreatureWOWFactionTemplateIDByEQFactionID[eqFactionID];
             else
             {
-                Logger.WriteDetail("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
+                Logger.WriteDebug("Creature Faction - No wow faction template ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
                 return Configuration.CREATURE_FACTION_TEMPLATE_DEFAULT;
             }
         }
@@ -164,7 +164,7 @@ namespace EQWOWConverter.Creatures
         {
             // Load in the class alignments
             string factionClassAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionClassAlignment.csv");
-            Logger.WriteDetail("Populating creature faction class alignments via file '" + factionClassAlignmentFile + "'");
+            Logger.WriteDebug("Populating creature faction class alignments via file '" + factionClassAlignmentFile + "'");
             List<Dictionary<string, string>> classAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionClassAlignmentFile, "|");
             HashSet<ClassType> evilClasses = new HashSet<ClassType>();
             HashSet<ClassType> goodClasses = new HashSet<ClassType>();
@@ -200,7 +200,7 @@ namespace EQWOWConverter.Creatures
 
             // Load in the race alignments
             string factionRaceAlignmentFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionRaceAlignment.csv");
-            Logger.WriteDetail("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
+            Logger.WriteDebug("Populating creature faction race alignments via file '" + factionRaceAlignmentFile + "'");
             List<Dictionary<string, string>> raceAlignmentRows = FileTool.ReadAllRowsFromFileWithHeader(factionRaceAlignmentFile, "|");
             HashSet<RaceType> evilRaces = new HashSet<RaceType>();
             HashSet<RaceType> goodRaces = new HashSet<RaceType>();
@@ -234,7 +234,7 @@ namespace EQWOWConverter.Creatures
 
             // Load in faction list
             string factionListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactions.csv");
-            Logger.WriteDetail("Populating creature factions via file '" + factionListFile + "'");
+            Logger.WriteDebug("Populating creature factions via file '" + factionListFile + "'");
             List<Dictionary<string, string>> listRows = FileTool.ReadAllRowsFromFileWithHeader(factionListFile, "|");
             foreach (Dictionary<string, string> columns in listRows)
             {
@@ -278,7 +278,7 @@ namespace EQWOWConverter.Creatures
 
             // Load the faction mappings
             string factionMapListFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionMap.csv");
-            Logger.WriteDetail("Populating creature factions map via file '" + factionMapListFile + "'");
+            Logger.WriteDebug("Populating creature factions map via file '" + factionMapListFile + "'");
             List<Dictionary<string, string>> mapRows = FileTool.ReadAllRowsFromFileWithHeader(factionMapListFile, "|");
             foreach (Dictionary<string, string> columns in mapRows)
             {
@@ -306,7 +306,7 @@ namespace EQWOWConverter.Creatures
 
             // Load in faction kill reward list
             string factionKillRewardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureFactionKillRewards.csv");
-            Logger.WriteDetail("Populating creature faction kill rewards via file '" + factionKillRewardFile + "'");
+            Logger.WriteDebug("Populating creature faction kill rewards via file '" + factionKillRewardFile + "'");
             List<Dictionary<string, string>> factionKillRewardRows = FileTool.ReadAllRowsFromFileWithHeader(factionKillRewardFile, "|");
             foreach (Dictionary<string, string> columns in factionKillRewardRows)
             {

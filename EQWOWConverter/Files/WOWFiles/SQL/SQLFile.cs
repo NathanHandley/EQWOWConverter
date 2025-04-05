@@ -111,7 +111,7 @@ namespace EQWOWConverter.WOWFiles
 
         public void SaveToDisk(string tableName, SQLFileType fileType)
         {
-            Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' started...");
+            Logger.WriteDebug("Saving SQL Scripts for '" + tableName + "' started...");
 
             // Determine the path and create the folder if needed
             string outputFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "SQLScripts", fileType.ToString());
@@ -176,7 +176,7 @@ namespace EQWOWConverter.WOWFiles
                 File.WriteAllText(fullFilePath, stringBuilder.ToString());
             }
 
-            Logger.WriteDetail("Saving SQL Scripts for '" + tableName + "' completed");
+            Logger.WriteDebug("Saving SQL Scripts for '" + tableName + "' completed");
         }
 
         private string GenerateFieldsSegment()

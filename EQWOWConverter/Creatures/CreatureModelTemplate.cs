@@ -109,7 +109,7 @@ namespace EQWOWConverter.Creatures
         public void CreateModelFiles()
         {
             string objectName = Race.Name + " " + GenerateFileName();
-            Logger.WriteDetail("For creature template '" + objectName + "', creating the object files");
+            Logger.WriteDebug("For creature template '" + objectName + "', creating the object files");
 
             // Get the skeleton name
             string skeletonName = Race.SkeletonName;
@@ -117,7 +117,7 @@ namespace EQWOWConverter.Creatures
             // Only operate if there is a skeleton name
             if (skeletonName.Trim().Length == 0)
             {
-                Logger.WriteDetail("Skipping creature template due to no skeleton name");
+                Logger.WriteDebug("Skipping creature template due to no skeleton name");
                 return;
             }
 
@@ -174,12 +174,12 @@ namespace EQWOWConverter.Creatures
                 if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
                 {
                     File.Copy(inputTextureNameInCharTextureFolder, outputTextureName, true);
-                    Logger.WriteDetail("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
                 }
                 else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
                 {
                     File.Copy(inputTextureNameInGeneratedTextureFolder, outputTextureName, true);
-                    Logger.WriteDetail("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
                 }
                 else
                 {
@@ -188,7 +188,7 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
-            Logger.WriteDetail("For creature template '" + objectName + "', completed creating the object files");
+            Logger.WriteDebug("For creature template '" + objectName + "', completed creating the object files");
         }
 
         public string GenerateFileName()

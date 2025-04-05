@@ -29,7 +29,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Object Instances Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Object Instances Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find object instances file that should be at '" + fileFullPath + "'");
@@ -75,7 +75,7 @@ namespace EQWOWConverter.EQFiles
                 }
             }
 
-            Logger.WriteDetail(" - Done reading EQ Object Instances from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Object Instances from '" + fileFullPath + "'");
             return true;
         }
     }

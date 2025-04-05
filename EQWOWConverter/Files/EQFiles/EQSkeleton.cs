@@ -72,7 +72,7 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDetail(" - Reading EQ Skeleton Data from '" + fileFullPath + "'...");
+            Logger.WriteDebug(" - Reading EQ Skeleton Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
                 Logger.WriteError("- Could not find EQ Skeleton file that should be at '" + fileFullPath + "'");
@@ -140,7 +140,7 @@ namespace EQWOWConverter.EQFiles
                 BoneStructures.Add(boneStruct);
             }
 
-            Logger.WriteDetail(" - Done reading EQ Skeleton Data from '" + fileFullPath + "'");
+            Logger.WriteDebug(" - Done reading EQ Skeleton Data from '" + fileFullPath + "'");
             return true;
         }
     }

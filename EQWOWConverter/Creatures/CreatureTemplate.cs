@@ -86,7 +86,7 @@ namespace EQWOWConverter.Creatures
 
             // Load all of the creature data
             string creatureTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
-            Logger.WriteDetail("Populating Creature Template list via file '" + creatureTemplatesFile + "'");           
+            Logger.WriteDebug("Populating Creature Template list via file '" + creatureTemplatesFile + "'");           
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureTemplatesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
@@ -103,14 +103,14 @@ namespace EQWOWConverter.Creatures
                 int raceID = int.Parse(columns["race"]);
                 if (raceID == 0)
                 {
-                    Logger.WriteDetail("Creature template had race of 0, so falling back to 1 (Human)");
+                    Logger.WriteDebug("Creature template had race of 0, so falling back to 1 (Human)");
                     raceID = 1;
                 }
                 newCreatureTemplate.EQBodyType = int.Parse(columns["bodytype"]);
                 newCreatureTemplate.Size = float.Parse(columns["size"]);
                 if (newCreatureTemplate.Size <= 0)
                 {
-                    Logger.WriteDetail("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
+                    Logger.WriteDebug("CreatureTemplate with size of zero or less detected with name '" + newCreatureTemplate.Name + "', so setting to 1");
                     newCreatureTemplate.Size = 1;
                 }
                 int genderID = int.Parse(columns["gender"]);
@@ -125,7 +125,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.FaceID = int.Parse(columns["face"]);
                 if (newCreatureTemplate.FaceID > 9)
                 {
-                    Logger.WriteDetail("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
+                    Logger.WriteDebug("CreatureTemplate with face ID greater than 9 detected, so setting to 0");
                     newCreatureTemplate.FaceID = 0;
                 }
                 newCreatureTemplate.EQLootTableID = int.Parse(columns["loottable_id"]);
@@ -175,7 +175,7 @@ namespace EQWOWConverter.Creatures
                     // Make sure there's a skeleton
                     if (race.SkeletonName.Trim().Length == 0)
                     {
-                        Logger.WriteDetail("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + raceID + "' has no skeletons, so skipping");
+                        Logger.WriteDebug("Creature Template with name '" + newCreatureTemplate.Name + "' with race ID of '" + raceID + "' has no skeletons, so skipping");
                         continue;
                     }
                     newCreatureTemplate.Race = race;
@@ -298,7 +298,7 @@ namespace EQWOWConverter.Creatures
         private static void PopulateStatBaselinesByLevel()
         {
             string creatureStatBaselineFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureStatBaselines.csv");
-            Logger.WriteDetail("Populating Creature Stat Baselines list via file '" + creatureStatBaselineFile + "'");
+            Logger.WriteDebug("Populating Creature Stat Baselines list via file '" + creatureStatBaselineFile + "'");
             List<string> creatureStatBaselineRows = FileTool.ReadAllStringLinesFromFile(creatureStatBaselineFile, true, true);
             foreach (string row in creatureStatBaselineRows)
             {

@@ -92,7 +92,7 @@ namespace EQWOWConverter
                 // If it's the character, music, equipment, or sound folder then copy it as-is
                 if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
                 {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
+                    Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
                     string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
                     FileTool.CopyDirectoryAndContents(tempFolderRoot, outputFolder, true, true);
                     continue;
@@ -101,7 +101,7 @@ namespace EQWOWConverter
                 // If it's a bmpwad (contains misc images) then copy that into the miscimages folder
                 if (topDirectoryFolderNameOnly.StartsWith("bmpwad"))
                 {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
+                    Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects, and resizing loading screens");
                     string outputMiscImagesFolder = Path.Combine(eqExportsCondensedPath, "miscimages");
                     FileTool.CopyDirectoryAndContents(tempFolderRoot, outputMiscImagesFolder, false, true);
 
@@ -201,21 +201,21 @@ namespace EQWOWConverter
                 // Copy files that were missing in the original folders for some reason
                 if (topDirectoryFolderNameOnly == "fearplane")
                 {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
+                    Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "maywall.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "maywall.png");
                     File.Copy(inputFileName, outputFileName, true);
                 }
                 else if (topDirectoryFolderNameOnly == "oasis")
                 {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
+                    Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "canwall1.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "canwall1.png");
                     File.Copy(inputFileName, outputFileName, true);
                 }
                 else if (topDirectoryFolderNameOnly == "swampofnohope")
                 {
-                    Logger.WriteDetail("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
+                    Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "kruphse3.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "kruphse3.png");
                     File.Copy(inputFileName, outputFileName, true);
@@ -318,7 +318,7 @@ namespace EQWOWConverter
                         // Resize if it's too small
                         if (imageHeight < 8 || imageWidth < 8)
                         {
-                            Logger.WriteDetail("Expanding texture at '" + textureFullPath + "' which has a height of '" + imageHeight + "' and width of '" + imageWidth + "'");
+                            Logger.WriteDebug("Expanding texture at '" + textureFullPath + "' which has a height of '" + imageHeight + "' and width of '" + imageWidth + "'");
                             if (imageHeight < 8)
                                 imageHeight = 8;
                             if (imageWidth < 8)
@@ -356,7 +356,7 @@ namespace EQWOWConverter
                 foreach (string customTexture in customTextures)
                 {
                     string targetFileName = Path.Combine(charactersDirectory, "Textures", Path.GetFileName(customTexture));
-                    Logger.WriteDetail("Replacing or placing character object texture '" + customTexture + "'");
+                    Logger.WriteDebug("Replacing or placing character object texture '" + customTexture + "'");
                     File.Copy(customTexture, targetFileName, true);
                 }
                 Logger.WriteInfo("Character custom texture replacements complete");
@@ -375,7 +375,7 @@ namespace EQWOWConverter
                 foreach (string customTexture in customTextures)
                 {
                     string targetFileName = Path.Combine(objectsDirectory, "textures", Path.GetFileName(customTexture));
-                    Logger.WriteDetail("Replacing or placing custom object texture '" + customTexture + "'");
+                    Logger.WriteDebug("Replacing or placing custom object texture '" + customTexture + "'");
                     File.Copy(customTexture, targetFileName, true);
                 }
                 Logger.WriteInfo("Object custom texture replacements complete");
@@ -405,7 +405,7 @@ namespace EQWOWConverter
                 File.Delete(priorCreatedMusicFile);
 
             string[] musicXMIFiles = Directory.GetFiles(musicDirectory, "*.xmi");
-            Logger.WriteDetail("There are '" + musicXMIFiles.Count() + "' music .xmi files to process into .mid");
+            Logger.WriteDebug("There are '" + musicXMIFiles.Count() + "' music .xmi files to process into .mid");
 
             // Establish paths to tool files
             string ssplayerFileFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ssplayer", "ssplayer.exe");
@@ -442,7 +442,7 @@ namespace EQWOWConverter
             foreach (string musicXMIFile in musicXMIFiles)
             {
                 // Extract XMI into 1 or more .mid
-                Logger.WriteDetail("Extracting XMI file at '" + musicXMIFile + "'");
+                Logger.WriteDebug("Extracting XMI file at '" + musicXMIFile + "'");
                 string args = "-extractall \"" + musicXMIFile + "\"";
                 System.Diagnostics.Process process = new System.Diagnostics.Process();
                 process.StartInfo.RedirectStandardOutput = true;
@@ -450,17 +450,17 @@ namespace EQWOWConverter
                 process.StartInfo.FileName = ssplayerFileFullPath;
                 process.Start();
                 process.WaitForExit();
-                Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                Logger.WriteDebug(process.StandardOutput.ReadToEnd());
                 Console.Title = "EverQuest to WoW Converter";
 
                 // Go through each .mid to complete the conversion
                 string[] musicMidiFiles = Directory.GetFiles(musicDirectory, "*.mid");
-                Logger.WriteDetail("There are '" + musicMidiFiles.Count() + "' music .mid files created from '" + musicXMIFile + "'");
+                Logger.WriteDebug("There are '" + musicMidiFiles.Count() + "' music .mid files created from '" + musicXMIFile + "'");
                 foreach (string musicMidiFile in musicMidiFiles)
                 {
                     // Create the .wav
                     string tempWavFileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".wav");
-                    Logger.WriteDetail("Converting .mid file at '" + musicMidiFile + "' to .wav");
+                    Logger.WriteDebug("Converting .mid file at '" + musicMidiFile + "' to .wav");
                     args = "-F \"" + tempWavFileName + "\" -ni \"" + soundfontFileFullPath + "\" \"" + musicMidiFile + "\" -g " + Configuration.AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT.ToString();
                     process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
@@ -468,11 +468,11 @@ namespace EQWOWConverter
                     process.StartInfo.FileName = fluidsynthFileFullPath;
                     process.Start();
                     process.WaitForExit();
-                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
 
                     // Create the .mp3
                     string mp3FileName = Path.Combine(musicDirectory, Path.GetFileNameWithoutExtension(musicMidiFile) + ".mp3");
-                    Logger.WriteDetail("Converting .wav file at '" + tempWavFileName + "' to .mp3");
+                    Logger.WriteDebug("Converting .wav file at '" + tempWavFileName + "' to .mp3");
                     args = "-i \"" + tempWavFileName + "\" -acodec mp3 \"" + mp3FileName + "\" -hide_banner -loglevel error";
                     process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
@@ -480,7 +480,7 @@ namespace EQWOWConverter
                     process.StartInfo.FileName = ffmpegFileFullPath;
                     process.Start();
                     process.WaitForExit();
-                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
 
                     // Delete the temp files
                     File.Delete(musicMidiFile);
@@ -504,7 +504,7 @@ namespace EQWOWConverter
             }
 
             // Item Icons
-            Logger.WriteDetail("Creating item icons.");
+            Logger.WriteDebug("Creating item icons.");
             string itemIconsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
             try
             {
@@ -527,7 +527,7 @@ namespace EQWOWConverter
             }
 
             // Spell Icons
-            Logger.WriteDetail("Creating spell icons.");
+            Logger.WriteDebug("Creating spell icons.");
             string spellIconsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
             try
             {
@@ -634,7 +634,7 @@ namespace EQWOWConverter
                 string[] curFolderPNGFiles = Directory.GetFiles(folderToProcess, "*.png");
                 foreach(string curPngFile in curFolderPNGFiles)
                 {
-                    Logger.WriteDetail("Adding file '" + curPngFile + "' for conversion");
+                    Logger.WriteDebug("Adding file '" + curPngFile + "' for conversion");
                     pngFilesToConvert.Add(curPngFile);
                 }
             }
@@ -656,7 +656,7 @@ namespace EQWOWConverter
                 curFileArgListSB.Append("\"");
                 if (i != 0 && i % Configuration.GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
                 {
-                    Logger.WriteDetail("Converting png files '" + curFileArgListSB.ToString() + "'");
+                    Logger.WriteDebug("Converting png files '" + curFileArgListSB.ToString() + "'");
                     string args = "/M /FBLP_DXT5 " + curFileArgListSB.ToString();
                     System.Diagnostics.Process process = new System.Diagnostics.Process();
                     process.StartInfo.RedirectStandardOutput = true;
@@ -664,7 +664,7 @@ namespace EQWOWConverter
                     process.StartInfo.FileName = blpConverterFullPath;
                     process.Start();
                     //process.WaitForExit();
-                    Logger.WriteDetail(process.StandardOutput.ReadToEnd());
+                    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
                     Console.Title = "EverQuest to WoW Converter";
                     curFileArgListSB.Clear();
 
@@ -773,7 +773,7 @@ namespace EQWOWConverter
                             if (generatedID > 0)
                             {
                                 textureNameNoExt = textureNameNoExt + "alt" + generatedID.ToString();
-                                Logger.WriteDetail("- [" + topDirectory + "] Texture collision occurred so renaming '" + workingTextureBlocks[j] + "' to '" + textureNameNoExt + "' for MaterialList '" + materialListFullPath + "'");
+                                Logger.WriteDebug("- [" + topDirectory + "] Texture collision occurred so renaming '" + workingTextureBlocks[j] + "' to '" + textureNameNoExt + "' for MaterialList '" + materialListFullPath + "'");
                                 workingTextureBlocks[j] = textureNameNoExt;
                             }
 
@@ -901,7 +901,7 @@ namespace EQWOWConverter
             {
                 string tempObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
                 if (File.Exists(tempObjectInstancesFile) == false)
-                    Logger.WriteDetail("- [" + topDirectory + "] No object_instances file to update");
+                    Logger.WriteDebug("- [" + topDirectory + "] No object_instances file to update");
                 else
                 {
                     EQObjectInstances eqObjectInstances = new EQObjectInstances();
@@ -924,7 +924,7 @@ namespace EQWOWConverter
                             if (fileText.Contains(objectName + ","))
                             {
                                 string newObjectMeshFileNameNoExtension = Path.GetFileNameWithoutExtension(revisedObjectName);
-                                Logger.WriteDetail("- [" + topDirectory + "] Zone object_instances file '" + tempObjectInstancesFile + "' contained mesh '" + objectName + "' which was renamed to '" + revisedObjectName + "'. Updating object_instances file...");
+                                Logger.WriteDebug("- [" + topDirectory + "] Zone object_instances file '" + tempObjectInstancesFile + "' contained mesh '" + objectName + "' which was renamed to '" + revisedObjectName + "'. Updating object_instances file...");
                                 fileText = fileText.Replace(objectName + ",", newObjectMeshFileNameNoExtension + ",");
                                 File.WriteAllText(tempObjectInstancesFile, fileText);
                             }

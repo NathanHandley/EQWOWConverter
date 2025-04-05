@@ -686,7 +686,7 @@ namespace EQWOWConverter.ObjectModels
 
         public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
         {
-            Logger.WriteDetail("Seeking animation to build to wow type '" + animationType.ToString() + "' for object '" + Name + "'");
+            Logger.WriteDebug("Seeking animation to build to wow type '" + animationType.ToString() + "' for object '" + Name + "'");
 
             // Determine what animations can work
             List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
@@ -702,7 +702,7 @@ namespace EQWOWConverter.ObjectModels
                     if (animation.Value.EQAnimationType == compatibleAnimationType)
                     {
                         // Capture and set this animation
-                        Logger.WriteDetail("Found usable candidate, setting to eq type '" + animation.Key + "' for object '" + Name + "'");
+                        Logger.WriteDebug("Found usable candidate, setting to eq type '" + animation.Key + "' for object '" + Name + "'");
 
                         // Create the base animation object
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
@@ -733,7 +733,7 @@ namespace EQWOWConverter.ObjectModels
                             Animation.BoneAnimationFrame animationFrame = animationFrame = animation.Value.AnimationFrames[i];
                             if (DoesBoneExistForName(animationFrame.GetBoneName()) == false)
                             {
-                                Logger.WriteDetail("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
+                                Logger.WriteDebug("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
                                 continue;
                             }
                             
@@ -795,7 +795,7 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            Logger.WriteDetail("No animation candidate was found for object '" + Name + "'");
+            Logger.WriteDebug("No animation candidate was found for object '" + Name + "'");
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
@@ -1441,7 +1441,7 @@ namespace EQWOWConverter.ObjectModels
                     }
                     if (materialFound == false)
                     {
-                        Logger.WriteDetail("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
+                        Logger.WriteDebug("Attempted to build collision data for object '" + Name + "', but could not find material with ID '" + face.MaterialIndex + "'");
                         continue;
                     }
                     if (curMaterial.HasTransparency() == true)

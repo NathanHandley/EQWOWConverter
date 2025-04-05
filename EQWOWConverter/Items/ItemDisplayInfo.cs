@@ -27,7 +27,6 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, ObjectModel> ObjectModelsByEQItemDisplayFileName = new Dictionary<string, ObjectModel>();
         private static Dictionary<string, string> staticFileNamesByCommonName = new Dictionary<string, string>();
         private static Dictionary<string, string> skeletalFileNamesByCommonName = new Dictionary<string, string>();
-        private static Dictionary<int, List<Int64>> GeneratedRobesByIDThenColor = new Dictionary<int, List<Int64>>();
         private static bool IsFirstCreate = true;
 
         private static Dictionary<string, List<Int64>> GeneratedArmorPartBySourceNameThenColorID = new Dictionary<string, List<long>>();
@@ -282,7 +281,7 @@ namespace EQWOWConverter.Items
             string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
             if (staticFileNamesByCommonName.Count == 0)
             {
-                Logger.WriteDetail("Loading equipment actors_static.txt...");
+                Logger.WriteDebug("Loading equipment actors_static.txt...");
                 string staticListFileName = Path.Combine(equipmentSourceBasePath, "actors_static.txt");
                 foreach (string line in FileTool.ReadAllStringLinesFromFile(staticListFileName, false, true))
                 {
@@ -294,7 +293,7 @@ namespace EQWOWConverter.Items
             }
             if (skeletalFileNamesByCommonName.Count == 0)
             {
-                Logger.WriteDetail("Loading equipment actors_skeletal.txt...");
+                Logger.WriteDebug("Loading equipment actors_skeletal.txt...");
                 string skeletalListFileName = Path.Combine(equipmentSourceBasePath, "actors_skeletal.txt");
                 foreach (string line in FileTool.ReadAllStringLinesFromFile(skeletalListFileName, false, true))
                 {
@@ -314,7 +313,7 @@ namespace EQWOWConverter.Items
                 return ObjectModelsByEQItemDisplayFileName[itemDisplayCommonName];
             else
             {
-                Logger.WriteDetail("Creating equipment model object for '" + itemDisplayCommonName + "'...");
+                Logger.WriteDebug("Creating equipment model object for '" + itemDisplayCommonName + "'...");
 
                 // Fallback the name if it's not known, or it's not a held type
                 string eqAssetFileName = "it63"; // Fallback/default

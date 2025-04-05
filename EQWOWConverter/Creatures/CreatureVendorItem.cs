@@ -42,7 +42,7 @@ namespace EQWOWConverter.Creatures
         private static void PopulateCreatureVendorItems()
         {
             string creatureVendorItemsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
-            Logger.WriteDetail("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
+            Logger.WriteDebug("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
             string inputData = FileTool.ReadAllDataFromFile(creatureVendorItemsFile);
             string[] inputRows = inputData.Split(Environment.NewLine);
             if (inputRows.Length < 2)

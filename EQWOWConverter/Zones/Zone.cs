@@ -341,7 +341,7 @@ namespace EQWOWConverter.Zones
                 // Skip any invalid instances
                 if (ObjectModel.StaticObjectModelsByName.ContainsKey(objectInstance.ModelName) == false)
                 {
-                    Logger.WriteDetail("WARNING (or maybe Error): Could not generate doodad instance since model '" + objectInstance.ModelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
+                    Logger.WriteDebug("WARNING (or maybe Error): Could not generate doodad instance since model '" + objectInstance.ModelName + "' does not exist.  Either is was missing on export, or you need to generate objects");
                     continue;
                 }
 
@@ -422,12 +422,12 @@ namespace EQWOWConverter.Zones
             // Determine if preset collision mesh data should be used, or if the render data should be used to generate it
             if (collisionMeshData.Vertices.Count == 0 || collisionMeshData.TriangleFaces.Count == 0)
             {
-                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from rendermesh");
+                Logger.WriteDebug("For zone '" + ShortName + "', collision is generated from rendermesh");
                 collisionMeshData = new MeshData(renderMeshData);
             }
             else
             {
-                Logger.WriteDetail("For zone '" + ShortName + "', collision is generated from defined collision mesh");
+                Logger.WriteDebug("For zone '" + ShortName + "', collision is generated from defined collision mesh");
                 if (collisionMeshData.Normals.Count == 0)
                     for (int i = 0; i < collisionMeshData.Vertices.Count; i++)
                         collisionMeshData.Normals.Add(new Vector3(0, 0, 0));
@@ -856,9 +856,9 @@ namespace EQWOWConverter.Zones
             foreach (SoundInstance soundInstance3D in EQZoneData.Sound3DInstances)
             {
                 if (soundInstance3D.SoundFileNameDayNoExt.Trim() == string.Empty)
-                    Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
+                    Logger.WriteDebug("For zone '" + ShortName + "', skipping 3D sound instance which has no file name for the day sound");
                 else if (soundInstance3D.SoundFileNameDayNoExt != soundInstance3D.SoundFileNameNightNoExt)
-                    Logger.WriteDetail("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
+                    Logger.WriteDebug("For zone '" + ShortName + "', skipping 3D sound instance which has mismatched day and night of '" + soundInstance3D.SoundFileNameDayNoExt + "' and '" + soundInstance3D.SoundFileNameNightNoExt + "'");
                 else
                     ProcessSoundInstance(soundInstance3D);
             }
