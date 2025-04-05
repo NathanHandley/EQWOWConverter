@@ -22,7 +22,6 @@ namespace EQWOWConverter.Items
     {
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
-        private static int CURRENT_SQL_ITEMTEMPLATEENTRYID = Configuration.SQL_ITEM_TEMPLATE_ENTRY_START;
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -59,8 +58,7 @@ namespace EQWOWConverter.Items
 
         public ItemTemplate()
         {
-            WOWEntryID = CURRENT_SQL_ITEMTEMPLATEENTRYID;
-            CURRENT_SQL_ITEMTEMPLATEENTRYID++;
+
         }
 
         public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
@@ -1059,6 +1057,7 @@ namespace EQWOWConverter.Items
                 // Load the row
                 ItemTemplate newItemTemplate = new ItemTemplate();
                 newItemTemplate.EQItemID = int.Parse(columns["id"]);
+                newItemTemplate.WOWEntryID = int.Parse(columns["wowid"]);
                 newItemTemplate.Name = columns["Name"];
 
                 // Icon information
