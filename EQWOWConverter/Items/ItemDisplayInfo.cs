@@ -183,11 +183,30 @@ namespace EQWOWConverter.Items
             // Armor
             else if (IsVisableArmor(inventoryType) == true && (materialTypeID <= 4 || materialTypeID == 7 || (materialTypeID >= 17 && materialTypeID <= 23)))
             {
-                int armorID = materialTypeID + 1; // <= 4
+                int armorID = materialTypeID + 1;
                 if (materialTypeID == 7)
-                    armorID = 3; // TODO: Confirm if this is right. Fungis Covered Scale Tunic is a 7, for example
+                    armorID = 3; // Kunark Chain => Classic Chain
                 else if (materialTypeID >= 17)
-                    armorID = materialTypeID - 11;         
+                {
+                    // Set it 1:1 for velious or higher
+                    if (Configuration.GENERATE_EQ_EXPANSION_ID >= 2)
+                        armorID = materialTypeID - 11;
+                    // Otherwise, remap any graphics to classic counterparts
+                    else
+                    {
+                        switch (materialTypeID)
+                        {
+                            case 17: armorID = 2; break; // Velious Leather => Classic Leather
+                            case 18: armorID = 3; break; // Velious Chain => Classic Chain
+                            case 19: armorID = 4; break; // Velious Plate => Classic Plate
+                            case 20: armorID = 2; break; // Velious Leather 2 => Classic Leather
+                            case 21: armorID = 3; break; // Velious Chain 2 => Classic Chain
+                            case 22: armorID = 4; break; // Velious Plate 2 => Classic Plate
+                            case 23: armorID = 5; break; // Velious Monk => Classic Monk
+                            default: armorID = 1; break; // Default to cloth
+                        }
+                    }
+                }
                 string armorIDString;
                 if (armorID < 10)
                     armorIDString = "0" + armorID.ToString();
