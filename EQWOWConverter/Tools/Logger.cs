@@ -61,6 +61,9 @@ namespace EQWOWConverter
 
         public static void WriteDebug(string text)
         {
+            if (Configuration.LOGGING_CONSOLE_MIN_LEVEL < 3 && Configuration.LOGGING_FILE_MIN_LEVEL < 3)
+                return;
+
             lock (writeLock)
             {
                 string outputLine = "[.] Detail| " + text;

@@ -30,7 +30,7 @@ namespace EQWOWConverter
         // Level of logs to write to the console and log file.
         // 1 = Error, 2 = Info, 3 = Debug
         public static readonly int LOGGING_CONSOLE_MIN_LEVEL = 2;
-        public static readonly int LOGGING_FILE_MIN_LEVEL = 3;
+        public static readonly int LOGGING_FILE_MIN_LEVEL = 2;
 
         // ====================================================================
         // Paths and Files
