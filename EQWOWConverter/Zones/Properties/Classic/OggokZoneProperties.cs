@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public OggokZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("oggok", "Oggok", -99f, -345f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(88, 94, 54, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             Enable2DSoundInstances("wtr_pool", "darkwds1", "wind_lp2");

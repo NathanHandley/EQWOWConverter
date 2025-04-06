@@ -17,13 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {

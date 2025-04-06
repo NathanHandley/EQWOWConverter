@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NorthDesertOfRoZoneProperties() : base()
         {
             // Add more zone areas
-            SetBaseZoneProperties("nro", "Northern Desert of Ro", 299.12f, 3537.9f, -24.5f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp4", "wind_lp2", "wind_lp3");
 
             AddZoneArea("Field Camp", "nro-03", "nro-03", true, "", "night");

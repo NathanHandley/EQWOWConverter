@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TrakanonsTeethZoneProperties() : base()
         {
-            SetBaseZoneProperties("trakanon", "Trakanon's Teeth", 1485.86f, 3868.29f, -340.59f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

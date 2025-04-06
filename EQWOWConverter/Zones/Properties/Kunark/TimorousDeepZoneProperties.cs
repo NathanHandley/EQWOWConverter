@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TimorousDeepZoneProperties() : base()
         {
-            SetBaseZoneProperties("timorous", "Timorous Deep", 2194f, -5392f, 4f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

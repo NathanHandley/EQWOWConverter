@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Lifts for Kelethin (look at how the lifts work for Thunder Bluffs?)
             // TODO: Add more zone areas / child areas
-            SetBaseZoneProperties("gfaydark", "Greater Faydark", 10f, -20f, 0f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("wind_lp2", "darkwds1");

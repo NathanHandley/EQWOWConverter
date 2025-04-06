@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public CobaltScarZoneProperties() : base()
         {
             // TODO: Portal to skyshrine is a clicky in the tower
-            SetBaseZoneProperties("cobaltscar", "Cobalt Scar", 895f, -939f, 318f, 0, ZoneContinentType.Velious);
             //AddValidMusicInstanceTrackIndexes(0);
             AddZoneLineBox("sirens", -595.916992f, 73.038841f, -96.968727f, ZoneLineOrientationType.North,
                 1604.295898f, 1636.723511f, 87.406502f, 1588.378052f, 1616.337891f, 62.437771f);

@@ -14,21 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones
 {
     internal enum ZoneContinentType
     {
-        Antonica,
-        Odus,
-        Faydwer,
-        Kunark,
-        Velious,
-        Development
+        Antonica = 0,
+        Odus = 1,
+        Faydwer = 2,
+        Kunark = 3,
+        Velious = 4,
+        Development = 5
     }
 }

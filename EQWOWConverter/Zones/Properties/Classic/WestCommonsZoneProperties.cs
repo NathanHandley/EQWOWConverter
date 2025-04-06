@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public WestCommonsZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("commons", "West Commonlands", -1334.24f, 209.57f, -51.47f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             SetZonewideAmbienceSound("", "darkwds1");
             AddZoneLineBox("befallen", -67.97337f, 34.777237f, 0.0009409825f, ZoneLineOrientationType.South, -1161.5278f, 603.6031f, -29.81225f, -1176.3967f, 588.6972f, -42.781216f);

@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             // TODO: Secret pot to Tox
-            SetBaseZoneProperties("qcat", "Qeynos Aqueduct System", -315f, 214f, -38f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(11, 36, 28, ZoneFogType.Medium);
             OverrideVertexColorIntensity(0.4);
             SetZonewideMusic("qcat-00", "qcat-00", true);

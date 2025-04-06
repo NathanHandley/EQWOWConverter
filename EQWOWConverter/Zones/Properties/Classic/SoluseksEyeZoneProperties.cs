@@ -30,7 +30,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Drawbridges at -156.465775f, -289.006134f, 15.660960f, probably other places too
             // TODO: Traps
             // TODO: Zone Areas
-            SetBaseZoneProperties("soldunga", "Solusek's Eye", -485.77f, -476.04f, 73.72f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(180, 30, 30, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.3);
             DisableSunlight();

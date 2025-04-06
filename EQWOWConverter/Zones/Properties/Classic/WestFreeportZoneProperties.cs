@@ -28,9 +28,7 @@ namespace EQWOWConverter.Zones.Properties
         public WestFreeportZoneProperties() : base()
         {
             // TODO: Gaps in the geometry at -325.65 -797.158 -32
-            // TODO: Make Arena PVP
-            SetBaseZoneProperties("freportw", "West Freeport", 181f, 335f, -24f, 0, ZoneContinentType.Antonica);
-            
+            // TODO: Make Arena PVP            
             AddZoneArea("West Gate", "freportw-00", "freportw-00", false, "", "night");
             AddZoneAreaBox("West Gate", 425.826050f, 443.986359f, 100, -359.499847f, 94.975891f, -100f);
             AddZoneAreaBox("West Gate", 142.186234f, 97.686897f, 100, -14.375550f, 28.334290f, -100f);

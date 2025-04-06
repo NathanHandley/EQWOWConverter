@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add more zone areas
             // Bug: Hole in the doorway into the teleport room (bottom).  Might be scale related -- It's also this way on live!  Test after collision changes.
-            SetBaseZoneProperties("felwitheb", "Southern Felwithe", -790f, 320f, -10.25f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsOutdoorsWithSky(58, 75, 58, ZoneFogType.Medium, 0.5f, 1f);
 
             // This track normally plays in north felwithe

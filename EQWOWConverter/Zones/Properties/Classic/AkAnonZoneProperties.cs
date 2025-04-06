@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Improve the angle water room water surfaces
             // TODO: Swimming up the entry waterfall will allow you to exit the map
             // TODO: Waterwheel in the deepest water room
-            SetBaseZoneProperties("akanon", "Ak'Anon", -35f, 47f, 4f, 0, ZoneContinentType.Faydwer);
             Enable2DSoundInstances("spinnrlp");
 
             AddZoneArea("Entry", "akanon-00", "akanon-00");

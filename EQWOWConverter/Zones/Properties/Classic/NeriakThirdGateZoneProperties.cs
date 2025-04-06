@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakThirdGateZoneProperties() : base()
         {
             // TODO: Could add a few more zone areas
-            SetBaseZoneProperties("neriakc", "Neriak Third Gate", -968.96f, 891.92f, -52.22f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(35, 22, 59, ZoneFogType.Heavy);
             Enable2DSoundInstances("wfall_md", "streamsm");
 

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DalnirZoneProperties() : base()
         {
-            SetBaseZoneProperties("dalnir", "Dalnir", 90f, 8f, 3.75f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public WarrensZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("warrens", "The Warrens", -930f, 748f, -37.22f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4f);
             DisableSunlight();

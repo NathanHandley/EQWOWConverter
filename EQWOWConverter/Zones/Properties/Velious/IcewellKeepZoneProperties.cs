@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public IcewellKeepZoneProperties() : base()
         {
-            SetBaseZoneProperties("thurgadinb", "Icewell Keep", 0f, 250f, 0f, 0, ZoneContinentType.Velious);
             //AddValidMusicInstanceTrackIndexes(0, 1);
         }
     }

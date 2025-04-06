@@ -27,9 +27,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public InnothuleSwampZoneProperties() : base()
         {            
-            // TODO: Fix sun (too green / bright)
             // TODO: Add more zone areas (may not be needed)
-            SetBaseZoneProperties("innothule", "Innothule Swamp", -588f, -2192f, -25f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(106, 100, 56, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("swmp1", "swmp1");

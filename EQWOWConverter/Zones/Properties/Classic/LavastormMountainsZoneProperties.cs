@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public LavastormMountainsZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("lavastorm", "Lavastorm Mountains", 153.45f, -1842.79f, -16.37f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("steamlp");
             SetZonewideMusic("lavastorm-00", "lavastorm-00", true, 0.5f); // Lowered volume, as it was pretty loud
             

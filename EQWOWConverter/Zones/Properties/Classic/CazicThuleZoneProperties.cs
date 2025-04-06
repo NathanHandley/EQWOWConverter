@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Indoor Lighting
             // TODO: Bug: Near the entry pools, the textures collide on the surface
-            SetBaseZoneProperties("cazicthule", "Lost Temple of Cazic-Thule", -80f, 80f, 5.5f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsWithSky(40, 65, 16, ZoneFogType.Heavy, 0.5f, 1.0f);
             Enable2DSoundInstances("slmestrm", "wind_lp2", "lakelap1", "torch_lp");
             

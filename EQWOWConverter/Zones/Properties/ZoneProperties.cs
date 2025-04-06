@@ -25,12 +25,15 @@ namespace EQWOWConverter.Zones
         static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
         static public ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
+        public int DBCMapID;
+        public int DBCMapDifficultyID;
+        public UInt32 DBCWMOID;
         public string ShortName = string.Empty;
         public string DescriptiveName = string.Empty;
         public ZoneContinentType Continent;
         public bool HasShadowBox = false;
-        public Vector3 SafePosition = new Vector3();
-        public float SafeOrientation = 0;
+        public Vector3 TelePosition = new Vector3();
+        public float TeleOrientation = 0;
         public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();  
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
@@ -41,17 +44,11 @@ namespace EQWOWConverter.Zones
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
 
         // DBCIDs
-        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
-        private static int CURRENT_MAPDIFFICULTYID = Configuration.DBCID_MAPDIFFICULTY_ID_START;        
-        public int DBCMapID;
-        public int DBCMapDifficultyID;
-        public UInt32 DBCWMOID;
+        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;   
 
         public ZoneProperties()
         {
-            DBCMapID = MapDBC.GenerateID();
             DBCWMOID = GenerateDBCWMOID();
-            DBCMapDifficultyID = GenerateDBCMapDifficultyID();
         }
 
         public static UInt32 GenerateDBCWMOID()
@@ -59,26 +56,6 @@ namespace EQWOWConverter.Zones
             UInt32 dbcWMOID = CURRENT_WMOID;
             CURRENT_WMOID++;
             return dbcWMOID;
-        }
-
-        public static int GenerateDBCMapDifficultyID()
-        {
-            int dbcMapDifficultyID = CURRENT_MAPDIFFICULTYID;
-            CURRENT_MAPDIFFICULTYID++;
-            return dbcMapDifficultyID;
-        }
-
-        // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void SetBaseZoneProperties(string shortName, string descriptiveName, float safeX, float safeY, float safeZ, float safeOrientation, ZoneContinentType continent)
-        {
-            ShortName = shortName;
-            DescriptiveName = descriptiveName;
-            Continent = continent;
-            SafePosition.X = safeX;
-            SafePosition.Y = safeY;
-            SafePosition.Z = safeZ;
-            SafeOrientation = safeOrientation;
-            DefaultZoneArea.DisplayName = DescriptiveName;
         }
 
         protected void DisableSunlight()
@@ -649,131 +626,159 @@ namespace EQWOWConverter.Zones
                 return ZonePropertyListByShortName[zoneShortName];
         }
 
+        private static void AddZonePropertiesByShortName(List<Dictionary<string, string>> propertiesRows, string shortName, ZoneProperties zoneProperties)
+        {
+            foreach(Dictionary<string, string> propertiesRow in propertiesRows)
+            {
+                if (propertiesRow["ShortName"].Trim().ToLower() == shortName.Trim().ToLower())
+                {
+                    zoneProperties.ShortName = shortName;
+                    zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
+                    zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);                    
+                    zoneProperties.DescriptiveName = propertiesRow["DescriptiveName"];
+                    zoneProperties.TelePosition.X = float.Parse(propertiesRow["TeleX"]);
+                    zoneProperties.TelePosition.Y = float.Parse(propertiesRow["TeleY"]);
+                    zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]);
+                    zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
+                    zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
+                    zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
+                    ZonePropertyListByShortName.Add(shortName, zoneProperties);
+                    return;
+                }
+            }
+            Logger.WriteError("Could not find the properties for short name '" + shortName + "' which should be in the ZoneProperties.csv file");
+        }
+
         private static void PopulateZonePropertiesList()
         {
-            ZonePropertyListByShortName.Add("airplane", new PlaneOfSkyZoneProperties());
-            ZonePropertyListByShortName.Add("akanon", new AkAnonZoneProperties());
-            ZonePropertyListByShortName.Add("arena", new ArenaZoneProperties());
-            ZonePropertyListByShortName.Add("befallen", new BefallenZoneProperties());
-            ZonePropertyListByShortName.Add("beholder", new GorgeOfKingXorbbZoneProperties());
-            ZonePropertyListByShortName.Add("blackburrow", new BlackburrowZoneProperties());
-            ZonePropertyListByShortName.Add("burningwood", new BurningWoodZoneProperties());
-            ZonePropertyListByShortName.Add("butcher", new ButcherblockMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("cabeast", new CabilisEastZoneProperties());
-            ZonePropertyListByShortName.Add("cabwest", new CabilisWestZoneProperties());
-            ZonePropertyListByShortName.Add("cauldron", new DagnorsCauldronZoneProperties());
-            ZonePropertyListByShortName.Add("cazicthule", new CazicThuleZoneProperties());
-            ZonePropertyListByShortName.Add("charasis", new HowlingStonesZoneProperties());
-            ZonePropertyListByShortName.Add("chardok", new ChardokZoneProperties());
-            ZonePropertyListByShortName.Add("citymist", new CityOfMistZoneProperties());
-            ZonePropertyListByShortName.Add("cobaltscar", new CobaltScarZoneProperties());
-            ZonePropertyListByShortName.Add("commons", new WestCommonsZoneProperties());
-            ZonePropertyListByShortName.Add("crushbone", new CrushboneZoneProperties());
-            ZonePropertyListByShortName.Add("crystal", new CrystalCavernsZoneProperties());
-            ZonePropertyListByShortName.Add("dalnir", new DalnirZoneProperties());
-            ZonePropertyListByShortName.Add("dreadlands", new DreadlandsZoneProperties());
-            ZonePropertyListByShortName.Add("droga", new TempleOfDrogaZoneProperties());
-            ZonePropertyListByShortName.Add("eastkarana", new EastKaranaZoneProperties());
-            ZonePropertyListByShortName.Add("eastwastes", new EasternWastesZoneProperties());
-            ZonePropertyListByShortName.Add("ecommons", new EastCommonsZoneProperties());
-            ZonePropertyListByShortName.Add("emeraldjungle", new EmeraldJungleZoneProperties());
-            ZonePropertyListByShortName.Add("erudnext", new ErudinZoneProperties());
-            ZonePropertyListByShortName.Add("erudnint", new ErudinPalaceZoneProperties());
-            ZonePropertyListByShortName.Add("erudsxing", new ErudsCrossingZoneProperties());
-            ZonePropertyListByShortName.Add("everfrost", new EverfrostZoneProperties());
-            ZonePropertyListByShortName.Add("fearplane", new PlaneOfFearZoneProperties());
-            ZonePropertyListByShortName.Add("feerrott", new FeerrottZoneProperties());
-            ZonePropertyListByShortName.Add("felwithea", new NorthFelwitheZoneProperties());
-            ZonePropertyListByShortName.Add("felwitheb", new SouthFelwitheZoneProperties());
-            ZonePropertyListByShortName.Add("fieldofbone", new FieldOfBoneZoneProperties());
-            ZonePropertyListByShortName.Add("firiona", new FirionaVieZoneProperties());
-            ZonePropertyListByShortName.Add("freporte", new EastFreeportZoneProperties());
-            ZonePropertyListByShortName.Add("freportn", new NorthFreeportZoneProperties());
-            ZonePropertyListByShortName.Add("freportw", new WestFreeportZoneProperties());
-            ZonePropertyListByShortName.Add("frontiermtns", new FrontierMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("frozenshadow", new TowerOfFrozenShadowZoneProperties());
-            ZonePropertyListByShortName.Add("gfaydark", new GreaterFaydarkZoneProperties());
-            ZonePropertyListByShortName.Add("greatdivide", new GreatDivideZoneProperties());
-            ZonePropertyListByShortName.Add("grobb", new GrobbZoneProperties());
-            ZonePropertyListByShortName.Add("growthplane", new PlaneOfGrowthZoneProperties());
-            ZonePropertyListByShortName.Add("gukbottom", new GukBottomZoneProperties());
-            ZonePropertyListByShortName.Add("guktop", new GukTopZoneProperties());
-            ZonePropertyListByShortName.Add("halas", new HalasZoneProperties());
-            ZonePropertyListByShortName.Add("hateplane", new PlaneOfHateZoneProperties());
-            ZonePropertyListByShortName.Add("highkeep", new HighKeepZoneProperties());
-            ZonePropertyListByShortName.Add("highpass", new HighpassHoldZoneProperties());
-            ZonePropertyListByShortName.Add("hole", new HoleZoneProperties());
-            ZonePropertyListByShortName.Add("iceclad", new IcecladOceanZoneProperties());
-            ZonePropertyListByShortName.Add("innothule", new InnothuleSwampZoneProperties());
-            ZonePropertyListByShortName.Add("kael", new KaelDrakkalZoneProperties());
-            ZonePropertyListByShortName.Add("kaesora", new KaesoraZoneProperties());
-            ZonePropertyListByShortName.Add("kaladima", new SouthKaladimZoneProperties());
-            ZonePropertyListByShortName.Add("kaladimb", new NorthKaladimZoneProperties());
-            ZonePropertyListByShortName.Add("karnor", new KarnorsCastleZoneProperties());
-            ZonePropertyListByShortName.Add("kedge", new KedgeKeepZoneProperties());
-            ZonePropertyListByShortName.Add("kerraridge", new KerraIsleZoneProperties());
-            ZonePropertyListByShortName.Add("kithicor", new KithicorForestZoneProperties());
-            ZonePropertyListByShortName.Add("kurn", new KurnsTowerZoneProperties());
-            ZonePropertyListByShortName.Add("lakeofillomen", new LakeOfIllOmenZoneProperties());
-            ZonePropertyListByShortName.Add("lakerathe", new LakeRathetearZoneProperties());
-            ZonePropertyListByShortName.Add("lavastorm", new LavastormMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("lfaydark", new LesserFaydarkZoneProperties());
-            ZonePropertyListByShortName.Add("load", new LoadingAreaZoneProperties());
-            ZonePropertyListByShortName.Add("mischiefplane", new PlaneOfMischiefZoneProperties());
-            ZonePropertyListByShortName.Add("mistmoore", new CastleMistmooreZoneProperties());
-            ZonePropertyListByShortName.Add("misty", new MistyThicketZoneProperties());
-            ZonePropertyListByShortName.Add("najena", new NajenaZoneProperties());
-            ZonePropertyListByShortName.Add("necropolis", new DragonNecropolisZoneProperties());
-            ZonePropertyListByShortName.Add("nektulos", new NektulosForestZoneProperties());
-            ZonePropertyListByShortName.Add("neriaka", new NeriakForeignQuarterZoneProperties());
-            ZonePropertyListByShortName.Add("neriakb", new NeriakCommonsZoneProperties());
-            ZonePropertyListByShortName.Add("neriakc", new NeriakThirdGateZoneProperties());
-            ZonePropertyListByShortName.Add("northkarana", new NorthKaranaZoneProperties());
-            ZonePropertyListByShortName.Add("nro", new NorthDesertOfRoZoneProperties());
-            ZonePropertyListByShortName.Add("nurga", new MinesOfNurgaZoneProperties());
-            ZonePropertyListByShortName.Add("oasis", new OasisOfMarrZoneProperties());
-            ZonePropertyListByShortName.Add("oggok", new OggokZoneProperties());
-            ZonePropertyListByShortName.Add("oot", new OceanOfTearsZoneProperties());
-            ZonePropertyListByShortName.Add("overthere", new OverthereZoneProperties());
-            ZonePropertyListByShortName.Add("paineel", new PaineelZoneProperties());
-            ZonePropertyListByShortName.Add("paw", new LairOfTheSplitpawZoneProperties());
-            ZonePropertyListByShortName.Add("permafrost", new PermafrostCavernsZoneProperties());
-            ZonePropertyListByShortName.Add("qcat", new QeynosAqueductsZoneProperties());
-            ZonePropertyListByShortName.Add("qey2hh1", new WestKaranaZoneProperties());
-            ZonePropertyListByShortName.Add("qeynos", new SouthQeynosZoneProperties());
-            ZonePropertyListByShortName.Add("qeynos2", new NorthQeynosZoneProperties());
-            ZonePropertyListByShortName.Add("qeytoqrg", new QeynosHillsZoneProperties());
-            ZonePropertyListByShortName.Add("qrg", new SurefallGladeZoneProperties());
-            ZonePropertyListByShortName.Add("rathemtn", new RatheMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("rivervale", new RivervaleZoneProperties());
-            ZonePropertyListByShortName.Add("runnyeye", new RunnyeyeCitadelZoneProperties());
-            ZonePropertyListByShortName.Add("sebilis", new OldSebilisZoneProperties());
-            ZonePropertyListByShortName.Add("sirens", new SirensGrottoZoneProperties());
-            ZonePropertyListByShortName.Add("skyfire", new SkyfireMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("skyshrine", new SkyshrineZoneProperties());
-            ZonePropertyListByShortName.Add("sleeper", new SleeperTombZoneProperties());
-            ZonePropertyListByShortName.Add("soldunga", new SoluseksEyeZoneProperties());
-            ZonePropertyListByShortName.Add("soldungb", new NagafensLairZoneProperties());
-            ZonePropertyListByShortName.Add("soltemple", new TempleOfSolusekRoZoneProperties());
-            ZonePropertyListByShortName.Add("southkarana", new SouthKaranaZoneProperties());
-            ZonePropertyListByShortName.Add("swampofnohope", new SwampOfNoHopeZoneProperties());
-            ZonePropertyListByShortName.Add("sro", new SouthDesertOfRoZoneProperties());
-            ZonePropertyListByShortName.Add("steamfont", new SteamfontMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("stonebrunt", new StonebruntMountainsZoneProperties());
-            ZonePropertyListByShortName.Add("templeveeshan", new TempleOfVeeshanZoneProperties());
-            ZonePropertyListByShortName.Add("thurgadina", new ThurgadinZoneProperties());
-            ZonePropertyListByShortName.Add("thurgadinb", new IcewellKeepZoneProperties());
-            ZonePropertyListByShortName.Add("timorous", new TimorousDeepZoneProperties());
-            ZonePropertyListByShortName.Add("tox", new ToxxuliaForestZoneProperties());
-            ZonePropertyListByShortName.Add("trakanon", new TrakanonsTeethZoneProperties());
-            ZonePropertyListByShortName.Add("tutorial", new TutorialZoneProperties());
-            ZonePropertyListByShortName.Add("veeshan", new VeeshansPeakZoneProperties());
-            ZonePropertyListByShortName.Add("velketor", new VelketorsLabyrinthZoneProperties());
-            ZonePropertyListByShortName.Add("unrest", new EstateOfUnrestZoneProperties());
-            ZonePropertyListByShortName.Add("wakening", new WakeningLandZoneProperties());
-            ZonePropertyListByShortName.Add("warrens", new WarrensZoneProperties());
-            ZonePropertyListByShortName.Add("warslikswood", new WarsliksWoodsZoneProperties());
-            ZonePropertyListByShortName.Add("westwastes", new WesternWastesZoneProperties());
+            // Load the file first
+            string zonePropertiesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneProperties.csv");
+            Logger.WriteDebug("Populating Zone Properties list via file '" + zonePropertiesFile + "'");
+            List<Dictionary<string, string>> zonePropertiesRows = FileTool.ReadAllRowsFromFileWithHeader(zonePropertiesFile, "|");
+
+            AddZonePropertiesByShortName(zonePropertiesRows, "airplane", new PlaneOfSkyZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "akanon", new AkAnonZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "arena", new ArenaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "befallen", new BefallenZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "beholder", new GorgeOfKingXorbbZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "blackburrow", new BlackburrowZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "burningwood", new BurningWoodZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "butcher", new ButcherblockMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "cabeast", new CabilisEastZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "cabwest", new CabilisWestZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "cauldron", new DagnorsCauldronZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "cazicthule", new CazicThuleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "charasis", new HowlingStonesZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "chardok", new ChardokZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "citymist", new CityOfMistZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "cobaltscar", new CobaltScarZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "commons", new WestCommonsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "crushbone", new CrushboneZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "crystal", new CrystalCavernsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "dalnir", new DalnirZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "dreadlands", new DreadlandsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "droga", new TempleOfDrogaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "eastkarana", new EastKaranaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "eastwastes", new EasternWastesZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "ecommons", new EastCommonsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "emeraldjungle", new EmeraldJungleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "erudnext", new ErudinZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "erudnint", new ErudinPalaceZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "erudsxing", new ErudsCrossingZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "everfrost", new EverfrostZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "fearplane", new PlaneOfFearZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "feerrott", new FeerrottZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "felwithea", new NorthFelwitheZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "felwitheb", new SouthFelwitheZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "fieldofbone", new FieldOfBoneZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "firiona", new FirionaVieZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "freporte", new EastFreeportZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "freportn", new NorthFreeportZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "freportw", new WestFreeportZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "frontiermtns", new FrontierMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "frozenshadow", new TowerOfFrozenShadowZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "gfaydark", new GreaterFaydarkZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "greatdivide", new GreatDivideZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "grobb", new GrobbZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "growthplane", new PlaneOfGrowthZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "gukbottom", new GukBottomZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "guktop", new GukTopZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "halas", new HalasZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "hateplane", new PlaneOfHateZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "highkeep", new HighKeepZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "highpass", new HighpassHoldZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "hole", new HoleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "iceclad", new IcecladOceanZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "innothule", new InnothuleSwampZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kael", new KaelDrakkalZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kaesora", new KaesoraZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kaladima", new SouthKaladimZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kaladimb", new NorthKaladimZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "karnor", new KarnorsCastleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kedge", new KedgeKeepZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kerraridge", new KerraIsleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kithicor", new KithicorForestZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "kurn", new KurnsTowerZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "lakeofillomen", new LakeOfIllOmenZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "lakerathe", new LakeRathetearZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "lavastorm", new LavastormMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "lfaydark", new LesserFaydarkZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "load", new LoadingAreaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "mischiefplane", new PlaneOfMischiefZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "mistmoore", new CastleMistmooreZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "misty", new MistyThicketZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "najena", new NajenaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "necropolis", new DragonNecropolisZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "nektulos", new NektulosForestZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "neriaka", new NeriakForeignQuarterZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "neriakb", new NeriakCommonsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "neriakc", new NeriakThirdGateZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "northkarana", new NorthKaranaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "nro", new NorthDesertOfRoZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "nurga", new MinesOfNurgaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "oasis", new OasisOfMarrZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "oggok", new OggokZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "oot", new OceanOfTearsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "overthere", new OverthereZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "paineel", new PaineelZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "paw", new LairOfTheSplitpawZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "permafrost", new PermafrostCavernsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qcat", new QeynosAqueductsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qey2hh1", new WestKaranaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qeynos", new SouthQeynosZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qeynos2", new NorthQeynosZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qeytoqrg", new QeynosHillsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "qrg", new SurefallGladeZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "rathemtn", new RatheMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "rivervale", new RivervaleZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "runnyeye", new RunnyeyeCitadelZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "sebilis", new OldSebilisZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "sirens", new SirensGrottoZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "skyfire", new SkyfireMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "skyshrine", new SkyshrineZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "sleeper", new SleeperTombZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "soldunga", new SoluseksEyeZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "soldungb", new NagafensLairZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "soltemple", new TempleOfSolusekRoZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "southkarana", new SouthKaranaZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "swampofnohope", new SwampOfNoHopeZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "sro", new SouthDesertOfRoZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "steamfont", new SteamfontMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "stonebrunt", new StonebruntMountainsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "templeveeshan", new TempleOfVeeshanZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "thurgadina", new ThurgadinZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "thurgadinb", new IcewellKeepZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "timorous", new TimorousDeepZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "tox", new ToxxuliaForestZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "trakanon", new TrakanonsTeethZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "tutorial", new TutorialZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "veeshan", new VeeshansPeakZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "velketor", new VelketorsLabyrinthZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "unrest", new EstateOfUnrestZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "wakening", new WakeningLandZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "warrens", new WarrensZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "warslikswood", new WarsliksWoodsZoneProperties());
+            AddZonePropertiesByShortName(zonePropertiesRows, "westwastes", new WesternWastesZoneProperties());
         }
     }
 }

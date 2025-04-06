@@ -30,7 +30,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Consider making more zone areas
             // TODO: Bug: See-through ceiling in water at 78.642151f, -130.569107f, -166.715637f
             // TODO: Indoor Lighting / Make darker
-            SetBaseZoneProperties("blackburrow", "Blackburrow", 38.92f, -158.97f, 3.75f, 0, ZoneContinentType.Antonica);
 
             AddZoneArea("Dark Path", "blackburrow-01", "blackburrow-00");
             AddZoneAreaBox("Dark Path", -69.372070f, -207.378036f, 48.338322f, -271.918854f, -267.815552f, -4.489510f);

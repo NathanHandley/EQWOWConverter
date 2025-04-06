@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public MinesOfNurgaZoneProperties() : base()
         {
-            SetBaseZoneProperties("nurga", "Mines of Nurga", 150f, -1062f, -107f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

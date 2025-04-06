@@ -28,8 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public EastKaranaZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetBaseZoneProperties("eastkarana", "Eastern Plains of Karana", 0f, 0f, 3.5f, 0, ZoneContinentType.Antonica);
-
             SetZonewideAmbienceSound("silence", "darkwds2");
             Enable2DSoundInstances("wind_lp3");
 

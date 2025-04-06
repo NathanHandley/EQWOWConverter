@@ -27,8 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthQeynosZoneProperties() : base()
         {
-            SetBaseZoneProperties("qeynos2", "North Qeynos", 114f, 678f, 4f, 0, ZoneContinentType.Antonica);
-
             AddZoneArea("Kliknik Tunnel", "", "", false, "", "night");
             AddZoneAreaBox("Kliknik Tunnel", 334.274689f, -136.490662f, 100f, 277.038788f, -184.821274f, -500f);
 

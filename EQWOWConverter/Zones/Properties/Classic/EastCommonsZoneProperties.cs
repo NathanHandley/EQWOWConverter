@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public EastCommonsZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetBaseZoneProperties("ecommons", "East Commonlands", -1485f, 9.2f, -51f, 0, ZoneContinentType.Antonica);
             SetZonewideAmbienceSound("", "darkwds2");
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
 

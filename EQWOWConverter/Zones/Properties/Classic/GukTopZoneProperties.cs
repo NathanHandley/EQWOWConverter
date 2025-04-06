@@ -30,7 +30,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Add zone areas
             // TODO: Large areas to 'delete' that you couldn't access anyway
             // "gap" that falls down at 931 -2 -125
-            SetBaseZoneProperties("guktop", "Guk", 7f, -36f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(40, 45, 20, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             Enable2DSoundInstances("caveloop");

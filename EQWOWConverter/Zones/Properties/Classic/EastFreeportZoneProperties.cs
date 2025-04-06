@@ -27,9 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public EastFreeportZoneProperties() : base()
         {
-            // TODO: There is a boat that goes to ocean of tears (OOT)
-            SetBaseZoneProperties("freporte", "East Freeport", -648f, -1097f, -52.2f, 0, ZoneContinentType.Antonica);
-
             AddZoneArea("Field North Camp", "freporte-04", "freporte-04", true, "", "night");
             AddZoneAreaBox("Field North Camp", -341.816437f, -60.168308f, 200, -540.543701f, -266.745239f, -60f);
 

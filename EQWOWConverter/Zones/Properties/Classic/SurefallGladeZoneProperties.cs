@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SurefallGladeZoneProperties() : base()
         {
-            SetBaseZoneProperties("qrg", "Surefall Glade", 136.9f, -65.9f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(114, 111, 116, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("", "night");

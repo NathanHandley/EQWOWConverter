@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public SleeperTombZoneProperties() : base()
         {
-            SetBaseZoneProperties("sleeper", "Sleeper's Tomb", 0f, 0f, 5f, 0, ZoneContinentType.Velious);
+
         }
     }
 }

@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public WakeningLandZoneProperties() : base()
         {
-            SetBaseZoneProperties("wakening", "Wakening Land", -5000f, -673f, -195f, 0, ZoneContinentType.Kunark);
             //AddValidMusicInstanceTrackIndexes(0, 1);
         }
     }

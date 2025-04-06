@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add zone areas
             // TODO: Add breath
-            SetBaseZoneProperties("permafrost", "Permafrost Caverns", 0f, 0f, 3.75f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(30, 40, 60, ZoneFogType.Heavy);
             Enable2DSoundInstances("wind_lp2", "wind_lp4", "caveloop", "torch_lp");
             OverrideVertexColorIntensity(0.3);

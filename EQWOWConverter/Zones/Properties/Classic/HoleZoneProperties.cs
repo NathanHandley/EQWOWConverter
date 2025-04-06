@@ -30,7 +30,6 @@ namespace EQWOWConverter.Zones.Properties
             // TDOO: Add zone areas.  Note: There is no music or sound effects in this zone
             // TODO: Bad object at 117 164 -349 (1x scale)
             // TODO: Forge in first building when coming in needs damage zone
-            SetBaseZoneProperties("hole", "The Hole", -1049.98f, 640.04f, -77.22f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsIndoors(10, 10, 10, ZoneFogType.Heavy);
             DisableSunlight();
             OverrideVertexColorIntensity(0.4);

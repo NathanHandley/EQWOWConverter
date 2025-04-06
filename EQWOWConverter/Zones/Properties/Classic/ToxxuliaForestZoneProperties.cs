@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public ToxxuliaForestZoneProperties() : base()
         {
             // TODO: Is there a boat to Kerra?
-            SetBaseZoneProperties("tox", "Toxxulia Forest", 203f, 2295f, -45f, 0, ZoneContinentType.Odus);
             SetZonewideEnvironmentAsOutdoorsNoSky(138, 125, 19, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("", "darkwds1");

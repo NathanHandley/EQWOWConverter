@@ -417,10 +417,9 @@ namespace EQWOWConverter
         public static readonly int DBCID_LOADINGSCREEN_ID_START = 255;
 
         // Identifies Maps in Map.dbc and MapDifficulty.dbc
+        // Note: This value is hard coded in /WorldData/ZoneProperties.csv and /TransportShips.csv, so you cannot change only this value
         public static readonly int DBCID_MAP_ID_START = 750;
-
-        // Specific rows in MapDifficulty.dbc. (~800-922)
-        public static readonly int DBCID_MAPDIFFICULTY_ID_START = 800;
+        public static readonly int DBCID_MAP_ID_END = 899;
 
         // ID for general/shared skill line holding EverQuest alteration abilities like
         //  gate found in SkillLine and SkillLineAbility.

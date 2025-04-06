@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Add child sub areas
             // TODO: Smooth out the southeast line of "West Misty Thicket" area
-            SetBaseZoneProperties("misty", "Misty Thicket", 0f, 0f, 2.43f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(67, 81, 34, ZoneFogType.Heavy, 1.0f);
             DisableSunlight();
             SetZonewideAmbienceSound("", "night");

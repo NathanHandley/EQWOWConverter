@@ -484,7 +484,7 @@ namespace EQWOWConverter
             int numOfZonesToOutput = 0;
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                // Skip any disabled expansions
+                // Skip any disabled expansions or zones
                 if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
                     continue;
                 if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
@@ -632,9 +632,17 @@ namespace EQWOWConverter
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
             Dictionary<int, ZoneProperties> zonePropertiesByMapID = new Dictionary<int, ZoneProperties>();
-
             foreach (var zoneProperties in ZoneProperties.GetZonePropertyListByShortName())
             {
+                // Skip any disabled expansions or zones
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneProperties.Key))
+                    continue;
+                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneProperties.Key))
+                    continue;
+                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
+                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneProperties.Key) == false)
+                    continue;
+
                 mapIDsByShortName.Add(zoneProperties.Value.ShortName.ToLower().Trim(), zoneProperties.Value.DBCMapID);
                 zonePropertiesByMapID.Add(zoneProperties.Value.DBCMapID, zoneProperties.Value);
             }

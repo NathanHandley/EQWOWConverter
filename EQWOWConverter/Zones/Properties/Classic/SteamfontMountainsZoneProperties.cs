@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TODO: Look into possibly more zone areas
             // TODO: Darken the Minotaur Caves
-            SetBaseZoneProperties("steamfont", "Steamfont Mountains", -272.86f, 159.86f, -21.4f, 0, ZoneContinentType.Faydwer);
             SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp4", "steamlp");
 

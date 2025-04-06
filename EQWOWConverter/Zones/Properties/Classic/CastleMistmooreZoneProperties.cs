@@ -27,9 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CastleMistmooreZoneProperties() : base()
         {
-            // TODO: Lift in "The Tower"
-            SetBaseZoneProperties("mistmoore", "Castle Mistmoore", 123f, -295f, -177f, 0, ZoneContinentType.Faydwer);
-
             AddZoneArea("Main Entryway", "mistmoore-03", "mistmoore-03", false);
             AddZoneAreaBox("Main Entryway", 52.558922f, 64.554611f, -168.251938f, -54.312000f, -70.595573f, -204.147720f);
             AddZoneAreaBox("Main Entryway", -26.757799f, 55.103039f, -166.467682f, -73.198334f, -57.687698f, -195.256317f);

@@ -1,0 +1,124 @@
+WOWMapID|WOWMapDifficultyID|ShortName|DescriptiveName|TeleX|TeleY|TeleZ|TeleOrientation|ContinentID
+750|800|airplane|Plane of Sky|542.45|1384.6|-650|0|0
+751|801|akanon|Ak'Anon|-35|47|4|0|2
+752|802|arena|The Arena|460.9|-41.4|-7.38|0|0
+753|803|befallen|Befallen|35.22|-75.27|2.19|0|0
+754|804|beholder|Gorge of King Xorbb|-21.44|-512.23|45.13|0|0
+755|805|blackburrow|Blackburrow|38.92|-158.97|3.75|0|0
+756|806|burningwood|Burning Wood|-820|-4942|200.31|0|3
+757|807|butcher|Butcherblock Mountains|-700|2550|2.9|0|2
+758|808|cabeast|Cabilis East|-416|1343|4|0|3
+759|809|cabwest|Cabilis West|790|165|3.75|0|3
+760|810|cauldron|Dagnor's Cauldron|320|2815|473|0|2
+761|811|cazicthule|Lost Temple of Cazic-Thule|-80|80|5.5|0|0
+762|812|charasis|Howling Stones|0|0|-4.25|0|3
+763|813|chardok|Chardok|859|119|106|0|3
+764|814|citymist|City of Mist|-734|28|3.75|0|3
+765|815|cobaltscar|Cobalt Scar|895|-939|318|0|4
+766|816|commons|West Commonlands|-1334.24|209.57|-51.47|0|0
+767|817|crushbone|Crushbone|158|-644|4|0|2
+768|818|crystal|Crystal Caverns|303|487|-74|0|4
+769|819|dalnir|Dalnir|90|8|3.75|0|3
+770|820|dreadlands|Dreadlands|9565.05|2806.04|1045.2|0|3
+771|821|droga|Temple of Droga|294.11|1371.43|3.75|0|3
+772|822|eastkarana|Eastern Plains of Karana|0|0|3.5|0|0
+773|823|eastwastes|Eastern Wastes|-4296|-5049|147|0|4
+774|824|ecommons|East Commonlands|-1485|9.2|-51|0|0
+775|825|emeraldjungle|Emerald Jungle|4648.06|-1222.97|0|0|3
+776|826|erudnext|Erudin|-309.75|109.64|23.75|0|1
+777|827|erudnint|Erudin Palace|807|712|22|0|1
+778|828|erudsxing|Erud's Crossing|795|-1766.9|12.36|0|1
+779|829|everfrost|Everfrost|682.74|3139.01|-60.16|0|0
+780|830|fearplane|Plane of Fear|1282.09|-1139.03|1.67|0|0
+781|831|feerrott|The Feerrott|902.6|1091.7|28|0|0
+782|832|felwithea|Northern Felwithe|94|-25|3.75|0|2
+783|833|felwitheb|Southern Felwithe|-790|320|-10.25|0|2
+784|834|fieldofbone|Field of Bone|1617|-1684|-54.78|0|3
+785|835|firiona|Firiona Vie|1439.96|-2392.06|-2.65|0|3
+786|836|freporte|East Freeport|-648|-1097|-52.2|0|0
+787|837|freportn|North Freeport|211|-296|4|0|0
+788|838|freportw|West Freeport|181|335|-24|0|0
+789|839|frontiermtns|Frontier Mountains|-4262|-633|113.24|0|3
+790|840|frozenshadow|Tower of Frozen Shadow|200|120|0|0|4
+791|841|gfaydark|Greater Faydark|10|-20|0|0|2
+792|842|greatdivide|The Great Divide|-965|-7720|-557|0|4
+793|843|grobb|Grobb|0|-100|4|0|0
+794|844|growthplane|Plane of Growth|3016|-2522|-19|0|4
+795|845|gukbottom|Ruins of Old Guk|-217|1197|-81.78|0|0
+796|846|guktop|Guk|7|-36|4|0|0
+797|847|halas|Halas|0|0|3.75|0|0
+798|848|hateplane|Plane of Hate|-353.08|-374.8|3.75|0|0
+799|849|highkeep|High Keep|88|-16|4|0|0
+800|850|highpass|Highpass Hold|-104|-14|4|0|0
+801|851|hole|The Hole|-1049.98|640.04|-77.22|0|1
+802|852|iceclad|Iceclad Ocean|340|5330|-17|0|4
+803|853|innothule|Innothule Swamp|-588|-2192|-25|0|0
+804|854|kael|Kael Drakkal|-633|-47|128|0|4
+805|855|kaesora|Kaesora|40|370|99.72|0|3
+806|856|kaladima|South Kaladim|-2|-18|3.75|0|2
+807|857|kaladimb|North Kaladim|-267|414|3.75|0|2
+808|858|karnor|Karnor's Castle|0|0|4|0|3
+809|859|kedge|Kedge Keep|99.96|14.02|31.75|0|2
+810|860|kerraridge|Kerra Isle|-859.97|474.96|23.75|0|1
+811|861|kithicor|Kithicor Forest|3828|1889|459|0|0
+812|862|kurn|Kurn's Tower|77.72|-277.64|3.75|0|3
+813|863|lakeofillomen|Lake of Ill Omen|-5383.07|5747.14|68.27|0|3
+814|864|lakerathe|Lake Rathetear|1213|4183|4|0|0
+815|865|lavastorm|Lavastorm Mountains|153.45|-1842.79|-16.37|0|0
+816|866|lfaydark|Lesser Faydark|-1769.93|-108.08|-1.11|0|2
+817|867|load|Loading Area|-316|5|8.2|0|5
+818|868|mischiefplane|Plane of Mischief|-395|-1410|115|0|4
+819|869|mistmoore|Castle Mistmoore|123|-295|-177|0|2
+820|870|misty|Misty Thicket|0|0|2.43|0|0
+821|871|najena|Najena|-22.6|229.1|-41.8|0|0
+822|872|necropolis|Dragon Necropolis|2000|-100|5|0|4
+823|873|nektulos|Nektulos Forest|-259|-1201|-5|0|0
+824|874|neriaka|Neriak Foreign Quarter|156.92|-2.94|31.75|0|0
+825|875|neriakb|Neriak Commons|-499.91|2.97|-10.25|0|0
+826|876|neriakc|Neriak Third Gate|-968.96|891.92|-52.22|0|0
+827|877|northkarana|Northern Plains of Karana|-382|-284|-7|0|0
+828|878|nro|Northern Desert of Ro|299.12|3537.9|-24.5|0|0
+829|879|nurga|Mines of Nurga|150|-1062|-107|0|3
+830|880|oasis|Oasis of Marr|903.98|490.03|6.4|0|0
+831|881|oggok|Oggok|-99|-345|4|0|0
+832|882|oot|Ocean of Tears|-9200|390|6|0|0
+833|883|overthere|The Overthere|-4263|-241|235|0|3
+834|884|paineel|Paineel|200|800|3.39|0|1
+835|885|paw|Lair of the Splitpaw|-7.9|-79.3|4|0|0
+836|886|permafrost|Permafrost Caverns|0|0|3.75|0|0
+837|887|qcat|Qeynos Aqueduct System|-315|214|-38|0|0
+838|888|qey2hh1|Western Plains of Karana|-638|12|-4|0|0
+839|889|qeynos|South Qeynos|186.46|14.29|3.75|0|0
+840|890|qeynos2|North Qeynos|114|678|4|0|0
+841|891|qeytoqrg|Qeynos Hills|196.7|5100.9|-1|0|0
+842|892|qrg|Surefall Glade|136.9|-65.9|4|0|0
+843|893|rathemtn|Rathe Mountains|1831|3825|29.03|0|0
+844|894|rivervale|Rivervale|45.3|1.6|3.8|0|0
+845|895|runnyeye|Runnyeye Citadel|-21.85|-108.88|3.75|0|0
+846|896|sebilis|Old Sebilis|0|235|40|0|3
+847|897|sirens|Siren's Grotto|-33|196|4|0|4
+848|898|skyfire|Skyfire Mountains|-3931.32|-1139.25|39.76|0|3
+849|899|skyshrine|Skyshrine|-730|-210|0|0|4
+850|900|sleeper|Sleeper's Tomb|0|0|5|0|4
+851|901|soldunga|Solusek's Eye|-485.77|-476.04|73.72|0|0
+852|902|soldungb|Nagafen's Lair|-262.7|-423.99|-108.22|0|0
+853|903|soltemple|Temple of Solusek Ro|7.5|268.8|3|0|0
+854|904|southkarana|Southern Plains of Karana|1293.66|2346.69|-5.77|0|0
+855|905|swampofnohope|Swamp of No Hope|-1830|-1259.9|27.1|0|3
+856|906|sro|Southern Desert of Ro|286|1265|79|0|0
+857|907|steamfont|Steamfont Mountains|-272.86|159.86|-21.4|0|2
+858|908|stonebrunt|Stonebrunt Mountains|-1643.01|-3427.84|-6.57|0|1
+859|909|templeveeshan|Temple of Veeshan|-499|-2086|-36|0|4
+860|910|thurgadina|Thurgadin|0|-1222|0|0|4
+861|911|thurgadinb|Icewell Keep|0|250|0|0|4
+862|912|timorous|Timorous Deep|2194|-5392|4|0|3
+863|913|tox|Toxxulia Forest|203|2295|-45|0|1
+864|914|trakanon|Trakanon's Teeth|1485.86|3868.29|-340.59|0|3
+865|915|tutorial|Tutorial|0|0|0|0|5
+866|916|veeshan|Veeshan's Peak|1682|41|28|0|3
+867|917|velketor|Velketor's Labyrinth|-65|581|-152|0|4
+868|918|unrest|Estate of Unrest|52|-38|3.75|0|2
+869|919|wakening|Wakening Land|-5000|-673|-195|0|3
+870|920|warrens|The Warrens|-930|748|-37.22|0|1
+871|921|warslikswood|Warslik's Woods|-467.95|-1428.95|197.31|0|3
+872|922|westwastes|Western Wastes|-3499|-4099|-16.66|0|4

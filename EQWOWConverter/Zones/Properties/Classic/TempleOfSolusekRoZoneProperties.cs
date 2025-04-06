@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public TempleOfSolusekRoZoneProperties() : base()
         {
             // TODO: Add zone areas (maybe?)
-            SetBaseZoneProperties("soltemple", "Temple of Solusek Ro", 7.5f, 268.8f, 3f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(180, 5, 5, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.3);
             Enable2DSoundInstances("rumblelp", "steamlp");

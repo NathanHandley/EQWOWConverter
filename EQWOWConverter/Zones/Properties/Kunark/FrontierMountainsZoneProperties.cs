@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FrontierMountainsZoneProperties() : base()
         {
-            SetBaseZoneProperties("frontiermtns", "Frontier Mountains", -4262f, -633f, 113.24f, 0, ZoneContinentType.Kunark);
             AddZoneLineBox("burningwood", -2965.3167f, -4515.809f, -51.462868f, ZoneLineOrientationType.West,
                 -2312.331f, 4184.5947f, -433.798f, -2418.7312f, 4063.2607f, -472.19543f);
         }

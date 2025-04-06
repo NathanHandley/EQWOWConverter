@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public LesserFaydarkZoneProperties() : base()
         {
             // TODO: A few unmapped zone areas (bandit camps)
-            SetBaseZoneProperties("lfaydark", "Lesser Faydark", -1769.93f, -108.08f, -1.11f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsOutdoorsNoSky(140, 155, 122, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("", "night");

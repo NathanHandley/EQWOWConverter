@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public DragonNecropolisZoneProperties() : base()
         {
-            SetBaseZoneProperties("necropolis", "Dragon Necropolis", 2000f, -100f, 5f, 0, ZoneContinentType.Velious);
+            
         }
     }
 }

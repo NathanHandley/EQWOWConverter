@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public NorthFreeportZoneProperties() : base()
         {
-            SetBaseZoneProperties("freportn", "North Freeport", 211f, -296f, 4f, 0, ZoneContinentType.Antonica);
             Enable2DSoundInstances("wind_lp4");
 
             AddZoneArea("Temple of Marr", "freportn-12", "freportn-12");

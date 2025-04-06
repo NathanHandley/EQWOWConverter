@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: Set more zone areas
             // TODO: Use audio track 3
             // TODO: Bug: Fetid House area is broken, fix it
-            SetBaseZoneProperties("fearplane", "Plane of Fear", 1282.09f, -1139.03f, 1.67f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsPlaneOfFear();
             SetZonewideAmbienceSound("", "night");
             Enable2DSoundInstances("darkwds1", "wind_lp4");

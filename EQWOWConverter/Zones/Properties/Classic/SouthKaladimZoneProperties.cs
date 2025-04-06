@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public SouthKaladimZoneProperties() : base()
         {
             // TODO: Arena PVP
-            SetBaseZoneProperties("kaladima", "South Kaladim", -2f, -18f, 3.75f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsIndoors(31, 22, 09, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             

@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public CrushboneZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetBaseZoneProperties("crushbone", "Crushbone", 158f, -644f, 4f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsOutdoorsWithSky(71, 71, 150, ZoneFogType.Heavy, 0.5f, 1.0f);
             SetZonewideAmbienceSound("wind_lp4", "night");
             AddZoneLineBox("gfaydark", 2561.247803f, -52.142502f, 15.843880f, ZoneLineOrientationType.South, -640.919861f, 187.129715f, 39.221329f, -732.241028f, 141.981308f, -0.500000f);

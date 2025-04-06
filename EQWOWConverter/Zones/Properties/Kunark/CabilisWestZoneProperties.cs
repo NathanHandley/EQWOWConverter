@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public CabilisWestZoneProperties() : base()
         {
-            SetBaseZoneProperties("cabwest", "Cabilis West", 790f, 165f, 3.75f, 0, ZoneContinentType.Kunark);
             AddZoneLineBox("cabeast", -28.278749f, 314.920990f, 0.000030f, ZoneLineOrientationType.South,
                 -20.735310f, 322.030548f, 12.469000f, -33.827209f, 302.649109f, -0.499990f);
             AddZoneLineBox("cabeast", -28.944679f, 335.877106f, -24.860720f, ZoneLineOrientationType.South,

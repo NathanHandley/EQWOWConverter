@@ -28,8 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public PaineelZoneProperties() : base()
         {
             // TODO: Add zone areas
-            // TODO: "Lift" near the hole that goes up and down
-            SetBaseZoneProperties("paineel", "Paineel", 200f, 800f, 3.39f, 0, ZoneContinentType.Odus);
             Enable2DSoundInstances("wind_lp2");
 
             AddZoneArea("Upper Field", "", "", false, "", "darkwds1");

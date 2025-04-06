@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public SouthDesertOfRoZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetBaseZoneProperties("sro", "Southern Desert of Ro", 286f, 1265f, 79f, 0, ZoneContinentType.Antonica);
             SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp3", "wind_lp2", "wind_lp4");
 

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public FirionaVieZoneProperties() : base()
         {
-            SetBaseZoneProperties("firiona", "Firiona Vie", 1439.96f, -2392.06f, -2.65f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

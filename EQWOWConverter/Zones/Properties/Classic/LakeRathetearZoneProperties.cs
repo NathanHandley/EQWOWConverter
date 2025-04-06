@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public LakeRathetearZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("lakerathe", "Lake Rathetear", 1213f, 4183f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideAmbienceSound("ocean", "ocean");
             Enable2DSoundInstances("wind_lp3");
             AddZoneLineBox("arena", -56.940857f, -835.9014f, 7.882746f, ZoneLineOrientationType.West, 2360.1794f, 2708.7017f, 130.344f, 2329.8247f, 2699.243f, 92.11265f);

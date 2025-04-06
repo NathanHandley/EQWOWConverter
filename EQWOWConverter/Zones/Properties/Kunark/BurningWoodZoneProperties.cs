@@ -26,7 +26,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public BurningWoodZoneProperties() : base()
         {
-            SetBaseZoneProperties("burningwood", "Burning Wood", -820f, -4942f, 200.31f, 0, ZoneContinentType.Kunark);
             AddZoneLineBox("skyfire", -5439.923f, 1772.0016f, -162.23752f, ZoneLineOrientationType.North,
                 5302.864258f, 1900f, -110.222794f, 5118.025879f, 1400.658936f, -170.772964f);
             AddZoneLineBox("chardok", -2.107779f, 858.89545f, 99.968796f, ZoneLineOrientationType.North,

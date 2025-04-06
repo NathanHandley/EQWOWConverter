@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public KithicorForestZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("kithicor", "Kithicor Forest", 3828f, 1889f, 459f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(72, 84, 60, ZoneFogType.Heavy, 1f);
             DisableSunlight();
             SetZonewideAmbienceSound("", "darkwds1");

@@ -26,7 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public PlaneOfGrowthZoneProperties() : base()
         {
-            SetBaseZoneProperties("growthplane", "Plane of Growth", 3016f, -2522f, -19f, 0, ZoneContinentType.Velious);
+
         }
     }
 }

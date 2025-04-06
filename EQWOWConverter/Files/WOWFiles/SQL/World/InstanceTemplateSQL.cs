@@ -14,20 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class InstanceTemplateSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM `instance_template` WHERE `map` >= " + Configuration.DBCID_MAP_ID_START + " AND `map` <= " + (MapDBC.GenerateID()) + ";";
+            return "DELETE FROM `instance_template` WHERE `map` >= " + Configuration.DBCID_MAP_ID_START + " AND `map` <= " + Configuration.DBCID_MAP_ID_END + ";";
         }
 
         public void AddRow(int mapID)

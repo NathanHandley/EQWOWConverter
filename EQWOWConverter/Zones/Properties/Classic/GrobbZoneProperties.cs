@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public GrobbZoneProperties() : base()
         {
             // TODO: Add Zone Areas
-            SetBaseZoneProperties("grobb", "Grobb", 0f, -100f, 4f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(106, 100, 56, ZoneFogType.Clear, 1f);
             DisableSunlight();
             Enable2DSoundInstances("swmp1", "wind_lp2", "wind_lp4");

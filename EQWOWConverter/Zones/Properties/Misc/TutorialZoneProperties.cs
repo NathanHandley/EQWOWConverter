@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
     {
         public TutorialZoneProperties() : base()
         {
-            SetBaseZoneProperties("tutorial", "Tutorial", 0f, 0f, 0f, 0, ZoneContinentType.Development);
             SetZonewideAmbienceSound("", "night");
             Enable2DSoundInstances("wind_lp4");
             AddLiquidPlaneZLevel(ZoneLiquidType.Water, "t75_w1", 99.116943f, 98.680382f, -101.066818f, -103.535660f, -14.000000f, 350f); // Middle circle of water

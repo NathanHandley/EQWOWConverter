@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NorthFelwitheZoneProperties() : base()
         {
             // TODO: More zone areas
-            SetBaseZoneProperties("felwithea", "Northern Felwithe", 94f, -25f, 3.75f, 0, ZoneContinentType.Faydwer);
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             SetZonewideMusic("felwithea-00", "felwithea-00", true);
 

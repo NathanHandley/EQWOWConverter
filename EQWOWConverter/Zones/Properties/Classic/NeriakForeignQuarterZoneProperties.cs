@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public NeriakForeignQuarterZoneProperties() : base()
         {
             // TODO: Add more zone areas
-            SetBaseZoneProperties("neriaka", "Neriak Foreign Quarter", 156.92f, -2.94f, 31.75f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(35, 22, 59, ZoneFogType.Heavy);
 
             AddZoneArea("Guard House", "neriaka-02", "neriaka-02");

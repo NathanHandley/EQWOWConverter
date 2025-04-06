@@ -26,8 +26,7 @@ namespace EQWOWConverter.Zones.Properties
     {
         public OverthereZoneProperties() : base()
         {
-            // TODO: There's a clicky teleport to Chardok which should drop you at 0, 0, -8f facing North
-            SetBaseZoneProperties("overthere", "The Overthere", -4263f, -241f, 235f, 0, ZoneContinentType.Kunark);
+
         }
     }
 }

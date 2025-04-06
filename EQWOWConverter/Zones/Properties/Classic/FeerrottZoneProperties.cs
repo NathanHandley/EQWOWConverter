@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public FeerrottZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("feerrott", "The Feerrott", 902.6f, 1091.7f, 28f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsOutdoorsNoSky(30, 46, 15, ZoneFogType.Heavy, 1f);
             OverrideVertexColorIntensity(0.4);
             DisableSunlight();

@@ -28,11 +28,8 @@ namespace EQWOWConverter.Zones.Properties
         public SouthQeynosZoneProperties() : base()
         {
             // TODO: Port Authority lamp is missing
-            // TODO: Boat to Erudes Crossing
             // TODO: Make arena PVP
             // TODO: Junk geometry in the sky near a zone line
-            SetBaseZoneProperties("qeynos", "South Qeynos", 186.46f, 14.29f, 3.75f, 0, ZoneContinentType.Antonica);
-
             AddZoneArea("Mermaid's Lure", "qeynos-07", "qeynos-07");
             AddZoneAreaBox("Mermaid's Lure", 55.699829f, -28.153431f, 110f, -27.963150f, -69.853050f, -1.5f);
             AddZoneAreaBox("Mermaid's Lure", 27.911350f, -28.153431f, 110f, -27.963150f, -111.824409f, -1.5f);

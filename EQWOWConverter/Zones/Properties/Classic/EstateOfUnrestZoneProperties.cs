@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public EstateOfUnrestZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetBaseZoneProperties("unrest", "Estate of Unrest", 52f, -38f, 3.75f, 0, ZoneContinentType.Faydwer);
             SetZonewideEnvironmentAsIndoors(10, 0, 30, ZoneFogType.Heavy);
             DisableSunlight();
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");

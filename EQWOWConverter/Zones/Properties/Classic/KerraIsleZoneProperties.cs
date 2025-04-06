@@ -28,7 +28,6 @@ namespace EQWOWConverter.Zones.Properties
         public KerraIsleZoneProperties() : base()
         {
             // TODO: Add Zone Areas
-            SetBaseZoneProperties("kerraridge", "Kerra Isle", -859.97f, 474.96f, 23.75f, 0, ZoneContinentType.Odus);
             SetZonewideAmbienceSound("", "night");
             Enable2DSoundInstances("wind_lp2", "wind_lp3", "wind_lp4");
             AddZoneLineBox("tox", -510.562134f, 2635.008545f, -38.249962f, ZoneLineOrientationType.East, 430.005493f, -948.882141f, 38.436760f, 399.657959f, -979.802734f, 19.500050f);

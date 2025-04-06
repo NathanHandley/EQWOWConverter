@@ -27,7 +27,6 @@ namespace EQWOWConverter.Zones.Properties
         public RatheMountainsZoneProperties() : base()
         {
             // TODO: More zone areas
-            SetBaseZoneProperties("rathemtn", "Rathe Mountains", 1831f, 3825f, 29.03f, 0, ZoneContinentType.Antonica);
             SetZonewideAmbienceSound("", "darkwds1");
             Enable2DSoundInstances("wind_lp2", "wind_lp4");
 

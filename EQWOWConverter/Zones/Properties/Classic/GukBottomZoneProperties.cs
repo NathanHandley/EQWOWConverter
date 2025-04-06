@@ -29,7 +29,6 @@ namespace EQWOWConverter.Zones.Properties
         {
             // TDOO: Add zone areas
             // TODO: Bug - Clear ceiling in north tunnel at 1510 -459 -136
-            SetBaseZoneProperties("gukbottom", "Ruins of Old Guk", -217f, 1197f, -81.78f, 0, ZoneContinentType.Antonica);
             SetZonewideEnvironmentAsIndoors(50, 45, 20, ZoneFogType.Heavy);
             OverrideVertexColorIntensity(0.4);
             Enable2DSoundInstances("caveloop");
