@@ -151,7 +151,7 @@ namespace EQWOWConverter
             try
             {
                 using (FileStream fs = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                    using (StreamReader reader = new StreamReader(fs))
+                    using (StreamReader reader = new StreamReader(fs, bufferSize: 102400)) // Set a 100 KB buffer
                         returnString = reader.ReadToEnd();
             }
             catch
