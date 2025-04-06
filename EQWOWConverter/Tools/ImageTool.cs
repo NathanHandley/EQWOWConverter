@@ -305,32 +305,62 @@ namespace EQWOWConverter
             }
 
             // Build a color-changed image
-            // TODO: Look for solution to image operations.  These image methods are part of why this project is windows only.
             using (Bitmap inputImage = new Bitmap(inputPNGFullPath))
+            using (Bitmap outputImage = new Bitmap(inputImage.Width, inputImage.Height, PixelFormat.Format32bppArgb))
             {
-                using (Bitmap outputImage = new Bitmap(inputImage.Width, inputImage.Height))
+                // Lock the input and output bitmaps bits for faster operation
+                BitmapData inputData = inputImage.LockBits(new Rectangle(0, 0, inputImage.Width, inputImage.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                BitmapData outputData = outputImage.LockBits(new Rectangle(0, 0, outputImage.Width, outputImage.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+
+                try
                 {
-                    for (int y = 0; y < outputImage.Height; y++)
+                    unsafe
                     {
-                        for (int x = 0; x < outputImage.Width; x++)
+                        // Pointers to the pixel data
+                        byte* inputPtr = (byte*)inputData.Scan0;
+                        byte* outputPtr = (byte*)outputData.Scan0;
+
+                        // Bytes per pixel (4 for ARGB: A, R, G, B)
+                        int bytesPerPixel = 4;
+                        int height = inputImage.Height;
+                        int widthInBytes = inputImage.Width * bytesPerPixel;
+
+                        for (int y = 0; y < height; y++)
                         {
-                            // Get the current pixel's color
-                            Color pixelColor = inputImage.GetPixel(x, y);
+                            byte* currentInputLine = inputPtr + (y * inputData.Stride);
+                            byte* currentOutputLine = outputPtr + (y * outputData.Stride);
 
-                            // Apply vertex color as a multiplier to the RGB channels
-                            int blendedR = ((pixelColor.R * color.R) / 255);
-                            int blendedG = ((pixelColor.G * color.G) / 255);
-                            int blendedB = ((pixelColor.B * color.B) / 255);
-                            Color blendedColor = Color.FromArgb(pixelColor.A, blendedR, blendedG, blendedB);
+                            for (int x = 0; x < widthInBytes; x += bytesPerPixel)
+                            {
+                                // Extract ARGB from input
+                                byte blue = currentInputLine[x];
+                                byte green = currentInputLine[x + 1];
+                                byte red = currentInputLine[x + 2];
+                                byte alpha = currentInputLine[x + 3];
 
-                            // Set the blended color to the output image
-                            outputImage.SetPixel(x, y, blendedColor);
+                                // Apply blend (multiply RGB by color, preserve alpha)
+                                byte blendedR = (byte)((red * color.R) / 255);
+                                byte blendedG = (byte)((green * color.G) / 255);
+                                byte blendedB = (byte)((blue * color.B) / 255);
+
+                                // Write to output
+                                currentOutputLine[x] = blendedB;
+                                currentOutputLine[x + 1] = blendedG;
+                                currentOutputLine[x + 2] = blendedR;
+                                currentOutputLine[x + 3] = alpha;
+                            }
                         }
                     }
-
-                    // Save the output image
-                    outputImage.Save(outputPNGFullPath, ImageFormat.Png);
                 }
+                finally
+                {
+                    // Unlock the bits
+                    inputImage.UnlockBits(inputData);
+                    outputImage.UnlockBits(outputData);
+                }
+
+                // Save the output image
+                outputImage.Save(outputPNGFullPath, ImageFormat.Png);
             }
 
             // Generate the BLP file, if needed
