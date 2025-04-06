@@ -655,21 +655,26 @@ namespace EQWOWConverter
             if (Directory.Exists(workingTexturePath))
                 Directory.Delete(workingTexturePath, true);
             Directory.CreateDirectory(workingTexturePath);
-
-            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
-
-            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
-
-            if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
-                Logger.WriteInfo("- Note: CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
-
-            // Recreate the output folder to clean it out
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
             if (Directory.Exists(exportAnimatedObjectsFolder))
                 Directory.Delete(exportAnimatedObjectsFolder, true);
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
+            if (Directory.Exists(charactersFolderRoot) == false)
+            {
+                Logger.WriteError("Failed to create characters because could not find the characters folder root at '" + charactersFolderRoot + "'");
+                return false;
+            }
+            string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
+            string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
+
+            Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
+
+            if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                Logger.WriteInfo("- Note: CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
 
             // Generate templates
             Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateListByEQID();
@@ -682,7 +687,7 @@ namespace EQWOWConverter
             {
                 foreach (CreatureModelTemplate modelTemplate in modelTemplatesByRaceID.Value)
                 {
-                    modelTemplate.CreateModelFiles();
+                    modelTemplate.CreateModelFiles(charactersFolderRoot, inputObjectTextureFolder, exportAnimatedObjectsFolder, generatedTexturesFolderPath);
                     creatureModelTemplates.Add(modelTemplate);
                     progressionCounter.Write(1);
                 }

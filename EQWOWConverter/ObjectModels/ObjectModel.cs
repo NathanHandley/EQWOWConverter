@@ -218,7 +218,8 @@ namespace EQWOWConverter.ObjectModels
                     Logger.WriteError("Could not build skeleton information for object '" + Name + "'");
 
                     // Make one animation (standing)
-                    ModelBones.Add(new ObjectModelBone());
+                    ObjectModelBone newBone = new ObjectModelBone("root", -1);
+                    ModelBones.Add(newBone);
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
                     ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
@@ -945,12 +946,14 @@ namespace EQWOWConverter.ObjectModels
                         int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
                         ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
                         attachBone.PivotPoint = new Vector3(0.2012056f, -0.0001476863f, 0.003507267f); // From Sword_2H_Crystal_C_03.m2
+                        ModelBones.Add(attachBone);
                     } break;
                 case "lbw_r": // Left Elbow Visual
                     {
                         int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
                         ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
                         attachBone.PivotPoint = new Vector3(0.9165421f, -0.0001476836f, 0.0009568771f); // From Sword_2H_Crystal_C_03.m2
+                        ModelBones.Add(attachBone);
                     }
                     break;
                 case "lbw_l": // Right Elbow Visual
@@ -958,6 +961,7 @@ namespace EQWOWConverter.ObjectModels
                         int parentBoneID = GetFirstBoneIndexForEQBoneNames("root");
                         ObjectModelBone attachBone = new ObjectModelBone(newBoneName, Convert.ToInt16(parentBoneID));
                         attachBone.PivotPoint = new Vector3(1.189032f, -0.0001476824f, 0.001456708f); // From Sword_2H_Crystal_C_03.m2
+                        ModelBones.Add(attachBone);
                     }
                     break;
                 default:

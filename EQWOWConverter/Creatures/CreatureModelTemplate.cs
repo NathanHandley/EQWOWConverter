@@ -106,7 +106,8 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        public void CreateModelFiles()
+        public void CreateModelFiles(string charactersFolderRoot, string inputObjectTextureFolder, string exportAnimatedObjectsFolder,
+            string generatedTexturesFolderPath)
         {
             string objectName = Race.Name + " " + GenerateFileName();
             Logger.WriteDebug("For creature template '" + objectName + "', creating the object files");
@@ -121,24 +122,10 @@ namespace EQWOWConverter.Creatures
                 return;
             }
 
-            // Make sure the source folder path exists
-            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
-            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
-            if (Directory.Exists(charactersFolderRoot) == false)
-            {
-                Logger.WriteError("Can not read in EQ Creatures (skeletal objects) data, because folder did not exist at '" + charactersFolderRoot + "'");
-                return;
-            }
-
             // Base paths
-            string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
-            string outputObjectFolderName = GetCreatureModelFolderName();
-            string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
-            string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
+            string outputObjectFolderName = GetCreatureModelFolderName();        
             string relativeMPQPath = Path.Combine("Creature", "Everquest", outputObjectFolderName);
             string outputFullMPQPath = Path.Combine(exportAnimatedObjectsFolder, outputObjectFolderName);
-            string inputObjectTextureFolder = Path.Combine(charactersFolderRoot, "Textures");
-            string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Create folder if it doesn't exist
             if (Directory.Exists(outputFullMPQPath) == false)
