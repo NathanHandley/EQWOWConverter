@@ -52,12 +52,15 @@ namespace EQWOWConverter
 
             // Thread 1: Objects and Zones
             List<Zone> zones = new List<Zone>();
-            Task zoneAndObjectTask = Task.Run(() =>
+            Task zoneAndObjectTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Zone and Objects] Started");
+
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == false)
                     Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
+                else
+                    ConvertEQObjectsToWOW();
 
                 // Zones
                 ConvertEQZonesToWOW(out zones);
@@ -68,7 +71,7 @@ namespace EQWOWConverter
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
-            Task creaturesAndSpawnsTask = Task.Run(() =>
+            Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Creatures, Transports, and Spawns] Started");
 
@@ -89,7 +92,7 @@ namespace EQWOWConverter
 
             // Thread 3: Items and Spells
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
-            Task itemsAndSpellsTask = Task.Run(() =>
+            Task itemsAndSpellsTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Items and Spells] Started");
 
@@ -509,25 +512,25 @@ namespace EQWOWConverter
 
             // Use 4 threads to process the zones list
             List<Zone> workingZones = new List<Zone>();
-            Task zoneThread1Task = Task.Run(() =>
+            Task zoneThread1Task = Task.Factory.StartNew(() =>
             {
                 List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock(ZoneLock)
                     workingZones.AddRange(processedZones);
             });
-            Task zoneThread2Task = Task.Run(() =>
+            Task zoneThread2Task = Task.Factory.StartNew(() =>
             {
                 List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
                     workingZones.AddRange(processedZones);
             });
-            Task zoneThread3Task = Task.Run(() =>
+            Task zoneThread3Task = Task.Factory.StartNew(() =>
             {
                 List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
                     workingZones.AddRange(processedZones);
             });
-            Task zoneThread4Task = Task.Run(() =>
+            Task zoneThread4Task = Task.Factory.StartNew(() =>
             {
                 List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
