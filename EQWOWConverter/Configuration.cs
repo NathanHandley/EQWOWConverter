@@ -19,10 +19,13 @@ namespace EQWOWConverter
     internal class Configuration
     {
         // ====================================================================
-        // Console
+        // Core
         // ====================================================================
         // Plays a beep sound when the generate completes if set to true
-        public static readonly bool CONSOLE_BEEP_ON_COMPLETE = true;
+        public static readonly bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
+
+        // If true, the generator will run in multithreading mode
+        public static readonly bool CORE_ENABLE_MULTITHREADING = true;
 
         // ====================================================================
         // Logging
