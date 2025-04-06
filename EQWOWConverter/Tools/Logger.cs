@@ -43,6 +43,20 @@ namespace EQWOWConverter
             }
         }
 
+        public static void WriteForCounter(string outputString, int outputLeft, int outputTop)
+        {
+            lock (writeLock)
+            {
+                int currentCursorLeft = Console.CursorLeft;
+                int currentCursorTop = Console.CursorTop;
+                Console.SetCursorPosition(outputLeft, outputTop);
+                Console.Write(outputString);
+                Console.SetCursorPosition(currentCursorLeft, currentCursorTop);
+                int curCursorTop = Console.CursorTop;
+                int curCursorLeft = Console.CursorLeft;
+            }
+        }
+
         public static void WriteInfo(string text, bool outputNewLine = true, bool includeLeaderBlock = true)
         {
             lock (writeLock)

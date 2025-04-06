@@ -68,13 +68,7 @@ namespace EQWOWConverter
                     outputString = "(" + CurProgress.ToString() + " of " + TotalNumber.ToString() + ")";
                 else
                     outputString = "(" + CurProgress.ToString() + ")";
-                int currentCursorLeft = Console.CursorLeft;
-                int currentCursorTop = Console.CursorTop;
-                Console.SetCursorPosition(StartCursorLeft, StartCursorTop);
-                Console.Write(outputString);
-                Console.SetCursorPosition(currentCursorLeft, currentCursorTop);
-                int curCursorTop = Console.CursorTop;
-                int curCursorLeft = Console.CursorLeft;
+                Logger.WriteForCounter(outputString, StartCursorLeft, StartCursorTop);
             }
         }
     }
