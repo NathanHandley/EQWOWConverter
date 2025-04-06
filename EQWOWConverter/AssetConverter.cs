@@ -52,12 +52,14 @@ namespace EQWOWConverter
             List<Zone> zones = new List<Zone>();
             Task zoneAndObjectTask = Task.Run(() =>
             {
+                Logger.WriteInfo("<+> Thread [Zone and Objects] Started");
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == false)
                     Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
 
                 // Zones
                 ConvertEQZonesToWOW(out zones);
+                Logger.WriteInfo("<-> Thread [Zone and Objects] Ended");
             });
 
             // Thread 2: Creatures, Transports and Spawns
@@ -66,6 +68,8 @@ namespace EQWOWConverter
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Run(() =>
             {
+                Logger.WriteInfo("<+> Thread [Creatures, Transports, and Spawns] Started");
+
                 // Creatures                
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
                     ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
@@ -77,12 +81,16 @@ namespace EQWOWConverter
                     ConvertTransports();
                 else
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
+
+                Logger.WriteInfo("<-> Thread [Creatures, Transports, and Spawns] Ended");
             });
 
             // Thread 3: Items and Spells
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             Task itemsAndSpellsTask = Task.Run(() =>
             {
+                Logger.WriteInfo("<+> Thread [Items and Spells] Started");
+
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates and visual information...");
                 SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
@@ -107,6 +115,8 @@ namespace EQWOWConverter
 
                 // Spells
                 GenerateSpells(out spellTemplates);
+
+                Logger.WriteInfo("<-> Thread [Items and Spells] Ended");
             });
 
             // Wait for threads above to complete
@@ -134,8 +144,10 @@ namespace EQWOWConverter
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
             // Thread 1: MPQ
-            Task mpqBuildAndDeployTask = Task.Run(() =>
+            Task clientBuildAndDeployTask = Task.Run(() =>
             {
+                Logger.WriteInfo("<+> Thread [Client Build and Deploy] Started");
+
                 // Create or update the MPQ
                 string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
@@ -150,19 +162,31 @@ namespace EQWOWConverter
                     if (Configuration.DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
                         ClearClientCache();
                 }
+                else
+                    Logger.WriteInfo("- Note: DEPLOY_CLIENT_FILES set false in the Configuration");
+
+                Logger.WriteInfo("<-> Thread [Client Build and Deploy] Ended");
             });
 
             // Thead 2: Server Deploy
             Task serverDeployTask = Task.Run(() =>
             {
+                Logger.WriteInfo("<+> Thread [Server Deploy] Started");
+
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
+                else
+                    Logger.WriteInfo("- Note: DEPLOY_SERVER_FILES set false in the Configuration");
                 if (Configuration.DEPLOY_SERVER_SQL == true)
                     DeployServerSQL();
+                else
+                    Logger.WriteInfo("- Note: DEPLOY_SERVER_SQL set false in the Configuration");
+
+                Logger.WriteInfo("<-> Thread [Server Deploy] Ended");
             });
                 
             // Wait for threads above to complete
-            mpqBuildAndDeployTask.Wait();
+            clientBuildAndDeployTask.Wait();
             serverDeployTask.Wait();
 
             Logger.WriteInfo("Conversion of data complete");
