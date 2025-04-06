@@ -16,19 +16,13 @@
 
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Imaging;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics.Tracing;
 
 namespace EQWOWConverter.Zones
 {
     internal class ZoneModelObject
     {
         private static UInt32 CURRENT_WMOGROUPID = Configuration.DBCID_WMOAREATABLE_WMOGROUPID_START;
+        private static readonly object WMOGroupIDLock = new object();
 
         public UInt32 WMOGroupID;
         public string DisplayName = string.Empty;
@@ -51,8 +45,11 @@ namespace EQWOWConverter.Zones
 
         public ZoneModelObject(UInt16 groupIndex, UInt32 areaTableID)
         {
-            WMOGroupID = CURRENT_WMOGROUPID;
-            CURRENT_WMOGROUPID++;
+            lock (WMOGroupIDLock)
+            {
+                WMOGroupID = CURRENT_WMOGROUPID;
+                CURRENT_WMOGROUPID++;
+            }
             GroupIndex = groupIndex;
             AreaTableID = areaTableID;
         }

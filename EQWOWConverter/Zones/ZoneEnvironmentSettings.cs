@@ -1,9 +1,20 @@
-﻿using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//  Author: Nathan Handley (nathanhandley@protonmail.com)
+//  Copyright (c) 2025 Nathan Handley
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+using EQWOWConverter.Common;
 
 namespace EQWOWConverter.Zones
 {
@@ -93,6 +104,7 @@ namespace EQWOWConverter.Zones
 
             // DBCIDs
             private static int CURRENT_LIGHTPARAMSID = Configuration.DBCID_LIGHTPARAMS_ID_START;
+            private static readonly object LIGHTSPARAMSLock = new object();
             public int DBCLightParamsID;
             public float Glow = 0.5f;
             public int HighlightSky = 0; // Boolean, 1 or 0
@@ -100,8 +112,11 @@ namespace EQWOWConverter.Zones
 
             public ZoneEnvironmentParameters()
             {
-                DBCLightParamsID = CURRENT_LIGHTPARAMSID;
-                CURRENT_LIGHTPARAMSID++;
+                lock (LIGHTSPARAMSLock)
+                {
+                    DBCLightParamsID = CURRENT_LIGHTPARAMSID;
+                    CURRENT_LIGHTPARAMSID++;
+                }
             }        
         }
 

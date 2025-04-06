@@ -30,6 +30,8 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
+        private static readonly object ZoneLock = new object();
+
         public bool ConvertEQDataToWOW()
         {
             Logger.WriteInfo("Converting from EQ to WoW...");
@@ -478,10 +480,10 @@ namespace EQWOWConverter
             // Load shared environment settings
             ZoneProperties.CommonOutdoorEnvironmentProperties.SetAsOutdoors(77, 120, 143, ZoneFogType.Clear, true, 0.5f, 1.0f, ZoneSkySpecialType.None);
 
-            // Count zones to write and generate the progress counter
+            // Get the list of zones to process
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
-            int numOfZonesToOutput = 0;
+            List<string> zoneShortNamesToProcess = new List<string>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Skip any disabled expansions or zones
@@ -492,9 +494,9 @@ namespace EQWOWConverter
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
                     Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
                     continue;
-                numOfZonesToOutput++;
+                zoneShortNamesToProcess.Add(zoneDirectory.Name);
             }
-            LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, numOfZonesToOutput);
+            LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, zoneShortNamesToProcess.Count);
             progressCounter.Write(0);
 
             if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0)
@@ -505,87 +507,141 @@ namespace EQWOWConverter
                 Logger.WriteInfo(string.Empty, true, false);
             }
 
-            // Go through the subfolders for each zone and convert to wow zone
-            zones = new List<Zone>();
-            foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
+            // Use 4 threads to process the zones list
+            List<Zone> workingZones = new List<Zone>();
+            Task zoneThread1Task = Task.Run(() =>
             {
-                // Skip any disabled expansions
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
-                    continue;
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
-                    continue;
-                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
-                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
-                    continue;
+                List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                lock(ZoneLock)
+                    workingZones.AddRange(processedZones);
+            });
+            Task zoneThread2Task = Task.Run(() =>
+            {
+                List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                lock (ZoneLock)
+                    workingZones.AddRange(processedZones);
+            });
+            Task zoneThread3Task = Task.Run(() =>
+            {
+                List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                lock (ZoneLock)
+                    workingZones.AddRange(processedZones);
+            });
+            Task zoneThread4Task = Task.Run(() =>
+            {
+                List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                lock (ZoneLock)
+                    workingZones.AddRange(processedZones);
+            });
 
-                // Grab the zone properties to generate IDs, even for zones not being output
-                Logger.WriteDebug(" - Processing zone '" + zoneDirectory.Name + "'");
-                string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneDirectory.Name);
-                ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneDirectory.Name);
+            zoneThread1Task.Wait();
+            zoneThread2Task.Wait();
+            zoneThread3Task.Wait();
+            zoneThread4Task.Wait();
 
-                // Generate the zone
-                Zone curZone = new Zone(zoneDirectory.Name, zoneProperties);
-                Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
-                string curZoneDirectory = Path.Combine(inputZoneFolder, zoneDirectory.Name);
-                curZone.LoadFromEQZone(zoneDirectory.Name, curZoneDirectory);
-
-                // Create the zone WMO objects
-                WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
-                zoneWMO.WriteToDisk();
-
-                // Create the WDT
-                WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName);
-                zoneWDT.WriteToDisk(exportMPQRootFolder);
-
-                // Create the WDL
-                WDL zoneWDL = new WDL(curZone);
-                zoneWDL.WriteToDisk(exportMPQRootFolder);
-
-                // Create the zone-specific generated object files
-                foreach (ObjectModel zoneObject in curZone.GeneratedZoneObjects)
-                {
-                    // Recreate the folder if needed
-                    string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneObject.Name);
-                    string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
-                    if (Directory.Exists(curZoneObjectFolder))
-                        Directory.Delete(curZoneObjectFolder, true);
-                    Directory.CreateDirectory(curZoneObjectFolder);
-
-                    // Build this zone object M2 Data
-                    M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
-                    objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
-                }
-
-                // Create the zone-specific sound instance objects
-                foreach (ObjectModel zoneSoundInstanceObject in curZone.SoundInstanceObjectModels)
-                {
-                    // Recreate the folder if needed
-                    string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneSoundInstanceObject.Name);
-                    string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
-                    if (Directory.Exists(curZoneObjectFolder))
-                        Directory.Delete(curZoneObjectFolder, true);
-                    Directory.CreateDirectory(curZoneObjectFolder);
-
-                    // Build this zone object M2 Data
-                    M2 objectM2 = new M2(zoneSoundInstanceObject, curZoneObjectRelativePath);
-                    objectM2.WriteToDisk(zoneSoundInstanceObject.Name, curZoneObjectFolder);
-                }
-
-                // Place the related textures
-                ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneObjectsPath, inputObjectTexturesFolder);
-
-                // Place the related music files
-                ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
-
-                // Place the related ambience files
-                ExportAmbientSoundForZone(curZone, inputSoundFolderRoot, exportMPQRootFolder);
-
-                Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting of zone '" + curZone.ShortName + "' complete");
-
-                zones.Add(curZone);
-                progressCounter.Write(1);
-            }
+            zones = workingZones;
             return true;
+        }
+
+        private List<Zone> ZoneThreadWorker(List<string> zoneShortNamesToProcess, string inputZoneFolder, string exportMPQRootFolder, string relativeStaticDoodadsPath, string inputObjectTexturesFolder,
+            string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
+        {
+            List<Zone> processedZones = new List<Zone>();
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Grab the zone to work with
+                string zoneShortNameToProcess = string.Empty;
+                lock (ZoneLock)
+                {
+                    if (zoneShortNamesToProcess.Count > 0)
+                    {
+                        zoneShortNameToProcess = zoneShortNamesToProcess.First();
+                        zoneShortNamesToProcess.RemoveAt(0);
+                    }
+                }
+
+                // Zone was found, so continue processing
+                if (zoneShortNameToProcess != string.Empty)
+                {
+                    Zone curZone = ConvertZone(zoneShortNameToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                    processedZones.Add(curZone);
+                }
+                else
+                    moreToProcess = false;
+            }
+            return processedZones;
+        }
+
+        private Zone ConvertZone(string zoneShortName, string inputZoneFolder, string exportMPQRootFolder, string relativeStaticDoodadsPath, string inputObjectTexturesFolder,
+            string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
+        {
+            // Grab the zone properties to generate IDs, even for zones not being output
+            Logger.WriteDebug(" - Processing zone '" + zoneShortName + "'");
+            string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneShortName);
+            ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneShortName);
+
+            // Generate the zone
+            Zone curZone = new Zone(zoneShortName, zoneProperties);
+            Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
+            string curZoneDirectory = Path.Combine(inputZoneFolder, zoneShortName);
+            curZone.LoadFromEQZone(zoneShortName, curZoneDirectory);
+
+            // Create the zone WMO objects
+            WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
+            zoneWMO.WriteToDisk();
+
+            // Create the WDT
+            WDT zoneWDT = new WDT(curZone, zoneWMO.RootFileRelativePathWithFileName);
+            zoneWDT.WriteToDisk(exportMPQRootFolder);
+
+            // Create the WDL
+            WDL zoneWDL = new WDL(curZone);
+            zoneWDL.WriteToDisk(exportMPQRootFolder);
+
+            // Create the zone-specific generated object files
+            foreach (ObjectModel zoneObject in curZone.GeneratedZoneObjects)
+            {
+                // Recreate the folder if needed
+                string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneObject.Name);
+                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
+                if (Directory.Exists(curZoneObjectFolder))
+                    Directory.Delete(curZoneObjectFolder, true);
+                Directory.CreateDirectory(curZoneObjectFolder);
+
+                // Build this zone object M2 Data
+                M2 objectM2 = new M2(zoneObject, curZoneObjectRelativePath);
+                objectM2.WriteToDisk(zoneObject.Name, curZoneObjectFolder);
+            }
+
+            // Create the zone-specific sound instance objects
+            foreach (ObjectModel zoneSoundInstanceObject in curZone.SoundInstanceObjectModels)
+            {
+                // Recreate the folder if needed
+                string curZoneObjectRelativePath = Path.Combine(relativeZoneObjectsPath, zoneSoundInstanceObject.Name);
+                string curZoneObjectFolder = Path.Combine(exportMPQRootFolder, curZoneObjectRelativePath);
+                if (Directory.Exists(curZoneObjectFolder))
+                    Directory.Delete(curZoneObjectFolder, true);
+                Directory.CreateDirectory(curZoneObjectFolder);
+
+                // Build this zone object M2 Data
+                M2 objectM2 = new M2(zoneSoundInstanceObject, curZoneObjectRelativePath);
+                objectM2.WriteToDisk(zoneSoundInstanceObject.Name, curZoneObjectFolder);
+            }
+
+            // Place the related textures
+            ExportTexturesForZone(curZone, curZoneDirectory, exportMPQRootFolder, relativeZoneObjectsPath, inputObjectTexturesFolder);
+
+            // Place the related music files
+            ExportMusicForZone(curZone, inputMusicFolderRoot, exportMPQRootFolder);
+
+            // Place the related ambience files
+            ExportAmbientSoundForZone(curZone, inputSoundFolderRoot, exportMPQRootFolder);
+
+            Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting of zone '" + curZone.ShortName + "' complete");
+
+            progressCounter.Write(1);
+            return curZone;
         }
 
         public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 

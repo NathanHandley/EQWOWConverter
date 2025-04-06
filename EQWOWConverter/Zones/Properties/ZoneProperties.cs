@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones.Properties;
 
 namespace EQWOWConverter.Zones
@@ -43,6 +42,9 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
 
+        private static readonly object ListReadLock = new object();
+        private static readonly object DBCWMOIDLock = new object();
+
         // DBCIDs
         private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;   
 
@@ -53,9 +55,12 @@ namespace EQWOWConverter.Zones
 
         public static UInt32 GenerateDBCWMOID()
         {
-            UInt32 dbcWMOID = CURRENT_WMOID;
-            CURRENT_WMOID++;
-            return dbcWMOID;
+            lock (DBCWMOIDLock)
+            {
+                UInt32 dbcWMOID = CURRENT_WMOID;
+                CURRENT_WMOID++;
+                return dbcWMOID;
+            }            
         }
 
         protected void DisableSunlight()
@@ -608,22 +613,28 @@ namespace EQWOWConverter.Zones
         }
         static public Dictionary<string, ZoneProperties> GetZonePropertyListByShortName()
         {
-            if (ZonePropertyListByShortName.Count == 0)
-                PopulateZonePropertiesList();
-            return ZonePropertyListByShortName;
+            lock (ListReadLock)
+            {
+                if (ZonePropertyListByShortName.Count == 0)
+                    PopulateZonePropertiesList();
+                return ZonePropertyListByShortName;
+            }
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)
         {
-            if (ZonePropertyListByShortName.Count == 0)
-                PopulateZonePropertiesList();
-            if (ZonePropertyListByShortName.ContainsKey(zoneShortName) == false)
+            lock (ListReadLock)
             {
-                Logger.WriteError("Error.  Tried to pull Zone Properties for zone with shortname '" + zoneShortName + "' but non existed with that name");
-                return ZonePropertyListByShortName["load"];
+                if (ZonePropertyListByShortName.Count == 0)
+                    PopulateZonePropertiesList();
+                if (ZonePropertyListByShortName.ContainsKey(zoneShortName) == false)
+                {
+                    Logger.WriteError("Error.  Tried to pull Zone Properties for zone with shortname '" + zoneShortName + "' but non existed with that name");
+                    return ZonePropertyListByShortName["load"];
+                }
+                else
+                    return ZonePropertyListByShortName[zoneShortName];
             }
-            else
-                return ZonePropertyListByShortName[zoneShortName];
         }
 
         private static void AddZonePropertiesByShortName(List<Dictionary<string, string>> propertiesRows, string shortName, ZoneProperties zoneProperties)

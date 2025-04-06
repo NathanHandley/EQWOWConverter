@@ -15,17 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
     internal class ZoneAreaMusic
     {
         private static int CURRENT_ZONEMUSICSTARTID = Configuration.DBCID_ZONEMUSIC_START;
+        private static object ZONEMUSICIDLock = new object();
 
         public int DBCID;
         public string Name;
@@ -36,8 +32,11 @@ namespace EQWOWConverter.Zones
 
         public ZoneAreaMusic(string zoneDBCName, Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
         {
-            DBCID = CURRENT_ZONEMUSICSTARTID;
-            CURRENT_ZONEMUSICSTARTID++;
+            lock (ZONEMUSICIDLock)
+            {
+                DBCID = CURRENT_ZONEMUSICSTARTID;
+                CURRENT_ZONEMUSICSTARTID++;
+            }
             Name = zoneDBCName;
             DaySound = daySound;
             NightSound = nightSound;

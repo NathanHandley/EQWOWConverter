@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 
@@ -38,8 +32,6 @@ namespace EQWOWConverter.Zones
         public List<ObjectInstance> ObjectInstances = new List<ObjectInstance>();
         public List<SoundInstance> Sound2DInstances = new List<SoundInstance>();
         public List<SoundInstance> Sound3DInstances = new List<SoundInstance>();
-
-        private string MaterialListName = string.Empty;
 
         public void LoadDataFromDisk(string inputZoneFolderName, string inputZoneFolderFullPath)
         {

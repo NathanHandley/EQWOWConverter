@@ -16,17 +16,12 @@
 
 using EQWOWConverter.Common;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones
 {
     internal class ZoneAreaAmbientSound
     {
         private static int CURRENT_SOUNDAMBIENCE_ID = Configuration.DBCID_SOUNDAMBIENCE_ID_START;
+        private static readonly object SOUNDAMBIENCEIDLock = new object();
 
         public int DBCID;
         public string FileNameNoExtDay = string.Empty;
@@ -35,9 +30,12 @@ namespace EQWOWConverter.Zones
         public Sound? NightSound;
 
         public ZoneAreaAmbientSound(Sound? daySound, Sound? nightSound, string fileNameNoExtDay, string fileNameNoExtNight)
-        {
-            DBCID = CURRENT_SOUNDAMBIENCE_ID;
-            CURRENT_SOUNDAMBIENCE_ID++;
+        { 
+            lock (SOUNDAMBIENCEIDLock)
+            {
+                DBCID = CURRENT_SOUNDAMBIENCE_ID;
+                CURRENT_SOUNDAMBIENCE_ID++;
+            }
             DaySound = daySound;
             NightSound = nightSound;
             FileNameNoExtDay = fileNameNoExtDay;

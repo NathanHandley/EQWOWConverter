@@ -15,18 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.Zones
 {
     internal class ZoneArea
     {
         private static UInt32 CURRENT_AREATABLEID = Configuration.DBCID_AREATABLE_ID_START;
+        private static readonly object AREATABLEIDLock = new object();
 
         public UInt32 DBCAreaTableID;
         public UInt32 DBCParentAreaTableID = 0; // Zero is no parent
@@ -46,8 +41,11 @@ namespace EQWOWConverter.Zones
 
         public ZoneArea(string displayName, string parentAreaDisplayName)
         {
-            DBCAreaTableID = CURRENT_AREATABLEID;
-            CURRENT_AREATABLEID++;
+            lock (AREATABLEIDLock)
+            {
+                DBCAreaTableID = CURRENT_AREATABLEID;
+                CURRENT_AREATABLEID++;
+            }
             DisplayName = displayName;
             ParentAreaDisplayName = parentAreaDisplayName;
         }
