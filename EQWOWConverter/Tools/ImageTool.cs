@@ -339,13 +339,7 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating colored texture completed for '" + outputBLPFullPath + "'");
         }
 
-        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType)
-        {
-            int workingCounter = -1;
-            ConvertPNGTexturesToBLP(fullFileInputPaths, imageType, -1, 0, ref workingCounter);
-        }
-
-        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, int counterCursorOffset, int counterTotalCount, ref int counterWorkingCount)
+        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, LogCounter? progressionCounter = null)
         {
             string formatArg = "/FBLP_DXT5";
             switch (imageType)
@@ -378,11 +372,8 @@ namespace EQWOWConverter
                 Logger.WriteDebug(process.StandardOutput.ReadToEnd());
                 Console.Title = "EverQuest to WoW Converter";
 
-                if (counterCursorOffset != -1)
-                {
-                    ++counterWorkingCount;
-                    Logger.WriteCounter(counterWorkingCount, counterCursorOffset, counterTotalCount);
-                }
+                if (progressionCounter != null)
+                    progressionCounter.Write(1);
             }
         }
     }

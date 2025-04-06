@@ -14,11 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using EQWOWConverter.Common;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones.Properties;
@@ -27,7 +22,7 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneProperties
     {
-        static public Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
         static public ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
         public string ShortName = string.Empty;
@@ -633,6 +628,12 @@ namespace EQWOWConverter.Zones
                 // Set new top factoring for overlap
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
+        }
+        static public Dictionary<string, ZoneProperties> GetZonePropertyListByShortName()
+        {
+            if (ZonePropertyListByShortName.Count == 0)
+                PopulateZonePropertiesList();
+            return ZonePropertyListByShortName;
         }
 
         public static ZoneProperties GetZonePropertiesForZone(string zoneShortName)

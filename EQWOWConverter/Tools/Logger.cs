@@ -14,13 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using Mysqlx.Crud;
+
 namespace EQWOWConverter
 {
     internal class Logger
     {
         // Rows written to the console, for tracking
         private static readonly object writeLock = new object();
-        private static Dictionary<int, string> ConsoleRows = new Dictionary<int, string>();
 
         public static void ResetLog()
         {
@@ -35,17 +36,6 @@ namespace EQWOWConverter
         {
             lock (writeLock)
             {
-                int row = Console.CursorTop;
-                int col = Console.CursorLeft;
-
-                if (ConsoleRows.ContainsKey(row) == false)
-                    ConsoleRows[row] = new string(' ', Console.BufferWidth);
-
-                char[] rowBuffer = ConsoleRows[row].ToCharArray();
-                for (int i = 0; i < text.Length && col + i < Console.BufferWidth; i++)
-                    rowBuffer[col + i] = text[i];
-
-                ConsoleRows[row] = new string(rowBuffer);
                 if (outputNewLine == true)
                     Console.WriteLine(text);
                 else
@@ -90,42 +80,6 @@ namespace EQWOWConverter
                     WriteToConsole(outputLine);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)
                     File.AppendAllText("log.txt", outputLine + "\n");
-            }
-        }
-
-        public static void WriteCounter(int number, int startPosition, int totalNumber = 0)
-        {
-            lock (writeLock)
-            {
-                string outputString;
-                if (totalNumber != 0)
-                    outputString = "(" + number.ToString() + " of " + totalNumber.ToString() + ")";
-                else
-                    outputString = "(" + number.ToString() + ")";
-                int cursorTop = Console.CursorTop - 1;
-                Console.SetCursorPosition(startPosition, cursorTop);
-                Console.Write(outputString);
-                Console.SetCursorPosition(0, cursorTop + 1);
-            }
-        }
-
-        public static int GetConsolePriorRowCursorLeft()
-        {
-            lock (writeLock)
-            {
-                int currentRow = Console.CursorTop;
-                if (currentRow == 0)
-                    return 0;
-                int previousRow = currentRow - 1;
-                if (ConsoleRows.ContainsKey(previousRow) == false)
-                    return 0;
-                string rowChars = ConsoleRows[previousRow];
-                for (int i = rowChars.Length - 1; i >= 0; i--)
-                {
-                    if (rowChars[i] != ' ')
-                        return i;
-                }
-                return 0;
             }
         }
     }

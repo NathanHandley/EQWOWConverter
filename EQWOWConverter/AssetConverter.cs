@@ -48,45 +48,75 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
 
-            // Objects (must always come before zones)
-            if (Configuration.GENERATE_OBJECTS == true)
+            // Thread 1: Objects and Zones
+            List<Zone> zones = new List<Zone>();
+            Task zoneAndObjectTask = Task.Run(() =>
             {
-                if (ConvertEQObjectsToWOW() == false)
-                    return false;
-            }
-            else
-                Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
+                // Objects (must always come before zones)
+                if (Configuration.GENERATE_OBJECTS == false)
+                    Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
 
-            // Zones
-            List<Zone> zones;
-            if (ConvertEQZonesToWOW(out zones) == false)
-                return false;
+                // Zones
+                ConvertEQZonesToWOW(out zones);
+            });
 
-            // Creatures
-            List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
+            // Thread 2: Creatures, Transports and Spawns
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
+            List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
-            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
+            Task creaturesAndSpawnsTask = Task.Run(() =>
             {
-                if (ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools, zones) == false)
-                    return false;
-            }
-            else
-                Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
+                // Creatures                
+                if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
+                    ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
+                else
+                    Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
 
-            // Transports (make sure it's after zones)
-            if (Configuration.GENERATE_TRANSPORTS == true)
-                ConvertTransports();
-            else
-                Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
+                // Transports (make sure it's after zones)
+                if (Configuration.GENERATE_TRANSPORTS == true)
+                    ConvertTransports();
+                else
+                    Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
+            });
+
+            // Thread 3: Items and Spells
+            List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
+            Task itemsAndSpellsTask = Task.Run(() =>
+            {
+                // Generate item templates
+                Logger.WriteInfo("Generating item templates and visual information...");
+                SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
+
+                // Build output directory
+                Logger.WriteInfo("Generating and copying blp files for equipment...");
+                string outputFolderPathRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
+                if (Directory.Exists(outputFolderPathRoot) == true)
+                    Directory.Delete(outputFolderPathRoot, true);
+                Directory.CreateDirectory(outputFolderPathRoot);
+
+                // Convert and copy all of the BLP files
+                LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
+                ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
+
+                // Spells
+                GenerateSpells(out spellTemplates);
+            });
+
+            // Wait for threads above to complete
+            zoneAndObjectTask.Wait();
+            creaturesAndSpawnsTask.Wait();
+            itemsAndSpellsTask.Wait();
 
             // Items
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
-            ConvertItemsAndLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
-
-            // Spells
-            List<SpellTemplate> spellTemplates;
-            GenerateSpells(out spellTemplates);
+            ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
             // Icons
             CopyIconFiles();
@@ -103,24 +133,37 @@ namespace EQWOWConverter
             // Create the SQL Scripts (note: this must always be after DBC files)
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
-            // Create or update the MPQ
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
-            if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
-                CreatePatchMPQ();
-            else
-                UpdatePatchMPQ();
-
-            // Deploy 
-            if (Configuration.DEPLOY_CLIENT_FILES == true)
+            // Thread 1: MPQ
+            Task mpqBuildAndDeployTask = Task.Run(() =>
             {
-                DeployClient();
-                if (Configuration.DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
-                    ClearClientCache();
-            }
-            if (Configuration.DEPLOY_SERVER_FILES == true)
-                DeployServerFiles();
-            if (Configuration.DEPLOY_SERVER_SQL == true)
-                DeployServerSQL();
+                // Create or update the MPQ
+                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
+                    CreatePatchMPQ();
+                else
+                    UpdatePatchMPQ();
+
+                // Deploy 
+                if (Configuration.DEPLOY_CLIENT_FILES == true)
+                {
+                    DeployClient();
+                    if (Configuration.DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY == true)
+                        ClearClientCache();
+                }
+            });
+
+            // Thead 2: Server Deploy
+            Task serverDeployTask = Task.Run(() =>
+            {
+                if (Configuration.DEPLOY_SERVER_FILES == true)
+                    DeployServerFiles();
+                if (Configuration.DEPLOY_SERVER_SQL == true)
+                    DeployServerSQL();
+            });
+                
+            // Wait for threads above to complete
+            mpqBuildAndDeployTask.Wait();
+            serverDeployTask.Wait();
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
@@ -300,14 +343,12 @@ namespace EQWOWConverter
                 Directory.Delete(exportObjectsFolder, true);
 
             // Generate static EQ objects
-            Logger.WriteInfo("Converting static EQ objects...");
             string staticObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "static_objects.txt");
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
             List<string> staticObjectList = FileTool.ReadAllStringLinesFromFile(staticObjectListFileName, false, true);
+            LogCounter staticObjectProgressCounter = new LogCounter("Converting static EQ objects...", 0, staticObjectList.Count);
             foreach (string staticObjectName in staticObjectList)
             {
-                curProgress++;
+                staticObjectProgressCounter.AddToProgress(1);
                 string curObjectOutputFolder = Path.Combine(exportObjectsFolder, staticObjectName);
 
                 // Load the EQ object
@@ -328,18 +369,16 @@ namespace EQWOWConverter
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
-                Logger.WriteCounter(curProgress, curProgressOffset, staticObjectList.Count);
+                staticObjectProgressCounter.Write();
             }
 
             // Generate skeletal EQ objects
-            Logger.WriteInfo("Converting skeletal EQ objects...");
             string skeletalObjectListFileName = Path.Combine(conditionedObjectFolderRoot, "skeletal_objects.txt");
-            curProgress = 0;
-            curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
             List<string> skeletalObjectList = FileTool.ReadAllStringLinesFromFile(skeletalObjectListFileName, false, true);
+            LogCounter skeletalObjectProgressCounter = new LogCounter("Converting skeletal EQ objects...", 0, skeletalObjectList.Count);            
             foreach (string skeletalObjectName in skeletalObjectList)
             {
-                curProgress++;
+                skeletalObjectProgressCounter.AddToProgress(1);
                 string curObjectOutputFolder = Path.Combine(exportObjectsFolder, skeletalObjectName);
 
                 // Load the EQ object
@@ -360,7 +399,7 @@ namespace EQWOWConverter
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
-                Logger.WriteCounter(curProgress, curProgressOffset, skeletalObjectList.Count);
+                skeletalObjectProgressCounter.Write();
             }
 
             return true;
@@ -516,10 +555,8 @@ namespace EQWOWConverter
         }
 
         public bool ConvertCreatures(ref List<CreatureModelTemplate> creatureModelTemplates, ref List<CreatureTemplate> creatureTemplates, 
-            ref List<CreatureSpawnPool> creatureSpawnPools, List<Zone> zones)
-        {
-            // Clear out / build the texture working folder
-            
+            ref List<CreatureSpawnPool> creatureSpawnPools)
+        {           
             // Generate folder paths
             string workingTexturePath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
             if (Directory.Exists(workingTexturePath))
@@ -546,12 +583,7 @@ namespace EQWOWConverter
             creatureTemplates = creatureTemplatesByID.Values.ToList();
 
             // Create all of the models and related model files
-            Logger.WriteInfo("Creating creature model files...");
-
-            // For the counter
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            
+            LogCounter progressionCounter = new LogCounter("Creating creature model files...");
             CreatureModelTemplate.CreateAllCreatureModelTemplates(creatureTemplates);
             foreach (var modelTemplatesByRaceID in CreatureModelTemplate.AllTemplatesByRaceID)
             {
@@ -559,18 +591,18 @@ namespace EQWOWConverter
                 {
                     modelTemplate.CreateModelFiles();
                     creatureModelTemplates.Add(modelTemplate);
-                    curProgress++;
-                    Logger.WriteCounter(curProgress, curProgressOffset);
+                    progressionCounter.Write(1);
                 }
             }
 
             // Get a list of valid zone names
             Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            Dictionary<int, Zone> zonesByMapID = new Dictionary<int, Zone>();
-            foreach (Zone zone in zones)
+            Dictionary<int, ZoneProperties> zonePropertiesByMapID = new Dictionary<int, ZoneProperties>();
+
+            foreach (var zoneProperties in ZoneProperties.GetZonePropertyListByShortName())
             {
-                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
-                zonesByMapID.Add(zone.ZoneProperties.DBCMapID, zone);
+                mapIDsByShortName.Add(zoneProperties.Value.ShortName.ToLower().Trim(), zoneProperties.Value.DBCMapID);
+                zonePropertiesByMapID.Add(zoneProperties.Value.DBCMapID, zoneProperties.Value);
             }
 
             // Group spawn entries (creature template relationships) by group ID
@@ -613,7 +645,7 @@ namespace EQWOWConverter
                     if (mapIDsByShortName.ContainsKey(spawnInstance.ZoneShortName.ToLower().Trim()))
                     {
                         spawnInstance.MapID = mapIDsByShortName[spawnInstance.ZoneShortName.ToLower().Trim()];
-                        spawnInstance.AreaID = Convert.ToInt32(zonesByMapID[spawnInstance.MapID].DefaultArea.DBCAreaTableID);
+                        spawnInstance.AreaID = Convert.ToInt32(zonePropertiesByMapID[spawnInstance.MapID].DefaultZoneArea.DBCAreaTableID);
                         curSpawnPool.AddSpawnInstance(spawnInstance);
                     }
                 }
@@ -732,9 +764,9 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void ConvertItemsAndLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
+        public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
         {
-            Logger.WriteInfo("Converting items and loot...");
+            Logger.WriteInfo("Converting loot tables...");
 
             // Clear out the working texture folder for character clothes
             string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
@@ -821,30 +853,10 @@ namespace EQWOWConverter
                 }
             }
 
-            // Build output directory
-            Logger.WriteInfo("Generating and copying blp files for equipment...");
-            string outputFolderPathRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
-            if (Directory.Exists(outputFolderPathRoot) == true)
-                Directory.Delete(outputFolderPathRoot, true);
-            Directory.CreateDirectory(outputFolderPathRoot);
-
-            // Convert and copy all of the BLP files
-            Logger.WriteInfo("Converting and copying equipment textures... ");
-            int cursorCurProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            ConvertAndCopyEquipmentTextures("ArmLowerTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("ArmUpperTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("LegLowerTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("LegUpperTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("TorsoLowerTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("TorsoUpperTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("HandTexture", ref cursorCurProgress, curProgressOffset);
-            ConvertAndCopyEquipmentTextures("FootTexture", ref cursorCurProgress, curProgressOffset);
-
             Logger.WriteInfo("Item and loot conversion complete.");
         }
 
-        private void ConvertAndCopyEquipmentTextures(string subfolderName, ref int curCount, int curProgressOffset)
+        private void ConvertAndCopyEquipmentTextures(string subfolderName, LogCounter progressionCounter)
         {
             Logger.WriteDebug("Converting and copying equipment textures for '" + subfolderName + "'... ");
             string workingFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures", subfolderName);
@@ -858,9 +870,9 @@ namespace EQWOWConverter
                 Directory.Delete(outputFolder, true);
             Directory.CreateDirectory(outputFolder);
             string[] pngFileNamesWithPath = Directory.GetFiles(workingFolder, "*.png");
-            
-            Logger.WriteCounter(curCount, curProgressOffset);
-            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing, curProgressOffset, 0, ref curCount);
+
+            progressionCounter.Write();
+            ImageTool.ConvertPNGTexturesToBLP(pngFileNamesWithPath.ToList(), ImageTool.ImageAssociationType.Clothing, progressionCounter);
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
@@ -1836,7 +1848,7 @@ namespace EQWOWConverter
                 // Zone lines
                 foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
-                    if (ZoneProperties.ZonePropertyListByShortName.ContainsKey(zoneLine.TargetZoneShortName) == false)
+                    if (ZoneProperties.GetZonePropertyListByShortName().ContainsKey(zoneLine.TargetZoneShortName) == false)
                     {
                         Logger.WriteError("Error!  When attempting to map a zone line, there was no zone with short name '" + zoneLine.TargetZoneShortName + "'");
                         continue;

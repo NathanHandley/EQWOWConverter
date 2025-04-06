@@ -27,7 +27,7 @@ namespace EQWOWConverter
     {
         public bool ConditionEQOutput()
         {
-            Logger.WriteInfo("Conditioning EQ folders...");
+            LogCounter progressCounter = new LogCounter("Conditioning EQ folders...");
 
             // Make sure the raw path exists
             string eqExportsRawPath = Configuration.PATH_EQEXPORTSRAW_FOLDER;
@@ -65,11 +65,6 @@ namespace EQWOWConverter
             Directory.CreateDirectory(outputObjectsSkeletonsFolderRoot);
             Directory.CreateDirectory(outputZoneFolderRoot);
             Directory.CreateDirectory(outputLiquidSurfacesFolderRoot);
-
-            // For the counter
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset);
 
             // Keep a store of all objects found
             SortedSet<string> staticObjectNames = new SortedSet<string>();
@@ -221,8 +216,7 @@ namespace EQWOWConverter
                     File.Copy(inputFileName, outputFileName, true);
                 }
 
-                curProgress++;
-                Logger.WriteCounter(curProgress, curProgressOffset);
+                progressCounter.Write(1);
             }
 
             // Clean up the temp folder
@@ -386,7 +380,7 @@ namespace EQWOWConverter
 
         public void ConditionMusicFiles(string musicDirectory)
         {
-            Logger.WriteInfo("Converting music files...");
+            LogCounter progressCounter = new LogCounter("Converting music files...");
             if (Path.Exists(musicDirectory) == false)
             {
                 Logger.WriteError("Failed to process music files.  The music directory at '" + musicDirectory + "' does not exist.");
@@ -432,11 +426,6 @@ namespace EQWOWConverter
                 Logger.WriteError("Failed to process music files. '" + ffmpegFileFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
                 return;
             }
-
-            // For the counter
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset);
 
             // Process all of the xmi files, which contain the midi information
             foreach (string musicXMIFile in musicXMIFiles)
@@ -486,8 +475,7 @@ namespace EQWOWConverter
                     File.Delete(musicMidiFile);
                     File.Delete(tempWavFileName);
 
-                    curProgress++;
-                    Logger.WriteCounter(curProgress, curProgressOffset);
+                    progressCounter.Write(1);
                 }
             }
         }
@@ -639,14 +627,8 @@ namespace EQWOWConverter
                 }
             }
 
-            Logger.WriteInfo("Converting png files to blp files...");
-
-            // For the counter
-            int curProgress = 0;
-            int curProgressOffset = Logger.GetConsolePriorRowCursorLeft();
-            Logger.WriteCounter(curProgress, curProgressOffset, pngFilesToConvert.Count);
-
             // Convert them
+            LogCounter progressCounter = new LogCounter("Converting png files to blp files...", 0, pngFilesToConvert.Count);
             StringBuilder curFileArgListSB = new StringBuilder();
             for(int i = 0; i < pngFilesToConvert.Count; i++)
             {
@@ -668,8 +650,8 @@ namespace EQWOWConverter
                     Console.Title = "EverQuest to WoW Converter";
                     curFileArgListSB.Clear();
 
-                    curProgress = i;
-                    Logger.WriteCounter(curProgress, curProgressOffset, pngFilesToConvert.Count);
+                    progressCounter.SetProgress(i);
+                    progressCounter.Write();
                 }
             }
 
