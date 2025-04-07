@@ -20,16 +20,27 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQMesh
     {
-        public class BoneReference
+        public struct BoneReference
         {
             public byte KeyBoneID = 0;
             public int VertStart = 0;
-            public int VertCount = 0;        
+            public int VertCount = 0;
+
+            public BoneReference() { }
         }
 
         public MeshData Meshdata = new MeshData();
         public string MaterialListFileName = string.Empty;       
         public List<BoneReference> Bones = new List<BoneReference>();
+
+        public EQMesh() { }
+
+        public EQMesh(EQMesh other)
+        {
+            Meshdata = new MeshData(other.Meshdata);
+            MaterialListFileName = other.MaterialListFileName;
+            Bones = new List<BoneReference>(other.Bones);
+        }
 
         public bool LoadFromDisk(string fileFullPath)
         {

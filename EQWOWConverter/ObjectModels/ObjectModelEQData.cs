@@ -22,6 +22,9 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelEQData
     {
+        static private Dictionary<string, EQMesh> CachedRenderMeshByFileName = new Dictionary<string, EQMesh>();
+        static private readonly object MeshLock = new object();
+
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
         public List<Vector3> CollisionVertices = new List<Vector3>();
@@ -249,13 +252,20 @@ namespace EQWOWConverter.ObjectModels
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading render mesh data...");
             foreach (var meshNameByBoneIndex in meshNamesByBoneIndex)
             {
-                // Load this mesh
+                // Load this mesh, if needed
                 string renderMeshFileName = Path.Combine(inputObjectFolder, "Meshes", meshNameByBoneIndex.Key + ".txt");
                 EQMesh eqMeshData = new EQMesh();
-                if (eqMeshData.LoadFromDisk(renderMeshFileName) == false)
+                lock (MeshLock)
                 {
-                    Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
-                    return;
+                    if (CachedRenderMeshByFileName.ContainsKey(renderMeshFileName) == true)
+                        eqMeshData = new EQMesh(CachedRenderMeshByFileName[renderMeshFileName]);
+                    else if (eqMeshData.LoadFromDisk(renderMeshFileName) == true)
+                        CachedRenderMeshByFileName.Add(renderMeshFileName, new EQMesh(eqMeshData));
+                    else
+                    {
+                        Logger.WriteError("- [" + inputObjectName + "]: ERROR - Could not find render mesh file that should be at '" + renderMeshFileName + "'");
+                        return;
+                    }                        
                 }
 
                 // Associate bone references

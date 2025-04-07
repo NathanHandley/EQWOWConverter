@@ -161,13 +161,19 @@ namespace EQWOWConverter.Creatures
                 string outputTextureName = Path.Combine(outputFullMPQPath, texture.TextureName + ".blp");
                 if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
                 {
-                    File.Copy(inputTextureNameInCharTextureFolder, outputTextureName, true);
-                    Logger.WriteDebug(String.Concat("- [", curObject.Name, "]: Texture named '", texture.TextureName, ".blp' copied"));
+                    if (File.Exists(outputTextureName) == false)
+                    {
+                        File.Copy(inputTextureNameInCharTextureFolder, outputTextureName, true);
+                        Logger.WriteDebug(String.Concat("- [", curObject.Name, "]: Texture named '", texture.TextureName, ".blp' copied"));
+                    }
                 }
                 else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
                 {
-                    File.Copy(inputTextureNameInGeneratedTextureFolder, outputTextureName, true);
-                    Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    if (File.Exists(outputTextureName) == false)
+                    {
+                        File.Copy(inputTextureNameInGeneratedTextureFolder, outputTextureName, true);
+                        Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    }
                 }
                 else
                 {

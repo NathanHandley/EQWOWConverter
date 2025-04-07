@@ -687,7 +687,7 @@ namespace EQWOWConverter.ObjectModels
 
         public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
         {
-            Logger.WriteDebug("Seeking animation to build to wow type '" + animationType.ToString() + "' for object '" + Name + "'");
+            Logger.WriteDebug(string.Concat("Seeking animation to build to wow type '", animationType.ToString(), "' for object '", Name, "'"));
 
             // Determine what animations can work
             List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
@@ -703,7 +703,7 @@ namespace EQWOWConverter.ObjectModels
                     if (animation.Value.EQAnimationType == compatibleAnimationType)
                     {
                         // Capture and set this animation
-                        Logger.WriteDebug("Found usable candidate, setting to eq type '" + animation.Key + "' for object '" + Name + "'");
+                        Logger.WriteDebug(string.Concat("Found usable candidate, setting to eq type '", animation.Key, "' for object '", Name, "'"));
 
                         // Create the base animation object
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
@@ -734,7 +734,7 @@ namespace EQWOWConverter.ObjectModels
                             Animation.BoneAnimationFrame animationFrame = animationFrame = animation.Value.AnimationFrames[i];
                             if (DoesBoneExistForName(animationFrame.GetBoneName()) == false)
                             {
-                                Logger.WriteDebug("For object '" + Name + "' skipping bone with name '" + animationFrame.GetBoneName() + "' when mapping animation since it couldn't be found");
+                                Logger.WriteDebug(string.Concat("For object '", Name, "' skipping bone with name '", animationFrame.GetBoneName(), "' when mapping animation since it couldn't be found"));
                                 continue;
                             }
                             
@@ -796,7 +796,7 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            Logger.WriteDebug("No animation candidate was found for object '" + Name + "'");
+            Logger.WriteDebug(String.Concat("No animation candidate was found for object '", Name, "'"));
         }
 
         public int GetFirstBoneIndexForEQBoneNames(params string[] eqBoneNames)
