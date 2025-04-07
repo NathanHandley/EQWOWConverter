@@ -114,14 +114,33 @@ namespace EQWOWConverter
 
                 // Convert and copy all of the BLP files
                 LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
-                ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);
-                ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
+                Task equipTexConv1Task = Task.Factory.StartNew(() =>
+                {
+                    Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 1] Started");
+                    ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
+                    Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 1] Ended");
+                }, TaskCreationOptions.LongRunning);
+                if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                    equipTexConv1Task.Wait();
+                Task equipTexConv2Task = Task.Factory.StartNew(() =>
+                {
+                    Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 2] Started");
+                    ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
+                    ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);                    
+                    Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 2] Ended");
+                }, TaskCreationOptions.LongRunning);
+                if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                    equipTexConv2Task.Wait();
+                if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+                {
+                    equipTexConv1Task.Wait();
+                    equipTexConv2Task.Wait();
+                }
 
                 // Spells
                 GenerateSpells(out spellTemplates);
@@ -143,25 +162,22 @@ namespace EQWOWConverter
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
-            // Icons
-            CopyIconFiles();
-
-            // Copy the loading screens
-            CreateLoadingScreens();
-
-            // Copy the liquid material textures
-            CreateLiquidMaterials();
-
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
-            // Create the SQL Scripts (note: this must always be after DBC files)
-            CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
-
-            // Thread 1: MPQ
+            // Thread 1: Client
             Task clientBuildAndDeployTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Client Build and Deploy] Started");
+
+                // Icons
+                CopyIconFiles();
+
+                // Copy the liquid material textures
+                CreateLiquidMaterials();
+
+                // Copy the loading screens
+                CreateLoadingScreens();
 
                 // Create or update the MPQ
                 string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
@@ -183,10 +199,13 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<-> Thread [Client Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
 
-            // Thead 2: Server Deploy
+            // Thead 2: Server
             Task serverDeployTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Server Deploy] Started");
+                Logger.WriteInfo("<+> Thread [Server Build and Deploy] Started");
+
+                // Create the SQL Scripts (note: this must always be after DBC files)
+                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -197,7 +216,7 @@ namespace EQWOWConverter
                 else
                     Logger.WriteInfo("- Note: DEPLOY_SERVER_SQL set false in the Configuration");
 
-                Logger.WriteInfo("<-> Thread [Server Deploy] Ended");
+                Logger.WriteInfo("<-> Thread [Server Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
                 
             // Wait for threads above to complete
@@ -524,12 +543,14 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 int taskCount = Configuration.CORE_ZONEGEN_THREAD_COUNT;
+                if (zoneShortNamesToProcess.Count < taskCount)
+                    taskCount = zoneShortNamesToProcess.Count;
                 Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        return ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                        return ZoneThreadWorker(i, zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                     }, TaskCreationOptions.LongRunning);
                 }
                 Task.WaitAll(tasks);
@@ -538,7 +559,7 @@ namespace EQWOWConverter
             }
             else
             {
-                List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                List<Zone> processedZones = ZoneThreadWorker(0, zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
                     workingZones.AddRange(processedZones);
             }
@@ -547,9 +568,10 @@ namespace EQWOWConverter
             return true;
         }
 
-        private List<Zone> ZoneThreadWorker(List<string> zoneShortNamesToProcess, string inputZoneFolder, string exportMPQRootFolder, string relativeStaticDoodadsPath, string inputObjectTexturesFolder,
-            string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
+        private List<Zone> ZoneThreadWorker(int threadID, List<string> zoneShortNamesToProcess, string inputZoneFolder, string exportMPQRootFolder, 
+            string relativeStaticDoodadsPath, string inputObjectTexturesFolder, string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
         {
+            Logger.WriteInfo(string.Concat("<+> Thread [Zone Subworker ", threadID.ToString(), "] Started"));
             List<Zone> processedZones = new List<Zone>();
             bool moreToProcess = true;
             while (moreToProcess)
@@ -574,6 +596,7 @@ namespace EQWOWConverter
                 else
                     moreToProcess = false;
             }
+            Logger.WriteInfo(string.Concat("<-> Thread [Zone Subworker ", threadID.ToString(), "] Ended"));
             return processedZones;
         }
 
