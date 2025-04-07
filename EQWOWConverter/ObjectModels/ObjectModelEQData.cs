@@ -24,6 +24,8 @@ namespace EQWOWConverter.ObjectModels
     {
         static private Dictionary<string, EQMesh> CachedRenderMeshByFileName = new Dictionary<string, EQMesh>();
         static private readonly object MeshLock = new object();
+        static private Dictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new Dictionary<string, EQSkeleton>();
+        static private readonly object SkeletonLock = new object();
 
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();
@@ -355,11 +357,20 @@ namespace EQWOWConverter.ObjectModels
         {
             Logger.WriteDebug("- [" + inputObjectName + "]: Reading skeleton data...");
             string skeletonFileName = Path.Combine(inputObjectFolder, "Skeletons", inputObjectName + ".txt");
-            SkeletonData = new EQSkeleton();
-            if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
+            lock(SkeletonLock)
             {
-                Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
-                return;
+                if (CachedSkeletonDataByFileName.ContainsKey(skeletonFileName) == true)
+                    SkeletonData = new EQSkeleton(CachedSkeletonDataByFileName[skeletonFileName]);
+                else
+                {
+                    SkeletonData = new EQSkeleton();
+                    if (SkeletonData.LoadFromDisk(skeletonFileName) == false)
+                    {
+                        Logger.WriteError("- [" + inputObjectName + "]: Issue loading skeleton data that should be at '" + skeletonFileName + "'");
+                        return;
+                    }
+                    CachedSkeletonDataByFileName.Add(skeletonFileName, new EQSkeleton(SkeletonData));
+                }
             }
         }
 

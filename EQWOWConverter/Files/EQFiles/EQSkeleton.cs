@@ -20,18 +20,31 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQSkeleton
     {
-        public class EQSkeletonBone
+        public struct EQSkeletonBone
         {
             public string BoneName = string.Empty;
             public List<int> Children = new List<int>();
             public string MeshName = string.Empty;
             public string AlternateMeshName = string.Empty;
             public string ParticleCloudName = string.Empty;
+
+            public EQSkeletonBone() { }
         }
 
         public List<string> MeshNames = new List<string>();
         public List<string> SecondaryMeshNames = new List<string>();
         public List<EQSkeletonBone> BoneStructures = new List<EQSkeletonBone>();
+
+        public EQSkeleton() { }
+        public EQSkeleton(EQSkeleton other)
+        {
+            MeshNames = new List<string>(other.MeshNames.Count);
+            MeshNames.AddRange(other.MeshNames);
+            SecondaryMeshNames = new List<string>(other.SecondaryMeshNames.Count);
+            SecondaryMeshNames.AddRange(other.SecondaryMeshNames);
+            BoneStructures = new List<EQSkeletonBone>(other.BoneStructures.Count);
+            BoneStructures.AddRange(other.BoneStructures);
+        }
 
         public void LoadFromAnimatedVerticesData(ref MeshData meshData)
         {
