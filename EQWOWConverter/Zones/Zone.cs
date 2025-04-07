@@ -446,10 +446,8 @@ namespace EQWOWConverter.Zones
                     // Get the object mesh data
                     ObjectModel curObject = ObjectModel.StaticObjectModelsByName[doodadInstance.ObjectName];
                     MeshData objectMeshData = new MeshData();
-                    foreach (Vector3 collisionPosition in curObject.CollisionPositions)
-                        objectMeshData.Vertices.Add(new Vector3(collisionPosition));
-                    foreach (TriangleFace collisionFace in curObject.CollisionTriangles)
-                        objectMeshData.TriangleFaces.Add(new TriangleFace(collisionFace));
+                    objectMeshData.Vertices = new List<Vector3>(curObject.CollisionPositions);
+                    objectMeshData.TriangleFaces = new List<TriangleFace>(curObject.CollisionTriangles);
 
                     // Fill out placeholders (TODO: Figure out how to remove this)
                     for (int i = 0; i < objectMeshData.Vertices.Count; i++)
@@ -497,9 +495,6 @@ namespace EQWOWConverter.Zones
                 // Append it
                 collisionMeshData.AddMeshData(allObjectMeshData);
             }
-
-            // Split the collision geometry into cubiods
-            //collisionMeshData.SplitGeometryIntoCubiods(Configuration.ZONE_COLLISION_AREA_MAX_EDGE_LEGNTH);
 
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)

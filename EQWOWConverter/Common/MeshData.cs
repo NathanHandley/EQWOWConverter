@@ -204,8 +204,8 @@ namespace EQWOWConverter.Common
 
         public void ApplyRotationOnVertices(Quaternion rotation)
         {
-            foreach (Vector3 vertex in Vertices)
-                vertex.Rotate(rotation);
+            for (int i = 0; i < Vertices.Count; i++)
+                Vertices[i] = Vector3.GetRotated(Vertices[i], rotation);
         }
 
         public void ApplyTranslationOnVertices(Vector3 translation)
@@ -218,8 +218,8 @@ namespace EQWOWConverter.Common
 
         public void ApplyScaleOnVertices(float scale)
         {
-            foreach (Vector3 vertex in Vertices)
-                vertex.Scale(scale);
+            for (int i = 0; i < Vertices.Count; i++)
+                Vertices[i] = Vector3.GetScaled(Vertices[i], scale);
         }
 
         public void DeleteInvalidTriangles()

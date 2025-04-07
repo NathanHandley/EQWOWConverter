@@ -98,12 +98,8 @@ namespace EQWOWConverter.ObjectModels
             CreatureModelTemplate = creatureModelTemplate;
 
             // Load it
-            if (EQObjectModelData.CollisionVertices.Count == 0)
-                Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, new List<Vector3>(), new List<TriangleFace>(), activeDoodadAnimationType,
-                    activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
-            else
-                Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
-                    activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
+            Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
+                activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
         }
 
         // TODO: Vertex Colors
@@ -146,10 +142,12 @@ namespace EQWOWConverter.ObjectModels
                 // If there is any collision data, also translate that too
                 if (collisionVertices.Count > 0)
                 {
+                    // Putting in a MeshData is just to gain access to "ApplyEQToWoWGeometryTranslationsAndScale"
                     MeshData collisionMeshData = new MeshData();
                     collisionMeshData.TriangleFaces = collisionTriangleFaces;
                     collisionMeshData.Vertices = collisionVertices;
                     collisionMeshData.ApplyEQToWoWGeometryTranslationsAndScale(doRotateOnZAxis, scaleAmount);
+                    // Copy back
                     collisionTriangleFaces = collisionMeshData.TriangleFaces;
                     collisionVertices = collisionMeshData.Vertices;
                 }
@@ -658,11 +656,11 @@ namespace EQWOWConverter.ObjectModels
             {
                 // Rotate
                 if (curBone.RotationTrack.Values[0].Values.Count > 0)
-                    headLocation.Rotate(curBone.RotationTrack.Values[0].Values[0]);
+                    headLocation = Vector3.GetRotated(headLocation, curBone.RotationTrack.Values[0].Values[0]);
 
                 // Scale
                 if (curBone.ScaleTrack.Values[0].Values.Count > 0)
-                    headLocation.Scale(curBone.ScaleTrack.Values[0].Values[0].X);
+                    headLocation = Vector3.GetScaled(headLocation, curBone.ScaleTrack.Values[0].Values[0].X);
 
                 // Translate
                 if (curBone.TranslationTrack.Values[0].Values.Count > 0)
@@ -1413,11 +1411,6 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            // Purge prior data
-            CollisionPositions.Clear();
-            CollisionFaceNormals.Clear();
-            CollisionTriangles.Clear();
-
             // Generate collision data if there is none and it's from an EQ object
             if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
             {
@@ -1494,14 +1487,9 @@ namespace EQWOWConverter.ObjectModels
             if (Properties.CustomCollisionType != ObjectModelCustomCollisionType.None)
                 ApplyCustomCollision(Properties.CustomCollisionType, ref collisionVertices, ref collisionTriangleFaces);
 
-            // Store positions, factoring for world scailing and rotation around Z axis
-            foreach (Vector3 collisionVertex in collisionVertices)
-                CollisionPositions.Add(new Vector3(collisionVertex));
-
-            // Store triangle indices, ignoring 'blank' ones that have the same value 3x
-            foreach (TriangleFace collisionTriangle in collisionTriangleFaces)
-                if (collisionTriangle.V1 != collisionTriangle.V2)
-                    CollisionTriangles.Add(new TriangleFace(collisionTriangle));
+            // Store data on the object
+            CollisionPositions = new List<Vector3>(collisionVertices);
+            CollisionTriangles = new List<TriangleFace>(collisionTriangleFaces);
 
             // Calculate normals using the triangles provided
             foreach (TriangleFace collisionTriangle in CollisionTriangles)
@@ -1515,7 +1503,7 @@ namespace EQWOWConverter.ObjectModels
                 Vector3 edge1 = vertex2 - vertex1;
                 Vector3 edge2 = vertex3 - vertex1;
 
-                // Cross product determise the vector, then normalize (using C# libraries to save coding time)
+                // Cross product determines the vector, then normalize (using C# libraries to save coding time)
                 System.Numerics.Vector3 edge1System = new System.Numerics.Vector3(edge1.X, edge1.Y, edge1.Z);
                 System.Numerics.Vector3 edge2System = new System.Numerics.Vector3(edge2.X, edge2.Y, edge2.Z);
                 System.Numerics.Vector3 normalSystem = System.Numerics.Vector3.Cross(edge1System, edge2System);

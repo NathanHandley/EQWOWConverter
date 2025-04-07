@@ -109,8 +109,10 @@ namespace EQWOWConverter.Common
             return new Vector3(Math.Max(v1.X, v2.X), Math.Max(v1.Y, v2.Y), Math.Max(v1.Z, v2.Z));
         }
 
-        public void Rotate(float rotationX, float rotationY, float rotationZ, float rotationW)
+        public static Vector3 GetRotated(Vector3 v, float rotationX, float rotationY, float rotationZ, float rotationW)
         {
+            Vector3 rotatedVector = new Vector3(v);
+
             // Calculate intermediate values
             float x2 = rotationX + rotationX, y2 = rotationY + rotationY, z2 = rotationZ + rotationZ;
             float xx = rotationX * x2, yy = rotationY * y2, zz = rotationZ * z2;
@@ -118,29 +120,33 @@ namespace EQWOWConverter.Common
             float wx = rotationW * x2, wy = rotationW * y2, wz = rotationW * z2;
 
             // Apply rotation matrix
-            float transformedX = (1 - (yy + zz)) * X + (xy - wz) * Y + (xz + wy) * Z;
-            float transformedY = (xy + wz) * X + (1 - (xx + zz)) * Y + (yz - wx) * Z;
-            float transformedZ = (xz - wy) * X + (yz + wx) * Y + (1 - (xx + yy)) * Z;
-            X = transformedX;
-            Y = transformedY;
-            Z = transformedZ;
+            float transformedX = (1 - (yy + zz)) * v.X + (xy - wz) * v.Y + (xz + wy) * v.Z;
+            float transformedY = (xy + wz) * v.X + (1 - (xx + zz)) * v.Y + (yz - wx) * v.Z;
+            float transformedZ = (xz - wy) * v.X + (yz + wx) * v.Y + (1 - (xx + yy)) * v.Z;
+            rotatedVector.X = transformedX;
+            rotatedVector.Y = transformedY;
+            rotatedVector.Z = transformedZ;
+
+            return rotatedVector;
         }
 
-        public void Rotate(Quaternion rotation)
+        public static Vector3 GetRotated(Vector3 v, Quaternion rotation)
         {
-            Rotate(rotation.X, rotation.Y, rotation.Z, rotation.W);
+            return GetRotated(v, rotation.X, rotation.Y, rotation.Z, rotation.W);
         }
 
-        public void Rotate(QuaternionShort rotation)
+        public static Vector3 GetRotated(Vector3 v,QuaternionShort rotation)
         {
-            Rotate(rotation.X, rotation.Y, rotation.Z, rotation.W);
+            return GetRotated(v, rotation.X, rotation.Y, rotation.Z, rotation.W);
         }
 
-        public void Scale(float scale)
+        public static Vector3 GetScaled(Vector3 v, float scale)
         {
-            X *= scale;
-            Y *= scale;
-            Z *= scale;
+            Vector3 scaledVector = new Vector3(v);
+            scaledVector.X *= scale;
+            scaledVector.Y *= scale;
+            scaledVector.Z *= scale;
+            return scaledVector;
         }
 
         public float GetMagnitude()

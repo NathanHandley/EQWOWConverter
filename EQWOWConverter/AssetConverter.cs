@@ -588,8 +588,6 @@ namespace EQWOWConverter
                     }
                 }
 
-                Logger.WriteInfo(threadID + ", " + zoneShortNameToProcess);
-
                 // Zone was found, so continue processing
                 if (zoneShortNameToProcess != string.Empty)
                 {
