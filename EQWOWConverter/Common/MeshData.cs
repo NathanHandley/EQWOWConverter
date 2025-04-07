@@ -504,7 +504,34 @@ namespace EQWOWConverter.Common
         {
             // Since the face list is likely to not include all faces, rebuild the render object lists
             MeshData extractedMeshData = new MeshData();
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+
+            // Size the data objects to avoid constant resizing (performance)
+            HashSet<int> vertIndicesInFaces = new HashSet<int>();
+            for (int i = 0; i < faces.Count; i++)
+            {
+                TriangleFace curTriangleFace = faces[i];
+                if (vertIndicesInFaces.Contains(curTriangleFace.V1) == false)
+                    vertIndicesInFaces.Add(curTriangleFace.V1);
+                if (vertIndicesInFaces.Contains(curTriangleFace.V2) == false)
+                    vertIndicesInFaces.Add(curTriangleFace.V2);
+                if (vertIndicesInFaces.Contains(curTriangleFace.V3) == false)
+                    vertIndicesInFaces.Add(curTriangleFace.V3);
+            }
+            extractedMeshData.TriangleFaces = new List<TriangleFace>(faces.Count);
+            extractedMeshData.Vertices = new List<Vector3>(vertIndicesInFaces.Count);
+            if (Normals.Count > 0)
+                extractedMeshData.Normals = new List<Vector3>(vertIndicesInFaces.Count);
+            if (TextureCoordinates.Count > 0)
+                extractedMeshData.TextureCoordinates = new List<TextureCoordinates>(vertIndicesInFaces.Count);
+            if (VertexColors.Count > 0)
+                extractedMeshData.VertexColors = new List<ColorRGBA>(vertIndicesInFaces.Count);
+            if (BoneIDs.Count != 0)
+                extractedMeshData.BoneIDs = new List<byte>(vertIndicesInFaces.Count);
+            if (AnimatedVertexFramesByVertexIndex.Count > 0)
+                extractedMeshData.AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(vertIndicesInFaces.Count);
+
+            // Remap
+            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>(vertIndicesInFaces.Count);
             for (int i = 0; i < faces.Count; i++)
             {
                 TriangleFace curTriangleFace = faces[i];
