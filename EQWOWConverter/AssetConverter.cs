@@ -2357,16 +2357,19 @@ namespace EQWOWConverter
             }
 
             // Finally copy the textures for any sound instance objects
-            string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
-            foreach (ObjectModel zoneObject in zone.SoundInstanceObjectModels)
+            if (Configuration.AUDIO_SOUNDINSTANCE_DRAW_AS_BOX == true)
             {
-                string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
-                if (File.Exists(soundInstanceInputTextureFullPath) == false)
+                string soundInstanceInputTextureFullPath = Path.Combine(inputObjectTextureFolder, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+                foreach (ObjectModel zoneObject in zone.SoundInstanceObjectModels)
                 {
-                    Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
-                    continue;
+                    string soundInstanceOutputTextureFullPath = Path.Combine(wowExportPath, relativeZoneMaterialDoodadsPath, zoneObject.Name, Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_MATERIAL_NAME + ".blp");
+                    if (File.Exists(soundInstanceInputTextureFullPath) == false)
+                    {
+                        Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
+                        continue;
+                    }
+                    File.Copy(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath, true);
                 }
-                File.Copy(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath, true);
             }
 
             Logger.WriteDebug("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
