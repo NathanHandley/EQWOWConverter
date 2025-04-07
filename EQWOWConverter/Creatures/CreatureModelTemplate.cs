@@ -18,6 +18,7 @@ using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.ObjectModels;
 using System.Text;
 using EQWOWConverter.WOWFiles;
+using System.Linq;
 
 namespace EQWOWConverter.Creatures
 {
@@ -109,8 +110,8 @@ namespace EQWOWConverter.Creatures
         public void CreateModelFiles(string charactersFolderRoot, string inputObjectTextureFolder, string exportAnimatedObjectsFolder,
             string generatedTexturesFolderPath)
         {
-            string objectName = Race.Name + " " + GenerateFileName();
-            Logger.WriteDebug("For creature template '" + objectName + "', creating the object files");
+            string objectName = String.Concat(Race.Name, " ", GenerateFileName());
+            Logger.WriteDebug(String.Concat("For creature template '", objectName , "', creating the object files"));
 
             // Get the skeleton name
             string skeletonName = Race.SkeletonName;
@@ -161,7 +162,7 @@ namespace EQWOWConverter.Creatures
                 if (Path.Exists(inputTextureNameInCharTextureFolder) == true)
                 {
                     File.Copy(inputTextureNameInCharTextureFolder, outputTextureName, true);
-                    Logger.WriteDebug("- [" + curObject.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                    Logger.WriteDebug(String.Concat("- [", curObject.Name, "]: Texture named '", texture.TextureName, ".blp' copied"));
                 }
                 else if (Path.Exists(inputTextureNameInGeneratedTextureFolder) == true)
                 {
@@ -175,7 +176,7 @@ namespace EQWOWConverter.Creatures
                 }
             }
 
-            Logger.WriteDebug("For creature template '" + objectName + "', completed creating the object files");
+            Logger.WriteDebug(String.Concat("For creature template '", objectName, "', completed creating the object files"));
         }
 
         public string GenerateFileName()

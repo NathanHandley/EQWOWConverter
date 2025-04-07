@@ -20,6 +20,9 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQAnimation
     {
+        static private Dictionary<string, Animation> CachedAnimationDataForFile = new Dictionary<string, Animation>();
+        static private readonly object AnimationLock = new object();
+
         public Animation Animation = new Animation("", AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
 
         public bool LoadFromDisk(string fileFullPath)
@@ -29,6 +32,17 @@ namespace EQWOWConverter.EQFiles
             {
                 Logger.WriteError("- Could not find EQ Animation file that should be at '" + fileFullPath + "'");
                 return false;
+            }
+
+            // If there is a cached version, just use that
+            lock (AnimationLock)
+            {
+                if (CachedAnimationDataForFile.ContainsKey(fileFullPath) == true)
+                {
+                    Animation = new Animation(CachedAnimationDataForFile[fileFullPath]);
+                    Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "' via cache");
+                    return true;
+                }
             }
 
             string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
@@ -98,6 +112,11 @@ namespace EQWOWConverter.EQFiles
             }
 
             Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
+
+            // Store on the cache
+            lock (AnimationLock)
+                CachedAnimationDataForFile.Add(fileFullPath, new Animation(Animation));
+
             return true;
         }
 

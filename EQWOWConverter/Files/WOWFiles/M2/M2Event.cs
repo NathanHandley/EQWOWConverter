@@ -239,8 +239,7 @@ namespace EQWOWConverter.WOWFiles
 
             // Reserve the space for all headers in the byte buffer
             UInt32 totalSubHeaderSpaceToReserve = timestampHeaderBlockSize;
-            for (int i = 0; i < totalSubHeaderSpaceToReserve; i++)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[totalSubHeaderSpaceToReserve]);
 
             // Add timestamp data
             foreach (ObjectModelTrackSequenceTimestamps timestamp in Timestamps)

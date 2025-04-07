@@ -15,11 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.EQFiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.Common
 {
@@ -30,6 +25,7 @@ namespace EQWOWConverter.Common
         public EQAnimationType EQAnimationType;
         public int FrameCount = 0;
         public int TotalTimeInMS = 0;
+        public List<BoneAnimationFrame> AnimationFrames = new List<BoneAnimationFrame>();
 
         public Animation(string animationName, AnimationType animationType, EQAnimationType eqAnimationType, int frameCount, int totalTimeInMS)
         {
@@ -40,7 +36,17 @@ namespace EQWOWConverter.Common
             TotalTimeInMS = totalTimeInMS;
         }
 
-        public class BoneAnimationFrame
+        public Animation(Animation other)
+        {
+            AnimationName = other.AnimationName;
+            AnimationType = other.AnimationType;
+            EQAnimationType = other.EQAnimationType;
+            FrameCount = other.FrameCount;
+            TotalTimeInMS = other.TotalTimeInMS;
+            AnimationFrames = new List<BoneAnimationFrame>(other.AnimationFrames);
+        }
+
+        public struct BoneAnimationFrame
         {
             public string BoneFullNameInPath = string.Empty;
             public int FrameIndex = 0;
@@ -53,6 +59,11 @@ namespace EQWOWConverter.Common
             public float WRotation = 0;
             public float Scale = 0;
             public int FramesMS = 0;
+
+            public BoneAnimationFrame()
+            {
+
+            }
 
             public string GetBoneName()
             {
@@ -67,8 +78,6 @@ namespace EQWOWConverter.Common
                     return string.Empty;
                 return nameParts[nameParts.Length - 2];
             }
-        }
-
-        public List<BoneAnimationFrame> AnimationFrames = new List<BoneAnimationFrame>();
+        }        
     }
 }

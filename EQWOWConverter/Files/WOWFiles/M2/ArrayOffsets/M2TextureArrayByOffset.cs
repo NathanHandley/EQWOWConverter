@@ -94,8 +94,7 @@ namespace EQWOWConverter.WOWFiles
             int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
             if (bytesToAdd == byteAlignMultiplier)
                 return;
-            for (int i = 0; i < bytesToAdd; ++i)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[bytesToAdd]);
             curOffset += Convert.ToUInt32(bytesToAdd);
         }
     }

@@ -63,8 +63,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 allTextureAnimSubHeaderSize = 0;
             foreach (M2TextureAnimation textureAnimation in TextureAnimations)
                 allTextureAnimSubHeaderSize += textureAnimation.GetHeaderSize();
-            for (int i = 0; i < allTextureAnimSubHeaderSize; i++)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[allTextureAnimSubHeaderSize]);
 
             // Add all of the data
             foreach (M2TextureAnimation textureAnimation in TextureAnimations)

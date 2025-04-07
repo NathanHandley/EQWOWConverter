@@ -244,8 +244,7 @@ namespace EQWOWConverter.WOWFiles
                 bytesModified = 0;
                 return;
             }
-            for (int i = 0; i < bytesModified; ++i)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[bytesModified]);
             offset += bytesModified;
         }
     }

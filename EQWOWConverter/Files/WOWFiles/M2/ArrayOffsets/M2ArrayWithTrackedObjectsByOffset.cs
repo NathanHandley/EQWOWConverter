@@ -50,8 +50,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 allElementSubHeaderSize = 0;
             foreach (T element in Elements)
                 allElementSubHeaderSize += element.GetHeaderSize();
-            for (int i = 0; i < allElementSubHeaderSize; i++)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[allElementSubHeaderSize]);
             AddBytesToAlign(ref byteBuffer, 16);
 
             // Add all of the data
@@ -71,8 +70,7 @@ namespace EQWOWConverter.WOWFiles
             int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
             if (bytesToAdd == byteAlignMultiplier)
                 return;
-            for (int i = 0; i < bytesToAdd; ++i)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[bytesToAdd]);
         }
     }
 }

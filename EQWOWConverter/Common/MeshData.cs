@@ -635,8 +635,7 @@ namespace EQWOWConverter.Common
             List<ColorRGBA> sortedVertexColors = new List<ColorRGBA>(VertexColors.Count);
             List<byte> sortedBoneIndexes = new List<byte>(BoneIDs.Count);
             List<AnimatedVertexFrames> sortedAnimatedVertexFrames = new List<AnimatedVertexFrames>(AnimatedVertexFramesByVertexIndex.Count);
-
-            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>();
+            Dictionary<int, int> oldNewVertexIndices = new Dictionary<int, int>(Vertices.Count);
             int curSortedVertexCount = 0;
             for (int i = 0; i < TriangleFaces.Count; i++)
             {
@@ -1078,11 +1077,11 @@ namespace EQWOWConverter.Common
             }
 
             // Create the new mesh objects for categorized faces so far
-            extractedMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(extractedFaces);
+            extractedMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(extractedFaces));
             extractedMeshData.CondenseAndRenumberVertexIndices();
-            remainderMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(remainderFaces);
+            remainderMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(remainderFaces));
             remainderMeshData.CondenseAndRenumberVertexIndices();
-            MeshData intersectingMeshData = new MeshData(meshToExtractFrom).GetMeshDataForFaces(intersectingFaces);
+            MeshData intersectingMeshData = new MeshData(meshToExtractFrom.GetMeshDataForFaces(intersectingFaces));
             intersectingMeshData.CondenseAndRenumberVertexIndices();
 
             // Process known intersecting triangles crossing the high X line

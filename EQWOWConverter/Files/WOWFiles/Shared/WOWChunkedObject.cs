@@ -53,8 +53,7 @@ namespace EQWOWConverter.WOWFiles
             int bytesToAdd = 4 - (byteBuffer.Count % 4);
             if (bytesToAdd == 4)
                 return;
-            for (int i = 0; i < bytesToAdd; ++i)
-                byteBuffer.Add(0);
+            byteBuffer.AddRange(new byte[bytesToAdd]);
         }
     }
 }
