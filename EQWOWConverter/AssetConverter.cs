@@ -66,7 +66,7 @@ namespace EQWOWConverter
                 // Zones
                 ConvertEQZonesToWOW(out zones);
                 Logger.WriteInfo("<-> Thread [Zone and Objects] Ended");
-            });
+            }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 zoneAndObjectTask.Wait();
 
@@ -91,7 +91,7 @@ namespace EQWOWConverter
                     Logger.WriteInfo("- Note: Transport generation is set to false in the Configuration");
 
                 Logger.WriteInfo("<-> Thread [Creatures, Transports, and Spawns] Ended");
-            });
+            }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
@@ -127,7 +127,7 @@ namespace EQWOWConverter
                 GenerateSpells(out spellTemplates);
 
                 Logger.WriteInfo("<-> Thread [Items and Spells] Ended");
-            });
+            }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsAndSpellsTask.Wait();
 
@@ -159,7 +159,7 @@ namespace EQWOWConverter
             CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
 
             // Thread 1: MPQ
-            Task clientBuildAndDeployTask = Task.Run(() =>
+            Task clientBuildAndDeployTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Client Build and Deploy] Started");
 
@@ -181,10 +181,10 @@ namespace EQWOWConverter
                     Logger.WriteInfo("- Note: DEPLOY_CLIENT_FILES set false in the Configuration");
 
                 Logger.WriteInfo("<-> Thread [Client Build and Deploy] Ended");
-            });
+            }, TaskCreationOptions.LongRunning);
 
             // Thead 2: Server Deploy
-            Task serverDeployTask = Task.Run(() =>
+            Task serverDeployTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Server Deploy] Started");
 
@@ -198,7 +198,7 @@ namespace EQWOWConverter
                     Logger.WriteInfo("- Note: DEPLOY_SERVER_SQL set false in the Configuration");
 
                 Logger.WriteInfo("<-> Thread [Server Deploy] Ended");
-            });
+            }, TaskCreationOptions.LongRunning);
                 
             // Wait for threads above to complete
             clientBuildAndDeployTask.Wait();
@@ -521,38 +521,21 @@ namespace EQWOWConverter
             }
 
             List<Zone> workingZones = new List<Zone>();
-            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            //if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            if (true == true)
             {
-                // Use 4 threads to process the zones list
-                Task zoneThread1Task = Task.Factory.StartNew(() =>
+                int taskCount = Configuration.CORE_ZONEGEN_THREAD_COUNT;
+                Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];
+                for (int i = 0; i < taskCount; i++)
                 {
-                    List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
-                    lock (ZoneLock)
-                        workingZones.AddRange(processedZones);
-                });
-                Task zoneThread2Task = Task.Factory.StartNew(() =>
-                {
-                    List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
-                    lock (ZoneLock)
-                        workingZones.AddRange(processedZones);
-                });
-                Task zoneThread3Task = Task.Factory.StartNew(() =>
-                {
-                    List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
-                    lock (ZoneLock)
-                        workingZones.AddRange(processedZones);
-                });
-                Task zoneThread4Task = Task.Factory.StartNew(() =>
-                {
-                    List<Zone> processedZones = ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
-                    lock (ZoneLock)
-                        workingZones.AddRange(processedZones);
-                });
-
-                zoneThread1Task.Wait();
-                zoneThread2Task.Wait();
-                zoneThread3Task.Wait();
-                zoneThread4Task.Wait();
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        return ZoneThreadWorker(zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                    }, TaskCreationOptions.LongRunning);
+                }
+                Task.WaitAll(tasks);
+                foreach(var task in tasks)
+                    workingZones.AddRange(task.Result);
             }
             else
             {
