@@ -32,12 +32,11 @@ namespace EQWOWConverter
                 StartProgress = startProgress;
                 TotalNumber = totalNumber;
                 CurProgress = StartProgress;
+                Logger.WriteInfo(counterMessage, false);
+                StartCursorLeft = Console.CursorLeft;
+                StartCursorTop = Console.CursorTop;
+                Logger.WriteInfo(string.Empty, true, false);
             }
-
-            Logger.WriteInfo(counterMessage, false);
-            StartCursorLeft = Console.CursorLeft;
-            StartCursorTop = Console.CursorTop;
-            Logger.WriteInfo(string.Empty, true, false);
         }
 
         public void AddToProgress(int numToAdd)
