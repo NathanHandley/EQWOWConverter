@@ -14,15 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Common
 {
-    internal class TriangleFace : IByteSerializable, IComparable, IEquatable<TriangleFace>
+    internal struct TriangleFace : IByteSerializable, IEquatable<TriangleFace>, IComparable<TriangleFace>
     {
         public int MaterialIndex;
         public int V1;
@@ -89,19 +83,13 @@ namespace EQWOWConverter.Common
             return false;
         }
 
-        public int CompareTo(object? obj)
+        public int CompareTo(TriangleFace other)
         {
-            if (obj == null) return 1;
-            TriangleFace? otherTriangle = obj as TriangleFace;
-            if (otherTriangle != null)
-                return this.MaterialIndex.CompareTo(otherTriangle.MaterialIndex);
-            else
-                throw new ArgumentException("Object is not a TriangleFace");
+            return this.MaterialIndex.CompareTo(other.MaterialIndex);
         }
 
-        public bool Equals(TriangleFace? other)
+        public bool Equals(TriangleFace other)
         {
-            if (other == null) return false;
             if (V1 != other.V1) return false;
             if (V2 != other.V2) return false;
             if (V3 != other.V3) return false;

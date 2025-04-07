@@ -1168,36 +1168,36 @@ namespace EQWOWConverter.ObjectModels
                 // Head
                 if (colorTint.HelmColor != null)
                 {
-                    SetMaterialColorByTextureNameFragment("helm", colorTint.ID, colorTint.HelmColor);
-                    SetMaterialColorByTextureNameFragment("chain", colorTint.ID, colorTint.HelmColor);
+                    SetMaterialColorByTextureNameFragment("helm", colorTint.ID, (ColorRGBA)colorTint.HelmColor);
+                    SetMaterialColorByTextureNameFragment("chain", colorTint.ID, (ColorRGBA)colorTint.HelmColor);
                 }
 
                 // Chest
                 if (colorTint.ChestColor != null)
                 {
-                    SetMaterialColorByTextureNameFragmentAtPosition("ch", 3, colorTint.ID, colorTint.ChestColor);
-                    SetMaterialColorByTextureNameFragment("clk", colorTint.ID, colorTint.ChestColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ch", 3, colorTint.ID, (ColorRGBA)colorTint.ChestColor);
+                    SetMaterialColorByTextureNameFragment("clk", colorTint.ID, (ColorRGBA)colorTint.ChestColor);
                 }
 
                 // Arms
                 if (colorTint.ArmsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("ua", 3, colorTint.ID, colorTint.ArmsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ua", 3, colorTint.ID, (ColorRGBA)colorTint.ArmsColor);
 
                 // Bracer
                 if (colorTint.BracerColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("fa", 3, colorTint.ID, colorTint.BracerColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("fa", 3, colorTint.ID, (ColorRGBA)colorTint.BracerColor);
 
                 // Hands
                 if (colorTint.HandsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("hn", 3, colorTint.ID, colorTint.HandsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("hn", 3, colorTint.ID, (ColorRGBA)colorTint.HandsColor);
 
                 // Legs
                 if (colorTint.LegsColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("lg", 3, colorTint.ID, colorTint.LegsColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("lg", 3, colorTint.ID, (ColorRGBA)colorTint.LegsColor);
 
                 // Feet
                 if (colorTint.FeetColor != null)
-                    SetMaterialColorByTextureNameFragmentAtPosition("ft", 3, colorTint.ID, colorTint.FeetColor);
+                    SetMaterialColorByTextureNameFragmentAtPosition("ft", 3, colorTint.ID, (ColorRGBA)colorTint.FeetColor);
             }
 
             // Generate model textures

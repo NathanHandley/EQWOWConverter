@@ -521,8 +521,7 @@ namespace EQWOWConverter
             }
 
             List<Zone> workingZones = new List<Zone>();
-            //if (Configuration.CORE_ENABLE_MULTITHREADING == true)
-            if (true == true)
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 int taskCount = Configuration.CORE_ZONEGEN_THREAD_COUNT;
                 Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];

@@ -230,9 +230,11 @@ namespace EQWOWConverter.EQFiles
                 {
                     for (int j = 0; j < Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames.Count; j++)
                     {
-                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].X -= Meshdata.Vertices[i].X;
-                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].Y -= Meshdata.Vertices[i].Y;
-                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].Z -= Meshdata.Vertices[i].Z;
+                        Vector3 newVector = new Vector3(
+                            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].X - Meshdata.Vertices[i].X,
+                            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].Y - Meshdata.Vertices[i].Y,
+                            Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j].Z - Meshdata.Vertices[i].Z);
+                        Meshdata.AnimatedVertexFramesByVertexIndex[i].VertexOffsetFrames[j] = newVector;
                     }
                 }
 

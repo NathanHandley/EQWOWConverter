@@ -31,24 +31,12 @@ namespace EQWOWConverter.Common
 
         public MeshData(MeshData meshData)
         {
-            Vertices = new List<Vector3>(meshData.Vertices.Count);
-            foreach (Vector3 vertex in meshData.Vertices)
-                Vertices.Add(new Vector3(vertex));
-            Normals = new List<Vector3>(meshData.Normals.Count);
-            foreach (Vector3 normal in meshData.Normals)
-                Normals.Add(new Vector3(normal));
-            TextureCoordinates = new List<TextureCoordinates>(meshData.TextureCoordinates.Count);
-            foreach(TextureCoordinates textureCoordinate in meshData.TextureCoordinates)
-                TextureCoordinates.Add(new TextureCoordinates(textureCoordinate));
-            TriangleFaces = new List<TriangleFace>(meshData.TriangleFaces.Count);
-            foreach(TriangleFace triangleFace in meshData.TriangleFaces)
-                TriangleFaces.Add(new TriangleFace(triangleFace));
-            VertexColors = new List<ColorRGBA>(meshData.VertexColors.Count);
-            foreach (ColorRGBA colorRGBA in meshData.VertexColors)
-                VertexColors.Add(new ColorRGBA(colorRGBA));
-            BoneIDs = new List<byte>(meshData.BoneIDs.Count);
-            foreach (byte boneID in meshData.BoneIDs)
-                BoneIDs.Add(boneID);
+            Vertices = new List<Vector3>(meshData.Vertices);
+            Normals = new List<Vector3>(meshData.Normals);
+            TextureCoordinates = new List<TextureCoordinates>(meshData.TextureCoordinates);
+            TriangleFaces = new List<TriangleFace>(meshData.TriangleFaces);
+            VertexColors = new List<ColorRGBA>(meshData.VertexColors);
+            BoneIDs = new List<byte>(meshData.BoneIDs);
             AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(meshData.AnimatedVertexFramesByVertexIndex.Count);
             foreach(AnimatedVertexFrames frames in meshData.AnimatedVertexFramesByVertexIndex)
             {
@@ -222,12 +210,10 @@ namespace EQWOWConverter.Common
 
         public void ApplyTranslationOnVertices(Vector3 translation)
         {
-            foreach(Vector3 vertex in Vertices)
-            {
-                vertex.X += translation.X;
-                vertex.Y += translation.Y;
-                vertex.Z += translation.Z;
-            }
+            for (int i = 0; i < Vertices.Count; i++)
+                Vertices[i] = new Vector3(Vertices[i].X + translation.X, 
+                                          Vertices[i].Y + translation.Y, 
+                                          Vertices[i].Z + translation.Z);
         }
 
         public void ApplyScaleOnVertices(float scale)
@@ -276,28 +262,37 @@ namespace EQWOWConverter.Common
         public void ApplyEQToWoWGeometryTranslationsAndScale(bool rotateZAxis, float scale)
         {
             // Change face indices for winding over differences
-            foreach (TriangleFace triangleFace in TriangleFaces)
+            for (int i = 0; i < TriangleFaces.Count; i++)
             {
-                int swapFaceVertexIndex = triangleFace.V3;
-                triangleFace.V3 = triangleFace.V1;
-                triangleFace.V1 = swapFaceVertexIndex;
+                TriangleFaces[i] = new TriangleFace(
+                    TriangleFaces[i].MaterialIndex,
+                    TriangleFaces[i].V3,
+                    TriangleFaces[i].V2,
+                    TriangleFaces[i].V1);
             }
             // Perform vertex world scaling and 180 Z-Axis degree rotation
-            foreach (Vector3 vertex in Vertices)
+            for (int i = 0; i < Vertices.Count; i++)
             {
-                vertex.X *= scale;
-                vertex.Y *= scale;
-                vertex.Z *= scale;
                 if (rotateZAxis == true)
                 {
-                    vertex.X *= -1;
-                    vertex.Y *= -1;
+                    Vertices[i] = new Vector3(
+                        Vertices[i].X * scale * -1,
+                        Vertices[i].Y * scale * -1,
+                        Vertices[i].Z * scale);
+                }
+                else
+                {
+                    Vertices[i] = new Vector3(
+                        Vertices[i].X * scale,
+                        Vertices[i].Y * scale,
+                        Vertices[i].Z * scale);
                 }
             }
             // Flip Y on the texture coordinates
-            foreach (TextureCoordinates textureCoordinate in TextureCoordinates)
+            for (int i = 0; i < TextureCoordinates.Count; i++)
             {
-                textureCoordinate.Y *= -1;
+                TextureCoordinates[i] = new TextureCoordinates(TextureCoordinates[i].X,
+                                                               TextureCoordinates[i].Y * -1);
             }
         }
 
@@ -308,12 +303,13 @@ namespace EQWOWConverter.Common
                 intensityAmount = vertexColorIntensityOverride;
 
             // Vertex colors are reduced for external areas due to the natural zone light
-            foreach (ColorRGBA vertexColor in VertexColors)
+            for (int i = 0; i < VertexColors.Count; i++)
             {
-                vertexColor.R = Convert.ToByte(Convert.ToDouble(vertexColor.R) * intensityAmount);
-                vertexColor.G = Convert.ToByte(Convert.ToDouble(vertexColor.G) * intensityAmount);
-                vertexColor.B = Convert.ToByte(Convert.ToDouble(vertexColor.B) * intensityAmount);
-                //vertexColor.A = vertexColor.A;
+                VertexColors[i] = new ColorRGBA(
+                    Convert.ToByte(Convert.ToDouble(VertexColors[i].R) * intensityAmount),
+                    Convert.ToByte(Convert.ToDouble(VertexColors[i].G) * intensityAmount),
+                    Convert.ToByte(Convert.ToDouble(VertexColors[i].B) * intensityAmount),
+                    0);
             }
         }
 
@@ -321,11 +317,13 @@ namespace EQWOWConverter.Common
         {
             // Increase the vertex information for the mesh data being added in since the vertices array will increase
             int indexValueToAdd = Vertices.Count;
-            foreach(TriangleFace face in meshDataToAdd.TriangleFaces)
+            for (int i = 0; i < meshDataToAdd.TriangleFaces.Count; i++)
             {
-                face.V1 += indexValueToAdd;
-                face.V2 += indexValueToAdd;
-                face.V3 += indexValueToAdd;
+                meshDataToAdd.TriangleFaces[i] = new TriangleFace(
+                    meshDataToAdd.TriangleFaces[i].MaterialIndex,
+                    meshDataToAdd.TriangleFaces[i].V1 + indexValueToAdd,
+                    meshDataToAdd.TriangleFaces[i].V2 + indexValueToAdd,
+                    meshDataToAdd.TriangleFaces[i].V3 + indexValueToAdd);
             }
 
             // Add the data to the arrays
@@ -369,10 +367,13 @@ namespace EQWOWConverter.Common
             }
 
             // Update all of the material mappings in TriangleFaces
-            foreach(TriangleFace face in TriangleFaces)
+            for (int i = 0; i < TriangleFaces.Count; i++)
             {
-                int curMaterialIndex = face.MaterialIndex;
-                face.MaterialIndex = oldNewMaterialMappings[curMaterialIndex];
+                TriangleFaces[i] = new TriangleFace(
+                    oldNewMaterialMappings[TriangleFaces[i].MaterialIndex],
+                    TriangleFaces[i].V1,
+                    TriangleFaces[i].V2,
+                    TriangleFaces[i].V3);
             }
         }
 
@@ -510,12 +511,9 @@ namespace EQWOWConverter.Common
             for (int i = 0; i < faces.Count; i++)
             {
                 TriangleFace curTriangleFace = faces[i];
-                if (vertIndicesInFaces.Contains(curTriangleFace.V1) == false)
-                    vertIndicesInFaces.Add(curTriangleFace.V1);
-                if (vertIndicesInFaces.Contains(curTriangleFace.V2) == false)
-                    vertIndicesInFaces.Add(curTriangleFace.V2);
-                if (vertIndicesInFaces.Contains(curTriangleFace.V3) == false)
-                    vertIndicesInFaces.Add(curTriangleFace.V3);
+                vertIndicesInFaces.Add(curTriangleFace.V1);
+                vertIndicesInFaces.Add(curTriangleFace.V2);
+                vertIndicesInFaces.Add(curTriangleFace.V3);
             }
             extractedMeshData.TriangleFaces = new List<TriangleFace>(faces.Count);
             extractedMeshData.Vertices = new List<Vector3>(vertIndicesInFaces.Count);
@@ -1002,11 +1000,12 @@ namespace EQWOWConverter.Common
                 chunkPositions.Add(newMeshPosition);
 
                 // Subtract the center from the position data so it aligns propertly
-                foreach (Vector3 vertex in newMeshData.Vertices)
+                for (int i = 0; i < newMeshData.Vertices.Count; i++)
                 {
-                    vertex.X -= newMeshPosition.X;
-                    vertex.Y -= newMeshPosition.Y;
-                    vertex.Z -= newMeshPosition.Z;
+                    newMeshData.Vertices[i] = new Vector3(
+                            newMeshData.Vertices[i].X - newMeshPosition.X,
+                            newMeshData.Vertices[i].Y - newMeshPosition.Y,
+                            newMeshData.Vertices[i].Z - newMeshPosition.Z);
                 }
 
                 // Save the mesh
