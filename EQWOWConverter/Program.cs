@@ -39,7 +39,7 @@ internal class Program
         string? enteredCommand = Console.ReadLine();
         if (enteredCommand == null || enteredCommand.Length == 0 || enteredCommand[0] == ' ' || enteredCommand.ToUpper()[0] == 'X')
         {
-            if (Configuration.CONSOLE_BEEP_ON_COMPLETE)
+            if (Configuration.CORE_CONSOLE_BEEP_ON_COMPLETE)
                 Console.Beep();
             Console.WriteLine("");
             Console.WriteLine("Press any key to exit");
@@ -148,7 +148,7 @@ internal class Program
             }
         }
 
-        if (Configuration.CONSOLE_BEEP_ON_COMPLETE)
+        if (Configuration.CORE_CONSOLE_BEEP_ON_COMPLETE)
             Console.Beep();
         Console.WriteLine("");
         Console.WriteLine("Press any key to exit");
