@@ -30,6 +30,7 @@ namespace EQWOWConverter
 {
     internal class AssetConverter
     {
+        private static List<string> ZoneShortNamesToProcess = new List<string>();
         private static readonly object ZoneLock = new object();
 
         public bool ConvertEQDataToWOW()
@@ -515,7 +516,6 @@ namespace EQWOWConverter
             // Get the list of zones to process
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
-            List<string> zoneShortNamesToProcess = new List<string>();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
                 // Skip any disabled expansions or zones
@@ -526,9 +526,9 @@ namespace EQWOWConverter
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
                     Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
                     continue;
-                zoneShortNamesToProcess.Add(zoneDirectory.Name);
+                ZoneShortNamesToProcess.Add(zoneDirectory.Name);
             }
-            LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, zoneShortNamesToProcess.Count);
+            LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, ZoneShortNamesToProcess.Count);
             progressCounter.Write(0);
 
             if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0)
@@ -543,15 +543,16 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 int taskCount = Configuration.CORE_ZONEGEN_THREAD_COUNT;
-                if (zoneShortNamesToProcess.Count < taskCount)
-                    taskCount = zoneShortNamesToProcess.Count;
+                if (ZoneShortNamesToProcess.Count < taskCount)
+                    taskCount = ZoneShortNamesToProcess.Count;
                 Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
+                    int iCopy = i;
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
-                        return ZoneThreadWorker(i, zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
-                    }, TaskCreationOptions.LongRunning);
+                        return ZoneThreadWorker(iCopy, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                    });
                 }
                 Task.WaitAll(tasks);
                 foreach(var task in tasks)
@@ -559,7 +560,7 @@ namespace EQWOWConverter
             }
             else
             {
-                List<Zone> processedZones = ZoneThreadWorker(0, zoneShortNamesToProcess, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                List<Zone> processedZones = ZoneThreadWorker(0, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
                     workingZones.AddRange(processedZones);
             }
@@ -568,8 +569,8 @@ namespace EQWOWConverter
             return true;
         }
 
-        private List<Zone> ZoneThreadWorker(int threadID, List<string> zoneShortNamesToProcess, string inputZoneFolder, string exportMPQRootFolder, 
-            string relativeStaticDoodadsPath, string inputObjectTexturesFolder, string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
+        private List<Zone> ZoneThreadWorker(int threadID, string inputZoneFolder, string exportMPQRootFolder, string relativeStaticDoodadsPath, 
+            string inputObjectTexturesFolder, string inputMusicFolderRoot, string inputSoundFolderRoot, LogCounter progressCounter)
         {
             Logger.WriteInfo(string.Concat("<+> Thread [Zone Subworker ", threadID.ToString(), "] Started"));
             List<Zone> processedZones = new List<Zone>();
@@ -580,12 +581,14 @@ namespace EQWOWConverter
                 string zoneShortNameToProcess = string.Empty;
                 lock (ZoneLock)
                 {
-                    if (zoneShortNamesToProcess.Count > 0)
+                    if (ZoneShortNamesToProcess.Count > 0)
                     {
-                        zoneShortNameToProcess = zoneShortNamesToProcess.First();
-                        zoneShortNamesToProcess.RemoveAt(0);
+                        zoneShortNameToProcess = ZoneShortNamesToProcess.First();
+                        ZoneShortNamesToProcess.RemoveAt(0);
                     }
                 }
+
+                Logger.WriteInfo(threadID + ", " + zoneShortNameToProcess);
 
                 // Zone was found, so continue processing
                 if (zoneShortNameToProcess != string.Empty)
