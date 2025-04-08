@@ -899,11 +899,6 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Converting loot tables...");
 
-            // Clear out the working texture folder for character clothes
-            string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
-            if (Directory.Exists(wornEquipmentTexturesWorkingFullPath) == true)
-                Directory.Delete(wornEquipmentTexturesWorkingFullPath, true);
-
             // Generate item templates
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 

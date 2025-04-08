@@ -1031,6 +1031,11 @@ namespace EQWOWConverter.Items
 
         static public void PopulateItemTemplateListFromDisk()
         {
+            // Clear out the working texture folder for character clothes
+            string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
+            if (Directory.Exists(wornEquipmentTexturesWorkingFullPath) == true)
+                Directory.Delete(wornEquipmentTexturesWorkingFullPath, true);
+
             // Clear the model directories and recreate if needed
             string itemObjectDirectoryName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "OBJECTCOMPONENTS");
             string itemObjectWeaponDirectoryName = Path.Combine(itemObjectDirectoryName, "WEAPON");
