@@ -548,7 +548,7 @@ namespace EQWOWConverter
                 Task<List<Zone>>[] tasks = new Task<List<Zone>>[taskCount];
                 for (int i = 0; i < taskCount; i++)
                 {
-                    int iCopy = i;
+                    int iCopy = i + 1;
                     tasks[i] = Task.Factory.StartNew(() =>
                     {
                         return ZoneThreadWorker(iCopy, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
@@ -560,7 +560,7 @@ namespace EQWOWConverter
             }
             else
             {
-                List<Zone> processedZones = ZoneThreadWorker(0, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
+                List<Zone> processedZones = ZoneThreadWorker(1, inputZoneFolder, exportMPQRootFolder, relativeStaticDoodadsPath, inputObjectTexturesFolder, inputMusicFolderRoot, inputSoundFolderRoot, progressCounter);
                 lock (ZoneLock)
                     workingZones.AddRange(processedZones);
             }
