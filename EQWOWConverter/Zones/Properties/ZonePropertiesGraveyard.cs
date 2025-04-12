@@ -23,6 +23,7 @@ namespace EQWOWConverter.Zones
         private static Dictionary<int, ZonePropertiesGraveyard> GraveyardsByID = new Dictionary<int, ZonePropertiesGraveyard>();
 
         private static int CUR_WORLDSAFELOCS_ID = Configuration.DBCID_WORLDSAFELOCS_ID_START;
+        private static readonly object GraveyardLock = new object();
 
         public int ID = 0;
         public string LocationShortName = string.Empty;
@@ -60,60 +61,63 @@ namespace EQWOWConverter.Zones
 
         private static void PopulateGraveyardData()
         {
-            // Load the graveyards
-            string graveyardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyards.csv");
-            Logger.WriteDebug("Populating zone graveyards via file '" + graveyardFile + "'");
-            List<Dictionary<string, string>> zoneGraveyardRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardFile, "|");
-            foreach (Dictionary<string, string> columns in zoneGraveyardRows)
+            lock (GraveyardLock)
             {
-                ZonePropertiesGraveyard graveyard = new ZonePropertiesGraveyard();
-                graveyard.ID = int.Parse(columns["ID"]);
-                graveyard.LocationShortName = columns["ZoneShortName"];
-                graveyard.RespawnX = float.Parse(columns["RespawnX"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.RespawnY = float.Parse(columns["RespawnY"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.RespawnZ = float.Parse(columns["RespawnZ"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.RespawnOrientation = float.Parse(columns["RespawnOrientation"]);
-                graveyard.SpiritHealerX = float.Parse(columns["SpiritHealerX"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.SpiritHealerY = float.Parse(columns["SpiritHealerY"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.SpiritHealerZ = float.Parse(columns["SpiritHealerZ"]) * Configuration.GENERATE_WORLD_SCALE;
-                graveyard.SpiritHealerOrientation = float.Parse(columns["SpiritHealerOrientation"]);
-                string areaNameDescription = graveyard.LocationShortName;
-                string comments = columns["Comments"];
-                if (comments.Length > 0)
-                    areaNameDescription += ", " + comments;
-                graveyard.Description = areaNameDescription;
-                graveyard.WorldSafeLocsDBCID = CUR_WORLDSAFELOCS_ID;
-                GraveyardsByID.Add(graveyard.ID, graveyard);
-
-                CUR_WORLDSAFELOCS_ID++;
-
-                // Map self
-                graveyard.GhostZoneShortNames.Add(graveyard.LocationShortName);
-            }
-
-            // Load the zone mapping
-            string graveyardMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyardMap.csv");
-            Logger.WriteDebug("Populating zone graveyard map via file '" + graveyardMapFile + "'");
-            List<Dictionary<string, string>> zoneGraveyardMapRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardMapFile, "|");
-            foreach (Dictionary<string, string> columns in zoneGraveyardMapRows)
-            {
-                string zoneShortName = columns["ZoneShortName"];
-                int graveyardID = int.Parse(columns["GraveyardID"]);
-                if (graveyardID == -1)
+                // Load the graveyards
+                string graveyardFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyards.csv");
+                Logger.WriteDebug("Populating zone graveyards via file '" + graveyardFile + "'");
+                List<Dictionary<string, string>> zoneGraveyardRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardFile, "|");
+                foreach (Dictionary<string, string> columns in zoneGraveyardRows)
                 {
-                    Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' is -1, so wow will search for the nearest on death in that zone");
-                    continue;
-                }
-                ZonePropertiesGraveyard curGraveyard = GetGraveyardByID(graveyardID);
+                    ZonePropertiesGraveyard graveyard = new ZonePropertiesGraveyard();
+                    graveyard.ID = int.Parse(columns["ID"]);
+                    graveyard.LocationShortName = columns["ZoneShortName"];
+                    graveyard.RespawnX = float.Parse(columns["RespawnX"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.RespawnY = float.Parse(columns["RespawnY"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.RespawnZ = float.Parse(columns["RespawnZ"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.RespawnOrientation = float.Parse(columns["RespawnOrientation"]);
+                    graveyard.SpiritHealerX = float.Parse(columns["SpiritHealerX"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.SpiritHealerY = float.Parse(columns["SpiritHealerY"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.SpiritHealerZ = float.Parse(columns["SpiritHealerZ"]) * Configuration.GENERATE_WORLD_SCALE;
+                    graveyard.SpiritHealerOrientation = float.Parse(columns["SpiritHealerOrientation"]);
+                    string areaNameDescription = graveyard.LocationShortName;
+                    string comments = columns["Comments"];
+                    if (comments.Length > 0)
+                        areaNameDescription += ", " + comments;
+                    graveyard.Description = areaNameDescription;
+                    graveyard.WorldSafeLocsDBCID = CUR_WORLDSAFELOCS_ID;
+                    GraveyardsByID.Add(graveyard.ID, graveyard);
 
-                // Skip cases where the ghost zone and the spawn zone match (since that would already be mapped)
-                if (curGraveyard.LocationShortName.ToLower() == zoneShortName.ToLower())
-                {
-                    Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' had a mapping to itself, so skipping the map step");
-                    continue;
+                    CUR_WORLDSAFELOCS_ID++;
+
+                    // Map self
+                    graveyard.GhostZoneShortNames.Add(graveyard.LocationShortName);
                 }
 
-                curGraveyard.GhostZoneShortNames.Add(zoneShortName);
+                // Load the zone mapping
+                string graveyardMapFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ZoneGraveyardMap.csv");
+                Logger.WriteDebug("Populating zone graveyard map via file '" + graveyardMapFile + "'");
+                List<Dictionary<string, string>> zoneGraveyardMapRows = FileTool.ReadAllRowsFromFileWithHeader(graveyardMapFile, "|");
+                foreach (Dictionary<string, string> columns in zoneGraveyardMapRows)
+                {
+                    string zoneShortName = columns["ZoneShortName"];
+                    int graveyardID = int.Parse(columns["GraveyardID"]);
+                    if (graveyardID == -1)
+                    {
+                        Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' is -1, so wow will search for the nearest on death in that zone");
+                        continue;
+                    }
+                    ZonePropertiesGraveyard curGraveyard = GetGraveyardByID(graveyardID);
+
+                    // Skip cases where the ghost zone and the spawn zone match (since that would already be mapped)
+                    if (curGraveyard.LocationShortName.ToLower() == zoneShortName.ToLower())
+                    {
+                        Logger.WriteDebug("Graveyard for zone '" + zoneShortName + "' had a mapping to itself, so skipping the map step");
+                        continue;
+                    }
+
+                    curGraveyard.GhostZoneShortNames.Add(zoneShortName);
+                }
             }
         }
     }

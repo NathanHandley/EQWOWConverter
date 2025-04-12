@@ -30,18 +30,23 @@ namespace EQWOWConverter.WOWFiles
     internal class AreaTableDBC : DBCFile
     {
         private static int CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_START;
+        private static readonly object AreaBitLock = new object();
 
         public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName)
         {
             // AreaBit must always be unique
-            int areaBit = CURRENT_AREABIT;
-            CURRENT_AREABIT++;
-            if (CURRENT_AREABIT == Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_END + 1)
-                CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_START;
-            else if (CURRENT_AREABIT == Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_END + 1)
-                CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_START;
-            else if (CURRENT_AREABIT > Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END)
-                Logger.WriteError("Areabit is too high, as it is over '" + Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END + "'");
+            int areaBit;
+            lock(AreaBitLock)
+            {
+                areaBit = CURRENT_AREABIT;
+                CURRENT_AREABIT++;
+                if (CURRENT_AREABIT == Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_END + 1)
+                    CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_START;
+                else if (CURRENT_AREABIT == Configuration.DBCID_AREATABLE_AREABIT_BLOCK_2_END + 1)
+                    CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_START;
+                else if (CURRENT_AREABIT > Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END)
+                    Logger.WriteError("Areabit is too high, as it is over '" + Configuration.DBCID_AREATABLE_AREABIT_BLOCK_3_END + "'");
+            }
 
             // Music
             int zoneMusicID = 0;

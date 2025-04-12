@@ -28,6 +28,7 @@ namespace EQWOWConverter.WOWFiles
     internal class GameObjectDisplayInfoDBC : DBCFile
     {
         private static int CUR_ID = Configuration.DBCID_GAMEOBJECTDISPLAYINFO_ID_START;
+        private static readonly object GameObjectDisplayLock = new object();
 
         public void AddRow(int id, string modelNameAndRelativePath, BoundingBox boundingBox, int openSoundEntryID = 0, int closeSoundEntryID = 0)
         {
@@ -56,8 +57,12 @@ namespace EQWOWConverter.WOWFiles
 
         public static int GenerateID()
         {
-            int id = CUR_ID;
-            CUR_ID++;
+            int id;
+            lock (GameObjectDisplayLock)
+            {
+                id = CUR_ID;
+                CUR_ID++;
+            }
             return id;
         }
     }

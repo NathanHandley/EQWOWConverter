@@ -25,10 +25,15 @@ namespace EQWOWConverter.WOWFiles
     internal class AreaTriggerDBC : DBCFile
     {
         public static int CURRENT_AREATRIGGER_ID = Configuration.DBCID_AREATRIGGER_ID_START;
+        private static readonly object AreaTriggerLock = new object();
         public static int GetGeneratedAreaTriggerID()
         {
-            int generatedID = CURRENT_AREATRIGGER_ID;
-            CURRENT_AREATRIGGER_ID++;
+            int generatedID;
+            lock (AreaTriggerLock)
+            {
+                generatedID = CURRENT_AREATRIGGER_ID;
+                CURRENT_AREATRIGGER_ID++;
+            }
             return generatedID;
         }
 

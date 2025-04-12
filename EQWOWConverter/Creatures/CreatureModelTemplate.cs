@@ -40,15 +40,19 @@ namespace EQWOWConverter.Creatures
         public int DBCCreatureModelDataID;
         public int DBCCreatureDisplayID;
         public int DBCCreatureSoundDataID;
+        private static readonly object CreatureLock = new object();
 
         public CreatureModelTemplate(CreatureRace creatureRace, CreatureTemplate creatureTemplate)
         {
-            DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
-            CURRENT_DBCID_CREATUREMODELDATAID++;
-            DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
-            CURRENT_DBCID_CREATUREDISPLAYINFOID++;
-            DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
-            CURRENT_DBCID_CREATURESOUNDDATAID++;
+            lock(CreatureLock)
+            {
+                DBCCreatureModelDataID = CURRENT_DBCID_CREATUREMODELDATAID;
+                CURRENT_DBCID_CREATUREMODELDATAID++;
+                DBCCreatureDisplayID = CURRENT_DBCID_CREATUREDISPLAYINFOID;
+                CURRENT_DBCID_CREATUREDISPLAYINFOID++;
+                DBCCreatureSoundDataID = CURRENT_DBCID_CREATURESOUNDDATAID;
+                CURRENT_DBCID_CREATURESOUNDDATAID++;
+            }
 
             Race = creatureRace;
             GenderType = creatureTemplate.GenderType;
