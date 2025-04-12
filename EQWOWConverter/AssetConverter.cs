@@ -273,8 +273,8 @@ namespace EQWOWConverter
                                 Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                                 continue;
                             }
-                            File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
                             Logger.WriteDebug("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
+                            FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
                         }
                     }
 
@@ -374,7 +374,7 @@ namespace EQWOWConverter
                     FileTool.CreateBlankDirectory(outputLiftSoundFolder, true);
                 string sourceFullPath = Path.Combine(inputSoundFolder, sound.AudioFileNameNoExt + ".wav");
                 string targetFullPath = Path.Combine(outputLiftSoundFolder, sound.AudioFileNameNoExt + ".wav");
-                File.Copy(sourceFullPath, targetFullPath, true);
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
             }
 
             Logger.WriteDebug("Converting Transports complete.");
@@ -888,7 +888,7 @@ namespace EQWOWConverter
                 string sourceSoundFileName = Path.Combine(inputSoundFolderRoot, sound.Value.Name);
                 string targetSoundFileName = Path.Combine(exportCreatureSoundsDirectory, sound.Value.Name);
                 if (File.Exists(targetSoundFileName) == false)
-                    File.Copy(sourceSoundFileName, targetSoundFileName, true);
+                    FileTool.CopyFile(sourceSoundFileName, targetSoundFileName);
             }
 
             Logger.WriteInfo("Creature generation complete.");
@@ -1337,7 +1337,7 @@ namespace EQWOWConverter
             }
 
             // Copy it
-            File.Copy(sourcePatchFileNameAndPath, targetPatchFileNameAndPath, true);
+            FileTool.CopyFile(sourcePatchFileNameAndPath, targetPatchFileNameAndPath);
 
             Logger.WriteDebug("Deploying to client complete");
         }
@@ -1383,7 +1383,7 @@ namespace EQWOWConverter
             foreach (string dbcFile in dbcFiles)
             {
                 string targetFileName = Path.Combine(Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER, Path.GetFileName(dbcFile));
-                File.Copy(dbcFile, targetFileName, true);
+                FileTool.CopyFile(dbcFile, targetFileName);
             }
 
 
@@ -1469,7 +1469,7 @@ namespace EQWOWConverter
             if (File.Exists(classicInputFile) == false)
                 Logger.WriteError("Could not find texture '" + classicInputFile + "', it did not exist. Did you run blpconverter?");
             else
-                File.Copy(classicInputFile, classicOutputFile);
+                FileTool.CopyFile(classicInputFile, classicOutputFile);
 
             // Kunark
             string kunarkInputFile = Path.Combine(eqExportsConditionedPath, "miscimages", "eqkloadresized.blp");
@@ -1477,7 +1477,7 @@ namespace EQWOWConverter
             if (File.Exists(kunarkInputFile) == false)
                 Logger.WriteError("Could not find texture '" + kunarkInputFile + "', it did not exist. Did you run blpconverter?");
             else
-                File.Copy(kunarkInputFile, kunarkOutputFile);
+                FileTool.CopyFile(kunarkInputFile, kunarkOutputFile);
 
             // Velious
             string veliousInputFile = Path.Combine(eqExportsConditionedPath, "miscimages", "eqvloadresized.blp");
@@ -1485,7 +1485,7 @@ namespace EQWOWConverter
             if (File.Exists(veliousInputFile) == false)
                 Logger.WriteError("Could not find texture '" + veliousInputFile + "', it did not exist. Did you run blpconverter?");
             else
-                File.Copy(veliousInputFile, veliousOutputFile);
+                FileTool.CopyFile(veliousInputFile, veliousOutputFile);
         }
 
         public void CreateLiquidMaterials()
@@ -2353,8 +2353,8 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                         continue;
                     }
-                    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
                     Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
+                    FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
                 }
             }
 
@@ -2370,8 +2370,8 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                         continue;
                     }
-                    File.Copy(sourceTextureFullPath, outputTextureFullPath, true);
                     Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
+                    FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
                 }
             }
 
@@ -2387,7 +2387,7 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy texture '" + soundInstanceInputTextureFullPath + "', it did not exist. Did you run blpconverter?");
                         continue;
                     }
-                    File.Copy(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath, true);
+                    FileTool.CopyFile(soundInstanceInputTextureFullPath, soundInstanceOutputTextureFullPath);
                 }
             }
 
@@ -2419,8 +2419,8 @@ namespace EQWOWConverter
                     Logger.WriteError("Could not copy music file '" + sourceFullPath + "', as it did not exist");
                     continue;
                 }
-                File.Copy(sourceFullPath, targetFullPath, true);
                 Logger.WriteDebug("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
             }
             Logger.WriteDebug("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
         }
@@ -2450,7 +2450,7 @@ namespace EQWOWConverter
                     Logger.WriteError("Could not copy ambient sound file '" + sourceFullPath + "', as it did not exist");
                     continue;
                 }
-                File.Copy(sourceFullPath, targetFullPath, true);
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
                 Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound named '" + ambientSoundByFileName.Value.AudioFileNameNoExt + "' copied");
             }
             foreach (SoundInstance soundInstance in zone.SoundInstances)
@@ -2467,7 +2467,7 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy sound instance sound file '" + sourceFullPath + "', as it did not exist");
                         continue;
                     }
-                    File.Copy(sourceFullPath, targetFullPath, true);
+                    FileTool.CopyFile(sourceFullPath, targetFullPath);
                     Logger.WriteDebug("- [" + zone.ShortName + "]: Sound instance sound named '" + curSound.AudioFileNameNoExt + "' copied");
                 }
             }
@@ -2489,7 +2489,7 @@ namespace EQWOWConverter
                     Logger.WriteError("- [" + wowObjectModelData.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
                     return;
                 }
-                File.Copy(inputTextureName, outputTextureName, true);
+                FileTool.CopyFile(inputTextureName, outputTextureName);
                 Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }
 
@@ -2513,7 +2513,7 @@ namespace EQWOWConverter
             {
                 string sourceIconFile = Path.Combine(itemIconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
                 string outputIconFile = Path.Combine(iconOutputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
-                File.Copy(sourceIconFile, outputIconFile, true);
+                FileTool.CopyFile(sourceIconFile, outputIconFile);
             }
 
             // Spells
@@ -2523,7 +2523,7 @@ namespace EQWOWConverter
             {
                 string sourceIconFile = spellIconFile;
                 string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileNameWithoutExtension(spellIconFile) + ".blp");
-                File.Copy(sourceIconFile, outputIconFile, true);
+                FileTool.CopyFile(sourceIconFile, outputIconFile);
             }
         }
     }

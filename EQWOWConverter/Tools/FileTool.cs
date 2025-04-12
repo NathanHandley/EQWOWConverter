@@ -242,5 +242,46 @@ namespace EQWOWConverter
                 return true;
             }
         }
+
+        static public void CopyFile(string sourcePath, string targetPath)
+        {
+            // Verify Inputs
+            if (string.IsNullOrEmpty(sourcePath) || string.IsNullOrEmpty(targetPath))
+            {
+                Logger.WriteError("CopyFile failure, as source or target were empty");
+                return;            
+            }
+            if (File.Exists(sourcePath) == false)
+            {
+                Logger.WriteError(string.Concat("CopyFile failure, as source file of '", sourcePath, "' did not exist"));
+                return;
+            }
+
+            // Create directory if it doesn't exist (Skip for now for performance, but consider enabling)
+            //string? targetDirectory = Path.GetDirectoryName(targetPath);
+            //if (string.IsNullOrEmpty(targetDirectory) == false)
+            //    Directory.CreateDirectory(targetDirectory);
+
+            // Copy the file normally unless the file is locked, then do it manually by a file stream
+            try
+            {
+                File.Copy(sourcePath, targetPath, true);
+            }
+            catch (IOException)
+            {
+                using (var sourceStream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+                {
+                    using (var destStream = new FileStream(targetPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        byte[] buffer = new byte[81920]; // 80KB
+                        int bytesRead;
+                        while ((bytesRead = sourceStream.Read(buffer, 0, buffer.Length)) > 0)
+                        {
+                            destStream.Write(buffer, 0, bytesRead);
+                        }
+                    }
+                }
+            }
+        }
     }
 }

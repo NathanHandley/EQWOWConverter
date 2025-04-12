@@ -181,7 +181,7 @@ namespace EQWOWConverter
                 // Copy the object instances again in case it changed
                 string sourceObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
                 string targetObjectInstancesFile = Path.Combine(outputZoneFolder, "object_instances.txt");
-                File.Copy(sourceObjectInstancesFile, targetObjectInstancesFile, true);
+                FileTool.CopyFile(sourceObjectInstancesFile, targetObjectInstancesFile);
 
                 // Generate the object lists
                 string outputStaticObjectListFileName = Path.Combine(outputObjectsFolderRoot, "static_objects.txt");
@@ -199,21 +199,21 @@ namespace EQWOWConverter
                     Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'maywall' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "maywall.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "maywall.png");
-                    File.Copy(inputFileName, outputFileName, true);
+                    FileTool.CopyFile(inputFileName, outputFileName);
                 }
                 else if (topDirectoryFolderNameOnly == "oasis")
                 {
                     Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'canwall1' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "canwall1.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "canwall1.png");
-                    File.Copy(inputFileName, outputFileName, true);
+                    FileTool.CopyFile(inputFileName, outputFileName);
                 }
                 else if (topDirectoryFolderNameOnly == "swampofnohope")
                 {
                     Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying texture file 'kruphse3' not found in the original zone folder...");
                     string inputFileName = Path.Combine(tempObjectsFolder, "Textures", "kruphse3.png");
                     string outputFileName = Path.Combine(outputZoneFolder, "Textures", "kruphse3.png");
-                    File.Copy(inputFileName, outputFileName, true);
+                    FileTool.CopyFile(inputFileName, outputFileName);
                 }
 
                 progressCounter.Write(1);
@@ -370,7 +370,7 @@ namespace EQWOWConverter
                 {
                     string targetFileName = Path.Combine(objectsDirectory, "textures", Path.GetFileName(customTexture));
                     Logger.WriteDebug("Replacing or placing custom object texture '" + customTexture + "'");
-                    File.Copy(customTexture, targetFileName, true);
+                    FileTool.CopyFile(customTexture, targetFileName);
                 }
                 Logger.WriteInfo("Object custom texture replacements complete");
             }
@@ -761,7 +761,7 @@ namespace EQWOWConverter
 
                             // Copy the texture
                             string targetTextureFileNameAndPath = Path.Combine(targetTextureFolder, textureNameNoExt + ".png");
-                            File.Copy(sourceTextureFileNameAndPath, targetTextureFileNameAndPath, true);
+                            FileTool.CopyFile(sourceTextureFileNameAndPath, targetTextureFileNameAndPath);
                         }
 
                         // Put it back together
@@ -847,16 +847,16 @@ namespace EQWOWConverter
                         targetMeshName = meshName + "alt" + generatedID.ToString();
                     string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", meshName + ".txt");
                     string tempObjectMeshCollision = Path.Combine(tempObjectsFolder, "Meshes", meshName + "_collision.txt");
-                    File.Copy(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", targetMeshName + ".txt"), true);
+                    FileTool.CopyFile(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(targetMeshName, ".txt")));
                     if (File.Exists(tempObjectMeshCollision))
-                        File.Copy(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", targetMeshName + "_collision.txt"), true);
+                        FileTool.CopyFile(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(targetMeshName, "_collision.txt")));
                 }
                 revisedObjectName = objectName;
                 if (generatedID > 0)
                     revisedObjectName = objectName + "alt" + generatedID.ToString();
-                File.Copy(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"), true);                
-                File.Copy(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations", revisedObjectName + "_pos.txt"), true);
-                File.Copy(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons", revisedObjectName + ".txt"), true);
+                FileTool.CopyFile(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"));                
+                FileTool.CopyFile(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations", revisedObjectName + "_pos.txt"));
+                FileTool.CopyFile(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons", revisedObjectName + ".txt"));
             }
             else
             {
@@ -872,10 +872,10 @@ namespace EQWOWConverter
                 revisedObjectName = objectName;
                 if (generatedID > 0)
                     revisedObjectName = objectName + "alt" + generatedID.ToString();
-                File.Copy(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + ".txt"), true);
-                File.Copy(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"), true);
+                FileTool.CopyFile(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(revisedObjectName, ".txt")));
+                FileTool.CopyFile(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", string.Concat(revisedObjectName, ".txt")));
                 if (File.Exists(tempObjectMeshCollision))
-                    File.Copy(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", revisedObjectName + "_collision.txt"), true);
+                    FileTool.CopyFile(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(revisedObjectName, "_collision.txt")));
             }
 
             // If the object itself was renamed, update the object instances file

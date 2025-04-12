@@ -99,7 +99,7 @@ namespace EQWOWConverter.Items
             if (colorPacked == 0)
             {
                 string sourceFileNameAndPath = Path.Combine(sourceTextureFolder, sourceFileNameNoExt + ".png");
-                File.Copy(sourceFileNameAndPath, targetFileNameAndPathNoExt + ".png", true);
+                FileTool.CopyFile(sourceFileNameAndPath, targetFileNameAndPathNoExt + ".png");
             }
             else
             {
@@ -353,7 +353,7 @@ namespace EQWOWConverter.Items
                     if (Path.Exists(inputTextureName) == false)
                         Logger.WriteError("Error copying texture '" + inputTextureName + "' for '" + itemDisplayCommonName + "', as it could not be found. Did you do the 'convert png to blp' step?");
                     else
-                        File.Copy(inputTextureName, outputTextureName, true);
+                        FileTool.CopyFile(inputTextureName, outputTextureName);
                 }
 
                 // Save it on the list and return it
