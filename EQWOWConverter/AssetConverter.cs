@@ -266,15 +266,15 @@ namespace EQWOWConverter
                     {
                         foreach (string textureName in material.TextureNames)
                         {
-                            string sourceTextureFullPath = Path.Combine(charactersFolderRoot, "Textures", textureName + ".blp");
-                            string outputTextureFullPath = Path.Combine(transportOutputTextureFolder, textureName + ".blp");
+                            string sourceTextureFullPath = Path.Combine(charactersFolderRoot, "Textures", string.Concat(textureName, ".blp"));
+                            string outputTextureFullPath = Path.Combine(transportOutputTextureFolder, string.Concat(textureName, ".blp"));
                             if (File.Exists(sourceTextureFullPath) == false)
                             {
                                 Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                                 continue;
                             }
-                            Logger.WriteDebug("- [" + transportShip.Name + "]: Texture named '" + textureName + "' copied");
                             FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
+                            Logger.WriteDebug(string.Concat("- [", transportShip.Name, "]: Texture named '", textureName, "' copied"));
                         }
                     }
 
@@ -372,8 +372,8 @@ namespace EQWOWConverter
                 string outputLiftSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "EQTransports");
                 if (Directory.Exists(outputLiftSoundFolder) == false)
                     FileTool.CreateBlankDirectory(outputLiftSoundFolder, true);
-                string sourceFullPath = Path.Combine(inputSoundFolder, sound.AudioFileNameNoExt + ".wav");
-                string targetFullPath = Path.Combine(outputLiftSoundFolder, sound.AudioFileNameNoExt + ".wav");
+                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                string targetFullPath = Path.Combine(outputLiftSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
                 FileTool.CopyFile(sourceFullPath, targetFullPath);
             }
 
@@ -2334,7 +2334,7 @@ namespace EQWOWConverter
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
             string inputObjectTextureFolder)
         {
-            Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting textures for zone '" + zone.ShortName + "'...");
+            Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Exporting textures for zone '", zone.ShortName, "'..."));
 
             // Create the folder to output
             string zoneOutputTextureFolder = Path.Combine(wowExportPath, "World", "Everquest", "ZoneTextures", zone.ShortName);
@@ -2346,15 +2346,15 @@ namespace EQWOWConverter
             {
                 foreach (string textureName in material.TextureNames)
                 {
-                    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", textureName + ".blp");
-                    string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, textureName + ".blp");
+                    string sourceTextureFullPath = Path.Combine(zoneInputFolder, "Textures", string.Concat(textureName, ".blp"));
+                    string outputTextureFullPath = Path.Combine(zoneOutputTextureFolder, string.Concat(textureName, ".blp"));
                     if (File.Exists(sourceTextureFullPath) == false)
                     {
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                         continue;
                     }
-                    Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + textureName + "' copied");
                     FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
+                    Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Texture named '", textureName, "' copied"));
                 }
             }
 
@@ -2370,8 +2370,8 @@ namespace EQWOWConverter
                         Logger.WriteError("Could not copy texture '" + sourceTextureFullPath + "', it did not exist. Did you run blpconverter?");
                         continue;
                     }
-                    Logger.WriteDebug("- [" + zone.ShortName + "]: Texture named '" + texture.TextureName + "' copied");
                     FileTool.CopyFile(sourceTextureFullPath, outputTextureFullPath);
+                    Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Texture named '", texture.TextureName, "' copied"));
                 }
             }
 
@@ -2391,12 +2391,12 @@ namespace EQWOWConverter
                 }
             }
 
-            Logger.WriteDebug("- [" + zone.ShortName + "]: Texture output for zone '" + zone.ShortName + "' complete");
+            Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Texture output for zone '", zone.ShortName, "' complete"));
         }
 
         public void ExportMusicForZone(Zone zone, string musicInputFolder, string wowExportPath)
         {
-            Logger.WriteDebug("- [" + zone.ShortName + "]: Exporting music for zone '" + zone.ShortName + "'...");
+            Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Exporting music for zone '", zone.ShortName, "'..."));
 
             if (zone.ZoneAreaMusics.Count == 0)
             {
@@ -2419,10 +2419,10 @@ namespace EQWOWConverter
                     Logger.WriteError("Could not copy music file '" + sourceFullPath + "', as it did not exist");
                     continue;
                 }
-                Logger.WriteDebug("- [" + zone.ShortName + "]: Music named '" + musicSoundByFileName.Value.AudioFileNameNoExt + "' copied");
                 FileTool.CopyFile(sourceFullPath, targetFullPath);
+                Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Music named '", musicSoundByFileName.Value.AudioFileNameNoExt, "' copied"));
             }
-            Logger.WriteDebug("- [" + zone.ShortName + "]: Music output for zone '" + zone.ShortName + "' complete");
+            Logger.WriteDebug(string.Concat("- [", zone.ShortName, "]: Music output for zone '", zone.ShortName, "' complete"));
         }
 
         public void ExportAmbientSoundForZone(Zone zone, string soundInputFolder, string wowExportPath)

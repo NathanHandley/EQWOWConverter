@@ -369,7 +369,7 @@ namespace EQWOWConverter
                 foreach (string customTexture in customTextures)
                 {
                     string targetFileName = Path.Combine(objectsDirectory, "textures", Path.GetFileName(customTexture));
-                    Logger.WriteDebug("Replacing or placing custom object texture '" + customTexture + "'");
+                    Logger.WriteDebug(string.Concat("Replacing or placing custom object texture '", customTexture, "'"));
                     FileTool.CopyFile(customTexture, targetFileName);
                 }
                 Logger.WriteInfo("Object custom texture replacements complete");
