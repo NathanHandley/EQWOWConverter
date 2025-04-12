@@ -26,7 +26,7 @@ namespace EQWOWConverter
 
         // If true, the generator will run in multithreading mode
         public static readonly bool CORE_ENABLE_MULTITHREADING = true;
-        public static readonly int CORE_ZONEGEN_THREAD_COUNT = 4;
+        public static readonly int CORE_ZONEGEN_THREAD_COUNT = 1; // Don't raise above 1, there are concurrency issues
 
         // ====================================================================
         // Logging
