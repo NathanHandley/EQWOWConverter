@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class MapDBC : DBCFile
@@ -46,6 +39,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(2); // ExpansionID (0 - Vanilla, 1 - BC, 2 - WOTLK)
             newRow.AddInt32(0); // RaidOffset (?)
             newRow.AddInt32(0); // Max Players (0 if no max?)
+
+            // Set sorting row
+            newRow.SortValue1 = id; // MapID
+
             Rows.Add(newRow);
         }
     }

@@ -14,14 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using Google.Protobuf.WellKnownTypes;
-using Mysqlx.Session;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -61,8 +54,14 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        public class DBCRow
+        public class DBCRow : IEquatable<DBCRow>, IComparable<DBCRow>
         {
+            public List<DBCRow.DBCField> AddedFields = new List<DBCField>();
+            public List<byte> SourceRawBytes = new List<byte>();
+            public int SortValue1 = 0;
+            public int SortValue2 = 0;
+            public int SortValue3 = 0;
+
             public class DBCField
             {
             }
@@ -220,8 +219,26 @@ namespace EQWOWConverter.WOWFiles
                 offsetCursor += 4;
             }
 
-            public List<DBCRow.DBCField> AddedFields = new List<DBCField>();
-            public List<byte> SourceRawBytes = new List<byte>();
+            public int CompareTo(DBCRow? other)
+            {
+                if (other == null)
+                    return 1;
+                if (SortValue1 != other.SortValue1)
+                    return SortValue1.CompareTo(other.SortValue1);
+                else if (SortValue2 != other.SortValue2)
+                    return SortValue2.CompareTo(other.SortValue2);
+                else
+                    return SortValue3.CompareTo(other.SortValue3);
+            }
+
+            public bool Equals(DBCRow? other)
+            {
+                if (other == null) return false;
+                if (SortValue1 != other.SortValue1) return false;
+                if (SortValue2 != other.SortValue2) return false;
+                if (SortValue3 != other.SortValue3) return false;
+                return true;
+            }
         }
 
         protected string FileName = string.Empty;
@@ -294,6 +311,9 @@ namespace EQWOWConverter.WOWFiles
                 Logger.WriteError("Could not save DBC to '" + fileFolder + "', it was not loaded");
                 return;
             }
+
+            // Sort the records
+            Rows.Sort();
 
             // Delete the file if it already exists
             string fullFilePath = Path.Combine(fileFolder, FileName);

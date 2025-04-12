@@ -15,15 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
-using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -79,6 +70,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(-5000f); // Minimum Elevation
             newRow.AddFloat(0); // Ambient Multiplier
             newRow.AddInt32(0); // LightID
+
+            // Set the sort
+            newRow.SortValue1 = id;
+
             Rows.Add(newRow);
         }
     }

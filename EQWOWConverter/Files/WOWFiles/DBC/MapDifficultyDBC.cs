@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class MapDifficultyDBC : DBCFile
@@ -35,6 +28,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Raid Duration
             newRow.AddInt32(0); // Max Players
             newRow.AddString(""); // Difficulty String (?)
+
+            // Set the sort
+            newRow.SortValue1 = mapDifficultyID;
+
             Rows.Add(newRow);
         }
     }

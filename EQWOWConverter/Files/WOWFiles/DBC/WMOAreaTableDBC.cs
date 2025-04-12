@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.WOWFiles
 {
     internal class WMOAreaTableDBC : DBCFile
@@ -44,7 +38,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // Intro Sound
             newRow.AddPackedFlags(0); // Flags
             newRow.AddInt32(areaTableID);
-            newRow.AddStringLang(areaName);            
+            newRow.AddStringLang(areaName);
+
+            // Also set the fields for sorting
+            newRow.SortValue1 = wmoID;
+            newRow.SortValue2 = 0; // NameSetID
+            newRow.SortValue3 = wmoGroupID;
+
             Rows.Add(newRow);
         }      
     }
