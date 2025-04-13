@@ -43,6 +43,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(delayInSecCalc); // Delay in seconds
             newRow.AddInt32(0); // ArrivalEventID
             newRow.AddInt32(0); // DepatureEventID
+
+            // Set sorting
+            newRow.SortValue1 = CUR_ID;
+
             Rows.Add(newRow);
 
             CUR_ID++;
