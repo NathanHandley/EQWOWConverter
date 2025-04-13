@@ -104,6 +104,8 @@ namespace EQWOWConverter
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates and visual information...");
+                if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
+                    Logger.WriteInfo("- Note: Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
                 SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
                 // Build output directory

@@ -135,6 +135,12 @@ namespace EQWOWConverter.Items
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
 
+            // Break out if configured to do so
+            if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
+            {
+                return newItemDisplayInfo;
+            }
+
             // Test for a texture file.  If none, the graphics will be blank
             if (DoTexturesExist() == false)
             {
