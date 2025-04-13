@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using Mysqlx.Crud;
+using System.Text;
 
 namespace EQWOWConverter
 {
@@ -52,8 +53,6 @@ namespace EQWOWConverter
                 Console.SetCursorPosition(outputLeft, outputTop);
                 Console.Write(outputString);
                 Console.SetCursorPosition(currentCursorLeft, currentCursorTop);
-                int curCursorTop = Console.CursorTop;
-                int curCursorLeft = Console.CursorLeft;
             }
         }
 
@@ -61,15 +60,17 @@ namespace EQWOWConverter
         {
             lock (writeLock)
             {
-                string outputLine;
+                StringBuilder stringBuilder = new StringBuilder();
                 if (includeLeaderBlock == true)
-                    outputLine = "[ ] Info | " + text;
-                else
-                    outputLine = text;
+                    stringBuilder.Append("[ ] Info | ");
+                stringBuilder.Append(text);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
-                    WriteToConsole(outputLine, outputNewLine);
+                    WriteToConsole(stringBuilder.ToString(), outputNewLine);
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
-                    File.AppendAllText("log.txt", outputLine + "\n");
+                {
+                    stringBuilder.Append("\n");
+                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                }
             }
         }
 
@@ -80,11 +81,16 @@ namespace EQWOWConverter
 
             lock (writeLock)
             {
-                string outputLine = "[.] Detail| " + text;
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("[.] Detail| ");
+                stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
-                    WriteToConsole(outputLine);
+                    WriteToConsole(stringBuilder.ToString());
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
-                    File.AppendAllText("log.txt", outputLine + "\n");
+                {
+                    stringBuilder.Append("\n");
+                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                }
             }
         }
 
@@ -92,11 +98,16 @@ namespace EQWOWConverter
         {
             lock (writeLock)
             {
-                string outputLine = "[*] Error| " + text;
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("[*] Error| ");
+                stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 2)
-                    WriteToConsole(outputLine);
+                    WriteToConsole(stringBuilder.ToString());
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)
-                    File.AppendAllText("log.txt", outputLine + "\n");
+                {
+                    stringBuilder.Append("\n");
+                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                }
             }
         }
     }
