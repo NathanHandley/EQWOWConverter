@@ -199,6 +199,8 @@ namespace EQWOWConverter
 
                 Logger.WriteInfo("<-> Thread [Client Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                clientBuildAndDeployTask.Wait();
 
             // Thead 2: Server
             Task serverDeployTask = Task.Factory.StartNew(() =>
@@ -219,10 +221,15 @@ namespace EQWOWConverter
 
                 Logger.WriteInfo("<-> Thread [Server Build and Deploy] Ended");
             }, TaskCreationOptions.LongRunning);
-                
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                serverDeployTask.Wait();
+
             // Wait for threads above to complete
-            clientBuildAndDeployTask.Wait();
-            serverDeployTask.Wait();
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
+                clientBuildAndDeployTask.Wait();
+                serverDeployTask.Wait();
+            }
 
             Logger.WriteInfo("Conversion of data complete");
             return true;
