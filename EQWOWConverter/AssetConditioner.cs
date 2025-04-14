@@ -711,6 +711,24 @@ namespace EQWOWConverter
             return calculatedUniqueIDToAdd;
         }
 
+        private void UpdateMaterialListNameInMesh(string sourceMeshFileFullPath, string oldMaterialListName, string newMaterialListName)
+        {
+            // Read each line of the mesh file looking for material name
+            List<string> inputMeshFileRows = FileTool.ReadAllStringLinesFromFile(sourceMeshFileFullPath, false, false);
+            List<string> outputMeshFileRows = new List<string>();
+            for (int mi = 0; mi < inputMeshFileRows.Count; mi++)
+            {
+                string inputMeshLine = inputMeshFileRows[mi];
+                if (inputMeshLine.Contains("ml,"))
+                    inputMeshLine = inputMeshLine.Replace(oldMaterialListName, newMaterialListName);
+                outputMeshFileRows.Add(inputMeshLine);
+            }
+            // Write the file
+            using (var outputMaterialList = new StreamWriter(sourceMeshFileFullPath))
+                foreach (string block in outputMeshFileRows)
+                    outputMaterialList.WriteLine(block);
+        }
+
         private void ProcessAndCopyMaterialTextures(string topDirectory, string tempObjectsFolder, string materialListFullPath, string outputObjectsFolder)
         {
             string sourceTextureFolder = Path.Combine(tempObjectsFolder, "textures");
@@ -839,6 +857,11 @@ namespace EQWOWConverter
                     RenameMeshInSkeletonFile(tempObjectSkeletonFile, idByOriginalMeshName.Key, newMeshName);
                 }
 
+                // Generate a new name
+                revisedObjectName = objectName;
+                if (generatedID > 0)
+                    revisedObjectName = objectName + "alt" + generatedID.ToString();
+
                 // Copy the files, factoring for renames
                 foreach (string meshName in tempMeshNames)
                 {
@@ -847,13 +870,15 @@ namespace EQWOWConverter
                         targetMeshName = meshName + "alt" + generatedID.ToString();
                     string tempObjectMesh = Path.Combine(tempObjectsFolder, "Meshes", meshName + ".txt");
                     string tempObjectMeshCollision = Path.Combine(tempObjectsFolder, "Meshes", meshName + "_collision.txt");
-                    FileTool.CopyFile(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(targetMeshName, ".txt")));
+                    string outputMeshFileName = Path.Combine(outputObjectsFolder, "Meshes", string.Concat(targetMeshName, ".txt"));
+                    FileTool.CopyFile(tempObjectMesh, outputMeshFileName);
                     if (File.Exists(tempObjectMeshCollision))
                         FileTool.CopyFile(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(targetMeshName, "_collision.txt")));
+
+                    // If renamed, also update the material list reference
+                    if (generatedID > 0)
+                        UpdateMaterialListNameInMesh(outputMeshFileName, objectName, revisedObjectName);
                 }
-                revisedObjectName = objectName;
-                if (generatedID > 0)
-                    revisedObjectName = objectName + "alt" + generatedID.ToString();
                 FileTool.CopyFile(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", revisedObjectName + ".txt"));                
                 FileTool.CopyFile(tempObjectAnimationFile, Path.Combine(outputObjectsFolder, "Animations", revisedObjectName + "_pos.txt"));
                 FileTool.CopyFile(tempObjectSkeletonFile, Path.Combine(outputObjectsFolder, "Skeletons", revisedObjectName + ".txt"));
@@ -872,15 +897,21 @@ namespace EQWOWConverter
                 revisedObjectName = objectName;
                 if (generatedID > 0)
                     revisedObjectName = objectName + "alt" + generatedID.ToString();
-                FileTool.CopyFile(tempObjectMesh, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(revisedObjectName, ".txt")));
+                string outputMeshFileName = Path.Combine(outputObjectsFolder, "Meshes", string.Concat(revisedObjectName, ".txt"));
+                FileTool.CopyFile(tempObjectMesh, outputMeshFileName);
                 FileTool.CopyFile(tempObjectMaterialList, Path.Combine(outputObjectsFolder, "MaterialLists", string.Concat(revisedObjectName, ".txt")));
                 if (File.Exists(tempObjectMeshCollision))
                     FileTool.CopyFile(tempObjectMeshCollision, Path.Combine(outputObjectsFolder, "Meshes", string.Concat(revisedObjectName, "_collision.txt")));
-            }
 
-            // If the object itself was renamed, update the object instances file
+                // If renamed, also update the material list reference
+                if (generatedID > 0)
+                    UpdateMaterialListNameInMesh(outputMeshFileName, objectName, revisedObjectName);
+            }
+            
+            // If the object itself was renamed, update references
             if (objectName != revisedObjectName)
             {
+                // Update the instances file
                 string tempObjectInstancesFile = Path.Combine(tempZoneFolder, "object_instances.txt");
                 if (File.Exists(tempObjectInstancesFile) == false)
                     Logger.WriteDebug("- [" + topDirectory + "] No object_instances file to update");
