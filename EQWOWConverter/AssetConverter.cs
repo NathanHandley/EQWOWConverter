@@ -2516,23 +2516,21 @@ namespace EQWOWConverter
             Directory.CreateDirectory(iconOutputFolder);
 
             // Items
-            SortedDictionary<int, ItemTemplate> itemTemplates = ItemTemplate.GetItemTemplatesByEQDBIDs();       
             string itemIconInputFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "itemicons");
-            foreach(ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
+            string[] sourceItemIconFilePaths = Directory.GetFiles(itemIconInputFolder, "*.blp");
+            foreach (string inputIconFile in sourceItemIconFilePaths)
             {
-                string sourceIconFile = Path.Combine(itemIconInputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
-                string outputIconFile = Path.Combine(iconOutputFolder, itemDisplayInfo.IconFileNameNoExt + ".blp");
-                FileTool.CopyFile(sourceIconFile, outputIconFile);
+                string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileName(inputIconFile));
+                FileTool.CopyFile(inputIconFile, outputIconFile);
             }
 
             // Spells
             string spellIconInputFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellicons");
-            string[] spellIconFiles = Directory.GetFiles(spellIconInputFolder, "*.blp");
-            foreach(string spellIconFile in spellIconFiles)
+            string[] sourceSpellIconFilePaths = Directory.GetFiles(spellIconInputFolder, "*.blp");
+            foreach (string inputIconFile in sourceSpellIconFilePaths)
             {
-                string sourceIconFile = spellIconFile;
-                string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileNameWithoutExtension(spellIconFile) + ".blp");
-                FileTool.CopyFile(sourceIconFile, outputIconFile);
+                string outputIconFile = Path.Combine(iconOutputFolder, Path.GetFileName(inputIconFile));
+                FileTool.CopyFile(inputIconFile, outputIconFile);
             }
         }
     }
