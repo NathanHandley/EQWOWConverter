@@ -723,10 +723,10 @@ namespace EQWOWConverter.Items
                                     itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
                                 }
 
-                                // Otherwise, store it as misc
+                                // Otherwise, store it as "other"
                                 else
                                 {
-                                    itemTemplate.ClassID = 4; // armor class
+                                    itemTemplate.ClassID = 15; 
                                     itemTemplate.SubClassID = 4;
                                 }
                             }                           
