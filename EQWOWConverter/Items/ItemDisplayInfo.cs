@@ -125,11 +125,6 @@ namespace EQWOWConverter.Items
                     return itemDisplayInfo;
             }
 
-            // Make temp folder if it's not there yet
-            string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
-            if (Directory.Exists(workingFolderPath) == false)
-                Directory.CreateDirectory(workingFolderPath);
-
             // Create the item display record
             ItemDisplayInfo newItemDisplayInfo = new ItemDisplayInfo();
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;

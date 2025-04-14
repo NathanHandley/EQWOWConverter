@@ -1050,6 +1050,11 @@ namespace EQWOWConverter.Items
             string itemsFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "ItemTemplates.csv");
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(itemsFileName, "|");
 
+            // Make temp folder if it's not there yet
+            string workingFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");
+            if (Directory.Exists(workingFolderPath) == false)
+                Directory.CreateDirectory(workingFolderPath);
+
             // Load all of the data
             LogCounter progressionCounter = new LogCounter("Populating item templates... ", 0, rows.Count);
             foreach (Dictionary<string, string> columns in rows)

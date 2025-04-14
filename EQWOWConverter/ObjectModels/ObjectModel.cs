@@ -685,8 +685,6 @@ namespace EQWOWConverter.ObjectModels
 
         public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
         {
-            Logger.WriteDebug(string.Concat("Seeking animation to build to wow type '", animationType.ToString(), "' for object '", Name, "'"));
-
             // Determine what animations can work
             List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
             if (ModelType == ObjectModelType.Creature && overrideEQAnimationType != EQAnimationType.Unknown)
