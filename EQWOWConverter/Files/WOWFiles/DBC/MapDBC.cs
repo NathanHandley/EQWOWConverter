@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // CorpseX - "This is listed as the x-coordinate of the instance entrance" on wowdev... why?
             newRow.AddFloat(0); // CorpseY - "This is listed as the y-coordinate of the instance entrance" on wowdev... why?
             newRow.AddInt32(-1); // TimeOfDayOverride - This is -1 for everywhere except Orgimmar and Dalaran
-            newRow.AddInt32(2); // ExpansionID (0 - Vanilla, 1 - BC, 2 - WOTLK)
+            newRow.AddInt32(0); // ExpansionID (0 - Vanilla, 1 - BC, 2 - WOTLK)
             newRow.AddInt32(0); // RaidOffset (?)
             newRow.AddInt32(0); // Max Players (0 if no max?)
 
