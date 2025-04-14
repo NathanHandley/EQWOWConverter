@@ -51,10 +51,16 @@ namespace EQWOWConverter.ObjectModels
 
         public List<Byte> GetDataBytes()
         {
-            List<Byte> bytes = new List<Byte>();
-            foreach (T value in Values)
-                bytes.AddRange(value.ToBytes());
-            return bytes;
+            if (Values.Count == 0)
+                return new List<byte>();
+            else
+            {
+                // Allocate an estimated size
+                List<Byte> bytes = new List<Byte>(Convert.ToInt32(Values.Count * Values[0].GetBytesSize()));
+                foreach (T value in Values)
+                    bytes.AddRange(value.ToBytes());
+                return bytes;
+            }
         }
     }
 }
