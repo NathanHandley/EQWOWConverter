@@ -37,6 +37,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(posY); // PosY (delta move amount?  Is it absolute relative to 0,0 of object?)
             newRow.AddFloat(posZ); // PosZ (delta move amount?  Is it absolute relative to 0,0 of object?)
             newRow.AddInt32(animationSequenceID); // SequenceID (Animation type. 0 = standing)
+
+            // Sorting
+            newRow.SortValue1 = gameObjectTemplateID;
+            newRow.SortValue2 = timestampInMS;
+            newRow.SortValue3 = id;
             Rows.Add(newRow);
         }
     }
