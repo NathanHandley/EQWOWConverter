@@ -229,14 +229,14 @@ namespace EQWOWConverter.ObjectModels
 
                 // Load the rest
                 // If this object uses animated vertices, then it should have a skeleton and animation generated
-                // TODO: Make this work with > 256 vertex frames
+                // TODO: Make this work with > 100 vertex frames
                 int numOfFilledAVs = 0;
                 foreach (var avFrames in MeshData.AnimatedVertexFramesByVertexIndex)
                     if (avFrames.VertexOffsetFrames.Count > 0)
                         numOfFilledAVs++;
-                if (numOfFilledAVs >= 255)
+                if (numOfFilledAVs >= 100)
                     Logger.WriteDebug("Object '" + name + "' has animated vertices but has a frame count of " + MeshData.AnimatedVertexFramesByVertexIndex.Count + " so it will not be animated by vertices");
-                if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 255)
+                if (MeshData.AnimatedVertexFramesByVertexIndex.Count > 0 && numOfFilledAVs < 100)
                 {
                     ConvertAnimatedVerticesToSkeleton(name);
                     GenerateAnimationFromAnimatedVertexSkeleton(name, MeshData);
