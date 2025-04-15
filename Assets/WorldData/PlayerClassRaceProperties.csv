@@ -1,101 +1,101 @@
-﻿RaceID|RaceName|ClassID|ClassName|Alignment|StartZoneShortName|StartPosX|StartPosY|StartPosZ|StartOrientation
-1|Human|6|DeathKnight|Evil|tutorial|0|0|0|0
-2|Orc|6|DeathKnight|Evil|tutorial|0|0|0|0
-3|Dwarf|6|DeathKnight|Evil|tutorial|0|0|0|0
-4|Night Elf|6|DeathKnight|Evil|tutorial|0|0|0|0
-5|Undead|6|DeathKnight|Evil|tutorial|0|0|0|0
-6|Tauren|6|DeathKnight|Evil|tutorial|0|0|0|0
-7|Gnome|6|DeathKnight|Evil|tutorial|0|0|0|0
-8|Troll|6|DeathKnight|Evil|tutorial|0|0|0|0
-10|Blood Elf|6|DeathKnight|Evil|tutorial|0|0|0|0
-11|Draenei|6|DeathKnight|Evil|tutorial|0|0|0|0
-10|Blood Elf|8|Mage|Evil|tutorial|0|0|0|0
-10|Blood Elf|4|Rogue|Evil|tutorial|0|0|0|0
-10|Blood Elf|7|Shaman|Evil|tutorial|0|0|0|0
-10|Blood Elf|1|Warrior|Evil|tutorial|0|0|0|0
-1|Human|9|Warlock|Evil|tutorial|0|0|0|0
-2|Orc|9|Warlock|Evil|tutorial|0|0|0|0
-3|Dwarf|9|Warlock|Evil|tutorial|0|0|0|0
-4|Night Elf|9|Warlock|Evil|tutorial|0|0|0|0
-5|Undead|9|Warlock|Evil|tutorial|0|0|0|0
-6|Tauren|9|Warlock|Evil|tutorial|0|0|0|0
-7|Gnome|9|Warlock|Evil|tutorial|0|0|0|0
-8|Troll|9|Warlock|Evil|tutorial|0|0|0|0
-10|Blood Elf|9|Warlock|Evil|tutorial|0|0|0|0
-11|Draenei|9|Warlock|Evil|tutorial|0|0|0|0
-5|Undead|8|Mage|Evil|tutorial|0|0|0|0
-5|Undead|4|Rogue|Evil|tutorial|0|0|0|0
-5|Undead|7|Shaman|Evil|tutorial|0|0|0|0
-5|Undead|1|Warrior|Evil|tutorial|0|0|0|0
-1|Human|11|Druid|Good|tutorial|0|0|0|0
-2|Orc|11|Druid|Good|tutorial|0|0|0|0
-3|Dwarf|11|Druid|Good|tutorial|0|0|0|0
-4|Night Elf|11|Druid|Good|tutorial|0|0|0|0
-5|Undead|11|Druid|Good|tutorial|0|0|0|0
-6|Tauren|11|Druid|Good|tutorial|0|0|0|0
-7|Gnome|11|Druid|Good|tutorial|0|0|0|0
-8|Troll|11|Druid|Good|tutorial|0|0|0|0
-10|Blood Elf|11|Druid|Good|tutorial|0|0|0|0
-11|Draenei|11|Druid|Good|tutorial|0|0|0|0
-1|Human|3|Hunter|Good|tutorial|0|0|0|0
-2|Orc|3|Hunter|Good|tutorial|0|0|0|0
-3|Dwarf|3|Hunter|Good|tutorial|0|0|0|0
-4|Night Elf|3|Hunter|Good|tutorial|0|0|0|0
-5|Undead|3|Hunter|Good|tutorial|0|0|0|0
-6|Tauren|3|Hunter|Good|tutorial|0|0|0|0
-7|Gnome|3|Hunter|Good|tutorial|0|0|0|0
-8|Troll|3|Hunter|Good|tutorial|0|0|0|0
-10|Blood Elf|3|Hunter|Good|tutorial|0|0|0|0
-11|Draenei|3|Hunter|Good|tutorial|0|0|0|0
-11|Draenei|8|Mage|Good|tutorial|0|0|0|0
-11|Draenei|4|Rogue|Good|tutorial|0|0|0|0
-11|Draenei|7|Shaman|Good|tutorial|0|0|0|0
-11|Draenei|1|Warrior|Good|tutorial|0|0|0|0
-3|Dwarf|8|Mage|Good|tutorial|0|0|0|0
-3|Dwarf|4|Rogue|Good|tutorial|0|0|0|0
-1|Human|2|Paladin|Good|tutorial|0|0|0|0
-2|Orc|2|Paladin|Good|tutorial|0|0|0|0
-3|Dwarf|2|Paladin|Good|tutorial|0|0|0|0
-4|Night Elf|2|Paladin|Good|tutorial|0|0|0|0
-5|Undead|2|Paladin|Good|tutorial|0|0|0|0
-6|Tauren|2|Paladin|Good|tutorial|0|0|0|0
-7|Gnome|2|Paladin|Good|tutorial|0|0|0|0
-8|Troll|2|Paladin|Good|tutorial|0|0|0|0
-10|Blood Elf|2|Paladin|Good|tutorial|0|0|0|0
-11|Draenei|2|Paladin|Good|tutorial|0|0|0|0
-1|Human|5|Priest|Good|tutorial|0|0|0|0
-2|Orc|5|Priest|Good|tutorial|0|0|0|0
-3|Dwarf|5|Priest|Good|tutorial|0|0|0|0
-4|Night Elf|5|Priest|Good|tutorial|0|0|0|0
-5|Undead|5|Priest|Good|tutorial|0|0|0|0
-6|Tauren|5|Priest|Good|tutorial|0|0|0|0
-7|Gnome|5|Priest|Good|tutorial|0|0|0|0
-8|Troll|5|Priest|Good|tutorial|0|0|0|0
-10|Blood Elf|5|Priest|Good|tutorial|0|0|0|0
-11|Draenei|5|Priest|Good|tutorial|0|0|0|0
-3|Dwarf|7|Shaman|Good|tutorial|0|0|0|0
-3|Dwarf|1|Warrior|Good|tutorial|0|0|0|0
-4|Night Elf|8|Mage|Good|tutorial|0|0|0|0
-4|Night Elf|4|Rogue|Good|tutorial|0|0|0|0
-4|Night Elf|7|Shaman|Good|tutorial|0|0|0|0
-4|Night Elf|1|Warrior|Good|tutorial|0|0|0|0
-6|Tauren|8|Mage|Good|tutorial|0|0|0|0
-6|Tauren|4|Rogue|Good|tutorial|0|0|0|0
-6|Tauren|7|Shaman|Good|tutorial|0|0|0|0
-6|Tauren|1|Warrior|Good|tutorial|0|0|0|0
-7|Gnome|8|Mage|Neutral|tutorial|0|0|0|0
-7|Gnome|4|Rogue|Neutral|tutorial|0|0|0|0
-7|Gnome|7|Shaman|Neutral|tutorial|0|0|0|0
-7|Gnome|1|Warrior|Neutral|tutorial|0|0|0|0
-1|Human|8|Mage|Neutral|tutorial|0|0|0|0
-1|Human|4|Rogue|Neutral|tutorial|0|0|0|0
-1|Human|7|Shaman|Neutral|tutorial|0|0|0|0
-1|Human|1|Warrior|Neutral|tutorial|0|0|0|0
-2|Orc|8|Mage|Neutral|tutorial|0|0|0|0
-2|Orc|4|Rogue|Neutral|tutorial|0|0|0|0
-2|Orc|7|Shaman|Neutral|tutorial|0|0|0|0
-2|Orc|1|Warrior|Neutral|tutorial|0|0|0|0
-8|Troll|8|Mage|Neutral|tutorial|0|0|0|0
-8|Troll|4|Rogue|Neutral|tutorial|0|0|0|0
-8|Troll|7|Shaman|Neutral|tutorial|0|0|0|0
-8|Troll|1|Warrior|Neutral|tutorial|0|0|0|0
+﻿RaceID|RaceName|ClassID|ClassName|StartZoneShortName|StartPosX|StartPosY|StartPosZ|StartOrientation
+1|Human|1|Warrior|tutorial|0|0|0|0
+1|Human|2|Paladin|tutorial|0|0|0|0
+1|Human|3|Hunter|tutorial|0|0|0|0
+1|Human|4|Rogue|tutorial|0|0|0|0
+1|Human|5|Priest|tutorial|0|0|0|0
+1|Human|6|DeathKnight|tutorial|0|0|0|0
+1|Human|7|Shaman|tutorial|0|0|0|0
+1|Human|8|Mage|tutorial|0|0|0|0
+1|Human|9|Warlock|tutorial|0|0|0|0
+1|Human|11|Druid|tutorial|0|0|0|0
+2|Orc|1|Warrior|tutorial|0|0|0|0
+2|Orc|2|Paladin|tutorial|0|0|0|0
+2|Orc|3|Hunter|tutorial|0|0|0|0
+2|Orc|4|Rogue|tutorial|0|0|0|0
+2|Orc|5|Priest|tutorial|0|0|0|0
+2|Orc|6|DeathKnight|tutorial|0|0|0|0
+2|Orc|7|Shaman|tutorial|0|0|0|0
+2|Orc|8|Mage|tutorial|0|0|0|0
+2|Orc|9|Warlock|tutorial|0|0|0|0
+2|Orc|11|Druid|tutorial|0|0|0|0
+3|Dwarf|1|Warrior|tutorial|0|0|0|0
+3|Dwarf|2|Paladin|tutorial|0|0|0|0
+3|Dwarf|3|Hunter|tutorial|0|0|0|0
+3|Dwarf|4|Rogue|tutorial|0|0|0|0
+3|Dwarf|5|Priest|tutorial|0|0|0|0
+3|Dwarf|6|DeathKnight|tutorial|0|0|0|0
+3|Dwarf|7|Shaman|tutorial|0|0|0|0
+3|Dwarf|8|Mage|tutorial|0|0|0|0
+3|Dwarf|9|Warlock|tutorial|0|0|0|0
+3|Dwarf|11|Druid|tutorial|0|0|0|0
+4|Night Elf|1|Warrior|tutorial|0|0|0|0
+4|Night Elf|2|Paladin|tutorial|0|0|0|0
+4|Night Elf|3|Hunter|tutorial|0|0|0|0
+4|Night Elf|4|Rogue|tutorial|0|0|0|0
+4|Night Elf|5|Priest|tutorial|0|0|0|0
+4|Night Elf|6|DeathKnight|tutorial|0|0|0|0
+4|Night Elf|7|Shaman|tutorial|0|0|0|0
+4|Night Elf|8|Mage|tutorial|0|0|0|0
+4|Night Elf|9|Warlock|tutorial|0|0|0|0
+4|Night Elf|11|Druid|tutorial|0|0|0|0
+5|Undead|1|Warrior|tutorial|0|0|0|0
+5|Undead|2|Paladin|tutorial|0|0|0|0
+5|Undead|3|Hunter|tutorial|0|0|0|0
+5|Undead|4|Rogue|tutorial|0|0|0|0
+5|Undead|5|Priest|tutorial|0|0|0|0
+5|Undead|6|DeathKnight|tutorial|0|0|0|0
+5|Undead|7|Shaman|tutorial|0|0|0|0
+5|Undead|8|Mage|tutorial|0|0|0|0
+5|Undead|9|Warlock|tutorial|0|0|0|0
+5|Undead|11|Druid|tutorial|0|0|0|0
+6|Tauren|1|Warrior|tutorial|0|0|0|0
+6|Tauren|2|Paladin|tutorial|0|0|0|0
+6|Tauren|3|Hunter|tutorial|0|0|0|0
+6|Tauren|4|Rogue|tutorial|0|0|0|0
+6|Tauren|5|Priest|tutorial|0|0|0|0
+6|Tauren|6|DeathKnight|tutorial|0|0|0|0
+6|Tauren|7|Shaman|tutorial|0|0|0|0
+6|Tauren|8|Mage|tutorial|0|0|0|0
+6|Tauren|9|Warlock|tutorial|0|0|0|0
+6|Tauren|11|Druid|tutorial|0|0|0|0
+7|Gnome|1|Warrior|tutorial|0|0|0|0
+7|Gnome|2|Paladin|tutorial|0|0|0|0
+7|Gnome|3|Hunter|tutorial|0|0|0|0
+7|Gnome|4|Rogue|tutorial|0|0|0|0
+7|Gnome|5|Priest|tutorial|0|0|0|0
+7|Gnome|6|DeathKnight|tutorial|0|0|0|0
+7|Gnome|7|Shaman|tutorial|0|0|0|0
+7|Gnome|8|Mage|tutorial|0|0|0|0
+7|Gnome|9|Warlock|tutorial|0|0|0|0
+7|Gnome|11|Druid|tutorial|0|0|0|0
+8|Troll|1|Warrior|tutorial|0|0|0|0
+8|Troll|2|Paladin|tutorial|0|0|0|0
+8|Troll|3|Hunter|tutorial|0|0|0|0
+8|Troll|4|Rogue|tutorial|0|0|0|0
+8|Troll|5|Priest|tutorial|0|0|0|0
+8|Troll|6|DeathKnight|tutorial|0|0|0|0
+8|Troll|7|Shaman|tutorial|0|0|0|0
+8|Troll|8|Mage|tutorial|0|0|0|0
+8|Troll|9|Warlock|tutorial|0|0|0|0
+8|Troll|11|Druid|tutorial|0|0|0|0
+10|Blood Elf|1|Warrior|tutorial|0|0|0|0
+10|Blood Elf|2|Paladin|tutorial|0|0|0|0
+10|Blood Elf|3|Hunter|tutorial|0|0|0|0
+10|Blood Elf|4|Rogue|tutorial|0|0|0|0
+10|Blood Elf|5|Priest|tutorial|0|0|0|0
+10|Blood Elf|6|DeathKnight|tutorial|0|0|0|0
+10|Blood Elf|7|Shaman|tutorial|0|0|0|0
+10|Blood Elf|8|Mage|tutorial|0|0|0|0
+10|Blood Elf|9|Warlock|tutorial|0|0|0|0
+10|Blood Elf|11|Druid|tutorial|0|0|0|0
+11|Draenei|1|Warrior|tutorial|0|0|0|0
+11|Draenei|2|Paladin|tutorial|0|0|0|0
+11|Draenei|3|Hunter|tutorial|0|0|0|0
+11|Draenei|4|Rogue|tutorial|0|0|0|0
+11|Draenei|5|Priest|tutorial|0|0|0|0
+11|Draenei|6|DeathKnight|tutorial|0|0|0|0
+11|Draenei|7|Shaman|tutorial|0|0|0|0
+11|Draenei|8|Mage|tutorial|0|0|0|0
+11|Draenei|9|Warlock|tutorial|0|0|0|0
+11|Draenei|11|Druid|tutorial|0|0|0|0

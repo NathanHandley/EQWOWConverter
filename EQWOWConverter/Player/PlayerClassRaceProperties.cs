@@ -22,7 +22,6 @@ namespace EQWOWConverter.Player
         private static readonly object PropertiesReadLock = new object();
         public int RaceID;
         public int ClassID;
-        public string Alignment = string.Empty;
         public string StartZoneShortName = string.Empty;
         public float StartPositionX;
         public float StartPositionY;
@@ -50,7 +49,6 @@ namespace EQWOWConverter.Player
                 PlayerClassRaceProperties curProperties = new PlayerClassRaceProperties();
                 curProperties.RaceID = int.Parse(columns["RaceID"]);
                 curProperties.ClassID = int.Parse(columns["ClassID"]);
-                curProperties.Alignment = columns["Alignment"];
                 curProperties.StartZoneShortName = columns["StartZoneShortName"];
                 curProperties.StartPositionX = float.Parse(columns["StartPosX"]);
                 curProperties.StartPositionY = float.Parse(columns["StartPosY"]);
