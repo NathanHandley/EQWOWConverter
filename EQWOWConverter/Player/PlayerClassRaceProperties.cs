@@ -49,10 +49,10 @@ namespace EQWOWConverter.Player
                 PlayerClassRaceProperties curProperties = new PlayerClassRaceProperties();
                 curProperties.RaceID = int.Parse(columns["RaceID"]);
                 curProperties.ClassID = int.Parse(columns["ClassID"]);
-                curProperties.StartZoneShortName = columns["StartZoneShortName"];
-                curProperties.StartPositionX = float.Parse(columns["StartPosX"]);
-                curProperties.StartPositionY = float.Parse(columns["StartPosY"]);
-                curProperties.StartPositionZ = float.Parse(columns["StartPosZ"]);
+                curProperties.StartZoneShortName = columns["StartZoneShortName"].Trim().ToLower();
+                curProperties.StartPositionX = float.Parse(columns["StartPosX"]) * Configuration.GENERATE_WORLD_SCALE;
+                curProperties.StartPositionY = float.Parse(columns["StartPosY"]) * Configuration.GENERATE_WORLD_SCALE;
+                curProperties.StartPositionZ = float.Parse(columns["StartPosZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 curProperties.StartOrientation = float.Parse(columns["StartOrientation"]);
 
                 // Add if unique

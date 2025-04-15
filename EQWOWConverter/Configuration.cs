@@ -132,6 +132,13 @@ namespace EQWOWConverter
         public static readonly float GENERATE_FLOAT_EPSILON = 0.001f;
 
         //=====================================================================
+        // Player
+        //=====================================================================
+        // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
+        // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
+        public static readonly bool PLAYER_USE_EQ_START_LOCATION = false;
+
+        //=====================================================================
         // Zone General
         //=====================================================================
         // If this is set to false, any static graphics (like dirt, etc) are not rendered.  Only set to false for debugging

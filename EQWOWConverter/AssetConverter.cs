@@ -19,6 +19,7 @@ using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.Player;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
@@ -1962,6 +1963,7 @@ namespace EQWOWConverter
             NPCTextSQL npcTextSQL = new NPCTextSQL();
             NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();            
             NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
+            PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
@@ -2221,7 +2223,34 @@ namespace EQWOWConverter
                 int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                 creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID, 
                     graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None);
-            }         
+            }
+
+            // Player start properties
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
+            {
+                // Restrict to loaded zones
+                Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+                Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
+                foreach (Zone zone in zones)
+                {
+                    mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+                    areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
+                }
+                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                {
+                    if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
+                    {
+                        Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname"));
+                        continue;
+                    }
+                    else
+                    {
+                        playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[classRaceProperties.Value.StartZoneShortName],
+                            areaIDsByShortName[classRaceProperties.Value.StartZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
+                            classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+                    }
+                }
+            }
 
             // Trainer Abilities
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
@@ -2332,6 +2361,8 @@ namespace EQWOWConverter
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
+                playerCreateInfoSQL.SaveToDisk("playercreateinfo", SQLFileType.World);
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);

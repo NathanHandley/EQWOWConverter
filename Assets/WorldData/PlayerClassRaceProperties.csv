@@ -1,101 +1,101 @@
 ﻿RaceID|RaceName|ClassID|ClassName|StartZoneShortName|StartPosX|StartPosY|StartPosZ|StartOrientation
-1|Human|1|Warrior|freportw|25.84486|12.13679|-24.620689|4.60241
-1|Human|2|Paladin|qeynos2|218.898056|105.019279|0.00003|3.2162
-1|Human|3|Hunter|qeynos2|218.898056|105.019279|0.00003|3.2162
-1|Human|4|Rogue|qeynos2|218.898056|105.019279|0.00003|3.2162
-1|Human|5|Priest|qeynos2|218.898056|105.019279|0.00003|3.2162
-1|Human|6|DeathKnight|freportw|25.84486|12.13679|-24.620689|4.60241
-1|Human|7|Shaman|halas|-25.93767|6.35944|0.00001|6.21247
-1|Human|8|Mage|freportw|25.84486|12.13679|-24.620689|4.60241
-1|Human|9|Warlock|freportw|25.84486|12.13679|-24.620689|4.60241
-1|Human|11|Druid|qrg|-62.338718|116.245941|0.00001|6.06328
-2|Orc|1|Warrior|oggok|-300.73999|-10.32083|0|0.42805
-2|Orc|2|Paladin|freportw|25.84486|12.13679|-24.620689|4.60241
-2|Orc|3|Hunter|qeynos2|218.898056|105.019279|0.00003|3.2162
-2|Orc|4|Rogue|freportw|25.84486|12.13679|-24.620689|4.60241
-2|Orc|5|Priest|freportw|25.84486|12.13679|-24.620689|4.60241
-2|Orc|6|DeathKnight|oggok|-300.73999|-10.32083|0|0.42805
-2|Orc|7|Shaman|oggok|-300.73999|-10.32083|0|0.42805
-2|Orc|8|Mage|freportw|25.84486|12.13679|-24.620689|4.60241
-2|Orc|9|Warlock|neriaka|0.66446|71.80513|17.60528|4.70061
-2|Orc|11|Druid|qrg|-62.338718|116.245941|0.00001|6.06328
+3|Dwarf|8|Mage|akanon|34.47596|20.196699|-28|6.28318
+7|Gnome|1|Warrior|akanon|34.47596|20.196699|-28|6.28318
+7|Gnome|4|Rogue|akanon|34.47596|20.196699|-28|6.28318
+7|Gnome|5|Priest|akanon|34.47596|20.196699|-28|6.28318
+7|Gnome|8|Mage|akanon|34.47596|20.196699|-28|6.28318
+7|Gnome|9|Warlock|akanon|34.47596|20.196699|-28|6.28318
+11|Draenei|2|Paladin|erudnext|-1233.418701|-239.548553|48.968788|6.28317
+11|Draenei|5|Priest|erudnext|-1233.418701|-239.548553|48.968788|6.28317
+11|Draenei|8|Mage|erudnext|-1233.418701|-239.548553|48.968788|6.28317
+4|Night Elf|2|Paladin|felwithea|1.2224|-3.52619|0|4.69983
+4|Night Elf|5|Priest|felwithea|1.2224|-3.52619|0|4.69983
+4|Night Elf|8|Mage|felwithea|1.2224|-3.52619|0|4.69983
+6|Tauren|2|Paladin|felwithea|1.2224|-3.52619|0|4.69983
+6|Tauren|5|Priest|felwithea|1.2224|-3.52619|0|4.69983
+6|Tauren|8|Mage|felwithea|1.2224|-3.52619|0|4.69983
+1|Human|1|Warrior|freportw|28.693199|15.69033|-28|4.61029
+1|Human|6|DeathKnight|freportw|28.693199|15.69033|-28|4.61029
+1|Human|8|Mage|freportw|28.693199|15.69033|-28|4.61029
+1|Human|9|Warlock|freportw|28.693199|15.69033|-28|4.61029
+2|Orc|2|Paladin|freportw|28.693199|15.69033|-28|4.61029
+2|Orc|4|Rogue|freportw|28.693199|15.69033|-28|4.61029
+2|Orc|5|Priest|freportw|28.693199|15.69033|-28|4.61029
+2|Orc|8|Mage|freportw|28.693199|15.69033|-28|4.61029
+3|Dwarf|6|DeathKnight|freportw|28.693199|15.69033|-28|4.61029
+3|Dwarf|9|Warlock|freportw|28.693199|15.69033|-28|4.61029
+4|Night Elf|6|DeathKnight|freportw|28.693199|15.69033|-28|4.61029
+4|Night Elf|9|Warlock|freportw|28.693199|15.69033|-28|4.61029
+5|Undead|2|Paladin|freportw|28.693199|15.69033|-28|4.61029
+6|Tauren|6|DeathKnight|freportw|28.693199|15.69033|-28|4.61029
+7|Gnome|6|DeathKnight|freportw|28.693199|15.69033|-28|4.61029
+8|Troll|2|Paladin|freportw|28.693199|15.69033|-28|4.61029
+8|Troll|4|Rogue|freportw|28.693199|15.69033|-28|4.61029
+8|Troll|5|Priest|freportw|28.693199|15.69033|-28|4.61029
+8|Troll|8|Mage|freportw|28.693199|15.69033|-28|4.61029
+10|Blood Elf|2|Paladin|freportw|28.693199|15.69033|-28|4.61029
+4|Night Elf|1|Warrior|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+4|Night Elf|3|Hunter|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+4|Night Elf|4|Rogue|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+4|Night Elf|11|Druid|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+6|Tauren|3|Hunter|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+6|Tauren|11|Druid|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+7|Gnome|3|Hunter|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+10|Blood Elf|11|Druid|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+11|Draenei|3|Hunter|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+11|Draenei|4|Rogue|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+11|Draenei|11|Druid|gfaydark|-15.9484|-140.502014|73.968773|3.51545
+5|Undead|7|Shaman|grobb|2.67273|-0.42426|0|0.30001
+8|Troll|1|Warrior|grobb|2.67273|-0.42426|0|0.30001
+8|Troll|6|DeathKnight|grobb|2.67273|-0.42426|0|0.30001
+8|Troll|7|Shaman|grobb|2.67273|-0.42426|0|0.30001
+10|Blood Elf|7|Shaman|grobb|2.67273|-0.42426|0|0.30001
+1|Human|7|Shaman|halas|0|0|0|0
+3|Dwarf|7|Shaman|halas|0|0|0|0
+4|Night Elf|7|Shaman|halas|0|0|0|0
+6|Tauren|4|Rogue|halas|0|0|0|0
+7|Gnome|7|Shaman|halas|0|0|0|0
+11|Draenei|7|Shaman|halas|0|0|0|0
 3|Dwarf|1|Warrior|kaladima|0|0|0|0
 3|Dwarf|2|Paladin|kaladima|0|0|0|0
-3|Dwarf|3|Hunter|qrg|-62.338718|116.245941|0.00001|6.06328
 3|Dwarf|4|Rogue|kaladima|0|0|0|0
 3|Dwarf|5|Priest|kaladima|0|0|0|0
-3|Dwarf|6|DeathKnight|freportw|25.84486|12.13679|-24.620689|4.60241
-3|Dwarf|7|Shaman|halas|-25.93767|6.35944|0.00001|6.21247
-3|Dwarf|8|Mage|akanon|22.9821|18.004299|-24.620689|6.28318
-3|Dwarf|9|Warlock|freportw|25.84486|12.13679|-24.620689|4.60241
-3|Dwarf|11|Druid|rivervale|-2.15627|-0.2479|0|4.97942
-4|Night Elf|1|Warrior|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-4|Night Elf|2|Paladin|felwithea|0.72423|34.108822|0|4.68885
-4|Night Elf|3|Hunter|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-4|Night Elf|4|Rogue|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-4|Night Elf|5|Priest|felwithea|0.72423|34.108822|0|4.68885
-4|Night Elf|6|DeathKnight|freportw|25.84486|12.13679|-24.620689|4.60241
-4|Night Elf|7|Shaman|halas|-25.93767|6.35944|0.00001|6.21247
-4|Night Elf|8|Mage|felwithea|0.72423|34.108822|0|4.68885
-4|Night Elf|9|Warlock|freportw|25.84486|12.13679|-24.620689|4.60241
-4|Night Elf|11|Druid|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-5|Undead|1|Warrior|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|2|Paladin|freportw|25.84486|12.13679|-24.620689|4.60241
-5|Undead|3|Hunter|qeynos2|218.898056|105.019279|0.00003|3.2162
-5|Undead|4|Rogue|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|5|Priest|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|6|DeathKnight|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|7|Shaman|grobb|-6.74586|0.89219|0|0.1453
-5|Undead|8|Mage|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|9|Warlock|neriaka|0.66446|71.80513|17.60528|4.70061
-5|Undead|11|Druid|qrg|-62.338718|116.245941|0.00001|6.06328
-6|Tauren|1|Warrior|qeynos2|218.898056|105.019279|0.00003|3.2162
-6|Tauren|2|Paladin|felwithea|0.72423|34.108822|0|4.68885
-6|Tauren|3|Hunter|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-6|Tauren|4|Rogue|halas|-25.93767|6.35944|0.00001|6.21247
-6|Tauren|5|Priest|felwithea|0.72423|34.108822|0|4.68885
-6|Tauren|6|DeathKnight|freportw|25.84486|12.13679|-24.620689|4.60241
-6|Tauren|7|Shaman|oggok|-300.73999|-10.32083|0|0.42805
-6|Tauren|8|Mage|felwithea|0.72423|34.108822|0|4.68885
-6|Tauren|9|Warlock|paineel|720.895935|182.753159|0.00006|3.14082
-6|Tauren|11|Druid|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-7|Gnome|1|Warrior|akanon|22.9821|18.004299|-24.620689|6.28318
 7|Gnome|2|Paladin|kaladima|0|0|0|0
-7|Gnome|3|Hunter|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-7|Gnome|4|Rogue|akanon|22.9821|18.004299|-24.620689|6.28318
-7|Gnome|5|Priest|akanon|22.9821|18.004299|-24.620689|6.28318
-7|Gnome|6|DeathKnight|freportw|25.84486|12.13679|-24.620689|4.60241
-7|Gnome|7|Shaman|halas|-25.93767|6.35944|0.00001|6.21247
-7|Gnome|8|Mage|akanon|22.9821|18.004299|-24.620689|6.28318
-7|Gnome|9|Warlock|akanon|22.9821|18.004299|-24.620689|6.28318
-7|Gnome|11|Druid|rivervale|-2.15627|-0.2479|0|4.97942
-8|Troll|1|Warrior|grobb|-6.74586|0.89219|0|0.1453
-8|Troll|2|Paladin|freportw|25.84486|12.13679|-24.620689|4.60241
-8|Troll|3|Hunter|qeynos2|218.898056|105.019279|0.00003|3.2162
-8|Troll|4|Rogue|freportw|25.84486|12.13679|-24.620689|4.60241
-8|Troll|5|Priest|freportw|25.84486|12.13679|-24.620689|4.60241
-8|Troll|6|DeathKnight|grobb|-6.74586|0.89219|0|0.1453
-8|Troll|7|Shaman|grobb|-6.74586|0.89219|0|0.1453
-8|Troll|8|Mage|freportw|25.84486|12.13679|-24.620689|4.60241
-8|Troll|9|Warlock|neriaka|0.66446|71.80513|17.60528|4.70061
-8|Troll|11|Druid|qrg|-62.338718|116.245941|0.00001|6.06328
-10|Blood Elf|1|Warrior|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|2|Paladin|freportw|25.84486|12.13679|-24.620689|4.60241
-10|Blood Elf|3|Hunter|qrg|-62.338718|116.245941|0.00001|6.06328
-10|Blood Elf|4|Rogue|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|5|Priest|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|6|DeathKnight|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|7|Shaman|grobb|-6.74586|0.89219|0|0.1453
-10|Blood Elf|8|Mage|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|9|Warlock|neriaka|0.66446|71.80513|17.60528|4.70061
-10|Blood Elf|11|Druid|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-11|Draenei|1|Warrior|qeynos2|218.898056|105.019279|0.00003|3.2162
-11|Draenei|2|Paladin|erudnext|-1297.926758|-238.930756|-42.179279|0.27881
-11|Draenei|3|Hunter|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-11|Draenei|4|Rogue|gfaydark|-22.05751|-119.92363|65.041481|3.58142
-11|Draenei|5|Priest|erudnext|-1297.926758|-238.930756|-42.179279|0.27881
-11|Draenei|6|DeathKnight|paineel|720.895935|182.753159|0.00006|3.14082
-11|Draenei|7|Shaman|halas|-25.93767|6.35944|0.00001|6.21247
-11|Draenei|8|Mage|erudnext|-1297.926758|-238.930756|-42.179279|0.27881
-11|Draenei|9|Warlock|paineel|720.895935|182.753159|0.00006|3.14082
-11|Draenei|11|Druid|gfaydark|-22.05751|-119.92363|65.041481|3.58142
+2|Orc|9|Warlock|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|1|Warrior|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|4|Rogue|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|5|Priest|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|6|DeathKnight|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|8|Mage|neriaka|0.83969|91.685837|22.3696|4.73595
+5|Undead|9|Warlock|neriaka|0.83969|91.685837|22.3696|4.73595
+8|Troll|9|Warlock|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|1|Warrior|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|4|Rogue|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|5|Priest|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|6|DeathKnight|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|8|Mage|neriaka|0.83969|91.685837|22.3696|4.73595
+10|Blood Elf|9|Warlock|neriaka|0.83969|91.685837|22.3696|4.73595
+2|Orc|1|Warrior|oggok|-235.567978|187.459915|35.40612|1.54724
+2|Orc|6|DeathKnight|oggok|-235.567978|187.459915|35.40612|1.54724
+2|Orc|7|Shaman|oggok|-235.567978|187.459915|35.40612|1.54724
+6|Tauren|7|Shaman|oggok|-235.567978|187.459915|35.40612|1.54724
+6|Tauren|9|Warlock|paineel|803.93866|203.568222|-0.24207|3.08269
+11|Draenei|6|DeathKnight|paineel|803.93866|203.568222|-0.24207|3.08269
+11|Draenei|9|Warlock|paineel|803.93866|203.568222|-0.24207|3.08269
+1|Human|2|Paladin|qeynos2|243.64064|119.203613|0.00001|3.1353
+1|Human|3|Hunter|qeynos2|243.64064|119.203613|0.00001|3.1353
+1|Human|4|Rogue|qeynos2|243.64064|119.203613|0.00001|3.1353
+1|Human|5|Priest|qeynos2|243.64064|119.203613|0.00001|3.1353
+2|Orc|3|Hunter|qeynos2|243.64064|119.203613|0.00001|3.1353
+5|Undead|3|Hunter|qeynos2|243.64064|119.203613|0.00001|3.1353
+6|Tauren|1|Warrior|qeynos2|243.64064|119.203613|0.00001|3.1353
+8|Troll|3|Hunter|qeynos2|243.64064|119.203613|0.00001|3.1353
+11|Draenei|1|Warrior|qeynos2|243.64064|119.203613|0.00001|3.1353
+1|Human|11|Druid|qrg|0|0|-1|0
+2|Orc|11|Druid|qrg|0|0|-1|0
+3|Dwarf|3|Hunter|qrg|0|0|-1|0
+5|Undead|11|Druid|qrg|0|0|-1|0
+8|Troll|11|Druid|qrg|0|0|-1|0
+10|Blood Elf|3|Hunter|qrg|0|0|-1|0
+3|Dwarf|11|Druid|rivervale|13.52066|-31.19392|0|4.73988
+7|Gnome|11|Druid|rivervale|13.52066|-31.19392|0|4.73988
