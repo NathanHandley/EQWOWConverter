@@ -1,0 +1,101 @@
+﻿RaceID|RaceName|ClassID|ClassName|Alignment|StartZoneShortName|StartPosX|StartPosY|StartPosZ|StartOrientation
+1|Human|6|DeathKnight|Evil|||||
+2|Orc|6|DeathKnight|Evil|||||
+3|Dwarf|6|DeathKnight|Evil|||||
+4|Night Elf|6|DeathKnight|Evil|||||
+5|Undead|6|DeathKnight|Evil|||||
+6|Tauren|6|DeathKnight|Evil|||||
+7|Gnome|6|DeathKnight|Evil|||||
+8|Troll|6|DeathKnight|Evil|||||
+10|Blood Elf|6|DeathKnight|Evil|||||
+11|Draenei|6|DeathKnight|Evil|||||
+10|Blood Elf|8|Mage|Evil|||||
+10|Blood Elf|4|Rogue|Evil|||||
+10|Blood Elf|7|Shaman|Evil|||||
+10|Blood Elf|1|Warrior|Evil|||||
+1|Human|9|Warlock|Evil|||||
+2|Orc|9|Warlock|Evil|||||
+3|Dwarf|9|Warlock|Evil|||||
+4|Night Elf|9|Warlock|Evil|||||
+5|Undead|9|Warlock|Evil|||||
+6|Tauren|9|Warlock|Evil|||||
+7|Gnome|9|Warlock|Evil|||||
+8|Troll|9|Warlock|Evil|||||
+10|Blood Elf|9|Warlock|Evil|||||
+11|Draenei|9|Warlock|Evil|||||
+5|Undead|8|Mage|Evil|||||
+5|Undead|4|Rogue|Evil|||||
+5|Undead|7|Shaman|Evil|||||
+5|Undead|1|Warrior|Evil|||||
+1|Human|11|Druid|Good|||||
+2|Orc|11|Druid|Good|||||
+3|Dwarf|11|Druid|Good|||||
+4|Night Elf|11|Druid|Good|||||
+5|Undead|11|Druid|Good|||||
+6|Tauren|11|Druid|Good|||||
+7|Gnome|11|Druid|Good|||||
+8|Troll|11|Druid|Good|||||
+10|Blood Elf|11|Druid|Good|||||
+11|Draenei|11|Druid|Good|||||
+1|Human|3|Hunter|Good|||||
+2|Orc|3|Hunter|Good|||||
+3|Dwarf|3|Hunter|Good|||||
+4|Night Elf|3|Hunter|Good|||||
+5|Undead|3|Hunter|Good|||||
+6|Tauren|3|Hunter|Good|||||
+7|Gnome|3|Hunter|Good|||||
+8|Troll|3|Hunter|Good|||||
+10|Blood Elf|3|Hunter|Good|||||
+11|Draenei|3|Hunter|Good|||||
+11|Draenei|8|Mage|Good|||||
+11|Draenei|4|Rogue|Good|||||
+11|Draenei|7|Shaman|Good|||||
+11|Draenei|1|Warrior|Good|||||
+3|Dwarf|8|Mage|Good|||||
+3|Dwarf|4|Rogue|Good|||||
+1|Human|2|Paladin|Good|||||
+2|Orc|2|Paladin|Good|||||
+3|Dwarf|2|Paladin|Good|||||
+4|Night Elf|2|Paladin|Good|||||
+5|Undead|2|Paladin|Good|||||
+6|Tauren|2|Paladin|Good|||||
+7|Gnome|2|Paladin|Good|||||
+8|Troll|2|Paladin|Good|||||
+10|Blood Elf|2|Paladin|Good|||||
+11|Draenei|2|Paladin|Good|||||
+1|Human|5|Priest|Good|||||
+2|Orc|5|Priest|Good|||||
+3|Dwarf|5|Priest|Good|||||
+4|Night Elf|5|Priest|Good|||||
+5|Undead|5|Priest|Good|||||
+6|Tauren|5|Priest|Good|||||
+7|Gnome|5|Priest|Good|||||
+8|Troll|5|Priest|Good|||||
+10|Blood Elf|5|Priest|Good|||||
+11|Draenei|5|Priest|Good|||||
+3|Dwarf|7|Shaman|Good|||||
+3|Dwarf|1|Warrior|Good|||||
+4|Night Elf|8|Mage|Good|||||
+4|Night Elf|4|Rogue|Good|||||
+4|Night Elf|7|Shaman|Good|||||
+4|Night Elf|1|Warrior|Good|||||
+6|Tauren|8|Mage|Good|||||
+6|Tauren|4|Rogue|Good|||||
+6|Tauren|7|Shaman|Good|||||
+6|Tauren|1|Warrior|Good|||||
+7|Gnome|8|Mage|Neutral|||||
+7|Gnome|4|Rogue|Neutral|||||
+7|Gnome|7|Shaman|Neutral|||||
+7|Gnome|1|Warrior|Neutral|||||
+1|Human|8|Mage|Neutral|||||
+1|Human|4|Rogue|Neutral|||||
+1|Human|7|Shaman|Neutral|||||
+1|Human|1|Warrior|Neutral|||||
+2|Orc|8|Mage|Neutral|||||
+2|Orc|4|Rogue|Neutral|||||
+2|Orc|7|Shaman|Neutral|||||
+2|Orc|1|Warrior|Neutral|||||
+8|Troll|8|Mage|Neutral|||||
+8|Troll|4|Rogue|Neutral|||||
+8|Troll|7|Shaman|Neutral|||||
+8|Troll|1|Warrior|Neutral|||||
