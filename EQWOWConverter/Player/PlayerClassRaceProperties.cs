@@ -18,5 +18,53 @@ namespace EQWOWConverter.Player
 {
     internal class PlayerClassRaceProperties
     {
+        private static Dictionary<(int, int), PlayerClassRaceProperties> PlayerClassRacePropertiesByRaceAndClassIDs = new Dictionary<(int, int), PlayerClassRaceProperties>();
+        private static readonly object PropertiesReadLock = new object();
+        public int RaceID;
+        public int ClassID;
+        public string Alignment = string.Empty;
+        public string StartZoneShortName = string.Empty;
+        public float StartPositionX;
+        public float StartPositionY;
+        public float StartPositionZ;
+        public float StartOrientation;
+
+        public static Dictionary<(int, int), PlayerClassRaceProperties> GetClassRacePropertiesByRaceAndClassID()
+        {
+            lock (PropertiesReadLock)
+            {
+                if (PlayerClassRacePropertiesByRaceAndClassIDs.Count == 0)
+                    PopulateClassRaceProperties();
+                return PlayerClassRacePropertiesByRaceAndClassIDs;
+            }            
+        }
+
+        private static void PopulateClassRaceProperties()
+        {
+            string propertiesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PlayerClassRaceProperties.csv");
+            Logger.WriteDebug(string.Concat("Populating player class race properties via file '", propertiesFile, "'"));
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(propertiesFile, "|");
+            foreach(Dictionary<string, string> columns in rows)
+            {
+                // Load the row
+                PlayerClassRaceProperties curProperties = new PlayerClassRaceProperties();
+                curProperties.RaceID = int.Parse(columns["RaceID"]);
+                curProperties.ClassID = int.Parse(columns["ClassID"]);
+                curProperties.Alignment = columns["Alignment"];
+                curProperties.StartZoneShortName = columns["StartZoneShortName"];
+                curProperties.StartPositionX = float.Parse(columns["StartPosX"]);
+                curProperties.StartPositionY = float.Parse(columns["StartPosY"]);
+                curProperties.StartPositionZ = float.Parse(columns["StartPosZ"]);
+                curProperties.StartOrientation = float.Parse(columns["StartOrientation"]);
+
+                // Add if unique
+                if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)
+                {
+                    Logger.WriteError(string.Concat("Failed to read in a player class race properties row since there was a duplicate row with race ", curProperties.RaceID, " and class ", curProperties.ClassID));
+                    continue;
+                }
+                PlayerClassRacePropertiesByRaceAndClassIDs.Add((curProperties.RaceID, curProperties.ClassID), curProperties);
+            }
+        }
     }
 }
