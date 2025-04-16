@@ -38,7 +38,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|871|Shield Wall||11000|0|0|28|0
 1|8204|Thunder Clap|Rank 3|11000|0|0|28|0
 1|2458|Berserker Stance|Rank 1|12000|0|0|30|0
-1|20252|Intercept||12000|0|0|30|0
 1|1464|Slam|Rank 1|12000|0|0|30|0
 1|6548|Rend|Rank 4|12000|0|0|30|0
 1|7369|Cleave|Rank 2|12000|0|0|30|0
@@ -160,7 +159,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|1044|Hand of Freedom||3500|0|0|18|0
 2|643|Devotion Aura|Rank 3|4000|0|0|20|0
 2|879|Exorcism|Rank 1|4000|0|0|20|0
-2|5502|Sense Undead||4000|0|0|20|0
 2|19750|Flash of Light|Rank 1|4000|0|0|20|0
 2|20217|Blessing of Kings||4000|0|0|20|0
 2|26573|Consecration|Rank 1|4000|0|0|20|0
@@ -185,7 +183,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|1042|Holy Light|Rank 5|11000|0|0|30|0
 2|2800|Lay on Hands|Rank 2|11000|0|0|30|0
 2|10291|Devotion Aura|Rank 4|11000|0|0|30|0
-2|19752|Divine Intervention||11000|0|0|30|0
 2|20116|Consecration|Rank 2|11000|0|0|30|0
 2|20165|Seal of Light||11000|0|0|30|0
 2|19752|Divine Intervention||11000|0|0|30|0
@@ -630,7 +627,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|2006|Resurrection|Rank 1|300|0|0|10|0
 5|2053|Lesser Heal|Rank 3|300|0|0|10|0
 5|8092|Mind Blast|Rank 1|300|0|0|10|0
-5|19236|Desperate Prayer|Rank 1|300|0|0|10|0
 5|588|Inner Fire|Rank 1|800|0|0|12|0
 5|592|Power Word: Shield|Rank 2|800|0|0|12|0
 5|1244|Power Word: Fortitude|Rank 2|800|0|0|12|0
