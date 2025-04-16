@@ -34,6 +34,7 @@ namespace EQWOWConverter.Items
         public int WOWItemMaterialType = 0;
         public int EQArmorMaterialType = 0;
         public Int64 ColorPacked = 0;
+        public int BuyCount = 1;
         public int BuyPriceInCopper = 0;
         public int SellPriceInCopper = 0;
         public int BagSlots = 0;
@@ -656,7 +657,14 @@ namespace EQWOWConverter.Items
                     }
                 }
             }
-            
+
+            // Arrows should be usable by all unless only a specific class is allowed
+            if (classID == 6 && subClassID == 2 && classTypes.Count != 1)
+            {
+                classTypes.Clear();
+                classTypes.Add(ClassType.All);
+            }
+
             return classTypes;
         }
 
@@ -1058,11 +1066,7 @@ namespace EQWOWConverter.Items
             {
                 itemTemplate.SheatheType = 0; // None / hide when put away
             }
-        }             
-
-
-        // TODO: Arrows
-        
+        }                     
 
         static public void PopulateItemTemplateListFromDisk()
         {
@@ -1133,22 +1137,38 @@ namespace EQWOWConverter.Items
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
 
+                // Adjust stack size and price for arrows
+                if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2)
+                {
+                    newItemTemplate.StackSize = 1000;
+                    if (newItemTemplate.BuyPriceInCopper > 20)
+                        newItemTemplate.BuyPriceInCopper /= 20;
+                    newItemTemplate.SellPriceInCopper = 0;
+                    newItemTemplate.BuyCount = 200;
+                }
+
                 // Calculate the weapon damage
                 int delay = int.Parse(columns["delay"]) * 100;
-                if (damage > 0  && delay > 0 && newItemTemplate.ClassID == 2)
+                if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2) // Ammo defaults to 3000 ms delay
+                    delay = 3000;
+                if (damage > 0  && delay > 0 && (newItemTemplate.ClassID == 2 || newItemTemplate.ClassID == 6))
                 {
                     float dps = Convert.ToSingle(damage) / (Convert.ToSingle(delay) / 1000);
                     float calcDps = GetConvertedEqToWowStat(newItemTemplate.InventoryType, "dps", dps);
                     float calcDelay = Convert.ToSingle(delay) * (1 - Configuration.ITEMS_WEAPON_DELAY_REDUCTION_AMT);
                     float calcDamage = calcDps * (calcDelay / 1000);
+                    if (newItemTemplate.ClassID == 6) // Ammo doesn't factor delay in damage
+                        calcDamage = calcDps;
                     if (calcDps != 0)
                     {
                         // Min/Max damage ranges are a +/- 20% 
                         newItemTemplate.WeaponMinDamage = Convert.ToInt32(Math.Round(calcDamage * 0.8f));
                         newItemTemplate.WeaponMaxDamage = Convert.ToInt32(Math.Round(calcDamage * 1.2f));
 
-                        // Scale the delay
-                        if (delay > 0)
+                        // Scale the delay, or if arrow just set it
+                        if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2)
+                            newItemTemplate.WeaponDelay = 3000;
+                        else if (delay > 0)
                             newItemTemplate.WeaponDelay = Convert.ToInt32(Math.Round(calcDelay));
                     }
                 }

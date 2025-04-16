@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Quality", Convert.ToInt32(itemTemplate.Quality));
             newRow.AddInt("Flags", itemTemplate.DoesVanishOnLogout == true ? 2 : 0);
             newRow.AddInt("FlagsExtra", 0);
-            newRow.AddInt("BuyCount", 1);
+            newRow.AddInt("BuyCount", itemTemplate.BuyCount);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
             newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
