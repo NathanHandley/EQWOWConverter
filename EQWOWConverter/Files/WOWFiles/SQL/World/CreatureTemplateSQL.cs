@@ -98,12 +98,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("unit_flags", unitFlags);
             newRow.AddInt("unit_flags2", 2048); // Most have 2048 here, TODO Look into it
             newRow.AddInt("dynamicflags", 0);
-            newRow.AddInt("family", 0); // I see other values here, like 1 and 3
+            newRow.AddInt("family", creatureTemplate.Race.WOWCreatureFamily); // I see other values here, like 1 and 3
             newRow.AddInt("trainer_type", trainerType);
             newRow.AddInt("trainer_spell", 0);
             newRow.AddInt("trainer_class", trainerClass);
             newRow.AddInt("trainer_race", 0);
-            newRow.AddInt("type", 0); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
+            newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
             newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"
             newRow.AddInt("lootid", creatureTemplate.WOWLootID);
             newRow.AddInt("pickpocketloot", 0);

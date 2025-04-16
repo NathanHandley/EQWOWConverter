@@ -15,14 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.ObjectModels.Properties;
-using Org.BouncyCastle.Asn1.Crmf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.Creatures
 {
@@ -63,6 +55,8 @@ namespace EQWOWConverter.Creatures
         public Vector3 CameraTargetPositionMod = new Vector3();
         public float GeoboxInradius = 0;
         public float NameplateAddedHeight = 0;
+        public int WOWCreatureFamily = 0;
+        public int WOWCreatureType = 0;
 
         public static Dictionary<string, Sound> SoundsBySoundName = new Dictionary<string, Sound>();
         public static Dictionary<string, int> FootstepIDBySoundName = new Dictionary<string, int>();
@@ -142,72 +136,52 @@ namespace EQWOWConverter.Creatures
             // Load in base race data
             string raceDataFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureRaces.csv");
             Logger.WriteDebug("Populating CreatureRace list via file '" + raceDataFileName + "'");
-            string inputData = FileTool.ReadAllDataFromFile(raceDataFileName);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(raceDataFileName, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                Logger.WriteError("CreatureRace list via file '" + raceDataFileName + "' did not have enough lines");
-                return;
-            }
-
-            // Load all of the data
-            bool headerRow = true;
-            foreach(string row in inputRows)
-            {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
-                    continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
                 // Load the row
-                string[] rowBlocks = row.Split("|");
                 CreatureRace newCreatureRace = new CreatureRace();
-                newCreatureRace.ID = int.Parse(rowBlocks[0]);
-                newCreatureRace.Gender = (CreatureGenderType)int.Parse(rowBlocks[1]);
-                newCreatureRace.VariantID = int.Parse(rowBlocks[2]);
-                newCreatureRace.Name = rowBlocks[3].Trim();
-                newCreatureRace.SkeletonName = rowBlocks[4].Trim();
-                newCreatureRace.Skeleton2Name = rowBlocks[5].Trim();
-                newCreatureRace.Lift = float.Parse(rowBlocks[6]);
-                newCreatureRace.ModelScale = float.Parse(rowBlocks[7]);
-                newCreatureRace.Height = float.Parse(rowBlocks[8]);
-                newCreatureRace.SpawnSizeMod = float.Parse(rowBlocks[9]);
-                newCreatureRace.BoundaryRadius = float.Parse(rowBlocks[10]);
-                newCreatureRace.BoundaryHeight = float.Parse(rowBlocks[11]);
-                newCreatureRace.SoundLoopName = rowBlocks[12];
-                newCreatureRace.SoundIdle1Name = rowBlocks[13];
-                newCreatureRace.SoundIdle2Name = rowBlocks[14];
-                newCreatureRace.SoundJumpName = rowBlocks[15];
-                newCreatureRace.SoundHit1Name = rowBlocks[16];
-                newCreatureRace.SoundHit2Name = rowBlocks[17];
-                newCreatureRace.SoundHit3Name = rowBlocks[18];
-                newCreatureRace.SoundHit4Name = rowBlocks[19];
-                newCreatureRace.SoundGasp1Name = rowBlocks[20];
-                newCreatureRace.SoundGasp2Name = rowBlocks[21];
-                newCreatureRace.SoundDeathName = rowBlocks[22];
-                newCreatureRace.SoundDrownName = rowBlocks[23];
-                newCreatureRace.SoundWalkingName = rowBlocks[24];
-                newCreatureRace.SoundRunningName = rowBlocks[25];
-                newCreatureRace.SoundAttackName = rowBlocks[26];
-                newCreatureRace.SoundSpellAttackName = rowBlocks[27];
-                newCreatureRace.SoundTechnicalAttackName = rowBlocks[28];
-                float cameraPositionModX = float.Parse(rowBlocks[29]) * Configuration.GENERATE_CREATURE_SCALE;
-                float cameraPositionModY = float.Parse(rowBlocks[30]) * Configuration.GENERATE_CREATURE_SCALE;
-                float cameraPositionModZ = float.Parse(rowBlocks[31]) * Configuration.GENERATE_CREATURE_SCALE;
+                newCreatureRace.ID = int.Parse(columns["RaceID"]);
+                newCreatureRace.Gender = (CreatureGenderType)int.Parse(columns["Gender"]);
+                newCreatureRace.VariantID = int.Parse(columns["Variant"]);
+                newCreatureRace.Name = columns["RaceName"].Trim();
+                newCreatureRace.SkeletonName = columns["Anim"].Trim();
+                newCreatureRace.Skeleton2Name = columns["Anim2"].Trim();
+                newCreatureRace.Lift = float.Parse(columns["Lift"]);
+                newCreatureRace.ModelScale = float.Parse(columns["ModelScale"]);
+                newCreatureRace.Height = float.Parse(columns["Height"]);
+                newCreatureRace.SpawnSizeMod = float.Parse(columns["SpawnSizeMod"]);
+                newCreatureRace.BoundaryRadius = float.Parse(columns["BoundRadius"]);
+                newCreatureRace.BoundaryHeight = float.Parse(columns["BoundHeight"]);
+                newCreatureRace.SoundLoopName = columns["SndLoop"];
+                newCreatureRace.SoundIdle1Name = columns["SndIdle1"];
+                newCreatureRace.SoundIdle2Name = columns["SndIdle2"];
+                newCreatureRace.SoundJumpName = columns["SndJump"];
+                newCreatureRace.SoundHit1Name = columns["SndGetHit1"];
+                newCreatureRace.SoundHit2Name = columns["SndGetHit2"];
+                newCreatureRace.SoundHit3Name = columns["SndGetHit3"];
+                newCreatureRace.SoundHit4Name = columns["SndGetHit4"];
+                newCreatureRace.SoundGasp1Name = columns["SndGasp1"];
+                newCreatureRace.SoundGasp2Name = columns["SndGasp2"];
+                newCreatureRace.SoundDeathName = columns["SndDeath"];
+                newCreatureRace.SoundDrownName = columns["SndDrown"];
+                newCreatureRace.SoundWalkingName = columns["SndWalking"];
+                newCreatureRace.SoundRunningName = columns["SndRunning"];
+                newCreatureRace.SoundAttackName = columns["SndAttack"];
+                newCreatureRace.SoundSpellAttackName = columns["SndSAttack"];
+                newCreatureRace.SoundTechnicalAttackName = columns["SndTAttack"];
+                float cameraPositionModX = float.Parse(columns["CamPosModX"]) * Configuration.GENERATE_CREATURE_SCALE;
+                float cameraPositionModY = float.Parse(columns["CamPosModY"]) * Configuration.GENERATE_CREATURE_SCALE;
+                float cameraPositionModZ = float.Parse(columns["CamPosModZ"]) * Configuration.GENERATE_CREATURE_SCALE;
                 newCreatureRace.CameraPositionMod = new Vector3(cameraPositionModX, cameraPositionModY, cameraPositionModZ);
-                float cameraTargetPositionModX = float.Parse(rowBlocks[32]) * Configuration.GENERATE_CREATURE_SCALE;
-                float cameraTargetPositionModY = float.Parse(rowBlocks[33]) * Configuration.GENERATE_CREATURE_SCALE;
-                float cameraTargetPositionModZ = float.Parse(rowBlocks[34]) * Configuration.GENERATE_CREATURE_SCALE;
+                float cameraTargetPositionModX = float.Parse(columns["CamTarModX"]) * Configuration.GENERATE_CREATURE_SCALE;
+                float cameraTargetPositionModY = float.Parse(columns["CamTarModY"]) * Configuration.GENERATE_CREATURE_SCALE;
+                float cameraTargetPositionModZ = float.Parse(columns["CamTarModZ"]) * Configuration.GENERATE_CREATURE_SCALE;
                 newCreatureRace.CameraTargetPositionMod = new Vector3(cameraTargetPositionModX, cameraTargetPositionModY, cameraTargetPositionModZ);
-                newCreatureRace.GeoboxInradius = float.Parse(rowBlocks[35]) * Configuration.GENERATE_CREATURE_SCALE;
-                newCreatureRace.NameplateAddedHeight = float.Parse(rowBlocks[36]) * Configuration.GENERATE_CREATURE_SCALE;
-
+                newCreatureRace.GeoboxInradius = float.Parse(columns["GeoboxInradius"]) * Configuration.GENERATE_CREATURE_SCALE;
+                newCreatureRace.NameplateAddedHeight = float.Parse(columns["NamePlateHeightAdd"]) * Configuration.GENERATE_CREATURE_SCALE;
+                newCreatureRace.WOWCreatureFamily = int.Parse(columns["WOWFamily"]);
+                newCreatureRace.WOWCreatureType = int.Parse(columns["WOWType"]);
                 CreatureRaces.Add(newCreatureRace);
             }
         }
