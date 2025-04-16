@@ -46,8 +46,13 @@ internal class Program
             Console.ReadKey();
             return;
         }
-        if (enteredCommand == "5" && Configuration.PLAYER_USE_EQ_START_LOCATION == true)
-            Logger.WriteInfo("- Note: PLAYER_USE_EQ_START_LOCATION is true, so WoW player start locations will be changed");
+        if (enteredCommand == "5")
+        {
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
+                Logger.WriteInfo("- Note: PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+                Logger.WriteInfo("- Note: PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
+        }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
         if (enteredConfirm != null && (enteredConfirm.Length == 0 || enteredConfirm.Trim().ToUpper()[0] == 'Y'))

@@ -138,6 +138,12 @@ namespace EQWOWConverter
         // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
         public static readonly bool PLAYER_USE_EQ_START_LOCATION = false;
 
+        // If true, players will start with an EQ item loadout instead of a WOW item loadout
+        public static readonly bool PLAYER_USE_EQ_START_ITEMS = false;
+
+        // If true, this will also add a hearthstone if using EQ items
+        public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = true;
+
         //=====================================================================
         // Zone General
         //=====================================================================

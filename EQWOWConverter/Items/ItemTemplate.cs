@@ -22,6 +22,7 @@ namespace EQWOWConverter.Items
     {
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
+        private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -61,11 +62,24 @@ namespace EQWOWConverter.Items
 
         }
 
+        public ItemTemplate(int wowEntryID, ItemWOWInventoryType inventoryType)
+        {
+            WOWEntryID = wowEntryID;
+            InventoryType = inventoryType;
+        }
+
         public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByEQDBIDs()
         {
             if (ItemTemplatesByEQDBID.Count == 0)
                 PopulateItemTemplateListFromDisk();
             return ItemTemplatesByEQDBID;
+        }
+
+        public static SortedDictionary<int, ItemTemplate> GetItemTemplatesByWOWEntryID()
+        {
+            if (ItemTemplatesByWOWEntryID.Count == 0)
+                PopulateItemTemplateListFromDisk();
+            return ItemTemplatesByWOWEntryID;
         }
 
         private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
@@ -1172,6 +1186,12 @@ namespace EQWOWConverter.Items
                     continue;
                 }
                 ItemTemplatesByEQDBID.Add(newItemTemplate.EQItemID, newItemTemplate);
+                if (ItemTemplatesByWOWEntryID.ContainsKey(newItemTemplate.WOWEntryID))
+                {
+                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with WOWEntryID '" + newItemTemplate.WOWEntryID + "'");
+                    continue;
+                }
+                ItemTemplatesByWOWEntryID.Add(newItemTemplate.WOWEntryID, newItemTemplate);
             }
         }
 

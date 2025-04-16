@@ -1542,6 +1542,9 @@ namespace EQWOWConverter
             areaTableDBC.LoadFromDisk(dbcInputFolder, "AreaTable.dbc");
             AreaTriggerDBC areaTriggerDBC = new AreaTriggerDBC();
             areaTriggerDBC.LoadFromDisk(dbcInputFolder, "AreaTrigger.dbc");
+            CharStartOutfitDBC charStartOutfitDBC = new CharStartOutfitDBC();
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+                charStartOutfitDBC.LoadFromDisk(dbcInputFolder, "CharStartOutfit.dbc");
             CreatureDisplayInfoDBC creatureDisplayInfoDBC = new CreatureDisplayInfoDBC();
             creatureDisplayInfoDBC.LoadFromDisk(dbcInputFolder, "CreatureDisplayInfo.dbc");
             CreatureModelDataDBC creatureModelDataDBC = new CreatureModelDataDBC();
@@ -1769,6 +1772,38 @@ namespace EQWOWConverter
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                 itemDisplayInfoDBC.AddRow(itemDisplayInfo);
 
+            // Character start data
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+            {
+                // Create the non-eq items to be used
+                ItemTemplate itemHearthstone = new ItemTemplate(6948, ItemWOWInventoryType.NoEquip);
+                ItemTemplate itemTotem = new ItemTemplate(46978, ItemWOWInventoryType.NoEquip);
+                SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
+
+                // Populate for all combinations, all races
+                foreach(var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                {
+                    // Grab all of the items
+                    List<ItemTemplate> startingItems = new List<ItemTemplate>();
+                    foreach(int itemID in classRaceProperties.Value.StartItemIDs)
+                    {
+                        if (itemID == 46978)
+                            startingItems.Add(itemTotem);
+                        else if (itemTemplatesByWOWEntry.ContainsKey(itemID) == false)
+                            Logger.WriteError(string.Concat("Failed to pull startup item with wow entry id '", itemID, "' since it did not exist"));
+                        else
+                            startingItems.Add(itemTemplatesByWOWEntry[itemID]);
+                    }
+
+                    // Add the hearthstone if configured to do so
+                    if (Configuration.PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS == true)
+                        startingItems.Add(itemHearthstone);
+
+                    // Add the rows
+                    charStartOutfitDBC.AddRowsForSexes(Convert.ToByte(classRaceProperties.Value.RaceID), Convert.ToByte(classRaceProperties.Value.ClassID), startingItems);
+                }
+            }
+
             // SkillLine
             //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
 
@@ -1862,6 +1897,11 @@ namespace EQWOWConverter
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputClientFolder);
             areaTriggerDBC.SaveToDisk(dbcOutputServerFolder);
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+            {
+                charStartOutfitDBC.SaveToDisk(dbcOutputClientFolder);
+                charStartOutfitDBC.SaveToDisk(dbcOutputServerFolder);
+            }
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputClientFolder);
             creatureDisplayInfoDBC.SaveToDisk(dbcOutputServerFolder);
             creatureModelDataDBC.SaveToDisk(dbcOutputClientFolder);

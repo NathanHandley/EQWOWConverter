@@ -27,6 +27,7 @@ namespace EQWOWConverter.Player
         public float StartPositionY;
         public float StartPositionZ;
         public float StartOrientation;
+        public List<int> StartItemIDs = new List<int>();
 
         public static Dictionary<(int, int), PlayerClassRaceProperties> GetClassRacePropertiesByRaceAndClassID()
         {
@@ -54,6 +55,21 @@ namespace EQWOWConverter.Player
                 curProperties.StartPositionY = float.Parse(columns["StartPosY"]) * Configuration.GENERATE_WORLD_SCALE;
                 curProperties.StartPositionZ = float.Parse(columns["StartPosZ"]) * Configuration.GENERATE_WORLD_SCALE;
                 curProperties.StartOrientation = float.Parse(columns["StartOrientation"]);
+                int startItemID1 = int.Parse(columns["StartItemID1"]);
+                if (startItemID1 > -1)
+                    curProperties.StartItemIDs.Add(startItemID1);
+                int startItemID2 = int.Parse(columns["StartItemID2"]);
+                if (startItemID2 > -1)
+                    curProperties.StartItemIDs.Add(startItemID2);
+                int startItemID3 = int.Parse(columns["StartItemID3"]);
+                if (startItemID3 > -1)
+                    curProperties.StartItemIDs.Add(startItemID3);
+                int startItemID4 = int.Parse(columns["StartItemID4"]);
+                if (startItemID4 > -1)
+                    curProperties.StartItemIDs.Add(startItemID4);
+                int startItemID5 = int.Parse(columns["StartItemID5"]);
+                if (startItemID5 > -1)
+                    curProperties.StartItemIDs.Add(startItemID5);
 
                 // Add if unique
                 if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)

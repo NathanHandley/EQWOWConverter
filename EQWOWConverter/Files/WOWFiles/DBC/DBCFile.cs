@@ -164,6 +164,17 @@ namespace EQWOWConverter.WOWFiles
                 offsetCursor += 4;
             }
 
+            public class DBCFieldByte : DBCField
+            {
+                public DBCFieldByte(byte value) { Value = value; }
+                public byte Value;
+            }
+
+            public void AddByte(byte value)
+            {
+                AddedFields.Add(new DBCFieldByte(value));
+            }
+
             public class DBCFieldString : DBCField
             {
                 public DBCFieldString(string value) { Value = value; }
@@ -358,6 +369,11 @@ namespace EQWOWConverter.WOWFiles
                         {
                             DBCRow.DBCFieldFloat rowField = (DBCRow.DBCFieldFloat)addedField;
                             contentBytes.AddRange(BitConverter.GetBytes(rowField.Value));
+                        }
+                        else if (addedField.GetType() == typeof(DBCRow.DBCFieldByte))
+                        {
+                            DBCRow.DBCFieldByte rowField = (DBCRow.DBCFieldByte)addedField;
+                            contentBytes.Add(rowField.Value);
                         }
                         else if (addedField.GetType() == typeof(DBCRow.DBCFieldString))
                         {
