@@ -70,6 +70,10 @@ namespace EQWOWConverter.Items
 
         private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
         {
+            // Normalize mainhand to onehand in this method for lookups
+            if (itemSlot == ItemWOWInventoryType.MainHand)
+                itemSlot = ItemWOWInventoryType.OneHand;
+
             // Read the file if haven't yet
             if (StatBaselinesBySlotAndStat.Count() == 0)
                 PopulateStatBaselinesBySlot();
@@ -651,6 +655,11 @@ namespace EQWOWConverter.Items
 
         static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, int iconID, int damage)
         {
+            bool allowBothHands = false;
+            if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
+                IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Secondary, slotMask))
+                allowBothHands = true;
+
             switch (eqItemType)
             {
                 case 0: // Catches a lot of items
@@ -692,7 +701,10 @@ namespace EQWOWConverter.Items
                                 // 1 Hand Slash => 1h Sword or Axe
                                 itemTemplate.ClassID = 2;
                                 itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                                itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                                if (allowBothHands)
+                                    itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                                else
+                                    itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
                             }
 
                             // No damage, check if it has an equippable slot.  If so, it's armor or a held item
@@ -742,7 +754,10 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        if (allowBothHands)
+                            itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        else
+                            itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
                     } break;
                 case 35: // 2 Hand Pierce => Polearm
                     {
@@ -754,7 +769,10 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = Convert.ToInt32(GetWeaponSubclass(itemTemplate.EQItemID, eqItemType, iconID));
-                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        if (allowBothHands)
+                            itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        else
+                            itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
                     } break;
                 case 4: // 2 Hand Blunt => 2H Mace or Staff
                     {
@@ -955,7 +973,10 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 2;
                         itemTemplate.SubClassID = 13;
-                        itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        if (allowBothHands)
+                            itemTemplate.InventoryType = ItemWOWInventoryType.OneHand;
+                        else
+                            itemTemplate.InventoryType = ItemWOWInventoryType.MainHand;
                     } break;
                 case 50: // Singing => Misc
                     {
