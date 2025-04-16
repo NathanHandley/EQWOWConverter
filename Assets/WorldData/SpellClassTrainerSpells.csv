@@ -9,6 +9,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|1715|Hamstring||200|0|0|8|0
 1|2687|Bloodrage||600|0|0|10|0
 1|6546|Rend|Rank 2|600|0|0|10|0
+1|71|Defensive Stance||600|0|0|10|0
+1|7386|Sunder Armor|Rank 1|600|0|0|10|0
+1|355|Taunt||600|0|0|10|0
 1|72|Shield Bash||1000|0|0|12|0
 1|5242|Battle Shout|Rank 2|1000|0|0|12|0
 1|7384|Overpower||1000|0|0|12|0
@@ -34,6 +37,8 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 1|6178|Charge|Rank 2|10000|0|0|26|0
 1|871|Shield Wall||11000|0|0|28|0
 1|8204|Thunder Clap|Rank 3|11000|0|0|28|0
+1|2458|Berserker Stance|Rank 1|12000|0|0|30|0
+1|20252|Intercept||12000|0|0|30|0
 1|1464|Slam|Rank 1|12000|0|0|30|0
 1|6548|Rend|Rank 4|12000|0|0|30|0
 1|7369|Cleave|Rank 2|12000|0|0|30|0
@@ -145,6 +150,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|10290|Devotion Aura|Rank 2|300|0|0|10|0
 2|19834|Blessing of Might|Rank 2|1000|0|0|12|0
 2|53408|Judgement of Wisdom||1000|0|0|12|0
+2|7328|Redemption|Rank 1|1000|0|0|12|0
 2|647|Holy Light|Rank 3|2000|0|0|14|0
 2|19742|Blessing of Wisdom|Rank 1|2000|0|0|14|0
 2|31789|Righteous Defense||4000|0|0|14|0
@@ -160,6 +166,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|26573|Consecration|Rank 1|4000|0|0|20|0
 2|13820|Summon Warhorse|Summon|3500|0|0|20|0
 2|34768|Summon Warhorse|Summon|3500|0|0|20|0
+2|5502|Sense Undead||3500|0|0|20|0
 2|1026|Holy Light|Rank 4|4000|0|0|22|0
 2|19746|Concentration Aura||4000|0|0|22|0
 2|19835|Blessing of Might|Rank 3|4000|0|0|22|0
@@ -181,6 +188,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 2|19752|Divine Intervention||11000|0|0|30|0
 2|20116|Consecration|Rank 2|11000|0|0|30|0
 2|20165|Seal of Light||11000|0|0|30|0
+2|19752|Divine Intervention||11000|0|0|30|0
 2|19836|Blessing of Might|Rank 4|12000|0|0|32|0
 2|19888|Frost Resistance Aura|Rank 1|12000|0|0|32|0
 2|642|Divine Shield||13000|0|0|34|0
@@ -320,6 +328,11 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 3|3127|Parry|Passive|200|0|0|8|0
 3|5116|Concussive Shot||200|0|0|8|0
 3|14260|Raptor Strike|Rank 2|200|0|0|8|0
+3|1515|Tame Beast||400|0|0|10|0
+3|883|Call Pet||400|0|0|10|0
+3|2641|Dismiss Pet||400|0|0|10|0
+3|6991|Feed Pet||400|0|0|10|0
+3|982|Revive Pet||400|0|0|10|0
 3|13165|Aspect of the Hawk|Rank 1|400|0|0|10|0
 3|13549|Serpent Sting|Rank 2|400|0|0|10|0
 3|19883|Track Humanoids||400|0|0|10|0
@@ -617,6 +630,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 5|2006|Resurrection|Rank 1|300|0|0|10|0
 5|2053|Lesser Heal|Rank 3|300|0|0|10|0
 5|8092|Mind Blast|Rank 1|300|0|0|10|0
+5|19236|Desperate Prayer|Rank 1|300|0|0|10|0
 5|588|Inner Fire|Rank 1|800|0|0|12|0
 5|592|Power Word: Shield|Rank 2|800|0|0|12|0
 5|1244|Power Word: Fortitude|Rank 2|800|0|0|12|0
@@ -930,6 +944,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 6|55268|Frost Strike|Rank 6|18000|0|0|80|0
 7|8017|Rockbiter Weapon|Rank 1|10|0|0|1|0
 7|8042|Earth Shock|Rank 1|100|0|0|4|0
+7|8071|Stoneskin Totem||100|0|0|4|0
 7|332|Healing Wave|Rank 2|100|0|0|6|0
 7|2484|Earthbind Totem||100|0|0|6|0
 7|324|Lightning Shield|Rank 1|100|0|0|8|0
@@ -940,6 +955,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|8024|Flametongue Weapon|Rank 1|400|0|0|10|0
 7|8050|Flame Shock|Rank 1|400|0|0|10|0
 7|8075|Strength of Earth Totem|Rank 1|400|0|0|10|0
+7|3599|Searing Totem|Rank 1|400|0|0|10|0
 7|370|Purge|Rank 1|800|0|0|12|0
 7|547|Healing Wave|Rank 3|800|0|0|12|0
 7|1535|Fire Nova|Rank 1|800|0|0|12|0
@@ -963,6 +979,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|8033|Frostbrand Weapon|Rank 1|2200|0|0|20|0
 7|8056|Frost Shock|Rank 1|2200|0|0|20|0
 7|52127|Water Shield|Rank 1|2200|0|0|20|0
+7|5394|Healing Stream Totem|Rank 1|2200|0|0|20|0
 7|131|Water Breathing||3000|0|0|22|0
 7|8498|Fire Nova|Rank 2|3000|0|0|22|0
 7|905|Lightning Shield|Rank 3|3500|0|0|24|0
@@ -986,7 +1003,6 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 7|8184|Fire Resistance Totem|Rank 1|6000|0|0|28|0
 7|8227|Flametongue Totem|Rank 1|6000|0|0|28|0
 7|52129|Water Shield|Rank 2|6000|0|0|28|0
-7|556|Astral Recall||7000|0|0|30|0
 7|6364|Searing Totem|Rank 3|7000|0|0|30|0
 7|6375|Healing Stream Totem|Rank 2|7000|0|0|30|0
 7|8177|Grounding Totem||7000|0|0|30|0
@@ -1472,6 +1488,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|707|Immolate|Rank 2|300|0|0|10|0
 9|1120|Drain Soul|Rank 1|300|0|0|10|0
 9|6201|Create Healthstone|Rank 1|300|0|0|10|0
+9|697|Summon Voidwalker||300|0|0|10|0
 9|705|Shadow Bolt|Rank 3|600|0|0|12|0
 9|755|Health Funnel|Rank 1|600|0|0|12|0
 9|1108|Curse of Weakness|Rank 2|600|0|0|12|0
@@ -1482,6 +1499,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|693|Create Soulstone|Rank 1|1500|0|0|18|0
 9|1014|Curse of Agony|Rank 2|1500|0|0|18|0
 9|5676|Searing Pain|Rank 1|1500|0|0|18|0
+9|712|Summon Succubus||2000|0|0|20|0
 9|698|Ritual of Summoning||2000|0|0|20|0
 9|706|Demon Armor|Rank 1|2000|0|0|20|0
 9|1088|Shadow Bolt|Rank 4|2000|0|0|20|0
@@ -1508,6 +1526,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|6217|Curse of Agony|Rank 3|5000|0|0|28|0
 9|6366|Create Firestone|Rank 1|5000|0|0|28|0
 9|709|Drain Life|Rank 3|6000|0|0|30|0
+9|691|Summon Felhunter||6000|0|0|30|0
 9|1086|Demon Armor|Rank 2|6000|0|0|30|0
 9|1098|Enslave Demon|Rank 1|6000|0|0|30|0
 9|1949|Hellfire|Rank 1|6000|0|0|30|0
@@ -1583,6 +1602,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 9|11730|Create Healthstone|Rank 5|24000|0|0|58|0
 9|17923|Searing Pain|Rank 6|24000|0|0|58|0
 9|17926|Death Coil|Rank 3|24000|0|0|58|0
+9|18540|Ritual of Doom|Rank 1|26000|0|0|60|0
 9|603|Curse of Doom|Rank 1|26000|0|0|60|0
 9|11661|Shadow Bolt|Rank 9|26000|0|0|60|0
 9|11668|Immolate|Rank 7|26000|0|0|60|0
@@ -1707,6 +1727,9 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|5232|Mark of the Wild|Rank 2|300|0|0|10|0
 11|8924|Moonfire|Rank 2|300|0|0|10|0
 11|16689|Nature's Grasp|Rank 1|300|0|0|10|0
+11|5487|Bear Form|Rank 1|300|0|0|10|0
+11|6795|Growl|Rank 1|300|0|0|10|0
+11|6807|Maul|Rank 1|300|0|0|10|0
 11|5229|Enrage||800|0|0|12|0
 11|8936|Regrowth|Rank 1|800|0|0|12|0
 11|50769|Revive|Rank 1|800|0|0|12|0
@@ -1714,6 +1737,7 @@ ClassID|SpellID|SpellName|SpellSubName|MoneyCost|ReqSkillLine|ReqSkillRank|ReqLe
 11|5178|Wrath|Rank 3|900|0|0|14|0
 11|5187|Healing Touch|Rank 3|900|0|0|14|0
 11|5211|Bash|Rank 1|900|0|0|14|0
+11|8946|Cure Poison|Rank 1|900|0|0|14|0
 11|779|Swipe (Bear)|Rank 1|1800|0|0|16|0
 11|783|Travel Form|Shapeshift|6000|0|0|16|0
 11|1066|Aquatic Form|Shapeshift|900|0|0|16|0
