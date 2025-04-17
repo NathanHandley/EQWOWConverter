@@ -822,9 +822,19 @@ namespace EQWOWConverter.Items
                     } break;
                 case 10: // Armor
                     {
-                        itemTemplate.ClassID = 4;
-                        itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
-                        itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
+                        // Some type 10 items have no viable slots, so they can't be armor
+                        if (slotMask == 0)
+                        {
+                            // Store as misc for now
+                            itemTemplate.ClassID = 15; // Misc
+                            itemTemplate.SubClassID = 4; // Other
+                        }
+                        else
+                        {
+                            itemTemplate.ClassID = 4;
+                            itemTemplate.SubClassID = Convert.ToInt32(GetArmorSubclass(classMask));
+                            itemTemplate.InventoryType = GetInventoryTypeFromSlotMask(slotMask);
+                        }   
                     } break;
                 case 11: // Misc
                     {
