@@ -70,6 +70,9 @@ namespace EQWOWConverter.Player
                 int startItemID5 = int.Parse(columns["StartItemID5"]);
                 if (startItemID5 > -1)
                     curProperties.StartItemIDs.Add(startItemID5);
+                int startItemID6 = int.Parse(columns["StartItemID6"]);
+                if (startItemID6 > -1)
+                    curProperties.StartItemIDs.Add(startItemID6);
 
                 // Add if unique
                 if (PlayerClassRacePropertiesByRaceAndClassIDs.ContainsKey((curProperties.RaceID, curProperties.ClassID)) == true)
