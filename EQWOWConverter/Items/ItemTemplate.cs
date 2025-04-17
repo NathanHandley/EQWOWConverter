@@ -62,6 +62,7 @@ namespace EQWOWConverter.Items
         public int SpellCategory1 = 0; // 11 = food, 59 = water/alcohol
         public int SpellCategoryCooldown1 = -1;
         public int CastTime = 0;
+        public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
 
         public ItemTemplate()
         {
@@ -1198,6 +1199,7 @@ namespace EQWOWConverter.Items
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
+                newItemTemplate.FoodType = int.Parse(columns["foodtype"]);
 
                 // Adjust stack size and price for arrows
                 if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2)
