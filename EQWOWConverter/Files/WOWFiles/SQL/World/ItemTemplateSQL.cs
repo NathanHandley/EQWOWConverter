@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 0);
-            newRow.AddInt("RequiredLevel", 0);
+            newRow.AddInt("RequiredLevel", 1);
             newRow.AddInt("RequiredSkill", 0);
             newRow.AddInt("RequiredSkillRank", 0);
             newRow.AddInt("requiredspell", 0);
@@ -91,13 +91,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("delay", itemTemplate.WeaponDelay);
             newRow.AddInt("ammo_type", 0);
             newRow.AddFloat("RangedModRange", 0);
-            newRow.AddInt("spellid_1", 0);
+            newRow.AddInt("spellid_1", itemTemplate.SpellID1);
             newRow.AddInt("spelltrigger_1", 0);
             newRow.AddInt("spellcharges_1", 0);
             newRow.AddFloat("spellppmRate_1", 0);
-            newRow.AddInt("spellcooldown_1", -1);
-            newRow.AddInt("spellcategory_1", 0);
-            newRow.AddInt("spellcategorycooldown_1", -1);
+            newRow.AddInt("spellcooldown_1", itemTemplate.SpellCooldown1);
+            newRow.AddInt("spellcategory_1", itemTemplate.SpellCategory1);
+            newRow.AddInt("spellcategorycooldown_1", itemTemplate.SpellCategoryCooldown1);
             newRow.AddInt("spellid_2", 0);
             newRow.AddInt("spelltrigger_2", 0);
             newRow.AddInt("spellcharges_2", 0);
@@ -159,7 +159,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("HolidayId", 0);
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("DisenchantID", 0);
-            newRow.AddInt("FoodType", 0);
+            newRow.AddInt("FoodType", 0); // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
             newRow.AddInt("minMoneyLoot", 0);
             newRow.AddInt("maxMoneyLoot", 0);
             newRow.AddInt("flagsCustom", 0);

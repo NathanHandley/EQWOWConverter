@@ -57,6 +57,11 @@ namespace EQWOWConverter.Items
         public bool DoesVanishOnLogout = false;
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
+        public int SpellID1 = 0;
+        public int SpellCooldown1 = -1;
+        public int SpellCategory1 = 0; // 11 = food, 59 = water/alcohol
+        public int SpellCategoryCooldown1 = -1;
+        public int CastTime = 0;
 
         public ItemTemplate()
         {
@@ -675,7 +680,8 @@ namespace EQWOWConverter.Items
             return false;
         }
 
-        static private void PopulateEquippableItemProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, int iconID, int damage)
+        static private void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
+            int iconID, int damage, int castTime)
         {
             bool allowBothHands = false;
             if (IsPackedSlotMask(ItemEQEquipSlotBitmaskType.Primary, slotMask) &&
@@ -871,11 +877,55 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 5;
+                        itemTemplate.SpellCategory1 = 11; // Food
+                        itemTemplate.SpellCooldown1 = 1;
+                        itemTemplate.SpellCategoryCooldown1 = 1000;
+                        itemTemplate.BuyCount = 5;
+                        if (castTime >= 70)
+                            itemTemplate.SpellID1 = 45548;
+                        else if (castTime >= 50)
+                            itemTemplate.SpellID1 = 43180;
+                        else if (castTime >= 40)
+                            itemTemplate.SpellID1 = 27094;
+                        else if (castTime >= 30)
+                            itemTemplate.SpellID1 = 1131;
+                        else if (castTime >= 20)
+                            itemTemplate.SpellID1 = 1129;
+                        else if (castTime >= 15)
+                            itemTemplate.SpellID1 = 1127;
+                        else if (castTime >= 10)
+                            itemTemplate.SpellID1 = 435;
+                        else if (castTime >= 5)
+                            itemTemplate.SpellID1 = 434;
+                        else
+                            itemTemplate.SpellID1 = 433;
                     } break;
                 case 15: // Drink => Food and Drink
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 5;
+                        itemTemplate.SpellCategory1 = 59; // Water/alcohol
+                        itemTemplate.SpellCooldown1 = 1;
+                        itemTemplate.SpellCategoryCooldown1 = 1000;
+                        itemTemplate.BuyCount = 5;
+                        if (castTime >= 80)
+                            itemTemplate.SpellID1 = 43183;
+                        else if (castTime >= 60)
+                            itemTemplate.SpellID1 = 27089;
+                        else if (castTime >= 30)
+                            itemTemplate.SpellID1 = 22734;
+                        else if (castTime >= 25)
+                            itemTemplate.SpellID1 = 1137;
+                        else if (castTime >= 20)
+                            itemTemplate.SpellID1 = 1135;
+                        else if (castTime >= 15)
+                            itemTemplate.SpellID1 = 1133;
+                        else if (castTime >= 10)
+                            itemTemplate.SpellID1 = 432;
+                        else if (castTime >= 8)
+                            itemTemplate.SpellID1 = 431;
+                        else
+                            itemTemplate.SpellID1 = 430;
                     } break;
                 case 16: // Light Source => Misc
                     {
@@ -1116,7 +1166,7 @@ namespace EQWOWConverter.Items
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
-                string iconName = "INV_EQ_" + (iconID).ToString();            
+                string iconName = "INV_EQ_" + (iconID).ToString();
 
                 // Binding Properties
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;
@@ -1128,12 +1178,14 @@ namespace EQWOWConverter.Items
                 int damage = int.Parse(columns["damage"]);
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
-                PopulateEquippableItemProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, damage);
+                newItemTemplate.CastTime = int.Parse(columns["casttime"]);
+                PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, 
+                    damage, newItemTemplate.CastTime);
 
                 // Model information
                 newItemTemplate.EQArmorMaterialType = int.Parse(columns["material"]);
                 newItemTemplate.ColorPacked = Int64.Parse(columns["color"]);
-                newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName, 
+                newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName,
                     newItemTemplate.InventoryType, newItemTemplate.EQArmorMaterialType, newItemTemplate.ColorPacked);
 
                 // Price
