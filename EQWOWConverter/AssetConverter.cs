@@ -2089,9 +2089,14 @@ namespace EQWOWConverter
                         creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
                     }
 
+                    // Determine the display id
+                    int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
+                    if (creatureTemplate.IsNonNPC == true)
+                        displayID = 11686; // Dranei totem
+
                     // Create the records
                     creatureTemplateSQL.AddRow(creatureTemplate, scale);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureTemplate.ModelTemplate.DBCCreatureDisplayID, scale);
+                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
                     
                     // If it's a vendor, add the vendor records too
                     if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))

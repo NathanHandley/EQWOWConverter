@@ -56,6 +56,7 @@ namespace EQWOWConverter.Creatures
         public bool IsBanker = false;
         public ClassType ClassTrainerType = ClassType.None;
         public int GossipMenuID = 0;
+        public bool IsNonNPC = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -88,6 +89,7 @@ namespace EQWOWConverter.Creatures
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["eq_id"]);
                 newCreatureTemplate.WOWCreatureTemplateID = int.Parse(columns["wow_id"]);
+                newCreatureTemplate.IsNonNPC = int.Parse(columns["non_npc"]) > 0;
                 if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
                     Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);

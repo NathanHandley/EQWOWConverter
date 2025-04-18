@@ -14,14 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.WOWFiles;
-using Mysqlx.Expr;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 
@@ -58,8 +50,19 @@ namespace EQWOWConverter.WOWFiles
             }
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
-
             int unitFlags = 0;
+            if (creatureTemplate.IsNonNPC == true)
+            {
+                unitFlags |= 33554432; // 0x02000000 = UNIT_FLAG_NOT_SELECTABLE
+                unitFlags |= 512; // 0x00000200 = UNIT_FLAG_IMMUNE_TO_NPC (disable combat assistance w/NPCs)
+                unitFlags |= 256; // 0x00000100 = UNIT_FLAG_IMMUNE_TO_PC (disable combat assistance w/Player)
+            }
+            int extraFlags = 0;
+            if (creatureTemplate.IsNonNPC == true)
+            {
+                extraFlags |= 128; // 0x00000080 = CREATURE_FLAG_EXTRA_TRIGGER (invis to players)
+                extraFlags |= 2;   // 0x00000002 = CREATURE_FLAG_EXTRA_CIVILIAN (ignore agro / faction)
+            }
 
             // Create the row
             SQLRow newRow = new SQLRow();
@@ -124,7 +127,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RegenHealth", 1);
             newRow.AddInt("mechanic_immune_mask", 0);
             newRow.AddInt("spell_school_immune_mask", 0);
-            newRow.AddInt("flags_extra", 0);
+            newRow.AddInt("flags_extra", extraFlags);
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
