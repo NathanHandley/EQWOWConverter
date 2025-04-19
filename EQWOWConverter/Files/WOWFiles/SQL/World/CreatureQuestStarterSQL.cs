@@ -16,22 +16,18 @@
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureTemplateModelSQL : SQLFile
+    internal class CreatureQuestStarterSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM creature_template_model WHERE `CreatureID` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `CreatureID` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
+            return "DELETE FROM creature_queststarter WHERE `quest` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `quest` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int creatureTemplateID, int creatureDisplayID, float displayScale)
+        public void AddRow()
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("CreatureID", creatureTemplateID);
-            newRow.AddInt("Idx", 0);
-            newRow.AddInt("CreatureDisplayID", creatureDisplayID); // CreatureDisplayInfo.dbc reference
-            newRow.AddFloat("DisplayScale", displayScale);
-            newRow.AddFloat("Probability", 1);
-            newRow.AddInt("VerifiedBuild", 12340);
+            newRow.AddInt("id", 0);
+            newRow.AddInt("quest", 0);
             Rows.Add(newRow);
         }
     }

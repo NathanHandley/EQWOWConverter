@@ -113,6 +113,9 @@ namespace EQWOWConverter
         // If true, transports (ships, ferries) will be generated
         public static readonly bool GENERATE_TRANSPORTS = true;
 
+        // If true, quests are generated
+        public static readonly bool GENERATE_QUESTS = true;
+
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
@@ -378,7 +381,7 @@ namespace EQWOWConverter
         public static readonly int SPELLS_GATE_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_GATE_SPELL_LEARN_COST = 100;
         public static readonly int SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 or 14 to be more like EQ
-        public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ (melee can't learn it)
+        public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
 
         //=====================================================================

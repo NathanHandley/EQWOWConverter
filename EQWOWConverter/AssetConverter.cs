@@ -1987,6 +1987,8 @@ namespace EQWOWConverter
             CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
             CreatureLootTableSQL creatureLootTableSQL = new CreatureLootTableSQL();
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
+            CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
+            CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
             GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
@@ -2007,6 +2009,8 @@ namespace EQWOWConverter
             PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
             PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
+            QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
+            QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
             //SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
@@ -2414,6 +2418,13 @@ namespace EQWOWConverter
             //smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
+            if (Configuration.GENERATE_QUESTS == true)
+            {
+                creatureQuestEnderSQL.SaveToDisk("creature_questender", SQLFileType.World);
+                creatureQuestStarterSQL.SaveToDisk("creature_queststarter", SQLFileType.World);
+                questTemplateSQL.SaveToDisk("quest_template", SQLFileType.World);
+                questTemplateAddonSQL.SaveToDisk("quest_template_Addon", SQLFileType.World);
+            }
         }
 
         public void ExportTexturesForZone(Zone zone, string zoneInputFolder, string wowExportPath, string relativeZoneMaterialDoodadsPath,
