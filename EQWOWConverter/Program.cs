@@ -15,11 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter;
+using EQWOWConverter.Zones;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
+        ZoneInteractiveObject.GetAllZoneInteractiveObjectsByZoneShortNames();
         Console.Title = "EverQuest to WoW Converter";
         Logger.ResetLog();
         Logger.WriteInfo("###### EQ WOW Converter ######");
