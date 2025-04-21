@@ -540,6 +540,10 @@ namespace EQWOWConverter
         public static readonly int SQL_POOL_TEMPLATE_ID_START = 110000;
         public static readonly int SQL_POOL_TEMPLATE_ID_END = 150000;
 
+        // Start and end IDs for quest template data rows
+        public static readonly int SQL_QUEST_TEMPLATE_ID_START = 30000;
+        public static readonly int SQL_QUEST_TEMPLATE_ID_END = 40000;
+
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
         public static readonly int SQL_TRANSPORTS_GUID_END = 41;

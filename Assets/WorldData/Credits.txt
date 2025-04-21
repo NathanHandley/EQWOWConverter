@@ -1,2 +1,3 @@
 "CreatureRaces" and "CreatureRaceSounds" were seeded with data extracted from https://github.com/LanternEQ/LanternUnityTools project and were pulled Nov 2024.  
 Much of the rest of the data was mined or taken from various emulator databases for EQ, with primary one being TAKP
+The /quests/ data was interpreted from https://github.com/EQMacEmu/quests on 4/18/2025
