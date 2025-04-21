@@ -33,7 +33,8 @@ namespace EQWOWConverter.Zones
         public bool HasShadowBox = false;
         public Vector3 TelePosition = new Vector3();
         public float TeleOrientation = 0;
-        public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();  
+        public int ExpansionID = 0;
+        public List<ZonePropertiesZoneLineBox> ZoneLineBoxes = new List<ZonePropertiesZoneLineBox>();
         public List<ZoneLiquidGroup> LiquidGroups = new List<ZoneLiquidGroup>();
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public ZoneEnvironmentSettings? CustomZonewideEnvironmentProperties = null;
@@ -46,7 +47,7 @@ namespace EQWOWConverter.Zones
         private static readonly object DBCWMOIDLock = new object();
 
         // DBCIDs
-        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;   
+        private static UInt32 CURRENT_WMOID = Configuration.DBCID_WMOAREATABLE_WMOID_START;
 
         public ZoneProperties()
         {
@@ -60,7 +61,7 @@ namespace EQWOWConverter.Zones
                 UInt32 dbcWMOID = CURRENT_WMOID;
                 CURRENT_WMOID++;
                 return dbcWMOID;
-            }            
+            }
         }
 
         protected void DisableSunlight()
@@ -70,7 +71,7 @@ namespace EQWOWConverter.Zones
 
         protected void Enable2DSoundInstances(params string[] daySoundNames)
         {
-            foreach(string daySoundName in daySoundNames)
+            foreach (string daySoundName in daySoundNames)
             {
                 if (Enabled2DSoundInstancesByDaySoundName.Contains(daySoundName) == false)
                     Enabled2DSoundInstancesByDaySoundName.Add(daySoundName);
@@ -96,7 +97,7 @@ namespace EQWOWConverter.Zones
             CustomZonewideEnvironmentProperties.SetAsIndoors(fogRed, fogGreen, fogBlue, fogType, ambientRed, ambientGreen, ambientBlue);
         }
 
-        protected void SetZonewideEnvironmentAsOutdoorsWithSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType,float cloudDensity,
+        protected void SetZonewideEnvironmentAsOutdoorsWithSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float cloudDensity,
             float ambientBrightnessMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
@@ -123,7 +124,7 @@ namespace EQWOWConverter.Zones
         protected void AddZoneArea(string name, string musicFileNameNoExtDay = "", string musicFileNameNoExtNight = "", bool loopMusic = true,
             string ambientSoundFileNameNoExtDay = "", string ambientSoundFileNameNoExtNight = "", float musicVolume = 1f)
         {
-            AddChildZoneArea(name, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, ambientSoundFileNameNoExtDay, 
+            AddChildZoneArea(name, string.Empty, musicFileNameNoExtDay, musicFileNameNoExtNight, loopMusic, ambientSoundFileNameNoExtDay,
                 ambientSoundFileNameNoExtNight, musicVolume);
         }
 
@@ -143,7 +144,7 @@ namespace EQWOWConverter.Zones
 
             // Ambient Sounds
             if (ambientSoundFileNameNoExtDay != "" || ambientSoundFileNameNoExtNight != "")
-                newZoneArea.SetAmbientSound(ambientSoundFileNameNoExtDay, ambientSoundFileNameNoExtNight);            
+                newZoneArea.SetAmbientSound(ambientSoundFileNameNoExtDay, ambientSoundFileNameNoExtNight);
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
@@ -254,17 +255,17 @@ namespace EQWOWConverter.Zones
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
         // The box is oriented when facing north (when using .gps, orientation = 0 and no tilt) since zone lines are axis aligned in EQ
         protected void AddZoneLineBox(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY,
-            float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY, 
+            float targetZonePositionZ, ZoneLineOrientationType targetZoneOrientation, float boxTopNorthwestX, float boxTopNorthwestY,
             float boxTopNorthwestZ, float boxBottomSoutheastX, float boxBottomSoutheastY, float boxBottomSoutheastZ)
         {
             ZonePropertiesZoneLineBox zoneLineBox = new ZonePropertiesZoneLineBox(targetZoneShortName, targetZonePositionX, targetZonePositionY,
-                targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX, 
+                targetZonePositionZ, targetZoneOrientation, boxTopNorthwestX, boxTopNorthwestY, boxTopNorthwestZ, boxBottomSoutheastX,
                 boxBottomSoutheastY, boxBottomSoutheastZ);
             ZoneLineBoxes.Add(zoneLineBox);
         }
 
         // Values should be pre-Scaling (before * EQTOWOW_WORLD_SCALE)
-        protected void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ, 
+        protected void AddTeleportPad(string targetZoneShortName, float targetZonePositionX, float targetZonePositionY, float targetZonePositionZ,
             ZoneLineOrientationType targetZoneOrientation, float padBottomCenterXPosition, float padBottomCenterYPosition, float padBottomCenterZPosition,
             float padWidth)
         {
@@ -277,7 +278,7 @@ namespace EQWOWConverter.Zones
         protected void AddLiquidVolume(ZoneLiquidType liquidType, float nwCornerX, float nwCornerY, float seCornerX, float seCornerY,
             float highZ, float lowZ, int liquidGroupID = -1)
         {
-            ZoneLiquid liquidVolume = new ZoneLiquid(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, highZ-lowZ, ZoneLiquidShapeType.Volume);
+            ZoneLiquid liquidVolume = new ZoneLiquid(liquidType, "", nwCornerX, nwCornerY, seCornerX, seCornerY, highZ, highZ - lowZ, ZoneLiquidShapeType.Volume);
             if (liquidGroupID == -1)
             {
                 ZoneLiquidGroup newLiquidGroup = new ZoneLiquidGroup();
@@ -579,7 +580,7 @@ namespace EQWOWConverter.Zones
                 {
                     curXBottom = southEdgeX;
                     moreXToWalk = false;
-                }                
+                }
 
                 // Determine NW position
                 float nwX = curXTop;
@@ -611,6 +612,7 @@ namespace EQWOWConverter.Zones
                 curXTop = curXBottom -= Configuration.LIQUID_QUADGEN_PLANE_OVERLAP_SIZE;
             }
         }
+
         static public Dictionary<string, ZoneProperties> GetZonePropertyListByShortName()
         {
             lock (ListReadLock)
@@ -642,6 +644,35 @@ namespace EQWOWConverter.Zones
             if (zonePropertiesByShortName.ContainsKey(shortName) == true)
             {
                 Dictionary<string, string> propertiesRow = zonePropertiesByShortName[shortName];
+
+                // Skip if the expansion doesn't line up, and it wasn't an explicit add
+                zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
+
+                // If this is an explict add, respond accordingly
+                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count != 0)
+                {
+                    bool foundShortname = false;
+                    foreach (string generateShortName in Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES)
+                    {
+                        if (generateShortName.Trim().ToLower() == shortName.ToLower())
+                        {
+                            foundShortname = true;
+                            break;
+                        }
+                    }
+                    if (foundShortname == false)
+                    {
+                        Logger.WriteDebug(string.Concat("Skipping zone with shortname '", shortName, "' since the Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES was populated but did not include this shortname"));
+                        return;
+                    }
+                }
+
+                else if (Configuration.GENERATE_EQ_EXPANSION_ID < zoneProperties.ExpansionID)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping zone with shortname '", shortName, "' since the expansionID is > the configured expansion ID"));
+                    return;
+                }
+
                 zoneProperties.ShortName = shortName;
                 zoneProperties.DBCMapID = int.Parse(propertiesRow["WOWMapID"]);
                 zoneProperties.DBCMapDifficultyID = int.Parse(propertiesRow["WOWMapDifficultyID"]);                    
@@ -651,6 +682,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.TelePosition.Z = float.Parse(propertiesRow["TeleZ"]);
                 zoneProperties.TeleOrientation = float.Parse(propertiesRow["TeleOrientation"]);
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
+                zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }

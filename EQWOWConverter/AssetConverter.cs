@@ -162,7 +162,7 @@ namespace EQWOWConverter
                 itemsAndSpellsTask.Wait();
             }            
 
-            // Items
+            // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
@@ -526,17 +526,11 @@ namespace EQWOWConverter
             // Get the list of zones to process
             DirectoryInfo zoneRootDirectoryInfo = new DirectoryInfo(inputZoneFolder);
             DirectoryInfo[] zoneDirectoryInfos = zoneRootDirectoryInfo.GetDirectories();
+            Dictionary<string, ZoneProperties> zonePropertiesListByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (DirectoryInfo zoneDirectory in zoneDirectoryInfos)
             {
-                // Skip any disabled expansions or zones
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
-                    continue;
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneDirectory.Name))
-                    continue;
-                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
-                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneDirectory.Name) == false)
-                    continue;
-                ZoneShortNamesToProcess.Add(zoneDirectory.Name);
+                if (zonePropertiesListByShortName.ContainsKey(zoneDirectory.Name))
+                    ZoneShortNamesToProcess.Add(zoneDirectory.Name);
             }
             LogCounter progressCounter = new LogCounter("Converting EQ zones to WOW zones...", 0, ZoneShortNamesToProcess.Count);
             progressCounter.Write(0);
@@ -733,15 +727,6 @@ namespace EQWOWConverter
             Dictionary<int, ZoneProperties> zonePropertiesByMapID = new Dictionary<int, ZoneProperties>();
             foreach (var zoneProperties in ZoneProperties.GetZonePropertyListByShortName())
             {
-                // Skip any disabled expansions or zones
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 1 && Configuration.ZONE_KUNARK_ZONE_SHORTNAMES.Contains(zoneProperties.Key))
-                    continue;
-                if (Configuration.GENERATE_EQ_EXPANSION_ID < 2 && Configuration.ZONE_VELIOUS_ZONE_SHORTNAMES.Contains(zoneProperties.Key))
-                    continue;
-                if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count > 0 == true &&
-                    Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Contains(zoneProperties.Key) == false)
-                    continue;
-
                 mapIDsByShortName.Add(zoneProperties.Value.ShortName.ToLower().Trim(), zoneProperties.Value.DBCMapID);
                 zonePropertiesByMapID.Add(zoneProperties.Value.DBCMapID, zoneProperties.Value);
             }
@@ -1760,10 +1745,14 @@ namespace EQWOWConverter
             }
 
             // Graveyards
-            foreach(ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
             {
-                int mapID = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName).DBCMapID;
-                worldSafeLocsDBC.AddRow(graveyard, mapID);
+                if (zonePropertiesByShortName.ContainsKey(graveyard.LocationShortName) == true)
+                {
+                    int mapID = zonePropertiesByShortName[graveyard.LocationShortName].DBCMapID;
+                    worldSafeLocsDBC.AddRow(graveyard, mapID);
+                }
             }
 
             // Item data
@@ -2016,6 +2005,7 @@ namespace EQWOWConverter
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
             // Zones
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (Zone zone in zones)
             {
                 // Instance list
@@ -2029,11 +2019,9 @@ namespace EQWOWConverter
                 // Zone lines
                 foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
                 {
-                    if (ZoneProperties.GetZonePropertyListByShortName().ContainsKey(zoneLine.TargetZoneShortName) == false)
-                    {
-                        Logger.WriteError("Error!  When attempting to map a zone line, there was no zone with short name '" + zoneLine.TargetZoneShortName + "'");
+                    // Skip invalid zone lines
+                    if (zonePropertiesByShortName.ContainsKey(zoneLine.TargetZoneShortName.ToLower()) == false)
                         continue;
-                    }
 
                     // Area Trigger
                     areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
@@ -2256,26 +2244,32 @@ namespace EQWOWConverter
             foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
             {
                 // Should be one for each ghost zone
-                foreach(string zoneShortName in graveyard.GhostZoneShortNames)
+                foreach (string zoneShortName in graveyard.GhostZoneShortNames)
                 {
                     string zoneShortNameLower = zoneShortName.ToLower();
-                    int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortNameLower).DefaultZoneArea.DBCAreaTableID);
-                    graveyardZoneSQL.AddRow(graveyard, ghostZoneAreaID);
+                    if (zonePropertiesByShortName.ContainsKey(zoneShortNameLower) == true)
+                    {
+                        int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortNameLower).DefaultZoneArea.DBCAreaTableID);
+                        graveyardZoneSQL.AddRow(graveyard, ghostZoneAreaID);
+                    }   
                 }
 
-                ZoneProperties curZoneProperties = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName);
-                int mapID = curZoneProperties.DBCMapID;
-                gameGraveyardSQL.AddRow(graveyard, mapID);
+                if (zonePropertiesByShortName.ContainsKey(graveyard.LocationShortName) == true)
+                {
+                    ZoneProperties curZoneProperties = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName);
+                    int mapID = curZoneProperties.DBCMapID;
+                    gameGraveyardSQL.AddRow(graveyard, mapID);
 
-                // And there should be one spirit healer per graveyard
-                int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
-                creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID, 
-                    graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None);
+                    // And there should be one spirit healer per graveyard
+                    int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
+                    creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None);
+                }
             }
 
             // Player start properties
-            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
             {
                 // Restrict to loaded zones
                 Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
@@ -2287,17 +2281,16 @@ namespace EQWOWConverter
                 }
                 foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
                 {
+                    string startZoneShortName = classRaceProperties.Value.StartZoneShortName;
                     if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
                     {
-                        Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname"));
-                        continue;
+                        Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname.  Using a fallback"));
+                        startZoneShortName = mapIDsByShortName.First().Key;
                     }
-                    else
-                    {
-                        playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[classRaceProperties.Value.StartZoneShortName],
-                            areaIDsByShortName[classRaceProperties.Value.StartZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
-                            classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
-                    }
+
+                    playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
+                        areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
+                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
                 }
             }
 

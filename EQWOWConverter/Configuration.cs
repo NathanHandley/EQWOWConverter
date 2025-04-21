@@ -189,17 +189,6 @@ namespace EQWOWConverter
         // ID for the creature template for the spirit healer.
         public static readonly int ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = 6491;
 
-        // Kunark zone shortnames
-        public static readonly List<string> ZONE_KUNARK_ZONE_SHORTNAMES = new List<string>() { "burningwood", "cabeast", "cabwest",
-            "charasis", "chardok", "citymist", "dalnir", "dreadlands", "droga", "emeraldjungle", "fieldofbone", "firiona", "frontiermtns",
-            "kaesora", "karnor", "kurn", "lakeofillomen", "nurga", "overthere", "sebilis", "skyfire", "swampofnohope", "timorous",
-            "trakanon", "veeshan", "wakening", "warslikswood" };
-
-        // Velious zone shortnames
-        public static readonly List<string> ZONE_VELIOUS_ZONE_SHORTNAMES = new List<string>() { "cobaltscar", "crystal", "eastwastes",
-            "frozenshadow", "greatdivide", "growthplane", "iceclad", "kael", "mischiefplane", "necropolis", "sirens", "skyshrine",
-            "sleeper", "templeveeshan", "thurgadina", "thurgadinb", "velketor", "westwastes" };
-
         //=====================================================================
         // Liquid
         //=====================================================================
