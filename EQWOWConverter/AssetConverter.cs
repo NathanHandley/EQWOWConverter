@@ -222,7 +222,7 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<+> Thread [Server Build and Deploy] Started");
 
                 // Create the SQL Scripts (note: this must always be after DBC files)
-                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID);
+                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -510,7 +510,8 @@ namespace EQWOWConverter
                     continue;
                 }
 
-                // Pull up the related creature(s)
+                // Pull up the related creature(s) and mark them as quest givers
+                // NOTE: Always do this last (before the add(questTemplate)
                 List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplateForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
                 if (questgiverCreatureTemplates.Count == 0)
                 {
@@ -518,7 +519,10 @@ namespace EQWOWConverter
                     continue;
                 }
                 foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
+                {
                     questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
+                    creatureTemplate.IsQuestGiver = true;
+                }
 
                 // TODO: Rep
 
@@ -2010,7 +2014,7 @@ namespace EQWOWConverter
         }
 
         public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
-            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
+            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
 
@@ -2345,6 +2349,18 @@ namespace EQWOWConverter
                     playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
                         areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
                         classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+                }
+            }
+
+            // Quests
+            foreach(QuestTemplate questTemplate in questTemplates)
+            {
+                questTemplateSQL.AddRow(questTemplate);
+                questTemplateAddonSQL.AddRow(questTemplate);
+                foreach(int creatureTemplateID in questTemplate.QuestgiverWOWCreatureTemplateIDs)
+                {
+                    creatureQuestStarterSQL.AddRow(questTemplate.QuestIDWOW, creatureTemplateID);
+                    creatureQuestEnderSQL.AddRow(questTemplate.QuestIDWOW, creatureTemplateID);
                 }
             }
 

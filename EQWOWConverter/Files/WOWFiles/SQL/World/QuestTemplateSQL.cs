@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Quests;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class QuestTemplateSQL : SQLFile
@@ -23,15 +25,15 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM quest_template WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow()
+        public void AddRow(QuestTemplate questTemplate)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("ID", 0);
+            newRow.AddInt("ID", questTemplate.QuestIDWOW);
             newRow.AddInt("QuestType", 2);
-            newRow.AddInt("QuestLevel", 1);
-            newRow.AddInt("MinLevel", 0);
-            newRow.AddInt("QuestSortID", 0);
-            newRow.AddInt("QuestInfoID", 0);
+            newRow.AddInt("QuestLevel", -1); // -1 = player's level will be used to calculate completion exp
+            newRow.AddInt("MinLevel", 1);
+            newRow.AddInt("QuestSortID", 0); // > 0 then the value is the Zone ID from AreaTable.dbc
+            newRow.AddInt("QuestInfoID", 0); // References QuestInfo.dbc
             newRow.AddInt("SuggestedGroupNum", 0);
             newRow.AddInt("RequiredFactionId1", 0);
             newRow.AddInt("RequiredFactionId2", 0);
@@ -39,21 +41,21 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
             newRow.AddInt("RewardXPDifficulty", 0);
-            newRow.AddInt("RewardMoney", 0);
+            newRow.AddInt("RewardMoney", questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);
             newRow.AddInt("RewardSpell", 0);
             newRow.AddInt("RewardHonor", 0);
             newRow.AddFloat("RewardKillHonor", 0);
             newRow.AddInt("StartItem", 0);
-            newRow.AddInt("Flags", 0);
+            newRow.AddInt("Flags", GetFlags());
             newRow.AddInt("RequiredPlayerKills", 0);
-            newRow.AddInt("RewardItem1", 0);
-            newRow.AddInt("RewardAmount1", 0);
-            newRow.AddInt("RewardItem2", 0);
-            newRow.AddInt("RewardAmount2", 0);
-            newRow.AddInt("RewardItem3", 0);
-            newRow.AddInt("RewardAmount3", 0);
+            newRow.AddInt("RewardItem1", questTemplate.RewardItem1WOWID);
+            newRow.AddInt("RewardAmount1", questTemplate.RewardItem1Count);
+            newRow.AddInt("RewardItem2", questTemplate.RewardItem2WOWID);
+            newRow.AddInt("RewardAmount2", questTemplate.RewardItem2Count);
+            newRow.AddInt("RewardItem3", questTemplate.RewardItem3WOWID);
+            newRow.AddInt("RewardAmount3", questTemplate.RewardItem3Count);
             newRow.AddInt("RewardItem4", 0);
             newRow.AddInt("RewardAmount4", 0);
             newRow.AddInt("ItemDrop1", 0);
@@ -100,11 +102,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RewardFactionOverride5", 0);
             newRow.AddInt("TimeAllowed", 0);
             newRow.AddInt("AllowableRaces", 0);
-            newRow.AddString("LogTitle", "");
-            newRow.AddString("LogDescription", "");
-            newRow.AddString("QuestDescription", "");
-            newRow.AddString("AreaDescription", "");
-            newRow.AddString("QuestCompletionLog", "");
+            newRow.AddString("LogTitle", questTemplate.Name);
+            newRow.AddString("LogDescription", "Test Log Description");
+            newRow.AddString("QuestDescription", "Test Quest Description"); // Fix below, this is a temp line.  .RequestText has characters that violate SQL
+            //newRow.AddString("QuestDescription", questTemplate.RequestText); // $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
+            newRow.AddString("AreaDescription", "Test Area Description");
+            newRow.AddString("QuestCompletionLog", "Test Quest Completion Log"); // $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
             newRow.AddInt("RequiredNpcOrGo1", 0);
             newRow.AddInt("RequiredNpcOrGo2", 0);
             newRow.AddInt("RequiredNpcOrGo3", 0);
@@ -113,18 +116,18 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredNpcOrGoCount2", 0);
             newRow.AddInt("RequiredNpcOrGoCount3", 0);
             newRow.AddInt("RequiredNpcOrGoCount4", 0);
-            newRow.AddInt("RequiredItemId1", 0);
-            newRow.AddInt("RequiredItemId2", 0);
-            newRow.AddInt("RequiredItemId3", 0);
-            newRow.AddInt("RequiredItemId4", 0);
-            newRow.AddInt("RequiredItemId5", 0);
-            newRow.AddInt("RequiredItemId6", 0);
-            newRow.AddInt("RequiredItemCount1", 0);
-            newRow.AddInt("RequiredItemCount2", 0);
-            newRow.AddInt("RequiredItemCount3", 0);
-            newRow.AddInt("RequiredItemCount4", 0);
-            newRow.AddInt("RequiredItemCount5", 0);
-            newRow.AddInt("RequiredItemCount6", 0);
+            newRow.AddInt("RequiredItemId1", questTemplate.RequiredItem1WOWID);
+            newRow.AddInt("RequiredItemId2", questTemplate.RequiredItem2WOWID);
+            newRow.AddInt("RequiredItemId3", questTemplate.RequiredItem3WOWID);
+            newRow.AddInt("RequiredItemId4", questTemplate.RequiredItem4WOWID);
+            newRow.AddInt("RequiredItemId5", questTemplate.RequiredItem5WOWID);
+            newRow.AddInt("RequiredItemId6", questTemplate.RequiredItem6WOWID);
+            newRow.AddInt("RequiredItemCount1", questTemplate.RequiredItem1Count);
+            newRow.AddInt("RequiredItemCount2", questTemplate.RequiredItem2Count);
+            newRow.AddInt("RequiredItemCount3", questTemplate.RequiredItem3Count);
+            newRow.AddInt("RequiredItemCount4", questTemplate.RequiredItem4Count);
+            newRow.AddInt("RequiredItemCount5", questTemplate.RequiredItem5Count);
+            newRow.AddInt("RequiredItemCount6", questTemplate.RequiredItem6Count);
             newRow.AddInt("Unknown0", 0);
             newRow.AddString("ObjectiveText1", "");
             newRow.AddString("ObjectiveText2", "");
@@ -132,6 +135,15 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("ObjectiveText4", "");
             newRow.AddInt("VerifiedBuild", 12340);
             Rows.Add(newRow);
+        }
+
+        private int GetFlags()
+        {
+            int flags = 0;
+            flags += 8; // QUEST_FLAGS_SHARABLE
+            flags += 64; // QUEST_FLAGS_RAID (Can complete in raid)
+
+            return flags;
         }
     }
 }

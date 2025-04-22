@@ -48,6 +48,8 @@ namespace EQWOWConverter.WOWFiles
                 trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
                 iconName = "Trainer";
             }
+            if (creatureTemplate.IsQuestGiver == true)
+                npcFlags |= 2;      // 0x00000002	Quest Giver
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
             int unitFlags = 0;

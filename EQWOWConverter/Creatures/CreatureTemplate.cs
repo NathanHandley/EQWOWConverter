@@ -60,6 +60,7 @@ namespace EQWOWConverter.Creatures
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
         public string SpawnZones = string.Empty;
+        public bool IsQuestGiver = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         

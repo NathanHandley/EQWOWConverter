@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Quests;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class QuestTemplateAddonSQL : SQLFile
@@ -23,10 +25,10 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM quest_template_addon WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow()
+        public void AddRow(QuestTemplate questTemplate)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("ID", 0);
+            newRow.AddInt("ID", questTemplate.QuestIDWOW);
             newRow.AddInt("MaxLevel", 0);
             newRow.AddInt("AllowableClasses", 0);
             newRow.AddInt("SourceSpellID", 0);

@@ -23,11 +23,11 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM creature_questender WHERE `quest` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `quest` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow()
+        public void AddRow(int questTemplateID, int creatureTemplateID)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("id", 0);
-            newRow.AddInt("quest", 0);
+            newRow.AddInt("id", creatureTemplateID);
+            newRow.AddInt("quest", questTemplateID);
             Rows.Add(newRow);
         }
     }
