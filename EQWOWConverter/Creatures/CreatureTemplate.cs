@@ -22,10 +22,12 @@ namespace EQWOWConverter.Creatures
     {
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByEQID = new Dictionary<int, CreatureTemplate>();
         private static SortedDictionary<int, Dictionary<string, float>> StatBaselinesByLevels = new SortedDictionary<int, Dictionary<string, float>>();
+        private static Dictionary<(string, string), List<CreatureTemplate>> CreatureTemplatesBySpawnZonesAndName = new Dictionary<(string, string), List<CreatureTemplate>>();
 
         public int EQCreatureTemplateID = 0;
         public int WOWCreatureTemplateID = 0;
         public string Name = string.Empty; // Restrict to 100 characters
+        private string NameNoFormat = string.Empty;
         public string SubName = string.Empty; // Restrict to 100 characters
         public int Level = 1;
         public CreatureRace Race = new CreatureRace();
@@ -57,6 +59,7 @@ namespace EQWOWConverter.Creatures
         public ClassType ClassTrainerType = ClassType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
+        public string SpawnZones = string.Empty;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -65,6 +68,20 @@ namespace EQWOWConverter.Creatures
             if (CreatureTemplateListByEQID.Count == 0)
                 PopulateCreatureTemplateList();
             return CreatureTemplateListByEQID;
+        }
+
+        public static List<CreatureTemplate> GetCreatureTemplateForSpawnZonesAndName(string spawnZones, string namePreFormat)
+        {
+            if (CreatureTemplatesBySpawnZonesAndName.Count == 0)
+                PopulateCreatureTemplateList();
+
+            // Fall back to no spawn zones if spawn zones lookup fails
+            if (CreatureTemplatesBySpawnZonesAndName.ContainsKey((spawnZones, namePreFormat)) == true)
+                return CreatureTemplatesBySpawnZonesAndName[(spawnZones, namePreFormat)];
+            else if (CreatureTemplatesBySpawnZonesAndName.ContainsKey(("", namePreFormat)) == true)
+                return CreatureTemplatesBySpawnZonesAndName[("", namePreFormat)];
+            else
+                return new List<CreatureTemplate>();
         }
 
         public static int GenerateCreatureSQLGUID()
@@ -89,11 +106,13 @@ namespace EQWOWConverter.Creatures
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["eq_id"]);
                 newCreatureTemplate.WOWCreatureTemplateID = int.Parse(columns["wow_id"]);
+                newCreatureTemplate.SpawnZones = columns["spawnzones"].Trim();
                 newCreatureTemplate.IsNonNPC = int.Parse(columns["non_npc"]) > 0;
                 if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
                     Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
                 newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
+                newCreatureTemplate.NameNoFormat = columns["name"];
                 newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                 newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);
                 int raceID = int.Parse(columns["race"]);
@@ -196,8 +215,11 @@ namespace EQWOWConverter.Creatures
                     Logger.WriteError("Creature Template list via file '" + creatureTemplatesFile + "' has an duplicate row with id '" + newCreatureTemplate.EQCreatureTemplateID + "'");
                     continue;
                 }
-
                 CreatureTemplateListByEQID.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
+
+                if (CreatureTemplatesBySpawnZonesAndName.ContainsKey((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)) == false)
+                    CreatureTemplatesBySpawnZonesAndName.Add((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat), new List<CreatureTemplate>());
+                CreatureTemplatesBySpawnZonesAndName[(newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)].Add(newCreatureTemplate);
             }
         }
 

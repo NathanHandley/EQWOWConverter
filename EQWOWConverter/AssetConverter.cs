@@ -20,11 +20,13 @@ using EQWOWConverter.Items;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Player;
+using EQWOWConverter.Quests;
 using EQWOWConverter.Spells;
 using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
+using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter
@@ -74,6 +76,7 @@ namespace EQWOWConverter
 
             // Thread 2: Creatures, Transports and Spawns
             List<CreatureTemplate> creatureTemplates = new List<CreatureTemplate>();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = new Dictionary<int, CreatureTemplate>();
             List<CreatureModelTemplate> creatureModelTemplates = new List<CreatureModelTemplate>();
             List<CreatureSpawnPool> creatureSpawnPools = new List<CreatureSpawnPool>();
             Task creaturesAndSpawnsTask = Task.Factory.StartNew(() =>
@@ -82,7 +85,10 @@ namespace EQWOWConverter
 
                 // Creatures                
                 if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true)
+                {
                     ConvertCreatures(ref creatureModelTemplates, ref creatureTemplates, ref creatureSpawnPools);
+                    creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+                }
                 else
                     Logger.WriteInfo("- Note: Creature generation is set to false in the Configuration");
 
@@ -99,6 +105,7 @@ namespace EQWOWConverter
 
             // Thread 3: Items and Spells
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
+            SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsAndSpellsTask = Task.Factory.StartNew(() =>
             {
                 Logger.WriteInfo("<+> Thread [Items and Spells] Started");
@@ -107,7 +114,7 @@ namespace EQWOWConverter
                 Logger.WriteInfo("Generating item templates and visual information...");
                 if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                     Logger.WriteInfo("- Note: Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
-                SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
+                itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
 
                 // Build output directory
                 Logger.WriteInfo("Generating and copying blp files for equipment...");
@@ -165,6 +172,10 @@ namespace EQWOWConverter
             // Loot
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
+
+            // Quests
+            List<QuestTemplate> questTemplates;
+            ConvertQuests(itemTemplatesByEQDBID, out questTemplates);
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -472,6 +483,49 @@ namespace EQWOWConverter
             }
 
             return true;
+        }
+
+        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, out List<QuestTemplate> questTemplates)
+        {
+            Logger.WriteInfo("Converting quests...");
+
+            // Build the return quest templates
+            questTemplates = new List<QuestTemplate>();
+
+            // Work through each of the quest templates
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
+            {
+                // Skip any quests that are in zones we're not processing
+                if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
+                {
+                    Logger.WriteDebug(string.Concat("Ignoring quest with id '", questTemplate.QuestIDWOW, ", as the zone '", questTemplate.ZoneShortName, "' is not being generated"));
+                    continue;
+                }
+
+                // Confirm the items are good and store the IDs
+                if (questTemplate.MapWOWItemIDs(itemTemplatesByEQDBID) == false)
+                {
+                    Logger.WriteError(string.Concat("Could not map item IDs for quest '", questTemplate.QuestIDWOW, "'"));
+                    continue;
+                }
+
+                // Pull up the related creature(s)
+                List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplateForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
+                if (questgiverCreatureTemplates.Count == 0)
+                {
+                    Logger.WriteError(string.Concat("Could not map quest to creature template with zone '", questTemplate.ZoneShortName, "' and name '", questTemplate.QuestgiverName, "'"));
+                    continue;
+                }
+                foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
+                    questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
+
+                // TODO: Rep
+
+                questTemplates.Add(questTemplate);
+            }
+
+            Logger.WriteDebug("Converting quests done");
         }
 
         // TODO: Condense above
