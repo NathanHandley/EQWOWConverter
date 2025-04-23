@@ -22,6 +22,7 @@ using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Player;
 using EQWOWConverter.Quests;
 using EQWOWConverter.Spells;
+using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
@@ -155,6 +156,12 @@ namespace EQWOWConverter
                 // Spells
                 GenerateSpells(out spellTemplates);
 
+                // Tradeskills
+                if (Configuration.GENERATE_TRADESKILLS == true)
+                    GenerateTradeskills(itemTemplatesByEQDBID);
+                else
+                    Logger.WriteInfo("- Note: GENERATE_TRADESKILLS is false in the Configuration");
+
                 Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
@@ -173,7 +180,7 @@ namespace EQWOWConverter
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
             // Quests
-            List<QuestTemplate> questTemplates;
+            List<QuestTemplate> questTemplates = new List<QuestTemplate>();
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(itemTemplatesByEQDBID, out questTemplates);
             else
@@ -508,7 +515,7 @@ namespace EQWOWConverter
                 // Confirm the items are good and store the IDs
                 if (questTemplate.MapWOWItemIDs(itemTemplatesByEQDBID) == false)
                 {
-                    Logger.WriteError(string.Concat("Could not map item IDs for quest '", questTemplate.QuestIDWOW, "'"));
+                    Logger.WriteDebug(string.Concat("Could not map item IDs for quest '", questTemplate.QuestIDWOW, "'"));
                     continue;
                 }
 
@@ -517,7 +524,7 @@ namespace EQWOWConverter
                 List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplateForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
                 if (questgiverCreatureTemplates.Count == 0)
                 {
-                    Logger.WriteError(string.Concat("Could not map quest to creature template with zone '", questTemplate.ZoneShortName, "' and name '", questTemplate.QuestgiverName, "'"));
+                    Logger.WriteDebug(string.Concat("Could not map quest to creature template with zone '", questTemplate.ZoneShortName, "' and name '", questTemplate.QuestgiverName, "'"));
                     continue;
                 }
                 foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
@@ -1107,6 +1114,15 @@ namespace EQWOWConverter
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");
+        }
+
+        public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            Logger.WriteInfo("Converting tradeskills...");
+
+            TradeskillRecipe.PopulateTradeskillRecipes(itemTemplatesByEQDBID);
+
+            Logger.WriteDebug("Converting tradeskills completed.");
         }
 
         public void ExtractClientDBCFiles()

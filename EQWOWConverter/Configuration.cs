@@ -34,7 +34,7 @@ namespace EQWOWConverter
         // Level of logs to write to the console and log file.
         // 1 = Error, 2 = Info, 3 = Debug
         public static readonly int LOGGING_CONSOLE_MIN_LEVEL = 2;
-        public static readonly int LOGGING_FILE_MIN_LEVEL = 2;
+        public static readonly int LOGGING_FILE_MIN_LEVEL = 3;
 
         // ====================================================================
         // Paths and Files
@@ -115,6 +115,9 @@ namespace EQWOWConverter
 
         // If true, quests are generated
         public static readonly bool GENERATE_QUESTS = false;
+
+        // If true, tradeskills are generated
+        public static readonly bool GENERATE_TRADESKILLS = false;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones

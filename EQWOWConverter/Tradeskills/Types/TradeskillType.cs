@@ -22,15 +22,17 @@ namespace EQWOWConverter.Tradeskills
     // EQ Blacksmithing => WOW Blacksmithing
     // EQ Brewing => WOW Cooking
     // EQ Fletching => WOW Engineering
-    // EQ Jewelcrafting => WOW Jewelcrafting
+    // EQ JewelryMaking => WOW Jewelcrafting
     // EQ Poison Making => WOW Alchemy
     // EQ Pottery => WOW Blacksmithing
     // EQ Research => WOW Inscription
     // EQ Tailoring => WOW Tailoring
     // EQ Tinkering => WOW Engineering
+    // EQ Fishing => WOW Cooking
 
     internal enum TradeskillType
     {
+        Unknown,
         Alchemy,
         Blacksmithing,
         Cooking,

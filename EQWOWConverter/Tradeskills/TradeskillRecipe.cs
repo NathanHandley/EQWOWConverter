@@ -20,7 +20,7 @@ namespace EQWOWConverter.Tradeskills
 {
     internal class TradeskillRecipe
     {
-        static private Dictionary<TradeskillType, TradeskillRecipe> RecipesByTradeskillType = new Dictionary<TradeskillType, TradeskillRecipe>();
+        static private Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
         private static readonly object TradeskillLock = new object();
 
         public int SpellID;
@@ -29,6 +29,8 @@ namespace EQWOWConverter.Tradeskills
         public TradeskillType Type;
         public int SkillNeededEQ;
         public int TrivialEQ;
+        public Dictionary<int, int> ProducedItemCountsByItemID = new Dictionary<int, int>();
+        public Dictionary<int, int> ComponentItemCountsByItemID = new Dictionary<int, int>();
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -40,14 +42,14 @@ namespace EQWOWConverter.Tradeskills
             TrivialEQ = trivialEQ;
         }
 
-        public static Dictionary<TradeskillType, TradeskillRecipe> GetRecipesByTradeskillType()
+        public static Dictionary<TradeskillType, List<TradeskillRecipe>> GetRecipesByTradeskillType()
         {
             lock (TradeskillLock)
             {
                 if (RecipesByTradeskillType.Count == 0)
                 {
                     Logger.WriteError("Must call PopulateTradeskillRecipes before trying to GetRecipesByTradeskillType");
-                    return new Dictionary<TradeskillType, TradeskillRecipe>();
+                    return new Dictionary<TradeskillType, List<TradeskillRecipe>>();
                 }
                 else
                     return RecipesByTradeskillType;
@@ -60,9 +62,30 @@ namespace EQWOWConverter.Tradeskills
             string tradeskillRecipesFilePath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TradeskillRecipes.csv");
             Logger.WriteDebug(string.Concat("Populating tradeskill recipes via file '", tradeskillRecipesFilePath, "'"));
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(tradeskillRecipesFilePath, "|");
+            Dictionary<int, TradeskillRecipe> candidateRecipesByEQID = new Dictionary<int, TradeskillRecipe>();
             foreach (Dictionary<string, string> columns in rows)
             {
-                // TODO:
+                // Skip if not generating the higher expansions
+                int minExpansionID = int.Parse(columns["min_expansion"]);
+                if (minExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID)
+                    continue;
+
+                // Create the tradeskill recipe
+                int spellID = int.Parse(columns["spellid_wow"]);
+                int eqID = int.Parse(columns["id_eq"]);
+                string name = columns["name"];
+                int eqSkillNeeded = int.Parse(columns["skillneeded"]);
+                int eqTrivial = int.Parse(columns["trivial"]);
+                TradeskillType type = ConvertTradeskillType(int.Parse(columns["tradeskill"]));
+                if (type == TradeskillType.Unknown)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping tradeskill item with name '", name, "' as the tradeskill type is Unknown"));
+                    continue;
+                }
+
+                // Add it as a candidate
+                TradeskillRecipe newRecipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
+                candidateRecipesByEQID.Add(eqID, newRecipe);
             }
 
             // Load in the recipe items
@@ -71,11 +94,83 @@ namespace EQWOWConverter.Tradeskills
             rows = FileTool.ReadAllRowsFromFileWithHeader(tradeskillRecipeItemsFilePath, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
-                // TODO:
+                int recipeEQID = int.Parse(columns["recipe_id"]);
+                int itemID = int.Parse(columns["item_id"]);
+                int successCount = int.Parse(columns["successcount"]);
+                int componentCount = int.Parse(columns["componentcount"]);
+
+                // Valid items only
+                if (itemTemplatesByEQDBID.ContainsKey(itemID) == false)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping recipe item with eqid ", itemID, " since that item ID is not known"));
+                    continue;
+                }
+                if (candidateRecipesByEQID.ContainsKey(recipeEQID) == false)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping recipe item with recipe id ", recipeEQID, " since that recipe ID is not known"));
+                    continue;
+                }
+
+                // Attach to the related templates
+                TradeskillRecipe curRecipe = candidateRecipesByEQID[recipeEQID];
+                if (successCount > 0)
+                {
+                    if (curRecipe.ProducedItemCountsByItemID.ContainsKey(itemID) == false)
+                        curRecipe.ProducedItemCountsByItemID.Add(itemID, successCount);
+                    else
+                        curRecipe.ProducedItemCountsByItemID[itemID] += successCount;
+                }
+                if (componentCount > 0)
+                {
+                    if (curRecipe.ComponentItemCountsByItemID.ContainsKey(itemID) == false)
+                        curRecipe.ComponentItemCountsByItemID.Add(itemID, componentCount);
+                    else
+                        curRecipe.ComponentItemCountsByItemID[itemID] += componentCount;
+                }
             }
 
             // Save them in the list
-            // TODO:
+            foreach(var tradeskillRecipe in candidateRecipesByEQID)
+            {
+                if (tradeskillRecipe.Value.ProducedItemCountsByItemID.Count == 0)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping recipe id ", tradeskillRecipe.Key, " since there are no produced items"));
+                    continue;
+                }
+                if (tradeskillRecipe.Value.ComponentItemCountsByItemID.Count == 0)
+                {
+                    Logger.WriteDebug(string.Concat("Skipping recipe id ", tradeskillRecipe.Key, " since there are no component items"));
+                    continue;
+                }
+                if (RecipesByTradeskillType.ContainsKey(tradeskillRecipe.Value.Type) == false)
+                    RecipesByTradeskillType.Add(tradeskillRecipe.Value.Type, new List<TradeskillRecipe>());
+                RecipesByTradeskillType[tradeskillRecipe.Value.Type].Add(tradeskillRecipe.Value);
+            }
+        }
+
+        private static TradeskillType ConvertTradeskillType(int eqTradeskillTypeID)
+        {
+            switch (eqTradeskillTypeID)
+            {
+                case 55: return TradeskillType.Cooking; // Fishing
+                case 56: return TradeskillType.Alchemy; // Make Poison
+                case 57: return TradeskillType.Engineering; // Tinkering
+                case 58: return TradeskillType.Inscription; // Research
+                case 59: return TradeskillType.Alchemy; // Alchemy
+                case 60: return TradeskillType.Cooking; // Baking
+                case 61: return TradeskillType.Tailoring; // Tailoring
+                case 63: return TradeskillType.Blacksmithing; // Blacksmithing
+                case 64: return TradeskillType.Engineering; // Fletching
+                case 65: return TradeskillType.Cooking; // Brewing
+                case 68: return TradeskillType.Jewelcrafting; // Jewerly Making
+                case 69: return TradeskillType.Blacksmithing; // Pottery
+                case 75: return TradeskillType.Unknown;
+                default:
+                    {
+                        Logger.WriteError(string.Concat("Invalid tradeskill type of '", eqTradeskillTypeID, "'"));
+                        return TradeskillType.Unknown;
+                    }
+            }
         }
     }
 }
