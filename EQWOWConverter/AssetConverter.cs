@@ -103,12 +103,12 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
-            // Thread 3: Items and Spells
+            // Thread 3: Items, Spells, and Tradeskills
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
-            Task itemsAndSpellsTask = Task.Factory.StartNew(() =>
+            Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items and Spells] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates and visual information...");
@@ -156,17 +156,17 @@ namespace EQWOWConverter
                 // Spells
                 GenerateSpells(out spellTemplates);
 
-                Logger.WriteInfo("<-> Thread [Items and Spells] Ended");
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                itemsAndSpellsTask.Wait();
+                itemsSpellsTradeskillsTask.Wait();
 
             // Wait for threads above to complete
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
                 zoneAndObjectTask.Wait();
                 creaturesAndSpawnsTask.Wait();
-                itemsAndSpellsTask.Wait();
+                itemsSpellsTradeskillsTask.Wait();
             }            
 
             // Loot
