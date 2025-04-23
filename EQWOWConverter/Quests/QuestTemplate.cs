@@ -28,6 +28,7 @@ namespace EQWOWConverter.Quests
         public string ZoneShortName = string.Empty;
         public string QuestgiverName = string.Empty;
         public List<int> QuestgiverWOWCreatureTemplateIDs = new List<int>();
+        public bool HasMinimumFactionRequirement = false;
         public int QuestgiverWOWFactionID = 0;
         public int MinimumQuestgiverFactionValue = 0;
         public int RequiredItem1EQID;
@@ -65,6 +66,7 @@ namespace EQWOWConverter.Quests
         // TODO: Faction
         // TODO: Attack player after turnin
         public string RequestText = string.Empty;
+        public int AreaID = 0;
 
         public static List<QuestTemplate> GetQuestTemplates()
         {
@@ -114,6 +116,7 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.QuestgiverName = columns["questgiver_name"];
                 int minRep = int.Parse(columns["req_repmin"]);
                 newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
+                newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
                 newQuestTemplate.RequiredItem1EQID = int.Parse(columns["req_item_id1"]);
                 newQuestTemplate.RequiredItem1Count = int.Parse(columns["req_item_count1"]);
                 newQuestTemplate.RequiredItem2EQID = int.Parse(columns["req_item_id2"]);

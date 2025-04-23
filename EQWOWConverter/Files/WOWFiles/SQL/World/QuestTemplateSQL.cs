@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("QuestType", 2);
             newRow.AddInt("QuestLevel", -1); // -1 = player's level will be used to calculate completion exp
             newRow.AddInt("MinLevel", 1);
-            newRow.AddInt("QuestSortID", 0); // > 0 then the value is the Zone ID from AreaTable.dbc
+            newRow.AddInt("QuestSortID", questTemplate.AreaID); // > 0 then the value is the Zone ID from AreaTable.dbc
             newRow.AddInt("QuestInfoID", 0); // References QuestInfo.dbc
             newRow.AddInt("SuggestedGroupNum", 0);
             newRow.AddInt("RequiredFactionId1", 0);

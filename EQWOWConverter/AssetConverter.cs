@@ -531,9 +531,13 @@ namespace EQWOWConverter
                 {
                     questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
                     creatureTemplate.IsQuestGiver = true;
+
+                    if (questTemplate.HasMinimumFactionRequirement == true)
+                        questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(creatureTemplate.EQFactionID);
                 }
 
-                // TODO: Rep
+                // Add the default area id for quest sorting
+                questTemplate.AreaID = Convert.ToInt32(zonePropertiesByShortName[questTemplate.ZoneShortName.ToLower()].DefaultZoneArea.DBCAreaTableID);
 
                 questTemplates.Add(questTemplate);
             }
