@@ -26,7 +26,6 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter
@@ -175,7 +174,10 @@ namespace EQWOWConverter
 
             // Quests
             List<QuestTemplate> questTemplates;
-            ConvertQuests(itemTemplatesByEQDBID, out questTemplates);
+            if (Configuration.GENERATE_QUESTS == true)
+                ConvertQuests(itemTemplatesByEQDBID, out questTemplates);
+            else
+                Logger.WriteInfo("- Note: Quest generation is set to false in the Configuration");
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
