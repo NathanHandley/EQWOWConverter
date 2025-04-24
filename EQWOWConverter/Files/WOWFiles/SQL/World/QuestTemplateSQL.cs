@@ -16,6 +16,8 @@
 
 using EQWOWConverter.Quests;
 
+// $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class QuestTemplateSQL : SQLFile
@@ -103,11 +105,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("TimeAllowed", 0);
             newRow.AddInt("AllowableRaces", 0);
             newRow.AddString("LogTitle", questTemplate.Name);
-            newRow.AddString("LogDescription", "Test Log Description");
-            newRow.AddString("QuestDescription", "Test Quest Description"); // Fix below, this is a temp line.  .RequestText has characters that violate SQL
-            //newRow.AddString("QuestDescription", questTemplate.RequestText); // $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
-            newRow.AddString("AreaDescription", "Test Area Description");
-            newRow.AddString("QuestCompletionLog", "Test Quest Completion Log"); // $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
+            newRow.AddString("LogDescription", GenerateQuestObjectives(questTemplate));
+            newRow.AddString("QuestDescription", GenerateQuestDescription(questTemplate));
+            newRow.AddString("AreaDescription", string.Empty);
+            newRow.AddString("QuestCompletionLog", GenerateQuestDescription(questTemplate));
             newRow.AddInt("RequiredNpcOrGo1", 0);
             newRow.AddInt("RequiredNpcOrGo2", 0);
             newRow.AddInt("RequiredNpcOrGo3", 0);
@@ -144,6 +145,19 @@ namespace EQWOWConverter.WOWFiles
             flags += 64; // QUEST_FLAGS_RAID (Can complete in raid)
 
             return flags;
+        }
+
+        private string GenerateQuestObjectives(QuestTemplate questTemplate)
+        {
+            return "Test Log Description";
+        }
+
+        private string GenerateQuestDescription(QuestTemplate questTemplate)
+        {
+            if (questTemplate.RequestText.Length > 0)
+                return questTemplate.RequestText;
+            else
+                return "I am looking for some things, can you help?";
         }
     }
 }

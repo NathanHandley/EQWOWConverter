@@ -66,7 +66,9 @@ namespace EQWOWConverter.Quests
         // TODO: Faction
         // TODO: Attack player after turnin
         public string RequestText = string.Empty;
+        public string RequestObjectiveText = string.Empty;
         public int AreaID = 0;
+        private int NumOfObjectiveItemsAddedToText = 0;
 
         public static List<QuestTemplate> GetQuestTemplates()
         {
@@ -95,6 +97,20 @@ namespace EQWOWConverter.Quests
                         return 0;
                     }
             }
+        }
+
+        public void AddObjectiveItems(string itemName, int itemCount)
+        {
+            if (NumOfObjectiveItemsAddedToText != 0)
+                RequestText += ", ";
+            else
+                RequestText += "$B$BPlease bring me ";
+
+            if (itemCount > 1)
+                RequestText = string.Concat(RequestText, itemCount, " ", itemName, "s");
+            else
+                RequestText = string.Concat(RequestText, itemCount, " ", itemName);
+            NumOfObjectiveItemsAddedToText++;
         }
 
         private static void PopulateQuestTemplates()
@@ -155,6 +171,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem1WOWID = itemTemplatesByEQDBID[RequiredItem1EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem1EQID].Name, RequiredItem1Count);
             }
             if (RequiredItem2EQID != -1)
             {
@@ -164,6 +181,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem2WOWID = itemTemplatesByEQDBID[RequiredItem2EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem2EQID].Name, RequiredItem2Count);
             }
             if (RequiredItem3EQID != -1)
             {
@@ -173,6 +191,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem3WOWID = itemTemplatesByEQDBID[RequiredItem3EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem3EQID].Name, RequiredItem3Count);
             }
             if (RequiredItem4EQID != -1)
             {
@@ -182,6 +201,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem4WOWID = itemTemplatesByEQDBID[RequiredItem4EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem4EQID].Name, RequiredItem4Count);
             }
             if (RequiredItem5EQID != -1)
             {
@@ -191,6 +211,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem5WOWID = itemTemplatesByEQDBID[RequiredItem5EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem5EQID].Name, RequiredItem5Count);
             }
             if (RequiredItem6EQID != -1)
             {
@@ -200,6 +221,7 @@ namespace EQWOWConverter.Quests
                     return false;
                 }
                 RequiredItem6WOWID = itemTemplatesByEQDBID[RequiredItem6EQID].WOWEntryID;
+                AddObjectiveItems(itemTemplatesByEQDBID[RequiredItem6EQID].Name, RequiredItem6Count);
             }
 
             if (RewardItem1EQID != -1)
