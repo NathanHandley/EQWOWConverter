@@ -42,7 +42,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue1", 0);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
-            newRow.AddInt("RewardXPDifficulty", questTemplate.RewardExperience > 0 ? 5 : 0);
+            //newRow.AddInt("RewardXPDifficulty", questTemplate.RewardExperience > 0 ? 5 : 0);
+            newRow.AddInt("RewardXPDifficulty", 0); // No EXP for now until it works properly
             newRow.AddInt("RewardMoney", questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);
