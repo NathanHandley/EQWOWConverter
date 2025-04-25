@@ -104,7 +104,7 @@ namespace EQWOWConverter.Quests
             if (NumOfObjectiveItemsAddedToText != 0)
                 RequestText += ", ";
             else
-                RequestText += "$B$BPlease bring me ";
+                RequestText = "Bring me ";
 
             if (itemCount > 1)
                 RequestText = string.Concat(RequestText, itemCount, " ", itemName, "s");
@@ -156,7 +156,7 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.RewardItem3EQID = int.Parse(columns["reward_item_ID3"]);
                 newQuestTemplate.RewardItem3Count = int.Parse(columns["reward_item_count3"]);
                 newQuestTemplate.RewardItem3Chance = float.Parse(columns["reward_item_chance3"]);
-                newQuestTemplate.RequestText = columns["request_text"];
+                //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now
                 QuestTemplates.Add(newQuestTemplate);
             }
         }

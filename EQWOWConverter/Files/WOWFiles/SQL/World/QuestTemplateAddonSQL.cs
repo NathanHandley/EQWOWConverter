@@ -25,14 +25,14 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM quest_template_addon WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(QuestTemplate questTemplate)
+        public void AddRow(QuestTemplate questTemplate, int curQuestTemplateID, int prevQuestTemplateID, bool isRepeatable)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("ID", questTemplate.QuestIDWOW);
+            newRow.AddInt("ID", curQuestTemplateID);
             newRow.AddInt("MaxLevel", 0);
             newRow.AddInt("AllowableClasses", 0);
             newRow.AddInt("SourceSpellID", 0);
-            newRow.AddInt("PrevQuestID", 0);
+            newRow.AddInt("PrevQuestID", prevQuestTemplateID);
             newRow.AddInt("NextQuestID", 0);
             newRow.AddInt("ExclusiveGroup", 0);
             newRow.AddInt("RewardMailTemplateID", 0);
@@ -44,7 +44,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredMinRepValue", 0);
             newRow.AddInt("RequiredMaxRepValue", 0);
             newRow.AddInt("ProvidedItemCount", 0);
-            newRow.AddInt("SpecialFlags", 0);
+            newRow.AddInt("SpecialFlags", isRepeatable == true ? 1 : 0); // QUEST_SPECIAL_FLAGS_REPEATABLE
             Rows.Add(newRow);
         }
     }

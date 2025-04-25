@@ -27,10 +27,10 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM quest_template WHERE `ID` >= " + Configuration.SQL_QUEST_TEMPLATE_ID_START.ToString() + " AND `ID` <= " + Configuration.SQL_QUEST_TEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(QuestTemplate questTemplate)
+        public void AddRow(QuestTemplate questTemplate, int questID, string questName)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("ID", questTemplate.QuestIDWOW);
+            newRow.AddInt("ID", questID);
             newRow.AddInt("QuestType", 2);
             newRow.AddInt("QuestLevel", -1); // -1 = player's level will be used to calculate completion exp
             newRow.AddInt("MinLevel", 1);
@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue1", 0);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
-            newRow.AddInt("RewardXPDifficulty", 0);
+            newRow.AddInt("RewardXPDifficulty", questTemplate.RewardExperience > 0 ? 5 : 0);
             newRow.AddInt("RewardMoney", questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);
@@ -104,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RewardFactionOverride5", 0);
             newRow.AddInt("TimeAllowed", 0);
             newRow.AddInt("AllowableRaces", 0);
-            newRow.AddString("LogTitle", questTemplate.Name);
+            newRow.AddString("LogTitle", questName);
             newRow.AddString("LogDescription", GenerateQuestObjectives(questTemplate));
             newRow.AddString("QuestDescription", GenerateQuestDescription(questTemplate));
             newRow.AddString("AreaDescription", string.Empty);

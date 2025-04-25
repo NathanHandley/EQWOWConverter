@@ -519,6 +519,10 @@ namespace EQWOWConverter
                     continue;
                 }
 
+                // Skip any quests that do not have anything to hand in
+                if (questTemplate.RequiredItem1Count == 0)
+                    continue;
+
                 // Pull up the related creature(s) and mark them as quest givers
                 // NOTE: Always do this last (before the add(questTemplate)
                 List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplateForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
@@ -2377,12 +2381,22 @@ namespace EQWOWConverter
             // Quests
             foreach(QuestTemplate questTemplate in questTemplates)
             {
-                questTemplateSQL.AddRow(questTemplate);
-                questTemplateAddonSQL.AddRow(questTemplate);
-                foreach(int creatureTemplateID in questTemplate.QuestgiverWOWCreatureTemplateIDs)
+                string firstQuestName = questTemplate.Name;
+                int firstQuestID = questTemplate.QuestIDWOW;
+                string repeatQuestName = string.Concat(questTemplate.Name, " (repeat)");
+                int repeatQuestID = firstQuestID + Configuration.SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT;
+
+                questTemplateSQL.AddRow(questTemplate, firstQuestID, firstQuestName);              
+                questTemplateSQL.AddRow(questTemplate, repeatQuestID, repeatQuestName);
+                questTemplateAddonSQL.AddRow(questTemplate, firstQuestID, 0, false);
+                questTemplateAddonSQL.AddRow(questTemplate, repeatQuestID, firstQuestID, true);
+
+                foreach (int creatureTemplateID in questTemplate.QuestgiverWOWCreatureTemplateIDs)
                 {
-                    creatureQuestStarterSQL.AddRow(questTemplate.QuestIDWOW, creatureTemplateID);
-                    creatureQuestEnderSQL.AddRow(questTemplate.QuestIDWOW, creatureTemplateID);
+                    creatureQuestStarterSQL.AddRow(firstQuestID, creatureTemplateID);
+                    creatureQuestStarterSQL.AddRow(repeatQuestID, creatureTemplateID);
+                    creatureQuestEnderSQL.AddRow(firstQuestID, creatureTemplateID);
+                    creatureQuestEnderSQL.AddRow(repeatQuestID, creatureTemplateID);
                 }
             }
 
