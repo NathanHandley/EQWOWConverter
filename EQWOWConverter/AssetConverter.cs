@@ -1127,9 +1127,7 @@ namespace EQWOWConverter
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
             Logger.WriteInfo("Converting tradeskills...");
-
             TradeskillRecipe.PopulateTradeskillRecipes(itemTemplatesByEQDBID);
-
             Logger.WriteDebug("Converting tradeskills completed.");
         }
 
@@ -2159,7 +2157,7 @@ namespace EQWOWConverter
                     if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
                     {
                         // Trainers need a line in the npc trainers table
-                        npcTrainerSQL.AddRowForClassTrainer(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+                        npcTrainerSQL.AddRowForTrainerReference(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
 
                         // Associate the menu
                         creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];

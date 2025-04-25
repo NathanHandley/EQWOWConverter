@@ -31,6 +31,10 @@ namespace EQWOWConverter.Tradeskills
         public int TrivialEQ;
         public Dictionary<int, int> ProducedItemCountsByItemID = new Dictionary<int, int>();
         public Dictionary<int, int> ComponentItemCountsByItemID = new Dictionary<int, int>();
+        public int SkillNeededWOW;
+        public int TrivialLowWOW;
+        public int TrivialHighWOW;
+        public int LearnCostInCopper;
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -127,10 +131,13 @@ namespace EQWOWConverter.Tradeskills
                     else
                         curRecipe.ComponentItemCountsByItemID[itemID] += componentCount;
                 }
+
+                // Generate WOW values
+                PopulateWOWSkillLevels(curRecipe);
             }
 
             // Save them in the list
-            foreach(var tradeskillRecipe in candidateRecipesByEQID)
+            foreach (var tradeskillRecipe in candidateRecipesByEQID)
             {
                 if (tradeskillRecipe.Value.ProducedItemCountsByItemID.Count == 0)
                 {
@@ -171,6 +178,14 @@ namespace EQWOWConverter.Tradeskills
                         return TradeskillType.Unknown;
                     }
             }
+        }
+
+        private static void PopulateWOWSkillLevels(TradeskillRecipe tradeskillRecipe)
+        {
+            // Base skill levels entirely off the "trivial" value
+            tradeskillRecipe.SkillNeededWOW = Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD);
+            tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
+            tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.TrivialHighWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
         }
     }
 }

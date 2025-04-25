@@ -29,7 +29,7 @@ namespace EQWOWConverter.WOWFiles
             return stringBuilder.ToString();
         }
 
-        public void AddRowForClassTrainer(int spellLinesID, int creatureTemplateEntryID)
+        public void AddRowForTrainerReference(int spellLinesID, int creatureTemplateEntryID)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", creatureTemplateEntryID);
@@ -53,6 +53,11 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ReqLevel", trainerAbility.ReqLevel);
             newRow.AddInt("ReqSpell", trainerAbility.ReqSpellID);
             Rows.Add(newRow);
+        }
+
+        public void AddRowForTradeskillAbility(int lineID)
+        {
+
         }
     }
 }

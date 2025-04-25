@@ -376,6 +376,14 @@ namespace EQWOWConverter
         public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
 
+        public static readonly float TRADESKILLS_CONVERSION_MOD = 1.3f;
+
+        // Distance between Grey -> Green -> Yellow -> Red steps
+        public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE = 10;
+
+        // How much to multiply the learn skill level rate to determine the cost of learning the tradeskill
+        public static readonly int TRADESKILL_LEARN_COST_MOD = 10;
+
         //=====================================================================
         // Transports
         //=====================================================================
@@ -533,8 +541,10 @@ namespace EQWOWConverter
         public static readonly int SQL_POOL_TEMPLATE_ID_END = 150000;
 
         // Start and end IDs for quest template data rows
+        // The 'shift' value is the value to add for the repeatable versions
         public static readonly int SQL_QUEST_TEMPLATE_ID_START = 30000;
         public static readonly int SQL_QUEST_TEMPLATE_ID_END = 40000;
+        public static readonly int SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT = 5000;
 
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
