@@ -85,7 +85,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // MaxLevel
             newRow.AddUInt32(0); // BaseLevel
             newRow.AddUInt32(0); // SpellLevel
-            newRow.AddUInt32(0); // DurationIndex
+            newRow.AddUInt32(spellTemplate.DurationIndex); // DurationIndex
             newRow.AddInt32(0); // PowerType
             newRow.AddUInt32(0); // ManaCost
             newRow.AddUInt32(0); // ManaCostPerLevel
@@ -116,7 +116,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(-1); // EquippedItemClass
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes
-            newRow.AddInt32(0); // Effect1
+            newRow.AddInt32(spellTemplate.Effect1); // Effect1
             newRow.AddInt32(0); // Effect2
             newRow.AddInt32(0); // Effect3
             newRow.AddInt32(0); // EffectDieSides3
@@ -140,7 +140,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectRadiusIndex1
             newRow.AddUInt32(0); // EffectRadiusIndex2
             newRow.AddUInt32(0); // EffectRadiusIndex3
-            newRow.AddUInt32(0); // EffectAura1
+            newRow.AddUInt32(spellTemplate.EffectAura1); // EffectAura1
             newRow.AddUInt32(0); // EffectAura2
             newRow.AddUInt32(0); // EffectAura3
             newRow.AddUInt32(0); // EffectAuraPeriod1
@@ -184,7 +184,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(spellTemplate.Name); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
             newRow.AddStringLang(spellTemplate.Description); // Description_Lang
-            newRow.AddStringLang(""); // AuraDescription_Lang
+            newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
             newRow.AddUInt32(0); // StartRecoveryCategory
             newRow.AddUInt32(0); // StartRecoveryTime

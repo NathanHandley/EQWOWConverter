@@ -368,9 +368,10 @@ namespace EQWOWConverter
 
         // These are the levels in which casters and melee can learn gate and bind. Setting to 0 or lower means
         // that can never be learned by that group.  If both melee and casters can learn bind, then a self-only
-        // version of bind is learned
         public static readonly int SPELLS_GATE_CASTER_LEARN_LEVEL = 4; // Set to 4 or 6 to be more like EQ
         public static readonly int SPELLS_GATE_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ (melee can't learn it)
+        // version of bind is learned.  If gate tether is enabled then the player can return to their gate point
+        // by clicking off the buff (within 30 minutes)
         public static readonly int SPELLS_GATE_SPELL_LEARN_COST = 100;
         public static readonly int SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 or 14 to be more like EQ
         public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)

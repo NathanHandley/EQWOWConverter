@@ -26,6 +26,7 @@ namespace EQWOWConverter.Spells
         public int ID = 0;
         public string Name = string.Empty;
         public string Description = string.Empty;
+        public string AuraDescription = string.Empty;
         public int SpellIconID = 0;
         protected int _CastTimeInMS = 0;
         public int CastTimeInMS
@@ -46,6 +47,9 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false;
+        public UInt32 DurationIndex = 0;
+        public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
+        public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
 
         public static int GenerateID()
         {

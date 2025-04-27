@@ -1086,13 +1086,21 @@ namespace EQWOWConverter
             gateSpellTemplate.Name = "Gate";
             gateSpellTemplate.ID = Configuration.SPELLS_GATE_SPELLDBC_ID;
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
+            if (Configuration.SPELLS_GATE_TETHER_ENABLED == true)
+            {
+                gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
+                gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
+                gateSpellTemplate.DurationIndex = 30; // SpellDuration.dbc index 30 has a 30 minute timer
+                gateSpellTemplate.Effect1 = 6; // Aura
+                gateSpellTemplate.EffectAura1 = 4; // Dummy
+            }
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
             gateSpellTemplate.TargetType = SpellTargetType.SelfSingle;
             gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
-            spellTemplates.Add(gateSpellTemplate);            
+            spellTemplates.Add(gateSpellTemplate);
 
             // Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
