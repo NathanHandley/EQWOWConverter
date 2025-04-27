@@ -2520,7 +2520,7 @@ namespace EQWOWConverter
                 creatureQuestEnderSQL.SaveToDisk("creature_questender", SQLFileType.World);
                 creatureQuestStarterSQL.SaveToDisk("creature_queststarter", SQLFileType.World);
                 questTemplateSQL.SaveToDisk("quest_template", SQLFileType.World);
-                questTemplateAddonSQL.SaveToDisk("quest_template_Addon", SQLFileType.World);
+                questTemplateAddonSQL.SaveToDisk("quest_template_addon", SQLFileType.World);
             }
         }
 
