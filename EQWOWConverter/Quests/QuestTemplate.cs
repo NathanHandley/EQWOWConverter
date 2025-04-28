@@ -106,7 +106,7 @@ namespace EQWOWConverter.Quests
             else
                 RequestText = "Bring me ";
 
-            if (itemCount > 1)
+            if (itemCount > 1 && itemName.EndsWith("s") == false)
                 RequestText = string.Concat(RequestText, itemCount, " ", itemName, "s");
             else
                 RequestText = string.Concat(RequestText, itemCount, " ", itemName);
