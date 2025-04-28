@@ -763,7 +763,7 @@ namespace EQWOWConverter
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
             string exportAnimatedObjectsFolder = Path.Combine(exportMPQRootFolder, "Creature", "Everquest");
             if (Directory.Exists(exportAnimatedObjectsFolder))
-                Directory.Delete(exportAnimatedObjectsFolder, true);
+                Directory.Delete(exportAnimatedObjectsFolder, true); // BUG: Race condition on this delete
             Directory.CreateDirectory(exportAnimatedObjectsFolder);
             string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
             string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
@@ -1100,6 +1100,7 @@ namespace EQWOWConverter
             gateSpellTemplate.TargetType = SpellTargetType.SelfSingle;
             gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
+            gateSpellTemplate.AllowCastInCombat = false;
             spellTemplates.Add(gateSpellTemplate);
 
             // Bind Affinity (Self)
@@ -1113,6 +1114,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.TargetType = SpellTargetType.SelfSingle;
             bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
+            bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -1127,6 +1129,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.TargetType = SpellTargetType.AllyGroupedSingle;
             bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
+            bindAffinitySpellTemplate.AllowCastInCombat = false;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");

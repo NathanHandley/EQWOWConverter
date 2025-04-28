@@ -51,7 +51,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(1); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(0); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate)); // Attributes
             newRow.AddUInt32(0); // AttributesEx
             newRow.AddUInt32(0); // AttributesExB
             newRow.AddUInt32(0); // AttributesExC
@@ -216,6 +216,14 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellDescriptionVariableID
             newRow.AddUInt32(0); // SpellDifficultyID
             Rows.Add(newRow);
+        }
+
+        private UInt32 GetAttributes(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.AllowCastInCombat == false)
+                return 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
+            else
+                return 0;
         }
 
         private UInt32 GetTargetValue(SpellTemplate spellTemplate)

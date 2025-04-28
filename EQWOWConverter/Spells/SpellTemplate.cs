@@ -50,6 +50,7 @@ namespace EQWOWConverter.Spells
         public UInt32 DurationIndex = 0;
         public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
+        public bool AllowCastInCombat = true;
 
         public static int GenerateID()
         {
