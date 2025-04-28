@@ -179,7 +179,7 @@ namespace EQWOWConverter
 
         // BSP tree nodes will stop subdividing when this many (or less) triangles are found
         public static readonly UInt16 ZONE_BTREE_MIN_SPLIT_SIZE = 10;
-        
+
         // BSP tree nodes won't operate on bounding boxes smaller than this (X + Y + Z lengths)
         public static readonly float ZONE_BTREE_MIN_BOX_SIZE_TOTAL = 5f;
 
@@ -376,7 +376,12 @@ namespace EQWOWConverter
         public static readonly int SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 or 14 to be more like EQ
         public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
+        public static readonly bool SPELLS_GATE_TETHER_ENABLED = true;
 
+        //=====================================================================
+        // Tradeskills
+        //=====================================================================
+        // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
         public static readonly float TRADESKILLS_CONVERSION_MOD = 1.3f;
 
         // Distance between Grey -> Green -> Yellow -> Red steps
@@ -390,7 +395,7 @@ namespace EQWOWConverter
         //=====================================================================
         public static readonly float TRANSPORT_PAUSE_MULTIPLIER = 1; // Pause as in 'stop at a port'. 1 will be EQ-like
         public static readonly int TRANSPORT_MOVE_SPEED = 15; // Most boats are 30 in WoW, but a value of around 9 is EQ-like
-        public static readonly int TRANSPORT_ACCELERATION = 1; 
+        public static readonly int TRANSPORT_ACCELERATION = 1;
 
         // ====================================================================
         // WOW DBC/File IDs

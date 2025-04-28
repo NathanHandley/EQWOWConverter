@@ -23,7 +23,7 @@ namespace EQWOWConverter.WOWFiles
         private static int CURRENT_AREABIT = Configuration.DBCID_AREATABLE_AREABIT_BLOCK_1_START;
         private static readonly object AreaBitLock = new object();
 
-        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName)
+        public void AddRow(int id, int mapID, int parentAreaID, ZoneAreaMusic? areaMusic, ZoneAreaAmbientSound? areaSound, string areaName, bool isRestingArea)
         {
             // AreaBit must always be unique
             int areaBit;
@@ -49,12 +49,17 @@ namespace EQWOWConverter.WOWFiles
             if (areaSound != null)
                 ambienceID = areaSound.DBCID;
 
+            // Flags
+            int flags = 0;
+            if (isRestingArea == true)
+                flags = 2097448; // AREA_FLAG_AllowTradeChannel + AREA_FLAG_AllowResting + AREA_FLAG_LinkedChat + AREA_FLAG_PlayersCallGuards 
+
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);
             newRow.AddInt32(mapID); // Continent ID
             newRow.AddInt32(parentAreaID);
             newRow.AddInt32(areaBit);
-            newRow.AddPackedFlags(0); // Flags
+            newRow.AddPackedFlags(flags); // Flags
             newRow.AddInt32(0); // Sound Provider Preferences
             newRow.AddInt32(0); // Sound Provider Preferences - Underwater
             newRow.AddInt32(ambienceID);

@@ -42,6 +42,7 @@ namespace EQWOWConverter.Zones
         public ZoneArea DefaultZoneArea = new ZoneArea(string.Empty, string.Empty);
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
+        public bool IsRestingZoneWide = false;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -684,6 +685,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.Continent = (ZoneContinentType)int.Parse(propertiesRow["ContinentID"]);
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
+                zoneProperties.IsRestingZoneWide = int.Parse(propertiesRow["RestZoneWide"]) == 1 ? true : false;
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else

@@ -549,7 +549,6 @@ namespace EQWOWConverter
             Logger.WriteDebug("Converting quests done");
         }
 
-        // TODO: Condense above
         public bool ConvertEQZonesToWOW(out List<Zone> zones)
         {
             // Build paths
@@ -1740,9 +1739,9 @@ namespace EQWOWConverter
                 ZoneProperties zoneProperties = zone.ZoneProperties;
 
                 // AreaTable
-                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName);
+                areaTableDBC.AddRow(Convert.ToInt32(zone.DefaultArea.DBCAreaTableID), zoneProperties.DBCMapID, 0, zone.DefaultArea.AreaMusic, zone.DefaultArea.AreaAmbientSound, zone.DefaultArea.DisplayName, zoneProperties.IsRestingZoneWide);
                 foreach (ZoneArea subArea in zoneProperties.ZoneAreas)
-                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName);
+                    areaTableDBC.AddRow(Convert.ToInt32(subArea.DBCAreaTableID), zoneProperties.DBCMapID, Convert.ToInt32(subArea.DBCParentAreaTableID), subArea.AreaMusic, subArea.AreaAmbientSound, subArea.DisplayName, zoneProperties.IsRestingZoneWide);
 
                 // AreaTrigger
                 foreach (ZonePropertiesZoneLineBox zoneLine in zoneProperties.ZoneLineBoxes)
