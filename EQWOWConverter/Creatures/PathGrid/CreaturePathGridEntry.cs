@@ -14,18 +14,11 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Creatures
 {
     internal class CreaturePathGridEntry : IComparable, IEquatable<CreaturePathGridEntry>
     {
-        private static List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
+        private static List<CreaturePathGridEntry> InitialPathGridEntries = new List<CreaturePathGridEntry>();
 
         public int GridID = 0;
         public string ZoneShortName = string.Empty;
@@ -35,16 +28,29 @@ namespace EQWOWConverter.Creatures
         public float NodeZ = 0;
         public int PauseInSec = 0;
 
-        public static List<CreaturePathGridEntry> GetPathGridEntries()
+        public CreaturePathGridEntry() { }
+
+        public CreaturePathGridEntry(CreaturePathGridEntry creaturePathGridEntry)
         {
-            if (PathGridEntries.Count == 0)
+            GridID = creaturePathGridEntry.GridID;
+            ZoneShortName = creaturePathGridEntry.ZoneShortName;
+            Number = creaturePathGridEntry.Number;
+            NodeX = creaturePathGridEntry.NodeX;
+            NodeY = creaturePathGridEntry.NodeY;
+            NodeZ = creaturePathGridEntry.NodeZ;
+            PauseInSec = creaturePathGridEntry.PauseInSec;
+        }
+
+        public static List<CreaturePathGridEntry> GetInitialPathGridEntries()
+        {
+            if (InitialPathGridEntries.Count == 0)
                 PopulatePathGridEntries();
-            return PathGridEntries;
+            return InitialPathGridEntries;
         }
 
         private static void PopulatePathGridEntries()
         {
-            PathGridEntries.Clear();
+            InitialPathGridEntries.Clear();
 
             string pathGridEntriesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PathGridEntries.csv");
             Logger.WriteDebug("Populating Path Grid Entires list via file '" + pathGridEntriesFile + "'");
@@ -95,7 +101,7 @@ namespace EQWOWConverter.Creatures
                 newPathGridEntry.NodeY = nodeY * Configuration.GENERATE_WORLD_SCALE;
                 newPathGridEntry.NodeZ = nodeZ * Configuration.GENERATE_WORLD_SCALE;
 
-                PathGridEntries.Add(newPathGridEntry);
+                InitialPathGridEntries.Add(newPathGridEntry);
             }
         }
 

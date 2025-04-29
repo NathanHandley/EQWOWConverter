@@ -27,6 +27,7 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
+using System.IO;
 using System.Text;
 
 namespace EQWOWConverter
@@ -886,7 +887,7 @@ namespace EQWOWConverter
 
             // Make a list of path grid entries
             Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>> creaturePathGridEntriesByIDAndMapID = new Dictionary<int, Dictionary<int, List<CreaturePathGridEntry>>>();
-            foreach (CreaturePathGridEntry creaturePathGridEntry in CreaturePathGridEntry.GetPathGridEntries())
+            foreach (CreaturePathGridEntry creaturePathGridEntry in CreaturePathGridEntry.GetInitialPathGridEntries())
             {
                 // Skip non-viable maps
                 if (mapIDsByShortName.ContainsKey(creaturePathGridEntry.ZoneShortName.ToLower().Trim()) == false)
@@ -899,24 +900,6 @@ namespace EQWOWConverter
                 if (creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].ContainsKey(mapID) == false)
                     creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID].Add(mapID, new List<CreaturePathGridEntry>());
                 creaturePathGridEntriesByIDAndMapID[creaturePathGridEntry.GridID][mapID].Add(creaturePathGridEntry);
-            }
-
-            // Sort and renumber grid IDs
-            foreach(var pathGridSetByGridID in creaturePathGridEntriesByIDAndMapID)
-            {
-                foreach (var pathGridSetByMapID in creaturePathGridEntriesByIDAndMapID[pathGridSetByGridID.Key])
-                {
-                    // Sort the values from smallest to largest
-                    pathGridSetByMapID.Value.Sort();
-
-                    // Renumber the elements so that it starts from 1 and incriments by 1
-                    int curID = 1;
-                    foreach(CreaturePathGridEntry curEntry in pathGridSetByMapID.Value)
-                    {
-                        curEntry.Number = curID;
-                        curID++;
-                    }
-                }
             }
 
             // Associate path grid entries with relevant spawn instances
@@ -938,8 +921,7 @@ namespace EQWOWConverter
                             continue;
                         }
 
-                        foreach (CreaturePathGridEntry creaturePathGridEntry in creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID])
-                            creatureSpawnInstance.PathGridEntries.Add(creaturePathGridEntry);
+                        creatureSpawnInstance.SetPathGridEntries(creaturePathGridEntriesByIDAndMapID[creatureSpawnInstance.PathGridID][creatureSpawnInstance.MapID]);
                     }
                 }
             }
@@ -2216,11 +2198,12 @@ namespace EQWOWConverter
                     CreatureTemplate creatureTemplate = spawnPool.CreatureTemplates[0];
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    if (spawnInstance.PathGridEntries.Count > 0)
+                    List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                    if (pathGridEntries.Count > 0)
                     {
                         int waypointGUID = creatureGUID * 1000;
                         creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                        foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                        foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                             waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
@@ -2264,11 +2247,12 @@ namespace EQWOWConverter
                             int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
                             int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
-                            if (spawnInstance.PathGridEntries.Count > 0)
+                            List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                            if (pathGridEntries.Count > 0)
                             {
                                 int waypointGUID = creatureGUID * 1000;
                                 creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                                foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                                foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                                     waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);
@@ -2307,11 +2291,12 @@ namespace EQWOWConverter
                         int chance = spawnPool.CreatureTemplateChances[creatureTemplateIndex];
                         int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                         poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
-                        if (spawnInstance.PathGridEntries.Count > 0)
+                        List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                        if (pathGridEntries.Count > 0)
                         {
                             int waypointGUID = creatureGUID * 1000;
                             creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
-                            foreach (CreaturePathGridEntry pathGridEntry in spawnInstance.PathGridEntries)
+                            foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                                 waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path);

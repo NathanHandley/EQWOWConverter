@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpawnInstance
@@ -40,13 +34,69 @@ namespace EQWOWConverter.Creatures
 
         public int MapID = 0;
         public int AreaID = 0;
-        public List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
+        private List<CreaturePathGridEntry> PathGridEntries = new List<CreaturePathGridEntry>();
 
         public static Dictionary<int, CreatureSpawnInstance> GetSpawnInstanceListByID()
         {
             if (SpawnInstanceListByID.Count == 0)
                 PopulateSpawnInstanceList();
             return SpawnInstanceListByID;
+        }
+
+        public void SetPathGridEntries(List<CreaturePathGridEntry> pathGridEntries)
+        {
+            if (pathGridEntries.Count == 0)
+                return;
+
+            // Sort the records first
+            pathGridEntries.Sort();
+
+            // Find the nearest grid node
+            int nearestPathGridEntryIndex = 0;
+            float nearestDistance = 5000f;
+            for (int i = 0; i < pathGridEntries.Count; i++)
+            {
+                CreaturePathGridEntry creaturePathGridEntry = pathGridEntries[i];
+                float dx = SpawnXPosition - creaturePathGridEntry.NodeX;
+                float dy = SpawnYPosition - creaturePathGridEntry.NodeY;
+                float dz = SpawnZPosition - creaturePathGridEntry.NodeZ;
+                float calcDistance = MathF.Sqrt(dx * dx + dy * dy + dz * dz);
+                if (calcDistance < nearestDistance)
+                {
+                    nearestDistance = calcDistance;
+                    nearestPathGridEntryIndex = i;
+                }
+            }
+
+            // Build a grid node list starting from the nearest
+            if (nearestPathGridEntryIndex == 0)
+            {
+                foreach (CreaturePathGridEntry creaturePathGridEntry in pathGridEntries)
+                    PathGridEntries.Add(new CreaturePathGridEntry(creaturePathGridEntry));
+            }
+            else
+            {
+                int curEntryNumber = 1;
+                for (int i = nearestPathGridEntryIndex; i < pathGridEntries.Count; ++i)
+                {
+                    CreaturePathGridEntry creaturePathGridEntry = new CreaturePathGridEntry(pathGridEntries[i]);
+                    creaturePathGridEntry.Number = curEntryNumber;
+                    curEntryNumber++;
+                    PathGridEntries.Add(creaturePathGridEntry);
+                }
+                for (int i = 0; i < pathGridEntries.Count - PathGridEntries.Count; ++i)
+                {
+                    CreaturePathGridEntry creaturePathGridEntry = new CreaturePathGridEntry(pathGridEntries[i]);
+                    creaturePathGridEntry.Number = curEntryNumber;
+                    curEntryNumber++;
+                    PathGridEntries.Add(creaturePathGridEntry);
+                }
+            }
+        }
+
+        public List<CreaturePathGridEntry> GetPathGridEntries()
+        {
+            return PathGridEntries;
         }
 
         private static void PopulateSpawnInstanceList()
@@ -99,6 +149,11 @@ namespace EQWOWConverter.Creatures
                 if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
                 if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                    continue;
+
+                // TODO: figure out really where this should be content wise
+                string contentFlagsDisabled = rowBlocks[21];
+                if (contentFlagsDisabled.Trim() == "OldPlane_Hate_Sky")
                     continue;
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
