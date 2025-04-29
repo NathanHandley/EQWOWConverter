@@ -14,21 +14,14 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-// Note: This is ignored for now until I figure out what Type and Type2 mean...
 namespace EQWOWConverter.Creatures
 {
     internal class CreaturePathGrid
     {
         private static List<CreaturePathGrid> PathGrids = new List<CreaturePathGrid>();
 
-        public int GridID = 0; 
-        public int ZoneID = 0;
+        public int GridID = 0;
+        public string ZoneShortName = string.Empty;
         public int Type = 0;
         public int Type2 = 0;
 
@@ -45,37 +38,15 @@ namespace EQWOWConverter.Creatures
 
             string pathGridsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "PathGrids.csv");
             Logger.WriteDebug("Populating Path Grids list via file '" + pathGridsFile + "'");
-            string inputData = FileTool.ReadAllDataFromFile(pathGridsFile);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(pathGridsFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                Logger.WriteError("Path Grids list via file '" + pathGridsFile + "' did not have enough rows");
-                return;
-            }
-
-            // Load all of the data
-            bool headerRow = true;
-            foreach (string row in inputRows)
-            {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
-                    continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
                 // Load the row
-                string[] rowBlocks = row.Split("|");
                 CreaturePathGrid newPathGrid = new CreaturePathGrid();
-                newPathGrid.GridID = int.Parse(rowBlocks[0]);
-                newPathGrid.ZoneID = int.Parse(rowBlocks[1]);
-                newPathGrid.Type = int.Parse(rowBlocks[2]);
-                newPathGrid.Type2 = int.Parse(rowBlocks[3]);
-
+                newPathGrid.GridID = int.Parse(columns["id"]);
+                newPathGrid.ZoneShortName = columns["zone_short_name"];
+                newPathGrid.Type = int.Parse(columns["Type"]);
+                newPathGrid.Type2 = int.Parse(columns["Type2"]);
                 PathGrids.Add(newPathGrid);
             }
         }
