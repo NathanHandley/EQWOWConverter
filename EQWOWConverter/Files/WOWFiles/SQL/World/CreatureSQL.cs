@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 
-            float orientation, CreatureMovementType movementType)
+            float orientation, CreatureMovementType movementType, float wanderDistance)
         {
             int currentWaypoint = 0;
             if (movementType == CreatureMovementType.Path)
@@ -48,7 +48,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("position_z", MathF.Round(zPosition, 6));
             newRow.AddFloat("orientation", MathF.Round(orientation, 6));
             newRow.AddInt("spawntimesecs", 300);
-            newRow.AddFloat("wander_distance", 0);
+            newRow.AddFloat("wander_distance", wanderDistance);
             newRow.AddInt("currentwaypoint", currentWaypoint);
             newRow.AddInt("curhealth", 100);
             newRow.AddInt("curmana", 0);
