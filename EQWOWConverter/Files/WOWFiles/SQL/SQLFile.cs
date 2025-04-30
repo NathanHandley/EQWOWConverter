@@ -14,12 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -86,6 +81,19 @@ namespace EQWOWConverter.WOWFiles
             public void AddString(string columnName, string? value)
             {
                 AddString(columnName, 65535, value);
+            }
+
+            public void AddDateTime(string columnName, DateTime? dateTime)
+            {
+                SQLColumn newColumn = new SQLColumn();
+                newColumn.Name = columnName;
+                if (dateTime != null)
+                {
+                    newColumn.Value = string.Concat("'", dateTime.Value.ToString("yyyy-MM-dd HH:mm:ss"), "'");
+                }
+                else
+                    newColumn.IsNull = true;
+                SQLColumns.Add(newColumn);
             }
 
             public string GetValuesStringInSQL()

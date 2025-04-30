@@ -2054,6 +2054,7 @@ namespace EQWOWConverter
             CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+            GameEventSQL gameEventSQL = new GameEventSQL();
             GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
             GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
@@ -2325,12 +2326,12 @@ namespace EQWOWConverter
                 }
             }
 
-            // Items
-            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
-                itemTemplateSQL.AddRow(itemTemplate);
-            foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
-                foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
-                    creatureLootTableSQL.AddRow(itemLootTemplate);
+            // Game Events
+            DateTime eventEnd = new DateTime(2025, 12, 30, 23, 0, 0);
+            DateTime dayStart = new DateTime(2012, 10, 29, 6, 0, 0);
+            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 720, "EQ Day");
+            DateTime nightStart = new DateTime(2016, 10, 28, 18, 0, 0);
+            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 720, "EQ Night");
 
             // Graveyards
             foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
@@ -2359,6 +2360,13 @@ namespace EQWOWConverter
                         graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0);
                 }
             }
+
+            // Items
+            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
+                itemTemplateSQL.AddRow(itemTemplate);
+            foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
+                foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
+                    creatureLootTableSQL.AddRow(itemLootTemplate);
 
             // Player start properties
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
@@ -2503,6 +2511,7 @@ namespace EQWOWConverter
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
+            gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
             gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
