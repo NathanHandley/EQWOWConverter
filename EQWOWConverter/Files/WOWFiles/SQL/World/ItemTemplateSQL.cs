@@ -89,8 +89,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("shadow_res", itemTemplate.ShadowResist);
             newRow.AddInt("arcane_res", itemTemplate.ArcaneResist);
             newRow.AddInt("delay", itemTemplate.WeaponDelay);
-            newRow.AddInt("ammo_type", 0);
-            newRow.AddFloat("RangedModRange", 0);
+            if (itemTemplate.ClassID == 2 && itemTemplate.SubClassID == 2) // bow
+            {
+                newRow.AddInt("ammo_type", 2);
+                newRow.AddFloat("RangedModRange", 100);
+            }
+            else
+            {
+                newRow.AddInt("ammo_type", 0);
+                newRow.AddFloat("RangedModRange", 0);
+            }
             newRow.AddInt("spellid_1", itemTemplate.SpellID1);
             newRow.AddInt("spelltrigger_1", 0);
             newRow.AddInt("spellcharges_1", 0);
