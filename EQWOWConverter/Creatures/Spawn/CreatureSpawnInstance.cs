@@ -30,7 +30,8 @@ namespace EQWOWConverter.Creatures
         public int RespawnTimeInSeconds = 0;
         public int Variance = 0; // TODO: Figure out what this is...
         public int PathGridID = 0;
-        public int RoamRange = 0;
+        public bool SpawnDay;
+        public bool SpawnNight;
 
         public int MapID = 0;
         public int AreaID = 0;
@@ -101,60 +102,38 @@ namespace EQWOWConverter.Creatures
 
         private static void PopulateSpawnInstanceList()
         {
-            SpawnInstanceListByID.Clear();
-
             string spawnDetailsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpawnInstances.csv");
             Logger.WriteDebug("Populating Spawn Detail list via file '" + spawnDetailsFile + "'");
-            string inputData = FileTool.ReadAllDataFromFile(spawnDetailsFile);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(spawnDetailsFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                Logger.WriteError("SpawnDetails list via file '" + spawnDetailsFile + "' did not have enough rows");
-                return;
-            }
-
-            // Load all of the data
-            bool headerRow = true;
-            foreach (string row in inputRows)
-            {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
-                    continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
-                // Load the row
-                string[] rowBlocks = row.Split("|");
-                CreatureSpawnInstance newSpawnDetail = new CreatureSpawnInstance();
-                newSpawnDetail.ID = int.Parse(rowBlocks[0]);
-                newSpawnDetail.SpawnGroupID = int.Parse(rowBlocks[1]);
-                newSpawnDetail.ZoneShortName = rowBlocks[2];
-                float spawnX = float.Parse(rowBlocks[3]);
-                float spawnY = float.Parse(rowBlocks[4]);
-                float spawnZ = float.Parse(rowBlocks[5]);
-                float heading = float.Parse(rowBlocks[6]);
-                newSpawnDetail.RespawnTimeInSeconds = int.Parse(rowBlocks[7]);
-                newSpawnDetail.Variance = int.Parse(rowBlocks[8]);
-                newSpawnDetail.PathGridID = int.Parse(rowBlocks[9]);
-                newSpawnDetail.RoamRange = int.Parse(rowBlocks[10]);
-
                 // Skip any invalid expansion rows
-                int minExpansion = int.Parse(rowBlocks[18]);
-                int maxExpansion = int.Parse(rowBlocks[19]);
+                int minExpansion = int.Parse(columns["min_expansion"]);
+                int maxExpansion = int.Parse(columns["max_expansion"]);
                 if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
                 if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
                     continue;
 
                 // TODO: figure out really where this should be content wise
-                string contentFlagsDisabled = rowBlocks[21];
+                string contentFlagsDisabled = columns["content_flags_disabled"];
                 if (contentFlagsDisabled.Trim() == "OldPlane_Hate_Sky")
                     continue;
+
+                // Load
+                CreatureSpawnInstance newSpawnDetail = new CreatureSpawnInstance();
+                newSpawnDetail.ID = int.Parse(columns["eqid"]);
+                newSpawnDetail.SpawnGroupID = int.Parse(columns["spawngroupid"]);
+                newSpawnDetail.ZoneShortName = columns["zone"];
+                float spawnX = float.Parse(columns["x"]);
+                float spawnY = float.Parse(columns["y"]);
+                float spawnZ = float.Parse(columns["z"]);
+                float heading = float.Parse(columns["heading"]);
+                newSpawnDetail.RespawnTimeInSeconds = int.Parse(columns["respawntime"]);
+                newSpawnDetail.Variance = int.Parse(columns["variance"]);
+                newSpawnDetail.PathGridID = int.Parse(columns["pathgrid"]);
+                newSpawnDetail.SpawnDay = int.Parse(columns["spawn_day"]) == 1 ? true : false;
+                newSpawnDetail.SpawnNight = int.Parse(columns["spawn_night"]) == 1 ? true : false;
 
                 // Get orientation from heading. EQ uses 0-256 range, and can be 2x that (512) and then convert to degrees and then radians
                 float modHeading = 0;
