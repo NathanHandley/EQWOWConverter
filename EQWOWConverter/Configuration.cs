@@ -365,6 +365,8 @@ namespace EQWOWConverter
         public static readonly int SPELLS_GATE_SPELLDBC_ID = 86900;
         public static readonly int SPELLS_BINDSELF_SPELLDBC_ID = 86901;
         public static readonly int SPELLS_BINDANY_SPELLDBC_ID = 86902;
+        public static readonly int SPELLS_DAYPHASE_SPELLDBC_ID = 86903;
+        public static readonly int SPELLS_NIGHTPHASE_SPELLDBC_ID = 86904;
 
         // These are the levels in which casters and melee can learn gate and bind. Setting to 0 or lower means
         // that can never be learned by that group.  If both melee and casters can learn bind, then a self-only
@@ -517,6 +519,10 @@ namespace EQWOWConverter
         // Start GUIDs for gameobjects
         public static readonly int SQL_GAMEOBJECT_GUID_ID_START = 310000;
         public static readonly int SQL_GAMEOBJECT_GUID_ID_END = 319999;
+
+        // IDs for game_event records
+        public static readonly int SQL_GAMEEVENT_ID_DAY = 125;
+        public static readonly int SQL_GAMEEVENT_ID_NIGHT = 126;
 
         // Start and end IDs for gameobject_template rows
         public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_START = 270000;
