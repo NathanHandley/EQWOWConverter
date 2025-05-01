@@ -48,16 +48,16 @@ namespace EQWOWConverter.WOWFiles
         {
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(spellTemplate.ID); // ID
-            newRow.AddUInt32(1); // Category (SpellCategory.ID)
+            newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
             newRow.AddUInt32(GetAttributes(spellTemplate)); // Attributes
-            newRow.AddUInt32(0); // AttributesEx
-            newRow.AddUInt32(0); // AttributesExB
-            newRow.AddUInt32(0); // AttributesExC
-            newRow.AddUInt32(0); // AttributesExD
-            newRow.AddUInt32(0); // AttributesExE
-            newRow.AddUInt32(0); // AttributesExF
+            newRow.AddUInt32(GetAttributesEx(spellTemplate)); // AttributesEx
+            newRow.AddUInt32(GetAttributesExB(spellTemplate)); // AttributesExB
+            newRow.AddUInt32(GetAttributesExC(spellTemplate)); // AttributesExC
+            newRow.AddUInt32(GetAttributesExD(spellTemplate)); // AttributesExD
+            newRow.AddUInt32(GetAttributesExE(spellTemplate)); // AttributesExE
+            newRow.AddUInt32(GetAttributesExF(spellTemplate)); // AttributesExF
             newRow.AddUInt32(0); // AttributesExG
             newRow.AddUInt64(0); // ShapeshiftMask
             newRow.AddUInt64(0); // ShapeshiftExclude
@@ -76,7 +76,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex
             newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
-            newRow.AddUInt32(15); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
+            newRow.AddUInt32(spellTemplate.InterruptFlags); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
             newRow.AddUInt32(0); // AuraInterruptFlags
             newRow.AddUInt32(0); // ChannelInterruptFlags
             newRow.AddUInt32(0); // ProcTypeMask
@@ -119,13 +119,13 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(spellTemplate.Effect1); // Effect1
             newRow.AddInt32(0); // Effect2
             newRow.AddInt32(0); // Effect3
-            newRow.AddInt32(0); // EffectDieSides3
+            newRow.AddInt32(spellTemplate.EffectDieSides1); // EffectDieSides1
             newRow.AddInt32(0); // EffectDieSides2
-            newRow.AddInt32(0); // EffectDieSides1
+            newRow.AddInt32(0); // EffectDieSides3
             newRow.AddFloat(0); // EffectRealPointsPerLevel1
             newRow.AddFloat(0); // EffectRealPointsPerLevel2
             newRow.AddFloat(0); // EffectRealPointsPerLevel3
-            newRow.AddInt32(0); // EffectBasePoints1
+            newRow.AddInt32(spellTemplate.EffectBasePoints1); // EffectBasePoints1
             newRow.AddInt32(0); // EffectBasePoints2
             newRow.AddUInt32(0); // EffectBasePoints3
             newRow.AddUInt32(0); // EffectMechanic1
@@ -155,7 +155,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectItemType1
             newRow.AddUInt32(0); // EffectItemType2
             newRow.AddUInt32(0); // EffectItemType3
-            newRow.AddInt32(0); // EffectMiscValue1
+            newRow.AddInt32(spellTemplate.EffectMiscValue1); // EffectMiscValue1
             newRow.AddInt32(0); // EffectMiscValue2
             newRow.AddInt32(0); // EffectMiscValue3
             newRow.AddInt32(0); // EffectMiscValueB1
@@ -205,8 +205,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // RequiredAuraVision
             newRow.AddUInt32(0); // RequiredTotemCategoryID1
             newRow.AddUInt32(0); // RequiredTotemCategoryID2
-            newRow.AddInt32(0); // RequiredAreasID
-            newRow.AddUInt32(0); // SchoolMask
+            newRow.AddInt32(spellTemplate.RequiredAreaIDs); // RequiredAreasID
+            newRow.AddUInt32(spellTemplate.SchoolMask); // SchoolMask
             newRow.AddUInt32(0); // RuneCostID
             newRow.AddUInt32(0); // SpellMissileID
             newRow.AddInt32(0); // PowerDisplayID
@@ -222,8 +222,52 @@ namespace EQWOWConverter.WOWFiles
         {
             if (spellTemplate.AllowCastInCombat == false)
                 return 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
+            else if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 2843738496;
             else
                 return 0;
+        }
+
+        private UInt32 GetAttributesEx(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 3072;
+            return 0;
+        }
+
+        private UInt32 GetAttributesExB(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 16385;
+            return 0;
+        }
+
+        private UInt32 GetAttributesExC(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 1048576;
+            return 0;
+        }
+
+        private UInt32 GetAttributesExD(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 128;
+            return 0;
+        }
+
+        private UInt32 GetAttributesExE(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 393224;
+            return 0;
+        }
+
+        private UInt32 GetAttributesExF(SpellTemplate spellTemplate)
+        {
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+                return 4096;
+            return 0;
         }
 
         private UInt32 GetTargetValue(SpellTemplate spellTemplate)
@@ -240,7 +284,7 @@ namespace EQWOWConverter.WOWFiles
         {
             switch (spellTemplate.TargetType)
             {
-                case SpellTargetType.SelfSingle: return 0;
+                case SpellTargetType.SelfSingle: return 1;
                 case SpellTargetType.AllyGroupedSingle: return 35; // Unit Target Party
                 default: return 0;
             }

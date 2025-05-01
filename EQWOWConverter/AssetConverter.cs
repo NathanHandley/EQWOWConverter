@@ -27,7 +27,6 @@ using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
 using MySql.Data.MySqlClient;
-using System.IO;
 using System.Text;
 
 namespace EQWOWConverter
@@ -1112,6 +1111,40 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             spellTemplates.Add(bindAffinitySpellTemplate);
+
+            // Phase aura 1 (Day)
+            SpellTemplate dayPhaseSpellTemplate = new SpellTemplate();
+            dayPhaseSpellTemplate.Name = "EQ Phase Day";
+            dayPhaseSpellTemplate.Category = 0;
+            dayPhaseSpellTemplate.InterruptFlags = 0;
+            dayPhaseSpellTemplate.ID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
+            dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
+            dayPhaseSpellTemplate.SpellIconID = 253;
+            dayPhaseSpellTemplate.Effect1 = 6;
+            dayPhaseSpellTemplate.EffectDieSides1 = 1;
+            dayPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
+            dayPhaseSpellTemplate.EffectMiscValue1 = 2;
+            dayPhaseSpellTemplate.EffectBasePoints1 = -1;
+            dayPhaseSpellTemplate.DurationIndex = 21; // Infinate
+            dayPhaseSpellTemplate.SchoolMask = 1;
+            spellTemplates.Add(dayPhaseSpellTemplate);
+
+            // Phase aura 2 (Night)
+            SpellTemplate nightPhaseSpellTemplate = new SpellTemplate();
+            nightPhaseSpellTemplate.Name = "EQ Phase Day";
+            nightPhaseSpellTemplate.Category = 0;
+            nightPhaseSpellTemplate.InterruptFlags = 0;
+            nightPhaseSpellTemplate.ID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
+            nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
+            nightPhaseSpellTemplate.Effect1 = 6;
+            nightPhaseSpellTemplate.EffectDieSides1 = 1;
+            nightPhaseSpellTemplate.SpellIconID = 253;
+            nightPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
+            nightPhaseSpellTemplate.EffectMiscValue1 = 4;
+            nightPhaseSpellTemplate.EffectBasePoints1 = -1;
+            nightPhaseSpellTemplate.DurationIndex = 21; // Infinate
+            nightPhaseSpellTemplate.SchoolMask = 1;
+            spellTemplates.Add(nightPhaseSpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");
         }
@@ -2208,7 +2241,7 @@ namespace EQWOWConverter
                             waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                            spawnPool.CreatureSpawnGroup.RoamDistance);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                     }
                     else
                     {
@@ -2217,7 +2250,7 @@ namespace EQWOWConverter
                             movementType = CreatureMovementType.Random;
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                            spawnPool.CreatureSpawnGroup.RoamDistance);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                     }
                 }
 
@@ -2262,7 +2295,7 @@ namespace EQWOWConverter
                                     waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                             }
                             else
                             {
@@ -2271,7 +2304,7 @@ namespace EQWOWConverter
                                     movementType = CreatureMovementType.Random;
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                             }
                         }
                     }
@@ -2311,7 +2344,7 @@ namespace EQWOWConverter
                                 waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path, 
-                                spawnPool.CreatureSpawnGroup.RoamDistance);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                         }
                         else
                         {
@@ -2320,7 +2353,7 @@ namespace EQWOWConverter
                                 movementType = CreatureMovementType.Random;
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                spawnPool.CreatureSpawnGroup.RoamDistance);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
                         }
                     }
                 }
@@ -2357,7 +2390,7 @@ namespace EQWOWConverter
                     int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0);
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true);
                 }
             }
 

@@ -27,6 +27,8 @@ namespace EQWOWConverter.Spells
         public string Name = string.Empty;
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
+        public UInt32 Category = 1;
+        public UInt32 InterruptFlags = 15;
         public int SpellIconID = 0;
         protected int _CastTimeInMS = 0;
         public int CastTimeInMS
@@ -50,6 +52,11 @@ namespace EQWOWConverter.Spells
         public UInt32 DurationIndex = 0;
         public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
+        public Int32 EffectDieSides1 = 0;
+        public Int32 EffectBasePoints1 = 0;
+        public int EffectMiscValue1 = 0;
+        public int RequiredAreaIDs = -1;
+        public UInt32 SchoolMask = 0;
         public bool AllowCastInCombat = true;
 
         public static int GenerateID()
