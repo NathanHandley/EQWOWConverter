@@ -83,9 +83,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[2]);
                 int maxExpansion = int.Parse(rowBlocks[3]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Create the item loot drop object
@@ -106,9 +106,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[7]);
                 int maxExpansion = int.Parse(rowBlocks[8]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Create the entry record

@@ -99,7 +99,8 @@ namespace EQWOWConverter
         public static readonly float GENERATE_EQUIPMENT_HELD_SCALE = 0.35f;
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
-        public static readonly int GENERATE_EQ_EXPANSION_ID = 0;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 0;
 
         // If true, then objects are generated
         public static readonly bool GENERATE_OBJECTS = true;

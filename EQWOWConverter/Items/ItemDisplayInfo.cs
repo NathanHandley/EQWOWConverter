@@ -189,7 +189,7 @@ namespace EQWOWConverter.Items
                 else if (materialTypeID >= 17)
                 {
                     // Set it 1:1 for velious or higher
-                    if (Configuration.GENERATE_EQ_EXPANSION_ID >= 2)
+                    if (Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL >= 2)
                         armorID = materialTypeID - 11;
                     // Otherwise, remap any graphics to classic counterparts
                     else

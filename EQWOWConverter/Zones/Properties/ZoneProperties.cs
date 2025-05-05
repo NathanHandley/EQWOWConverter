@@ -668,7 +668,7 @@ namespace EQWOWConverter.Zones
                     }
                 }
 
-                else if (Configuration.GENERATE_EQ_EXPANSION_ID < zoneProperties.ExpansionID)
+                else if (Configuration.GENERATE_EQ_EXPANSION_ID_ZONES < zoneProperties.ExpansionID)
                 {
                     Logger.WriteDebug(string.Concat("Skipping zone with shortname '", shortName, "' since the expansionID is > the configured expansion ID"));
                     return;

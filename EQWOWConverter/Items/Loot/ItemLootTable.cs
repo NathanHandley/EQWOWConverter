@@ -53,9 +53,9 @@ namespace EQWOWConverter.Items
                 // Skip invalid expansion rows
                 int minExpansion = int.Parse(rowBlocks[6]);
                 int maxExpansion = int.Parse(rowBlocks[7]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Create the item loot table object

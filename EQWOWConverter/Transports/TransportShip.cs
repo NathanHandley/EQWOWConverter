@@ -68,7 +68,7 @@ namespace EQWOWConverter.Transports
                 if (isEnabled == false)
                     continue;
                 int minExpansion = int.Parse(columns["min_expansion"]);
-                if (minExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Load the data

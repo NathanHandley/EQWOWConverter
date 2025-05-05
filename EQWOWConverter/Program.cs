@@ -48,6 +48,8 @@ internal class Program
         }
         if (enteredCommand == "5")
         {
+            Logger.WriteInfo(string.Concat("- Note: GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL));
+            Logger.WriteInfo(string.Concat("- Note: GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES));
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
                 Logger.WriteInfo("- Note: PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)

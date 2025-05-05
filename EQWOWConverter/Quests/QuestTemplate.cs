@@ -121,7 +121,7 @@ namespace EQWOWConverter.Quests
             foreach (Dictionary<string, string> columns in rows)
             {
                 // Skip invalid expansions
-                if (int.Parse(columns["min_expansion"]) > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (int.Parse(columns["min_expansion"]) > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Load the row

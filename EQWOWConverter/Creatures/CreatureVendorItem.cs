@@ -78,9 +78,9 @@ namespace EQWOWConverter.Creatures
                 // Only add if it's within this target expansion
                 int minExpansion = int.Parse(rowBlocks[5]);
                 int maxExpansion = int.Parse(rowBlocks[6]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
                 if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)
                     CreatureVendorItemsByMerchantID.Add(newVendorItem.MerchantID, new List<CreatureVendorItem>());

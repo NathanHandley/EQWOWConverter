@@ -71,7 +71,7 @@ namespace EQWOWConverter.Tradeskills
             {
                 // Skip if not generating the higher expansions
                 int minExpansionID = int.Parse(columns["min_expansion"]);
-                if (minExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // Create the tradeskill recipe

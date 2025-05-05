@@ -110,9 +110,9 @@ namespace EQWOWConverter.Creatures
                 // Skip any invalid expansion rows
                 int minExpansion = int.Parse(columns["min_expansion"]);
                 int maxExpansion = int.Parse(columns["max_expansion"]);
-                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
-                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID)
+                if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
 
                 // TODO: figure out really where this should be content wise
