@@ -61,6 +61,7 @@ namespace EQWOWConverter.Creatures
         public bool IsNonNPC = false;
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
+        public bool LimitOneInSpawnPool = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -113,6 +114,9 @@ namespace EQWOWConverter.Creatures
                     Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");
                 newCreatureTemplate.Rank = (CreatureRankType)int.Parse(columns["rank"]);
                 newCreatureTemplate.Name = columns["name"].Replace('_', ' ');
+                if (newCreatureTemplate.Name.StartsWith("#") == true && newCreatureTemplate.Name.StartsWith("##") == false)
+                    newCreatureTemplate.LimitOneInSpawnPool = true;
+                newCreatureTemplate.Name = newCreatureTemplate.Name.Replace("#", "");
                 newCreatureTemplate.NameNoFormat = columns["name"];
                 newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                 newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);

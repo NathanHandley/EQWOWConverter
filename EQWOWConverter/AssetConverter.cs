@@ -856,7 +856,14 @@ namespace EQWOWConverter
                     foreach (CreatureSpawnEntry spawnEntry in creatureSpawnEntriesByGroupID[spawnGroup.Key])
                     {
                         if (creatureTemplatesByID.ContainsKey(spawnEntry.EQCreatureTemplateID))
+                        {
                             curSpawnPool.AddCreatureTemplate(creatureTemplatesByID[spawnEntry.EQCreatureTemplateID], spawnEntry.Chance);
+
+                            // If  this is a limited spawn, limit the group
+                            // TODO: This should be handled differently, as only specific creature templates should be limited
+                            if (creatureTemplatesByID[spawnEntry.EQCreatureTemplateID].LimitOneInSpawnPool == true)
+                                spawnGroup.Value.SpawnLimit = 1;
+                        }
                     }
                 }
 
