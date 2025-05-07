@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", questID);
             newRow.AddInt("QuestType", 2);
-            newRow.AddInt("QuestLevel", -1); // -1 = player's level will be used to calculate completion exp
+            newRow.AddInt("QuestLevel", questTemplate.QuestLevel); // -1 = player's level will be used to calculate completion exp
             newRow.AddInt("MinLevel", 1);
             newRow.AddInt("QuestSortID", questTemplate.AreaID); // > 0 then the value is the Zone ID from AreaTable.dbc
             newRow.AddInt("QuestInfoID", 0); // References QuestInfo.dbc
@@ -42,9 +42,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("RequiredFactionValue1", 0);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
-            //newRow.AddInt("RewardXPDifficulty", questTemplate.RewardExperience > 0 ? 5 : 0);
-            newRow.AddInt("RewardXPDifficulty", 0); // No EXP for now until it works properly
-            newRow.AddInt("RewardMoney", questTemplate.RewardMoneyInCopper);
+            newRow.AddInt("RewardXPDifficulty", (questTemplate.RewardExperience > 0 && questTemplate.QuestLevel > 0) ? 3 : 0);
+            newRow.AddInt("RewardMoney", questTemplate.RequiredMoneyInCopper > 0 ? (-1 * questTemplate.RequiredMoneyInCopper) : questTemplate.RewardMoneyInCopper);
             newRow.AddInt("RewardMoneyDifficulty", 0);
             newRow.AddInt("RewardDisplaySpell", 0);
             newRow.AddInt("RewardSpell", 0);
@@ -106,8 +105,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("TimeAllowed", 0);
             newRow.AddInt("AllowableRaces", 0);
             newRow.AddString("LogTitle", questName);
-            newRow.AddString("LogDescription", GenerateQuestObjectives(questTemplate));
-            newRow.AddString("QuestDescription", GenerateQuestDescription(questTemplate));
+            newRow.AddString("LogDescription", GenerateQuestDescription(questTemplate));
+            newRow.AddString("QuestDescription", string.Empty);
             newRow.AddString("AreaDescription", string.Empty);
             newRow.AddString("QuestCompletionLog", GenerateQuestDescription(questTemplate));
             newRow.AddInt("RequiredNpcOrGo1", 0);

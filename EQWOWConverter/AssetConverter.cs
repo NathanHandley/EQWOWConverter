@@ -520,8 +520,8 @@ namespace EQWOWConverter
                 }
 
                 // Skip any quests that do not have anything to hand in
-                if (questTemplate.RequiredItem1Count == 0)
-                    continue;
+                //if (questTemplate.RequiredItem1Count == 0)
+                //    continue;
 
                 // Pull up the related creature(s) and mark them as quest givers
                 // NOTE: Always do this last (before the add(questTemplate)

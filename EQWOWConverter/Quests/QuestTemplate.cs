@@ -31,6 +31,8 @@ namespace EQWOWConverter.Quests
         public bool HasMinimumFactionRequirement = false;
         public int QuestgiverWOWFactionID = 0;
         public int MinimumQuestgiverFactionValue = 0;
+        public int QuestLevel = -1;
+        public int RequiredMoneyInCopper = 0;
         public int RequiredItem1EQID;
         public int RequiredItem1WOWID = 0;
         public int RequiredItem1Count;
@@ -140,8 +142,10 @@ namespace EQWOWConverter.Quests
             List<Dictionary<string, string>> questRows = FileTool.ReadAllRowsFromFileWithHeader(questTemplateFile, "|");
             foreach (Dictionary<string, string> columns in questRows)
             {
-                // Skip invalid expansions
+                // Skip invalid expansions and disabled quests
                 if (int.Parse(columns["min_expansion"]) > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                    continue;
+                if (int.Parse(columns["enabled"]) == 0)
                     continue;
 
                 // Load the row
@@ -150,11 +154,13 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.ZoneShortName = columns["zone_shortname"];
                 newQuestTemplate.QuestgiverName = columns["questgiver_name"];
                 newQuestTemplate.Name = columns["quest_name"];
+                newQuestTemplate.QuestLevel = int.Parse(columns["level"]);
                 if (newQuestTemplate.Name.Length == 0)
                     newQuestTemplate.Name = String.Concat(newQuestTemplate.QuestgiverName, " Quest (", newQuestTemplate.QuestIDWOW, ")");
                 int minRep = int.Parse(columns["req_repmin"]);
                 newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
+                newQuestTemplate.RequiredMoneyInCopper = int.Parse(columns["req_copper"]);
                 newQuestTemplate.RequiredItem1EQID = int.Parse(columns["req_item_id1"]);
                 newQuestTemplate.RequiredItem1Count = int.Parse(columns["req_item_count1"]);
                 newQuestTemplate.RequiredItem2EQID = int.Parse(columns["req_item_id2"]);
