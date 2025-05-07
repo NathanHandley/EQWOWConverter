@@ -323,8 +323,8 @@ namespace EQWOWConverter
         // If set to true, all factions will show up for EverQuest in the faction list immediately
         public static readonly bool CREATURE_FACTION_SHOW_ALL = true;
 
-        // What to multiple the EverQuest reputation kill rewards by.  WOW is approx 20-30x that of EQ in band.
-        public static readonly int CREATURE_KILL_REWARD_REP_MULTIPLIER = 20;
+        // What to multiple the EverQuest reputation rewards by.  WOW is approx 20-30x that of EQ in band.
+        public static readonly int CREATURE_REP_REWARD_MULTIPLIER = 20;
 
         // Values for creatures without a default detection/agro range (note: This is NOT scaled by WORLD_SCALE)
         public static readonly float CREATURE_DEFAULT_DETECTION_RANGE = 20f;

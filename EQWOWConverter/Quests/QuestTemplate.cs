@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
 
 namespace EQWOWConverter.Quests
@@ -71,6 +72,7 @@ namespace EQWOWConverter.Quests
         public int AreaID = 0;
         public List<QuestReaction> Reactions = new List<QuestReaction>();
         private int NumOfObjectiveItemsAddedToText = 0;
+        public List<QuestCompletionFactionReward> questCompletionFactionRewards = new List<QuestCompletionFactionReward>();
 
         public static List<QuestTemplate> GetQuestTemplates()
         {
@@ -184,9 +186,66 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.RewardItem3EQID = int.Parse(columns["reward_item_ID3"]);
                 newQuestTemplate.RewardItem3Count = int.Parse(columns["reward_item_count3"]);
                 newQuestTemplate.RewardItem3Chance = float.Parse(columns["reward_item_chance3"]);
-                //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now
+                List<int> rewardFactionEQIDs = new List<int>();
+                List<int> rewardFactionValues = new List<int>();
+                for (int i = 1; i <= 6; i++)
+                {
+                    rewardFactionEQIDs.Add(int.Parse(columns[string.Concat("reward_faction", i, "ID")]));
+                    rewardFactionValues.Add(int.Parse(columns[string.Concat("reward_faction", i, "Amt")]));
+                }
+                newQuestTemplate.questCompletionFactionRewards = GetCompletionFactionRewards(rewardFactionEQIDs, rewardFactionValues);
+                //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now                
                 QuestTemplates.Add(newQuestTemplate);
             }
+        }
+
+        static private List<QuestCompletionFactionReward> GetCompletionFactionRewards(List<int> eqFactionIDs, List<int> factionValues)
+        {
+            // Generate the initial faction rewards based on what the quest is configured to give
+            List<QuestCompletionFactionReward> initialFactionRewards = new List<QuestCompletionFactionReward>();
+            for (int i = 0; i < eqFactionIDs.Count; i++)
+            {
+                // Stop if we hit -1s since that's a nothing, and nothing will follow
+                if (eqFactionIDs[i] == -1)
+                    break;
+
+                QuestCompletionFactionReward curQuestFactionReward = new QuestCompletionFactionReward();
+                curQuestFactionReward.EQFactionID = eqFactionIDs[i];
+                curQuestFactionReward.WOWFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(eqFactionIDs[i]);
+                curQuestFactionReward.CompletionRewardValue = factionValues[i] * Configuration.CREATURE_REP_REWARD_MULTIPLIER;
+                initialFactionRewards.Add(curQuestFactionReward);
+            }
+
+            // Collapse/condense same factions since factions are merged up in this project
+            List<QuestCompletionFactionReward> collapsedFactionRewards = new List<QuestCompletionFactionReward>();
+            foreach (QuestCompletionFactionReward initialFactionReward in initialFactionRewards)
+            {
+                bool rewardFound = false;
+                for (int i = collapsedFactionRewards.Count - 1; i >= 0; i--)
+                {
+                    // Take the highest or lowest faction reward
+                    QuestCompletionFactionReward candidateRewardStage = collapsedFactionRewards[i];
+                    if (candidateRewardStage.WOWFactionID == initialFactionReward.WOWFactionID)
+                    {
+                        if (Math.Abs(initialFactionReward.CompletionRewardValue) > Math.Abs(candidateRewardStage.CompletionRewardValue))
+                            collapsedFactionRewards.RemoveAt(i);
+                        else
+                        {
+                            rewardFound = true;
+                            continue;
+                        }
+                    }
+                }
+                if (rewardFound == false)
+                    collapsedFactionRewards.Add(initialFactionReward);
+            }
+
+            // Store and sort the list and set the sort order for rewards
+            collapsedFactionRewards.Sort();
+            for (int i = 0; i < collapsedFactionRewards.Count; i++)
+                collapsedFactionRewards[i].SortOrder = i + 1;
+
+            return collapsedFactionRewards;
         }
 
         public bool MapWOWItemIDs(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)

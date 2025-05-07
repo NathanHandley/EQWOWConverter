@@ -323,7 +323,7 @@ namespace EQWOWConverter.Creatures
                 creatureFactionKillReward.EQNPCFactionID = int.Parse(columns["npc_faction_id"]);
                 creatureFactionKillReward.EQFactionID = int.Parse(columns["faction_id"]);
                 creatureFactionKillReward.SortOrder = int.Parse(columns["sort_order"]);
-                creatureFactionKillReward.KillRewardValue = int.Parse(columns["value"]) * Configuration.CREATURE_KILL_REWARD_REP_MULTIPLIER;
+                creatureFactionKillReward.KillRewardValue = int.Parse(columns["value"]) * Configuration.CREATURE_REP_REWARD_MULTIPLIER;
 
                 // Add it
                 if (CreatureWOWFactionIDByEQFactionID.ContainsKey(creatureFactionKillReward.EQFactionID))
