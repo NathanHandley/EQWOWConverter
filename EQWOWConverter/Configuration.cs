@@ -316,8 +316,9 @@ namespace EQWOWConverter
         // The value to name the everquest parent reputation item as
         public static readonly string CREATURE_FACTION_ROOT_NAME = "EverQuest";
 
-        // The default faction value to use if none can be mapped.  Using the 'neutral' record for now.
+        // The default faction values to use if none can be mapped.  Using the 'neutral' record for now.
         public static readonly int CREATURE_FACTION_TEMPLATE_DEFAULT = 2302;
+        public static readonly int CREATURE_FACTION_DEFAULT = 1200;
 
         // If set to true, all factions will show up for EverQuest in the faction list immediately
         public static readonly bool CREATURE_FACTION_SHOW_ALL = true;

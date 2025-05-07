@@ -84,6 +84,19 @@ namespace EQWOWConverter.Creatures
             return 0;
         }
 
+        public static int GetWOWFactionIDForEQFactionID(int eqFactionID)
+        {
+            if (CreatureWOWFactionIDByEQFactionID.Count == 0)
+                PopulateFactionData();
+            if (CreatureWOWFactionIDByEQFactionID.ContainsKey(eqFactionID) == true)
+                return CreatureWOWFactionIDByEQFactionID[eqFactionID];
+            else
+            {
+                Logger.WriteDebug("Creature Faction - No wow faction ID mapped to eq faction ID '" + eqFactionID.ToString() + "' so using default");
+                return Configuration.CREATURE_FACTION_DEFAULT;
+            }
+        }
+
         public static int GetWOWFactionTemplateIDForEQFactionID(int eqFactionID)
         {
             if (CreatureWOWFactionTemplateIDByEQFactionID.Count == 0)

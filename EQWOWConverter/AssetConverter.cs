@@ -537,7 +537,7 @@ namespace EQWOWConverter
                     creatureTemplate.IsQuestGiver = true;
 
                     if (questTemplate.HasMinimumFactionRequirement == true)
-                        questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionTemplateIDForEQFactionID(creatureTemplate.EQFactionID);
+                        questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(creatureTemplate.EQFactionID);
                 }
 
                 // Add the default area id for quest sorting

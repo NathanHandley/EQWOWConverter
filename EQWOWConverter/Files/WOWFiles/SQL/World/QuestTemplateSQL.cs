@@ -37,9 +37,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("QuestSortID", questTemplate.AreaID); // > 0 then the value is the Zone ID from AreaTable.dbc
             newRow.AddInt("QuestInfoID", 0); // References QuestInfo.dbc
             newRow.AddInt("SuggestedGroupNum", 0);
-            newRow.AddInt("RequiredFactionId1", 0);
+            newRow.AddInt("RequiredFactionId1", questTemplate.QuestgiverWOWFactionID);
             newRow.AddInt("RequiredFactionId2", 0);
-            newRow.AddInt("RequiredFactionValue1", 0);
+            newRow.AddInt("RequiredFactionValue1", questTemplate.MinimumQuestgiverFactionValue);
             newRow.AddInt("RequiredFactionValue2", 0);
             newRow.AddInt("RewardNextQuest", 0);
             newRow.AddInt("RewardXPDifficulty", (questTemplate.RewardExperience > 0 && questTemplate.QuestLevel > 0) ? 3 : 0);
