@@ -877,10 +877,11 @@ namespace EQWOWConverter.Items
                 case 14: // Food => Food and Drink
                     {
                         itemTemplate.ClassID = 0;
-                        itemTemplate.SubClassID = 5;
+                        itemTemplate.SubClassID = 0; // Was 5 but was unlimited. Made 0 for consumable.
                         itemTemplate.SpellCategory1 = 11; // Food
                         itemTemplate.SpellCooldown1 = 1;
                         itemTemplate.SpellCategoryCooldown1 = 1000;
+                        itemTemplate.WOWItemMaterialType = -1;
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 70)
                             itemTemplate.SpellID1 = 45548;

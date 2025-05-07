@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Quests;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class SmartScriptsSQL : SQLFile
@@ -21,6 +23,50 @@ namespace EQWOWConverter.WOWFiles
         public override string DeleteRowSQL()
         {
             return "DELETE FROM smart_scripts WHERE COMMENT LIKE 'EQ%';";
+        }
+
+        public void AddRowForQuestComplete(int creatureTemplateID, QuestTemplate questTemplate)
+        {
+            AddRow(creatureTemplateID,
+                0); // SMART_SCRIPT_TYPE_CREATURE = 0
+
+        }
+
+        public void AddRow(int entryOrGUIDID, int sourceType)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("entryorguid", entryOrGUIDID);
+            newRow.AddInt("source_type", sourceType); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
+            newRow.AddInt("id", 0);
+            newRow.AddInt("link", 0);
+            newRow.AddInt("event_type", 70); // 70 = SMART_EVENT_GO_STATE_CHANGED
+            newRow.AddInt("event_phase_mask", 0);
+            newRow.AddInt("event_chance", 100);
+            newRow.AddInt("event_flags", 0);
+            newRow.AddInt("event_param1", 2);
+            newRow.AddInt("event_param2", 0);
+            newRow.AddInt("event_param3", 0);
+            newRow.AddInt("event_param4", 0);
+            newRow.AddInt("event_param5", 0);
+            newRow.AddInt("event_param6", 0);
+            newRow.AddInt("action_type", 9); // 9 = Activate GO, 118 = SMART_ACTION_GO_SET_GO_STATE, 93 = SMART_ACTION_SEND_GO_CUSTOM_ANIM
+            newRow.AddInt("action_param1", 0); // targetGameObjectStateOnTrigger
+            newRow.AddInt("action_param2", 0);
+            newRow.AddInt("action_param3", 0);
+            newRow.AddInt("action_param4", 0);
+            newRow.AddInt("action_param5", 0);
+            newRow.AddInt("action_param6", 0);
+            newRow.AddInt("target_type", 14); // 14 = SMART_TARGET_GAMEOBJECT_GUID
+            newRow.AddInt("target_param1", 0);
+            newRow.AddInt("target_param2", 0);
+            newRow.AddInt("target_param3", 0);
+            newRow.AddInt("target_param4", 0);
+            newRow.AddFloat("target_x", 0);
+            newRow.AddFloat("target_y", 0);
+            newRow.AddFloat("target_z", 0);
+            newRow.AddFloat("target_o", 0);
+            newRow.AddString("comment", "EQ On Gameobject State Changed - Activate GameObject");
+            Rows.Add(newRow);
         }
 
         public void AddRow(int triggerGameObjectTemplateEntryID)

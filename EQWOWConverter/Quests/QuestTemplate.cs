@@ -64,10 +64,10 @@ namespace EQWOWConverter.Quests
         public int RewardItem3Count;
         public float RewardItem3Chance;
         // TODO: Faction
-        // TODO: Attack player after turnin
         public string RequestText = string.Empty;
         public string RequestObjectiveText = string.Empty;
         public int AreaID = 0;
+        public List<QuestReaction> Reactions = new List<QuestReaction>();
         private int NumOfObjectiveItemsAddedToText = 0;
 
         public static List<QuestTemplate> GetQuestTemplates()
@@ -115,10 +115,30 @@ namespace EQWOWConverter.Quests
 
         private static void PopulateQuestTemplates()
         {
+            // Load the reactions
+            string questReactionsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "QuestReactions.csv");
+            Logger.WriteDebug(string.Concat("Loading quest reactions via file '", questReactionsFile, "'"));
+            Dictionary<int, List<QuestReaction>> reactionsByQuestID = new Dictionary<int, List<QuestReaction>>();
+            List<Dictionary<string, string>> reactionRows = FileTool.ReadAllRowsFromFileWithHeader(questReactionsFile, "|");
+            foreach (Dictionary<string, string> columns in reactionRows)
+            {
+                int questID;
+                string reactionType = string.Empty;
+                string reactionValue1 = string.Empty;
+                string reactionValue2 = string.Empty;
+                string reactionValue3 = string.Empty;
+                string reactionValue4 = string.Empty;
+                string reactionValue5 = string.Empty;
+                string reactionValue6 = string.Empty;
+                string reactionValue7 = string.Empty;
+                string reactionValue8 = string.Empty;
+            }
+
+            // Load quest templates
             string questTemplateFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "QuestTemplates.csv");
             Logger.WriteDebug(string.Concat("Populating quest templates via file '", questTemplateFile, "'"));
-            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(questTemplateFile, "|");
-            foreach (Dictionary<string, string> columns in rows)
+            List<Dictionary<string, string>> questRows = FileTool.ReadAllRowsFromFileWithHeader(questTemplateFile, "|");
+            foreach (Dictionary<string, string> columns in questRows)
             {
                 // Skip invalid expansions
                 if (int.Parse(columns["min_expansion"]) > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
@@ -127,9 +147,11 @@ namespace EQWOWConverter.Quests
                 // Load the row
                 QuestTemplate newQuestTemplate = new QuestTemplate();
                 newQuestTemplate.QuestIDWOW = int.Parse(columns["wow_questid"]);
-                newQuestTemplate.Name = columns["quest_name"];
                 newQuestTemplate.ZoneShortName = columns["zone_shortname"];
                 newQuestTemplate.QuestgiverName = columns["questgiver_name"];
+                newQuestTemplate.Name = columns["quest_name"];
+                if (newQuestTemplate.Name.Length == 0)
+                    newQuestTemplate.Name = String.Concat(newQuestTemplate.QuestgiverName, " Quest (", newQuestTemplate.QuestIDWOW, ")");
                 int minRep = int.Parse(columns["req_repmin"]);
                 newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
