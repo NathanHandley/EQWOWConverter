@@ -70,14 +70,14 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool DEPLOY_CLIENT_FILES = false;
+        public static readonly bool DEPLOY_CLIENT_FILES = true;
 
         // If true, deploy to the server files/data after building
-        public static readonly bool DEPLOY_SERVER_FILES = false;
+        public static readonly bool DEPLOY_SERVER_FILES = true;
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static readonly bool DEPLOY_SERVER_SQL = false;
+        public static readonly bool DEPLOY_SERVER_SQL = true;
 
         // If true, DBC files are extracted every time.
         public static readonly bool EXTRACT_DBC_FILES = true;
@@ -115,7 +115,7 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_TRANSPORTS = true;
 
         // If true, quests are generated
-        public static readonly bool GENERATE_QUESTS = false;
+        public static readonly bool GENERATE_QUESTS = true;
 
         // If true, tradeskills are generated
         public static readonly bool GENERATE_TRADESKILLS = false;
@@ -143,10 +143,10 @@ namespace EQWOWConverter
         //=====================================================================
         // If true, new players created will use the everquest start locations defined in PlayerClassRaceProperties
         // WARNING: This will DELETE the existing start locations in WoW zones, so be certain you want this enabled before deploying
-        public static readonly bool PLAYER_USE_EQ_START_LOCATION = false;
+        public static readonly bool PLAYER_USE_EQ_START_LOCATION = true;
 
         // If true, players will start with an EQ item loadout instead of a WOW item loadout
-        public static readonly bool PLAYER_USE_EQ_START_ITEMS = false;
+        public static readonly bool PLAYER_USE_EQ_START_ITEMS = true;
 
         // If true, this will also add a hearthstone if using EQ items
         public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = true;
@@ -371,10 +371,10 @@ namespace EQWOWConverter
 
         // These are the levels in which casters and melee can learn gate and bind. Setting to 0 or lower means
         // that can never be learned by that group.  If both melee and casters can learn bind, then a self-only
-        public static readonly int SPELLS_GATE_CASTER_LEARN_LEVEL = 4; // Set to 4 or 6 to be more like EQ
-        public static readonly int SPELLS_GATE_MELEE_LEARN_LEVEL = -1; // Set to -1 to be like EQ (melee can't learn it)
         // version of bind is learned.  If gate tether is enabled then the player can return to their gate point
         // by clicking off the buff (within 30 minutes)
+        public static readonly int SPELLS_GATE_CASTER_LEARN_LEVEL = 1; // Set to 4 or 6 to be more like EQ
+        public static readonly int SPELLS_GATE_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
         public static readonly int SPELLS_GATE_SPELL_LEARN_COST = 100;
         public static readonly int SPELLS_BIND_CASTER_LEARN_LEVEL = 1; // Set to 12 or 14 to be more like EQ
         public static readonly int SPELLS_BIND_MELEE_LEARN_LEVEL = 1; // Set to -1 to be like EQ (melee can't learn it)
@@ -396,8 +396,8 @@ namespace EQWOWConverter
         //=====================================================================
         // Transports
         //=====================================================================
-        public static readonly float TRANSPORT_PAUSE_MULTIPLIER = 1; // Pause as in 'stop at a port'. 1 will be EQ-like
-        public static readonly int TRANSPORT_MOVE_SPEED = 15; // Most boats are 30 in WoW, but a value of around 9 is EQ-like
+        public static readonly float TRANSPORT_PAUSE_MULTIPLIER = 0.5f; // Pause as in 'stop at a port'. 1 will be EQ-like
+        public static readonly int TRANSPORT_MOVE_SPEED = 30; // Most boats are 30 in WoW, but a value of around 9 is EQ-like
         public static readonly int TRANSPORT_ACCELERATION = 1;
 
         // ====================================================================
