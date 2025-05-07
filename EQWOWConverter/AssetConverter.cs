@@ -2102,6 +2102,7 @@ namespace EQWOWConverter
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+            ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
             NPCTextSQL npcTextSQL = new NPCTextSQL();
             NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();            
             NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
@@ -2450,6 +2451,13 @@ namespace EQWOWConverter
                     creatureQuestEnderSQL.AddRow(firstQuestID, creatureTemplateID);
                     creatureQuestEnderSQL.AddRow(repeatQuestID, creatureTemplateID);
                 }
+
+                // Reputation rewards
+                foreach (QuestCompletionFactionReward completionReputation in questTemplate.questCompletionFactionRewards)
+                {
+                    modEverquestQuestCompleteReputationSQL.AddRow(firstQuestID, completionReputation);
+                    modEverquestQuestCompleteReputationSQL.AddRow(repeatQuestID, completionReputation);
+                }
             }
 
             // Trainer Abilities
@@ -2559,6 +2567,7 @@ namespace EQWOWConverter
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
+            modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
             npcTextSQL.SaveToDisk("npc_text", SQLFileType.World);
             npcTrainerSQL.SaveToDisk("npc_trainer", SQLFileType.World);
             npcVendorSQL.SaveToDisk("npc_vendor", SQLFileType.World);
