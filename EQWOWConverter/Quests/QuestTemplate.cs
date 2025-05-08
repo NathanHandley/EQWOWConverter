@@ -120,7 +120,6 @@ namespace EQWOWConverter.Quests
         private static void PopulateQuestTemplates()
         {
             // Load the reactions
-            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             string questReactionsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "QuestReactions.csv");
             Logger.WriteDebug(string.Concat("Loading quest reactions via file '", questReactionsFile, "'"));
             Dictionary<int, List<QuestReaction>> reactionsByQuestID = new Dictionary<int, List<QuestReaction>>();
@@ -143,7 +142,7 @@ namespace EQWOWConverter.Quests
                             if (reactionValue1 == "self")
                                 reaction.TargetSelf = true;
                             else
-                                reaction.TargetCreatureEQID = creatureTemplatesByEQID[int.Parse(reactionValue1)].EQCreatureTemplateID;
+                                reaction.TargetCreatureEQID = int.Parse(reactionValue1);
                         } break;
                     case "emote":
                         {
@@ -158,64 +157,64 @@ namespace EQWOWConverter.Quests
                     case "spawn":
                         {
                             reaction.type = QuestReactionType.Spawn;
-                            reaction.TargetCreatureEQID = creatureTemplatesByEQID[int.Parse(reactionValue1)].EQCreatureTemplateID;
+                            reaction.TargetCreatureEQID = int.Parse(reactionValue1);
                             string reactionValue2 = columns["reaction_value2"];
                             if (reactionValue2 == "playerX")
                                 reaction.UsePlayerX = true;
                             else
-                                reaction.X = int.Parse(reactionValue2);
+                                reaction.X = ParseTool.ParseFloat(reactionValue2, 0);
                             string reactionValue3 = columns["reaction_value3"];
                             if (reactionValue3 == "playerY")
                                 reaction.UsePlayerY = true;
                             else
-                                reaction.Y = int.Parse(reactionValue3);
+                                reaction.Y = ParseTool.ParseFloat(reactionValue3, 0);
                             string reactionValue4 = columns["reaction_value4"];
                             if (reactionValue4 == "playerZ")
                                 reaction.UsePlayerZ = true;
                             else
-                                reaction.Z = int.Parse(reactionValue4);
+                                reaction.Z = ParseTool.ParseFloat(reactionValue4, 0);
                             string reactionValue5 = columns["reaction_value5"];
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.Heading = int.Parse(reactionValue5); // TODO: Convert this
+                                reaction.Heading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
                             string reactionValue6 = columns["reaction_value6"];
                             if (reactionValue6.Length > 0)
-                                reaction.AddedX = int.Parse(reactionValue6);
+                                reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
                             string reactionValue7 = columns["reaction_value7"];
                             if (reactionValue7.Length > 0)
-                                reaction.AddedY = int.Parse(reactionValue7);
+                                reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
                         } break;
                     case "spawnunique":
                         {
                             reaction.type = QuestReactionType.SpawnUnique;
-                            reaction.TargetCreatureEQID = creatureTemplatesByEQID[int.Parse(reactionValue1)].EQCreatureTemplateID;
+                            reaction.TargetCreatureEQID = int.Parse(reactionValue1);
                             string reactionValue2 = columns["reaction_value2"];
                             if (reactionValue2 == "playerX")
                                 reaction.UsePlayerX = true;
                             else
-                                reaction.X = int.Parse(reactionValue2);
+                                reaction.X = ParseTool.ParseFloat(reactionValue2, 0);
                             string reactionValue3 = columns["reaction_value3"];
                             if (reactionValue3 == "playerY")
                                 reaction.UsePlayerY = true;
                             else
-                                reaction.Y = int.Parse(reactionValue3);
+                                reaction.Y = ParseTool.ParseFloat(reactionValue3, 0);
                             string reactionValue4 = columns["reaction_value4"];
                             if (reactionValue4 == "playerZ")
                                 reaction.UsePlayerZ = true;
                             else
-                                reaction.Z = int.Parse(reactionValue4);
+                                reaction.Z = ParseTool.ParseFloat(reactionValue4, 0);
                             string reactionValue5 = columns["reaction_value5"];
                             if (reactionValue5 == "playerHeading")
                                 reaction.UsePlayerHeading = true;
                             else
-                                reaction.Heading = int.Parse(reactionValue5); // TODO: Convert this
+                                reaction.Heading = ParseTool.ParseFloat(reactionValue5, 0); // TODO: Convert this
                             string reactionValue6 = columns["reaction_value6"];
                             if (reactionValue6.Length > 0)
-                                reaction.AddedX = int.Parse(reactionValue6);
+                                reaction.AddedX = ParseTool.ParseFloat(reactionValue6, 0);
                             string reactionValue7 = columns["reaction_value7"];
                             if (reactionValue7.Length > 0)
-                                reaction.AddedY = int.Parse(reactionValue7);
+                                reaction.AddedY = ParseTool.ParseFloat(reactionValue7, 0);
                         }
                         break;
                     case "yell":
