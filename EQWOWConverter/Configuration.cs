@@ -102,6 +102,7 @@ namespace EQWOWConverter
         public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2;
         public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 0;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 0;
 
         // If true, then objects are generated
         public static readonly bool GENERATE_OBJECTS = true;
