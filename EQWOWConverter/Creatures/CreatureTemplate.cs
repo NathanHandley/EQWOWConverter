@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Quests;
 
 namespace EQWOWConverter.Creatures
 {
@@ -62,6 +63,7 @@ namespace EQWOWConverter.Creatures
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool LimitOneInSpawnPool = false;
+        public List<QuestReaction> QuestReactions = new List<QuestReaction>();
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -72,7 +74,7 @@ namespace EQWOWConverter.Creatures
             return CreatureTemplateListByEQID;
         }
 
-        public static List<CreatureTemplate> GetCreatureTemplateForSpawnZonesAndName(string spawnZones, string namePreFormat)
+        public static List<CreatureTemplate> GetCreatureTemplatesForSpawnZonesAndName(string spawnZones, string namePreFormat)
         {
             if (CreatureTemplatesBySpawnZonesAndName.Count == 0)
                 PopulateCreatureTemplateList();

@@ -519,9 +519,9 @@ namespace EQWOWConverter
                     continue;
                 }
 
-                // Pull up the related creature(s) and mark them as quest givers
+                // Pull up the related creature(s) that are quest givers and mark them as quest givers
                 // NOTE: Always do this last (before the add(questTemplate)
-                List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplateForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
+                List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplatesForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
                 if (questgiverCreatureTemplates.Count == 0)
                 {
                     Logger.WriteDebug(string.Concat("Could not map quest to creature template with zone '", questTemplate.ZoneShortName, "' and name '", questTemplate.QuestgiverName, "'"));
@@ -538,6 +538,14 @@ namespace EQWOWConverter
 
                 // Add the default area id for quest sorting
                 questTemplate.AreaID = Convert.ToInt32(zonePropertiesByShortName[questTemplate.ZoneShortName.ToLower()].DefaultZoneArea.DBCAreaTableID);
+
+                // If there are any reactions, attach them to the appropriate creature templates
+                if (questTemplate.Reactions.Count > 0)
+                {
+                
+
+
+                }
 
                 questTemplates.Add(questTemplate);
             }

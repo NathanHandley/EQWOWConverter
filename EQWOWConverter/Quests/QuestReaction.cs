@@ -30,6 +30,7 @@ namespace EQWOWConverter.Quests
         public float Heading;
         public float AddedX;
         public float AddedY;
-        public int DespawnCreatureIDEQ;
+        public bool TargetSelf = false;
+        public int TargetCreatureEQID = 0;
     }
 }
