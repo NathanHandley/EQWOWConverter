@@ -503,6 +503,7 @@ namespace EQWOWConverter
 
             // Work through each of the quest templates
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
             {
                 // Skip any quests that are in zones we're not processing
@@ -529,6 +530,8 @@ namespace EQWOWConverter
                 }
                 foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
                 {
+                    if (questTemplate.QuestgiverWOWCreatureTemplateIDs.Contains(creatureTemplate.WOWCreatureTemplateID) == true)
+                        continue;
                     questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
                     creatureTemplate.IsQuestGiver = true;
 
@@ -539,13 +542,12 @@ namespace EQWOWConverter
                 // Add the default area id for quest sorting
                 questTemplate.AreaID = Convert.ToInt32(zonePropertiesByShortName[questTemplate.ZoneShortName.ToLower()].DefaultZoneArea.DBCAreaTableID);
 
-                // If there are any reactions, attach them to the appropriate creature templates
+                // If there are any reactions related to talking, mark the template as using smart scripts
                 if (questTemplate.Reactions.Count > 0)
-                {
-                
-
-
-                }
+                    foreach (QuestReaction reaction in questTemplate.Reactions)
+                        if (reaction.type == QuestReactionType.Emote || reaction.type == QuestReactionType.Say || reaction.type == QuestReactionType.Yell)
+                            foreach (CreatureTemplate creatureTemplate in questgiverCreatureTemplates)
+                                creatureTemplate.HasSmartScript = true;
 
                 questTemplates.Add(questTemplate);
             }
@@ -2098,6 +2100,7 @@ namespace EQWOWConverter
             CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
             CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
             CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+            CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
             GameEventSQL gameEventSQL = new GameEventSQL();
             GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
@@ -2120,7 +2123,7 @@ namespace EQWOWConverter
             PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
             QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
             QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
-            //SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+            SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -2440,6 +2443,8 @@ namespace EQWOWConverter
             }
 
             // Quests
+
+            Dictionary<int, int> creatureTextGroupIDsByCreatureTemplateID = new Dictionary<int, int>();
             foreach(QuestTemplate questTemplate in questTemplates)
             {
                 string firstQuestName = questTemplate.Name;
@@ -2452,12 +2457,50 @@ namespace EQWOWConverter
                 questTemplateAddonSQL.AddRow(questTemplate, firstQuestID, 0, false);
                 questTemplateAddonSQL.AddRow(questTemplate, repeatQuestID, firstQuestID, true);
 
+                // Quest NPCs
+                Dictionary<int, CreatureTemplate> creatureTemplateByWOWID = CreatureTemplate.GetCreatureTemplateListByWOWID();
                 foreach (int creatureTemplateID in questTemplate.QuestgiverWOWCreatureTemplateIDs)
                 {
                     creatureQuestStarterSQL.AddRow(firstQuestID, creatureTemplateID);
                     creatureQuestStarterSQL.AddRow(repeatQuestID, creatureTemplateID);
                     creatureQuestEnderSQL.AddRow(firstQuestID, creatureTemplateID);
                     creatureQuestEnderSQL.AddRow(repeatQuestID, creatureTemplateID);
+
+                    // Reward say/yell/emote actions
+                    foreach (QuestReaction reaction in questTemplate.Reactions)
+                    {
+                        if (reaction.type == QuestReactionType.Emote || reaction.type == QuestReactionType.Say || reaction.type == QuestReactionType.Yell)
+                        {
+                            // Broadcast Text
+                            int broadcastID = BroadcastTextSQL.GenerateUniqueID();
+                            broadcastTextSQL.AddRow(broadcastID, reaction.ReactionValue, reaction.ReactionValue);
+
+                            // Creature Text
+                            int creatureTextGroupID = 0;
+                            if (creatureTextGroupIDsByCreatureTemplateID.ContainsKey(creatureTemplateID) == true)
+                            {
+                                creatureTextGroupIDsByCreatureTemplateID[creatureTemplateID]+=2;
+                                creatureTextGroupID = creatureTextGroupIDsByCreatureTemplateID[creatureTemplateID];
+                            }
+                            else
+                                creatureTextGroupIDsByCreatureTemplateID.Add(creatureTemplateID, 0);
+                            string comment = string.Concat("EQ ", creatureTemplateByWOWID[creatureTemplateID].Name, " Quest ", reaction.type.ToString());
+                            int messageType = 12; // Default to say
+                            switch (reaction.type)
+                            {
+                                case QuestReactionType.Say: messageType = 12; break;
+                                case QuestReactionType.Emote: messageType = 16; break;
+                                case QuestReactionType.Yell: messageType = 14; break;
+                                default: Logger.WriteError("Unhandled quest reaction type of " + reaction.type); break;
+                            }
+                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
+                            creatureTextSQL.AddRow(creatureTemplateID, creatureTextGroupID + 1, messageType, reaction.ReactionValue, broadcastID, Configuration.QUESTS_TEXT_DURATION_IN_MS, comment);
+
+                            // Smart Script
+                            smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID, firstQuestID, comment);
+                            smartScriptsSQL.AddRowForQuestCompleteTalkEvent(creatureTemplateID, creatureTextGroupID + 1, repeatQuestID, comment);
+                        }
+                    }
                 }
 
                 // Reputation rewards
@@ -2563,6 +2606,7 @@ namespace EQWOWConverter
             creatureModelInfoSQL.SaveToDisk("creature_model_info", SQLFileType.World);
             creatureTemplateSQL.SaveToDisk("creature_template", SQLFileType.World);
             creatureTemplateModelSQL.SaveToDisk("creature_template_model", SQLFileType.World);
+            creatureTextSQL.SaveToDisk("creature_text", SQLFileType.World);
             gameEventSQL.SaveToDisk("game_event", SQLFileType.World);
             gameGraveyardSQL.SaveToDisk("game_graveyard", SQLFileType.World);
             gameObjectSQL.SaveToDisk("gameobject", SQLFileType.World);
@@ -2584,7 +2628,7 @@ namespace EQWOWConverter
             poolCreatureSQL.SaveToDisk("pool_creature", SQLFileType.World);
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
-            //smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
+            smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
             if (Configuration.GENERATE_QUESTS == true)

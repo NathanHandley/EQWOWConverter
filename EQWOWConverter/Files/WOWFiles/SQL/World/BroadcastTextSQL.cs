@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(int id, string maleText, string femaleText)
         {
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("ID", 0);
+            newRow.AddInt("ID", id);
 	        newRow.AddInt("LanguageID", 0);
 	        newRow.AddString("MaleText", maleText);
 	        newRow.AddString("FemaleText", femaleText);
@@ -40,7 +40,7 @@ namespace EQWOWConverter.WOWFiles
 	        newRow.AddInt("EmoteDelay3", 0);
 	        newRow.AddInt("SoundEntriesId", 0);
 	        newRow.AddInt("EmotesID", 0);
-	        newRow.AddInt("Flags", 0);
+	        newRow.AddInt("Flags", 1);
 	        newRow.AddInt("VerifiedBuild", 18019);
             Rows.Add(newRow);
         }

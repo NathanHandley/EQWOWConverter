@@ -363,6 +363,12 @@ namespace EQWOWConverter
         public static readonly int ITEMS_BAG_SLOT_MULTIPLIER = 2;
 
         //=====================================================================
+        // Quests
+        //=====================================================================
+        // How many milliseconds to display a text block from an NPC on quest events
+        public static readonly int QUESTS_TEXT_DURATION_IN_MS = 10000;
+
+        //=====================================================================
         // Spells
         //=====================================================================
         // IDs for special spells that need an exact match of ID between this and mod-everquest

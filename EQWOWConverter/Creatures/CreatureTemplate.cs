@@ -22,6 +22,7 @@ namespace EQWOWConverter.Creatures
     internal class CreatureTemplate
     {
         private static Dictionary<int, CreatureTemplate> CreatureTemplateListByEQID = new Dictionary<int, CreatureTemplate>();
+        private static Dictionary<int, CreatureTemplate> CreatureTemplateListByWOWID = new Dictionary<int, CreatureTemplate>();
         private static SortedDictionary<int, Dictionary<string, float>> StatBaselinesByLevels = new SortedDictionary<int, Dictionary<string, float>>();
         private static Dictionary<(string, string), List<CreatureTemplate>> CreatureTemplatesBySpawnZonesAndName = new Dictionary<(string, string), List<CreatureTemplate>>();
 
@@ -63,7 +64,7 @@ namespace EQWOWConverter.Creatures
         public string SpawnZones = string.Empty;
         public bool IsQuestGiver = false;
         public bool LimitOneInSpawnPool = false;
-        public List<QuestReaction> QuestReactions = new List<QuestReaction>();
+        public bool HasSmartScript = false;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -72,6 +73,13 @@ namespace EQWOWConverter.Creatures
             if (CreatureTemplateListByEQID.Count == 0)
                 PopulateCreatureTemplateList();
             return CreatureTemplateListByEQID;
+        }
+
+        public static Dictionary<int, CreatureTemplate> GetCreatureTemplateListByWOWID()
+        {
+            if (CreatureTemplateListByWOWID.Count == 0)
+                PopulateCreatureTemplateList();
+            return CreatureTemplateListByWOWID;
         }
 
         public static List<CreatureTemplate> GetCreatureTemplatesForSpawnZonesAndName(string spawnZones, string namePreFormat)
@@ -223,6 +231,7 @@ namespace EQWOWConverter.Creatures
                     continue;
                 }
                 CreatureTemplateListByEQID.Add(newCreatureTemplate.EQCreatureTemplateID, newCreatureTemplate);
+                CreatureTemplateListByWOWID.Add(newCreatureTemplate.WOWCreatureTemplateID, newCreatureTemplate);
 
                 if (CreatureTemplatesBySpawnZonesAndName.ContainsKey((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)) == false)
                     CreatureTemplatesBySpawnZonesAndName.Add((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat), new List<CreatureTemplate>());

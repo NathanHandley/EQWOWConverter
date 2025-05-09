@@ -117,7 +117,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("VehicleId", 0);
             newRow.AddInt("mingold", creatureTemplate.MoneyMinInCopper); // "mingold" in the DB, but value is actually copper
             newRow.AddInt("maxgold", creatureTemplate.MoneyMaxInCopper); // "maxgold" in the DB, but value is actually copper
-            newRow.AddString("AIName", 64, string.Empty);
+            if (creatureTemplate.HasSmartScript == true)
+                newRow.AddString("AIName", 64, "SmartAI");
+            else
+                newRow.AddString("AIName", 64, string.Empty);
             newRow.AddInt("MovementType", 0); // 0 = Stay in Place, 1 = Random Move within wander_distance, 2 = Waypoint Movement
             newRow.AddFloat("HoverHeight", 1);
             newRow.AddFloat("HealthModifier", creatureTemplate.HPMod);
