@@ -43,7 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("zoneId", areaID);
             newRow.AddInt("areaId", areaID);
             newRow.AddInt("spawnMask", 1);
-            newRow.AddInt("phaseMask", 1);
+            newRow.AddInt("phaseMask", 6); // Day (2) + Night (4)
             newRow.AddFloat("position_x", position.X);
             newRow.AddFloat("position_y", position.Y);
             newRow.AddFloat("position_z", position.Z);
@@ -52,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("rotation1", 0);
             newRow.AddFloat("rotation2", 0);
             newRow.AddFloat("rotation3", 0);
-            newRow.AddInt("spawntimesecs", 900);
+            newRow.AddInt("spawntimesecs", 0);
             newRow.AddInt("animprogress", 0);
             newRow.AddInt("state", 1);
             newRow.AddString("ScriptName", 64, string.Empty);
