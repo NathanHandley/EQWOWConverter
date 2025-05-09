@@ -524,7 +524,7 @@ namespace EQWOWConverter
                 if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
                 {
                     string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
-                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances);
+                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, questTemplate.RewardItemCounts);
                     questTemplate.RewardItemWOWIDs.Clear();
                     questTemplate.RewardItemEQIDs.Clear();
                     questTemplate.RewardItemCounts.Clear();

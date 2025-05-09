@@ -1321,12 +1321,13 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static ItemTemplate? CreateRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances)
+        public static ItemTemplate? CreateRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, List<int> itemCounts)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
             ItemTemplate itemTemplate = new ItemTemplate();
 
             // Fill the contained items
+            float totalChance = 0;
             for (int i = 0; i < eqItemIDsInsideContainer.Count; i++)
             {
                 int eqItemID = eqItemIDsInsideContainer[i];
@@ -1340,8 +1341,22 @@ namespace EQWOWConverter.Items
                     Logger.WriteError(string.Concat("Item with eqid '", eqItemID, "' had a zero or less chance"));
                     return null;
                 }
+
+                // Break up the counts if there is more than one
+                float itemChance = itemChances[i];
+                if (itemCounts[i] > 1)
+                    itemChance *= Convert.ToSingle(itemCounts[i]);
+                itemChance = float.Round(itemChance, 1);
                 itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
-                itemTemplate.ContainedItemChances.Add(itemChances[i]);
+                itemTemplate.ContainedItemChances.Add(itemChance);
+                totalChance += itemChance;
+            }
+
+            // Make sure the total chance equals as close to 100 as possible
+            if (itemTemplate.ContainedItemChances.Count > 0)
+            {
+                float addChance = 100 - totalChance;
+                itemTemplate.ContainedItemChances[itemTemplate.ContainedItemChances.Count - 1] += addChance;
             }
 
             // Calculate the icon name
