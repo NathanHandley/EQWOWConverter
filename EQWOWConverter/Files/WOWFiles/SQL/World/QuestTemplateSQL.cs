@@ -16,7 +16,7 @@
 
 using EQWOWConverter.Quests;
 
-// $B - line break, $N - name, $R - race, $C - class, $Gmale:female;
+// $B - line break, $N - name, $R - race, $C - class, $Gmale:female;, %s = self
 
 namespace EQWOWConverter.WOWFiles
 {
