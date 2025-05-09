@@ -46,6 +46,43 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue3 = wmoGroupID;
 
             Rows.Add(newRow);
-        }      
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("WMOAreaTableDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddPackedFlagsFromSourceRawBytes(ref byteCursor);
+                row.AddIntFromSourceRawBytes(ref byteCursor);
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock);
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value;
+                row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[2]).Value;
+                row.SortValue3 = ((DBCRow.DBCFieldInt32)row.AddedFields[3]).Value;
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace EQWOWConverter.WOWFiles
             return generatedID;
         }
 
-        public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ, 
+        public void AddRow(int areaTriggerID, int mapID, float positionX, float positionY, float positionZ,
             float boxLength, float boxWidth, float boxHeight, float boxOrientation)
         {
             DBCRow newRow = new DBCRow();
@@ -51,6 +51,40 @@ namespace EQWOWConverter.WOWFiles
             newRow.SortValue2 = areaTriggerID;
 
             Rows.Add(newRow);
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("AreaTriggerDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // AreaTriggerID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MapID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // PositionX
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // PositionY
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // PositionZ
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // Radius
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // BoxLength
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // BoxWidth
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // BoxHeight
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // BoxYaw
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[1]).Value; // MapID
+                row.SortValue2 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // AreaTriggerID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
         }
     }
 }

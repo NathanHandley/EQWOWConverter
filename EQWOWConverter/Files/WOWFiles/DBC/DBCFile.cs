@@ -77,11 +77,6 @@ namespace EQWOWConverter.WOWFiles
                 AddedFields.Add(new DBCFieldInt32(value));
             }
 
-            public void AddPackedFlags(Int32 value)
-            {
-                AddedFields.Add(new DBCFieldInt32(value));
-            }
-
             public void AddIntFromSourceRawBytes(ref int offsetCursor)
             {
                 if (offsetCursor >= SourceRawBytes.Count)
@@ -92,6 +87,30 @@ namespace EQWOWConverter.WOWFiles
                 if (offsetCursor + 4 > SourceRawBytes.Count + 1)
                 {
                     Logger.WriteError("DBCRow AddIntFromSourceRawBytes failure, as offsetCursor is trying to pull data that will fall outside the stream");
+                    return;
+                }
+
+                // Add it
+                byte[] intBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
+                AddedFields.Add(new DBCFieldInt32(BitConverter.ToInt32(intBytes, 0)));
+                offsetCursor += 4;
+            }
+
+            public void AddPackedFlags(Int32 value)
+            {
+                AddedFields.Add(new DBCFieldInt32(value));
+            }
+
+            public void AddPackedFlagsFromSourceRawBytes(ref int offsetCursor)
+            {
+                if (offsetCursor >= SourceRawBytes.Count)
+                {
+                    Logger.WriteError("DBCRow AddPackedFlagsFromSourceRawBytes failure, offsetCursor was beyond the raw data stream");
+                    return;
+                }
+                if (offsetCursor + 4 > SourceRawBytes.Count + 1)
+                {
+                    Logger.WriteError("DBCRow AddPackedFlagsFromSourceRawBytes failure, as offsetCursor is trying to pull data that will fall outside the stream");
                     return;
                 }
 
@@ -184,6 +203,30 @@ namespace EQWOWConverter.WOWFiles
             public void AddString(string value)
             {
                 AddedFields.Add(new DBCFieldString(value));
+            }
+
+            public void AddStringFromSourceRawBytes(ref int offsetCursor, List<char> stringBlock)
+            {
+                if (offsetCursor >= SourceRawBytes.Count)
+                {
+                    Logger.WriteError("DBCRow AddStringFromSourceRawBytes failure, offsetCursor was beyond the raw data stream");
+                    return;
+                }
+
+                // Load in the string offset
+                byte[] intBytes = SourceRawBytes.Skip(offsetCursor).Take(4).ToArray();
+                int stringOffset = BitConverter.ToInt32(intBytes);
+                offsetCursor += 4;
+
+                // Get the string value
+                string curStringValue = string.Empty;
+                for (int i = stringOffset; i < stringBlock.Count; i++)
+                {
+                    if (stringBlock[i] == '\0')
+                        break;
+                    curStringValue += stringBlock[i];
+                }
+                AddedFields.Add(new DBCFieldString(curStringValue));
             }
 
             public class DBCFieldStringLang : DBCField

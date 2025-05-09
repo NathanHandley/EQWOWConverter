@@ -45,5 +45,46 @@ namespace EQWOWConverter.WOWFiles
 
             Rows.Add(newRow);
         }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("MapDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // MapID / Primary Key
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Directory
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Instance Type
+                row.AddPackedFlagsFromSourceRawBytes(ref byteCursor); // Flags
+                row.AddPackedFlagsFromSourceRawBytes(ref byteCursor); // PVP
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // MapName
+                row.AddIntFromSourceRawBytes(ref byteCursor); // AreaTableID
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Alliance Map Description
+                row.AddStringLangFromSourceRawBytes(ref byteCursor, StringBlock); // Horde Map Description
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Loading screen ID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // Minimap Icon Scaling
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Corpse Map ID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // Corpse X
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // Corpse Y
+                row.AddIntFromSourceRawBytes(ref byteCursor); // TimeOfDayOverride
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Expansion ID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // RaidOffset
+                row.AddIntFromSourceRawBytes(ref byteCursor); // Max Players
+
+                // Attach the sort rows
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // MapID
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+            }
+        }
     }
 }
