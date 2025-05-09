@@ -23,12 +23,15 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
+        private static int CUR_ITEM_CONTAINER_WOWID = Configuration.SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID;
+        private static int CUR_ITEM_CONTAINER_EQID = 50000;
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
         public int ClassID = 0;
         public int SubClassID = 0;
         public string Name = string.Empty;
+        public string Description = string.Empty;
         public ItemWOWQuality Quality = ItemWOWQuality.Poor;
         public int SheatheType = 0;
         public int WOWItemMaterialType = 0;
@@ -63,6 +66,9 @@ namespace EQWOWConverter.Items
         public int SpellCategoryCooldown1 = -1;
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
+        public List<int> ContainedWOWItemTemplateIDs = new List<int>();
+        public List<float> ContainedItemChances = new List<float>();
+        public bool CanBeOpened = false;
 
         public ItemTemplate()
         {
@@ -1313,6 +1319,54 @@ namespace EQWOWConverter.Items
                 for (int i = 1; i < rowBlocks.Count(); i++)
                     StatBaselinesBySlotAndStat[slot].Add(stats[i - 1], float.Parse(rowBlocks[i]));
             }
+        }
+
+        public static ItemTemplate? CreateRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances)
+        {
+            SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
+            ItemTemplate itemTemplate = new ItemTemplate();
+
+            // Fill the contained items
+            for (int i = 0; i < eqItemIDsInsideContainer.Count; i++)
+            {
+                int eqItemID = eqItemIDsInsideContainer[i];
+                if (itemTemplatesByEQDBIDs.ContainsKey(eqItemID) == false)
+                {
+                    Logger.WriteError(string.Concat("Could not find item with eqid '", eqItemID, "' to be put into item container"));
+                    return null;
+                }
+                if (itemChances[i] <= 0)
+                {
+                    Logger.WriteError(string.Concat("Item with eqid '", eqItemID, "' had a zero or less chance"));
+                    return null;
+                }
+                itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
+                itemTemplate.ContainedItemChances.Add(itemChances[i]);
+            }
+
+            // Calculate the icon name
+            string iconName = string.Concat("INV_EQ_", Configuration.QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
+
+            // Complete the object
+            itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
+            itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
+            itemTemplate.ClassID = 15; // Misc
+            itemTemplate.SubClassID = 0; // Bag
+            itemTemplate.Name = name;
+            itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), iconName, ItemWOWInventoryType.Bag, 0, 0);
+            itemTemplate.Quality = ItemWOWQuality.Common;
+            itemTemplate.BuyPriceInCopper = 0;
+            itemTemplate.SellPriceInCopper = 0;
+            itemTemplate.CanBeOpened = true;
+            itemTemplate.Description = "Contains one of a number of items...";
+
+            // Save it
+            ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
+            ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
+
+            CUR_ITEM_CONTAINER_WOWID++;
+            CUR_ITEM_CONTAINER_EQID++;
+            return itemTemplate;
         }
     }
 }

@@ -38,7 +38,7 @@ namespace EQWOWConverter.WOWFiles
             else
                 newRow.AddInt("displayid", 0);
             newRow.AddInt("Quality", Convert.ToInt32(itemTemplate.Quality));
-            newRow.AddInt("Flags", itemTemplate.DoesVanishOnLogout == true ? 2 : 0);
+            newRow.AddInt("Flags", GetFlags(itemTemplate));
             newRow.AddInt("FlagsExtra", 0);
             newRow.AddInt("BuyCount", itemTemplate.BuyCount);
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
@@ -135,7 +135,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spellcategory_5", 0);
             newRow.AddInt("spellcategorycooldown_5", -1);
             newRow.AddInt("bonding", itemTemplate.IsNoDrop == true ? 1 : 0);
-            newRow.AddString("description", 255, string.Empty);
+            newRow.AddString("description", 255, itemTemplate.Description);
             newRow.AddInt("PageText", 0);
             newRow.AddInt("LanguageID", 0);
             newRow.AddInt("PageMaterial", 0);
@@ -187,6 +187,16 @@ namespace EQWOWConverter.WOWFiles
             if (allowableClass == 0)
                 allowableClass = -1;
             return allowableClass;
+        }
+
+        private int GetFlags(ItemTemplate itemTemplate)
+        {
+            int flags = 0;
+            if (itemTemplate.DoesVanishOnLogout == true)
+                flags += 2;
+            if (itemTemplate.CanBeOpened == true)
+                flags += 4;
+            return flags;
         }
     }
 }

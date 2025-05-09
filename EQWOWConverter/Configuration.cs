@@ -368,6 +368,10 @@ namespace EQWOWConverter
         // How many milliseconds to display a text block from an NPC on quest events
         public static readonly int QUESTS_TEXT_DURATION_IN_MS = 10000;
 
+        // This is the icon ID that is used for quest rewards that contain more than one random item
+        // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
+        public static readonly int QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID = 57;
+
         //=====================================================================
         // Spells
         //=====================================================================
@@ -549,6 +553,7 @@ namespace EQWOWConverter
         // Start and end IDs for template entries
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
+        public static readonly int SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID = 116000;
 
         // Stand and end IDs for npc_text sql records
         public static readonly int SQL_NPCTEXT_ID_START = 80000;

@@ -520,6 +520,24 @@ namespace EQWOWConverter
                     continue;
                 }
 
+                // If there is a random award, handle it
+                if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
+                {
+                    string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
+                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances);
+                    questTemplate.RewardItemWOWIDs.Clear();
+                    questTemplate.RewardItemEQIDs.Clear();
+                    questTemplate.RewardItemCounts.Clear();
+                    questTemplate.RewardItemChances.Clear();
+                    if (questTemplate.RandomAwardContainerItemTemplate != null)
+                    {
+                        questTemplate.RewardItemWOWIDs.Add(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID);
+                        questTemplate.RewardItemEQIDs.Add(questTemplate.RandomAwardContainerItemTemplate.EQItemID);
+                        questTemplate.RewardItemCounts.Add(1);
+                        questTemplate.RewardItemChances.Add(100);
+                    }
+                }
+
                 // Pull up the related creature(s) that are quest givers and mark them as quest givers
                 // NOTE: Always do this last (before the add(questTemplate)
                 List<CreatureTemplate> questgiverCreatureTemplates = CreatureTemplate.GetCreatureTemplatesForSpawnZonesAndName(questTemplate.ZoneShortName, questTemplate.QuestgiverName);
@@ -2111,6 +2129,7 @@ namespace EQWOWConverter
             GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
             GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
             InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
+            ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
             ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
             ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
             ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
@@ -2443,9 +2462,9 @@ namespace EQWOWConverter
             }
 
             // Quests
-
             Dictionary<int, int> creatureTextGroupIDsByCreatureTemplateID = new Dictionary<int, int>();
-            foreach(QuestTemplate questTemplate in questTemplates)
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            foreach (QuestTemplate questTemplate in questTemplates)
             {
                 string firstQuestName = questTemplate.Name;
                 int firstQuestID = questTemplate.QuestIDWOW;
@@ -2508,6 +2527,18 @@ namespace EQWOWConverter
                 {
                     modEverquestQuestCompleteReputationSQL.AddRow(firstQuestID, completionReputation);
                     modEverquestQuestCompleteReputationSQL.AddRow(repeatQuestID, completionReputation);
+                }
+
+                // Loot templates for containers
+                if (questTemplate.RandomAwardContainerItemTemplate != null)
+                {
+                    for (int i = 0; i < questTemplate.RandomAwardContainerItemTemplate.ContainedWOWItemTemplateIDs.Count; i++)
+                    {
+                        int curWOWItemTemplateID = questTemplate.RandomAwardContainerItemTemplate.ContainedWOWItemTemplateIDs[i];
+                        float curItemChance = questTemplate.RandomAwardContainerItemTemplate.ContainedItemChances[i];
+                        string comment = string.Concat(questTemplate.RandomAwardContainerItemTemplate.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
+                        itemLootTemplateSQL.AddRow(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID, curWOWItemTemplateID, curItemChance, comment);
+                    }
                 }
             }
 
@@ -2617,6 +2648,7 @@ namespace EQWOWConverter
             gossipMenuOptionSQL.SaveToDisk("gossip_menu_option", SQLFileType.World);
             graveyardZoneSQL.SaveToDisk("graveyard_zone", SQLFileType.World);
             instanceTemplateSQL.SaveToDisk("instance_template", SQLFileType.World);
+            itemLootTemplateSQL.SaveToDisk("item_loot_template", SQLFileType.World);
             itemTemplateSQL.SaveToDisk("item_template", SQLFileType.World);
             modEverquestCreatureOnkillReputationSQL.SaveToDisk("mod_everquest_creature_onkill_reputation", SQLFileType.World);
             modEverquestQuestCompleteReputationSQL.SaveToDisk("mod_everquest_quest_complete_reputation", SQLFileType.World);
