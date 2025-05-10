@@ -186,6 +186,9 @@ namespace EQWOWConverter
             else
                 Logger.WriteInfo("- Note: Quest generation is set to false in the Configuration");
 
+            // If there are any neutral creatures that should be interactive, remap
+            RemapDefaultFactionsForInteractiveCreatures(ref creatureTemplates);
+
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
@@ -571,6 +574,21 @@ namespace EQWOWConverter
             }
 
             Logger.WriteDebug("Converting quests done");
+        }
+
+        public void RemapDefaultFactionsForInteractiveCreatures(ref List<CreatureTemplate> creatureTemplates)
+        {
+            Logger.WriteDebug("Remapping interactive neutral creature templates's faction template started");
+            foreach(CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                if (creatureTemplate.WOWFactionTemplateID != Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL)
+                    continue;
+                if (creatureTemplate.IsBanker || creatureTemplate.IsQuestGiver || creatureTemplate.MerchantID != 0 || creatureTemplate.ClassTrainerType != ClassType.None)
+                {
+                    creatureTemplate.WOWFactionTemplateID = Configuration.CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE;
+                }
+            }
+            Logger.WriteDebug("Remapping interactive neutral creature templates's faction template done");
         }
 
         public bool ConvertEQZonesToWOW(out List<Zone> zones)

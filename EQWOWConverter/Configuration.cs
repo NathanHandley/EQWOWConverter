@@ -322,6 +322,10 @@ namespace EQWOWConverter
         public static readonly int CREATURE_FACTION_TEMPLATE_DEFAULT = 2302;
         public static readonly int CREATURE_FACTION_DEFAULT = 1200;
 
+        // For any quest or merchant NPCs that aren't aligned to a raisable or lowerable faction, they will be mapped to this.  Default is Norrath Settlers.
+        public static readonly int CREATURE_FACTION_TEMPLATE_NEUTRAL = 2302;
+        public static readonly int CREATURE_FACTION_TEMPLATE_NEUTRAL_INTERACTIVE = 2313;
+
         // If set to true, all factions will show up for EverQuest in the faction list immediately
         public static readonly bool CREATURE_FACTION_SHOW_ALL = true;
 
