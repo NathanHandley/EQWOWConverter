@@ -66,6 +66,7 @@ namespace EQWOWConverter.Quests
         private int NumOfObjectiveItemsAddedToText = 0;
         public List<QuestCompletionFactionReward> questCompletionFactionRewards = new List<QuestCompletionFactionReward>();
         public ItemTemplate? RandomAwardContainerItemTemplate = null;
+        public bool HasInvalidItems = false;
 
         public static List<QuestTemplate> GetQuestTemplates()
         {
@@ -367,6 +368,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem1EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem1EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem1WOWID = itemTemplatesByEQDBID[RequiredItem1EQID].WOWEntryID;
@@ -377,6 +379,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem2EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem2EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem2WOWID = itemTemplatesByEQDBID[RequiredItem2EQID].WOWEntryID;
@@ -387,6 +390,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem3EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem3EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem3WOWID = itemTemplatesByEQDBID[RequiredItem3EQID].WOWEntryID;
@@ -397,6 +401,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem4EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem4EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem4WOWID = itemTemplatesByEQDBID[RequiredItem4EQID].WOWEntryID;
@@ -407,6 +412,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem5EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem5EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem5WOWID = itemTemplatesByEQDBID[RequiredItem5EQID].WOWEntryID;
@@ -417,6 +423,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RequiredItem6EQID) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RequiredItem6EQID, "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RequiredItem6WOWID = itemTemplatesByEQDBID[RequiredItem6EQID].WOWEntryID;
@@ -428,6 +435,7 @@ namespace EQWOWConverter.Quests
                 if (itemTemplatesByEQDBID.ContainsKey(RewardItemEQIDs[i]) == false)
                 {
                     Logger.WriteDebug(string.Concat("Quest '", Name, "' (", QuestIDWOW, ") could not be mapped as the EQItemID '", RewardItemEQIDs[i], "' did not exist"));
+                    HasInvalidItems = true;
                     return false;
                 }
                 RewardItemWOWIDs.Add(itemTemplatesByEQDBID[RewardItemEQIDs[i]].WOWEntryID);

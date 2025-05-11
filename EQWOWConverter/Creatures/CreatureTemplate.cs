@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Quests;
+using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.Creatures
 {
@@ -108,19 +109,37 @@ namespace EQWOWConverter.Creatures
             // Grab the baselines
             PopulateStatBaselinesByLevel();
 
+            // Get the zone properties list for lookups
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+
             // Load all of the creature data
             string creatureTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureTemplates.csv");
             Logger.WriteDebug("Populating Creature Template list via file '" + creatureTemplatesFile + "'");           
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureTemplatesFile, "|");
             foreach (Dictionary<string, string> columns in rows)
             {
+                // Skip invalid creatures
+                string spawnZones = columns["spawnzones"].Trim();
+                if (spawnZones.Length == 0)
+                    continue;
+                bool zoneShortNameFound = false;
+                string[] spawnZoneShortNames = spawnZones.Split(',');
+                foreach (string spawnZoneShortName in spawnZoneShortNames)
+                {
+                    if (zonePropertiesByShortName.ContainsKey(spawnZoneShortName))
+                    {
+                        zoneShortNameFound = true;
+                        break;
+                    }
+                }
+                if (zoneShortNameFound == false)
+                    continue;
+
                 // Load the row
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
                 newCreatureTemplate.EQCreatureTemplateID = int.Parse(columns["eq_id"]);
                 newCreatureTemplate.WOWCreatureTemplateID = int.Parse(columns["wow_id"]);
-                newCreatureTemplate.SpawnZones = columns["spawnzones"].Trim();
-                if (newCreatureTemplate.SpawnZones.Length == 0)
-                    continue;
+                newCreatureTemplate.SpawnZones = spawnZones;
                 newCreatureTemplate.IsNonNPC = int.Parse(columns["non_npc"]) > 0;
                 if (newCreatureTemplate.WOWCreatureTemplateID < Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW || newCreatureTemplate.WOWCreatureTemplateID > Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH)
                     Logger.WriteError("Creature template with EQ id of '' had a wow id of '', but that's outside th ebounds of CREATURETEMPLATE_ENTRY_LOW and CREATURETEMPLATE_ENTRY_HIGH.  SQL deletes will not catch everything");

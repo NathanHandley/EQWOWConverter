@@ -514,6 +514,8 @@ namespace EQWOWConverter
             // Work through each of the quest templates
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
+
+            // Map and mark all rewards as quest obtainable so related quests will be generated
             foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
             {
                 // Skip any quests that are in zones we're not processing
@@ -529,14 +531,24 @@ namespace EQWOWConverter
                     Logger.WriteDebug(string.Concat("Could not map item IDs for quest '", questTemplate.QuestIDWOW, "'"));
                     continue;
                 }
-                else
+
+                // Mark all of the rewards so they get included in the final output
+                foreach (int eqItemTemplateID in questTemplate.RewardItemEQIDs)
+                    itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
+            }
+
+            foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
+            {
+                // Skip any quests that are in zones we're not processing
+                if (zonePropertiesByShortName.ContainsKey(questTemplate.ZoneShortName.ToLower()) == false)
                 {
-                    // Mark all of the rewards so they get included in the final output
-                    foreach(int eqItemTemplateID in questTemplate.RewardItemEQIDs)
-                        itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
+                    Logger.WriteDebug(string.Concat("Ignoring quest with id '", questTemplate.QuestIDWOW, ", as the zone '", questTemplate.ZoneShortName, "' is not being generated"));
+                    continue;
                 }
 
                 // Skip any quests where the items cannot be obtained
+                if (questTemplate.HasInvalidItems == true)
+                    continue;
                 SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
                 if (questTemplate.AreRequiredItemsPlayerObtainable(itemTemplatesByWOWEntryID) == false)
                     continue;
