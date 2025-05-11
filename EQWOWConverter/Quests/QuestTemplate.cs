@@ -96,6 +96,23 @@ namespace EQWOWConverter.Quests
             }
         }
 
+        public bool AreRequiredItemsPlayerObtainable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            if (RequiredItem1WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem1WOWID].IsPlayerObtainable() == false)
+                return false;
+            if (RequiredItem2WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem2WOWID].IsPlayerObtainable() == false)
+                return false;
+            if (RequiredItem3WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem3WOWID].IsPlayerObtainable() == false)
+                return false;
+            if (RequiredItem4WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem4WOWID].IsPlayerObtainable() == false)
+                return false;
+            if (RequiredItem5WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem5WOWID].IsPlayerObtainable() == false)
+                return false;
+            if (RequiredItem6WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem6WOWID].IsPlayerObtainable() == false)
+                return false;
+            return true;
+        }
+
         public void AddObjectiveItems(string itemName, int itemCount)
         {
             if (NumOfObjectiveItemsAddedToText != 0)

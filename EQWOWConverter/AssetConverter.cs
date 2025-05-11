@@ -536,6 +536,11 @@ namespace EQWOWConverter
                         itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
                 }
 
+                // Skip any quests where the items cannot be obtained
+                SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+                if (questTemplate.AreRequiredItemsPlayerObtainable(itemTemplatesByWOWEntryID) == false)
+                    continue;
+
                 // If there is a random award, handle it
                 if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
                 {
@@ -566,6 +571,7 @@ namespace EQWOWConverter
                 {
                     if (questTemplate.QuestgiverWOWCreatureTemplateIDs.Contains(creatureTemplate.WOWCreatureTemplateID) == true)
                         continue;
+
                     questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
                     creatureTemplate.IsQuestGiver = true;
 
@@ -2517,6 +2523,10 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             foreach (QuestTemplate questTemplate in questTemplates)
             {
+                // Skip quests where items needed to complete it are not available
+                if (questTemplate.AreRequiredItemsPlayerObtainable(itemTemplatesByWOWEntryID) == false)
+                    continue;
+
                 string firstQuestName = questTemplate.Name;
                 int firstQuestID = questTemplate.QuestIDWOW;
                 string repeatQuestName = string.Concat(questTemplate.Name, " (repeat)");
