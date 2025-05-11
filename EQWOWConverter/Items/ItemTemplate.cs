@@ -69,10 +69,39 @@ namespace EQWOWConverter.Items
         public List<int> ContainedWOWItemTemplateIDs = new List<int>();
         public List<float> ContainedItemChances = new List<float>();
         public bool CanBeOpened = false;
+        public bool IsExistingItemAlready = false;
+        public bool IsGivenAsStartItem = false;
+        public bool IsDroppedByCreature = false;
+        public bool IsSoldByVendor = false;
+        public bool IsRewardedFromQuest = false;
+        public bool IsMadeByTradeskill = false;
+        public bool IsCreatedBySpell = false;
+        public bool IsFoundInGameObject = false;
 
         public ItemTemplate()
         {
 
+        }
+
+        public bool IsPlayerObtainable()
+        {
+            if (IsExistingItemAlready == true)
+                return true;
+            if (IsGivenAsStartItem == true)
+                return true;
+            if (IsDroppedByCreature == true)
+                return true;
+            if (IsSoldByVendor == true)
+                return true;
+            if (IsRewardedFromQuest == true)
+                return true;
+            if (IsMadeByTradeskill == true)
+                return true;
+            if (IsCreatedBySpell == true)
+                return true;
+            if (IsFoundInGameObject == true)
+                return true;
+            return false;
         }
 
         public ItemTemplate(int wowEntryID, ItemWOWInventoryType inventoryType)
@@ -1348,6 +1377,7 @@ namespace EQWOWConverter.Items
                     itemChance *= Convert.ToSingle(itemCounts[i]);
                 itemChance = float.Round(itemChance, 1);
                 itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
+                itemTemplatesByEQDBIDs[eqItemID].IsRewardedFromQuest = true;
                 itemTemplate.ContainedItemChances.Add(itemChance);
                 totalChance += itemChance;
             }
@@ -1363,6 +1393,7 @@ namespace EQWOWConverter.Items
             string iconName = string.Concat("INV_EQ_", Configuration.QUESTS_ITEMS_REWARD_CONTAINER_ICON_ID);
 
             // Complete the object
+            itemTemplate.IsRewardedFromQuest = true;
             itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
             itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
             itemTemplate.ClassID = 15; // Misc

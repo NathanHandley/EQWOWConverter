@@ -179,6 +179,13 @@ namespace EQWOWConverter
             Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID;
             ConvertLoot(creatureTemplates, out itemLootTemplatesByCreatureTemplateID);
 
+            // Update vendor references for future culling
+            Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
+            foreach(var vendorItemList in vendorItems.Values)
+                foreach(CreatureVendorItem vendorItem in vendorItemList)
+                    if (itemTemplatesByEQDBID.ContainsKey(vendorItem.EQItemID) == true)
+                        itemTemplatesByEQDBID[vendorItem.EQItemID].IsSoldByVendor = true;
+
             // Quests
             List<QuestTemplate> questTemplates = new List<QuestTemplate>();
             if (Configuration.GENERATE_QUESTS == true)
@@ -521,6 +528,12 @@ namespace EQWOWConverter
                 {
                     Logger.WriteDebug(string.Concat("Could not map item IDs for quest '", questTemplate.QuestIDWOW, "'"));
                     continue;
+                }
+                else
+                {
+                    // Mark all of the rewards so they get included in the final output
+                    foreach(int eqItemTemplateID in questTemplate.RewardItemEQIDs)
+                        itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
                 }
 
                 // If there is a random award, handle it
@@ -1057,6 +1070,7 @@ namespace EQWOWConverter
                                 continue;
                             }
                             ItemTemplate curItemTemplate = itemTemplatesByEQDBID[itemDropEntry.ItemIDEQ];
+                            curItemTemplate.IsDroppedByCreature = true;
                             ItemLootTemplate newItemLootTemplate = new ItemLootTemplate();
                             newItemLootTemplate.CreatureTemplateEntryID = creatureTemplate.WOWCreatureTemplateID;
                             newItemLootTemplate.ItemTemplateEntryID = curItemTemplate.WOWEntryID;
@@ -1911,33 +1925,35 @@ namespace EQWOWConverter
                 }
             }
 
-            // Item data
-            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
-                itemDBC.AddRow(itemTemplate);
-            foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
-                itemDisplayInfoDBC.AddRow(itemDisplayInfo);
-
             // Character start data
+            // Note: Must come BEFORE item data
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
             {
                 // Create the non-eq items to be used
                 ItemTemplate itemHearthstone = new ItemTemplate(6948, ItemWOWInventoryType.NoEquip);
+                itemHearthstone.IsGivenAsStartItem = true;
+                itemHearthstone.IsExistingItemAlready = true;
                 ItemTemplate itemTotem = new ItemTemplate(46978, ItemWOWInventoryType.NoEquip);
+                itemTotem.IsGivenAsStartItem = true;
+                itemTotem.IsExistingItemAlready = true;
                 SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
 
                 // Populate for all combinations, all races
-                foreach(var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
                 {
                     // Grab all of the items
                     List<ItemTemplate> startingItems = new List<ItemTemplate>();
-                    foreach(int itemID in classRaceProperties.Value.StartItemIDs)
+                    foreach (int itemID in classRaceProperties.Value.StartItemIDs)
                     {
                         if (itemID == 46978)
                             startingItems.Add(itemTotem);
                         else if (itemTemplatesByWOWEntry.ContainsKey(itemID) == false)
                             Logger.WriteError(string.Concat("Failed to pull startup item with wow entry id '", itemID, "' since it did not exist"));
                         else
+                        {
                             startingItems.Add(itemTemplatesByWOWEntry[itemID]);
+                            itemTemplatesByWOWEntry[itemID].IsGivenAsStartItem = true;
+                        }
                     }
 
                     // Add the hearthstone if configured to do so
@@ -1948,6 +1964,18 @@ namespace EQWOWConverter
                     charStartOutfitDBC.AddRowsForSexes(Convert.ToByte(classRaceProperties.Value.RaceID), Convert.ToByte(classRaceProperties.Value.ClassID), startingItems);
                 }
             }
+
+            // Item data
+            // Note: Must come AFTER character start data
+            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
+            {
+                if (itemTemplate.IsExistingItemAlready == true)
+                    continue;
+                if (itemTemplate.IsPlayerObtainable() == true)
+                    itemDBC.AddRow(itemTemplate);
+            }
+            foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
+                itemDisplayInfoDBC.AddRow(itemDisplayInfo);
 
             // SkillLine
             //skillLineDBC.AddRow(Configuration.DBCID_SKILLLINE_ALTERATION_ID, "Alteration");            
@@ -2448,7 +2476,12 @@ namespace EQWOWConverter
 
             // Items
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
-                itemTemplateSQL.AddRow(itemTemplate);
+            {
+                if (itemTemplate.IsExistingItemAlready == true)
+                    continue;
+                if (itemTemplate.IsPlayerObtainable() == true)
+                    itemTemplateSQL.AddRow(itemTemplate);
+            }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
