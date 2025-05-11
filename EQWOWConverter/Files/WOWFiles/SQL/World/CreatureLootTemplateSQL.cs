@@ -14,21 +14,15 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 using EQWOWConverter.Items;
 
 namespace EQWOWConverter.WOWFiles
 {
-    internal class CreatureLootTableSQL : SQLFile
+    internal class CreatureLootTemplateSQL : SQLFile
     {
         public override string DeleteRowSQL()
         {
+            // Warning: Do not use item as the delete criteria as there are reference table entries in the 90039-91016 and 190003-191016 ranges
             return "DELETE FROM creature_loot_template WHERE `entry` >= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_LOW.ToString() + " AND `entry` <= " + Configuration.SQL_CREATURETEMPLATE_ENTRY_HIGH + ";";
         }
 

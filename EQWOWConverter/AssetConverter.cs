@@ -2130,7 +2130,7 @@ namespace EQWOWConverter
             BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
             CreatureSQL creatureSQL = new CreatureSQL();
             CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
-            CreatureLootTableSQL creatureLootTableSQL = new CreatureLootTableSQL();
+            CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
             CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
             CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
             CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
