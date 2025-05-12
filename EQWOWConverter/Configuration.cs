@@ -110,7 +110,7 @@ namespace EQWOWConverter
         // If true, then creatures are generated
         public static readonly bool GENERATE_CREATURES_AND_SPAWNS = true;
 
-        // If true, then item armor player graphics are generatiod (and if set in [PATH_ASSETS_FOLDER]\CustomTextures\item\texturecomponents)
+        // If true, then item armor player graphics are generated (and if set in [PATH_ASSETS_FOLDER]\CustomTextures\item\texturecomponents)
         public static readonly bool GENERATE_PLAYER_ARMOR_GRAPHICS = true;
 
         // If true, transports (ships, ferries) will be generated

@@ -130,12 +130,6 @@ namespace EQWOWConverter.Items
             newItemDisplayInfo.IconFileNameNoExt = iconFileNameNoExt;
             ItemDisplayInfos.Add(newItemDisplayInfo);
 
-            // Break out if configured to do so
-            if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
-            {
-                return newItemDisplayInfo;
-            }
-
             // Test for a texture file.  If none, the graphics will be blank
             if (DoTexturesExist() == false)
             {
@@ -150,6 +144,9 @@ namespace EQWOWConverter.Items
             // If a robe, set the texture properties and copy the textures
             if (inventoryType == ItemWOWInventoryType.Chest && materialTypeID >= 10 && materialTypeID <= 16)
             {
+                if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
+                    return newItemDisplayInfo;
+
                 // Generate the robe geometry, if needed
                 int robeID = materialTypeID - 9;
                 string robeIDString = "0" + robeID.ToString();
@@ -183,6 +180,9 @@ namespace EQWOWConverter.Items
             // Armor
             else if (IsVisableArmor(inventoryType) == true && (materialTypeID <= 4 || materialTypeID == 7 || (materialTypeID >= 17 && materialTypeID <= 23)))
             {
+                if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
+                    return newItemDisplayInfo;
+
                 int armorID = materialTypeID + 1;
                 if (materialTypeID == 7)
                     armorID = 3; // Kunark Chain => Classic Chain
@@ -368,7 +368,7 @@ namespace EQWOWConverter.Items
             // Fallback if it's not held
             if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
                 inventoryType != ItemWOWInventoryType.TwoHand && inventoryType != ItemWOWInventoryType.HeldInOffHand && inventoryType != ItemWOWInventoryType.RangedRight &&
-                inventoryType != ItemWOWInventoryType.Thrown)
+                inventoryType != ItemWOWInventoryType.Thrown && inventoryType != ItemWOWInventoryType.MainHand)
             {
                 return false;
             }
