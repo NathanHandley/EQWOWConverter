@@ -262,10 +262,7 @@ namespace EQWOWConverter.Quests
                 newQuestTemplate.QuestIDWOW = int.Parse(columns["wow_questid"]);
                 newQuestTemplate.ZoneShortName = columns["zone_shortname"];
                 newQuestTemplate.QuestgiverName = columns["questgiver_name"];
-                newQuestTemplate.Name = columns["quest_name"];
                 newQuestTemplate.QuestLevel = int.Parse(columns["level"]);
-                if (newQuestTemplate.Name.Length == 0)
-                    newQuestTemplate.Name = String.Concat(newQuestTemplate.QuestgiverName, " Quest (", newQuestTemplate.QuestIDWOW, ")");
                 int minRep = int.Parse(columns["req_repmin"]);
                 newQuestTemplate.MinimumQuestgiverFactionValue = minRep == -1 ? 0 : ConvertEQFactionValueToWoW(minRep);
                 newQuestTemplate.HasMinimumFactionRequirement = minRep == -1 ? false : true;
@@ -302,6 +299,9 @@ namespace EQWOWConverter.Quests
                     rewardFactionValues.Add(int.Parse(columns[string.Concat("reward_faction", i, "Amt")]));
                 }
                 newQuestTemplate.questCompletionFactionRewards = GetCompletionFactionRewards(rewardFactionEQIDs, rewardFactionValues);
+                string questName = columns["quest_name"];
+                string firstRewardItem = columns["reward_item1_name"];
+                newQuestTemplate.Name = GetOrGenerateName(questName, newQuestTemplate.QuestgiverName, newQuestTemplate.QuestIDWOW, firstRewardItem, newQuestTemplate.RewardItemCounts);
                 //newQuestTemplate.RequestText = columns["request_text"]; Ignoring for now
                 if (reactionsByQuestID.ContainsKey(newQuestTemplate.QuestIDWOW))
                 {
@@ -310,6 +310,15 @@ namespace EQWOWConverter.Quests
                 }
                 QuestTemplates.Add(newQuestTemplate);
             }
+        }
+
+        static private string GetOrGenerateName(string questName, string questGiverName, int questID, string firstRewardItemName, List<int> rewardItemCounts)
+        {
+            if (questName.Length != 0)
+                return questName;
+            if (rewardItemCounts.Count == 1 && rewardItemCounts[0] == 1)
+                return firstRewardItemName;
+            return String.Concat(questGiverName, " Quest (", questID, ")");
         }
 
         static private List<QuestCompletionFactionReward> GetCompletionFactionRewards(List<int> eqFactionIDs, List<int> factionValues)
