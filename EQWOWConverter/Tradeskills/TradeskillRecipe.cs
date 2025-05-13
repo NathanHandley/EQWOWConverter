@@ -171,6 +171,7 @@ namespace EQWOWConverter.Tradeskills
                 case 65: return TradeskillType.Cooking; // Brewing
                 case 68: return TradeskillType.Jewelcrafting; // Jewerly Making
                 case 69: return TradeskillType.Blacksmithing; // Pottery
+                case 100: return TradeskillType.Enchanting; // Made this one up
                 case 75: return TradeskillType.Unknown;
                 default:
                     {

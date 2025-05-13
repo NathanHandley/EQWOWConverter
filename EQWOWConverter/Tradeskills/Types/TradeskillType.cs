@@ -29,6 +29,7 @@ namespace EQWOWConverter.Tradeskills
     // EQ Tailoring => WOW Tailoring
     // EQ Tinkering => WOW Engineering
     // EQ Fishing => WOW Cooking
+    // N/A => WOW Enchanting (just the required enchanting spells)
 
     internal enum TradeskillType
     {
@@ -39,6 +40,7 @@ namespace EQWOWConverter.Tradeskills
         Engineering,
         Jewelcrafting,
         Inscription,
-        Tailoring
+        Tailoring,
+        Enchanting
     }
 }

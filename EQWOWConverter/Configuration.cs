@@ -120,7 +120,7 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_QUESTS = true;
 
         // If true, tradeskills are generated
-        public static readonly bool GENERATE_TRADESKILLS = false;
+        public static readonly bool GENERATE_TRADESKILLS = true;
 
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
