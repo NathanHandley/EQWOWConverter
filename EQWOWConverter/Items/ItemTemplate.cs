@@ -1201,6 +1201,15 @@ namespace EQWOWConverter.Items
                 newItemTemplate.WOWEntryID = int.Parse(columns["wowid"]);
                 newItemTemplate.Name = columns["Name"];
 
+                // Load stats depending on normal vs alt
+                int damage = int.Parse(columns["damage"]);
+                int delay = int.Parse(columns["delay"]) * 100;
+                if (Configuration.ITEMS_USE_ALTERNATE_STATS == true)
+                {
+                    damage = int.Parse(columns["alt_damage"]);
+                    delay = int.Parse(columns["alt_delay"]) * 100;
+                }
+
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
                 string iconName = "INV_EQ_" + (iconID).ToString();
@@ -1212,7 +1221,6 @@ namespace EQWOWConverter.Items
                 // Equippable Properties
                 int itemType = int.Parse(columns["itemtype"]);
                 int bagType = int.Parse(columns["bagtype"]);
-                int damage = int.Parse(columns["damage"]);
                 newItemTemplate.EQClassMask = int.Parse(columns["classes"]);
                 newItemTemplate.EQSlotMask = int.Parse(columns["slots"]);
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
@@ -1248,7 +1256,6 @@ namespace EQWOWConverter.Items
                 }
 
                 // Calculate the weapon damage
-                int delay = int.Parse(columns["delay"]) * 100;
                 if (newItemTemplate.ClassID == 6 && newItemTemplate.SubClassID == 2) // Ammo defaults to 3000 ms delay
                     delay = 3000;
                 if (damage > 0  && delay > 0 && (newItemTemplate.ClassID == 2 || newItemTemplate.ClassID == 6))

@@ -350,6 +350,9 @@ namespace EQWOWConverter
         //=====================================================================
         // Items
         //=====================================================================
+        // If true, this uses alternate stats for items that have been tweaked for balance reasons
+        public static readonly bool ITEMS_USE_ALTERNATE_STATS = true;
+        
         // This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;
         public static readonly float ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
 
