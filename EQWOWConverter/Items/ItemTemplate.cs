@@ -280,8 +280,8 @@ namespace EQWOWConverter.Items
                     itemTemplate.StatValues.Add((ItemWOWStatType.Spirit, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Spr", eqWisdom))));
 
                 // Hit (Charisma)
-                // Note: Charisma is being mapped to "hit"
-                if (eqCharisma != 0)
+                // Note: Charisma is being mapped to "hit", and it can't be less than zero
+                if (eqCharisma > 0)
                     itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "HitRating", eqCharisma))));
             }
 
