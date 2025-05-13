@@ -33,7 +33,7 @@ namespace EQWOWConverter.Tradeskills
 
     internal enum TradeskillType
     {
-        Unknown,
+        None,
         Alchemy,
         Blacksmithing,
         Cooking,

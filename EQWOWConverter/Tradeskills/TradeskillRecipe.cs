@@ -81,7 +81,7 @@ namespace EQWOWConverter.Tradeskills
                 int eqSkillNeeded = int.Parse(columns["skillneeded"]);
                 int eqTrivial = int.Parse(columns["trivial"]);
                 TradeskillType type = ConvertTradeskillType(int.Parse(columns["tradeskill"]));
-                if (type == TradeskillType.Unknown)
+                if (type == TradeskillType.None)
                 {
                     Logger.WriteDebug(string.Concat("Skipping tradeskill item with name '", name, "' as the tradeskill type is Unknown"));
                     continue;
@@ -171,12 +171,12 @@ namespace EQWOWConverter.Tradeskills
                 case 65: return TradeskillType.Cooking; // Brewing
                 case 68: return TradeskillType.Jewelcrafting; // Jewerly Making
                 case 69: return TradeskillType.Blacksmithing; // Pottery
-                case 100: return TradeskillType.Enchanting; // Made this one up
-                case 75: return TradeskillType.Unknown;
+                case 100: return TradeskillType.Enchanting; // Spell from enchanters
+                case 75: return TradeskillType.None;
                 default:
                     {
                         Logger.WriteError(string.Concat("Invalid tradeskill type of '", eqTradeskillTypeID, "'"));
-                        return TradeskillType.Unknown;
+                        return TradeskillType.None;
                     }
             }
         }
