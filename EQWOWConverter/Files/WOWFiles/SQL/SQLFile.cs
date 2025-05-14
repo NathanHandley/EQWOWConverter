@@ -142,7 +142,14 @@ namespace EQWOWConverter.WOWFiles
 
                 // On first batch, put the delete statement
                 if (i == 0)
+                {
+                    if (Configuration.GENERATE_FORCE_SQL_UPDATES == true)
+                    {
+                        string uniqueStamp = string.Concat("-- Unique Stamp: ", DateTime.Now.ToString("hh:mm:ss tt"));
+                        stringBuilder.AppendLine(uniqueStamp);
+                    }
                     stringBuilder.AppendLine(DeleteRowSQL());
+                }
 
                 // Calculate what rows to output
                 int startRowIter = i * rowsPerBatch;

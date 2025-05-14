@@ -140,6 +140,9 @@ namespace EQWOWConverter
         // What edge buffer to add when doing floating point month
         public static readonly float GENERATE_FLOAT_EPSILON = 0.001f;
 
+        // If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes
+        public static readonly bool GENERATE_FORCE_SQL_UPDATES = true;
+
         //=====================================================================
         // Player
         //=====================================================================
