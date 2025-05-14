@@ -82,7 +82,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("dmg_max2", 0);
             newRow.AddInt("dmg_type2", 0);
             newRow.AddInt("armor", itemTemplate.Armor);
-            newRow.AddInt("holy_res", null);
+            newRow.AddInt("holy_res", 0);
             newRow.AddInt("fire_res", itemTemplate.FireResist);
             newRow.AddInt("nature_res", itemTemplate.NatureResist);
             newRow.AddInt("frost_res", itemTemplate.FrostResist);
