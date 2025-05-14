@@ -134,6 +134,8 @@ namespace EQWOWConverter.Creatures
                 }
                 if (zoneShortNameFound == false)
                     continue;
+                if (int.Parse(columns["enabled"]) == 0)
+                    continue;
 
                 // Load the row
                 CreatureTemplate newCreatureTemplate = new CreatureTemplate();
