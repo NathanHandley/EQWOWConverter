@@ -270,10 +270,6 @@ namespace EQWOWConverter.Items
                 if (eqIntelligence != 0)
                     itemTemplate.StatValues.Add((ItemWOWStatType.Intellect, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Int", eqIntelligence))));
 
-                // Stamina
-                if (eqStamina != 0)
-                    itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Sta", eqStamina))));
-
                 // Spirit
                 // Note: This is converted from "Wisdom"
                 if (eqWisdom != 0)
@@ -283,6 +279,36 @@ namespace EQWOWConverter.Items
                 // Note: Charisma is being mapped to "hit", and it can't be less than zero
                 if (eqCharisma > 0)
                     itemTemplate.StatValues.Add((ItemWOWStatType.HitRating, Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "HitRating", eqCharisma))));
+
+                // Stamina
+                int wowStamina = 0;
+                if (eqStamina != 0)
+                    wowStamina = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Sta", eqStamina));
+                // Add additional stamina based on AC, factoring for any existing stats
+                if (eqArmorClass > 0)
+                {
+                    float additionalStaminaFromAC = GetConvertedEqToWowStat(itemSlot, "StaFromArmor", eqArmorClass);
+                    int numOfOtherStats = 0;
+                    if (eqStrength > 0)
+                        numOfOtherStats += 1;
+                    if (eqDexterity > 0 || eqAgility > 0)
+                        numOfOtherStats += 1;
+                    if (eqIntelligence > 0)
+                        numOfOtherStats += 1;
+                    if (eqWisdom > 0)
+                        numOfOtherStats += 1;
+                    if (eqCharisma > 0)
+                        numOfOtherStats += 1;
+
+                    if (numOfOtherStats == 0)
+                        wowStamina += Convert.ToInt32(additionalStaminaFromAC);
+                    else if (numOfOtherStats == 1)
+                        wowStamina += Convert.ToInt32(additionalStaminaFromAC * 0.66);
+                    else if (numOfOtherStats == 2)
+                        wowStamina += Convert.ToInt32(additionalStaminaFromAC * 0.33);
+                }
+                if (wowStamina > 0)
+                    itemTemplate.StatValues.Add((ItemWOWStatType.Stamina, wowStamina));
             }
 
             // Spell Power
