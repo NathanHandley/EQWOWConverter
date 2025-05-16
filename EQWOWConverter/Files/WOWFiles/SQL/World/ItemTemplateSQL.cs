@@ -46,7 +46,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
             newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
             newRow.AddInt("AllowableRace", -1);
-            newRow.AddInt("ItemLevel", 0);
+            newRow.AddInt("ItemLevel", 500);
             newRow.AddInt("RequiredLevel", 1);
             newRow.AddInt("RequiredSkill", 0);
             newRow.AddInt("RequiredSkillRank", 0);
