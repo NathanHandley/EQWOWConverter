@@ -226,7 +226,7 @@ namespace EQWOWConverter.Items
         private static void PopulateStats(ref ItemTemplate itemTemplate, ItemWOWInventoryType itemSlot, int classID, int subClassID, 
             int classMask, int eqArmorClass, int eqStrength, int eqAgility, int eqCharisma, int eqDexterity, int eqIntelligence, 
             int eqStamina, int eqWisdom, int eqHp, int eqMana, int eqResistPoison, int eqResistMagic, int eqResistDisease, int eqResistFire, 
-            int eqResistCold, int damage, int delay)
+            int eqResistCold, int damage, int delay, int qualityOverride)
         {
             itemTemplate.StatValues.Clear();
 
@@ -285,7 +285,7 @@ namespace EQWOWConverter.Items
                 if (eqStamina != 0)
                     wowStamina = Convert.ToInt32(GetConvertedEqToWowStat(itemSlot, "Sta", eqStamina));
                 // Add additional stamina based on AC, factoring for any existing stats
-                if (eqArmorClass > 0)
+                if (eqArmorClass > 0 && (qualityOverride > 1 || qualityOverride == -1))
                 {
                     float additionalStaminaFromAC = GetConvertedEqToWowStat(itemSlot, "StaFromArmor", eqArmorClass);
                     int numOfOtherStats = 0;
@@ -1221,6 +1221,11 @@ namespace EQWOWConverter.Items
             LogCounter progressionCounter = new LogCounter("Populating item templates... ", 0, rows.Count);
             foreach (Dictionary<string, string> columns in rows)
             {
+                // Skip any disabled items
+                int itemIsEnabled = int.Parse(columns["enabled"]);
+                if (itemIsEnabled == 0)
+                    continue;
+
                 // Load the row
                 ItemTemplate newItemTemplate = new ItemTemplate();
                 newItemTemplate.EQItemID = int.Parse(columns["id"]);
@@ -1307,6 +1312,7 @@ namespace EQWOWConverter.Items
                 }
 
                 // Calculate stats
+                int qualityOverride = int.Parse(columns["override_quality"]);
                 int agility = int.Parse(columns["aagi"]);
                 int armorClass = int.Parse(columns["ac"]);
                 int charisma = int.Parse(columns["acha"]);
@@ -1324,11 +1330,13 @@ namespace EQWOWConverter.Items
                 int resistFire = int.Parse(columns["resistfire"]);
                 PopulateStats(ref newItemTemplate, newItemTemplate.InventoryType, newItemTemplate.ClassID, newItemTemplate.SubClassID,
                     newItemTemplate.EQClassMask, armorClass, strength, agility, charisma, dexterity, intelligence, stamina, wisdom, hp, 
-                    mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay);
+                    mana, resistPoison, resistMagic, resistDisease, resistFire, resistCold, damage, delay, qualityOverride);
 
                 // Set the quality
-                newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease,
-                    resistFire, resistCold);
+                if (qualityOverride == -1)
+                    newItemTemplate.Quality = CalculateQuality(newItemTemplate.StatValues, resistPoison, resistMagic, resistDisease, resistFire, resistCold);
+                else
+                    newItemTemplate.Quality = (ItemWOWQuality)qualityOverride;
 
                 progressionCounter.Write(1);
 

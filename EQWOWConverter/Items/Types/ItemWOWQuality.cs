@@ -24,6 +24,7 @@ namespace EQWOWConverter.Items
 {
     internal enum ItemWOWQuality : Int32
     {
+        Unknown = -1,
         Poor = 0,
         Common = 1,
         Uncommon = 2,
