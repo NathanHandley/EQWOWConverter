@@ -1,7 +1,7 @@
 EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 0|1225|Unknown - Neutral|EQ Creature Neutral|
 41|1225|Class41|EQ Creature Neutral|
-51|1233|Human|Antonica Settlers|
+51|1233|Human|Norrath Settlers|
 60|1213|Ogre|Ogres of Oggok|
 63|1223|Aviak|EQ Creature KOS|
 64|1223|Werewolf|EQ Creature KOS|
@@ -62,7 +62,7 @@ EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 203|1237|CazicThule|EQ Creature KOS No Flee|
 205|1223|Fizzlethorp|EQ Creature KOS|
 206|1237|Innoruuk|EQ Creature KOS No Flee|
-207|1233|Karana|Antonica Settlers|
+207|1233|Karana|Norrath Settlers|
 209|1209|Prexus|The Kerra|Revisit
 211|1237|Rallos Zek|EQ Creature KOS No Flee|
 213|1211|Solusek Ro|Arcane Scientists|
@@ -90,7 +90,7 @@ EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 239|1217|The Dead|Hands of Innoruuk|
 240|1203|Deepmuses|Gnomes of Ak'anon|
 241|1218|Deeppockets|Rivervale Concord|
-242|1202|Deepwater Knights|Erudin Collective|
+242|1227|Deepwater Knights|League of Light|
 243|1218|Drafling|Rivervale Concord|
 244|1217|Ebon Mask|Hands of Innoruuk|
 245|1203|Eldritch Collective|Gnomes of Ak'anon|
@@ -183,8 +183,8 @@ EQFactionID|WOWFactionID|SourceFactionName|TargetFactionName|Comment
 342|1201|Order of Three|The Silver Mantle|
 343|1224|QRG Protected Animals|EQ Creature KOS Nature Neutral|
 344|1225|Beta Neutral|EQ Creature Neutral|
-345|1233|Karana Residents|Antonica Settlers|
-346|1233|Commons Residents|Antonica Settlers|
+345|1233|Karana Residents|Norrath Settlers|
+346|1233|Commons Residents|Norrath Settlers|
 347|1223|Shark|EQ Creature KOS|
 353|1217|Neriak Ogre|Hands of Innoruuk|
 354|1217|Neriak Troll|Hands of Innoruuk|
