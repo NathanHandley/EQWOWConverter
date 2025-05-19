@@ -43,45 +43,28 @@ namespace EQWOWConverter.Creatures
         {
             string creatureVendorItemsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "VendorItems.csv");
             Logger.WriteDebug("Populating Creature Vendor Items list via file '" + creatureVendorItemsFile + "'");
-            string inputData = FileTool.ReadAllDataFromFile(creatureVendorItemsFile);
-            string[] inputRows = inputData.Split(Environment.NewLine);
-            if (inputRows.Length < 2)
+            List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(creatureVendorItemsFile, "|");
+            foreach (Dictionary<string, string> columns in rows)
             {
-                Logger.WriteError("CreatureVenderItems list via file '" + creatureVendorItemsFile + "' did not have enough rows");
-                return;
-            }
-
-            // Load all of the data
-            bool headerRow = true;
-            foreach (string row in inputRows)
-            {
-                // Handle first row
-                if (headerRow == true)
-                {
-                    headerRow = false;
+                // Skip disabled
+                if (int.Parse(columns["enabled"]) == 0)
                     continue;
-                }
-
-                // Skip blank rows
-                if (row.Trim().Length == 0)
-                    continue;
-
-                // Load the row
-                string[] rowBlocks = row.Split("|");
-                CreatureVendorItem newVendorItem = new CreatureVendorItem();
-                newVendorItem.MerchantID = int.Parse(rowBlocks[0]);
-                newVendorItem.Slot = int.Parse(rowBlocks[1]);
-                newVendorItem.EQItemID = int.Parse(rowBlocks[2]);
-                newVendorItem.FactionRequired = int.Parse(rowBlocks[3]);
-                newVendorItem.Quantity = int.Parse(rowBlocks[4]);
 
                 // Only add if it's within this target expansion
-                int minExpansion = int.Parse(rowBlocks[5]);
-                int maxExpansion = int.Parse(rowBlocks[6]);
+                int minExpansion = int.Parse(columns["min_expansion"]);
+                int maxExpansion = int.Parse(columns["max_expansion"]);
                 if (minExpansion != -1 && minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
                 if (maxExpansion != -1 && maxExpansion < Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
                     continue;
+
+                // Add the row
+                CreatureVendorItem newVendorItem = new CreatureVendorItem();
+                newVendorItem.MerchantID = int.Parse(columns["merchantid"]);
+                newVendorItem.Slot = int.Parse(columns["slot"]);
+                newVendorItem.EQItemID = int.Parse(columns["item"]);
+                newVendorItem.FactionRequired = int.Parse(columns["faction_required"]);
+                newVendorItem.Quantity = int.Parse(columns["quantity"]);
                 if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)
                     CreatureVendorItemsByMerchantID.Add(newVendorItem.MerchantID, new List<CreatureVendorItem>());
                 CreatureVendorItemsByMerchantID[newVendorItem.MerchantID].Add(newVendorItem);
