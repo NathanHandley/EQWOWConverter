@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Quests;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.Creatures
@@ -66,6 +65,7 @@ namespace EQWOWConverter.Creatures
         public bool IsQuestGiver = false;
         public bool LimitOneInSpawnPool = false;
         public bool HasSmartScript = false;
+        public int DefaultEmoteID = 0;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -153,6 +153,7 @@ namespace EQWOWConverter.Creatures
                 newCreatureTemplate.NameNoFormat = columns["name"];
                 newCreatureTemplate.SubName = columns["lastname"].Replace('_', ' ');
                 newCreatureTemplate.Level = int.Max(int.Parse(columns["level"]), 1);
+                newCreatureTemplate.DefaultEmoteID = int.Max(int.Parse(columns["idle_emote_id"]), 0);
                 int raceID = int.Parse(columns["race"]);
                 if (raceID == 0)
                 {

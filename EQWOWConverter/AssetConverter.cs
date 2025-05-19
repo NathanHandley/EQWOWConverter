@@ -2341,6 +2341,7 @@ namespace EQWOWConverter
                     }
                     else
                     {
+                        creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
                         CreatureMovementType movementType = CreatureMovementType.None;
                         if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
                             movementType = CreatureMovementType.Random;
@@ -2396,6 +2397,7 @@ namespace EQWOWConverter
                             }
                             else
                             {
+                                creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
                                 CreatureMovementType movementType = CreatureMovementType.None;
                                 if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
                                     movementType = CreatureMovementType.Random;
@@ -2446,6 +2448,7 @@ namespace EQWOWConverter
                         }
                         else
                         {
+                            creatureAddonSQL.AddRow(creatureGUID, 0, creatureTemplate.DefaultEmoteID);
                             CreatureMovementType movementType = CreatureMovementType.None;
                             if (spawnPool.CreatureSpawnGroup.RoamDistance > 1)
                                 movementType = CreatureMovementType.Random;
