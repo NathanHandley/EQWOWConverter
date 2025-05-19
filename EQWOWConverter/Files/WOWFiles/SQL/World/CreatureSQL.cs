@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int guid, int id1, int mapID, int zoneID, int areaID, float xPosition, float yPosition, float zPosition, 
-            float orientation, CreatureMovementType movementType, float wanderDistance, bool seeDay, bool seeNight)
+            float orientation, CreatureMovementType movementType, float wanderDistance, bool seeDay, bool seeNight, string comment)
         {
             int currentWaypoint = 0;
             if (movementType == CreatureMovementType.Path)
@@ -59,7 +59,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 0);
             newRow.AddInt("CreateObject", 0);
-            newRow.AddString("Comment", string.Empty);
+            newRow.AddString("Comment", comment);
             Rows.Add(newRow);
         }
 

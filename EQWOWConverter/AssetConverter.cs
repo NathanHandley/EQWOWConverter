@@ -849,9 +849,6 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Converting EQ Creatures (skeletal objects) to WOW creature objects...");
 
-            if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
-                Logger.WriteInfo("- Note: CREATURE_ADD_ENTITY_ID_TO_NAME is set to TRUE");
-
             // Generate templates
             Dictionary<int, CreatureTemplate> creatureTemplatesByID = CreatureTemplate.GetCreatureTemplateListByEQID();
             creatureTemplates = creatureTemplatesByID.Values.ToList();
@@ -2331,6 +2328,7 @@ namespace EQWOWConverter
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                    string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                     if (pathGridEntries.Count > 0)
                     {
                         int waypointGUID = creatureGUID * 1000;
@@ -2339,7 +2337,7 @@ namespace EQWOWConverter
                             waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                     }
                     else
                     {
@@ -2348,7 +2346,7 @@ namespace EQWOWConverter
                             movementType = CreatureMovementType.Random;
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                             spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                            spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                     }
                 }
 
@@ -2385,6 +2383,7 @@ namespace EQWOWConverter
                             int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
                             List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                            string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                             if (pathGridEntries.Count > 0)
                             {
                                 int waypointGUID = creatureGUID * 1000;
@@ -2393,7 +2392,7 @@ namespace EQWOWConverter
                                     waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                             }
                             else
                             {
@@ -2402,7 +2401,7 @@ namespace EQWOWConverter
                                     movementType = CreatureMovementType.Random;
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                     spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                                    spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                             }
                         }
                     }
@@ -2434,6 +2433,7 @@ namespace EQWOWConverter
                         int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                         poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
                         List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
+                        string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                         if (pathGridEntries.Count > 0)
                         {
                             int waypointGUID = creatureGUID * 1000;
@@ -2442,7 +2442,7 @@ namespace EQWOWConverter
                                 waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, CreatureMovementType.Path, 
-                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                         }
                         else
                         {
@@ -2451,7 +2451,7 @@ namespace EQWOWConverter
                                 movementType = CreatureMovementType.Random;
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
                                 spawnInstance.SpawnXPosition, spawnInstance.SpawnYPosition, spawnInstance.SpawnZPosition, spawnInstance.Orientation, movementType,
-                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight);
+                                spawnPool.CreatureSpawnGroup.RoamDistance, spawnInstance.SpawnDay, spawnInstance.SpawnNight, comment);
                         }
                     }
                 }
@@ -2488,7 +2488,7 @@ namespace EQWOWConverter
                     int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true);
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true, string.Empty);
                 }
             }
 
