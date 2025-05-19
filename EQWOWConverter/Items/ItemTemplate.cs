@@ -1177,7 +1177,7 @@ namespace EQWOWConverter.Items
             {
                 itemTemplate.SheatheType = 4; // Middle of the back
             }
-            else if (itemTemplate.InventoryType == ItemWOWInventoryType.OneHand)
+            else if (itemTemplate.InventoryType == ItemWOWInventoryType.OneHand || itemTemplate.InventoryType == ItemWOWInventoryType.MainHand)
             {
                 itemTemplate.SheatheType = 3; // On the left-hand side of the waist
             }
