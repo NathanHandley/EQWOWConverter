@@ -235,7 +235,7 @@ namespace EQWOWConverter.Creatures
                 }
 
                 // Add ID if debugging for it is true
-                if (Configuration.CREATURE_ADD_ENTITY_ID_TO_NAME == true)
+                if (Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
                     newCreatureTemplate.Name = newCreatureTemplate.Name + " " + newCreatureTemplate.EQCreatureTemplateID.ToString();
                 //newCreatureTemplate.Name = newCreatureTemplate.Name + " R" + newCreatureTemplate.Race.EQCreatureTemplateID + "-G" + Convert.ToInt32(newCreatureTemplate.GenderType).ToString() + "-V" + newCreatureTemplate.Race.VariantID;
 

@@ -298,8 +298,8 @@ namespace EQWOWConverter
         // Note: There are two fidget animations, 1/2 this number applies to each fidget
         public static readonly int CREATURE_FIDGET_TIME_PERCENT = 20;
 
-        // If true, the entity name is put in the creature name for easy debugging. Default to false.
-        public static readonly bool CREATURE_ADD_ENTITY_ID_TO_NAME = false;
+        // If true, additional data is added in the creature name for easy debugging. Default to false.
+        public static readonly bool CREATURE_ADD_DEBUG_VALUES_TO_NAME = false;
 
         // Stat modifiers for creatures
         // - "MIN" and "MAX" are applied after all other calculations
