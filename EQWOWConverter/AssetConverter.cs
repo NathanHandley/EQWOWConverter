@@ -2328,11 +2328,11 @@ namespace EQWOWConverter
                     CreatureSpawnInstance spawnInstance = spawnPool.CreatureSpawnInstances[0];
                     int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                     List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
-                    string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                    string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                     if (pathGridEntries.Count > 0)
                     {
                         int waypointGUID = creatureGUID * 1000;
-                        creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                        creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
                         foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                             waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                         creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
@@ -2383,11 +2383,11 @@ namespace EQWOWConverter
                             int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                             poolCreatureSQL.AddRow(creatureGUID, poolPoolTemplateID, chance, creatureTemplate.Name);
                             List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
-                            string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                            string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                             if (pathGridEntries.Count > 0)
                             {
                                 int waypointGUID = creatureGUID * 1000;
-                                creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                                creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
                                 foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                                     waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                                 creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
@@ -2433,11 +2433,11 @@ namespace EQWOWConverter
                         int creatureGUID = CreatureTemplate.GenerateCreatureSQLGUID();
                         poolCreatureSQL.AddRow(creatureGUID, poolTemplateID, chance, creatureTemplate.Name);
                         List<CreaturePathGridEntry> pathGridEntries = spawnInstance.GetPathGridEntries();
-                        string comment = string.Concat("EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
+                        string comment = string.Concat(creatureTemplate.Name, " - EQ Group: ", spawnPool.CreatureSpawnGroup.ID, ", EQ NPC ID: ", creatureTemplate.EQCreatureTemplateID, ", EQ Instance ID: ", spawnInstance.ID);
                         if (pathGridEntries.Count > 0)
                         {
                             int waypointGUID = creatureGUID * 1000;
-                            creatureAddonSQL.AddRow(creatureGUID, waypointGUID);
+                            creatureAddonSQL.AddRow(creatureGUID, waypointGUID, creatureTemplate.DefaultEmoteID);
                             foreach (CreaturePathGridEntry pathGridEntry in pathGridEntries)
                                 waypointDataSQL.AddRow(waypointGUID, pathGridEntry.Number, pathGridEntry.NodeX, pathGridEntry.NodeY, pathGridEntry.NodeZ, pathGridEntry.PauseInSec * 1000);
                             creatureSQL.AddRow(creatureGUID, creatureTemplate.WOWCreatureTemplateID, spawnInstance.MapID, spawnInstance.AreaID, spawnInstance.AreaID,
