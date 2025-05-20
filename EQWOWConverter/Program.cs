@@ -51,6 +51,7 @@ internal class Program
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS));
+            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRADESKILLS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS));
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");

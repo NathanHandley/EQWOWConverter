@@ -6289,18 +6289,18 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 9717|1|Coin Of Tash||75|75|0|0|1|1|-1|10790|Coin of Tash|1||||||||||10780|An Old Silver Coin|1|10781|An Old Silver Coin|1|10782|An Old Silver Coin|1|10783|An Old Silver Coin|1|10784|An Old Silver Coin|1|10785|An Old Silver Coin|1|10786|An Old Silver Coin|1|10787|An Old Silver Coin|1|10788|An Old Silver Coin|1|10789|An Old Silver Coin|1|17511|A coin pouch||||||
 9680|1|Barbed Scaled Whip||75|75|0|0|1|1|-1|12886|Barbed Scaled Whip|1||||||||||12888|A Flaxen Lock of Hair|1|12889|Large Tassel Bookmark|1|12890|A Yellow Whip|1||||||||||||||||||||||17195|A Flaxen Hilt||||||
 10001|1|Staff Of The Wheel||75|75|0|0|1|1|-1|14360|Staff of the Wheel|1|14361|Star of Eyes|1|||||||14350|A Rod|1|14351|A Rod|1|14352|A Rod|1|14353|A Rod|1|14354|A Rod|1|14355|A Rod|1|14356|A Rod|1|14357|A Rod|1|14358|A Rod|1|14359|A Rod|1|17510|A glowing chest||||||
-9766|1|Full C.o.b.b. Chest||75|75|0|0|1|1|-1|12735|Full C.O.B.B. Chest|1||||||||||12730|Iksar Skull with an 'X'|5|12731|Iksar Skull with an 'X'|1|||||||||||||||||||||||||17034|A Skull Chest||||||
-9767|1|Full C.o.r.n. Chest||75|75|0|0|1|1|-1|12736|Full C.O.R.N. Chest|1||||||||||12732|Tiny Glowing Skull|5|12733|Tiny Glowing Skull|1|||||||||||||||||||||||||17035|A Skull Chest||||||
+9766|1|Full C.o.b.b. Chest||75|75|0|0|1|1|1|12735|Full C.O.B.B. Chest|1||||||||||12730|Iksar Skull with an 'X'|5|12731|Iksar Skull with an 'X'|1|||||||||||||||||||||||||17034|A Skull Chest||||||
+9767|1|Full C.o.r.n. Chest||75|75|0|0|1|1|1|12736|Full C.O.R.N. Chest|1||||||||||12732|Tiny Glowing Skull|5|12733|Tiny Glowing Skull|1|||||||||||||||||||||||||17035|A Skull Chest||||||
 13374|1|Air Tight Box||75|75|0|0|1|1|-1|13271|Air Tight Box|1||||||||||13270|Infected Rat Livers|10||||||||||||||||||||||||||||17923|Air Tight Box||||||
 13373|1|Container of Infectious Reagents||75|75|0|0|1|1|-1|10266|Container of Infectious Reagents|1||||||||||10264|Diseased Bone Marrow|2|10265|Sprig of Wormwood|1|13037|Gnomish Spirits|1||||||||||||||||||||||17357|Airtight Metal Box||||||
 9640|0|A Protected Tome||75|75|0|0|1|1|-1|16759|INVALID_ID|1||||||||||16799|INVALID_ID|1||||||||||||||||||||||||||||16689|INVALID_ID||||||
-9632|1|A Bundle Of Staves||75|75|0|0|1|1|-1|10639|A Bundle of Staves|1||||||||||10610|1st Piece of Staff|1|10611|2nd Piece of Staff|1|10612|3rd Piece of Staff|1|10613|4th Piece of Staff|1|||||||||||||||||||17861|An Enchanters Sack||||||
-9641|1|A Sack For Mizzle||75|75|0|0|1|1|-1|10636|A Sack For Mizzle|1||||||||||10614|a Spoon|1|10615|The One Key|1|10616|Lost Scroll|1|10617|Charm and Sacrifice|1|||||||||||||||||||17861|An Enchanters Sack||||||
-9642|1|A Sack For Modani||75|75|0|0|1|1|-1|10635|A Sack For Modani|1||||||||||10606|Xolion Rod|1|10607|Innoruuk's Word|1|10608|Chalice of Kings|1|10609|Snow Blossoms|1|||||||||||||||||||17861|An Enchanters Sack||||||
-9643|1|A Sack For Nadia||75|75|0|0|1|1|-1|10637|A Sack For Nadia|1||||||||||10618|Enchanted Diamond|1|10619|Enchanted Sapphire|1|10620|Enchanted Ruby|1|10621|Enchanted Emerald|1|||||||||||||||||||17861|An Enchanters Sack||||||
+9632|1|A Bundle Of Staves||75|75|0|0|1|1|-1|10639|A Bundle of Staves|1||||||||||10610|1st Piece of Staff|1|10611|2nd Piece of Staff|1|10612|3rd Piece of Staff|1|10613|4th Piece of Staff|1|||||||||||||||||||17861|An Enchanters Sack (for Staves)||||||
+9641|1|A Sack For Mizzle||75|75|0|0|1|1|-1|10636|A Sack For Mizzle|1||||||||||10614|a Spoon|1|10615|The One Key|1|10616|Lost Scroll|1|10617|Charm and Sacrifice|1|||||||||||||||||||40003|An Enchanters Sack (for Mizzle)||||||
+9642|1|A Sack For Modani||75|75|0|0|1|1|-1|10635|A Sack For Modani|1||||||||||10606|Xolion Rod|1|10607|Innoruuk's Word|1|10608|Chalice of Kings|1|10609|Snow Blossoms|1|||||||||||||||||||40004|An Enchanters Sack (for Modani)||||||
+9643|1|A Sack For Nadia||75|75|0|0|1|1|-1|10637|A Sack For Nadia|1||||||||||10618|Enchanted Diamond|1|10619|Enchanted Sapphire|1|10620|Enchanted Ruby|1|10621|Enchanted Emerald|1|||||||||||||||||||40005|An Enchanters Sack (for Nadia)||||||
 9645|0|A Screaming Sphere||75|75|0|0|1|1|-1|22954|INVALID_ID|1||||||||||22950|INVALID_ID|1|22951|INVALID_ID|1|22952|INVALID_ID|1|22953|INVALID_ID|1|||||||||||||||||||17172|INVALID_ID||||||
 9646|0|A Wind Etched Key||75|75|0|0|1|1|-1|28638|INVALID_ID|1||||||||||28639|INVALID_ID|1|28640|INVALID_ID|1|28641|INVALID_ID|1|28642|INVALID_ID|1|||||||||||||||||||17888|INVALID_ID||||||
-9644|1|A Sack For Polzin||75|75|0|0|1|1|-1|10638|A Sack For Polzin|1||||||||||10622|Head of the Serpent|1|10623|Essence of a Ghost|1|10624|Essence of a Vampire|1|10625|Sands of the Mystics|1|||||||||||||||||||17861|An Enchanters Sack||||||
+9644|1|A Sack For Polzin||75|75|0|0|1|1|-1|10638|A Sack For Polzin|1||||||||||10622|Head of the Serpent|1|10623|Essence of a Ghost|1|10624|Essence of a Vampire|1|10625|Sands of the Mystics|1|||||||||||||||||||40006|An Enchanters Sack (for Polzin)||||||
 9727|1|Completed Report||75|75|0|0|1|1|-1|3599|Completed Report|1||||||||||18450|Personal Diary Page|1|18451|Crier's Scroll|1|18452|Merchant's Letter|1|18453|Written Announcement|1|18454|Priest's Diary Page|1|18455|Student's Log|1|||||||||||||17805|Ancient Journal||||||
 9649|0|Arantir's Bracelet Of Discovery||75|75|0|0|1|1|-1|11308|Arantir's Bracelet of Discovery|1||||||||||16279|Wizard Emblem|1|16286|Ethereal Silk Swatch|1|16357|Ornate Silk Bracelet Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
 9650|0|Arantir's Circlet Of Discovery||75|75|0|0|1|1|-1|9949|Arantir's Circlet of Discovery|1||||||||||16286|Ethereal Silk Swatch|2|16279|Wizard Emblem|1|16354|Ornate Silk Turban Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
@@ -6339,16 +6339,16 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 9686|0|Bidilis' Helm Of The Elusive||75|75|0|0|1|1|-1|9806|INVALID_ID|1||||||||||16284|Ethereal Metal Rings|2|16273|Rogue Emblem|1|16362|Elemental Chain Coif Pattern|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
 9687|0|Bidilis' Sleeves Of The Elusive||75|75|0|0|1|1|-1|11432|INVALID_ID|1||||||||||16284|Ethereal Metal Rings|2|16273|Rogue Emblem|1|16364|Elemental Chain Sleeve Pattern|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
 9777|1|Full Gathering Satchel||75|75|0|0|1|1|-1|6975|Full Gathering Satchel|1||||||||||6961|Panda Claws|2|13762|Tiger Skin|2|16984|Asp Poison Sac|2|6973|Bamboo Shoot|1|6974|Kejekan Palm Fruit|1||||||||||||||||17884|Burlap Satchel||||||
-9961|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head|4||||||||||||||||||||||||||||17883|Burlap Satchel||||||
+9961|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head (Male)|1|6967|Heretics Head (Female)||||||||||||||||||||||||||17883|Burlap Satchel||||||
 9691|0|Bloodling Shield||75|75|0|0|1|1|-1|30658|INVALID_ID|1||||||||||30602|INVALID_ID|8||||||||||||||||||||||||||||17087|Carapace Shield Frame||||||
 9692|0|Bloody Cloth Bag||75|75|0|0|1|1|-1|6157|Bloody Cloth Bag|1||||||||||6156|INVALID_ID|2||||||||||||||||||||||||||||17112|Blue Cloth Bag||||||
 9693|0|Boots Of Emblazoned Souls||75|75|0|0|1|1|-1|19545|Boots of Emblazoned Souls|1||||||||||16283|Ethereal Sheet of Metal|2|16270|Shadowknight Emblem|1|16298|Ornate Boot Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
 9694|0|Boots Of The Khati Sha||75|75|0|0|1|1|-1|20000|Boots of the Khati Sha|1||||||||||16277|Beastlord Emblem|1|16287|Cured Ethereal Energy|1|16353|Ornate Leather Boot Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
 9695|0|Boots Of Vengeful Fury||75|75|0|0|1|1|-1|20073|Boots of Vengeful Fury|1||||||||||16283|Ethereal Sheet of Metal|2|16271|Cleric Emblem|1|16298|Ornate Boot Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
-9962|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head|3|6967|Heretics Head|1|||||||||||||||||||||||||17883|Burlap Satchel||||||
-9963|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head|2|6967|Heretics Head|2|||||||||||||||||||||||||17883|Burlap Satchel||||||
-9964|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6967|Heretics Head|3|6966|Heretics Head|1|||||||||||||||||||||||||17883|Burlap Satchel||||||
-9965|1|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6967|Heretics Head|4||||||||||||||||||||||||||||17883|Burlap Satchel||||||
+9962|0|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head|3|6967|Heretics Head|1|||||||||||||||||||||||||17883|Burlap Satchel||||||
+9963|0|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6966|Heretics Head|2|6967|Heretics Head|2|||||||||||||||||||||||||17883|Burlap Satchel||||||
+9964|0|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6967|Heretics Head|3|6966|Heretics Head|1|||||||||||||||||||||||||17883|Burlap Satchel||||||
+9965|0|Satchel Of Heretic Heads||75|75|0|0|1|1|-1|6969|Satchel of Heretic Heads|1||||||||||6967|Heretics Head|4||||||||||||||||||||||||||||17883|Burlap Satchel||||||
 9701|0|Box Of Scorpion Legs||75|75|0|0|1|1|-1|3676|INVALID_ID|1||||||||||3671|INVALID_ID|4||||||||||||||||||||||||||||17238|INVALID_ID||||||
 9702|0|Box Of Shadow Disks||75|75|0|0|1|1|-1|29819|Box of Shadow Disks|1||||||||||29818|Shadow Disk|8||||||||||||||||||||||||||||17498|Barkhem's Box||||||
 9703|0|Bracer Of Emblazoned Souls||75|75|0|0|1|1|-1|11172|Bracer of Emblazoned Souls|1||||||||||16270|Shadowknight Emblem|1|16283|Ethereal Sheet of Metal|1|16297|Ornate Bracer Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
@@ -6395,18 +6395,18 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 9751|0|Elemental Shroud Of The Prime||75|75|0|0|1|1|-1|15782|Elemental Shroud of the Prime|1||||||||||16286|Ethereal Silk Swatch|3|16280|Magician Emblem|1|16355|Ornate Silk Robe Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
 9752|0|Elemental Sleeves Of The Prime||75|75|0|0|1|1|-1|11597|Elemental Sleeves of the Prime|1||||||||||16286|Ethereal Silk Swatch|2|16280|Magician Emblem|1|16356|Ornate Silk Sleeve Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
 9753|0|Elemental Slippers Of The Prime||75|75|0|0|1|1|-1|20427|Elemental Slippers of the Prime|1||||||||||16286|Ethereal Silk Swatch|2|16280|Magician Emblem|1|16360|Ornate Silk Boot Pattern|1||||||||||||||||||||||17185|Druzzil's Mystical Sewing Kit|||16361|INVALID_ID||
-9670|1|Bag Of Ice Necklaces||75|75|0|0|1|1|-1|13898|Bag of Ice Necklaces|1||||||||||13897|Goblin Ice Necklace|6||||||||||||||||||||||||||||17944|Empty Bag||||||
-9676|1|Bag Of Snake Parts||75|75|0|0|1|1|-1|13889|Bag of Snake Parts|1||||||||||13067|Snake Fang|3|13070|Snake Scales|3|||||||||||||||||||||||||17943|Empty Bag||||||
+9670|1|Bag Of Ice Necklaces||75|75|0|0|1|1|-1|13898|Bag of Ice Necklaces|1||||||||||13897|Goblin Ice Necklace|6||||||||||||||||||||||||||||17944|Empty Bag for Ice Necklaces||||||
+9676|1|Bag Of Snake Parts||75|75|0|0|1|1|-1|13889|Bag of Snake Parts|1||||||||||13067|Snake Fang|3|13070|Snake Scales|3|||||||||||||||||||||||||17943|Empty Bag for Snake Parts||||||
 9756|0|Enchanted Ring Of Torden||75|75|0|0|1|1|-1|9425|INVALID_ID|1||||||||||9421|Sandstorm Gem|1|9422|Lightning Gem|1|9423|Blizzard Gem|1|9424|Tornado Gem|1|||||||||||||||||||17168|Ring of Torden||||||
 9757|0|Enchanted Velium Powder||75|75|0|0|1|0|-1|1850|Enchanted velium powder|1||||||||||22093|Small Brick of Velium|1|28521|Runed Sea Shell|1|||||||||||||||||||||||||17904|Mortar and Pestle||||||
 9758|0|Esoteric Meld||75|75|0|0|1|1|-1|11488|INVALID_ID|1||||||||||28765|INVALID_ID|1|28783|INVALID_ID|1|||||||||||||||||||||||||17192|INVALID_ID||||||
 9759|0|Esoteric Meld||75|75|0|0|1|1|-1|11488|INVALID_ID|1||||||||||28765|INVALID_ID|1|28780|INVALID_ID|1|||||||||||||||||||||||||17192|INVALID_ID||||||
 9760|0|Esoteric Meld||75|75|0|0|1|1|-1|11488|INVALID_ID|1||||||||||28780|INVALID_ID|1|28783|INVALID_ID|1|||||||||||||||||||||||||17192|INVALID_ID||||||
-9678|1|Bag Of Zombie Flesh||75|75|0|0|1|1|-1|13880|Bag of Zombie Flesh|1||||||||||13074|Zombie Skin|4||||||||||||||||||||||||||||17939|Empty Bag||||||
+9678|1|Bag Of Zombie Flesh||75|75|0|0|1|1|-1|13880|Bag of Zombie Flesh|1||||||||||13074|Zombie Skin|4||||||||||||||||||||||||||||17939|Empty Bag for Zombie Flesh||||||
 9762|1|Filled Sacred Urn||69|69|220|0|1|1|-1|16246|Filled Sacred Urn|1||||||||||16245|Sacred Water|3|16251|Wooden Signet|1||||||||||||||||||||||||||||||||
 9763|0|Food Satchel||60|60|220|0|1|1|-1|16248|Food Satchel|1||||||||||29781|INVALID_ID|3|16254|INVALID_ID|1||||||||||||||||||||||||||||||||
-9765|1|Full Bag Of Pearls||75|75|0|0|1|1|-1|13879|Full Bag of Pearls|1||||||||||13878|Pearl of Odus|4||||||||||||||||||||||||||||17939|Empty Bag||||||
-13111|1|Bag of Eyes and Bones||75|75|0|0|1|1|-1|13887|Bag of Eyes n Bones|1||||||||||10307|Fire Beetle Eye|3|13073|Bone Chips|3|||||||||||||||||||||||||17942|Empty Bag||||||
+9765|1|Full Bag Of Pearls||75|75|0|0|1|1|-1|13879|Full Bag of Pearls|1||||||||||13878|Pearl of Odus|4||||||||||||||||||||||||||||40001|Empty Bag for Pearls||||||
+13111|1|Bag of Eyes and Bones||75|75|0|0|1|1|-1|13887|Bag of Eyes n Bones|1||||||||||10307|Fire Beetle Eye|3|13073|Bone Chips|3|||||||||||||||||||||||||17942|Empty Bag for Beetle Eyes and Bones||||||
 9698|1|Box Of Beetle Eyes||75|75|0|0|1|1|-1|13389|Box of Beetle Eyes|1||||||||||10307|Fire Beetle Eye|10||||||||||||||||||||||||||||17930|Empty Box||||||
 9700|1|Box Of Remains||75|75|0|0|1|1|-1|13246|Box of Remains|1||||||||||13233|Barbarian Rib|1|13247|Barbarian Skull|1|13248|Barbarian Jaw|1|13249|Barbarian Femur|1|||||||||||||||||||17945|Empty Box||||||
 13609|1|Beetle Eye Chest||75|75|0|0|1|0|-1|13395|Beetle Eye Chest|1||||||||||13997|Kerra Isle Beetle Eye|4||||||||||||||||||||||||||||17932|Empty Chest||||||
@@ -6430,7 +6430,7 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 9787|0|Full Paladin Headhunting Satchel||75|75|0|0|1|1|-1|24630|INVALID_ID|1||||||||||11430|Sir Gregon's Head|1|14344|Sir Gerwin's Head|1|22892|Sir Telian's Head|1|26896|Sir Arlindo's Head|1|||||||||||||||||||11517|INVALID_ID||||||
 9677|1|Bag Of Sulfur||75|75|0|0|1|1|-1|24861|Bag of Sulfur|1||||||||||16976|Crystallized Sulfur|4||||||||||||||||||||||||||||17862|Empty Sulfur Collection Bag||||||
 9639|1|A Pebble Filled Box||75|75|0|0|1|1|-1|12836|A Pebble Filled Box|1||||||||||12434|Petrified Redwood|1|12483|Radiant Meteorite|1|12776|Gold Nugget|1|12794|Rile's Sand Coin|1|12830|A Scarlet Stone|1|12831|Tektite|1|12832|Plains Pebble|1|12833|Jade Magma|1|12834|Heart of Ice|1|12835|Unholy Coldstone|1|17039|Empty Tin Box||||||
-9697|1|Box Full Of Tiny Bones||75|75|0|0|1|1|-1|12376|Box Full of Tiny Bones|1||||||||||12377|Very Tiny Crumpled Skeleton|4||||||||||||||||||||||||||||17986|empty Tin Box||||||
+9697|1|Box Full Of Tiny Bones||75|75|0|0|1|1|-1|12376|Box Full of Tiny Bones|1||||||||||12377|Very Tiny Crumpled Skeleton|4||||||||||||||||||||||||||||17986|Empty Tin Box||||||
 13550|1|Full Fern Flower Pouch||75|75|0|0|1|1|-1|12421|Full Fern Flower Pouch|1||||||||||12422|Fern Flower|4||||||||||||||||||||||||||||17025|Fern Flower Pouch||||||
 9775|1|Full First Rite Pack||75|75|0|0|1|1|-1|12427|Full First Rite Pack|1||||||||||12425|Skipping Stone|1|12426|Sabertooth Cub Canine|1|12659|Large Scorpion Pincer|1|12672|Goblin Scout Beads|1|||||||||||||||||||17026|First Rite Pack||||||
 9793|0|Full Satchel||75|75|0|0|1|1|-1|29889|INVALID_ID|1||||||||||29885|INVALID_ID|1|29886|INVALID_ID|1|29887|INVALID_ID|1|29888|INVALID_ID|1|||||||||||||||||||17121|INVALID_ID||||||
@@ -6655,7 +6655,7 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 10060|0|Wristplates Of Vengeful Fury||75|75|0|0|1|1|-1|11198|Wristplates of Vengeful Fury|1||||||||||16271|Cleric Emblem|1|16283|Ethereal Sheet of Metal|1|16297|Ornate Bracer Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
 9923|1|Quiver Of Kithicor - Full||75|75|0|0|1|1|-1|12328|Quiver of Kithicor - full|1||||||||||12322|Arrow of Recognition|1|12323|Arrow of Acknowledgment|1|12324|Arrow of Defiance|1|12325|Arrow of Gallantry|1|12326|Arrow of Bravery|1|12327|Arrow of Fortitude|1|||||||||||||17978|Quiver of Kithicor - open||||||
 10066|0|Quintessence Of Knowledge||59|59|20|15|1|0|-1|29356|Quintessence of Knowledge|1||||||||||32244|INVALID_ID|1|32245|Erudition Vine|1||||||||||||||||||||||||||||||||
-9834|1|Blades of Tactics and Strategy||75|75|0|0|1|1|-1|17869|Red Scabbard|1|10909|Blade of Tactics|1|10910|Blade of Strategy|1||||20667|Ancient Sword Blade|1|20670|Ancient Blade|1|20671|Jeweled Dragon Head Hilt|1|20672|Finely Crafted Dragon Head Hilt|1|||||||||||||||||||17859|Red Scabbard||||||
+9834|1|Blades of Tactics and Strategy||75|75|0|0|1|1|-1|10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||20667|Ancient Sword Blade|1|20670|Ancient Blade|1|20671|Jeweled Dragon Head Hilt|1|20672|Finely Crafted Dragon Head Hilt|1|||||||||||||||||||17859|Red Scabbard||||||
 10068|0|Black Acrylia Long Sword||63|63|0|311|0|0|-1|12536|INVALID_ID|1||||||||||11591|INVALID_ID|1|11593|INVALID_ID|1|12046|Hilt Mold|1|12060|Pommel Mold|1|22085|Long Blade Mold|1|||||||||||||||||||||||
 10071|1|Spell: Ice Comet||58|58|0|182|0|0|-1|16338|Spell: Ice Comet|1||||||||||11780|Rune of Frost|1|11781|Rune of the Astral|1||||||||||||||||||||||||||||||||
 10072|0|Karana's Heartfruit Salad||60|60|0|308|0|0|-1|29782|INVALID_ID|2||||||||||29783|INVALID_ID|1|29786|INVALID_ID|1||||||||||||||||||||||||||||||||
@@ -6666,8 +6666,8 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 10079|1|Writ Of The Fallen||69|69|0|0|1|1|-1|22581|Writ of the Fallen|1||||||||||22597|A Tome Insert Page 1|1|22598|A Tome Insert Page 2|1|22599|A Tome Insert Page 3|1|22600|A Tome Insert Page 4|1||||||||||||||||||||||||||
 10081|1|Fish Eggs||55|55|0|135|0|0|-1|13076|Fish Scales|2|16498|Fish Eggs|2|||||||14975|Evergreen Salmon|1||||||||||||||||||||||||||||||||21565|Skinning Knife||
 10084|0|Summoned: 10 Dose Scoriae Bite||75|75|0|0|1|1|-1|13532|INVALID_ID|10||||||||||21683|Summoned: Scoriae Bite|10||||||||||||||||||||||||||||17149|Coffin Poison Bottle||||||
-13378|1|Blades Of Tactics And Strategy||75|75|0|0|1|0|-1|10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||5319|Summoned: Sword of Runes|1||||||||||||||||||||||||||||17869|Red Scabbard||||||
-13379|1|Blades of Tactics and Strategy||75|75|0|0|1|0|-1|10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||10908|Jagged Blade of War|1||||||||||||||||||||||||||||17869|Red Scabbard||||||
+13378|0|Blades Of Tactics And Strategy||75|75|0|0|1|0|-1|10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||5319|Summoned: Sword of Runes|1||||||||||||||||||||||||||||17869|Red Scabbard||||||
+13379|1|Blades of Tactics and Strategy||75|75|0|0|1|0|-1|10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||10908|Jagged Blade of War|1||||||||||||||||||||||||||||17869|Red Scabbard (Tactics and Strategy)||||||
 10087|1|Powdered Magma Crystals||60|60|0|0|1|0|-1|29516|Powdered Magma Crystals|4||||||||||21752|Magma Crystals|3|||||||||||||||||||||||||||||||||||
 10088|1|Powdered Granite||60|60|0|0|1|0|-1|29517|Powdered Granite|4||||||||||21708|Chips of Granite|3|||||||||||||||||||||||||||||||||||
 10097|1|Beer Braised Griffon||60|60|0|119|0|0|-1|8197|Beer Braised Griffon|1||||||||||8153|Griffon Meat|1|13032|Short Beer|1|13425|Spices|1|||||||||||||||||||||||||||||
@@ -6691,7 +6691,7 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 10116|1|Imbued Mithril Studded Gloves||61|61|0|122|0|0|-1|1962|Imbued Mithril Studded Gloves|1||||||||||22225|Mithril Studs|4|13810|Glove Pattern|1|16491|Oak Bark Tannin|1|22507|Imbued Emerald|1|30357|Sabertooth Tiger Hide|1|||||||||||||||||||||||
 10124|1|Imbued Mithril Studded Bracer||61|61|0|122|0|0|-1|1961|Imbued Mithril Studded Bracer|1||||||||||22225|Mithril Studs|2|13809|Wristband Pattern|1|16491|Oak Bark Tannin|1|22507|Imbued Emerald|1|30357|Sabertooth Tiger Hide|1|||||||||||||||||||||||
 10125|0|Jar Of Tonic||75|75|0|0|1|1|-1|5536|INVALID_ID|1||||||||||5535|INVALID_ID|4||||||||||||||||||||||||||||17077|INVALID_ID||||||
-13380|1|Jagged Blade of War||75|75|0|0|1|0|-1|10908|Jagged Blade of War|1||||||||||10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||||||||||||||||||||17869|Red Scabbard||||||
+13380|1|Jagged Blade of War||75|75|0|0|1|0|-1|10908|Jagged Blade of War|1||||||||||10909|Blade of Tactics|1|10910|Blade of Strategy|1|||||||||||||||||||||||||40007|Red Scabbard (War)||||||
 10129|1|Mithril Reinforced Belt||61|61|0|215|0|0|-1|1923|Mithril Reinforced Belt|1||||||||||22226|Mithril Boning|2|13807|Belt Pattern|1|16491|Oak Bark Tannin|1|30359|Excellent Sabertooth Tiger Hide|1||||||||||||||||||||||||||
 10130|1|Mithril Reinforced Boots||61|61|0|215|0|0|-1|1928|Mithril Reinforced Boots|1||||||||||22226|Mithril Boning|3|13812|Boot Pattern|1|16491|Oak Bark Tannin|1|30359|Excellent Sabertooth Tiger Hide|1||||||||||||||||||||||||||
 10131|1|Mithril Reinforced Cloak||61|61|0|215|0|0|-1|1922|Mithril Reinforced Cloak|1||||||||||22226|Mithril Boning|2|13806|Cloak Pattern|1|16491|Oak Bark Tannin|1|30359|Excellent Sabertooth Tiger Hide|1||||||||||||||||||||||||||
@@ -6862,8 +6862,8 @@ eq_recipeID|enabled|name|Note|eq_tradeskillID_orig|eq_tradeskillID|eq_skill_need
 13001|0|Sealed Wolf Fang Pouch||75|75|0|0|1|1|-1|9228|Sealed Wolf Fang Pouch|1||||||||||8259|Wolf Fang|3|8263|INVALID_ID|1|||||||||||||||||||||||||17263|Necklace Component Pouch||||||
 13002|0|Sealed Bear Fang Pouch||75|75|0|0|1|1|-1|9229|Sealed Bear Fang Pouch|1||||||||||8260|Bear Fang|3|8263|INVALID_ID|1|||||||||||||||||||||||||17263|Necklace Component Pouch||||||
 13003|0|Sealed Panther Fang Pouch||75|75|0|0|1|1|-1|9230|Sealed Panther Fang Pouch|1||||||||||8256|Panther Fang|3|8263|INVALID_ID|1|||||||||||||||||||||||||17263|Necklace Component Pouch||||||
-9754|1|Embroidered Bag Of Bone Necklaces||75|75|0|0|1|1|-1|14582|Embroidered Bag of Bone Necklaces|1||||||||||14581|Odd Bone Necklace|8||||||||||||||||||||||||||||17090|Small Embroidered Sack||||||
-9755|1|Embroidered Bag Of Bronze Symbols||75|75|0|0|1|1|-1|14583|Embroidered Bag of Bronze Symbols|1||||||||||14584|Odd Bronze Necklace|8||||||||||||||||||||||||||||17090|Small Embroidered Sack||||||
+9754|1|Embroidered Bag Of Bone Necklaces||75|75|0|0|1|1|-1|14582|Embroidered Bag of Bone Necklaces|1||||||||||14581|Odd Bone Necklace|8||||||||||||||||||||||||||||17090|Small Embroidered Sack for Necklaces||||||
+9755|1|Embroidered Bag Of Bronze Symbols||75|75|0|0|1|1|-1|14583|Embroidered Bag of Bronze Symbols|1||||||||||14584|Odd Bronze Necklace|8||||||||||||||||||||||||||||40002|Small Embroidered Sack for Bronze Symbols||||||
 9999|1|Small Sealed Bag||75|75|0|0|1|1|-1|12993|Small Sealed Bag|1||||||||||10307|Fire Beetle Eye|1|13068|Bat Wing|1|13072|Rat Ears|1|13088|Snake Egg|1|||||||||||||||||||17802|Small Sealable Bag||||||
 9679|1|Bar Of Ronium||75|75|0|0|1|1|-1|12305|A Bar of Ronium|1||||||||||16507|Enchanted Platinum Bar|2|12282|Soil of Underfoot|1|12297|Melatite|1|12306|Mistmoore Granite|1|16904|Sand of Ro|1||||||||||||||||17977|Sol Cauldron||||||
 13009|0|Anizok's Minimizing Device||69|69|0|0|1|0|-1|||||||||||||9181|Mana Battery - Class Six|1||||||||||||||||||||||||||||||||9176|INVALID_ID||
