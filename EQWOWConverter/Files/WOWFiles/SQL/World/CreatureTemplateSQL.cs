@@ -33,23 +33,35 @@ namespace EQWOWConverter.WOWFiles
             int npcFlags = 0;
             int trainerType = 0;
             int trainerClass = 0;
+            int numOfRoles = 0;
             string iconName = string.Empty;
             if (creatureTemplate.MerchantID != 0)
+            {
                 npcFlags |= 128;    // 0x00000080 = Vendor flag.  TODO: Add Vendor Ammo/Food/Poison/Reagent flags
+                numOfRoles++;
+            }
             if (creatureTemplate.IsBanker == true)
+            {
                 npcFlags |= 131072; // 0x00020000 = Banker Flag
+                numOfRoles++;
+            }
             if (creatureTemplate.ClassTrainerType != ClassType.None && creatureTemplate.ClassTrainerType != ClassType.All)
             {
-                npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
                 npcFlags = 179;
                 trainerType = 0;    // 0 = Class Trainer
                 trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
                 iconName = "Trainer";
+                numOfRoles+=2;
             }
             if (creatureTemplate.IsQuestGiver == true)
+            {
                 npcFlags |= 2;      // 0x00000002	Quest Giver
+                numOfRoles++;
+            }
+            if (numOfRoles > 1)
+                npcFlags |= 1;     // 0x00000001 = Has Gossip Menu
             if (creatureTemplate.CanAssist == true)
                 typeFlags |= 4096;   // 0x00001000 = CREATURE_TYPE_FLAG_CAN_ASSIST
             int unitFlags = 0;
