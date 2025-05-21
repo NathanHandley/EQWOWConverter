@@ -20,7 +20,6 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
-        private static int CUR_SPELL_DBCID = Configuration.DBCID_SPELL_ID_START;
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
 
         public int ID = 0;
@@ -58,12 +57,5 @@ namespace EQWOWConverter.Spells
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 0;
         public bool AllowCastInCombat = true;
-
-        public static int GenerateID()
-        {
-            int spellID = CUR_SPELL_DBCID;
-            CUR_SPELL_DBCID++;
-            return spellID;
-        }
     }
 }

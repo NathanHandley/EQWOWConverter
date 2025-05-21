@@ -492,7 +492,8 @@ namespace EQWOWConverter
         public static readonly int DBCID_SOUNDAMBIENCE_ID_START = 600;
 
         // ID for spells found in Spell.dbc
-        // Note: There is a block of manually assigned spell IDs starting at 86900.  See "Spells"
+        // - Manually created spells reserve IDs from 86900 to 86999.  See "Spells"
+        // - Recipes reserve IDs 87000 to 91354
         public static readonly int DBCID_SPELL_ID_START = 87000;
 
         // ID for spellcasttimes.dbc
