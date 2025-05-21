@@ -23,18 +23,22 @@ namespace EQWOWConverter.Tradeskills
         static private Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
         private static readonly object TradeskillLock = new object();
 
-        public int SpellID;
         public int EQID;
+        public int SpellID;
         public string Name = string.Empty;
         public TradeskillType Type;
         public int SkillNeededEQ;
         public int TrivialEQ;
-        public Dictionary<int, int> ProducedItemCountsByItemID = new Dictionary<int, int>();
-        public Dictionary<int, int> ComponentItemCountsByItemID = new Dictionary<int, int>();
         public int SkillNeededWOW;
         public int TrivialLowWOW;
         public int TrivialHighWOW;
         public int LearnCostInCopper;
+        public Dictionary<int, int> ProducedItemCountsByWOWItemID = new Dictionary<int, int>();
+        public Dictionary<int, int> ComponentItemCountsByWOWItemID = new Dictionary<int, int>();
+        public bool DoReplaceContainer;
+        public int CombineSpellID = -1;
+        public List<int> RequiredIWOWtemIDs = new List<int>();
+        public List<int> CombinerWOWItemIDs = new List<int>();
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -62,96 +66,121 @@ namespace EQWOWConverter.Tradeskills
 
         public static void PopulateTradeskillRecipes(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
-            // Load in the recipes first
+            // Clear if already loaded
+            if (RecipesByTradeskillType.Count > 0)
+            {
+                Logger.WriteError("Calling PopulateTradeskillRecipes twice");
+                RecipesByTradeskillType.Clear();
+            }
+
+            // Load the recipes
             string tradeskillRecipesFilePath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TradeskillRecipes.csv");
             Logger.WriteDebug(string.Concat("Populating tradeskill recipes via file '", tradeskillRecipesFilePath, "'"));
             List<Dictionary<string, string>> rows = FileTool.ReadAllRowsFromFileWithHeader(tradeskillRecipesFilePath, "|");
-            Dictionary<int, TradeskillRecipe> candidateRecipesByEQID = new Dictionary<int, TradeskillRecipe>();
             foreach (Dictionary<string, string> columns in rows)
             {
-                // Skip if not generating the higher expansions
+                // Skip if not eligible to generate
+                if (columns["enabled"] == "0")
+                    continue;
                 int minExpansionID = int.Parse(columns["min_expansion"]);
-                if (minExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                if (minExpansionID > Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS)
                     continue;
 
-                // Create the tradeskill recipe
-                int spellID = int.Parse(columns["spellid_wow"]);
-                int eqID = int.Parse(columns["id_eq"]);
+                // Load the recipe
+                int spellID = int.Parse(columns["wow_spellID"]);
+                int eqID = int.Parse(columns["eq_recipeID"]);
                 string name = columns["name"];
-                int eqSkillNeeded = int.Parse(columns["skillneeded"]);
-                int eqTrivial = int.Parse(columns["trivial"]);
-                TradeskillType type = ConvertTradeskillType(int.Parse(columns["tradeskill"]));
-                if (type == TradeskillType.None)
+                int eqSkillNeeded = int.Parse(columns["eq_skill_needed"]);
+                int eqTrivial = int.Parse(columns["eq_trivial"]);
+                TradeskillType type = ConvertTradeskillType(int.Parse(columns["eq_tradeskillID"]));
+                if (type == TradeskillType.Unknown)
                 {
                     Logger.WriteDebug(string.Concat("Skipping tradeskill item with name '", name, "' as the tradeskill type is Unknown"));
                     continue;
                 }
-
-                // Add it as a candidate
-                TradeskillRecipe newRecipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
-                candidateRecipesByEQID.Add(eqID, newRecipe);
-            }
-
-            // Load in the recipe items
-            string tradeskillRecipeItemsFilePath = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "TradeskillRecipeItems.csv");
-            Logger.WriteDebug(string.Concat("Populating tradeskill recipe items via file '", tradeskillRecipeItemsFilePath, "'"));
-            rows = FileTool.ReadAllRowsFromFileWithHeader(tradeskillRecipeItemsFilePath, "|");
-            foreach (Dictionary<string, string> columns in rows)
-            {
-                int recipeEQID = int.Parse(columns["recipe_id"]);
-                int itemID = int.Parse(columns["item_id"]);
-                int successCount = int.Parse(columns["successcount"]);
-                int componentCount = int.Parse(columns["componentcount"]);
-
-                // Valid items only
-                if (itemTemplatesByEQDBID.ContainsKey(itemID) == false)
+                TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
+                recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
+                for (int i = 0; i < 4; i++)
                 {
-                    Logger.WriteDebug(string.Concat("Skipping recipe item with eqid ", itemID, " since that item ID is not known"));
-                    continue;
+                    string producedEQItemIDString = columns[string.Concat("produced_eqid_", i)];
+                    if (producedEQItemIDString.Trim().Length > 0)
+                    {
+                        int producedEQItemID = int.Parse(producedEQItemIDString);
+                        if (itemTemplatesByEQDBID.ContainsKey(producedEQItemID) == false)
+                        {
+                            Logger.WriteError(string.Concat("Tried to add a tradeskill produced item with EQ Id of ", producedEQItemID, " but it did not exist"));
+                            continue;
+                        }
+                        int producedWOWItemID = itemTemplatesByEQDBID[producedEQItemID].WOWEntryID;                        
+                        int producedItemCount = int.Parse(columns[string.Concat("produced_count_", i)]);
+                        if (recipe.ProducedItemCountsByWOWItemID.ContainsKey(producedWOWItemID) == true)
+                            recipe.ProducedItemCountsByWOWItemID[producedWOWItemID] += producedItemCount;
+                        else
+                            recipe.ProducedItemCountsByWOWItemID.Add(producedWOWItemID, producedItemCount);
+                    }
                 }
-                if (candidateRecipesByEQID.ContainsKey(recipeEQID) == false)
+                for (int i = 0; i < 8; i++)
                 {
-                    Logger.WriteDebug(string.Concat("Skipping recipe item with recipe id ", recipeEQID, " since that recipe ID is not known"));
-                    continue;
+                    string componentEQItemIDString = columns[string.Concat("component_eqid_", i)];
+                    if (componentEQItemIDString.Trim().Length > 0)
+                    {
+                        int componentEQItemID = int.Parse(componentEQItemIDString);
+                        if (itemTemplatesByEQDBID.ContainsKey(componentEQItemID) == false)
+                        {
+                            Logger.WriteError(string.Concat("Tried to add a tradeskill component item with EQ Id of ", componentEQItemID, " but it did not exist"));
+                            continue;
+                        }
+                        int componentWOWItemID = itemTemplatesByEQDBID[componentEQItemID].WOWEntryID;
+                        int componentItemCount = int.Parse(columns[string.Concat("component_count_", i)]);
+                        if (recipe.ComponentItemCountsByWOWItemID.ContainsKey(componentWOWItemID) == true)
+                            recipe.ComponentItemCountsByWOWItemID[componentWOWItemID] += componentItemCount;
+                        else
+                            recipe.ComponentItemCountsByWOWItemID.Add(componentWOWItemID, componentItemCount);
+                    }
                 }
-
-                // Attach to the related templates
-                TradeskillRecipe curRecipe = candidateRecipesByEQID[recipeEQID];
-                if (successCount > 0)
+                for (int i = 0; i < 2; i++)
                 {
-                    if (curRecipe.ProducedItemCountsByItemID.ContainsKey(itemID) == false)
-                        curRecipe.ProducedItemCountsByItemID.Add(itemID, successCount);
+                    string requiredEQItemIDString = columns[string.Concat("required_eqid_", i)];
+                    if (requiredEQItemIDString.Trim().Length > 0)
+                    {
+                        int requiredEQItemID = int.Parse(requiredEQItemIDString);
+                        if (itemTemplatesByEQDBID.ContainsKey(requiredEQItemID) == false)
+                        {
+                            Logger.WriteError(string.Concat("Tried to add a tradeskill required item with EQ Id of ", requiredEQItemID, " but it did not exist"));
+                            continue;
+                        }
+                        int requiredWOWItemID = itemTemplatesByEQDBID[requiredEQItemID].WOWEntryID;
+                        if (recipe.RequiredIWOWtemIDs.Contains(requiredWOWItemID) == false)
+                            recipe.RequiredIWOWtemIDs.Add(requiredWOWItemID);
+                    }
+                }
+                if (type == TradeskillType.None)
+                {
+                    recipe.CombineSpellID = int.Parse(columns["combine_spell_id"]);
+                    int containerItemEQID = int.Parse(columns["container_eqid_0"]);
+                    if (containerItemEQID == -1)
+                    {
+                        foreach (int componentWOWItemID in recipe.ComponentItemCountsByWOWItemID.Keys)
+                            recipe.CombinerWOWItemIDs.Add(componentWOWItemID);
+                    }
                     else
-                        curRecipe.ProducedItemCountsByItemID[itemID] += successCount;
-                }
-                if (componentCount > 0)
-                {
-                    if (curRecipe.ComponentItemCountsByItemID.ContainsKey(itemID) == false)
-                        curRecipe.ComponentItemCountsByItemID.Add(itemID, componentCount);
-                    else
-                        curRecipe.ComponentItemCountsByItemID[itemID] += componentCount;
+                    {
+                        if (itemTemplatesByEQDBID.ContainsKey(containerItemEQID) == false)
+                        {
+                            Logger.WriteError(string.Concat("Tried to add a 'none' combiner item with EQ Id of ", containerItemEQID, " but it did not exist"));
+                            continue;
+                        }
+                        recipe.CombinerWOWItemIDs.Add(containerItemEQID);
+                    }
                 }
 
                 // Generate WOW values
-                PopulateWOWSkillLevels(curRecipe);
-            }
+                PopulateWOWSkillLevels(recipe);
 
-            // Save them in the list
-            foreach (var tradeskillRecipe in candidateRecipesByEQID)
-            {
-                if (tradeskillRecipe.Value.ProducedItemCountsByItemID.Count == 0)
-                {
-                    Logger.WriteDebug(string.Concat("Skipping recipe id ", tradeskillRecipe.Key, " since there are no produced items"));
-                    continue;
-                }
-                if (tradeskillRecipe.Value.ComponentItemCountsByItemID.Count == 0)
-                {
-                    Logger.WriteDebug(string.Concat("Skipping recipe id ", tradeskillRecipe.Key, " since there are no component items"));
-                    continue;
-                }
-                if (RecipesByTradeskillType.ContainsKey(tradeskillRecipe.Value.Type) == false)
-                    RecipesByTradeskillType.Add(tradeskillRecipe.Value.Type, new List<TradeskillRecipe>());
-                RecipesByTradeskillType[tradeskillRecipe.Value.Type].Add(tradeskillRecipe.Value);
+                // Add it
+                if (RecipesByTradeskillType.ContainsKey(type) == false)
+                    RecipesByTradeskillType.Add(type, new List<TradeskillRecipe>());
+                RecipesByTradeskillType[type].Add(recipe);
             }
         }
 
@@ -176,7 +205,7 @@ namespace EQWOWConverter.Tradeskills
                 default:
                     {
                         Logger.WriteError(string.Concat("Invalid tradeskill type of '", eqTradeskillTypeID, "'"));
-                        return TradeskillType.None;
+                        return TradeskillType.Unknown;
                     }
             }
         }

@@ -1224,7 +1224,10 @@ namespace EQWOWConverter.Items
                 // Skip any disabled items
                 int itemIsEnabled = int.Parse(columns["enabled"]);
                 if (itemIsEnabled == 0)
+                {
+                    progressionCounter.Write(1);
                     continue;
+                }
 
                 // Load the row
                 ItemTemplate newItemTemplate = new ItemTemplate();
