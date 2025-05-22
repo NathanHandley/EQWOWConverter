@@ -20,6 +20,18 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
+        public class Reagent
+        {
+            public int ItemID;
+            public int Count;
+
+            public Reagent(int itemID, int count)
+            {
+                ItemID = itemID;
+                Count = count;
+            }
+        }
+
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
 
         public int ID = 0;
@@ -47,7 +59,7 @@ namespace EQWOWConverter.Spells
         public SpellTargetType TargetType = SpellTargetType.SelfSingle;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
-        public bool PlayerLearnableByClassTrainer = false;
+        public bool PlayerLearnableByClassTrainer = false; // Needed?
         public UInt32 DurationIndex = 0;
         public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
@@ -57,5 +69,6 @@ namespace EQWOWConverter.Spells
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 0;
         public bool AllowCastInCombat = true;
+        public List<Reagent> Reagents = new List<Reagent>();
     }
 }

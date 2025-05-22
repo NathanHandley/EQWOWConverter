@@ -417,6 +417,9 @@ namespace EQWOWConverter
         // How much to multiply the learn skill level rate to determine the cost of learning the tradeskill
         public static readonly int TRADESKILL_LEARN_COST_MOD = 10;
 
+        // How long every tradeskill will take in milliseconds
+        public static readonly int TRADESKILL_CAST_TIME_IN_MS = 5000;
+
         //=====================================================================
         // Transports
         //=====================================================================
@@ -493,7 +496,7 @@ namespace EQWOWConverter
 
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999.  See "Spells"
-        // - Recipes reserve IDs 87000 to 91354
+        // - Recipes reserve IDs 87000 to 91221
         public static readonly int DBCID_SPELL_ID_START = 87000;
 
         // ID for spellcasttimes.dbc

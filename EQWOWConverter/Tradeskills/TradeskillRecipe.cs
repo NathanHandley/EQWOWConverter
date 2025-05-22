@@ -15,12 +15,14 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Items;
+using System.Text;
 
 namespace EQWOWConverter.Tradeskills
 {
     internal class TradeskillRecipe
     {
         static private Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
+        static private List<TradeskillRecipe> AllRecipes = new List<TradeskillRecipe>();
         private static readonly object TradeskillLock = new object();
 
         public int EQID;
@@ -36,7 +38,6 @@ namespace EQWOWConverter.Tradeskills
         public Dictionary<int, int> ProducedItemCountsByWOWItemID = new Dictionary<int, int>();
         public Dictionary<int, int> ComponentItemCountsByWOWItemID = new Dictionary<int, int>();
         public bool DoReplaceContainer;
-        public int CombineSpellID = -1;
         public List<int> RequiredIWOWtemIDs = new List<int>();
         public List<int> CombinerWOWItemIDs = new List<int>();
 
@@ -61,6 +62,20 @@ namespace EQWOWConverter.Tradeskills
                 }
                 else
                     return RecipesByTradeskillType;
+            }
+        }
+
+        public static List<TradeskillRecipe> GetAllRecipes()
+        {
+            lock (TradeskillLock)
+            {
+                if (RecipesByTradeskillType.Count == 0)
+                {
+                    Logger.WriteError("Must call PopulateTradeskillRecipes before trying to GetRecipesByTradeskillType");
+                    return new List<TradeskillRecipe>();
+                }
+                else
+                    return AllRecipes;
             }
         }
 
@@ -111,7 +126,8 @@ namespace EQWOWConverter.Tradeskills
                             Logger.WriteError(string.Concat("Tried to add a tradeskill produced item with EQ Id of ", producedEQItemID, " but it did not exist"));
                             continue;
                         }
-                        int producedWOWItemID = itemTemplatesByEQDBID[producedEQItemID].WOWEntryID;                        
+                        int producedWOWItemID = itemTemplatesByEQDBID[producedEQItemID].WOWEntryID;
+                        itemTemplatesByEQDBID[producedEQItemID].IsMadeByTradeskill = true;
                         int producedItemCount = int.Parse(columns[string.Concat("produced_count_", i)]);
                         if (recipe.ProducedItemCountsByWOWItemID.ContainsKey(producedWOWItemID) == true)
                             recipe.ProducedItemCountsByWOWItemID[producedWOWItemID] += producedItemCount;
@@ -156,7 +172,6 @@ namespace EQWOWConverter.Tradeskills
                 }
                 if (type == TradeskillType.None)
                 {
-                    recipe.CombineSpellID = int.Parse(columns["combine_spell_id"]);
                     int containerItemEQID = int.Parse(columns["container_eqid_0"]);
                     if (containerItemEQID == -1)
                     {
@@ -170,7 +185,7 @@ namespace EQWOWConverter.Tradeskills
                             Logger.WriteError(string.Concat("Tried to add a 'none' combiner item with EQ Id of ", containerItemEQID, " but it did not exist"));
                             continue;
                         }
-                        recipe.CombinerWOWItemIDs.Add(containerItemEQID);
+                        recipe.CombinerWOWItemIDs.Add(itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
                     }
                 }
 
@@ -181,6 +196,7 @@ namespace EQWOWConverter.Tradeskills
                 if (RecipesByTradeskillType.ContainsKey(type) == false)
                     RecipesByTradeskillType.Add(type, new List<TradeskillRecipe>());
                 RecipesByTradeskillType[type].Add(recipe);
+                AllRecipes.Add(recipe);
             }
         }
 
@@ -216,6 +232,36 @@ namespace EQWOWConverter.Tradeskills
             tradeskillRecipe.SkillNeededWOW = Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD);
             tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
             tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.TrivialHighWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
+        }
+
+        public string GetGeneratedDescription(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            StringBuilder spellDescriptionSB = new StringBuilder();
+            spellDescriptionSB.Append("Combine");
+            bool isFirstItem = true;
+            foreach (var item in ComponentItemCountsByWOWItemID)
+            {
+                ItemTemplate componentItemTemplate = itemTemplatesByWOWEntryID[item.Key];
+                if (isFirstItem == true)
+                    isFirstItem = false;
+                else
+                    spellDescriptionSB.Append(",");
+                spellDescriptionSB.Append(string.Concat(" ", item.Value, " ", componentItemTemplate.Name));
+                if (item.Value > 1)
+                    spellDescriptionSB.Append("s");
+            }
+            spellDescriptionSB.Append(" to make ");
+            isFirstItem = true;
+            foreach (var item in ProducedItemCountsByWOWItemID)
+            {
+                ItemTemplate producedItemTemplate = itemTemplatesByWOWEntryID[item.Key];
+                if (isFirstItem == true)
+                    isFirstItem = false;
+                else
+                    spellDescriptionSB.Append(" and ");
+                spellDescriptionSB.Append(string.Concat(" ", item.Value, " ", producedItemTemplate.Name));
+            }
+            return spellDescriptionSB.ToString();
         }
     }
 }

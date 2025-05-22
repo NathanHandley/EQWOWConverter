@@ -97,22 +97,20 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // CumulativeAura
             newRow.AddUInt32(0); // Totem1
             newRow.AddUInt32(0); // Totem2
-            newRow.AddInt32(0); // Reagent1
-            newRow.AddInt32(0); // Reagent2
-            newRow.AddInt32(0); // Reagent3
-            newRow.AddInt32(0); // Reagent4
-            newRow.AddInt32(0); // Reagent5
-            newRow.AddInt32(0); // Reagent6
-            newRow.AddInt32(0); // Reagent7
-            newRow.AddInt32(0); // Reagent8
-            newRow.AddInt32(0); // ReagentCount1
-            newRow.AddInt32(0); // ReagentCount2
-            newRow.AddInt32(0); // ReagentCount3
-            newRow.AddInt32(0); // ReagentCount4
-            newRow.AddInt32(0); // ReagentCount5
-            newRow.AddInt32(0); // ReagentCount6
-            newRow.AddInt32(0); // ReagentCount7
-            newRow.AddInt32(0); // ReagentCount8
+            for (int i = 0; i < 8; i++)
+            {
+                if (i < spellTemplate.Reagents.Count)
+                    newRow.AddInt32(spellTemplate.Reagents[i].ItemID); // ReagentX
+                else
+                    newRow.AddInt32(0); // ReagentX
+            }
+            for (int i = 0; i < 8; i++)
+            {
+                if (i < spellTemplate.Reagents.Count)
+                    newRow.AddInt32(spellTemplate.Reagents[i].Count); // ReagentCountX
+                else
+                    newRow.AddInt32(0); // ReagentCountX
+            }
             newRow.AddInt32(-1); // EquippedItemClass
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes

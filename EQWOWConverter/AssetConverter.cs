@@ -154,11 +154,11 @@ namespace EQWOWConverter
                 }
 
                 // Spells
-                GenerateSpells(out spellTemplates);
+                GenerateCustomSpells(out spellTemplates);
 
                 // Tradeskills
                 if (Configuration.GENERATE_TRADESKILLS == true)
-                    GenerateTradeskills(itemTemplatesByEQDBID);
+                    GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates);
                 else
                     Logger.WriteInfo("- Note: GENERATE_TRADESKILLS is false in the Configuration");
 
@@ -1130,7 +1130,7 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
-        public void GenerateSpells(out List<SpellTemplate> spellTemplates)
+        public void GenerateCustomSpells(out List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Generating spells...");
             spellTemplates = new List<SpellTemplate>();
@@ -1227,10 +1227,61 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating spells completed.");
         }
 
-        public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Converting tradeskills...");
+
+            // Populate the tradeskill data
             TradeskillRecipe.PopulateTradeskillRecipes(itemTemplatesByEQDBID);
+
+            // Create spells for the recipe actions
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            List<TradeskillRecipe> allRecipes = TradeskillRecipe.GetAllRecipes();
+            foreach (TradeskillRecipe recipe in allRecipes)
+            {
+                SpellTemplate curSpellTemplate = new SpellTemplate();
+                curSpellTemplate.CastTimeInMS = Configuration.TRADESKILL_CAST_TIME_IN_MS;
+                curSpellTemplate.Name = string.Concat("Create ", recipe.Name);
+
+                // "None" recipes aren't regular recipes, but rather (typically) quest item combines
+                if (recipe.Type == TradeskillType.None)
+                {
+                    curSpellTemplate.ID = recipe.SpellID;
+
+                    // Attach the spell to every combiner item
+                    foreach (int itemID in recipe.CombinerWOWItemIDs)
+                    {
+                        if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == false)
+                        {
+                            Logger.WriteError(string.Concat("Unable to attach spell to combiner item ", itemID, " as it did not exist"));
+                            continue;
+                        }
+                        ItemTemplate curItemTemplate = itemTemplatesByWOWEntryID[itemID];
+                        if (curItemTemplate.SpellID1 != 0)
+                        {
+                            Logger.WriteError(string.Concat("Unable to attach spell to combiner item ", itemID, " as that item already had a spell attached"));
+                            continue;
+                        }
+                        curItemTemplate.SpellID1 = curSpellTemplate.ID;
+                        curItemTemplate.Description = recipe.GetGeneratedDescription(itemTemplatesByWOWEntryID);
+                    }
+                }
+                // Standard recipe type
+                else
+                {
+                    // TODO
+                    continue;
+                }                
+
+                // Assign every component item as reagents
+                foreach (var item in recipe.ComponentItemCountsByWOWItemID)
+                    curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(item.Key, item.Value));
+
+                // Todo: Focus items
+
+                spellTemplates.Add(curSpellTemplate);
+            }
+            
             Logger.WriteDebug("Converting tradeskills completed.");
         }
 
