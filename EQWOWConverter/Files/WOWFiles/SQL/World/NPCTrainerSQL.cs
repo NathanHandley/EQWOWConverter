@@ -42,7 +42,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public void AddRowForClassAbility(int lineID, SpellClassTrainerAbility trainerAbility)
+        public void AddRowForTrainerAbility(int lineID, SpellTrainerAbility trainerAbility)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("ID", lineID);
@@ -53,11 +53,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("ReqLevel", trainerAbility.ReqLevel);
             newRow.AddInt("ReqSpell", trainerAbility.ReqSpellID);
             Rows.Add(newRow);
-        }
-
-        public void AddRowForTradeskillAbility(int lineID)
-        {
-
         }
     }
 }

@@ -2368,7 +2368,7 @@ namespace EQWOWConverter
                     if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
                     {
                         // Trainers need a line in the npc trainers table
-                        npcTrainerSQL.AddRowForTrainerReference(SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+                        npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
 
                         // Associate the menu
                         creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
@@ -2724,15 +2724,15 @@ namespace EQWOWConverter
                 }
             }
 
-            // Trainer Abilities
+            // Trainer Abilities - Class
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
                 if (classType == ClassType.All || classType == ClassType.None)
                     continue;
 
-                int lineID = SpellClassTrainerAbility.GetTrainerSpellsIDForWOWClassTrainer(classType);
-                foreach (SpellClassTrainerAbility trainerAbility in SpellClassTrainerAbility.GetTrainerSpellsForClass(classType))
-                    npcTrainerSQL.AddRowForClassAbility(lineID, trainerAbility);
+                int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(classType);
+                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
+                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
             }
 
             // Transports
