@@ -420,6 +420,10 @@ namespace EQWOWConverter
         // How long every tradeskill will take in milliseconds
         public static readonly int TRADESKILL_CAST_TIME_IN_MS = 5000;
 
+        // This is the icon ID that is used for tradeskill results that contain more than one item
+        // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
+        public static readonly int TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
+
         //=====================================================================
         // Transports
         //=====================================================================

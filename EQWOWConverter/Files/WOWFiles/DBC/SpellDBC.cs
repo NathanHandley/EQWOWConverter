@@ -150,7 +150,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectChainTargets1
             newRow.AddUInt32(0); // EffectChainTargets2
             newRow.AddUInt32(0); // EffectChainTargets3
-            newRow.AddUInt32(0); // EffectItemType1
+            newRow.AddUInt32(spellTemplate.EFfectItemType1); // EffectItemType1
             newRow.AddUInt32(0); // EffectItemType2
             newRow.AddUInt32(0); // EffectItemType3
             newRow.AddInt32(spellTemplate.EffectMiscValue1); // EffectMiscValue1

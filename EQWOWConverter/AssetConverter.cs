@@ -105,6 +105,7 @@ namespace EQWOWConverter
 
             // Thread 3: Items, Spells, and Tradeskills
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
+            List<TradeskillRecipe> tradeskillRecipes = new List<TradeskillRecipe>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
@@ -158,7 +159,7 @@ namespace EQWOWConverter
 
                 // Tradeskills
                 if (Configuration.GENERATE_TRADESKILLS == true)
-                    GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates);
+                    GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
                 else
                     Logger.WriteInfo("- Note: GENERATE_TRADESKILLS is false in the Configuration");
 
@@ -241,7 +242,7 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<+> Thread [Server Build and Deploy] Started");
 
                 // Create the SQL Scripts (note: this must always be after DBC files)
-                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates);
+                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -557,7 +558,7 @@ namespace EQWOWConverter
                 if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
                 {
                     string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
-                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, questTemplate.RewardItemCounts);
+                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateQuestRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, questTemplate.RewardItemCounts);
                     questTemplate.RewardItemWOWIDs.Clear();
                     questTemplate.RewardItemEQIDs.Clear();
                     questTemplate.RewardItemCounts.Clear();
@@ -1227,7 +1228,8 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating spells completed.");
         }
 
-        public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates)
+        public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
+            out List<TradeskillRecipe> tradeskillRecipes)
         {
             Logger.WriteInfo("Converting tradeskills...");
 
@@ -1236,8 +1238,8 @@ namespace EQWOWConverter
 
             // Create spells for the recipe actions
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
-            List<TradeskillRecipe> allRecipes = TradeskillRecipe.GetAllRecipes();
-            foreach (TradeskillRecipe recipe in allRecipes)
+            tradeskillRecipes = TradeskillRecipe.GetAllRecipes();
+            foreach (TradeskillRecipe recipe in tradeskillRecipes)
             {
                 SpellTemplate curSpellTemplate = new SpellTemplate();
                 curSpellTemplate.CastTimeInMS = Configuration.TRADESKILL_CAST_TIME_IN_MS;
@@ -1264,6 +1266,14 @@ namespace EQWOWConverter
                         }
                         curItemTemplate.SpellID1 = curSpellTemplate.ID;
                         curItemTemplate.Description = recipe.GetGeneratedDescription(itemTemplatesByWOWEntryID);
+
+                        // These can't be containers anymore
+                        curItemTemplate.ClassID = 12; // Quest
+                        curItemTemplate.SubClassID = 12; // Quest
+                        curItemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+                        curItemTemplate.SpellCooldown1 = 1;
+                        curItemTemplate.SpellCategoryCooldown1 = 1000;
+                        curItemTemplate.WOWItemMaterialType = -1;
                     }
                 }
                 // Standard recipe type
@@ -1277,7 +1287,35 @@ namespace EQWOWConverter
                 foreach (var item in recipe.ComponentItemCountsByWOWItemID)
                     curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(item.Key, item.Value));
 
+                // Create the produced item
+                ItemTemplate? resultItemTemplate = null;
+                if (recipe.ProducedItemCountsByWOWItemID.Count == 0)
+                {
+                    Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " due to there being no produced items"));
+                    continue;
+                }
+                else if (recipe.ProducedItemCountsByWOWItemID.Count > 1 || (recipe.ProducedItemCountsByWOWItemID.Count == 1 && recipe.ProducedItemCountsByWOWItemID.Values.First() > 1))
+                {
+                    string containerName = string.Concat(recipe.Name, " Items");
+                    resultItemTemplate = ItemTemplate.CreateTradeskillMultiItemContainer(containerName, recipe.ProducedItemCountsByWOWItemID);
+                    recipe.ProducedFilledContainer = resultItemTemplate;
+                }
+                else
+                {
+                    resultItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
+                }
+                if (resultItemTemplate == null)
+                {
+                    Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " as the result item template is NULL"));
+                    continue;
+                }
+
+                curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
+                curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
+                curSpellTemplate.SpellVisualID1 = 1168; // Same as "Join map fragments" for the Tanaris treasure map
+
                 // Todo: Focus items
+
 
                 spellTemplates.Add(curSpellTemplate);
             }
@@ -2206,7 +2244,8 @@ namespace EQWOWConverter
         }
 
         public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
-            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates)
+            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
+            List<TradeskillRecipe> tradeskillRecipes)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
 
@@ -2664,7 +2703,23 @@ namespace EQWOWConverter
                         int curWOWItemTemplateID = questTemplate.RandomAwardContainerItemTemplate.ContainedWOWItemTemplateIDs[i];
                         float curItemChance = questTemplate.RandomAwardContainerItemTemplate.ContainedItemChances[i];
                         string comment = string.Concat(questTemplate.RandomAwardContainerItemTemplate.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
-                        itemLootTemplateSQL.AddRow(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID, curWOWItemTemplateID, curItemChance, comment);
+                        itemLootTemplateSQL.AddRow(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID, curWOWItemTemplateID, 1, curItemChance, 1, comment);
+                    }
+                }
+            }
+
+            // Tradeskills
+            foreach (TradeskillRecipe recipe in tradeskillRecipes)
+            {
+                // Multi-item containers
+                if (recipe.ProducedFilledContainer != null)
+                {
+                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
+                    {
+                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
+                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
+                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
+                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i+1, 100, curItemCount, comment);
                     }
                 }
             }

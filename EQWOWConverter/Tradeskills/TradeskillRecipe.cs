@@ -40,6 +40,7 @@ namespace EQWOWConverter.Tradeskills
         public bool DoReplaceContainer;
         public List<int> RequiredIWOWtemIDs = new List<int>();
         public List<int> CombinerWOWItemIDs = new List<int>();
+        public ItemTemplate? ProducedFilledContainer = null;
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -250,7 +251,7 @@ namespace EQWOWConverter.Tradeskills
                 if (item.Value > 1)
                     spellDescriptionSB.Append("s");
             }
-            spellDescriptionSB.Append(" to make ");
+            spellDescriptionSB.Append(" to make");
             isFirstItem = true;
             foreach (var item in ProducedItemCountsByWOWItemID)
             {
@@ -258,7 +259,7 @@ namespace EQWOWConverter.Tradeskills
                 if (isFirstItem == true)
                     isFirstItem = false;
                 else
-                    spellDescriptionSB.Append(" and ");
+                    spellDescriptionSB.Append(" and");
                 spellDescriptionSB.Append(string.Concat(" ", item.Value, " ", producedItemTemplate.Name));
             }
             return spellDescriptionSB.ToString();

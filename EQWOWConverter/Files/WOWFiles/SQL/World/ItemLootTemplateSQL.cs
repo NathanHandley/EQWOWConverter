@@ -26,7 +26,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `item_loot_template` WHERE `Entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `Entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(int containerItemTemplateID, int containedItemTemplateID, float chance, string comment)
+        public void AddRow(int containerItemTemplateID, int containedItemTemplateID, int groupID, float chance, int count, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("Entry", containerItemTemplateID);
@@ -35,9 +35,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat("Chance", chance);
             newRow.AddInt("QuestRequired", 0);
             newRow.AddInt("LootMode", 1);
-            newRow.AddInt("GroupId", 1);
-            newRow.AddInt("MinCount", 1);
-            newRow.AddInt("MaxCount", 1);
+            newRow.AddInt("GroupId", groupID);
+            newRow.AddInt("MinCount", count);
+            newRow.AddInt("MaxCount", count);
             newRow.AddString("Comment", 255, comment);
             Rows.Add(newRow);
         }

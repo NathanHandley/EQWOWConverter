@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using System.Text;
 
 namespace EQWOWConverter.Items
 {
@@ -67,6 +68,7 @@ namespace EQWOWConverter.Items
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
         public List<int> ContainedWOWItemTemplateIDs = new List<int>();
+        public List<int> ContainedtemCounts = new List<int>();
         public List<float> ContainedItemChances = new List<float>();
         public bool CanBeOpened = false;
         public bool IsExistingItemAlready = false;
@@ -1394,7 +1396,7 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static ItemTemplate? CreateRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, List<int> itemCounts)
+        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, List<int> itemCounts)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
             ItemTemplate itemTemplate = new ItemTemplate();
@@ -1423,6 +1425,7 @@ namespace EQWOWConverter.Items
                 itemTemplate.ContainedWOWItemTemplateIDs.Add(itemTemplatesByEQDBIDs[eqItemID].WOWEntryID);
                 itemTemplatesByEQDBIDs[eqItemID].IsRewardedFromQuest = true;
                 itemTemplate.ContainedItemChances.Add(itemChance);
+                itemTemplate.ContainedtemCounts.Add(1);
                 totalChance += itemChance;
             }
 
@@ -1449,6 +1452,61 @@ namespace EQWOWConverter.Items
             itemTemplate.SellPriceInCopper = 0;
             itemTemplate.CanBeOpened = true;
             itemTemplate.Description = "Contains one of a number of items...";
+
+            // Save it
+            ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
+            ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
+
+            CUR_ITEM_CONTAINER_WOWID++;
+            CUR_ITEM_CONTAINER_EQID++;
+            return itemTemplate;
+        }
+
+        public static ItemTemplate? CreateTradeskillMultiItemContainer(string name, Dictionary<int, int> itemCountsByWOWItemID)
+        {
+            ItemTemplate itemTemplate = new ItemTemplate();
+
+            // Fill the contained items
+            foreach (var item in itemCountsByWOWItemID)
+            {
+                itemTemplate.ContainedWOWItemTemplateIDs.Add(item.Key);
+                itemTemplate.ContainedItemChances.Add(100);
+                itemTemplate.ContainedtemCounts.Add(item.Value);
+            }
+
+            // Calculate the icon name
+            string iconName = string.Concat("INV_EQ_", Configuration.TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID);
+
+            // Complete the object
+            itemTemplate.IsMadeByTradeskill = true;
+            itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
+            itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
+            itemTemplate.ClassID = 15; // Misc
+            itemTemplate.SubClassID = 0; // Bag
+            itemTemplate.Name = name;
+            itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), iconName, ItemWOWInventoryType.Bag, 0, 0);
+            itemTemplate.Quality = ItemWOWQuality.Common;
+            itemTemplate.BuyPriceInCopper = 0;
+            itemTemplate.SellPriceInCopper = 0;
+            itemTemplate.CanBeOpened = true;
+
+            // Make a description
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWIDs = GetItemTemplatesByWOWEntryID();
+            StringBuilder bagDescriptionSB = new StringBuilder();
+            bagDescriptionSB.Append("Contains");
+            bool isFirstItem = true;
+            foreach (var item in itemCountsByWOWItemID)
+            {
+                ItemTemplate componentItemTemplate = itemTemplatesByWOWIDs[item.Key];
+                if (isFirstItem == true)
+                    isFirstItem = false;
+                else
+                    bagDescriptionSB.Append(",");
+                bagDescriptionSB.Append(string.Concat(" ", item.Value, " ", componentItemTemplate.Name));
+                if (item.Value > 1)
+                    bagDescriptionSB.Append("s");
+            }          
+            itemTemplate.Description = bagDescriptionSB.ToString();
 
             // Save it
             ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
