@@ -409,14 +409,19 @@ namespace EQWOWConverter
         // Tradeskills
         //=====================================================================
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
-        public static readonly float TRADESKILLS_CONVERSION_MOD = 1.3f;
+        public static readonly float TRADESKILLS_CONVERSION_MOD = 1.3432f;
 
         // Max distance between Grey -> Green -> Yellow -> Red steps
         public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE_LOW = 10;
         public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE_HIGH = 25;
 
-        // How much to multiply the learn skill level rate to determine the cost of learning the tradeskill
-        public static readonly int TRADESKILL_LEARN_COST_MOD = 10;
+        // The skill level of a tradeskill will be priced closest to the value for that WOW skill level
+        public static readonly int TRADESKILL_LEARN_COST_AT_1 = 10;
+        public static readonly int TRADESKILL_LEARN_COST_AT_50 = 500;
+        public static readonly int TRADESKILL_LEARN_COST_AT_100 = 1000;
+        public static readonly int TRADESKILL_LEARN_COST_AT_200 = 2850;
+        public static readonly int TRADESKILL_LEARN_COST_AT_300 = 12500;
+        public static readonly int TRADESKILL_LEARN_COST_AT_450 = 150000;
 
         // How long every tradeskill will take in milliseconds
         public static readonly int TRADESKILL_CAST_TIME_IN_MS = 5000;

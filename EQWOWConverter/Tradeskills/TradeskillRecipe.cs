@@ -197,7 +197,7 @@ namespace EQWOWConverter.Tradeskills
 
                     // Generate WOW values
                     PopulateWOWSkillLevelsAndLine(recipe);
-                    recipe.LearnCostInCopper = Configuration.TRADESKILL_LEARN_COST_MOD * recipe.SkillRankNeededWOW;
+                    recipe.LearnCostInCopper = CalculateCostInCopper(recipe.SkillRankNeededWOW);
 
                     // Add it
                     if (RecipesByTradeskillType.ContainsKey(type) == false)
@@ -256,16 +256,35 @@ namespace EQWOWConverter.Tradeskills
             // Skill Level
             if (tradeskillRecipe.SkillNeededEQ > 1)
             {
-                tradeskillRecipe.SkillRankNeededWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1);
-                tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW;
-                tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH;
+                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1), 450);
+                tradeskillRecipe.TrivialLowWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 450);
+                tradeskillRecipe.TrivialHighWOW = Math.Min(tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 450);
             }
             else
             {
-                tradeskillRecipe.TrivialHighWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.TrivialEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1); // Gray
-                tradeskillRecipe.TrivialLowWOW = Math.Max(tradeskillRecipe.TrivialHighWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 1);
-                tradeskillRecipe.SkillRankNeededWOW = Math.Max(tradeskillRecipe.TrivialLowWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 1);
+                tradeskillRecipe.TrivialHighWOW = Math.Min(Math.Max(Convert.ToInt32(tradeskillRecipe.TrivialEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1), 450);
+                tradeskillRecipe.TrivialLowWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialHighWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 1), 450);
+                tradeskillRecipe.SkillRankNeededWOW = Math.Min(Math.Max(tradeskillRecipe.TrivialLowWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 1), 450);
             }
+        }
+
+        private static int GetLinearInterpolatedValue(int sourceValue, int sourceMin, int sourceMax, int targetMin, int targetMax)
+        {
+            return targetMin + (sourceValue - sourceMin) * (targetMax - targetMin) / (sourceMax - sourceMin);
+        }
+
+        private static int CalculateCostInCopper(int requiredSkillRank)
+        {
+            if (requiredSkillRank <= 50)
+                return GetLinearInterpolatedValue(requiredSkillRank, 1, 50, Configuration.TRADESKILL_LEARN_COST_AT_1, Configuration.TRADESKILL_LEARN_COST_AT_50);
+            else if (requiredSkillRank <= 100)
+                return GetLinearInterpolatedValue(requiredSkillRank, 50, 100, Configuration.TRADESKILL_LEARN_COST_AT_50, Configuration.TRADESKILL_LEARN_COST_AT_100);
+            else if (requiredSkillRank <= 200)
+                return GetLinearInterpolatedValue(requiredSkillRank, 100, 200, Configuration.TRADESKILL_LEARN_COST_AT_100, Configuration.TRADESKILL_LEARN_COST_AT_200);
+            else if (requiredSkillRank <= 300)
+                return GetLinearInterpolatedValue(requiredSkillRank, 200, 300, Configuration.TRADESKILL_LEARN_COST_AT_200, Configuration.TRADESKILL_LEARN_COST_AT_300);
+            else
+                return GetLinearInterpolatedValue(requiredSkillRank, 300, 450, Configuration.TRADESKILL_LEARN_COST_AT_300, Configuration.TRADESKILL_LEARN_COST_AT_450);
         }
 
         public string GetGeneratedDescription(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
