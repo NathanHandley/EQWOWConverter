@@ -18,9 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellIconDBC : DBCFile
     {
-        public void AddRow(int iconID)
+        public void AddSpellIconRow(int iconID)
         {
-            int dbcID = GetDBCIDForIconID(iconID);
+            int dbcID = GetDBCIDForSpellIconID(iconID);
             string textureFileName = "INTERFACE\\ICONS\\Spell_EQ_" + iconID.ToString();
 
             DBCRow newRow = new DBCRow();
@@ -29,9 +29,26 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public static int GetDBCIDForIconID(int iconID)
+        public void AddItemIconRow(int iconID)
+        {
+            int dbcID = GetDBCIDForItemIconID(iconID);
+            string textureFileName = "INTERFACE\\ICONS\\INV_EQ_" + iconID.ToString();
+
+            DBCRow newRow = new DBCRow();
+            newRow.AddInt32(dbcID);
+            newRow.AddString(textureFileName);
+            Rows.Add(newRow);
+        }
+
+        public static int GetDBCIDForSpellIconID(int iconID)
         {
             return Configuration.DBCID_SPELLICON_ID_START + iconID;
+        }
+
+        public static int GetDBCIDForItemIconID(int iconID)
+        {
+            // There are 23 spell icons, so shift accordingly
+            return Configuration.DBCID_SPELLICON_ID_START + 23 + iconID;
         }
     }
 }

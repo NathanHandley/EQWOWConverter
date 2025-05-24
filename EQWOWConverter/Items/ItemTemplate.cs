@@ -79,6 +79,7 @@ namespace EQWOWConverter.Items
         public bool IsMadeByTradeskill = false;
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
+        public int IconID = 0;
 
         public ItemTemplate()
         {
@@ -1249,6 +1250,7 @@ namespace EQWOWConverter.Items
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
                 string iconName = "INV_EQ_" + (iconID).ToString();
+                newItemTemplate.IconID = iconID;
 
                 // Binding Properties
                 newItemTemplate.IsNoDrop = int.Parse(columns["nodrop"]) == 0 ? true : false;

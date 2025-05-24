@@ -1153,7 +1153,7 @@ namespace EQWOWConverter
                 gateSpellTemplate.Effect1 = 6; // Aura
                 gateSpellTemplate.EffectAura1 = 4; // Dummy
             }
-            gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(22);
+            gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
             gateSpellTemplate.TargetType = SpellTargetType.SelfSingle;
@@ -1167,7 +1167,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
             bindAffinitySelfSpellTemplate.ID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
             bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
-            bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
+            bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySelfSpellTemplate.TargetType = SpellTargetType.SelfSingle;
@@ -1181,7 +1181,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.Name = "Bind Affinity";
             bindAffinitySpellTemplate.ID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
             bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
-            bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForIconID(21);
+            bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
             bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySpellTemplate.RangeIndexDBCID = 4; // Medium Range - 30 yards
@@ -1243,12 +1243,13 @@ namespace EQWOWConverter
             {
                 SpellTemplate curSpellTemplate = new SpellTemplate();
                 curSpellTemplate.CastTimeInMS = Configuration.TRADESKILL_CAST_TIME_IN_MS;
-                curSpellTemplate.Name = string.Concat("Create ", recipe.Name);
                 curSpellTemplate.ID = recipe.SpellID;
 
                 // "None" recipes aren't regular recipes, but rather (typically) quest item combines
                 if (recipe.Type == TradeskillType.None)
                 {
+                    curSpellTemplate.Name = string.Concat("Create ", recipe.Name);
+
                     // Attach the spell to every combiner item
                     foreach (int itemID in recipe.CombinerWOWItemIDs)
                     {
@@ -1275,14 +1276,9 @@ namespace EQWOWConverter
                         curItemTemplate.WOWItemMaterialType = -1;
                     }
                 }
-                //// Standard recipe type
-                //else
-                //{
-                //    //Logger.WriteError("Implement this");
-                //    // TODO
-                //    continue;
-                //}                
-
+                else
+                    curSpellTemplate.Name = recipe.Name;
+            
                 // Assign every component item as reagents
                 foreach (var item in recipe.ComponentItemCountsByWOWItemID)
                     curSpellTemplate.Reagents.Add(new SpellTemplate.Reagent(item.Key, item.Value));
@@ -1312,6 +1308,7 @@ namespace EQWOWConverter
 
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
+                curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 recipe.SetSpellVisualData(curSpellTemplate);
 
                 // Todo: Focus items
@@ -2089,7 +2086,9 @@ namespace EQWOWConverter
 
             // Spells
             for (int i = 0; i < 23; i++)
-                spellIconDBC.AddRow(i);
+                spellIconDBC.AddSpellIconRow(i);
+            for (int i = 0; i < 751; i++)
+                spellIconDBC.AddItemIconRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 spellDBC.AddRow(spellTemplate);

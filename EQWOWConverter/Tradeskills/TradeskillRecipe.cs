@@ -121,6 +121,7 @@ namespace EQWOWConverter.Tradeskills
                     }
                     TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
                     recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
+                    recipe.LearnCostInCopper = 1;
                     for (int i = 0; i < 4; i++)
                     {
                         string producedEQItemIDString = columns[string.Concat("produced_eqid_", i)];
@@ -252,7 +253,7 @@ namespace EQWOWConverter.Tradeskills
             }
 
             // Base skill levels entirely off the "trivial" value
-            tradeskillRecipe.SkillRankNeededWOW = Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD);
+            tradeskillRecipe.SkillRankNeededWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1);
             tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
             tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.TrivialHighWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
         }
@@ -289,6 +290,7 @@ namespace EQWOWConverter.Tradeskills
 
         public void SetSpellVisualData(SpellTemplate spellTemplate)
         {
+            // Animation / visual effect
             switch (Type)
             {
                 case TradeskillType.Alchemy: spellTemplate.SpellVisualID1 = 92; break; // Same as "Potion of Wild Magic"
@@ -300,7 +302,7 @@ namespace EQWOWConverter.Tradeskills
                 case TradeskillType.Tailoring: spellTemplate.SpellVisualID1 = 1168; break; // Same as "Bolt of Linen Cloth"
                 case TradeskillType.Enchanting: spellTemplate.SpellVisualID1 = 2641; break; // Same as "Flying Tiger Goggles"
                 default: spellTemplate.SpellVisualID1 = 1168; break; // Same as "Join map fragments" for the Tanaris treasure map
-            }            
+            }
         }
     }
 }
