@@ -2757,6 +2757,7 @@ namespace EQWOWConverter
                     continue;
 
                 int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(tradeskillType);
+                npcTrainerSQL.AddDevelopmentSkillsForTradeskill(lineID, tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
                     npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
             }
