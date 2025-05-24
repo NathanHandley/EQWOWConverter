@@ -7397,16 +7397,16 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13630|91194|1||Amulet of the Fae (Recharge)||75|100|0|0|1|1|-1|27723|Amulet of the Fae|1||||||||||27723|Amulet of the Fae|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13631|91195|1||Mantle of the Songweaver (Recharge)||75|100|0|0|1|1|-1|27721|Mantle of the Songweaver|1||||||||||27721|Mantle of the Songweaver|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13632|91196|1||Filled Slave Shackle Bag||75|75|0|0|1|1|-1|12661|Filled Slave Shackle Bag|1||||||||||12660|Busted Froglok Slave Shackles|8||||||||||||||||||||||||||||17994|Slave Shackle Bag||||||
-20000|91197|1||Enchant Clay|Level 8|-1|100|0|0|1|1|-1|16896|Large Block of Magic Clay|1||||||||||16902|Large Block of Clay|1|||||||||||||||||||||||||||||||||||
-20001|91198|1||Enchant Silver|Level 8|-1|100|0|0|1|1|-1|16504|Enchanted Silver Bar|1||||||||||16500|Silver Bar|1|||||||||||||||||||||||||||||||||||
-20002|91199|1||Enchant Electrum Bar|Level 16|-1|100|0|0|1|1|-1|16505|Enchanted Electrum Bar|1||||||||||16501|Electrum Bar|1|||||||||||||||||||||||||||||||||||
-20003|91200|1||Crystallize Mana|Level 20|-1|100|0|0|1|1|-1|10251|Vial of Cloudy Mana|1||||||||||10028|Peridot|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20004|91201|1||Enchant Gold|Level 24|-1|100|0|0|1|1|-1|16506|Enchanted Gold Bar|1||||||||||16502|Gold Bar|1|||||||||||||||||||||||||||||||||||
-20005|91202|1||Clarify Mana|Level 29|-1|100|0|0|1|1|-1|10252|Vial of Clear Mana|1||||||||||10029|Emerald|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20006|91203|1||Enchant Platinum|Level 34|-1|100|0|0|1|1|-1|16507|Enchanted Platinum Bar|1||||||||||16503|Platinum Bar|1|||||||||||||||||||||||||||||||||||
-20007|91204|1||Distill Mana|Level 39|-1|100|0|0|1|1|-1|10253|Vial of Distilled Mana|1||||||||||10034|Sapphire|2|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20008|91205|1||Enchant Velium|Level 44|-1|100|0|0|1|1|-1|22099|Enchanted Velium Bar|1||||||||||22098|Velium Bar|1|||||||||||||||||||||||||||||||||||
-20009|91206|1||Purify Mana|Level 49|-1|100|0|0|1|1|-1|10254|Vial of Purified Mana|1||||||||||10035|Ruby|4|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20000|91197|1||Enchant Clay|Level 8 (Enchanter)|-1|100|0|0|1|1|-1|16896|Large Block of Magic Clay|1||||||||||16902|Large Block of Clay|1|||||||||||||||||||||||||||||||||||
+20001|91198|1||Enchant Silver|Level 8 (Enchanter)|-1|100|0|0|1|1|-1|16504|Enchanted Silver Bar|1||||||||||16500|Silver Bar|1|||||||||||||||||||||||||||||||||||
+20002|91199|1||Enchant Electrum Bar|Level 16 (Enchanter)|-1|100|0|0|1|1|-1|16505|Enchanted Electrum Bar|1||||||||||16501|Electrum Bar|1|||||||||||||||||||||||||||||||||||
+20003|91200|1||Crystallize Mana|Level 20 (Enchanter)|-1|100|0|0|1|1|-1|10251|Vial of Cloudy Mana|1||||||||||10028|Peridot|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20004|91201|1||Enchant Gold|Level 24 (Enchanter)|-1|100|0|0|1|1|-1|16506|Enchanted Gold Bar|1||||||||||16502|Gold Bar|1|||||||||||||||||||||||||||||||||||
+20005|91202|1||Clarify Mana|Level 29 (Enchanter)|-1|100|0|0|1|1|-1|10252|Vial of Clear Mana|1||||||||||10029|Emerald|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20006|91203|1||Enchant Platinum|Level 34 (Enchanter)|-1|100|0|0|1|1|-1|16507|Enchanted Platinum Bar|1||||||||||16503|Platinum Bar|1|||||||||||||||||||||||||||||||||||
+20007|91204|1||Distill Mana|Level 39 (Enchanter)|-1|100|0|0|1|1|-1|10253|Vial of Distilled Mana|1||||||||||10034|Sapphire|2|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20008|91205|1||Enchant Velium|Level 44 (Enchanter)|-1|100|0|0|1|1|-1|22099|Enchanted Velium Bar|1||||||||||22098|Velium Bar|1|||||||||||||||||||||||||||||||||||
+20009|91206|1||Purify Mana|Level 49 (Enchanter)|-1|100|0|0|1|1|-1|10254|Vial of Purified Mana|1||||||||||10035|Ruby|4|16965|Poison Vial|1||||||||||||||||||||||||||||||||
 20010|91207|1||Clockwork Base Mechanism||-1|57|0|207|0|0|-1|40008|Clockwork Base Mechanism|1||||||||||16857|Metal Twine|1|16852|Grease|1|16859|Sprockets|1|29513|Cogs|1||||||||||||||||||||||||||
 20011|91208|1||Tax Payment Set 1||-1|75|0|0|1|0|-1|40009|Tax Payment Set 1|1||||||||||13170|Firepride's Tax Payment|1|13171|Sedder's Tax Payment|1|13172|Galliway's Tax Payment|1|13173|Tallaherd's Tax Payment|1|13179|Tassen's Tax Payment|1||||||||||||||||-1|Any||||||
 20012|91209|1||Tax Payment Set 2||-1|75|0|0|1|0|-1|40010|Tax Payment Set 2|1||||||||||13174|Sayer's Tax Payment|1|13175|Semhart's Tax Payment|1|13176|Huntlan's Tax Payment|1|13177|Rohand's Tax Payment|1|13178|Ranamer's Tax Payment|1||||||||||||||||-1|Any||||||
@@ -7422,3 +7422,17 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 20022|91219|1||Second Half of Bladesoul's Spritual Pouch||-1|75|0|0|1|0|-1|40020|Second Half of Bladesoul's Spritual Pouch|1||||||||||29471|Serrated Gargoyle Claw|1|29475|Stinted Velium Drapes|1|29479|Founder's Velium Creation|1|29482|Sightless Velium Eye|1|29483|Drakeen Scales|1||||||||||||||||-1|Any||||||
 20023|91220|1||First Half Filled Tin Box||-1|75|0|0|1|0|-1|40021|First Half Filled Tin Box|1||||||||||12434|Petrified Redwood|1|12483|Radiant Meteorite|1|12776|Gold Nugget|1|12794|Rile's Sand Coin|1|12830|A Scarlet Stone|1||||||||||||||||-1|Any||||||
 20024|91221|1||Second Half Filled Tin Box||-1|75|0|0|1|0|-1|40022|Second Half Filled Tin Box|1||||||||||12831|Tektite|1|12832|Plains Pebble|1|12833|Jade Magma|1|12834|Heart of Ice|1|12835|Unholy Coldstone|1||||||||||||||||-1|Any||||||
+20025|91222|1||Imbued Amber|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22502|Imbued Amber|1||||||||||10022|Amber|1|||||||||||||||||||||||||||||||||||
+20026|91223|1||Imbue Black Pearl|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22548|Imbued Black Pearl|1||||||||||19762|Black Pearl|1|||||||||||||||||||||||||||||||||||
+20027|91224|1||Imbue Black Sapphire|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22551|Imbued Black Sapphire|1||||||||||10036|Black Sapphire|1|||||||||||||||||||||||||||||||||||
+20028|91225|1||Imbue Diamond|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22549|Imbued Diamond|1||||||||||10037|Diamond|1|||||||||||||||||||||||||||||||||||
+20029|91226|1||Imbue Emerald|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22507|Imbued Emerald|1||||||||||10029|Emerald|1|||||||||||||||||||||||||||||||||||
+20030|91227|1||Imbue Opal|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22560|Imbued Opal|1||||||||||10030|Opal|1|||||||||||||||||||||||||||||||||||
+20031|91228|1||Imbue Peridot|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22554|Imbued Peridot|1||||||||||10028|Peridot|1|||||||||||||||||||||||||||||||||||
+20032|91229|1||Imbue Plains Pebble|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22553|Imbued Plains Pebble|1||||||||||12832|Plains Pebble|1|||||||||||||||||||||||||||||||||||
+20033|91230|1||Imbue Rose Quartz|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22550|Imbued Rose Quartz|1||||||||||10021|Star Rose Quartz|1|||||||||||||||||||||||||||||||||||
+20034|91231|1||Imbue Ruby|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22506|Imbued Ruby|1||||||||||10035|Ruby|1|||||||||||||||||||||||||||||||||||
+20035|91232|1||Imbue Sapphire|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22508|Imbued Sapphire|1||||||||||10034|Sapphire|1|||||||||||||||||||||||||||||||||||
+20036|91233|1||Imbue Topaz|Level 29 (Cleric)|-1|100|0|0|1|1|-1|22555|Imbued Topaz|1||||||||||10025|Topaz|1|||||||||||||||||||||||||||||||||||
+20037|91234|1||Imbue Ivory|Level 29 (Shaman)|-1|100|0|0|1|1|-1|22501|Imbued Ivory|1||||||||||22504|Ivory|1|||||||||||||||||||||||||||||||||||
+20038|91235|1||Imbue Jade|Level 29 (Shaman)|-1|100|0|0|1|1|-1|22500|Imbued Jade|1||||||||||10023|Jade|1|||||||||||||||||||||||||||||||||||

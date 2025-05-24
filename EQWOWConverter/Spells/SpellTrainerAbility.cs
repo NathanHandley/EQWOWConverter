@@ -48,6 +48,19 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        public static List<SpellTrainerAbility> GetTrainerSpellsForTradeskill(TradeskillType tradeskillType)
+        {
+            lock (SpellTrainerReadLock)
+            {
+                if (TradeskillSpellsReferenceLineIDsByTradeskillType.Count == 0)
+                {
+                    Logger.WriteError("GetTrainerSpellsForTradeskill called before PopulateTradeskillAbilities");
+                    return new List<SpellTrainerAbility>();
+                }
+                return TradeskillTrainerAbilitiesByTradeskillType[tradeskillType];
+            }
+        }
+
         public static int GetTrainerSpellsReferenceLineIDForWOWClassTrainer(ClassType trainerClassType)
         {
             lock (SpellTrainerReadLock)
@@ -55,6 +68,19 @@ namespace EQWOWConverter.Spells
                 if (ClassTrainerSpellsReferenceLineIDsByClassType.Count == 0)
                     PopulateClassTrainerAbilities();
                 return ClassTrainerSpellsReferenceLineIDsByClassType[trainerClassType];
+            }
+        }
+
+        public static int GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(TradeskillType trainerTradeskillType)
+        {
+            lock (SpellTrainerReadLock)
+            {
+                if (TradeskillSpellsReferenceLineIDsByTradeskillType.Count == 0)
+                {
+                    Logger.WriteError("GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer called before PopulateTradeskillAbilities");
+                    return 0;
+                }
+                return TradeskillSpellsReferenceLineIDsByTradeskillType[trainerTradeskillType];
             }
         }
 

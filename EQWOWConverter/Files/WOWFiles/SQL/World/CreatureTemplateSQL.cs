@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Tradeskills;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -49,11 +50,18 @@ namespace EQWOWConverter.WOWFiles
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 32;    // 0x00000020 = Is Class Trainer
-                npcFlags = 179;
                 trainerType = 0;    // 0 = Class Trainer
                 trainerClass = Convert.ToInt32(creatureTemplate.ClassTrainerType);
                 iconName = "Trainer";
                 numOfRoles+=2;
+            }
+            if (creatureTemplate.ClassTrainerType == ClassType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+            {
+                npcFlags |= 16;    // 0x00000010 = Is a trainer
+                npcFlags |= 64;    // 0x00000040 = Is Profession Trainer
+                trainerType = 2;    // 2 = Profession Trainer
+                iconName = "Trainer";
+                numOfRoles += 1;
             }
             if (creatureTemplate.IsQuestGiver == true)
             {

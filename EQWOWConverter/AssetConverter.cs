@@ -1244,12 +1244,11 @@ namespace EQWOWConverter
                 SpellTemplate curSpellTemplate = new SpellTemplate();
                 curSpellTemplate.CastTimeInMS = Configuration.TRADESKILL_CAST_TIME_IN_MS;
                 curSpellTemplate.Name = string.Concat("Create ", recipe.Name);
+                curSpellTemplate.ID = recipe.SpellID;
 
                 // "None" recipes aren't regular recipes, but rather (typically) quest item combines
                 if (recipe.Type == TradeskillType.None)
                 {
-                    curSpellTemplate.ID = recipe.SpellID;
-
                     // Attach the spell to every combiner item
                     foreach (int itemID in recipe.CombinerWOWItemIDs)
                     {
@@ -1276,13 +1275,13 @@ namespace EQWOWConverter
                         curItemTemplate.WOWItemMaterialType = -1;
                     }
                 }
-                // Standard recipe type
-                else
-                {
-                    Logger.WriteError("Implement this");
-                    // TODO
-                    continue;
-                }                
+                //// Standard recipe type
+                //else
+                //{
+                //    //Logger.WriteError("Implement this");
+                //    // TODO
+                //    continue;
+                //}                
 
                 // Assign every component item as reagents
                 foreach (var item in recipe.ComponentItemCountsByWOWItemID)
@@ -2378,6 +2377,17 @@ namespace EQWOWConverter
                         creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
                     }
 
+                    // Profession Trainers
+                    if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+                    {
+                        // Trainers need a line in the npc trainers table
+                        npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(creatureTemplate.TradeskillTrainerType), creatureTemplate.WOWCreatureTemplateID);
+
+                        // Associate the menu
+                        // TODO:?
+                        // creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                    }
+
                     // Determine the display id
                     int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
                     if (creatureTemplate.IsNonNPC == true)
@@ -2736,6 +2746,17 @@ namespace EQWOWConverter
 
                 int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(classType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForClass(classType))
+                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+            }
+
+            // Trainer Abilities - Tradeskills
+            foreach (TradeskillType tradeskillType in Enum.GetValues(typeof(TradeskillType)))
+            {
+                if (tradeskillType == TradeskillType.Unknown || tradeskillType == TradeskillType.None)
+                    continue;
+
+                int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(tradeskillType);
+                foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
                     npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
             }
 
