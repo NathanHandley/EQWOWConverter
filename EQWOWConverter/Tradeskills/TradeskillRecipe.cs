@@ -299,9 +299,7 @@ namespace EQWOWConverter.Tradeskills
                     isFirstItem = false;
                 else
                     spellDescriptionSB.Append(",");
-                spellDescriptionSB.Append(string.Concat(" ", item.Value, " ", componentItemTemplate.Name));
-                if (item.Value > 1)
-                    spellDescriptionSB.Append("s");
+                spellDescriptionSB.Append(string.Concat(" ", item.Value, " x ", componentItemTemplate.Name));
             }
             spellDescriptionSB.Append(" to make");
             isFirstItem = true;

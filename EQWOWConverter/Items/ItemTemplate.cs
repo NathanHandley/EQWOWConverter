@@ -1504,9 +1504,7 @@ namespace EQWOWConverter.Items
                     isFirstItem = false;
                 else
                     bagDescriptionSB.Append(",");
-                bagDescriptionSB.Append(string.Concat(" ", item.Value, " ", componentItemTemplate.Name));
-                if (item.Value > 1)
-                    bagDescriptionSB.Append("s");
+                bagDescriptionSB.Append(string.Concat(" ", item.Value, " x ", componentItemTemplate.Name));
             }          
             itemTemplate.Description = bagDescriptionSB.ToString();
 
