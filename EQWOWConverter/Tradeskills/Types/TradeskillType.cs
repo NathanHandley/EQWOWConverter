@@ -31,17 +31,17 @@ namespace EQWOWConverter.Tradeskills
     // EQ Fishing => WOW Cooking
     // N/A => WOW Enchanting (just the required enchanting spells)
 
-    internal enum TradeskillType
+    internal enum TradeskillType : Int32
     {
-        Unknown,
-        None,
-        Alchemy,
-        Blacksmithing,
-        Cooking,
-        Engineering,
-        Jewelcrafting,
-        Inscription,
-        Tailoring,
-        Enchanting
+        Unknown = -1,
+        None = 0,
+        Alchemy = 1,
+        Blacksmithing = 2,
+        Cooking = 3,
+        Engineering = 4,
+        Jewelcrafting = 5,
+        Inscription = 6,
+        Tailoring = 7,
+        Enchanting = 8
     }
 }

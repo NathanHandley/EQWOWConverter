@@ -1314,8 +1314,9 @@ namespace EQWOWConverter
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
                 recipe.SetSpellVisualData(curSpellTemplate);
-                // Todo: Focus items
 
+                // Todo: Focus items
+                // Todo: Totems
 
                 spellTemplates.Add(curSpellTemplate);
             }

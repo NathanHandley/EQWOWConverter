@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Tradeskills;
 using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.Creatures
@@ -59,6 +60,7 @@ namespace EQWOWConverter.Creatures
         public bool CanAssist = false;
         public bool IsBanker = false;
         public ClassType ClassTrainerType = ClassType.None;
+        public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
         public bool IsNonNPC = false;
         public string SpawnZones = string.Empty;
@@ -194,7 +196,8 @@ namespace EQWOWConverter.Creatures
                 else
                     newCreatureTemplate.DetectionRange = Configuration.CREATURE_DEFAULT_DETECTION_RANGE;
                 newCreatureTemplate.EQClass = int.Parse(columns["class"]);
-                ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);              
+                ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);
+                ProcessTradeskillTrainerType(ref newCreatureTemplate, int.Parse(columns["tradeskill_trainer"]));
 
                 // Special logic for a few variations of kobolds, which look wrong if not adjusted
                 if (raceID == 48)
@@ -260,6 +263,61 @@ namespace EQWOWConverter.Creatures
                 if (CreatureTemplatesBySpawnZonesAndName.ContainsKey((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)) == false)
                     CreatureTemplatesBySpawnZonesAndName.Add((newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat), new List<CreatureTemplate>());
                 CreatureTemplatesBySpawnZonesAndName[(newCreatureTemplate.SpawnZones, newCreatureTemplate.NameNoFormat)].Add(newCreatureTemplate);
+            }
+        }
+
+        private static void ProcessTradeskillTrainerType(ref CreatureTemplate creatureTemplate, int tradeskillTrainerType)
+        {
+            switch (tradeskillTrainerType)
+            {
+                case 1: // Alchemy
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Alchemy;
+                        creatureTemplate.SubName = "Alchemy Trainer";
+                    } break;
+                case 2: // Blacksmithing
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Blacksmithing;
+                        creatureTemplate.SubName = "Blacksmithing Trainer";
+                    }
+                    break;
+                case 3: // Cooking
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Cooking;
+                        creatureTemplate.SubName = "Cooking Trainer";
+                    }
+                    break;
+                case 4: // Engineering
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Engineering;
+                        creatureTemplate.SubName = "Engineering Trainer";
+                    }
+                    break;
+                case 5: // Jewelcrafting
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Jewelcrafting;
+                        creatureTemplate.SubName = "Jewelcrafting Trainer";
+                    }
+                    break;
+                case 6: // Inscription
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Inscription;
+                        creatureTemplate.SubName = "Inscription Trainer";
+                    }
+                    break;
+                case 7: // Tailoring
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Tailoring;
+                        creatureTemplate.SubName = "Tailoring Trainer";
+                    }
+                    break;
+                case 8: // Enchanting
+                    {
+                        creatureTemplate.TradeskillTrainerType = TradeskillType.Enchanting;
+                        creatureTemplate.SubName = "Enchanting Trainer";
+                    }
+                    break;
+                default:  break;// Nothing
             }
         }
 
@@ -332,11 +390,11 @@ namespace EQWOWConverter.Creatures
                         creatureTemplate.ClassTrainerType = ClassType.Mage;
                         creatureTemplate.SubName = "Mage Trainer";
                     } break;
-                case 33: // Enchanter GM
-                    {
-                        creatureTemplate.ClassTrainerType = ClassType.Warlock;
-                        creatureTemplate.SubName = "Warlock Trainer";
-                    } break;
+                //case 33: // Enchanter GM (switching it to an enchanter)
+                //    {
+                //        creatureTemplate.ClassTrainerType = ClassType.Warlock;
+                //        creatureTemplate.SubName = "Warlock Trainer";
+                //    } break;
                 case 34: // Beastlord GM
                     {
                         creatureTemplate.ClassTrainerType = ClassType.Hunter;
