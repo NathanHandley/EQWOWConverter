@@ -41,6 +41,7 @@ namespace EQWOWConverter.Spells
         public UInt32 Category = 1;
         public UInt32 InterruptFlags = 15;
         public int SpellIconID = 0;
+        public bool IsTradeskill = false;
         protected int _CastTimeInMS = 0;
         public int CastTimeInMS
         {

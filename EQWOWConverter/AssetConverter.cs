@@ -1309,6 +1309,8 @@ namespace EQWOWConverter
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
+                curSpellTemplate.SchoolMask = 1; // "Normal"
+                curSpellTemplate.IsTradeskill = true;
                 recipe.SetSpellVisualData(curSpellTemplate);
 
                 // Todo: Focus items

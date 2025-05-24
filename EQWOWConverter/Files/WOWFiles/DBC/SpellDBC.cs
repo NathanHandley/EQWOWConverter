@@ -218,12 +218,17 @@ namespace EQWOWConverter.WOWFiles
 
         private UInt32 GetAttributes(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.AllowCastInCombat == false)
-                return 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
-            else if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAura1 == 261) // Phase Aura
                 return 2843738496;
-            else
-                return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.AllowCastInCombat == false)
+                attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
+            if (spellTemplate.IsTradeskill == true)
+            {
+                attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
+                attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
+            }
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesEx(SpellTemplate spellTemplate)
