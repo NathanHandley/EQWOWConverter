@@ -1160,6 +1160,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
+            gateSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(gateSpellTemplate);
 
             // Bind Affinity (Self)
@@ -1174,6 +1175,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
+            bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -1189,6 +1191,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
+            bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             // Phase aura 1 (Day)
@@ -1206,6 +1209,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.EffectBasePoints1 = -1;
             dayPhaseSpellTemplate.DurationIndex = 21; // Infinate
             dayPhaseSpellTemplate.SchoolMask = 1;
+            dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(dayPhaseSpellTemplate);
 
             // Phase aura 2 (Night)
@@ -1223,6 +1227,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.EffectBasePoints1 = -1;
             nightPhaseSpellTemplate.DurationIndex = 21; // Infinate
             nightPhaseSpellTemplate.SchoolMask = 1;
+            nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(nightPhaseSpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");
@@ -1310,7 +1315,8 @@ namespace EQWOWConverter
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 curSpellTemplate.SchoolMask = 1; // "Normal"
-                curSpellTemplate.IsTradeskill = true;
+                curSpellTemplate.TradeskillRecipe = recipe;
+                curSpellTemplate.SkillLine = recipe.SkillLineWOW;
                 recipe.SetSpellVisualData(curSpellTemplate);
 
                 // Todo: Focus items
@@ -2094,7 +2100,7 @@ namespace EQWOWConverter
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 spellDBC.AddRow(spellTemplate);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), Configuration.DBCID_SKILLLINE_ALTERATION_ID, spellTemplate.ID);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);

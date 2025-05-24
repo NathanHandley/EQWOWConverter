@@ -223,7 +223,7 @@ namespace EQWOWConverter.WOWFiles
             UInt32 attributeFlags = 0;
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
-            if (spellTemplate.IsTradeskill == true)
+            if (spellTemplate.TradeskillRecipe != null)
             {
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)

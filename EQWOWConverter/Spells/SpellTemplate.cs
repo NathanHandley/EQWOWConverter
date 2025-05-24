@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Spells
@@ -41,7 +42,7 @@ namespace EQWOWConverter.Spells
         public UInt32 Category = 1;
         public UInt32 InterruptFlags = 15;
         public int SpellIconID = 0;
-        public bool IsTradeskill = false;
+        public TradeskillRecipe? TradeskillRecipe = null;
         protected int _CastTimeInMS = 0;
         public int CastTimeInMS
         {
@@ -72,5 +73,6 @@ namespace EQWOWConverter.Spells
         public UInt32 SchoolMask = 0;
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
+        public int SkillLine = 0;
     }
 }

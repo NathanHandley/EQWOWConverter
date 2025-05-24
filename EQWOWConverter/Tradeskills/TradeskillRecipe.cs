@@ -121,7 +121,6 @@ namespace EQWOWConverter.Tradeskills
                     }
                     TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
                     recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
-                    recipe.LearnCostInCopper = 1;
                     for (int i = 0; i < 4; i++)
                     {
                         string producedEQItemIDString = columns[string.Concat("produced_eqid_", i)];
@@ -198,6 +197,7 @@ namespace EQWOWConverter.Tradeskills
 
                     // Generate WOW values
                     PopulateWOWSkillLevelsAndLine(recipe);
+                    recipe.LearnCostInCopper = Configuration.TRADESKILL_LEARN_COST_MOD * recipe.SkillRankNeededWOW;
 
                     // Add it
                     if (RecipesByTradeskillType.ContainsKey(type) == false)
@@ -236,6 +236,7 @@ namespace EQWOWConverter.Tradeskills
 
         private static void PopulateWOWSkillLevelsAndLine(TradeskillRecipe tradeskillRecipe)
         {
+            // Skill Line
             switch(tradeskillRecipe.Type)
             {
                 case TradeskillType.Alchemy:        tradeskillRecipe.SkillLineWOW = 171; break;
@@ -252,10 +253,19 @@ namespace EQWOWConverter.Tradeskills
                     }
             }
 
-            // Base skill levels entirely off the "trivial" value
-            tradeskillRecipe.SkillRankNeededWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1);
-            tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
-            tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.TrivialHighWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE;
+            // Skill Level
+            if (tradeskillRecipe.SkillNeededEQ > 1)
+            {
+                tradeskillRecipe.SkillRankNeededWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.SkillNeededEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1);
+                tradeskillRecipe.TrivialLowWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW;
+                tradeskillRecipe.TrivialHighWOW = tradeskillRecipe.SkillRankNeededWOW + Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH;
+            }
+            else
+            {
+                tradeskillRecipe.TrivialHighWOW = Math.Max(Convert.ToInt32(tradeskillRecipe.TrivialEQ * Configuration.TRADESKILLS_CONVERSION_MOD), 1); // Gray
+                tradeskillRecipe.TrivialLowWOW = Math.Max(tradeskillRecipe.TrivialHighWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_LOW, 1);
+                tradeskillRecipe.SkillRankNeededWOW = Math.Max(tradeskillRecipe.TrivialLowWOW - Configuration.TRADESKILLS_SKILL_TIER_DISTANCE_HIGH, 1);
+            }
         }
 
         public string GetGeneratedDescription(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)

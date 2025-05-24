@@ -14,27 +14,40 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Spells;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class SkillLineAbilityDBC : DBCFile
     {
         private static int CUR_SPELL_DBCID = Configuration.DBCID_SKILLLINEABILITY_ID_START;
 
-        public void AddRow(int id, int skillLineID, int spellID)
+        public void AddRow(int id, SpellTemplate spellTemplate)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
-            newRow.AddInt32(skillLineID); // SkillLine
-            newRow.AddInt32(spellID); // Spell
+            newRow.AddInt32(spellTemplate.SkillLine); // SkillLine
+            newRow.AddInt32(spellTemplate.ID); // Spell
             newRow.AddInt32(0); // RaceMask
             newRow.AddInt32(0); // ClassMask
             newRow.AddInt32(0); // ExcludeRace
             newRow.AddInt32(0); // ExcludeClass
-            newRow.AddInt32(1); // MinSkillLineRank
-            newRow.AddInt32(0); // SupercededBySpell
-            newRow.AddInt32(0); // AcquireMethod (0 = learn by trainer)
-            newRow.AddInt32(0); // TrivialSkillLineRankHigh
-            newRow.AddInt32(0); // TrivialSkillLineRankLow
+            if (spellTemplate.TradeskillRecipe == null)
+            {
+                newRow.AddInt32(1); // MinSkillLineRank
+                newRow.AddInt32(0); // SupercededBySpell
+                newRow.AddInt32(0); // AcquireMethod (0 = learn by trainer)
+                newRow.AddInt32(0); // TrivialSkillLineRankHigh
+                newRow.AddInt32(0); // TrivialSkillLineRankLow
+            }
+            else
+            {
+                newRow.AddInt32(spellTemplate.TradeskillRecipe.SkillRankNeededWOW); // MinSkillLineRank
+                newRow.AddInt32(0); // SupercededBySpell
+                newRow.AddInt32(0); // AcquireMethod (0 = learn by trainer)
+                newRow.AddInt32(spellTemplate.TradeskillRecipe.TrivialHighWOW); // TrivialSkillLineRankHigh
+                newRow.AddInt32(spellTemplate.TradeskillRecipe.TrivialLowWOW); // TrivialSkillLineRankLow
+            }
             newRow.AddInt32(0); // CharacterPoints1
             newRow.AddInt32(0); // CharacterPoints2
             Rows.Add(newRow);

@@ -411,8 +411,9 @@ namespace EQWOWConverter
         // How much to multiply EQ skill requirements by to reach the same for WoW on conversion
         public static readonly float TRADESKILLS_CONVERSION_MOD = 1.3f;
 
-        // Distance between Grey -> Green -> Yellow -> Red steps
-        public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE = 10;
+        // Max distance between Grey -> Green -> Yellow -> Red steps
+        public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE_LOW = 10;
+        public static readonly int TRADESKILLS_SKILL_TIER_DISTANCE_HIGH = 25;
 
         // How much to multiply the learn skill level rate to determine the cost of learning the tradeskill
         public static readonly int TRADESKILL_LEARN_COST_MOD = 10;
