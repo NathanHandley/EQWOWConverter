@@ -1279,6 +1279,7 @@ namespace EQWOWConverter
                 // Standard recipe type
                 else
                 {
+                    Logger.WriteError("Implement this");
                     // TODO
                     continue;
                 }                
@@ -1312,13 +1313,15 @@ namespace EQWOWConverter
 
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
-                curSpellTemplate.SpellVisualID1 = 1168; // Same as "Join map fragments" for the Tanaris treasure map
-
+                recipe.SetSpellVisualData(curSpellTemplate);
                 // Todo: Focus items
 
 
                 spellTemplates.Add(curSpellTemplate);
             }
+
+            // Generate spell trainer abilities
+            SpellTrainerAbility.PopulateTradeskillAbilities(TradeskillRecipe.GetRecipesByTradeskillType());
             
             Logger.WriteDebug("Converting tradeskills completed.");
         }
