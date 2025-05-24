@@ -31,6 +31,7 @@ namespace EQWOWConverter.Spells
 
         public ClassType ClassType = ClassType.None;
         public TradeskillType TradeskillType = TradeskillType.None;
+        public TradeskillRecipe? TradeskillRecipe = null;
         public int SpellID = 0;
         public int MoneyCost = 0;
         public int ReqSkillLine = 0;
@@ -117,6 +118,7 @@ namespace EQWOWConverter.Spells
                         curTrainerRecipeAbility.ReqSkillLine = recipe.SkillLineWOW;
                         curTrainerRecipeAbility.ReqSkillRank = recipe.SkillRankNeededWOW;
                         curTrainerRecipeAbility.SpellID = recipe.SpellID;
+                        curTrainerRecipeAbility.TradeskillRecipe = recipe;
                         if (TradeskillTrainerAbilitiesByTradeskillType.ContainsKey(recipe.Type) == false)
                             TradeskillTrainerAbilitiesByTradeskillType.Add(recipe.Type, new List<SpellTrainerAbility>());
                         TradeskillTrainerAbilitiesByTradeskillType[recipe.Type].Add(curTrainerRecipeAbility);

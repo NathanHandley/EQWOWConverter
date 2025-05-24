@@ -2759,7 +2759,21 @@ namespace EQWOWConverter
                 int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(tradeskillType);
                 npcTrainerSQL.AddDevelopmentSkillsForTradeskill(lineID, tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
-                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+                {
+                    bool allComponentsAvailable = true;
+                    if (trainerAbility.TradeskillRecipe != null)
+                    {
+                        foreach (int componentWOWItemID in trainerAbility.TradeskillRecipe.ComponentItemCountsByWOWItemID.Keys)
+                        {
+                            if (itemTemplatesByWOWEntryID.ContainsKey(componentWOWItemID) == false)
+                                allComponentsAvailable = false;
+                            else if (itemTemplatesByWOWEntryID[componentWOWItemID].IsPlayerObtainable() == false)
+                                allComponentsAvailable = false;
+                        }
+                    }
+                    if (allComponentsAvailable == true)
+                        npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+                }
             }
 
             // Transports
