@@ -1296,7 +1296,7 @@ namespace EQWOWConverter
                     Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " due to there being no produced items"));
                     continue;
                 }
-                else if (recipe.ProducedItemCountsByWOWItemID.Count > 1 || (recipe.ProducedItemCountsByWOWItemID.Count == 1 && recipe.ProducedItemCountsByWOWItemID.Values.First() > 1))
+                else if (recipe.ProducedItemCountsByWOWItemID.Count > 1)
                 {
                     string containerName = string.Concat(recipe.Name, " Items");
                     resultItemTemplate = ItemTemplate.CreateTradeskillMultiItemContainer(containerName, recipe.ProducedItemCountsByWOWItemID);
@@ -1305,6 +1305,8 @@ namespace EQWOWConverter
                 else
                 {
                     resultItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
+                    curSpellTemplate.EffectDieSides1 = 1;
+                    curSpellTemplate.EffectBasePoints1 = recipe.ProducedItemCountsByWOWItemID.Values.First() - 1;
                 }
                 if (resultItemTemplate == null)
                 {
