@@ -430,6 +430,9 @@ namespace EQWOWConverter
         // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
         public static readonly int TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
 
+        // Tradeskill items that need a totem in TotemCategory.dbc will align under this
+        public static readonly int TRADESKILL_TOTEM_CATEGORY_START = 30;
+
         //=====================================================================
         // Transports
         //=====================================================================
@@ -520,6 +523,9 @@ namespace EQWOWConverter
 
         // ID for TaxiPathNode.dbc
         public static readonly int DBCID_TAXIPATHNODE_ID_START = 48000;
+
+        // ID for TotemCategory.dbc
+        public static readonly UInt32 DBCID_TOTEMCATEGORY_ID_START = 210;
 
         // ID for TransportAnimation.dbc
         public static readonly int DBCID_TRANSPORTANIMATION_ID_START = 180000;

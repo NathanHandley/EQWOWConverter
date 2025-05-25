@@ -71,6 +71,8 @@ namespace EQWOWConverter.Spells
         public int EffectMiscValue1 = 0;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 0;
+        public UInt32 RequiredTotemID1 = 0;
+        public UInt32 RequiredTotemID2 = 0;
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;

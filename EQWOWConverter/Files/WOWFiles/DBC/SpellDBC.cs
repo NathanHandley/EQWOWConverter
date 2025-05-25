@@ -201,8 +201,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // MinFactionID
             newRow.AddUInt32(0); // MinReputation
             newRow.AddUInt32(0); // RequiredAuraVision
-            newRow.AddUInt32(0); // RequiredTotemCategoryID1
-            newRow.AddUInt32(0); // RequiredTotemCategoryID2
+            newRow.AddUInt32(spellTemplate.RequiredTotemID1); // RequiredTotemCategoryID1
+            newRow.AddUInt32(spellTemplate.RequiredTotemID2); // RequiredTotemCategoryID2
             newRow.AddInt32(spellTemplate.RequiredAreaIDs); // RequiredAreasID
             newRow.AddUInt32(spellTemplate.SchoolMask); // SchoolMask
             newRow.AddUInt32(0); // RuneCostID

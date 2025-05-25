@@ -80,6 +80,7 @@ namespace EQWOWConverter.Items
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
         public int IconID = 0;
+        public int TotemDBCID = 0;
 
         public ItemTemplate()
         {

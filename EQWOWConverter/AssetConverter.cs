@@ -1330,10 +1330,11 @@ namespace EQWOWConverter
                 curSpellTemplate.SchoolMask = 1; // "Normal"
                 curSpellTemplate.TradeskillRecipe = recipe;
                 curSpellTemplate.SkillLine = recipe.SkillLineWOW;
+                curSpellTemplate.RequiredTotemID1 = recipe.RequiredTotemID1;
+                curSpellTemplate.RequiredTotemID2 = recipe.RequiredTotemID2;
                 recipe.SetSpellVisualData(curSpellTemplate);
 
                 // Todo: Focus items
-                // Todo: Totems
 
                 spellTemplates.Add(curSpellTemplate);
             }
@@ -1879,6 +1880,8 @@ namespace EQWOWConverter
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
             taxiPathNodeDBC.LoadFromDisk(dbcInputFolder, "TaxiPathNode.dbc");
+            TotemCategoryDBC totemCategoryDBC = new TotemCategoryDBC();
+            totemCategoryDBC.LoadFromDisk(dbcInputFolder, "TotemCategory.dbc");
             TransportAnimationDBC transportAnimationDBC = new TransportAnimationDBC();
             transportAnimationDBC.LoadFromDisk(dbcInputFolder, "TransportAnimation.dbc");
             WorldSafeLocsDBC worldSafeLocsDBC = new WorldSafeLocsDBC();
@@ -2192,6 +2195,24 @@ namespace EQWOWConverter
                     soundEntriesDBC.AddRow(sound, sound.AudioFileNameNoExt + ".wav", soundDirectoryRelative);
             }
 
+            // Tradeskills
+            Dictionary<string, UInt32> tradeskillTotems = TradeskillRecipe.GetTotemIDsByItemName();
+            int curTradeskillTotemCategoryMaskValue = 1;
+            int curTradeskillTotemCategoryMaskCount = 0;
+            int curTradeskillTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
+            foreach (var tradeskillTotemData in tradeskillTotems)
+            {
+                totemCategoryDBC.AddRow(tradeskillTotemData.Value, tradeskillTotemData.Key, curTradeskillTotemCategoryID, curTradeskillTotemCategoryMaskValue);
+                curTradeskillTotemCategoryMaskValue *= 2;
+                curTradeskillTotemCategoryMaskCount++;
+                if (curTradeskillTotemCategoryMaskCount > 10)
+                {
+                    curTradeskillTotemCategoryMaskValue = 1;
+                    curTradeskillTotemCategoryMaskCount = 0;
+                    curTradeskillTotemCategoryID++;
+                }
+            }
+
             // Save the files
             areaTableDBC.SaveToDisk(dbcOutputClientFolder);
             areaTableDBC.SaveToDisk(dbcOutputServerFolder);
@@ -2254,6 +2275,8 @@ namespace EQWOWConverter
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputServerFolder);
+            totemCategoryDBC.SaveToDisk(dbcOutputClientFolder);
+            totemCategoryDBC.SaveToDisk(dbcOutputServerFolder);
             transportAnimationDBC.SaveToDisk(dbcOutputClientFolder);
             transportAnimationDBC.SaveToDisk(dbcOutputServerFolder);
             worldSafeLocsDBC.SaveToDisk(dbcOutputClientFolder);

@@ -151,7 +151,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("area", 0);
             newRow.AddInt("Map", 0);
             newRow.AddInt("BagFamily", 0);
-            newRow.AddInt("TotemCategory", 0);
+            newRow.AddInt("TotemCategory", itemTemplate.TotemDBCID);
             newRow.AddInt("socketColor_1", 0);
             newRow.AddInt("socketContent_1", 0);
             newRow.AddInt("socketColor_2", 0);

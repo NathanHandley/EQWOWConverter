@@ -16,16 +16,18 @@
 
 using EQWOWConverter.Items;
 using EQWOWConverter.Spells;
+using EQWOWConverter.WOWFiles;
 using System.Text;
 
 namespace EQWOWConverter.Tradeskills
 {
     internal class TradeskillRecipe
     {
-        static private Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
-        static private List<TradeskillRecipe> AllRecipes = new List<TradeskillRecipe>();
+        private static Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
+        private static List<TradeskillRecipe> AllRecipes = new List<TradeskillRecipe>();
         private static readonly object TradeskillReadLock = new object();
         private static readonly object TradeskillWriteLock = new object();
+        private static Dictionary<string, UInt32> TotemIDsByItemName = new Dictionary<string, UInt32>();
 
         public int EQID;
         public int SpellID;
@@ -44,6 +46,8 @@ namespace EQWOWConverter.Tradeskills
         public List<int> RequiredIWOWtemIDs = new List<int>();
         public List<int> CombinerWOWItemIDs = new List<int>();
         public ItemTemplate? ProducedFilledContainer = null;
+        public UInt32 RequiredTotemID1 = 0;
+        public UInt32 RequiredTotemID2 = 0;
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -80,6 +84,14 @@ namespace EQWOWConverter.Tradeskills
                 }
                 else
                     return AllRecipes;
+            }
+        }
+
+        public static Dictionary<string, UInt32> GetTotemIDsByItemName()
+        {
+            lock (TradeskillReadLock)
+            {
+                return TotemIDsByItemName;
             }
         }
 
@@ -174,6 +186,14 @@ namespace EQWOWConverter.Tradeskills
                             int requiredWOWItemID = itemTemplatesByEQDBID[requiredEQItemID].WOWEntryID;
                             if (recipe.RequiredIWOWtemIDs.Contains(requiredWOWItemID) == false)
                                 recipe.RequiredIWOWtemIDs.Add(requiredWOWItemID);
+                            string itemName = itemTemplatesByEQDBID[requiredEQItemID].Name;
+                            if (TotemIDsByItemName.ContainsKey(itemName) == false)
+                                TotemIDsByItemName.Add(itemName, TotemCategoryDBC.GetUniqueID());
+                            if (i == 0)
+                                recipe.RequiredTotemID1 = TotemIDsByItemName[itemName];
+                            else
+                                recipe.RequiredTotemID2 = TotemIDsByItemName[itemName];
+                            itemTemplatesByEQDBID[requiredEQItemID].TotemDBCID = Convert.ToInt32(TotemIDsByItemName[itemName]);
                         }
                     }
                     if (type == TradeskillType.None)
