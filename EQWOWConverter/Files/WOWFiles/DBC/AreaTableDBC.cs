@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Zones;
-using Google.Protobuf.WellKnownTypes;
 
 namespace EQWOWConverter.WOWFiles
 {
