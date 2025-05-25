@@ -319,7 +319,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 345|-1|0||Anizok's Minimizing Device||57|57|0|212|212|0|0|-1|9176|INVALID_ID|20||||||||||9181|Mana Battery - Class Six|1|9182|Base Prototype|1|9197|Perpetual Steam Pump|1|16859|Sprockets|1|16861|Gnomish Bolts|1|||||||||||||||||||||||
 347|87124|1||Aqualung||57|57|0|148|148|0|0|-1|16873|Aqualung|20||||||||||13019|Fresh Fish|1|16850|Metal Rod|1|16857|Metal Twine|1|16861|Gnomish Bolts|1|16862|Silk Lined Steel Helm|1|16890|Fine Coral Mesh|1||||||||||||||||||||
 348|87125|1||Azimuth Indicative Cuirass||57|57|0|268|268|0|0|-1|8996|Azimuth Indicative Cuirass|1||||||||||4004|Steel Breastplate|1|9179|Coiled Spring|1|9181|Mana Battery - Class Six|1|9184|Steel Ball Bearing|1|16867|Gnomish Compass|1|||||||||||||||||||||||
-349|87126|1||Base Prototype||57|57|0|151|151|0|0|-1|9182|Base Prototype|1||||||||||9178|Pinion|1|9184|Steel Ball Bearing|1|9194|Steel Casing|1|16852|Grease|1||||||||||||||||||||||||||
+349|87126|0||Base Prototype||57|57|0|151|151|0|0|-1|9182|Base Prototype|1||||||||||9178|Pinion|1|9184|Steel Ball Bearing|1|9194|Steel Casing|1|16852|Grease|1||||||||||||||||||||||||||
 350|87127|1||Cheirometric Lockpick Device||57|57|0|267|267|0|0|-1|8995|Cheirometric Lockpick Device|1||||||||||3010|Chainmail Gloves|1|9178|Pinion|1|9179|Coiled Spring|1|9181|Mana Battery - Class Six|1|9184|Steel Ball Bearing|1|16865|Mechanized Lockpicks|1||||||||||||||||||||
 391|87128|1||Clockwork Watchman Boots||57|57|0|231|231|0|0|-1|29512|Clockwork Watchman Boots|10||||||||||14804|Mana Battery - Class Five|1|40008|Clockwork Base Mechanism|1|16861|Gnomish Bolts|1|16888|Metal Fastening|1|21024|Small Fine Plate Boots|1|30224|Faun Hoof|1||||||||||||||||||||
 392|87129|1||Clockwork Watchman Boots (Recharge)||57|57|0|0|0|1|0|-1|29512|Clockwork Watchman Boots|1||||||||||14804|Mana Battery - Class Five|1|29512|Clockwork Watchman Boots|1||||||||||||||||||||||||||||||||
@@ -346,7 +346,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 415|87149|1||Crab Cracker||57|57|0|288|288|0|0|-1|29778|Crab Cracker|1||||||||||16850|Metal Rod|2|16881|Firewater|1|29789|Knuckle Joint|1|||||||||||||||||||||||||||||
 420|-1|0||E'cian Ice Bow Cam||57|57|0|282|282|0|0|-1|30483|E'cian Ice Bow Cam|1||||||||||30487|E'cian Ice Gears|1|30497|E'cian Ice Bolts|1|30500|INVALID_ID|1|||||||||||||||||||||||||||||
 421|87150|1||Firewater||57|57|0|17|17|0|0|-1|16881|Firewater|1||||||||||13006|Water Flask|1|13037|Gnomish Spirits|1||||||||||||||||||||||||||||||||
-422|87151|1||Flame Bolt||57|57|0|68|68|0|0|-1|16872|Flame Bolt|1||||||||||6034|Pickbringers Chainmail Gloves|1|16857|Metal Twine|1|16858|Gears|1|16859|Sprockets|1|16881|Firewater|1|||||||||||||||||||||||
+422|87151|0||Flame Bolt||57|57|0|68|68|0|0|-1|16872|Flame Bolt|1||||||||||6034|Pickbringers Chainmail Gloves|1|16857|Metal Twine|1|16858|Gears|1|16859|Sprockets|1|16881|Firewater|1|||||||||||||||||||||||
 423|87152|1||Flameless Lantern||57|57|0|68|68|0|0|-1|16866|Flameless Lantern|20||||||||||13004|Large Lantern|1|16857|Metal Twine|1|16881|Firewater|1|||||||||||||||||||||||||||||
 424|87153|1||Footwarming Boots||57|57|0|235|235|0|0|-1|29501|Footwarming Boots|1||||||||||16850|Metal Rod|2|16857|Metal Twine|1|16861|Gnomish Bolts|1|16881|Firewater|1|16891|Sharkskin Tubing|1|21024|Small Fine Plate Boots|1||||||||||||||||||||
 426|87154|1||Geerlok All Purpose Baking Utensil||57|57|0|215|215|0|0|-1|7454|Geerlok All Purpose Baking Utensil|1||||||||||7471|Utensil Parts|1|7480|Darkclaw Claw|1|16858|Gears|1|16859|Sprockets|1|16861|Gnomish Bolts|1|||||||||||||||||||||||
@@ -362,7 +362,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 439|87163|1||Gnomish Vanishing Device||57|57|0|302|0|0|0|-1|29502|Gnomish Vanishing Device|5||||||||||10037|Diamond|1|13003|Small Lantern|1|14804|Mana Battery - Class Five|1|16860|Reflective Shard|1|16861|Gnomish Bolts|1|22535|Steel Wire|1|24862|Haze Panther Eye|1|||||||||||||||||
 440|87164|1||Gnomish Vanishing Device (Recharge)||57|57|0|0|0|1|0|-1|29502|Gnomish Vanishing Device|1||||||||||14804|Mana Battery - Class Five|1|29502|Gnomish Vanishing Device|1||||||||||||||||||||||||||||||||
 443|-1|0||Grandmaster Tinker's Spanner||57|57|0|335|335|0|0|-1|9255|Grandmaster Tinker's Spanner|1||||||||||12056|Sharpening Stone|1|16905|Metal Bits|1|23609|Artisan's Seal|1|||||||||||||||||||||||||||||
-444|87165|1||Greasy Diamond Of Innovation||57|57|0|135|135|0|0|-1|32075|Greasy Diamond of Innovation|1||||||||||15981|Raw Diamond|1|28165|Silicorrosive Grease|1|||||||||||||||||||||||||||||16883|Gem Cutter||
+444|87165|0||Greasy Diamond Of Innovation||57|57|0|135|135|0|0|-1|32075|Greasy Diamond of Innovation|1||||||||||15981|Raw Diamond|1|28165|Silicorrosive Grease|1|||||||||||||||||||||||||||||16883|Gem Cutter||
 445|-1|0||Happy Dragon||57|57|0|187|187|0|0|-1|8997|Happy Dragon|20||||||||||9180|Saltpeter|1|9183|INVALID_ID|1|16877|Gnomish Firework|1|||||||||||||||||||||||||||||
 446|-1|0||Happy Dragon (Recharge)||57|57|0|0|0|1|0|-1|8997|Happy Dragon|1||||||||||8997|Happy Dragon|1|9180|Saltpeter|1|16877|Gnomish Firework|1|||||||||||||||||||||||||||||
 449|-1|0||Innovative Bow Cam||57|57|0|208|208|0|0|-1|30197|Innovative Bow Cam|1||||||||||30498|Innovative Clockwork Gears|1|30499|Innovative Clockwork Bolts|1|30500|INVALID_ID|1|||||||||||||||||||||||||||||
@@ -386,10 +386,10 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 479|87183|1||Mechanized Lockpicks||57|57|0|62|62|0|0|-1|16865|Mechanized Lockpicks|1||||||||||13010|Lockpicks|1|13072|Rat Ears|1|16858|Gears|1|16859|Sprockets|1||||||||||||||||||||||||||
 480|-1|0||Meteorological Rocket||57|57|0|196|196|0|0|-1|8998|Meteorological Rocket|5||||||||||9183|INVALID_ID|1|10030|Opal|1|16877|Gnomish Firework|1|||||||||||||||||||||||||||||
 481|-1|0||Molten Metal Bow Cam||57|57|0|282|282|0|0|-1|30480|Molten Metal Bow Cam|1||||||||||30484|Molten Metal Gears|1|30494|Molten Metal Bolts|1|30500|INVALID_ID|1|||||||||||||||||||||||||||||
-482|87184|1||Nantik's Anti-gravity Unit||57|57|0|202|202|0|0|-1|16893|Nantik's Anti-Gravity Unit|1||||||||||16894|Large Black Lodestone|2|12003|Sheet Metal|1|16850|Metal Rod|1|16882|Static Orb|1|16888|Metal Fastening|1|||||||||||||||||||||||
-483|87185|1||Necrotic Divining Device||57|57|0|215|215|0|0|-1|9000|Necrotic Divining Device|1||||||||||9181|Mana Battery - Class Six|1|9182|Base Prototype|1|9962|Tiny Jade Inlaid Coffin|1|16861|Gnomish Bolts|1|16882|Static Orb|1|||||||||||||||||||||||
-484|87186|1||Perpetual Air Pump||57|57|0|168|168|0|0|-1|9196|Perpetual Air Pump|1||||||||||7483|Cured Leather Tubing|1|9179|Coiled Spring|1|9184|Steel Ball Bearing|1|9195|Vial of Gases|1|16858|Gears|1|||||||||||||||||||||||
-486|87187|1||Perpetual Steam Pump||57|57|0|168|168|0|0|-1|9197|Perpetual Steam Pump|1||||||||||7483|Cured Leather Tubing|1|9179|Coiled Spring|1|9184|Steel Ball Bearing|1|13006|Water Flask|1|16858|Gears|1|||||||||||||||||||||||
+482|87184|0||Nantik's Anti-gravity Unit||57|57|0|202|202|0|0|-1|16893|Nantik's Anti-Gravity Unit|1||||||||||16894|Large Black Lodestone|2|12003|Sheet Metal|1|16850|Metal Rod|1|16882|Static Orb|1|16888|Metal Fastening|1|||||||||||||||||||||||
+483|87185|0||Necrotic Divining Device||57|57|0|215|215|0|0|-1|9000|Necrotic Divining Device|1||||||||||9181|Mana Battery - Class Six|1|9182|Base Prototype|1|9962|Tiny Jade Inlaid Coffin|1|16861|Gnomish Bolts|1|16882|Static Orb|1|||||||||||||||||||||||
+484|87186|0||Perpetual Air Pump||57|57|0|168|168|0|0|-1|9196|Perpetual Air Pump|1||||||||||7483|Cured Leather Tubing|1|9179|Coiled Spring|1|9184|Steel Ball Bearing|1|9195|Vial of Gases|1|16858|Gears|1|||||||||||||||||||||||
+486|87187|0||Perpetual Steam Pump||57|57|0|168|168|0|0|-1|9197|Perpetual Steam Pump|1||||||||||7483|Cured Leather Tubing|1|9179|Coiled Spring|1|9184|Steel Ball Bearing|1|13006|Water Flask|1|16858|Gears|1|||||||||||||||||||||||
 487|-1|0||Planar Steel Bow Cam||57|57|0|282|282|0|0|-1|30481|INVALID_ID|1||||||||||30485|INVALID_ID|1|30495|INVALID_ID|1|30500|INVALID_ID|1|||||||||||||||||||||||||||||
 491|87188|1||Powered Gloves||57|57|0|122|122|0|0|-1|16876|Powered Gloves|1||||||||||16854|Steel Lined Gloves|1|16857|Metal Twine|1|16858|Gears|1|16859|Sprockets|1|16881|Firewater|1|||||||||||||||||||||||
 492|87189|1||Rebreather||57|57|0|175|175|0|0|-1|16889|Rebreather|1||||||||||4001|Platemail Helm|1|16873|Aqualung|1|16881|Firewater|1|16888|Metal Fastening|1|16891|Sharkskin Tubing|1|16892|Lime Coated Meshing|1||||||||||||||||||||
@@ -1382,7 +1382,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 2491|-1|0||Bracer Of The Silent Fist||61|61|0|0|0|1|0|-1|27373|Bracer of the Silent Fist|1||||||||||22584|INVALID_ID|1|27475|Silent Fist Bracer Material|1||||||||||||||||||||||||||||||||
 2492|-1|0||Bracer Of The Spurned Initiate||61|61|0|0|0|1|0|-1|22636|Bracer of the Spurned Initiate|1||||||||||22622|Bracer of the Spurned Material|1|22629|INVALID_ID|1||||||||||||||||||||||||||||||||
 2493|-1|0||Bracer Of The Stonehand||61|61|0|0|0|1|0|-1|9880|INVALID_ID|1||||||||||22584|INVALID_ID|1|24679|INVALID_ID|1||||||||||||||||||||||||||||||||
-2495|87803|1||Braids Of Pine||61|61|0|138|138|0|0|-1|8866|Braids of Pine|1||||||||||8792|Shadowjade Moss|1|8868|Jaggedpine Needles|1|8869|Potameid Braids|1|||||||||||||||||||||||||||||
+2495|87803|0||Braids Of Pine||61|61|0|138|138|0|0|-1|8866|Braids of Pine|1||||||||||8792|Shadowjade Moss|1|8868|Jaggedpine Needles|1|8869|Potameid Braids|1|||||||||||||||||||||||||||||
 2499|-1|0||Cap Of The Arcane Order||61|61|0|0|0|1|0|-1|27379|INVALID_ID|1||||||||||22583|INVALID_ID|1|27481|INVALID_ID|1||||||||||||||||||||||||||||||||
 2500|-1|0||Cap Of The Collective Initiate||61|61|0|0|0|1|0|-1|9091|Cap of the Collective Initiate|1||||||||||9166|Cap of the Collective Material|1|22583|INVALID_ID|1||||||||||||||||||||||||||||||||
 2502|-1|0||Cap Of The Leafrunner||61|61|0|0|0|1|0|-1|27516|Cap of the Leafrunner|1||||||||||27548|Leafrunners Cap Material|1|22628|INVALID_ID|1||||||||||||||||||||||||||||||||
@@ -1460,7 +1460,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 2582|-1|0||Earthweave Wristband||61|61|0|335|335|0|0|-1|30470|Earthweave Wristband|1||||||||||13809|Wristband Pattern|1|28230|Emblem of Earth|1|29548|Earthweave Curing Agent|1|29592|Earthtwine Swatch|1||||||||||||||||||||||||||
 2583|87835|1||Embroidered Coldain Prayer Shawl||61|61|0|208|208|0|0|-1|1198|Embroidered Coldain Prayer Shawl|1||||||||||1179|Silk Coldain Prayer Shawl|1|1832|Spool of Sacred Coldain Thread|1|1833|Embroidered Shawl Pattern|1|||||||||||||||||||||||||||||
 2587|-1|0||Ethereal Silk Swatch||61|61|220|212|212|0|0|-1|16286|Ethereal Silk Swatch|1||||||||||16285|Strand of Ether|2|16289|Ethereal Curing Agent|1||||||||||||||||||||||||||||||||
-2600|87836|1||Fiend Gut String||61|61|0|162|162|0|0|-1|29995|Fiend Gut String|1||||||||||29993|Fiend Gut|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
+2600|87836|0||Fiend Gut String||61|61|0|162|162|0|0|-1|29995|Fiend Gut String|1||||||||||29993|Fiend Gut|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
 2601|-1|0||Fire Undergarment Tunic||61|61|220|335|335|0|0|-1|15986|Fire Undergarment Tunic|1||||||||||29591|Firesilk Swatch|3|16252|Metal Signet|1|10254|INVALID_ID|1|13804|Tunic Pattern|1|28229|Emblem of Fire|1|29547|Firestrand Curing Agent|1||||||||||||||||||||
 2602|-1|0||Firehide Boots||61|61|0|335|335|0|0|-1|30785|Firehide Boots|1||||||||||29573|Molten Studs|4|13812|Boot Pattern|1|28229|Emblem of Fire|1|31447|Fire Mephit Skin|1||||||||||||||||||||||||||
 2603|-1|0||Firehide Bracer||61|61|0|335|335|0|0|-1|30733|INVALID_ID|1||||||||||29573|Molten Studs|2|13809|Wristband Pattern|1|28229|Emblem of Fire|1|31447|Fire Mephit Skin|1||||||||||||||||||||||||||
@@ -1710,7 +1710,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 2917|87953|1||Mithril Fern Boots||61|61|0|181|181|0|0|-1|8877|Mithril Fern Boots|1||||||||||8880|Blackened Mithril Boots|1|8881|Shadowjade Hide|1||||||||||||||||||||||||||||||||
 2918|87954|1||Monk Training Bag||61|61|0|0|0|1|0|-1|12688|Monk Training Bag|1||||||||||12689|Pile of Granite Pebbles|3|12687|Training Bag Husk|1||||||||||||||||||||||||||||||||
 2919|87955|1||Moss-threaded Rawhide Leggings||61|61|0|150|150|0|0|-1|8790|Moss-Threaded Rawhide Leggings|1||||||||||8791|Ruined Rawhide Leggings|1|8792|Shadowjade Moss|1|8793|Threads of the Hatchling|1|||||||||||||||||||||||||||||
-2930|87956|1||Mystic Cloak (Recharge)||61|100|0|34|35|0|0|-1|1057|Mystic Cloak|1||||||||||1057|Mystic Cloak|1|15982|Mystic Brooch|1||||||||||||||||||||||||||||||||
+2930|87956|0||Mystic Cloak (Recharge)||61|100|0|34|35|0|0|-1|1057|Mystic Cloak|1||||||||||1057|Mystic Cloak|1|15982|Mystic Brooch|1||||||||||||||||||||||||||||||||
 2931|-1|0||Neriad's Woven Platinum Cap||61|61|0|335|335|0|0|-1|24301|Neriad's Woven Platinum Cap|1||||||||||24272|Infused Terrorantula Silk|2|12095|Silver Thread|1|13801|Cap Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1||||||||||||||||||||9724|Embroidering Needle||
 2932|-1|0||Neriad's Woven Platinum Choker||61|61|0|335|335|0|0|-1|24298|Neriad's Woven Platinum Choker|1||||||||||12095|Silver Thread|1|13803|Gorget Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1|24272|Infused Terrorantula Silk|1||||||||||||||||||||9724|Embroidering Needle||
 2933|-1|0||Neriad's Woven Platinum Cloak||61|61|0|335|335|0|0|-1|24307|Neriad's Woven Platinum Cloak|1||||||||||24272|Infused Terrorantula Silk|3|12095|Silver Thread|1|13806|Cloak Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1||||||||||||||||||||9724|Embroidering Needle||
@@ -1878,7 +1878,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 3171|-1|0||Shaded Hopperhide Tunic||61|61|0|36|36|0|0|-1|30715|INVALID_ID|1||||||||||2753|INVALID_ID|1|30617|A Claw Needle|1|30703|Xakra Kel Shirt|1|||||||||||||||||||||||||||||
 3172|-1|0||Shaded Hopperhide Wristbands||61|61|0|36|36|0|0|-1|30720|INVALID_ID|1||||||||||2758|INVALID_ID|1|30617|A Claw Needle|1|30708|Xakra Kel Wristband|1|||||||||||||||||||||||||||||
 3173|87996|1||Shadow Silk||61|61|0|36|36|0|0|-1|16483|Shadow Silk|1||||||||||13779|Shadow Wolf Pelt|1|15522|Spell: Gather Shadows|1|16482|Silk Swatch|1|||||||||||||||||||||||||||||
-3174|87997|1||Shadowjade Weave||61|61|0|68|68|0|0|-1|8884|Shadowjade Weave|1||||||||||8792|Shadowjade Moss|2|8878|Shadowjade Fern Leaves|2||||||||||||||||||||||||||||||||
+3174|87997|0||Shadowjade Weave||61|61|0|68|68|0|0|-1|8884|Shadowjade Weave|1||||||||||8792|Shadowjade Moss|2|8878|Shadowjade Fern Leaves|2||||||||||||||||||||||||||||||||
 3175|87998|1||Shark Tooth Sleeves||61|61|0|166|166|0|0|-1|8796|Shark Tooth Sleeves|1||||||||||8798|Discarded Shark Tooth|2|8863|Reinforced Rawhide Sleeves|1||||||||||||||||||||||||||||||||
 3176|-1|0||Silent Fist Bracer Material||69|69|0|0|0|1|0|-1|27475|Silent Fist Bracer Material|1||||||||||13071|Rat Whiskers|2|1009|Cloth Wristband|1|9914|INVALID_ID|1|27392|Gnoll Jawbone|1||||||||||||||||||||||||||
 3177|-1|0||Silent Fist Cap Material||69|69|0|0|0|1|0|-1|27474|Silent Fist Cap Material|1||||||||||9914|INVALID_ID|2|1001|Cloth Cap|1|27387|Field Rat Skull|1|27390|Skeleton Tibia|1||||||||||||||||||||||||||
@@ -1893,7 +1893,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 3187|88002|1||Silk Swatch||61|61|0|15|15|1|0|-1|16482|Silk Swatch|1||||||||||13041|Spider Silk|2|||||||||||||||||||||||||||||||||||
 3188|88003|1||Silk Thread||61|61|0|15|15|1|0|-1|16486|Silk Thread|1||||||||||13099|Spiderling Silk|2|||||||||||||||||||||||||||||||||||
 3201|-1|0||Skullcap Of The Spurned Initiate||61|61|0|0|0|1|0|-1|22635|Skullcap of the Spurned Initiate|1||||||||||22621|Cap of the Spurned Material|1|22628|INVALID_ID|1||||||||||||||||||||||||||||||||
-3202|88004|1||Slarghilug Kelp String||61|61|0|162|162|0|0|-1|29998|Slarghilug Kelp String|1||||||||||29984|Slarghilug Kelp Strands|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
+3202|88004|0||Slarghilug Kelp String||61|61|0|162|162|0|0|-1|29998|Slarghilug Kelp String|1||||||||||29984|Slarghilug Kelp Strands|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
 3203|-1|0||Sleeves Of The Arcane Order||61|61|0|0|0|1|0|-1|27381|INVALID_ID|1||||||||||22586|INVALID_ID|1|27483|INVALID_ID|1||||||||||||||||||||||||||||||||
 3204|-1|0||Sleeves Of The Collective Initiate||61|61|0|0|0|1|0|-1|9093|Sleeves of the Collective Initiate|1||||||||||9168|Sleeves of the Collective Material|1|22586|INVALID_ID|1||||||||||||||||||||||||||||||||
 3206|-1|0||Sleeves Of The Leafrunner||61|61|0|0|0|1|0|-1|27518|Sleeves of the Leafrunner|1||||||||||27550|Leafrunners Sleeves Material|1|22631|INVALID_ID|1||||||||||||||||||||||||||||||||
@@ -2039,8 +2039,8 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 3369|88072|1||Tae Ew Silk Robe||61|61|0|238|238|0|0|-1|27785|Tae Ew Silk Robe|1||||||||||27760|Spinechill Silk Swatch|2|12094|Robe Pattern|1||||||||||||||||||||||||||||||||
 3370|88073|1||Tae Ew Silk Sleeves||61|61|0|228|228|0|0|-1|27786|Tae Ew Silk Sleeves|1||||||||||13808|Sleeve Pattern|1|27760|Spinechill Silk Swatch|1||||||||||||||||||||||||||||||||
 3371|-1|0||Tae Ew Whip||61|61|0|257|257|0|0|-1|27801|Tae Ew Whip|1||||||||||27758|Distilled Lizard Blood|2|16479|Whip Pattern|1|27761|Hardened Lizard Hide|1|||||||||||||||||||||||||||||
-3372|88074|1||Tailor-made Whip||61|61|0|36|36|0|0|-1|5060|Tailor-made Whip|1||||||||||16480|Heady Kiola|4|12085|Medium Quality Cat Pelt|1|16479|Whip Pattern|1|||||||||||||||||||||||||||||
-3373|88075|1||Tailor-made Whip||61|61|0|36|36|0|0|-1|5060|Tailor-made Whip|1||||||||||16480|Heady Kiola|4|13754|Medium Quality Wolf Skin|1|16479|Whip Pattern|1|||||||||||||||||||||||||||||
+3372|88074|0||Tailor-made Whip||61|61|0|36|36|0|0|-1|5060|Tailor-made Whip|1||||||||||16480|Heady Kiola|4|12085|Medium Quality Cat Pelt|1|16479|Whip Pattern|1|||||||||||||||||||||||||||||
+3373|88075|0||Tailor-made Whip||61|61|0|36|36|0|0|-1|5060|Tailor-made Whip|1||||||||||16480|Heady Kiola|4|13754|Medium Quality Wolf Skin|1|16479|Whip Pattern|1|||||||||||||||||||||||||||||
 3374|88076|1||Tailored Large Bag||61|61|0|41|41|0|0|-1|17084|Tailored Large Bag|1||||||||||13750|Low Quality Bear Skin|1|16489|Silk Cord|1||||||||||||||||||||||||||||||||
 3375|-1|0||Tailored Large Bag||61|61|0|41|41|0|0|-1|17084|Tailored Large Bag|1||||||||||2787|INVALID_ID|1|2793|INVALID_ID|1||||||||||||||||||||||||||||||||
 3376|-1|0||Tailored Large Belt Pouch||61|61|0|36|36|0|0|-1|17083|Tailored Large Belt Pouch|1||||||||||2786|INVALID_ID|1|2793|INVALID_ID|1||||||||||||||||||||||||||||||||
@@ -2148,7 +2148,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 3482|88108|1||Vale Studded Sleeves||61|61|0|107|107|0|0|-1|1984|Vale Studded Sleeves|1||||||||||12072|Studs|3|13808|Sleeve Pattern|1|16497|Acorn Oil|1|30356|Brute Hide|1||||||||||||||||||||||||||
 3483|88109|1||Vale Studded Tunic||61|61|0|107|107|0|0|-1|1980|Vale Studded Tunic|1||||||||||12072|Studs|5|13804|Tunic Pattern|1|16497|Acorn Oil|1|30356|Brute Hide|1||||||||||||||||||||||||||
 3484|88110|1||Vale Studded Wristbands||61|61|0|108|108|0|0|-1|1985|Vale Studded Wristbands|1||||||||||12072|Studs|2|13809|Wristband Pattern|1|16497|Acorn Oil|1|30356|Brute Hide|1||||||||||||||||||||||||||
-3485|88111|1||Vegerog Fiber String||61|61|0|162|162|0|0|-1|29996|Vegerog Fiber String|1||||||||||30074|Vegerog Vine|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
+3485|88111|0||Vegerog Fiber String||61|61|0|162|162|0|0|-1|29996|Vegerog Fiber String|1||||||||||30074|Vegerog Vine|2|29992|Clump of Wax|1||||||||||||||||||||||||||||||||
 3486|-1|0||Velium Hound Fur Cap||61|61|0|268|268|0|0|-1|24990|Velium Hound Fur Cap|1||||||||||24895|Velium Hound Fur|2|10254|INVALID_ID|1|12097|Platinum Thread|1|13801|Cap Pattern|1||||||||||||||||||||||||||
 3487|-1|0||Velium Hound Fur Cloak||61|61|0|322|322|0|0|-1|24898|Velium Hound Fur Cloak|1||||||||||24895|Velium Hound Fur|4|10254|INVALID_ID|1|12097|Platinum Thread|1|13806|Cloak Pattern|1||||||||||||||||||||||||||
 3488|-1|0||Velium Hound Fur Moccasins||61|61|0|275|275|0|0|-1|24992|Velium Hound Fur Moccasins|1||||||||||24895|Velium Hound Fur|3|10254|INVALID_ID|1|12097|Platinum Thread|1|13812|Boot Pattern|1||||||||||||||||||||||||||
@@ -5239,7 +5239,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8154|-1|0||Mounted Blue Diamond||68|68|0|16|16|0|0|3|23605|Mounted Blue Diamond|1||||||||||22098|Velium Bar|2|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
 8155|-1|0||Mounted Diamond||68|68|0|16|16|0|0|3|23604|Mounted Diamond|1||||||||||22098|Velium Bar|2|10037|Diamond|1||||||||||||||||||||||||||||||||
 8156|-1|0||Mounted Jacinth||68|68|0|16|16|0|0|3|23607|Mounted Jacinth|1||||||||||22098|Velium Bar|2|10053|Jacinth|1||||||||||||||||||||||||||||||||
-8157|90044|1||Mystic Brooch||68|68|0|122|122|0|0|-1|15982|Mystic Brooch|1||||||||||10146|Chrysoberyl Talisman|1|10253|Vial of Distilled Mana|1|15393|Spell: Steelskin|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||
+8157|90044|0||Mystic Brooch||68|68|0|122|122|0|0|-1|15982|Mystic Brooch|1||||||||||10146|Chrysoberyl Talisman|1|10253|Vial of Distilled Mana|1|15393|Spell: Steelskin|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||
 8158|90045|1||Necklace Of Biting Insanity||68|68|0|308|0|0|0|-1|29049|Necklace of Biting Insanity|1||||||||||26624|Tooth of the Insane|3|29489|Cord of Tormented Muscle|1|29875|Purple Diamond of Torment|1|||||||||||||||||||||||||||||
 8179|90046|1||Platinum Amber Ring||68|68|0|244|244|0|0|-1|16686|Platinum Amber Ring|1||||||||||10022|Amber|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
 8180|90047|1||Platinum Amber Ring||68|68|0|244|244|0|0|-1|14643|Platinum Amber Ring|1||||||||||10022|Amber|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
@@ -5723,7 +5723,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8891|90326|1||Innovative Glaze||69|69|0|0|0|1|0|-1|32226|Innovative Glaze|1||||||||||28165|Silicorrosive Grease|1|29355|Glaze Lacquer|1|29795|Moonstone Crystal|1|||||||||||||||||||||||||||||
 8892|-1|0||Jar Of Clockwork Grease||75|75|0|0|0|1|1|-1|30500|INVALID_ID|1||||||||||12564|INVALID_ID|2||||||||||||||||||||||||||||17960|Small Clay Jar||||||
 8893|90327|1||Justice Glaze||69|69|0|0|0|1|0|-1|32219|Justice Glaze|1||||||||||29355|Glaze Lacquer|1|32239|Enforcer Stone|1|32240|Grallok Quartz|1|||||||||||||||||||||||||||||
-8901|90328|1||Kurn's Jerky Delight||69|69|0|0|0|1|0|-1|12398|Kurn's Jerky Delight|1||||||||||16533|Zombie Flesh|2|12402|Salt Minnow|1|13073|Bone Chips|1|||||||||||||||||||||||||||||
+8901|90328|1||Kurn's Jerky Delight||69|55|0|0|0|1|0|-1|12398|Kurn's Jerky Delight|1||||||||||16533|Zombie Flesh|2|12402|Salt Minnow|1|13073|Bone Chips|1|||||||||||||||||||||||||||||
 8902|90329|1||Large Block Of Clay||69|69|0|21|21|0|0|-1|16902|Large Block of Clay|1||||||||||16901|Block of Clay|3|13006|Water Flask|1||||||||||||||||||||||||||||||||
 8903|90330|1||Large Bowl||69|69|0|15|15|0|0|-1|16942|Large Bowl|1||||||||||16908|High Quality Firing Sheet|1|16933|Unfired Large Bowl|1||||||||||||||||||||||||||||||||
 8904|90331|1||Large Clay Jar||69|69|0|15|15|0|0|-1|17962|Large Clay Jar|1||||||||||16907|Quality Firing Sheet|1|16916|Unfired Large Container|1||||||||||||||||||||||||||||||||
