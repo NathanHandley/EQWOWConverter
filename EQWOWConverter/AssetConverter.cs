@@ -1242,6 +1242,7 @@ namespace EQWOWConverter
             TradeskillRecipe.PopulateTradeskillRecipes(itemTemplatesByEQDBID);
 
             // Create spells for the recipe actions
+            Dictionary<string, int> recipeNameCounts = new Dictionary<string, int>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             tradeskillRecipes = TradeskillRecipe.GetAllRecipes();
             foreach (TradeskillRecipe recipe in tradeskillRecipes)
@@ -1310,6 +1311,16 @@ namespace EQWOWConverter
                     Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " as the result item template is NULL"));
                     continue;
                 }
+
+                // Avoid name collisions
+                if (recipeNameCounts.ContainsKey(curSpellTemplate.Name) == true)
+                {
+                    recipeNameCounts[curSpellTemplate.Name]++;
+                    string altName = string.Concat(curSpellTemplate.Name, " (Recipe ", recipeNameCounts[curSpellTemplate.Name], ")");
+                    curSpellTemplate.Name = altName;
+                }
+                else
+                    recipeNameCounts.Add(curSpellTemplate.Name, 1);
 
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
                 curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
