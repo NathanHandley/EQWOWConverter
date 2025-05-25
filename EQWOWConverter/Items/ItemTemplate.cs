@@ -1264,6 +1264,12 @@ namespace EQWOWConverter.Items
                 newItemTemplate.CastTime = int.Parse(columns["casttime"]);
                 PopulateItemClassSpecificProperties(ref newItemTemplate, itemType, bagType, newItemTemplate.EQClassMask, newItemTemplate.EQSlotMask, iconID, 
                     damage, newItemTemplate.CastTime);
+                int overrideItemClassID = int.Parse(columns["override_item_class_id"]);
+                if (overrideItemClassID >= 0)
+                    newItemTemplate.ClassID = overrideItemClassID;
+                int overrideItemSubClassID = int.Parse(columns["override_item_subclass_id"]);
+                if (overrideItemSubClassID >= 0)
+                    newItemTemplate.SubClassID = overrideItemSubClassID;
 
                 // Model information
                 newItemTemplate.EQArmorMaterialType = int.Parse(columns["material"]);
