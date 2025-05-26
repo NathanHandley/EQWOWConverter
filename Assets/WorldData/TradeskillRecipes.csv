@@ -5008,29 +5008,29 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7867|89861|1||Yew Leaf Tannin||65|65|0|68|68|0|0|-1|19181|Yew Leaf Tannin|1||||||||||13006|Water Flask|1|16589|Yew Leaf|1||||||||||||||||||||||||||||||||
 7868|89862|1||Zelniak Oil||65|65|0|102|102|0|0|-1|10691|Zelniak Oil|1||||||||||10693|Lump of Zelniak Fat|1|13006|Water Flask|1|16598|Bottle|1|||||||||||||||||||||||||||||
 7869|89863|1||Black Pearl Electrum Choker||68|68|0|122|122|0|0|-1|16746|Black Pearl Electrum Choker|1||||||||||10012|Black Pearl|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7870|89864|1||Black Pearl Electrum Choker||68|68|0|122|122|0|0|-1|14673|Black Pearl Electrum Choker|1||||||||||10012|Black Pearl|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7870|89864|1||Black Pearl Electrum Choker (Enchanted)||68|68|0|122|122|0|0|-1|14673|Black Pearl Electrum Choker|1||||||||||10012|Black Pearl|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7871|89865|1||Black Pearl Platinum Ring||68|68|0|266|266|0|0|-1|16750|Black Pearl Platinum Ring|1||||||||||10012|Black Pearl|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-7872|89866|1||Black Pearl Platinum Ring||68|68|0|266|266|0|0|-1|14675|Black Pearl Platinum Ring|1||||||||||10012|Black Pearl|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+7872|89866|1||Black Pearl Platinum Ring (Enchanted)||68|68|0|266|266|0|0|-1|14675|Black Pearl Platinum Ring|1||||||||||10012|Black Pearl|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 7873|89867|1||Black Pearl Velium Ring||68|68|0|268|268|0|0|-1|30336|Black Pearl Velium Ring|1||||||||||10012|Black Pearl|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-7874|89868|1||Black Pearl Velium Ring||68|68|0|268|268|0|0|-1|30337|Black Pearl Velium Ring|1||||||||||10012|Black Pearl|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+7874|89868|1||Black Pearl Velium Ring (Enchanted)||68|68|0|268|268|0|0|-1|30337|Black Pearl Velium Ring|1||||||||||10012|Black Pearl|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 7875|89869|1||Black Sapphire Electrum Earring||68|68|0|140|140|0|0|-1|16802|Black Sapphire Electrum Earring|1||||||||||10036|Black Sapphire|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7876|89870|1||Black Sapphire Electrum Earring||68|68|0|140|140|0|0|-1|14701|Black Sapphire Electrum Earring|1||||||||||10036|Black Sapphire|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7876|89870|1||Black Sapphire Electrum Earring (Enchanted)||68|68|0|140|140|0|0|-1|14701|Black Sapphire Electrum Earring|1||||||||||10036|Black Sapphire|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7878|89871|1||Black Sapphire Platinum Necklace||68|68|0|284|284|0|0|-1|16806|Black Sapphire Platinum Necklace|1||||||||||10036|Black Sapphire|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-7879|89872|1||Black Sapphire Platinum Necklace||68|68|0|284|284|0|0|-1|14703|Black Sapphire Platinum Necklace|1||||||||||10036|Black Sapphire|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+7879|89872|1||Black Sapphire Platinum Necklace (Enchanted)||68|68|0|284|284|0|0|-1|14703|Black Sapphire Platinum Necklace|1||||||||||10036|Black Sapphire|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 7880|89873|1||Black Sapphire Silvered Necklace||68|68|0|68|68|0|0|-1|16800|Black Sapphire Silvered Necklace|1||||||||||10036|Black Sapphire|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-7881|89874|1||Black Sapphire Silvered Necklace||68|68|0|68|68|0|0|-1|14700|Black Sapphire Silvered Necklace|1||||||||||10036|Black Sapphire|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+7881|89874|1||Black Sapphire Silvered Necklace (Enchanted)||68|68|0|68|68|0|0|-1|14700|Black Sapphire Silvered Necklace|1||||||||||10036|Black Sapphire|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 7882|89875|1||Black Sapphire Velium Necklace||68|68|0|287|287|0|0|-1|30350|Black Sapphire Velium Necklace|1||||||||||10036|Black Sapphire|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-7883|89876|1||Black Sapphire Velium Necklace||68|68|0|287|287|0|0|-1|30351|Black Sapphire Velium Necklace|1||||||||||10036|Black Sapphire|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+7883|89876|1||Black Sapphire Velium Necklace (Enchanted)||68|68|0|287|287|0|0|-1|30351|Black Sapphire Velium Necklace|1||||||||||10036|Black Sapphire|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 7884|89877|1||Blackened Pearl Silver Ring||68|68|0|52|52|0|0|-1|16744|Blackened Pearl Silver Ring|1||||||||||10012|Black Pearl|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-7885|89878|1||Blackened Pearl Silver Ring||68|68|0|52|52|0|0|-1|14672|Blackened Pearl Silver Ring|1||||||||||10012|Black Pearl|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+7885|89878|1||Blackened Pearl Silver Ring (Enchanted)||68|68|0|52|52|0|0|-1|14672|Blackened Pearl Silver Ring|1||||||||||10012|Black Pearl|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 7887|-1|0||Bloodmetal Earring Of Engagement||68|68|0|308|308|0|0|-1|29047|INVALID_ID|1||||||||||28608|Highly Polished Gem|1|29418|Enchanted Bar of Bloodmetal|1|31598|Orange Diamond of War|1|||||||||||||||||||||||||||||
 7888|89879|1||Blue Diamond Electrum Earring||68|68|0|148|148|0|0|-1|30361|Blue Diamond Electrum Earring|1||||||||||16501|Electrum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-7889|89880|1||Blue Diamond Electrum Earring||68|68|0|148|148|0|0|-1|30365|Blue Diamond Electrum Earring|1||||||||||16505|Enchanted Electrum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
+7889|89880|1||Blue Diamond Electrum Earring (Enchanted)||68|68|0|148|148|0|0|-1|30365|Blue Diamond Electrum Earring|1||||||||||16505|Enchanted Electrum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
 7890|-1|0||Bone Bracelet Of Corruption||68|68|0|308|308|0|0|-1|29039|INVALID_ID|1||||||||||29488|Runed Lepertoloth Bone Segment|1|30118|Green Diamond of Disease|1||||||||||||||||||||||||||||||||
 7911|89881|1||Cat Eye Platinum Necklace||68|68|0|228|228|0|0|-1|16638|Cat Eye Platinum Necklace|1||||||||||10026|Cat's Eye Agate|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-7912|89882|1||Cat Eye Platinum Necklace||68|68|0|228|228|0|0|-1|14619|Cat Eye Platinum Necklace|1||||||||||10026|Cat's Eye Agate|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+7912|89882|1||Cat Eye Platinum Necklace (Enchanted)||68|68|0|228|228|0|0|-1|14619|Cat Eye Platinum Necklace|1||||||||||10026|Cat's Eye Agate|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 7913|89883|1||Cat Eye Velium Necklace||68|68|0|228|228|0|0|-1|30308|Cat Eye Velium Necklace|1||||||||||10026|Cat's Eye Agate|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-7914|89884|1||Cat Eye Velium Necklace||68|68|0|228|228|0|0|-1|30309|Cat Eye Velium Necklace|1||||||||||10026|Cat's Eye Agate|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+7914|89884|1||Cat Eye Velium Necklace (Enchanted)||68|68|0|228|228|0|0|-1|30309|Cat Eye Velium Necklace|1||||||||||10026|Cat's Eye Agate|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 7915|-1|0||Cazicite Black Sapphire Earring||68|68|0|315|315|0|0|-1|27812|INVALID_ID|1||||||||||10036|Black Sapphire|1|27763|Enchanted Cazicite Bar|1||||||||||||||||||||||||||||||||
 7916|89885|1||Cazicite Blue Diamond Ring||68|68|0|328|0|0|0|-1|27810|Cazicite Blue Diamond Ring|1||||||||||22503|Blue Diamond|1|27763|Enchanted Cazicite Bar|1||||||||||||||||||||||||||||||||
 7917|-1|0||Cazicite Diamond Bracelet||68|68|0|322|322|0|0|-1|27811|INVALID_ID|1||||||||||10037|Diamond|1|27763|Enchanted Cazicite Bar|1||||||||||||||||||||||||||||||||
@@ -5039,40 +5039,40 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7920|-1|0||Champagne Magnum||68|68|0|196|196|0|0|3|9671|Champagne Magnum|1||||||||||10030|Opal|1|16506|Enchanted Gold Bar|1|16598|Bottle|1|||||||||||||||||||||||||||||
 7921|-1|0||Cloudy Ring Of Pneumatic Force||68|68|0|335|335|0|0|-1|29045|INVALID_ID|1||||||||||26722|Multifaceted Eye|1|28185|Enchanted Bar of Wind Metal|1|29989|Cloudy Diamond of Air|1|||||||||||||||||||||||||||||
 7922|89888|1||Diamond Electrum Mask||68|68|0|143|143|0|0|-1|16810|Diamond Electrum Mask|1||||||||||10037|Diamond|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7923|89889|1||Diamond Electrum Mask||68|68|0|143|143|0|0|-1|14705|Diamond Electrum Mask|1||||||||||10037|Diamond|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7923|89889|1||Diamond Electrum Mask (Enchanted)||68|68|0|143|143|0|0|-1|14705|Diamond Electrum Mask|1||||||||||10037|Diamond|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7924|-1|0||Electrified Earring Of Tempests||68|68|0|308|308|0|0|-1|29041|INVALID_ID|1||||||||||28187|Enchanted Electrified Copper|1|29912|A Wind-Worn Stone|1|29991|Gray Diamond of Storms|1|||||||||||||||||||||||||||||
 7925|89890|1||Electrum Amber Earring||68|68|0|100|100|0|0|-1|16682|Electrum Amber Earring|1||||||||||10022|Amber|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7926|89891|1||Electrum Amber Earring||68|68|0|100|100|0|0|-1|14641|Electrum Amber Earring|1||||||||||10022|Amber|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7926|89891|1||Electrum Amber Earring (Enchanted)||68|68|0|100|100|0|0|-1|14641|Electrum Amber Earring|1||||||||||10022|Amber|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7928|89892|1||Electrum Bloodstone Necklace||68|68|0|87|87|0|0|-1|16642|Electrum Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7929|89893|1||Electrum Bloodstone Necklace||68|68|0|87|87|0|0|-1|14621|Electrum Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7929|89893|1||Electrum Bloodstone Necklace (Enchanted)||68|68|0|87|87|0|0|-1|14621|Electrum Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7930|89894|1||Electrum Carnelian Wedding Ring||68|68|0|95|95|0|0|-1|16666|Electrum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7931|89895|1||Electrum Carnelian Wedding Ring||68|68|0|95|95|0|0|-1|14633|Electrum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7931|89895|1||Electrum Carnelian Wedding Ring (Enchanted)||68|68|0|95|95|0|0|-1|14633|Electrum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7932|89896|1||Electrum Cat Eye Bracelet||68|68|0|84|84|0|0|-1|16634|Electrum Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7933|89897|1||Electrum Cat Eye Bracelet||68|68|0|84|84|0|0|-1|14617|Electrum Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7933|89897|1||Electrum Cat Eye Bracelet (Enchanted)||68|68|0|84|84|0|0|-1|14617|Electrum Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7934|89898|1||Electrum Fire Wedding Ring||68|68|0|124|124|0|0|-1|16754|Electrum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7935|89899|1||Electrum Fire Wedding Ring||68|68|0|124|124|0|0|-1|14677|Electrum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7935|89899|1||Electrum Fire Wedding Ring (Enchanted)||68|68|0|124|124|0|0|-1|14677|Electrum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7938|89900|1||Electrum Hematite Choker||68|68|0|82|82|0|0|-1|16626|Electrum Hematite Choker|1||||||||||10018|Hematite|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7939|89901|1||Electrum Hematite Choker||68|68|0|82|82|0|0|-1|14613|Electrum Hematite Choker|1||||||||||10018|Hematite|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7939|89901|1||Electrum Hematite Choker (Enchanted)||68|68|0|82|82|0|0|-1|14613|Electrum Hematite Choker|1||||||||||10018|Hematite|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7940|89902|1||Electrum Jasper Earring||68|68|0|92|92|0|0|-1|16658|Electrum Jasper Earring|1||||||||||10020|Jasper|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7941|89903|1||Electrum Jasper Earring||68|68|0|92|92|0|0|-1|14629|Electrum Jasper Earring|1||||||||||10020|Jasper|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7941|89903|1||Electrum Jasper Earring (Enchanted)||68|68|0|92|92|0|0|-1|14629|Electrum Jasper Earring|1||||||||||10020|Jasper|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7942|89904|1||Electrum Lapis Lazuli Earring||68|68|0|76|76|0|0|-1|16610|Electrum Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7943|89905|1||Electrum Lapis Lazuli Earring||68|68|0|76|76|0|0|-1|14605|Electrum Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7943|89905|1||Electrum Lapis Lazuli Earring (Enchanted)||68|68|0|76|76|0|0|-1|14605|Electrum Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7944|89906|1||Electrum Malachite Bracelet||68|68|0|74|74|0|0|-1|16602|Electrum Malachite Bracelet|1||||||||||10015|Malachite|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7945|89907|1||Electrum Malachite Bracelet||68|68|0|74|74|0|0|-1|14601|Electrum Malachite Bracelet|1||||||||||10015|Malachite|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7945|89907|1||Electrum Malachite Bracelet (Enchanted)||68|68|0|74|74|0|0|-1|14601|Electrum Malachite Bracelet|1||||||||||10015|Malachite|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7948|89908|1||Electrum Onyx Pendant||68|68|0|90|90|0|0|-1|16650|Electrum Onyx Pendant|1||||||||||10027|Onyx|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7949|89909|1||Electrum Onyx Pendant||68|68|0|90|90|0|0|-1|14625|Electrum Onyx Pendant|1||||||||||10027|Onyx|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7949|89909|1||Electrum Onyx Pendant (Enchanted)||68|68|0|90|90|0|0|-1|14625|Electrum Onyx Pendant|1||||||||||10027|Onyx|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7950|89910|1||Electrum Opal Amulet||68|68|0|119|119|0|0|-1|16738|Electrum Opal Amulet|1||||||||||10030|Opal|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7951|89911|1||Electrum Opal Amulet||68|68|0|119|119|0|0|-1|14669|Electrum Opal Amulet|1||||||||||10030|Opal|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7951|89911|1||Electrum Opal Amulet (Enchanted)||68|68|0|119|119|0|0|-1|14669|Electrum Opal Amulet|1||||||||||10030|Opal|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7952|89912|1||Electrum Pearl Choker||68|68|0|108|108|0|0|-1|16706|Electrum Pearl Choker|1||||||||||10024|Pearl|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7953|89913|1||Electrum Pearl Choker||68|68|0|108|108|0|0|-1|14653|Electrum Pearl Choker|1||||||||||10024|Pearl|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7953|89913|1||Electrum Pearl Choker (Enchanted)||68|68|0|108|108|0|0|-1|14653|Electrum Pearl Choker|1||||||||||10024|Pearl|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7954|89914|1||Electrum Peridot Bracelet||68|68|0|114|114|0|0|-1|16722|Electrum Peridot Bracelet|1||||||||||10028|Peridot|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7955|89915|1||Electrum Peridot Bracelet||68|68|0|114|114|0|0|-1|14661|Electrum Peridot Bracelet|1||||||||||10028|Peridot|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7955|89915|1||Electrum Peridot Bracelet (Enchanted)||68|68|0|114|114|0|0|-1|14661|Electrum Peridot Bracelet|1||||||||||10028|Peridot|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7960|89916|1||Electrum Star Amulet||68|68|0|98|98|0|0|-1|16674|Electrum Star Amulet|1||||||||||10021|Star Rose Quartz|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7961|89917|1||Electrum Star Amulet||68|68|0|98|98|0|0|-1|14637|Electrum Star Amulet|1||||||||||10021|Star Rose Quartz|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7961|89917|1||Electrum Star Amulet (Enchanted)||68|68|0|98|98|0|0|-1|14637|Electrum Star Amulet|1||||||||||10021|Star Rose Quartz|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7962|89918|1||Electrum Star Ruby Ring||68|68|0|127|127|0|0|-1|16762|Electrum Star Ruby Ring|1||||||||||10032|Star Ruby|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7963|89919|1||Electrum Star Ruby Ring||68|68|0|127|127|0|0|-1|14681|Electrum Star Ruby Ring|1||||||||||10032|Star Ruby|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7963|89919|1||Electrum Star Ruby Ring (Enchanted)||68|68|0|127|127|0|0|-1|14681|Electrum Star Ruby Ring|1||||||||||10032|Star Ruby|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7964|89920|1||Electrum Turquoise Engagement Ring||68|68|0|79|79|0|0|-1|16618|Electrum Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7965|89921|1||Electrum Turquoise Engagement Ring||68|68|0|79|79|0|0|-1|14609|Electrum Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7965|89921|1||Electrum Turquoise Engagement Ring (Enchanted)||68|68|0|79|79|0|0|-1|14609|Electrum Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7966|-1|0||Emblem Of Air||68|68|0|287|287|0|0|-1|28231|Emblem of Air|1||||||||||28185|Enchanted Bar of Wind Metal|1|29351|INVALID_ID|1|29989|Cloudy Diamond of Air|1|||||||||||||||||||||||||||||
 7967|-1|0||Emblem Of Earth||68|68|0|287|287|0|0|-1|28230|Emblem of Earth|1||||||||||28184|Enchanted Bar of Immaculate Steel|1|29351|INVALID_ID|1|29988|Brown Diamond of Earth|1|||||||||||||||||||||||||||||
 7968|-1|0||Emblem Of Fire||68|68|0|287|287|0|0|-1|28229|Emblem of Fire|1||||||||||28182|Enchanted Molten Bar|1|29351|INVALID_ID|1|29986|Red Diamond of Fire|1|||||||||||||||||||||||||||||
@@ -5082,7 +5082,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7972|-1|0||Emblem Of War||68|68|0|287|287|0|0|-1|29352|Emblem of War|1||||||||||29351|INVALID_ID|1|29418|Enchanted Bar of Bloodmetal|1|31598|Orange Diamond of War|1|||||||||||||||||||||||||||||
 7973|-1|0||Emblem Of Water||68|68|0|287|287|0|0|-1|28232|Emblem of Water|1||||||||||28183|Enchanted Bar of E'cian Ice|1|29351|INVALID_ID|1|29987|Aqua Diamond of Water|1|||||||||||||||||||||||||||||
 7974|89922|1||Emerald Electrum Bracelet||68|68|0|116|116|0|0|-1|16730|Emerald Electrum Bracelet|1||||||||||10029|Emerald|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7975|89923|1||Emerald Electrum Bracelet||68|68|0|116|116|0|0|-1|14665|Emerald Electrum Bracelet|1||||||||||10029|Emerald|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7975|89923|1||Emerald Electrum Bracelet (Enchanted)||68|68|0|116|116|0|0|-1|14665|Emerald Electrum Bracelet|1||||||||||10029|Emerald|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7976|-1|0||Encased Velium Etched Rune||68|68|0|162|162|0|0|-1|2046|Encased Velium etched rune|1||||||||||1859|Velium etched rune|1|1860|Rune casing|1||||||||||||||||||||||||||||||||
 7977|-1|0||Engraved Royal Velium Boots||68|68|0|178|178|0|0|3|8974|Engraved Royal Velium Boots|1||||||||||9287|Imbued Royal Velium Boots|1||||||||||||||||||||||||||||||||8893|Etching Tools||
 7978|-1|0||Engraved Royal Velium Bracer||68|68|0|175|175|0|0|3|8971|Engraved Royal Velium Bracer|1||||||||||9284|Imbued Royal Velium Bracer|1||||||||||||||||||||||||||||||||8893|Etching Tools||
@@ -5097,67 +5097,67 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7987|89924|1||Faceted Hyacinth||68|68|0|255|255|0|0|-1|10192|Faceted Hyacinth|1||||||||||10191|Uncut Hyacinth|1||||||||||||||||||||||||||||||||16883|Gem Cutter||
 7988|-1|0||Faceted Sapphire||68|68|0|175|175|0|0|3|8891|Faceted Sapphire|1||||||||||8888|Unrefined Sapphire|1||||||||||||||||||||||||||||||||8893|Etching Tools||
 7989|89925|1||Fire Emerald Electrum Bracelet||68|68|0|130|130|0|0|-1|16770|Fire Emerald Electrum Bracelet|1||||||||||10033|Fire Emerald|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-7990|89926|1||Fire Emerald Electrum Bracelet||68|68|0|130|130|0|0|-1|14685|Fire Emerald Electrum Bracelet|1||||||||||10033|Fire Emerald|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+7990|89926|1||Fire Emerald Electrum Bracelet (Enchanted)||68|68|0|130|130|0|0|-1|14685|Fire Emerald Electrum Bracelet|1||||||||||10033|Fire Emerald|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 7991|89927|1||Fire Emerald Golden Bracelet||68|68|0|202|202|0|0|-1|16772|Fire Emerald Golden Bracelet|1||||||||||10033|Fire Emerald|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-7992|89928|1||Fire Emerald Golden Bracelet||68|68|0|202|202|0|0|-1|14686|Fire Emerald Golden Bracelet|1||||||||||10033|Fire Emerald|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+7992|89928|1||Fire Emerald Golden Bracelet (Enchanted)||68|68|0|202|202|0|0|-1|14686|Fire Emerald Golden Bracelet|1||||||||||10033|Fire Emerald|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 7994|89929|1||Fire Emerald Platinum Ring||68|68|0|274|274|0|0|-1|16774|Fire Emerald Platinum Ring|1||||||||||10033|Fire Emerald|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-7995|89930|1||Fire Emerald Platinum Ring||68|68|0|274|274|0|0|-1|14687|Fire Emerald Platinum Ring|1||||||||||10033|Fire Emerald|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+7995|89930|1||Fire Emerald Platinum Ring (Enchanted)||68|68|0|274|274|0|0|-1|14687|Fire Emerald Platinum Ring|1||||||||||10033|Fire Emerald|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 7996|89931|1||Fire Emerald Velium Ring||68|68|0|276|276|0|0|-1|30354|Fire Emerald Velium Ring|1||||||||||10013|A Special Fire Emerald|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-7997|89932|1||Fire Emerald Velium Ring||68|68|0|276|276|0|0|-1|30355|Fire Emerald Velium Ring|1||||||||||10013|A Special Fire Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+7997|89932|1||Fire Emerald Velium Ring (Enchanted)||68|68|0|276|276|0|0|-1|30355|Fire Emerald Velium Ring|1||||||||||10013|A Special Fire Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 7998|89933|1||Fire Emerald Velium Ring||68|68|0|276|276|0|0|-1|30342|Fire Emerald Velium Ring|1||||||||||10033|Fire Emerald|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-7999|89934|1||Fire Emerald Velium Ring||68|68|0|276|276|0|0|-1|30343|Fire Emerald Velium Ring|1||||||||||10033|Fire Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+7999|89934|1||Fire Emerald Velium Ring (Enchanted)||68|68|0|276|276|0|0|-1|30343|Fire Emerald Velium Ring|1||||||||||10033|Fire Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8000|-1|0||Gem Studded Chain||68|68|0|250|250|0|0|3|9669|Gem Studded Chain|1||||||||||9668|Worked Silver Chain|1|10029|Emerald|1|10034|Sapphire|1|10035|Ruby|1||||||||||||||||||||||||||
 8001|-1|0||Glittering Ring Of Judgement||68|68|0|295|295|0|0|-1|29048|INVALID_ID|1||||||||||21957|Crystallized Cloudy Eye|2|21938|Glittering Ring|1|29494|White Diamond of Justice|1|||||||||||||||||||||||||||||
 8004|89935|1||Gold Bloodstone Necklace||68|68|0|159|159|0|0|-1|16644|Gold Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8005|89936|1||Gold Bloodstone Necklace||68|68|0|159|159|0|0|-1|14622|Gold Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8005|89936|1||Gold Bloodstone Necklace (Enchanted)||68|68|0|159|159|0|0|-1|14622|Gold Bloodstone Necklace|1||||||||||10019|Bloodstone|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8006|89937|1||Gold Carnelian Wedding Ring||68|68|0|167|167|0|0|-1|16668|Gold Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8007|89938|1||Gold Carnelian Wedding Ring||68|68|0|167|167|0|0|-1|14634|Gold Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8007|89938|1||Gold Carnelian Wedding Ring (Enchanted)||68|68|0|167|167|0|0|-1|14634|Gold Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8010|89939|1||Gold Lapis Lazuli Earring||68|68|0|148|148|0|0|-1|16612|Gold Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8011|89940|1||Gold Lapis Lazuli Earring||68|68|0|148|148|0|0|-1|14606|Gold Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8011|89940|1||Gold Lapis Lazuli Earring (Enchanted)||68|68|0|148|148|0|0|-1|14606|Gold Lapis Lazuli Earring|1||||||||||10016|Lapis Lazuli|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8012|89941|1||Gold Malachite Bracelet||68|68|0|146|146|0|0|-1|16604|Gold Malachite Bracelet|1||||||||||10015|Malachite|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8013|89942|1||Gold Malachite Bracelet||68|68|0|146|146|0|0|-1|14602|Gold Malachite Bracelet|1||||||||||10015|Malachite|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
-8016|89943|1||Gold Onyx Pendant||68|68|0|162|162|0|0|-1|14626|Gold Onyx Pendant|1||||||||||10027|Onyx|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8013|89942|1||Gold Malachite Bracelet (Enchanted)||68|68|0|146|146|0|0|-1|14602|Gold Malachite Bracelet|1||||||||||10015|Malachite|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8016|89943|1||Gold Onyx Pendant (Enchanted)||68|68|0|162|162|0|0|-1|14626|Gold Onyx Pendant|1||||||||||10027|Onyx|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8017|89944|1||Gold Onyx Pendant||68|68|0|162|162|0|0|-1|16652|Gold Onyx Pendant|1||||||||||10027|Onyx|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
 8022|89945|1||Gold Turquoise Engagement Ring||68|68|0|151|151|0|0|-1|16620|Gold Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8023|89946|1||Gold Turquoise Engagement Ring||68|68|0|151|151|0|0|-1|14610|Gold Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8023|89946|1||Gold Turquoise Engagement Ring (Enchanted)||68|68|0|151|151|0|0|-1|14610|Gold Turquoise Engagement Ring|1||||||||||10017|Turquoise|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8024|89947|1||Golden Amber Earring||68|68|0|172|172|0|0|-1|16684|Golden Amber Earring|1||||||||||10022|Amber|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8025|89948|1||Golden Amber Earring||68|68|0|172|172|0|0|-1|14642|Golden Amber Earring|1||||||||||10022|Amber|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8025|89948|1||Golden Amber Earring (Enchanted)||68|68|0|172|172|0|0|-1|14642|Golden Amber Earring|1||||||||||10022|Amber|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8026|89949|1||Golden Black Pearl Choker||68|68|0|195|195|0|0|-1|16748|Golden Black Pearl Choker|1||||||||||10012|Black Pearl|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8027|89950|1||Golden Black Pearl Choker||68|68|0|195|195|0|0|-1|14674|Golden Black Pearl Choker|1||||||||||10012|Black Pearl|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8027|89950|1||Golden Black Pearl Choker (Enchanted)||68|68|0|195|195|0|0|-1|14674|Golden Black Pearl Choker|1||||||||||10012|Black Pearl|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8028|89951|1||Golden Black Sapphire Earring||68|68|0|212|212|0|0|-1|16804|Golden Black Sapphire Earring|1||||||||||10036|Black Sapphire|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8029|89952|1||Golden Black Sapphire Earring||68|68|0|212|212|0|0|-1|14702|Golden Black Sapphire Earring|1||||||||||10036|Black Sapphire|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8029|89952|1||Golden Black Sapphire Earring (Enchanted)||68|68|0|212|212|0|0|-1|14702|Golden Black Sapphire Earring|1||||||||||10036|Black Sapphire|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8030|89953|1||Golden Blue Diamond Pendant||68|68|0|228|228|0|0|-1|30362|Golden Blue Diamond Pendant|1||||||||||16502|Gold Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-8031|89954|1||Golden Blue Diamond Pendant||68|68|0|228|228|0|0|-1|30366|Golden Blue Diamond Pendant|1||||||||||16506|Enchanted Gold Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
+8031|89954|1||Golden Blue Diamond Pendant (Enchanted)||68|68|0|228|228|0|0|-1|30366|Golden Blue Diamond Pendant|1||||||||||16506|Enchanted Gold Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
 8032|89955|1||Golden Cat Eye Bracelet||68|68|0|156|156|0|0|-1|16636|Golden Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8033|89956|1||Golden Cat Eye Bracelet||68|68|0|156|156|0|0|-1|14618|Golden Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8033|89956|1||Golden Cat Eye Bracelet (Enchanted)||68|68|0|156|156|0|0|-1|14618|Golden Cat Eye Bracelet|1||||||||||10026|Cat's Eye Agate|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8036|89957|1||Golden Diamond Mask||68|68|0|215|215|0|0|-1|16812|Golden Diamond Mask|1||||||||||10037|Diamond|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8037|89958|1||Golden Diamond Mask||68|68|0|215|215|0|0|-1|14706|Golden Diamond Mask|1||||||||||10037|Diamond|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8037|89958|1||Golden Diamond Mask (Enchanted)||68|68|0|215|215|0|0|-1|14706|Golden Diamond Mask|1||||||||||10037|Diamond|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8038|89959|1||Golden Emerald Bracelet||68|68|0|188|188|0|0|-1|16732|Golden Emerald Bracelet|1||||||||||10029|Emerald|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8039|89960|1||Golden Emerald Bracelet||68|68|0|188|188|0|0|-1|14666|Golden Emerald Bracelet|1||||||||||10029|Emerald|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8039|89960|1||Golden Emerald Bracelet (Enchanted)||68|68|0|188|188|0|0|-1|14666|Golden Emerald Bracelet|1||||||||||10029|Emerald|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8040|89961|1||Golden Fire Wedding Ring||68|68|0|196|196|0|0|-1|16756|Golden Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8041|89962|1||Golden Fire Wedding Ring||68|68|0|196|196|0|0|-1|14678|Golden Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8041|89962|1||Golden Fire Wedding Ring (Enchanted)||68|68|0|196|196|0|0|-1|14678|Golden Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8042|89963|1||Golden Hematite Choker||68|68|0|154|154|0|0|-1|16628|Golden Hematite Choker|1||||||||||10018|Hematite|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8043|89964|1||Golden Hematite Choker||68|68|0|154|154|0|0|-1|14614|Golden Hematite Choker|1||||||||||10018|Hematite|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8043|89964|1||Golden Hematite Choker (Enchanted)||68|68|0|154|154|0|0|-1|14614|Golden Hematite Choker|1||||||||||10018|Hematite|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8044|89965|1||Golden Jacinth Wedding Ring||68|68|0|218|218|0|0|-1|16796|Golden Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8045|89966|1||Golden Jacinth Wedding Ring||68|68|0|218|218|0|0|-1|14698|Golden Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8045|89966|1||Golden Jacinth Wedding Ring (Enchanted)||68|68|0|218|218|0|0|-1|14698|Golden Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8046|89967|1||Golden Jaded Bracelet||68|68|0|178|178|0|0|-1|16700|Golden Jaded Bracelet|1||||||||||10023|Jade|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8047|89968|1||Golden Jaded Bracelet||68|68|0|178|178|0|0|-1|14650|Golden Jaded Bracelet|1||||||||||10023|Jade|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8047|89968|1||Golden Jaded Bracelet (Enchanted)||68|68|0|178|178|0|0|-1|14650|Golden Jaded Bracelet|1||||||||||10023|Jade|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8052|89969|1||Golden Opal Amulet||68|68|0|191|191|0|0|-1|16740|Golden Opal Amulet|1||||||||||10030|Opal|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8053|89970|1||Golden Opal Amulet||68|68|0|191|191|0|0|-1|14670|Golden Opal Amulet|1||||||||||10030|Opal|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8053|89970|1||Golden Opal Amulet (Enchanted)||68|68|0|191|191|0|0|-1|14670|Golden Opal Amulet|1||||||||||10030|Opal|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8054|89971|1||Golden Pearl Choker||68|68|0|180|180|0|0|-1|16708|Golden Pearl Choker|1||||||||||10024|Pearl|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8055|89972|1||Golden Pearl Choker||68|68|0|180|180|0|0|-1|14654|Golden Pearl Choker|1||||||||||10024|Pearl|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8055|89972|1||Golden Pearl Choker (Enchanted)||68|68|0|180|180|0|0|-1|14654|Golden Pearl Choker|1||||||||||10024|Pearl|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8056|89973|1||Golden Peridot Bracelet||68|68|0|186|186|0|0|-1|16724|Golden Peridot Bracelet|1||||||||||10028|Peridot|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8057|89974|1||Golden Peridot Bracelet||68|68|0|186|186|0|0|-1|14662|Golden Peridot Bracelet|1||||||||||10028|Peridot|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8057|89974|1||Golden Peridot Bracelet (Enchanted)||68|68|0|186|186|0|0|-1|14662|Golden Peridot Bracelet|1||||||||||10028|Peridot|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8058|89975|1||Golden Ruby Ring||68|68|0|207|207|0|0|-1|16788|Golden Ruby Ring|1||||||||||10035|Ruby|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8059|89976|1||Golden Ruby Ring||68|68|0|207|207|0|0|-1|14694|Golden Ruby Ring|1||||||||||10035|Ruby|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8059|89976|1||Golden Ruby Ring (Enchanted)||68|68|0|207|207|0|0|-1|14694|Golden Ruby Ring|1||||||||||10035|Ruby|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8060|89977|1||Golden Sapphire Earring||68|68|0|204|204|0|0|-1|16780|Golden Sapphire Earring|1||||||||||10034|Sapphire|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8061|89978|1||Golden Sapphire Earring||68|68|0|204|204|0|0|-1|14690|Golden Sapphire Earring|1||||||||||10034|Sapphire|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8061|89978|1||Golden Sapphire Earring (Enchanted)||68|68|0|204|204|0|0|-1|14690|Golden Sapphire Earring|1||||||||||10034|Sapphire|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8070|89979|1||Golden Star Amulet||68|68|0|170|170|0|0|-1|16676|Golden Star Amulet|1||||||||||10021|Star Rose Quartz|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8071|89980|1||Golden Star Amulet||68|68|0|170|170|0|0|-1|14638|Golden Star Amulet|1||||||||||10021|Star Rose Quartz|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8071|89980|1||Golden Star Amulet (Enchanted)||68|68|0|170|170|0|0|-1|14638|Golden Star Amulet|1||||||||||10021|Star Rose Quartz|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8072|89981|1||Golden Star Ruby Ring||68|68|0|199|199|0|0|-1|16764|Golden Star Ruby Ring|1||||||||||10032|Star Ruby|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8073|89982|1||Golden Star Ruby Ring||68|68|0|199|199|0|0|-1|14682|Golden Star Ruby Ring|1||||||||||10032|Star Ruby|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8073|89982|1||Golden Star Ruby Ring (Enchanted)||68|68|0|199|199|0|0|-1|14682|Golden Star Ruby Ring|1||||||||||10032|Star Ruby|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8074|89983|1||Golden Topaz Earring||68|68|0|183|183|0|0|-1|16716|Golden Topaz Earring|1||||||||||10025|Topaz|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8075|89984|1||Golden Topaz Earring||68|68|0|183|183|0|0|-1|14658|Golden Topaz Earring|1||||||||||10025|Topaz|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8075|89984|1||Golden Topaz Earring (Enchanted)||68|68|0|183|183|0|0|-1|14658|Golden Topaz Earring|1||||||||||10025|Topaz|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8076|-1|0||Grandmaster Jeweler's Eyeglass||68|68|0|335|335|0|0|-1|9254|Grandmaster Jeweler's Eyeglass|1||||||||||16500|Silver Bar|1|16903|Glass Shard|1|23609|Artisan's Seal|1|||||||||||||||||||||||||||||
 8077|-1|0||Helm Of Nocturnal Phantasms||68|68|0|295|295|0|0|-1|28275|Helm of Nocturnal Phantasms|1||||||||||26679|INVALID_ID|2|26661|Lock of Banshee Hair|1|26691|Ivory Skull|1|28233|Emblem of Nightmare|1||||||||||||||||||||||||||
 8078|-1|0||Ice Ring Of Chilling Depths||68|68|0|335|335|0|0|-1|29043|INVALID_ID|1||||||||||21745|A Kraken Eye|1|28183|Enchanted Bar of E'cian Ice|1|29987|Aqua Diamond of Water|1|||||||||||||||||||||||||||||
@@ -5217,17 +5217,17 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8132|90031|1||Imbued Topaz Silver Necklace||68|68|0|44|44|0|0|-1|20581|Imbued Topaz Silver Necklace|1||||||||||16504|Enchanted Silver Bar|1|22555|Imbued Topaz|1||||||||||||||||||||||||||||||||
 8133|-1|0||Iron Amulet Of Unseen Horrors||68|68|0|295|295|0|0|-1|29040|INVALID_ID|1||||||||||26679|INVALID_ID|1|28186|INVALID_ID|1|29990|Black Diamond of Nightmares|1|||||||||||||||||||||||||||||
 8134|90032|1||Jacinth Electrum Wedding Ring||68|68|0|138|138|0|0|-1|16794|Jacinth Electrum Wedding Ring|1||||||||||10053|Jacinth|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8135|90033|1||Jacinth Electrum Wedding Ring||68|68|0|137|137|0|0|-1|14697|Jacinth Electrum Wedding Ring|1||||||||||10053|Jacinth|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8135|90033|1||Jacinth Electrum Wedding Ring (Enchanted)||68|68|0|137|137|0|0|-1|14697|Jacinth Electrum Wedding Ring|1||||||||||10053|Jacinth|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8136|90034|1||Jaded Electrum Bracelet||68|68|0|106|106|0|0|-1|16698|Jaded Electrum Bracelet|1||||||||||10023|Jade|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8137|90035|1||Jaded Electrum Bracelet||68|68|0|106|106|0|0|-1|14649|Jaded Electrum Bracelet|1||||||||||10023|Jade|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8137|90035|1||Jaded Electrum Bracelet (Enchanted)||68|68|0|106|106|0|0|-1|14649|Jaded Electrum Bracelet|1||||||||||10023|Jade|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8138|90036|1||Jaded Platinum Ring||68|68|0|250|250|0|0|-1|16702|Jaded Platinum Ring|1||||||||||10023|Jade|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8139|90037|1||Jaded Platinum Ring||68|68|0|250|250|0|0|-1|14651|Jaded Platinum Ring|1||||||||||10023|Jade|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8139|90037|1||Jaded Platinum Ring (Enchanted)||68|68|0|250|250|0|0|-1|14651|Jaded Platinum Ring|1||||||||||10023|Jade|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8140|90038|1||Jaded Silver Ring||68|68|0|40|40|0|0|-1|16696|Jaded Silver Ring|1||||||||||10023|Jade|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8141|90039|1||Jaded Silver Ring||68|68|0|40|40|0|0|-1|14648|Jaded Silver Ring|1||||||||||10023|Jade|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8141|90039|1||Jaded Silver Ring (Enchanted)||68|68|0|40|40|0|0|-1|14648|Jaded Silver Ring|1||||||||||10023|Jade|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8142|90040|1||Jaded Velium Ring||68|68|0|252|252|0|0|-1|30324|Jaded Velium Ring|1||||||||||10023|Jade|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8143|90041|1||Jaded Velium Ring||68|68|0|252|252|0|0|-1|30325|Jaded Velium Ring|1||||||||||10023|Jade|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8143|90041|1||Jaded Velium Ring (Enchanted)||68|68|0|252|252|0|0|-1|30325|Jaded Velium Ring|1||||||||||10023|Jade|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8144|90042|1||Jasper Gold Earring||68|68|0|164|164|0|0|-1|16660|Jasper Gold Earring|1||||||||||10020|Jasper|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8145|90043|1||Jasper Gold Earring||68|68|0|164|164|0|0|-1|14630|Jasper Gold Earring|1||||||||||10020|Jasper|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8145|90043|1||Jasper Gold Earring (Enchanted)||68|68|0|164|164|0|0|-1|14630|Jasper Gold Earring|1||||||||||10020|Jasper|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8146|-1|0||Lacquered Emerald||68|68|0|110|110|0|0|3|23583|Lacquered Emerald|1||||||||||10029|Emerald|1|22101|Jar of Lacquer|1||||||||||||||||||||||||||||||||
 8147|-1|0||Lacquered Fire Opal||68|68|0|110|110|0|0|3|23584|Lacquered Fire Opal|1||||||||||10031|Fire Opal|1|22101|Jar of Lacquer|1||||||||||||||||||||||||||||||||
 8148|-1|0||Lacquered Opal||68|68|0|120|120|0|0|3|9680|Lacquered Opal|1||||||||||10030|Opal|1|22101|Jar of Lacquer|1||||||||||||||||||||||||||||||||
@@ -5242,103 +5242,103 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8157|90044|0||Mystic Brooch||68|68|0|122|122|0|0|-1|15982|Mystic Brooch|1||||||||||10146|Chrysoberyl Talisman|1|10253|Vial of Distilled Mana|1|15393|Spell: Steelskin|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||
 8158|90045|1||Necklace Of Biting Insanity||68|68|0|308|0|0|0|-1|29049|Necklace of Biting Insanity|1||||||||||26624|Tooth of the Insane|3|29489|Cord of Tormented Muscle|1|29875|Purple Diamond of Torment|1|||||||||||||||||||||||||||||
 8179|90046|1||Platinum Amber Ring||68|68|0|244|244|0|0|-1|16686|Platinum Amber Ring|1||||||||||10022|Amber|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8180|90047|1||Platinum Amber Ring||68|68|0|244|244|0|0|-1|14643|Platinum Amber Ring|1||||||||||10022|Amber|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8180|90047|1||Platinum Amber Ring (Enchanted)||68|68|0|244|244|0|0|-1|14643|Platinum Amber Ring|1||||||||||10022|Amber|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8183|90048|1||Platinum Bloodstone Earring||68|68|0|231|231|0|0|-1|16646|Platinum Bloodstone Earring|1||||||||||10019|Bloodstone|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8184|90049|1||Platinum Bloodstone Earring||68|68|0|231|231|0|0|-1|14623|Platinum Bloodstone Earring|1||||||||||10019|Bloodstone|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8184|90049|1||Platinum Bloodstone Earring (Enchanted)||68|68|0|231|231|0|0|-1|14623|Platinum Bloodstone Earring|1||||||||||10019|Bloodstone|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8185|90050|1||Platinum Blue Diamond Tiara||68|68|0|295|0|0|0|-1|30363|Platinum Blue Diamond Tiara|1||||||||||16503|Platinum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-8186|90051|1||Platinum Blue Diamond Tiara||68|68|0|295|0|0|0|-1|30367|Platinum Blue Diamond Tiara|1||||||||||16507|Enchanted Platinum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
+8186|90051|1||Platinum Blue Diamond Tiara (Enchanted)||68|68|0|295|0|0|0|-1|30367|Platinum Blue Diamond Tiara|1||||||||||16507|Enchanted Platinum Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
 8187|90052|1||Platinum Carnelian Wedding Ring||68|68|0|239|239|0|0|-1|16670|Platinum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8188|90053|1||Platinum Carnelian Wedding Ring||68|68|0|239|239|0|0|-1|14635|Platinum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8188|90053|1||Platinum Carnelian Wedding Ring (Enchanted)||68|68|0|239|239|0|0|-1|14635|Platinum Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8191|90054|1||Platinum Diamond Wedding Ring||68|68|0|287|0|0|0|-1|16814|Platinum Diamond Wedding Ring|1||||||||||10037|Diamond|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8192|90055|1||Platinum Diamond Wedding Ring||68|68|0|287|0|0|0|-1|14707|Platinum Diamond Wedding Ring|1||||||||||10037|Diamond|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8192|90055|1||Platinum Diamond Wedding Ring (Enchanted)||68|68|0|287|0|0|0|-1|14707|Platinum Diamond Wedding Ring|1||||||||||10037|Diamond|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8193|90056|1||Platinum Emerald Ring||68|68|0|260|260|0|0|-1|16734|Platinum Emerald Ring|1||||||||||10029|Emerald|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8194|90057|1||Platinum Emerald Ring||68|68|0|260|260|0|0|-1|14667|Platinum Emerald Ring|1||||||||||10029|Emerald|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8194|90057|1||Platinum Emerald Ring (Enchanted)||68|68|0|260|260|0|0|-1|14667|Platinum Emerald Ring|1||||||||||10029|Emerald|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8195|90058|1||Platinum Fire Wedding Ring||68|68|0|268|268|0|0|-1|16758|Platinum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8196|90059|1||Platinum Fire Wedding Ring||68|68|0|268|268|0|0|-1|14679|Platinum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8196|90059|1||Platinum Fire Wedding Ring (Enchanted)||68|68|0|268|268|0|0|-1|14679|Platinum Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8199|90060|1||Platinum Hematite Ring||68|68|0|226|226|0|0|-1|16630|Platinum Hematite Ring|1||||||||||10018|Hematite|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8200|90061|1||Platinum Hematite Ring||68|68|0|226|226|0|0|-1|14615|Platinum Hematite Ring|1||||||||||10018|Hematite|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8200|90061|1||Platinum Hematite Ring (Enchanted)||68|68|0|226|226|0|0|-1|14615|Platinum Hematite Ring|1||||||||||10018|Hematite|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8201|90062|1||Platinum Jacinth Wedding Ring||68|68|0|282|282|0|0|-1|16798|Platinum Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8202|90063|1||Platinum Jacinth Wedding Ring||68|68|0|282|282|0|0|-1|14699|Platinum Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8202|90063|1||Platinum Jacinth Wedding Ring (Enchanted)||68|68|0|282|282|0|0|-1|14699|Platinum Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8203|90064|1||Platinum Jasper Ring||68|68|0|236|236|0|0|-1|16662|Platinum Jasper Ring|1||||||||||10020|Jasper|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8204|90065|1||Platinum Jasper Ring||68|68|0|236|236|0|0|-1|14631|Platinum Jasper Ring|1||||||||||10020|Jasper|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8204|90065|1||Platinum Jasper Ring (Enchanted)||68|68|0|236|236|0|0|-1|14631|Platinum Jasper Ring|1||||||||||10020|Jasper|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8205|90066|1||Platinum Lapis Lazuli Necklace||68|68|0|220|220|0|0|-1|16614|Platinum Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8206|90067|1||Platinum Lapis Lazuli Necklace||68|68|0|220|220|0|0|-1|14607|Platinum Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8206|90067|1||Platinum Lapis Lazuli Necklace (Enchanted)||68|68|0|220|220|0|0|-1|14607|Platinum Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8209|90068|1||Platinum Malachite Ring||68|68|0|218|218|0|0|-1|16606|Platinum Malachite Ring|1||||||||||10015|Malachite|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8210|90069|1||Platinum Malachite Ring||68|68|0|218|218|0|0|-1|14603|Platinum Malachite Ring|1||||||||||10015|Malachite|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8210|90069|1||Platinum Malachite Ring (Enchanted)||68|68|0|218|218|0|0|-1|14603|Platinum Malachite Ring|1||||||||||10015|Malachite|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8213|90070|1||Platinum Onyx Bracelet||68|68|0|234|234|0|0|-1|16654|Platinum Onyx Bracelet|1||||||||||10027|Onyx|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8214|90071|1||Platinum Onyx Bracelet||68|68|0|234|234|0|0|-1|14627|Platinum Onyx Bracelet|1||||||||||10027|Onyx|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8214|90071|1||Platinum Onyx Bracelet (Enchanted)||68|68|0|234|234|0|0|-1|14627|Platinum Onyx Bracelet|1||||||||||10027|Onyx|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8215|90072|1||Platinum Opal Engagement Ring||68|68|0|263|263|0|0|-1|16742|Platinum Opal Engagement Ring|1||||||||||10030|Opal|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8216|90073|1||Platinum Opal Engagement Ring||68|68|0|263|263|0|0|-1|14671|Platinum Opal Engagement Ring|1||||||||||10030|Opal|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8216|90073|1||Platinum Opal Engagement Ring (Enchanted)||68|68|0|263|263|0|0|-1|14671|Platinum Opal Engagement Ring|1||||||||||10030|Opal|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8217|90074|1||Platinum Pearl Ring||68|68|0|252|252|0|0|-1|16710|Platinum Pearl Ring|1||||||||||10024|Pearl|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8218|90075|1||Platinum Pearl Ring||68|68|0|252|252|0|0|-1|14655|Platinum Pearl Ring|1||||||||||10024|Pearl|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8218|90075|1||Platinum Pearl Ring (Enchanted)||68|68|0|252|252|0|0|-1|14655|Platinum Pearl Ring|1||||||||||10024|Pearl|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8219|90076|1||Platinum Peridot Ring||68|68|0|258|258|0|0|-1|16726|Platinum Peridot Ring|1||||||||||10028|Peridot|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8220|90077|1||Platinum Peridot Ring||68|68|0|258|258|0|0|-1|14663|Platinum Peridot Ring|1||||||||||10028|Peridot|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8220|90077|1||Platinum Peridot Ring (Enchanted)||68|68|0|258|258|0|0|-1|14663|Platinum Peridot Ring|1||||||||||10028|Peridot|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8223|90078|1||Platinum Ruby Veil||68|68|0|279|279|0|0|-1|16790|Platinum Ruby Veil|1||||||||||10035|Ruby|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8224|90079|1||Platinum Ruby Veil||68|68|0|279|279|0|0|-1|14695|Platinum Ruby Veil|1||||||||||10035|Ruby|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8224|90079|1||Platinum Ruby Veil (Enchanted)||68|68|0|279|279|0|0|-1|14695|Platinum Ruby Veil|1||||||||||10035|Ruby|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8234|90080|1||Platinum Star Ruby Veil||68|68|0|271|271|0|0|-1|16766|Platinum Star Ruby Veil|1||||||||||10032|Star Ruby|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8235|90081|1||Platinum Star Ruby Veil||68|68|0|271|271|0|0|-1|14683|Platinum Star Ruby Veil|1||||||||||10032|Star Ruby|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8235|90081|1||Platinum Star Ruby Veil (Enchanted)||68|68|0|271|271|0|0|-1|14683|Platinum Star Ruby Veil|1||||||||||10032|Star Ruby|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8236|90082|1||Platinum Topaz Necklace||68|68|0|255|255|0|0|-1|16718|Platinum Topaz Necklace|1||||||||||10025|Topaz|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8237|90083|1||Platinum Topaz Necklace||68|68|0|255|255|0|0|-1|14659|Platinum Topaz Necklace|1||||||||||10025|Topaz|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8237|90083|1||Platinum Topaz Necklace (Enchanted)||68|68|0|255|255|0|0|-1|14659|Platinum Topaz Necklace|1||||||||||10025|Topaz|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8238|90084|1||Platinum Turquoise Bracelet||68|68|0|223|223|0|0|-1|16622|Platinum Turquoise Bracelet|1||||||||||10017|Turquoise|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8239|90085|1||Platinum Turquoise Bracelet||68|68|0|223|223|0|0|-1|14611|Platinum Turquoise Bracelet|1||||||||||10017|Turquoise|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8239|90085|1||Platinum Turquoise Bracelet (Enchanted)||68|68|0|223|223|0|0|-1|14611|Platinum Turquoise Bracelet|1||||||||||10017|Turquoise|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8278|90086|1||Rose Platinum Engagement Ring||68|68|0|242|242|0|0|-1|16678|Rose Platinum Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8279|90087|1||Rose Platinum Engagement Ring||68|68|0|242|242|0|0|-1|14639|Rose Platinum Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8279|90087|1||Rose Platinum Engagement Ring (Enchanted)||68|68|0|242|242|0|0|-1|14639|Rose Platinum Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8280|90088|1||Rose Velium Engagement Ring||68|68|0|242|242|0|0|-1|30318|Rose Velium Engagement Ring|1||||||||||10021|Star Rose Quartz|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8281|90089|1||Rose Velium Engagement Ring||68|68|0|242|242|0|0|-1|30319|Rose Velium Engagement Ring|1||||||||||10021|Star Rose Quartz|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8281|90089|1||Rose Velium Engagement Ring (Enchanted)||68|68|0|242|242|0|0|-1|30319|Rose Velium Engagement Ring|1||||||||||10021|Star Rose Quartz|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8282|90090|1||Ruby Electrum Ring||68|68|0|135|135|0|0|-1|16786|Ruby Electrum Ring|1||||||||||10035|Ruby|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8283|90091|1||Ruby Electrum Ring||68|68|0|135|135|0|0|-1|14693|Ruby Electrum Ring|1||||||||||10035|Ruby|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8283|90091|1||Ruby Electrum Ring (Enchanted)||68|68|0|135|135|0|0|-1|14693|Ruby Electrum Ring|1||||||||||10035|Ruby|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8284|-1|0||Rune Casing||68|68|0|152|152|0|0|-1|1860|Rune casing|1||||||||||16503|Platinum Bar|2|2040|Rune Casing Pattern|1|22569|Small Piece of Velium|1|||||||||||||||||||||||||||||
 8285|90092|1||Sapphire Electrum Earring||68|68|0|132|132|0|0|-1|16778|Sapphire Electrum Earring|1||||||||||10034|Sapphire|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8286|90093|1||Sapphire Electrum Earring||68|68|0|132|132|0|0|-1|14689|Sapphire Electrum Earring|1||||||||||10034|Sapphire|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8286|90093|1||Sapphire Electrum Earring (Enchanted)||68|68|0|132|132|0|0|-1|14689|Sapphire Electrum Earring|1||||||||||10034|Sapphire|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8288|90094|1||Sapphire Platinum Necklace||68|68|0|276|276|0|0|-1|16782|Sapphire Platinum Necklace|1||||||||||10034|Sapphire|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8289|90095|1||Sapphire Platinum Necklace||68|68|0|276|276|0|0|-1|14691|Sapphire Platinum Necklace|1||||||||||10034|Sapphire|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8289|90095|1||Sapphire Platinum Necklace (Enchanted)||68|68|0|276|276|0|0|-1|14691|Sapphire Platinum Necklace|1||||||||||10034|Sapphire|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8290|90096|1||Sapphire Velium Necklace||68|68|0|279|279|0|0|-1|30344|Sapphire Velium Necklace|1||||||||||10034|Sapphire|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8291|90097|1||Sapphire Velium Necklace||68|68|0|279|279|0|0|-1|30345|Sapphire Velium Necklace|1||||||||||10034|Sapphire|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8291|90097|1||Sapphire Velium Necklace (Enchanted)||68|68|0|279|279|0|0|-1|30345|Sapphire Velium Necklace|1||||||||||10034|Sapphire|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8308|90098|1||Silver Amber Ring||68|68|0|36|36|0|0|-1|16680|Silver Amber Ring|1||||||||||10022|Amber|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8309|90099|1||Silver Amber Ring||68|68|0|35|35|0|0|-1|14640|Silver Amber Ring|1||||||||||10022|Amber|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8309|90099|1||Silver Amber Ring (Enchanted)||68|68|0|35|35|0|0|-1|14640|Silver Amber Ring|1||||||||||10022|Amber|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8312|90100|1||Silver Bloodstone Earring||68|68|0|26|26|0|0|-1|16640|Silver Bloodstone Earring|1||||||||||10019|Bloodstone|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8313|90101|1||Silver Bloodstone Earring||68|68|0|26|26|0|0|-1|14620|Silver Bloodstone Earring|1||||||||||10019|Bloodstone|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8313|90101|1||Silver Bloodstone Earring (Enchanted)||68|68|0|26|26|0|0|-1|14620|Silver Bloodstone Earring|1||||||||||10019|Bloodstone|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8314|90102|1||Silver Blue Diamond Ring||68|68|0|75|75|0|0|-1|30360|Silver Blue Diamond Ring|1||||||||||16500|Silver Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-8315|90103|1||Silver Blue Diamond Ring||68|68|0|75|75|0|0|-1|30364|Silver Blue Diamond Ring|1||||||||||16504|Enchanted Silver Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-8316|90104|1||Silver Carnelian Wedding Ring||68|68|0|32|32|0|0|-1|14632|Silver Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8315|90103|1||Silver Blue Diamond Ring (Enchanted)||68|68|0|75|75|0|0|-1|30364|Silver Blue Diamond Ring|1||||||||||16504|Enchanted Silver Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
+8316|90104|1||Silver Carnelian Wedding Ring (Enchanted)||68|68|0|32|32|0|0|-1|14632|Silver Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8317|90105|1||Silver Carnelian Wedding Ring||68|68|0|32|32|0|0|-1|16664|Silver Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
 8318|90106|1||Silver Cat Eye Necklace||68|68|0|24|24|0|0|-1|16632|Silver Cat Eye Necklace|1||||||||||10026|Cat's Eye Agate|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8319|90107|1||Silver Cat Eye Necklace||68|68|0|24|24|0|0|-1|14616|Silver Cat Eye Necklace|1||||||||||10026|Cat's Eye Agate|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8319|90107|1||Silver Cat Eye Necklace (Enchanted)||68|68|0|24|24|0|0|-1|14616|Silver Cat Eye Necklace|1||||||||||10026|Cat's Eye Agate|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8320|90108|1||Silver Diamond Wedding Ring||68|68|0|71|71|0|0|-1|16808|Silver Diamond Wedding Ring|1||||||||||10037|Diamond|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8321|90109|1||Silver Diamond Wedding Ring||68|68|0|71|71|0|0|-1|14704|Silver Diamond Wedding Ring|1||||||||||10037|Diamond|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8321|90109|1||Silver Diamond Wedding Ring (Enchanted)||68|68|0|71|71|0|0|-1|14704|Silver Diamond Wedding Ring|1||||||||||10037|Diamond|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8322|90110|1||Silver Emerald Ring||68|68|0|48|48|0|0|-1|16728|Silver Emerald Ring|1||||||||||10029|Emerald|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8323|90111|1||Silver Emerald Ring||68|68|0|48|48|0|0|-1|14664|Silver Emerald Ring|1||||||||||10029|Emerald|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8323|90111|1||Silver Emerald Ring (Enchanted)||68|68|0|48|48|0|0|-1|14664|Silver Emerald Ring|1||||||||||10029|Emerald|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8324|90112|1||Silver Fire Wedding Ring||68|68|0|54|54|0|0|-1|16752|Silver Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8325|90113|1||Silver Fire Wedding Ring||68|68|0|54|54|0|0|-1|14676|Silver Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8325|90113|1||Silver Fire Wedding Ring (Enchanted)||68|68|0|54|54|0|0|-1|14676|Silver Fire Wedding Ring|1||||||||||10031|Fire Opal|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8328|90114|1||Silver Hematite Ring||68|68|0|22|22|0|0|-1|16624|Silver Hematite Ring|1||||||||||10018|Hematite|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8329|90115|1||Silver Hematite Ring||68|68|0|22|22|0|0|-1|14612|Silver Hematite Ring|1||||||||||10018|Hematite|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8329|90115|1||Silver Hematite Ring (Enchanted)||68|68|0|22|22|0|0|-1|14612|Silver Hematite Ring|1||||||||||10018|Hematite|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8330|90116|1||Silver Jacinth Wedding Ring||68|68|0|66|66|0|0|-1|16792|Silver Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8331|90117|1||Silver Jacinth Wedding Ring||68|68|0|65|65|0|0|-1|14696|Silver Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8331|90117|1||Silver Jacinth Wedding Ring (Enchanted)||68|68|0|65|65|0|0|-1|14696|Silver Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8332|90118|1||Silver Jasper Ring||68|68|0|30|30|0|0|-1|16656|Silver Jasper Ring|1||||||||||10020|Jasper|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8333|90119|1||Silver Jasper Ring||68|68|0|30|30|0|0|-1|14628|Silver Jasper Ring|1||||||||||10020|Jasper|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8333|90119|1||Silver Jasper Ring (Enchanted)||68|68|0|30|30|0|0|-1|14628|Silver Jasper Ring|1||||||||||10020|Jasper|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8334|90120|1||Silver Lapis Lazuli Necklace||68|68|0|21|21|0|0|-1|16608|Silver Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8335|90121|1||Silver Lapis Lazuli Necklace||68|68|0|21|21|0|0|-1|14604|Silver Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8335|90121|1||Silver Lapis Lazuli Necklace (Enchanted)||68|68|0|21|21|0|0|-1|14604|Silver Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8336|90122|1||Silver Malachite Ring||68|68|0|17|17|0|0|-1|16600|Silver Malachite Ring|1||||||||||10015|Malachite|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8337|90123|1||Silver Malachite Ring||68|68|0|17|17|0|0|-1|14600|Silver Malachite Ring|1||||||||||10015|Malachite|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8337|90123|1||Silver Malachite Ring (Enchanted)||68|68|0|17|17|0|0|-1|14600|Silver Malachite Ring|1||||||||||10015|Malachite|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8340|90124|1||Silver Onyx Bracelet||68|68|0|28|28|0|0|-1|16648|Silver Onyx Bracelet|1||||||||||10027|Onyx|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8341|90125|1||Silver Onyx Bracelet||68|68|0|28|28|0|0|-1|14624|Silver Onyx Bracelet|1||||||||||10027|Onyx|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8341|90125|1||Silver Onyx Bracelet (Enchanted)||68|68|0|28|28|0|0|-1|14624|Silver Onyx Bracelet|1||||||||||10027|Onyx|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8342|90126|1||Silver Opal Engagement Ring||68|68|0|50|50|0|0|-1|16736|Silver Opal Engagement Ring|1||||||||||10030|Opal|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8343|90127|1||Silver Opal Engagement Ring||68|68|0|50|50|0|0|-1|14668|Silver Opal Engagement Ring|1||||||||||10030|Opal|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8343|90127|1||Silver Opal Engagement Ring (Enchanted)||68|68|0|50|50|0|0|-1|14668|Silver Opal Engagement Ring|1||||||||||10030|Opal|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8346|90128|1||Silver Rose Engagement Ring||68|68|0|34|34|0|0|-1|16672|Silver Rose Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8347|90129|1||Silver Rose Engagement Ring||68|68|0|34|34|0|0|-1|14636|Silver Rose Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8347|90129|1||Silver Rose Engagement Ring (Enchanted)||68|68|0|34|34|0|0|-1|14636|Silver Rose Engagement Ring|1||||||||||10021|Star Rose Quartz|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8348|90130|1||Silver Ruby Veil||68|68|0|63|63|0|0|-1|16784|Silver Ruby Veil|1||||||||||10035|Ruby|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8349|90131|1||Silver Ruby Veil||68|68|0|62|62|0|0|-1|14692|Silver Ruby Veil|1||||||||||10035|Ruby|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8349|90131|1||Silver Ruby Veil (Enchanted)||68|68|0|62|62|0|0|-1|14692|Silver Ruby Veil|1||||||||||10035|Ruby|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8352|90132|1||Silver Turquoise Bracelet||68|68|0|20|20|0|0|-1|16616|Silver Turquoise Bracelet|1||||||||||10017|Turquoise|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8353|90133|1||Silver Turquoise Bracelet||68|68|0|18|18|0|0|-1|14608|Silver Turquoise Bracelet|1||||||||||10017|Turquoise|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8353|90133|1||Silver Turquoise Bracelet (Enchanted)||68|68|0|18|18|0|0|-1|14608|Silver Turquoise Bracelet|1||||||||||10017|Turquoise|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8354|90134|1||Silver Wolf's Eye Necklace||68|68|0|38|38|0|0|-1|16688|Silver Wolf's Eye Necklace|1||||||||||16010|Wolf's Eye Agate|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8355|90135|1||Silver Wolf's Eye Necklace||68|68|0|38|38|0|0|-1|14644|Silver Wolf's Eye Necklace|1||||||||||16010|Wolf's Eye Agate|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8355|90135|1||Silver Wolf's Eye Necklace (Enchanted)||68|68|0|38|38|0|0|-1|14644|Silver Wolf's Eye Necklace|1||||||||||16010|Wolf's Eye Agate|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8356|90136|1||Silvered Fire Emerald Ring||68|68|0|58|58|0|0|-1|16768|Silvered Fire Emerald Ring|1||||||||||10033|Fire Emerald|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8357|90137|1||Silvered Fire Emerald Ring||68|68|0|58|58|0|0|-1|14684|Silvered Fire Emerald Ring|1||||||||||10033|Fire Emerald|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8357|90137|1||Silvered Fire Emerald Ring (Enchanted)||68|68|0|58|58|0|0|-1|14684|Silvered Fire Emerald Ring|1||||||||||10033|Fire Emerald|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8358|90138|1||Silvered Pearl Ring||68|68|0|42|42|0|0|-1|16704|Silvered Pearl Ring|1||||||||||10024|Pearl|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8359|90139|1||Silvered Pearl Ring||68|68|0|42|42|0|0|-1|14652|Silvered Pearl Ring|1||||||||||10024|Pearl|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8359|90139|1||Silvered Pearl Ring (Enchanted)||68|68|0|42|42|0|0|-1|14652|Silvered Pearl Ring|1||||||||||10024|Pearl|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8360|90140|1||Silvered Peridot Ring||68|68|0|46|46|0|0|-1|16720|Silvered Peridot Ring|1||||||||||10028|Peridot|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8361|90141|1||Silvered Peridot Ring||68|68|0|46|46|0|0|-1|14660|Silvered Peridot Ring|1||||||||||10028|Peridot|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
-8362|90142|1||Silvered Sapphire Necklace||68|68|0|60|60|0|0|-1|14688|Silvered Sapphire Necklace|1||||||||||10034|Sapphire|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8361|90141|1||Silvered Peridot Ring (Enchanted)||68|68|0|46|46|0|0|-1|14660|Silvered Peridot Ring|1||||||||||10028|Peridot|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8362|90142|1||Silvered Sapphire Necklace (Enchanted)||68|68|0|60|60|0|0|-1|14688|Silvered Sapphire Necklace|1||||||||||10034|Sapphire|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8363|90143|1||Silvered Sapphire Necklace||68|68|0|60|60|0|0|-1|16776|Silvered Sapphire Necklace|1||||||||||10034|Sapphire|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
 8367|-1|0|0|Spell: Imbue Air||68|68|0|0|0|1|0|-1|28463|Spell: Imbue Air|1||||||||||15895|Spell: Imbue Diamond|1|15981|Raw Diamond|1|29524|Air Mephit Blood|1|||||||||||||||||||||||||||||
 8368|-1|0||Spell: Imbue Disease||68|68|0|0|0|1|0|-1|21691|Spell: Imbue Disease|1||||||||||15895|Spell: Imbue Diamond|1|15981|Raw Diamond|1|29346|INVALID_ID|1|||||||||||||||||||||||||||||
@@ -5353,59 +5353,59 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8377|-1|0|0|Spell: Imbue Water||68|68|0|0|0|1|0|-1|28467|Spell: Imbue Water|1||||||||||15895|Spell: Imbue Diamond|1|15981|Raw Diamond|1|29522|Water Mephit Blood|1|||||||||||||||||||||||||||||
 8378|-1|0||Steel Ring Of Earthen Resilience||68|68|0|335|335|0|0|-1|29044|INVALID_ID|1||||||||||21721|An Elemental Stone|1|28184|Enchanted Bar of Immaculate Steel|1|29988|Brown Diamond of Earth|1|||||||||||||||||||||||||||||
 8380|90144|1||Topaz Electrum Earring||68|68|0|111|111|0|0|-1|16714|Topaz Electrum Earring|1||||||||||10025|Topaz|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8381|90145|1||Topaz Electrum Earring||68|68|0|111|111|0|0|-1|14657|Topaz Electrum Earring|1||||||||||10025|Topaz|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8381|90145|1||Topaz Electrum Earring (Enchanted)||68|68|0|111|111|0|0|-1|14657|Topaz Electrum Earring|1||||||||||10025|Topaz|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8382|90146|1||Topaz Silver Necklace||68|68|0|44|44|0|0|-1|16712|Topaz Silver Necklace|1||||||||||10025|Topaz|1|16500|Silver Bar|1||||||||||||||||||||||||||||||||
-8383|90147|1||Topaz Silver Necklace||68|68|0|44|44|0|0|-1|14656|Topaz Silver Necklace|1||||||||||10025|Topaz|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
+8383|90147|1||Topaz Silver Necklace (Enchanted)||68|68|0|44|44|0|0|-1|14656|Topaz Silver Necklace|1||||||||||10025|Topaz|1|16504|Enchanted Silver Bar|1||||||||||||||||||||||||||||||||
 8384|90148|1||Valorium Ring Of Gallantry||68|68|0|308|0|0|0|-1|29046|Valorium Ring of Gallantry|1||||||||||29417|Enchanted Bar of Valorium|1|29948|A Razorfiend Talon|1|30489|Yellow Diamond of Valor|1|||||||||||||||||||||||||||||
 8385|90149|1||Velium Amber Ring||68|68|0|244|244|0|0|-1|30320|Velium Amber Ring|1||||||||||10022|Amber|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8386|90150|1||Velium Amber Ring||68|68|0|244|244|0|0|-1|30321|Velium Amber Ring|1||||||||||10022|Amber|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
-8389|90151|1||Velium Bloodstone Earring||68|68|0|234|234|0|0|-1|30311|Velium Bloodstone Earring|1||||||||||10019|Bloodstone|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8386|90150|1||Velium Amber Ring (Enchanted)||68|68|0|244|244|0|0|-1|30321|Velium Amber Ring|1||||||||||10022|Amber|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8389|90151|1||Velium Bloodstone Earring (Enchanted)||68|68|0|234|234|0|0|-1|30311|Velium Bloodstone Earring|1||||||||||10019|Bloodstone|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8390|90152|1||Velium Bloodstone Earring||68|68|0|234|234|0|0|-1|30310|Velium Bloodstone Earring|1||||||||||10019|Bloodstone|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
 8391|90153|1||Velium Blue Diamond Bracelet||68|68|0|302|0|0|0|-1|30298|Velium Blue Diamond Bracelet|1||||||||||22098|Velium Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
-8392|90154|1||Velium Blue Diamond Bracelet||68|68|0|302|0|0|0|-1|30299|Velium Blue Diamond Bracelet|1||||||||||22099|Enchanted Velium Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
+8392|90154|1||Velium Blue Diamond Bracelet (Enchanted)||68|68|0|302|0|0|0|-1|30299|Velium Blue Diamond Bracelet|1||||||||||22099|Enchanted Velium Bar|1|22503|Blue Diamond|1||||||||||||||||||||||||||||||||
 8393|-1|0||Velium Blue Diamond Ring||68|68|220|315|315|0|0|-1|15991|Velium Blue Diamond Ring|1||||||||||15989|Faceted Blue Diamond|1|15990|Pure Enchanted Velium Bar|1|16250|Clay Signet|1|||||||||||||||||||||||||||||
 8394|90155|1||Velium Carnelian Wedding Ring||68|68|0|239|239|0|0|-1|30316|Velium Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8395|90156|1||Velium Carnelian Wedding Ring||68|68|0|239|239|0|0|-1|30317|Velium Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8395|90156|1||Velium Carnelian Wedding Ring (Enchanted)||68|68|0|239|239|0|0|-1|30317|Velium Carnelian Wedding Ring|1||||||||||10011|Carnelian|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8398|90157|1||Velium Diamond Wedding Ring||68|68|0|290|0|0|0|-1|30352|Velium Diamond Wedding Ring|1||||||||||10037|Diamond|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8399|90158|1||Velium Diamond Wedding Ring||68|68|0|290|0|0|0|-1|30353|Velium Diamond Wedding Ring|1||||||||||10037|Diamond|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8399|90158|1||Velium Diamond Wedding Ring (Enchanted)||68|68|0|290|0|0|0|-1|30353|Velium Diamond Wedding Ring|1||||||||||10037|Diamond|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8400|90159|1||Velium Emerald Ring||68|68|0|263|263|0|0|-1|30332|Velium Emerald Ring|1||||||||||10029|Emerald|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8401|90160|1||Velium Emerald Ring||68|68|0|263|263|0|0|-1|30333|Velium Emerald Ring|1||||||||||10029|Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
-8402|90161|1||Velium Fire Wedding Ring||68|68|0|271|271|0|0|-1|30339|Velium Fire Wedding Ring|1||||||||||10031|Fire Opal|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8401|90160|1||Velium Emerald Ring (Enchanted)||68|68|0|263|263|0|0|-1|30333|Velium Emerald Ring|1||||||||||10029|Emerald|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8402|90161|1||Velium Fire Wedding Ring (Enchanted)||68|68|0|271|271|0|0|-1|30339|Velium Fire Wedding Ring|1||||||||||10031|Fire Opal|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8403|90162|1||Velium Fire Wedding Ring||68|68|0|271|271|0|0|-1|30338|Velium Fire Wedding Ring|1||||||||||10031|Fire Opal|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8406|90163|1||Velium Hematite Ring||68|68|0|226|226|0|0|-1|30307|Velium Hematite Ring|1||||||||||10018|Hematite|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8406|90163|1||Velium Hematite Ring (Enchanted)||68|68|0|226|226|0|0|-1|30307|Velium Hematite Ring|1||||||||||10018|Hematite|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8407|90164|1||Velium Hematite Ring||68|68|0|226|226|0|0|-1|30306|Velium Hematite Ring|1||||||||||10018|Hematite|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
 8408|90165|1||Velium Jacinth Wedding Ring||68|68|0|284|284|0|0|-1|30348|Velium Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8409|90166|1||Velium Jacinth Wedding Ring||68|68|0|284|284|0|0|-1|30349|Velium Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8409|90166|1||Velium Jacinth Wedding Ring (Enchanted)||68|68|0|284|284|0|0|-1|30349|Velium Jacinth Wedding Ring|1||||||||||10053|Jacinth|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8410|90167|1||Velium Jasper Ring||68|68|0|236|236|0|0|-1|30314|Velium Jasper Ring|1||||||||||10020|Jasper|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8411|90168|1||Velium Jasper Ring||68|68|0|236|236|0|0|-1|30315|Velium Jasper Ring|1||||||||||10020|Jasper|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
-8412|90169|1||Velium Lapis Lazuli Necklace||68|68|0|220|220|0|0|-1|30303|Velium Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8411|90168|1||Velium Jasper Ring (Enchanted)||68|68|0|236|236|0|0|-1|30315|Velium Jasper Ring|1||||||||||10020|Jasper|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8412|90169|1||Velium Lapis Lazuli Necklace (Enchanted)||68|68|0|220|220|0|0|-1|30303|Velium Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8413|90170|1||Velium Lapis Lazuli Necklace||68|68|0|220|220|0|0|-1|30302|Velium Lapis Lazuli Necklace|1||||||||||10016|Lapis Lazuli|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8418|90171|1||Velium Malachite Ring||68|68|0|220|220|0|0|-1|30301|Velium Malachite Ring|1||||||||||10015|Malachite|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8418|90171|1||Velium Malachite Ring (Enchanted)||68|68|0|220|220|0|0|-1|30301|Velium Malachite Ring|1||||||||||10015|Malachite|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8419|90172|1||Velium Malachite Ring||68|68|0|220|220|0|0|-1|30300|Velium Malachite Ring|1||||||||||10015|Malachite|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8422|90173|1||Velium Onyx Bracelet||68|68|0|234|234|0|0|-1|30313|Velium Onyx Bracelet|1||||||||||10027|Onyx|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8422|90173|1||Velium Onyx Bracelet (Enchanted)||68|68|0|234|234|0|0|-1|30313|Velium Onyx Bracelet|1||||||||||10027|Onyx|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8423|90174|1||Velium Onyx Bracelet||68|68|0|234|234|0|0|-1|30312|Velium Onyx Bracelet|1||||||||||10027|Onyx|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
 8424|90175|1||Velium Opal Engagement Ring||68|68|0|266|266|0|0|-1|30334|Velium Opal Engagement Ring|1||||||||||10030|Opal|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8425|90176|1||Velium Opal Engagement Ring||68|68|0|266|266|0|0|-1|30335|Velium Opal Engagement Ring|1||||||||||10030|Opal|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8425|90176|1||Velium Opal Engagement Ring (Enchanted)||68|68|0|266|266|0|0|-1|30335|Velium Opal Engagement Ring|1||||||||||10030|Opal|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8426|90177|1||Velium Pearl Ring||68|68|0|255|255|0|0|-1|30326|Velium Pearl Ring|1||||||||||10024|Pearl|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8427|90178|1||Velium Pearl Ring||68|68|0|255|255|0|0|-1|30327|Velium Pearl Ring|1||||||||||10024|Pearl|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8427|90178|1||Velium Pearl Ring (Enchanted)||68|68|0|255|255|0|0|-1|30327|Velium Pearl Ring|1||||||||||10024|Pearl|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8428|90179|1||Velium Peridot Ring||68|68|0|260|260|0|0|-1|30330|Velium Peridot Ring|1||||||||||10028|Peridot|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8429|90180|1||Velium Peridot Ring||68|68|0|260|260|0|0|-1|30331|Velium Peridot Ring|1||||||||||10028|Peridot|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8429|90180|1||Velium Peridot Ring (Enchanted)||68|68|0|260|260|0|0|-1|30331|Velium Peridot Ring|1||||||||||10028|Peridot|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8432|90181|1||Velium Ruby Veil||68|68|0|282|282|0|0|-1|30346|Velium Ruby Veil|1||||||||||10035|Ruby|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8433|90182|1||Velium Ruby Veil||68|68|0|282|282|0|0|-1|30347|Velium Ruby Veil|1||||||||||10035|Ruby|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8433|90182|1||Velium Ruby Veil (Enchanted)||68|68|0|282|282|0|0|-1|30347|Velium Ruby Veil|1||||||||||10035|Ruby|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8444|90183|1||Velium Star Ruby Veil||68|68|0|274|274|0|0|-1|30340|Velium Star Ruby Veil|1||||||||||10032|Star Ruby|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8445|90184|1||Velium Star Ruby Veil||68|68|0|274|274|0|0|-1|30341|Velium Star Ruby Veil|1||||||||||10032|Star Ruby|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
-8446|90185|1||Velium Topaz Necklace||68|68|0|258|258|0|0|-1|30329|Velium Topaz Necklace|1||||||||||10025|Topaz|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8445|90184|1||Velium Star Ruby Veil (Enchanted)||68|68|0|274|274|0|0|-1|30341|Velium Star Ruby Veil|1||||||||||10032|Star Ruby|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8446|90185|1||Velium Topaz Necklace (Enchanted)||68|68|0|258|258|0|0|-1|30329|Velium Topaz Necklace|1||||||||||10025|Topaz|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8447|90186|1||Velium Topaz Necklace||68|68|0|258|258|0|0|-1|30328|Velium Topaz Necklace|1||||||||||10025|Topaz|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
 8448|90187|1||Velium Turquoise Bracelet||68|68|0|223|223|0|0|-1|30304|Velium Turquoise Bracelet|1||||||||||10017|Turquoise|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8449|90188|1||Velium Turquoise Bracelet||68|68|0|223|223|0|0|-1|30305|Velium Turquoise Bracelet|1||||||||||10017|Turquoise|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8449|90188|1||Velium Turquoise Bracelet (Enchanted)||68|68|0|223|223|0|0|-1|30305|Velium Turquoise Bracelet|1||||||||||10017|Turquoise|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8450|90189|1||Wolf's Eye Electrum Bracelet||68|68|0|103|103|0|0|-1|16690|Wolf's Eye Electrum Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16501|Electrum Bar|1||||||||||||||||||||||||||||||||
-8451|90190|1||Wolf's Eye Electrum Bracelet||68|68|0|103|103|0|0|-1|14645|Wolf's Eye Electrum Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
+8451|90190|1||Wolf's Eye Electrum Bracelet (Enchanted)||68|68|0|103|103|0|0|-1|14645|Wolf's Eye Electrum Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16505|Enchanted Electrum Bar|1||||||||||||||||||||||||||||||||
 8452|90191|1||Wolf's Eye Golden Bracelet||68|68|0|175|175|0|0|-1|16692|Wolf's Eye Golden Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16502|Gold Bar|1||||||||||||||||||||||||||||||||
-8453|90192|1||Wolf's Eye Golden Bracelet||68|68|0|175|175|0|0|-1|14646|Wolf's Eye Golden Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
+8453|90192|1||Wolf's Eye Golden Bracelet (Enchanted)||68|68|0|175|175|0|0|-1|14646|Wolf's Eye Golden Bracelet|1||||||||||16010|Wolf's Eye Agate|1|16506|Enchanted Gold Bar|1||||||||||||||||||||||||||||||||
 8454|90193|1||Wolf's Eye Platinum Necklace||68|68|0|247|247|0|0|-1|16694|Wolf's Eye Platinum Necklace|1||||||||||16010|Wolf's Eye Agate|1|16503|Platinum Bar|1||||||||||||||||||||||||||||||||
-8455|90194|1||Wolf's Eye Platinum Necklace||68|68|0|247|247|0|0|-1|14647|Wolf's Eye Platinum Necklace|1||||||||||16010|Wolf's Eye Agate|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
+8455|90194|1||Wolf's Eye Platinum Necklace (Enchanted)||68|68|0|247|247|0|0|-1|14647|Wolf's Eye Platinum Necklace|1||||||||||16010|Wolf's Eye Agate|1|16507|Enchanted Platinum Bar|1||||||||||||||||||||||||||||||||
 8456|90195|1||Wolf's Eye Velium Necklace||68|68|0|247|247|0|0|-1|30322|Wolf's Eye Velium Necklace|1||||||||||16010|Wolf's Eye Agate|1|22098|Velium Bar|1||||||||||||||||||||||||||||||||
-8457|90196|1||Wolf's Eye Velium Necklace||68|68|0|247|247|0|0|-1|30323|Wolf's Eye Velium Necklace|1||||||||||16010|Wolf's Eye Agate|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
+8457|90196|1||Wolf's Eye Velium Necklace (Enchanted)||68|68|0|247|247|0|0|-1|30323|Wolf's Eye Velium Necklace|1||||||||||16010|Wolf's Eye Agate|1|22099|Enchanted Velium Bar|1||||||||||||||||||||||||||||||||
 8458|90197|1||Glowing Skull||69|69|0|0|0|1|1|-1|12401|A Glowing Skull|1||||||||||12396|A Preserved Eye|1|12397|A Preserved Eye|1|12398|Kurn's Jerky Delight|1|12399|a dried tongue|1||||||||||||||||||||||||||
 8459|90198|1||A Very Rusty Dagger||69|69|0|0|0|1|0|-1|6838|A Very Rusty Dagger|1||||||||||24550|a black throne|1|24551|a black crown|1|24562|a white throne|1|24563|a white crown|1||||||||||||||||||||||||||
 8460|-1|0||Abattoir Initiate Cap||69|69|0|0|0|1|0|-1|20333|Abattoir Initiate Cap|1||||||||||16486|Silk Thread|2|19555|Tattered Cap Pattern|1|20354|Briar Snake Skin|1|20357|INVALID_ID|1||||||||||||||||||||||||||
@@ -7093,7 +7093,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13323|91018|1||Ogre War Plate Pauldron||63|63|0|168|168|0|0|-1|4432|Ogre War Plate Pauldron|1||||||||||10499|Folded Sheet of Adamantite|2|10471|Adamantite Chain Jointing|1|22509|Blood Temper|1|22011|Large Plate Pauldron Mold|1|16488|Leather Padding|1||||||||||||||||||||10489|Smithy Hammer||
 13324|91019|0||Small Crimson Fine Breastplate||63|63|0|36|36|0|0|-1|23113|Small Crimson Fine Breastplate|1||||||||||22107|Dark Red Dye|1|22133|Jar of Acid|1|22101|Jar of Lacquer|1|21016|Small Fine Steel Breastplate|1||||||||||||||||||||||||||
 13325|91020|0||Small Crimson Fine Vambraces||63|63|0|36|36|0|0|-1|23114|Small Crimson Fine Vambraces|1||||||||||22107|Dark Red Dye|1|22133|Jar of Acid|1|22101|Jar of Lacquer|1|21020|Small Fine Plate Vambraces|1||||||||||||||||||||||||||
-13326|91021|1||Silvered Star Ruby Veil||68|68|0|56|56|0|0|-1|14680|Silvered Star Ruby Veil|1||||||||||16504|Enchanted Silver Bar|1|10032|Star Ruby|1||||||||||||||||||||||||||||||||
+13326|91021|1||Silvered Star Ruby Veil (Enchanted)||68|68|0|56|56|0|0|-1|14680|Silvered Star Ruby Veil|1||||||||||16504|Enchanted Silver Bar|1|10032|Star Ruby|1||||||||||||||||||||||||||||||||
 13327|91022|0||Small Red Fine Steel Breastplate||63|63|0|36|36|0|0|-1|23092|Small Red Fine Steel Breastplate|1||||||||||22133|Jar of Acid|1|22101|Jar of Lacquer|1|22106|Red Dye|1|21016|Small Fine Steel Breastplate|1||||||||||||||||||||||||||
 13328|-1|0||Fearsome Skyiron Coif||63|63|0|335|335|0|0|-1|23955|Fearsome Skyiron Coif|1||||||||||23964|Infused Skyiron Scales|2|23963|Folded Sheet of Infused Skyiron|1|12038|Helm Mold|1|22502|Imbued Amber|1|22513|Scale Temper|1||||||||||||||||||||6027|Forging Hammer||
 13329|91023|0||Dark Green Small Fine Breastplate||63|63|0|36|36|0|0|-1|23050|Dark Green Small Fine Breastplate|1||||||||||22104|Dark Green Dye|1|22133|Jar of Acid|1|22101|Jar of Lacquer|1|21016|Small Fine Steel Breastplate|1||||||||||||||||||||||||||
