@@ -214,10 +214,14 @@ namespace EQWOWConverter.Tradeskills
                             recipe.CombinerWOWItemIDs.Add(itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
                         }
                     }
-                    if (type == TradeskillType.Engineering)
+                    if (type == TradeskillType.Engineering && recipe.RequiredTotemID1 == 0)
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING);
                     if (type == TradeskillType.Tailoring && recipe.RequiredTotemID1 == 0)
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING);
+                    if (type == TradeskillType.Jewelcrafting && recipe.RequiredTotemID1 == 0)
+                        recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING);
+                    if (type == TradeskillType.Alchemy && recipe.RequiredTotemID1 == 0)
+                        recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY);
 
                     // Generate WOW values
                     PopulateWOWSkillLevelsAndLine(recipe);

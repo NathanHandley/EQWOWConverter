@@ -2198,6 +2198,10 @@ namespace EQWOWConverter
             curTradeskillTotemCategoryID++;
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING), "Sewing Kit", curTradeskillTotemCategoryID, 1);
             curTradeskillTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING), "Jeweler's Kit", curTradeskillTotemCategoryID, 1);
+            curTradeskillTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY), "Medicine Bag", curTradeskillTotemCategoryID, 1);
+            curTradeskillTotemCategoryID++;
             Dictionary<string, UInt32> tradeskillTotems = TradeskillRecipe.GetTotemIDsByItemName();
             int curTradeskillTotemCategoryMaskValue = 1;
             int curTradeskillTotemCategoryMaskCount = 0;

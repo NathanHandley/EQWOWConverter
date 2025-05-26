@@ -769,6 +769,14 @@ namespace EQWOWConverter.Items
                                         itemTemplate.InventoryType = ItemWOWInventoryType.Quiver;
                                         itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                                     } break;
+                                case 9: // Medicine Bag => Misc
+                                    {
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY;
+                                        itemTemplate.Description = "Used by Alchemists to produce any item.";
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+                                    } break;
                                 case 10: // Toolbox => Misc
                                     {
                                         itemTemplate.ClassID = 2;
@@ -791,6 +799,15 @@ namespace EQWOWConverter.Items
                                         itemTemplate.Description = "Used by Tailors to produce most items.";
                                         itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
                                     } break;
+                                case 20: // Jeweller's Kit => Misc
+                                    {
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING;
+                                        itemTemplate.Description = "Used by Jewelcrafter's to produce any item.";
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+                                    }
+                                    break;
                                 default: // Normal Bag
                                     {
                                         itemTemplate.ClassID = 1;

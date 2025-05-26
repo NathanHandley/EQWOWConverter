@@ -433,7 +433,9 @@ namespace EQWOWConverter
         // ID for TotemCategory.dbc for specific tradeskills
         public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING = 210;
         public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING = 211;
-        
+        public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING = 212;
+        public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY = 213;
+
         //=====================================================================
         // Transports
         //=====================================================================
