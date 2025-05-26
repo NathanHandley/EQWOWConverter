@@ -214,6 +214,14 @@ namespace EQWOWConverter.Tradeskills
                             recipe.CombinerWOWItemIDs.Add(itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
                         }
                     }
+
+                    // Don't create the recipe if there aren't any components
+                    if (recipe.ComponentItemCountsByWOWItemID.Count() == 0)
+                    {
+                        Logger.WriteDebug(string.Concat("There were no components for recipe '", recipe.EQID, "', skipping"));
+                        continue;
+                    }
+
                     if (type == TradeskillType.Engineering && recipe.RequiredTotemID1 == 0)
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING);
                     if (type == TradeskillType.Tailoring && recipe.RequiredTotemID1 == 0)
