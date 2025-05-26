@@ -605,177 +605,177 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 943|87292|0|1|Training Rune (complete)||58|58|0|62|62|0|0|-1|15918|Training Rune (Complete)|1||||||||||15904|Training Rune (Azia)|1|15905|Training Rune (Beza)|1||||||||||||||||||||||||||||||||
 944|87293|1|1|Velishoul's Tome Page 16||58|58|0|88|88|0|0|-1|16085|Velishoul's Tome Pg.16|1||||||||||16084|A Faded Velishouls Tome Page|1|||||||||||||||||||||||||||||||||||
 945|87294|1|1|Velishoul's Tome Pg. 108||58|58|0|122|122|0|0|-1|11700|Velishoul's Tome Pg. 108|1||||||||||11701|A Faded Velishouls Tome Page|1|||||||||||||||||||||||||||||||||||
-949|87295|1||10 Dose Adrenaline Tap||59|59|0|0|0|1|0|-1|14549|10 Dose Adrenaline Tap|10||||||||||14454|Adrenaline Tap|10|||||||||||||||||||||||||||||||||||
-950|87296|1||10 Dose Ant's Potion||59|59|0|0|0|1|0|-1|14536|10 Dose Ant's Potion|10||||||||||14441|Ant's Potion|10|||||||||||||||||||||||||||||||||||
-956|87297|1||10 Dose Blood Of The Wolf||59|59|0|0|0|1|0|-1|14534|10 Dose Blood of the Wolf|10||||||||||14439|Blood of the Wolf|10|||||||||||||||||||||||||||||||||||
-966|87298|1||10 Dose Divine Endurance Elixir||59|59|0|0|0|1|0|-1|19020|10 Dose Divine Endurance Elixir|10||||||||||14892|Elixir of Divine Endurance|10|||||||||||||||||||||||||||||||||||
-967|87299|1||10 Dose Elixir Of Concentration||59|59|0|0|0|1|0|-1|14894|10 Dose Elixir of Concentration|10||||||||||14577|Elixir of Concentration|10|||||||||||||||||||||||||||||||||||
-984|87300|1||10 Dose Ethira's Poison Antidote||59|59|0|0|0|1|0|-1|14542|10 Dose Ethira's Poison Antidote|10||||||||||14447|Ethira's Poison Antidote|10|||||||||||||||||||||||||||||||||||
-986|87301|1||10 Dose Great Concentration Elixir||59|59|0|0|0|1|0|-1|14896|10 Dose Great Concentration Elixir|10||||||||||14578|Greater Elixir of Concentration|10|||||||||||||||||||||||||||||||||||
-987|87302|1||10 Dose Great Mystical Infusion||59|59|0|0|0|1|0|-1|16450|10 Dose Great Mystical Infusion|10||||||||||14890|Greater Mystical Infusion|10|||||||||||||||||||||||||||||||||||
-988|87303|1||10 Dose Greater Null Potion||59|59|0|0|0|1|0|-1|14527|10 Dose Greater Null Potion|10||||||||||14432|Greater Null Potion|10|||||||||||||||||||||||||||||||||||
-989|87304|1||10 Dose Greater Potion Of Antibody||59|59|0|0|0|1|0|-1|14526|10 Dose Greater Potion of Antibody|10||||||||||14431|Greater Potion of Antibody|10|||||||||||||||||||||||||||||||||||
-990|87305|1||10 Dose Greater Potion Of Cohesion||59|59|0|0|0|1|0|-1|14494|10 Dose Greater Potion of Cohesion|10||||||||||14426|Greater Potion of Cohesion|10|||||||||||||||||||||||||||||||||||
-991|87306|1||10 Dose Greater Potion Of Cold||59|59|0|0|0|1|0|-1|14528|10 Dose Greater Potion of Cold|10||||||||||14433|Greater Potion of Cold|10|||||||||||||||||||||||||||||||||||
-992|87307|1||10 Dose Greater Potion Of Heat||59|59|0|0|0|1|0|-1|14529|10 Dose Greater Potion of Heat|10||||||||||14434|Greater Potion of Heat|10|||||||||||||||||||||||||||||||||||
-993|87308|1||10 Dose Greater Potion Of Negation||59|59|0|0|0|1|0|-1|14547|10 Dose Greater Potion of Negation|10||||||||||14452|Greater Potion of Negation|10|||||||||||||||||||||||||||||||||||
-994|87309|1||10 Dose Greater Potion Of Purity||59|59|0|0|0|1|0|-1|14530|10 Dose Greater Potion of Purity|10||||||||||14435|Greater Potion of Purity|10|||||||||||||||||||||||||||||||||||
-995|87310|1||10 Dose Greater Potion Of Vigor||59|59|0|0|0|1|0|-1|14493|10 Dose Greater Potion of Vigor|10||||||||||14425|Greater Potion of Vigor|10|||||||||||||||||||||||||||||||||||
-996|87311|1||10 Dose Hawks Eye Tonic||59|59|0|0|0|1|0|-1|14900|10 Dose Hawks Eye Tonic|10||||||||||14888|Hawks Eye Tonic|10|||||||||||||||||||||||||||||||||||
-1001|87312|1||10 Dose Kilva's Blistering Flesh||59|59|0|0|0|1|0|-1|14539|10 Dose Kilva's Blistering Flesh|10||||||||||14444|Kilva's Blistering Flesh|10|||||||||||||||||||||||||||||||||||
-1002|87313|1||10 Dose Kilva's Skin Of Flame||59|59|0|0|0|1|0|-1|14548|10 Dose Kilva's Skin of Flame|10||||||||||14453|Kilva's Skin of Flame|10|||||||||||||||||||||||||||||||||||
-1003|87314|1||10 Dose Kithar's Disease Treatment||59|59|0|0|0|1|0|-1|14543|10 Dose Kithar's Disease Treatment|10||||||||||14448|Kithar's Disease Treatment|10|||||||||||||||||||||||||||||||||||
-1008|87315|1||10 Dose Minor Null Potion||59|59|0|0|0|1|0|-1|14478|10 Dose Minor Null Potion|10||||||||||14410|Minor Null Potion|10|||||||||||||||||||||||||||||||||||
-1009|87316|1||10 Dose Minor Potion Of Antibody||59|59|0|0|0|1|0|-1|14477|10 Dose Minor Potion of Antibody|10||||||||||14409|Minor Potion of Antibody|10|||||||||||||||||||||||||||||||||||
-1010|87317|1||10 Dose Minor Potion Of Cold||59|59|0|0|0|1|0|-1|14479|10 Dose Minor Potion of Cold|10||||||||||14411|Minor Potion of Cold|10|||||||||||||||||||||||||||||||||||
-1011|87318|1||10 Dose Minor Potion Of Heat||59|59|0|0|0|1|0|-1|14480|10 Dose Minor Potion of Heat|10||||||||||14412|Minor Potion of Heat|10|||||||||||||||||||||||||||||||||||
-1012|87319|1||10 Dose Minor Potion Of Purity||59|59|0|0|0|1|0|-1|14481|10 Dose Minor Potion of Purity|10||||||||||14413|Minor Potion of Purity|10|||||||||||||||||||||||||||||||||||
-1014|87320|1||10 Dose Mystical Aptitude Potion||59|59|0|0|0|1|0|-1|14898|10 Dose Mystical Aptitude Potion|10||||||||||14579|Potion of Mystical Aptitude|10|||||||||||||||||||||||||||||||||||
-1015|87321|1||10 Dose Mystical Infusion||59|59|0|0|0|1|0|-1|16448|10 Dose Mystical Infusion|10||||||||||14889|Mystical Infusion|10|||||||||||||||||||||||||||||||||||
-1016|87322|1||10 Dose Null Potion||59|59|0|0|0|1|0|-1|14489|10 Dose Null Potion|10||||||||||14421|Null Potion|10|||||||||||||||||||||||||||||||||||
-1021|87323|1||10 Dose Potion Of Accuracy||59|59|0|0|0|1|0|-1|14485|10 Dose Potion of Accuracy|10||||||||||14417|Potion of Accuracy|10|||||||||||||||||||||||||||||||||||
-1022|87324|1||10 Dose Potion Of Adroitness||59|59|0|0|0|1|0|-1|14486|10 Dose Potion of Adroitness|10||||||||||14418|Potion of Adroitness|10|||||||||||||||||||||||||||||||||||
-1023|87325|1||10 Dose Potion Of Antibody||59|59|0|0|0|1|0|-1|14488|10 Dose Potion of Antibody|10||||||||||14420|Potion of Antibody|10|||||||||||||||||||||||||||||||||||
-1024|87326|1||10 Dose Potion Of Antiweight||59|59|0|0|0|1|0|-1|14540|10 Dose Potion of Antiweight|10||||||||||14445|Potion of Antiweight|10|||||||||||||||||||||||||||||||||||
-1025|87327|1||10 Dose Potion Of Aquatic Haunt||59|59|0|0|0|1|0|-1|14541|10 Dose Potion of Aquatic Haunt|10||||||||||14446|Potion of Aquatic Haunt|10|||||||||||||||||||||||||||||||||||
-1026|87328|1||10 Dose Potion Of Assailing||59|59|0|0|0|1|0|-1|14461|10 Dose Potion of Assailing|10||||||||||16469|Potion of Assailing|10|||||||||||||||||||||||||||||||||||
-1027|87329|1||10 Dose Potion Of Calimony||59|59|0|0|0|1|0|-1|14467|10 Dose Potion of Calimony|10||||||||||16475|Potion of Calimony|10|||||||||||||||||||||||||||||||||||
-1028|87330|1||10 Dose Potion Of Charming Deceit||59|59|0|0|0|1|0|-1|14388|10 Dose Potion of Charming Deceit|10||||||||||16453|Potion of Charming Deceit|10|||||||||||||||||||||||||||||||||||
-1029|87331|1||10 Dose Potion Of Cohesion||59|59|0|0|0|1|0|-1|14483|10 Dose Potion of Cohesion|10||||||||||14415|Potion of Cohesion|10|||||||||||||||||||||||||||||||||||
-1030|87332|1||10 Dose Potion Of Cold||59|59|0|0|0|1|0|-1|14490|10 Dose Potion of Cold|10||||||||||14422|Potion of Cold|10|||||||||||||||||||||||||||||||||||
-1031|87333|1||10 Dose Potion Of Copal's Demise||59|59|0|0|0|1|0|-1|14458|10 Dose Potion of Copal's Demise|10||||||||||16466|Potion of Copal's Demise|10|||||||||||||||||||||||||||||||||||
-1032|87334|1||10 Dose Potion Of Dulsehound||59|59|0|0|0|1|0|-1|14464|10 Dose Potion of Dulsehound|10||||||||||16472|Potion of Dulsehound|10|||||||||||||||||||||||||||||||||||
-1033|87335|1||10 Dose Potion Of Fleeting Languor||59|59|0|0|0|1|0|-1|14397|10 Dose Potion of Fleeting Languor|10||||||||||16462|Potion of Fleeting Languor|10|||||||||||||||||||||||||||||||||||
-1034|87336|1||10 Dose Potion Of Gnomish Boils||59|59|0|0|0|1|0|-1|14395|10 Dose Potion of Gnomish Boils|10||||||||||16460|Potion of Gnomish Boils|10|||||||||||||||||||||||||||||||||||
-1035|87337|1||10 Dose Potion Of Gorging Toxin||59|59|0|0|0|1|0|-1|14393|10 Dose Potion of Gorging Toxin|10||||||||||16458|Potion of Gorging Toxin|10|||||||||||||||||||||||||||||||||||
-1036|87338|1||10 Dose Potion Of Graveyard Dust||59|59|0|0|0|1|0|-1|14470|10 Dose Potion of Graveyard Dust|10||||||||||16478|Potion of Graveyard Dust|10|||||||||||||||||||||||||||||||||||
-1037|87339|1||10 Dose Potion Of Gulon's Impunity||59|59|0|0|0|1|0|-1|14457|10 Dose Potion of Gulon's Impunity|10||||||||||16465|Potion of Gulon's Impunity|10|||||||||||||||||||||||||||||||||||
-1038|87340|1||10 Dose Potion Of Heat||59|59|0|0|0|1|0|-1|14491|10 Dose Potion of Heat|10||||||||||14423|Potion of Heat|10|||||||||||||||||||||||||||||||||||
-1039|87341|1||10 Dose Potion Of Lesser Accuracy||59|59|0|0|0|1|0|-1|14474|10 Dose Potion of Lesser Accuracy|10||||||||||14406|Potion of Lesser Accuracy|10|||||||||||||||||||||||||||||||||||
-1040|87342|1||10 Dose Potion Of Lesser Cohesion||59|59|0|0|0|1|0|-1|14472|10 Dose Potion of Lesser Cohesion|10||||||||||14404|Potion of Lesser Cohesion|10|||||||||||||||||||||||||||||||||||
-1041|87343|1||10 Dose Potion Of Lesser Power||59|59|0|0|0|1|0|-1|14476|10 Dose Potion of Lesser Power|10||||||||||14408|Potion of Lesser Power|10|||||||||||||||||||||||||||||||||||
-1042|87344|1||10 Dose Potion Of Lesser Stability||59|59|0|0|0|1|0|-1|14473|10 Dose Potion of Lesser Stability|10||||||||||14405|Potion of Lesser Stability|10|||||||||||||||||||||||||||||||||||
-1043|87345|1||10 Dose Potion Of Lesser Vigor||59|59|0|0|0|1|0|-1|14471|10 Dose Potion of Lesser Vigor|10||||||||||14403|Potion of Lesser Vigor|10|||||||||||||||||||||||||||||||||||
-1044|87346|1||10 Dose Potion Of Negation||59|59|0|0|0|1|0|-1|14544|10 Dose Potion of Negation|10||||||||||14449|Potion of Negation|10|||||||||||||||||||||||||||||||||||
-1045|87347|1||10 Dose Potion Of Power||59|59|0|0|0|1|0|-1|14487|10 Dose Potion of Power|10||||||||||14419|Potion of Power|10|||||||||||||||||||||||||||||||||||
-1046|87348|1||10 Dose Potion Of Purity||59|59|0|0|0|1|0|-1|14492|10 Dose Potion of Purity|10||||||||||14424|Potion of Purity|10|||||||||||||||||||||||||||||||||||
-1047|87349|1||10 Dose Potion Of Rejuvenation||59|59|0|0|0|1|0|-1|14532|10 Dose Potion of Rejuvenation|10||||||||||14437|Potion of Rejuvenation|10|||||||||||||||||||||||||||||||||||
-1049|87350|1||10 Dose Potion Of Shumar's Breath||59|59|0|0|0|1|0|-1|14460|10 Dose Potion of Shumar's Breath|10||||||||||16468|Potion of Shumar's Breath|10|||||||||||||||||||||||||||||||||||
-1050|87351|1||10 Dose Potion Of Soluan's Vigor||59|59|0|0|0|1|0|-1|14459|10 Dose Potion of Soluan's Vigor|10||||||||||16467|Potion of Soluan's Vigor|10|||||||||||||||||||||||||||||||||||
-1051|87352|1||10 Dose Potion Of Spirit Shield||59|59|0|0|0|1|0|-1|14546|10 Dose Potion of Spirit Shield|10||||||||||14451|Potion of Spirit Shield|10|||||||||||||||||||||||||||||||||||
-1052|87353|1||10 Dose Potion Of Spurn Affliction||59|59|0|0|0|1|0|-1|14390|10 Dose Potion of Spurn Affliction|10||||||||||16455|Potion of Spurn Affliction|10|||||||||||||||||||||||||||||||||||
-1053|87354|1||10 Dose Potion Of Stability||59|59|0|0|0|1|0|-1|14484|10 Dose Potion of Stability|10||||||||||14416|Potion of Stability|10|||||||||||||||||||||||||||||||||||
-1054|87355|1||10 Dose Potion Of Stinging Wort||59|59|0|0|0|1|0|-1|14468|10 Dose Potion of Stinging Wort|10||||||||||16476|Potion of Stinging Wort|10|||||||||||||||||||||||||||||||||||
-1055|87356|1||10 Dose Potion Of The Bone Field||59|59|0|0|0|1|0|-1|14576|10 Dose Potion of the Bone Field|10||||||||||14574|Potion of the Bone Field|10|||||||||||||||||||||||||||||||||||
-1056|87357|1||10 Dose Potion Of The Frost||59|59|0|0|0|1|0|-1|14570|10 Dose Potion of the Frost|10||||||||||14455|Potion of the Frost|10|||||||||||||||||||||||||||||||||||
-1057|87358|1||10 Dose Potion Of The Swamp||59|59|0|0|0|1|0|-1|14571|10 Dose Potion of the Swamp|10||||||||||14456|Potion of the Swamp|10|||||||||||||||||||||||||||||||||||
-1058|87359|1||10 Dose Potion Of Troll's Essence||59|59|0|0|0|1|0|-1|14389|10 Dose Potion of Troll's Essence|10||||||||||16454|Potion of Troll's Essence|10|||||||||||||||||||||||||||||||||||
-1059|87360|1||10 Dose Potion Of Unlife Awareness||59|59|0|0|0|1|0|-1|14545|10 Dose Potion of Unlife Awareness|10||||||||||14450|Potion of Unlife Awareness|10|||||||||||||||||||||||||||||||||||
-1060|87361|1||10 Dose Potion Of Vampiric Spirit||59|59|0|0|0|1|0|-1|14462|10 Dose Potion of Vampiric Spirit|10||||||||||16470|Potion of Vampiric Spirit|10|||||||||||||||||||||||||||||||||||
-1061|87362|1||10 Dose Potion Of Vigor||59|59|0|0|0|1|0|-1|14482|10 Dose Potion of Vigor|10||||||||||14414|Potion of Vigor|10|||||||||||||||||||||||||||||||||||
-1062|87363|1||10 Dose Potion Of Vox's Vitality||59|59|0|0|0|1|0|-1|14396|10 Dose Potion of Vox's Vitality|10||||||||||16461|Potion of Vox's Vitality|10|||||||||||||||||||||||||||||||||||
-1063|87364|1||10 Dose Potion Of Wolves Blood||59|59|0|0|0|1|0|-1|14391|10 Dose Potion of Wolves Blood|10||||||||||16456|Potion of Wolves Blood|10|||||||||||||||||||||||||||||||||||
-1064|87365|1||10 Dose Potion Of Wrackbane||59|59|0|0|0|1|0|-1|14463|10 Dose Potion of Wrackbane|10||||||||||16471|Potion of Wrackbane|10|||||||||||||||||||||||||||||||||||
-1065|87366|1||10 Dose Serpent's Conviction||59|59|0|0|0|1|0|-1|14537|10 Dose Serpent's Conviction|10||||||||||14442|Serpent's Conviction|10|||||||||||||||||||||||||||||||||||
-1066|87367|1||10 Dose Soul Of The Incorporeal||59|59|0|0|0|1|0|-1|14398|10 Dose Soul of the Incorporeal|10||||||||||16463|Potion Soul of the Incorporeal|10|||||||||||||||||||||||||||||||||||
-1067|87368|1||10 Dose Titan Potion||59|59|0|0|0|1|0|-1|19018|10 Dose Titan Potion|10||||||||||14891|Titan Potion|10|||||||||||||||||||||||||||||||||||
-1068|87369|1||10 Dose Turtle's Drink||59|59|0|0|0|1|0|-1|14538|10 Dose Turtle's Drink|10||||||||||14443|Turtle's Drink|10|||||||||||||||||||||||||||||||||||
-1069|87370|1||10 Dose Vial Of Tamed Mercury||59|59|0|0|0|1|0|-1|14535|10 Dose Vial of Tamed Mercury|10||||||||||14440|Vial of Tamed Mercury|10|||||||||||||||||||||||||||||||||||
-1071|87371|1||10 Doses Of Frosty Insurgency||59|59|0|0|0|1|0|-1|14392|10 Doses of Frosty Insurgency|10||||||||||16457|Potion of Frosty Insurgency|10|||||||||||||||||||||||||||||||||||
-1072|87372|1||10 Doses Of Greater Accuracy||59|59|0|0|0|1|0|-1|14496|10 Doses of Greater Accuracy|10||||||||||14428|Greater Potion of Accuracy|10|||||||||||||||||||||||||||||||||||
-1073|87373|1||10 Doses Of Greater Adroitness||59|59|0|0|0|1|0|-1|14497|10 Doses of Greater Adroitness|10||||||||||14429|Greater Potion of Adroitness|10|||||||||||||||||||||||||||||||||||
-1074|87374|1||10 Doses Of Greater Power||59|59|0|0|0|1|0|-1|14498|10 Doses of Greater Power|10||||||||||14430|Greater Potion of Power|10|||||||||||||||||||||||||||||||||||
-1075|87375|1||10 Doses Of Greater Rejuvenation||59|59|0|0|0|1|0|-1|14533|10 Doses of Greater Rejuvenation|10||||||||||14438|Potion of Greater Rejuvenation|10|||||||||||||||||||||||||||||||||||
-1076|87376|1||10 Doses Of Greater Stability||59|59|0|0|0|1|0|-1|14495|10 Doses of Greater Stability|10||||||||||14427|Greater Potion of Stability|10|||||||||||||||||||||||||||||||||||
-1077|87377|1||10 Doses Of Hathcoat's Spirit||59|59|0|0|0|1|0|-1|14469|10 Doses of Hathcoat's Spirit|10||||||||||16477|Potion of Hathcoat's Spirit|10|||||||||||||||||||||||||||||||||||
-1078|87378|1||10 Doses Of Lesser Adroitness||59|59|0|0|0|1|0|-1|14475|10 Doses of Lesser Adroitness|10||||||||||14407|Potion of Lesser Adroitness|10|||||||||||||||||||||||||||||||||||
-1079|87379|1||10 Doses Of Lesser Rejuvenation||59|59|0|0|0|1|0|-1|14531|10 Doses of Lesser Rejuvenation|10||||||||||14436|Potion of Lesser Rejuvenation|10|||||||||||||||||||||||||||||||||||
-1080|87380|1||10 Doses Of Undead's Recourse||59|59|0|0|0|1|0|-1|14399|10 Doses of Undead's Recourse|10||||||||||16464|Potion of Undead's Recourse|10|||||||||||||||||||||||||||||||||||
-1081|87381|1||5 Dose Adrenaline Tap||59|59|0|0|0|1|0|-1|14297|5 Dose Adrenaline Tap|5||||||||||14454|Adrenaline Tap|5|||||||||||||||||||||||||||||||||||
-1082|87382|1||5 Dose Ant's Potion||59|59|0|0|0|1|0|-1|14284|5 Dose Ant's Potion|5||||||||||14441|Ant's Potion|5|||||||||||||||||||||||||||||||||||
-1088|87383|1||5 Dose Blood Of The Wolf||59|59|0|0|0|1|0|-1|14282|5 Dose Blood of the Wolf|5||||||||||14439|Blood of the Wolf|5|||||||||||||||||||||||||||||||||||
-1098|87384|1||5 Dose Divine Endurance Elixir||59|59|0|0|0|1|0|-1|19019|5 Dose Divine Endurance Elixir|5||||||||||14892|Elixir of Divine Endurance|5|||||||||||||||||||||||||||||||||||
-1099|87385|1||5 Dose Elixir Of Concentration||59|59|0|0|0|1|0|-1|14893|5 Dose Elixir of Concentration|5||||||||||14577|Elixir of Concentration|5|||||||||||||||||||||||||||||||||||
-1116|87386|1||5 Dose Ethira's Poison Antidote||59|59|0|0|0|1|0|-1|14290|5 Dose Ethira's Poison Antidote|5||||||||||14447|Ethira's Poison Antidote|5|||||||||||||||||||||||||||||||||||
-1118|87387|1||5 Dose Great Concentration Elixir||59|59|0|0|0|1|0|-1|14895|5 Dose Great Concentration Elixir|5||||||||||14578|Greater Elixir of Concentration|5|||||||||||||||||||||||||||||||||||
-1119|87388|1||5 Dose Great Mystical Infusion||59|59|0|0|0|1|0|-1|16449|5 Dose Great Mystical Infusion|5||||||||||14890|Greater Mystical Infusion|5|||||||||||||||||||||||||||||||||||
-1120|87389|1||5 Dose Greater Null Potion||59|59|0|0|0|1|0|-1|14275|5 Dose Greater Null Potion|5||||||||||14432|Greater Null Potion|5|||||||||||||||||||||||||||||||||||
-1121|87390|1||5 Dose Greater Potion Of Accuracy||59|59|0|0|0|1|0|-1|14271|5 Dose Greater Potion of Accuracy|5||||||||||14428|Greater Potion of Accuracy|5|||||||||||||||||||||||||||||||||||
-1122|87391|1||5 Dose Greater Potion Of Antibody||59|59|0|0|0|1|0|-1|14274|5 Dose Greater Potion of Antibody|5||||||||||14431|Greater Potion of Antibody|5|||||||||||||||||||||||||||||||||||
-1123|87392|1||5 Dose Greater Potion Of Cohesion||59|59|0|0|0|1|0|-1|14269|5 Dose Greater Potion of Cohesion|5||||||||||14426|Greater Potion of Cohesion|5|||||||||||||||||||||||||||||||||||
-1124|87393|1||5 Dose Greater Potion Of Cold||59|59|0|0|0|1|0|-1|14276|5 Dose Greater Potion of Cold|5||||||||||14433|Greater Potion of Cold|5|||||||||||||||||||||||||||||||||||
-1125|87394|1||5 Dose Greater Potion Of Heat||59|59|0|0|0|1|0|-1|14277|5 Dose Greater Potion of Heat|5||||||||||14434|Greater Potion of Heat|5|||||||||||||||||||||||||||||||||||
-1126|87395|1||5 Dose Greater Potion Of Negation||59|59|0|0|0|1|0|-1|14295|5 Dose Greater Potion of Negation|5||||||||||14452|Greater Potion of Negation|5|||||||||||||||||||||||||||||||||||
-1127|87396|1||5 Dose Greater Potion Of Power||59|59|0|0|0|1|0|-1|14273|5 Dose Greater Potion of Power|5||||||||||14430|Greater Potion of Power|5|||||||||||||||||||||||||||||||||||
-1128|87397|1||5 Dose Greater Potion Of Purity||59|59|0|0|0|1|0|-1|14278|5 Dose Greater Potion of Purity|5||||||||||14435|Greater Potion of Purity|5|||||||||||||||||||||||||||||||||||
-1129|87398|1||5 Dose Greater Potion Of Stability||59|59|0|0|0|1|0|-1|14270|5 Dose Greater Potion of Stability|5||||||||||14427|Greater Potion of Stability|5|||||||||||||||||||||||||||||||||||
-1130|87399|1||5 Dose Greater Potion Of Vigor||59|59|0|0|0|1|0|-1|14268|5 Dose Greater Potion of Vigor|5||||||||||14425|Greater Potion of Vigor|5|||||||||||||||||||||||||||||||||||
-1131|87400|1||5 Dose Hawks Eye Tonic||59|59|0|0|0|1|0|-1|14899|5 Dose Hawks Eye Tonic|5||||||||||14888|Hawks Eye Tonic|5|||||||||||||||||||||||||||||||||||
-1136|87401|1||5 Dose Kilva's Blistering Flesh||59|59|0|0|0|1|0|-1|14287|5 Dose Kilva's Blistering Flesh|5||||||||||14444|Kilva's Blistering Flesh|5|||||||||||||||||||||||||||||||||||
-1137|87402|1||5 Dose Kilva's Skin Of Flame||59|59|0|0|0|1|0|-1|14296|5 Dose Kilva's Skin of Flame|5||||||||||14453|Kilva's Skin of Flame|5|||||||||||||||||||||||||||||||||||
-1138|87403|1||5 Dose Kithar's Disease Treatment||59|59|0|0|0|1|0|-1|14291|5 Dose Kithar's Disease Treatment|5||||||||||14448|Kithar's Disease Treatment|5|||||||||||||||||||||||||||||||||||
-1143|87404|1||5 Dose Minor Null Potion||59|59|0|0|0|1|0|-1|14253|5 Dose Minor Null Potion|5||||||||||14410|Minor Null Potion|5|||||||||||||||||||||||||||||||||||
-1144|87405|1||5 Dose Minor Potion Of Antibody||59|59|0|0|0|1|0|-1|14252|5 Dose Minor Potion of Antibody|5||||||||||14409|Minor Potion of Antibody|5|||||||||||||||||||||||||||||||||||
-1145|87406|1||5 Dose Minor Potion Of Cold||59|59|0|0|0|1|0|-1|14254|5 Dose Minor Potion of Cold|5||||||||||14411|Minor Potion of Cold|5|||||||||||||||||||||||||||||||||||
-1146|87407|1||5 Dose Minor Potion Of Heat||59|59|0|0|0|1|0|-1|14255|5 Dose Minor Potion of Heat|5||||||||||14412|Minor Potion of Heat|5|||||||||||||||||||||||||||||||||||
-1147|87408|1||5 Dose Minor Potion Of Purity||59|59|0|0|0|1|0|-1|14256|5 Dose Minor Potion of Purity|5||||||||||14413|Minor Potion of Purity|5|||||||||||||||||||||||||||||||||||
-1149|87409|1||5 Dose Mystical Aptitude Potion||59|59|0|0|0|1|0|-1|14897|5 Dose Mystical Aptitude Potion|5||||||||||14579|Potion of Mystical Aptitude|5|||||||||||||||||||||||||||||||||||
-1150|87410|1||5 Dose Mystical Infusion||59|59|0|0|0|1|0|-1|16447|5 Dose Mystical Infusion|5||||||||||14889|Mystical Infusion|5|||||||||||||||||||||||||||||||||||
-1151|87411|1||5 Dose Null Potion||59|59|0|0|0|1|0|-1|14264|5 Dose Null Potion|5||||||||||14421|Null Potion|5|||||||||||||||||||||||||||||||||||
-1156|87412|1||5 Dose Potion Of Accuracy||59|59|0|0|0|1|0|-1|14260|5 Dose Potion of Accuracy|5||||||||||14417|Potion of Accuracy|5|||||||||||||||||||||||||||||||||||
-1157|87413|1||5 Dose Potion Of Adroitness||59|59|0|0|0|1|0|-1|14261|5 Dose Potion of Adroitness|5||||||||||14418|Potion of Adroitness|5|||||||||||||||||||||||||||||||||||
-1158|87414|1||5 Dose Potion Of Antibody||59|59|0|0|0|1|0|-1|14263|5 Dose Potion of Antibody|5||||||||||14420|Potion of Antibody|5|||||||||||||||||||||||||||||||||||
-1159|87415|1||5 Dose Potion Of Antiweight||59|59|0|0|0|1|0|-1|14288|5 Dose Potion of Antiweight|5||||||||||14445|Potion of Antiweight|5|||||||||||||||||||||||||||||||||||
-1160|87416|1||5 Dose Potion Of Aquatic Haunt||59|59|0|0|0|1|0|-1|14289|5 Dose Potion of Aquatic Haunt|5||||||||||14446|Potion of Aquatic Haunt|5|||||||||||||||||||||||||||||||||||
-1161|87417|1||5 Dose Potion Of Assailing||59|59|0|0|0|1|0|-1|14185|5 Dose Potion of Assailing|5||||||||||16469|Potion of Assailing|5|||||||||||||||||||||||||||||||||||
-1162|87418|1||5 Dose Potion Of Calimony||59|59|0|0|0|1|0|-1|14191|5 Dose Potion of Calimony|5||||||||||16475|Potion of Calimony|5|||||||||||||||||||||||||||||||||||
-1163|87419|1||5 Dose Potion Of Charming Deceit||59|59|0|0|0|1|0|-1|14169|5 Dose Potion of Charming Deceit|5||||||||||16453|Potion of Charming Deceit|5|||||||||||||||||||||||||||||||||||
-1164|87420|1||5 Dose Potion Of Cohesion||59|59|0|0|0|1|0|-1|14258|5 Dose Potion of Cohesion|5||||||||||14415|Potion of Cohesion|5|||||||||||||||||||||||||||||||||||
-1165|87421|1||5 Dose Potion Of Cold||59|59|0|0|0|1|0|-1|14265|5 Dose Potion of Cold|5||||||||||14422|Potion of Cold|5|||||||||||||||||||||||||||||||||||
-1166|87422|1||5 Dose Potion Of Copal's Demise||59|59|0|0|0|1|0|-1|14182|5 Dose Potion of Copal's Demise|5||||||||||16466|Potion of Copal's Demise|5|||||||||||||||||||||||||||||||||||
-1167|87423|1||5 Dose Potion Of Dulsehound||59|59|0|0|0|1|0|-1|14188|5 Dose Potion of Dulsehound|5||||||||||16472|Potion of Dulsehound|5|||||||||||||||||||||||||||||||||||
-1168|87424|1||5 Dose Potion Of Fleeting Languor||59|59|0|0|0|1|0|-1|14178|5 Dose Potion of Fleeting Languor|5||||||||||16462|Potion of Fleeting Languor|5|||||||||||||||||||||||||||||||||||
-1169|87425|1||5 Dose Potion Of Frosty Insurgency||59|59|0|0|0|1|0|-1|14173|5 Dose Potion of Frosty Insurgency|5||||||||||16457|Potion of Frosty Insurgency|5|||||||||||||||||||||||||||||||||||
-1170|87426|1||5 Dose Potion Of Gnomish Boils||59|59|0|0|0|1|0|-1|14176|5 Dose Potion of Gnomish Boils|5||||||||||16460|Potion of Gnomish Boils|5|||||||||||||||||||||||||||||||||||
-1171|87427|1||5 Dose Potion Of Gorging Toxin||59|59|0|0|0|1|0|-1|14174|5 Dose Potion of Gorging Toxin|5||||||||||16458|Potion of Gorging Toxin|5|||||||||||||||||||||||||||||||||||
-1172|87428|1||5 Dose Potion Of Graveyard Dust||59|59|0|0|0|1|0|-1|14194|5 Dose Potion of Graveyard Dust|5||||||||||16478|Potion of Graveyard Dust|5|||||||||||||||||||||||||||||||||||
-1173|87429|1||5 Dose Potion Of Gulon's Impunity||59|59|0|0|0|1|0|-1|14181|5 Dose Potion of Gulon's Impunity|5||||||||||16465|Potion of Gulon's Impunity|5|||||||||||||||||||||||||||||||||||
-1174|87430|1||5 Dose Potion Of Hathcoat's Spirit||59|59|0|0|0|1|0|-1|14193|5 Dose Potion of Hathcoat's Spirit|5||||||||||16477|Potion of Hathcoat's Spirit|5|||||||||||||||||||||||||||||||||||
-1175|87431|1||5 Dose Potion Of Heat||59|59|0|0|0|1|0|-1|14266|5 Dose Potion of Heat|5||||||||||14423|Potion of Heat|5|||||||||||||||||||||||||||||||||||
-1176|87432|1||5 Dose Potion Of Lesser Accuracy||59|59|0|0|0|1|0|-1|14198|5 Dose Potion of Lesser Accuracy|5||||||||||14406|Potion of Lesser Accuracy|5|||||||||||||||||||||||||||||||||||
-1177|87433|1||5 Dose Potion Of Lesser Adroitness||59|59|0|0|0|1|0|-1|14250|5 Dose Potion of Lesser Adroitness|5||||||||||14407|Potion of Lesser Adroitness|5|||||||||||||||||||||||||||||||||||
-1178|87434|1||5 Dose Potion Of Lesser Cohesion||59|59|0|0|0|1|0|-1|14196|5 Dose Potion of Lesser Cohesion|5||||||||||14404|Potion of Lesser Cohesion|5|||||||||||||||||||||||||||||||||||
-1179|87435|1||5 Dose Potion Of Lesser Power||59|59|0|0|0|1|0|-1|14251|5 Dose Potion of Lesser Power|5||||||||||14408|Potion of Lesser Power|5|||||||||||||||||||||||||||||||||||
-1180|87436|1||5 Dose Potion Of Lesser Stability||59|59|0|0|0|1|0|-1|14197|5 Dose Potion of Lesser Stability|5||||||||||14405|Potion of Lesser Stability|5|||||||||||||||||||||||||||||||||||
-1181|87437|1||5 Dose Potion Of Lesser Vigor||59|59|0|0|0|1|0|-1|14195|5 Dose Potion of Lesser Vigor|5||||||||||14403|Potion of Lesser Vigor|5|||||||||||||||||||||||||||||||||||
-1182|87438|1||5 Dose Potion Of Negation||59|59|0|0|0|1|0|-1|14292|5 Dose Potion of Negation|5||||||||||14449|Potion of Negation|5|||||||||||||||||||||||||||||||||||
-1183|87439|1||5 Dose Potion Of Power||59|59|0|0|0|1|0|-1|14262|5 Dose Potion of Power|5||||||||||14419|Potion of Power|5|||||||||||||||||||||||||||||||||||
-1184|87440|1||5 Dose Potion Of Purity||59|59|0|0|0|1|0|-1|14267|5 Dose Potion of Purity|5||||||||||14424|Potion of Purity|5|||||||||||||||||||||||||||||||||||
-1185|87441|1||5 Dose Potion Of Rejuvenation||59|59|0|0|0|1|0|-1|14280|5 Dose Potion of Rejuvenation|5||||||||||14437|Potion of Rejuvenation|5|||||||||||||||||||||||||||||||||||
-1187|87442|1||5 Dose Potion Of Soluan's Vigor||59|59|0|0|0|1|0|-1|14183|5 Dose Potion of Soluan's Vigor|5||||||||||16467|Potion of Soluan's Vigor|5|||||||||||||||||||||||||||||||||||
-1188|87443|1||5 Dose Potion Of Spirit Shield||59|59|0|0|0|1|0|-1|14294|5 Dose Potion of Spirit Shield|5||||||||||14451|Potion of Spirit Shield|5|||||||||||||||||||||||||||||||||||
-1189|87444|1||5 Dose Potion Of Spurn Affliction||59|59|0|0|0|1|0|-1|14171|5 Dose Potion of Spurn Affliction|5||||||||||16455|Potion of Spurn Affliction|5|||||||||||||||||||||||||||||||||||
-1190|87445|1||5 Dose Potion Of Stability||59|59|0|0|0|1|0|-1|14259|5 Dose Potion of Stability|5||||||||||14416|Potion of Stability|5|||||||||||||||||||||||||||||||||||
-1191|87446|1||5 Dose Potion Of Stinging Wort||59|59|0|0|0|1|0|-1|14192|5 Dose Potion of Stinging Wort|5||||||||||16476|Potion of Stinging Wort|5|||||||||||||||||||||||||||||||||||
-1192|87447|1||5 Dose Potion Of The Bone Field||59|59|0|0|0|1|0|-1|14575|5 Dose Potion of the Bone Field|5||||||||||14574|Potion of the Bone Field|5|||||||||||||||||||||||||||||||||||
-1193|87448|1||5 Dose Potion Of The Frost||59|59|0|0|0|1|0|-1|14298|5 Dose Potion of the Frost|5||||||||||14455|Potion of the Frost|5|||||||||||||||||||||||||||||||||||
-1194|87449|1||5 Dose Potion Of The Incorporeal||59|59|0|0|0|1|0|-1|14179|5 Dose Potion of the Incorporeal|5||||||||||16463|Potion Soul of the Incorporeal|5|||||||||||||||||||||||||||||||||||
-1195|87450|1||5 Dose Potion Of The Swamp||59|59|0|0|0|1|0|-1|14299|5 Dose Potion of the Swamp|5||||||||||14456|Potion of the Swamp|5|||||||||||||||||||||||||||||||||||
-1196|87451|1||5 Dose Potion Of Troll's Essence||59|59|0|0|0|1|0|-1|14170|5 Dose Potion of Troll's Essence|5||||||||||16454|Potion of Troll's Essence|5|||||||||||||||||||||||||||||||||||
-1197|87452|1||5 Dose Potion Of Undead's Recourse||59|59|0|0|0|1|0|-1|14180|5 Dose Potion of Undead's Recourse|5||||||||||16464|Potion of Undead's Recourse|5|||||||||||||||||||||||||||||||||||
-1198|87453|1||5 Dose Potion Of Unlife Awareness||59|59|0|0|0|1|0|-1|14293|5 Dose Potion of Unlife Awareness|5||||||||||14450|Potion of Unlife Awareness|5|||||||||||||||||||||||||||||||||||
-1199|87454|1||5 Dose Potion Of Vampiric Spirit||59|59|0|0|0|1|0|-1|14186|5 Dose Potion of Vampiric Spirit|5||||||||||16470|Potion of Vampiric Spirit|5|||||||||||||||||||||||||||||||||||
-1200|87455|1||5 Dose Potion Of Vigor||59|59|0|0|0|1|0|-1|14257|5 Dose Potion of Vigor|5||||||||||14414|Potion of Vigor|5|||||||||||||||||||||||||||||||||||
-1201|87456|1||5 Dose Potion Of Vox's Vitality||59|59|0|0|0|1|0|-1|14177|5 Dose Potion of Vox's Vitality|5||||||||||16461|Potion of Vox's Vitality|5|||||||||||||||||||||||||||||||||||
-1202|87457|1||5 Dose Potion Of Wolves Blood||59|59|0|0|0|1|0|-1|14172|5 Dose Potion of Wolves Blood|5||||||||||16456|Potion of Wolves Blood|5|||||||||||||||||||||||||||||||||||
-1203|87458|1||5 Dose Potion Of Wrackbane||59|59|0|0|0|1|0|-1|14187|5 Dose Potion of Wrackbane|5||||||||||16471|Potion of Wrackbane|5|||||||||||||||||||||||||||||||||||
-1204|87459|1||5 Dose Serpent's Conviction||59|59|0|0|0|1|0|-1|14285|5 Dose Serpent's Conviction|5||||||||||14442|Serpent's Conviction|5|||||||||||||||||||||||||||||||||||
-1205|87460|1||5 Dose Titan Potion||59|59|0|0|0|1|0|-1|19017|5 Dose Titan Potion|5||||||||||14891|Titan Potion|5|||||||||||||||||||||||||||||||||||
-1206|87461|1||5 Dose Turtle's Drink||59|59|0|0|0|1|0|-1|14286|5 Dose Turtle's Drink|5||||||||||14443|Turtle's Drink|5|||||||||||||||||||||||||||||||||||
-1207|87462|1||5 Dose Vial Of Tamed Mercury||59|59|0|0|0|1|0|-1|14283|5 Dose Vial of Tamed Mercury|5||||||||||14440|Vial of Tamed Mercury|5|||||||||||||||||||||||||||||||||||
-1209|87463|1||5 Doses Of Greater Adroitness||59|59|0|0|0|1|0|-1|14272|5 Doses of Greater Adroitness|5||||||||||14429|Greater Potion of Adroitness|5|||||||||||||||||||||||||||||||||||
-1210|87464|1||5 Doses Of Greater Rejuvenation||59|59|0|0|0|1|0|-1|14281|5 Doses of Greater Rejuvenation|5||||||||||14438|Potion of Greater Rejuvenation|5|||||||||||||||||||||||||||||||||||
-1211|87465|1||5 Doses Of Lesser Rejuvenation||59|59|0|0|0|1|0|-1|14279|5 Doses of Lesser Rejuvenation|5||||||||||14436|Potion of Lesser Rejuvenation|5|||||||||||||||||||||||||||||||||||
+949|87295|0|1|10 Dose Adrenaline Tap||59|59|0|0|0|1|0|-1|14549|10 Dose Adrenaline Tap|10||||||||||14454|Adrenaline Tap|10|||||||||||||||||||||||||||||||||||
+950|87296|0|1|10 Dose Ant's Potion||59|59|0|0|0|1|0|-1|14536|10 Dose Ant's Potion|10||||||||||14441|Ant's Potion|10|||||||||||||||||||||||||||||||||||
+956|87297|0|1|10 Dose Blood Of The Wolf||59|59|0|0|0|1|0|-1|14534|10 Dose Blood of the Wolf|10||||||||||14439|Blood of the Wolf|10|||||||||||||||||||||||||||||||||||
+966|87298|0|1|10 Dose Divine Endurance Elixir||59|59|0|0|0|1|0|-1|19020|10 Dose Divine Endurance Elixir|10||||||||||14892|Elixir of Divine Endurance|10|||||||||||||||||||||||||||||||||||
+967|87299|0|1|10 Dose Elixir Of Concentration||59|59|0|0|0|1|0|-1|14894|10 Dose Elixir of Concentration|10||||||||||14577|Elixir of Concentration|10|||||||||||||||||||||||||||||||||||
+984|87300|0|1|10 Dose Ethira's Poison Antidote||59|59|0|0|0|1|0|-1|14542|10 Dose Ethira's Poison Antidote|10||||||||||14447|Ethira's Poison Antidote|10|||||||||||||||||||||||||||||||||||
+986|87301|0|1|10 Dose Great Concentration Elixir||59|59|0|0|0|1|0|-1|14896|10 Dose Great Concentration Elixir|10||||||||||14578|Greater Elixir of Concentration|10|||||||||||||||||||||||||||||||||||
+987|87302|0|1|10 Dose Great Mystical Infusion||59|59|0|0|0|1|0|-1|16450|10 Dose Great Mystical Infusion|10||||||||||14890|Greater Mystical Infusion|10|||||||||||||||||||||||||||||||||||
+988|87303|0|1|10 Dose Greater Null Potion||59|59|0|0|0|1|0|-1|14527|10 Dose Greater Null Potion|10||||||||||14432|Greater Null Potion|10|||||||||||||||||||||||||||||||||||
+989|87304|0|1|10 Dose Greater Potion Of Antibody||59|59|0|0|0|1|0|-1|14526|10 Dose Greater Potion of Antibody|10||||||||||14431|Greater Potion of Antibody|10|||||||||||||||||||||||||||||||||||
+990|87305|0|1|10 Dose Greater Potion Of Cohesion||59|59|0|0|0|1|0|-1|14494|10 Dose Greater Potion of Cohesion|10||||||||||14426|Greater Potion of Cohesion|10|||||||||||||||||||||||||||||||||||
+991|87306|0|1|10 Dose Greater Potion Of Cold||59|59|0|0|0|1|0|-1|14528|10 Dose Greater Potion of Cold|10||||||||||14433|Greater Potion of Cold|10|||||||||||||||||||||||||||||||||||
+992|87307|0|1|10 Dose Greater Potion Of Heat||59|59|0|0|0|1|0|-1|14529|10 Dose Greater Potion of Heat|10||||||||||14434|Greater Potion of Heat|10|||||||||||||||||||||||||||||||||||
+993|87308|0|1|10 Dose Greater Potion Of Negation||59|59|0|0|0|1|0|-1|14547|10 Dose Greater Potion of Negation|10||||||||||14452|Greater Potion of Negation|10|||||||||||||||||||||||||||||||||||
+994|87309|0|1|10 Dose Greater Potion Of Purity||59|59|0|0|0|1|0|-1|14530|10 Dose Greater Potion of Purity|10||||||||||14435|Greater Potion of Purity|10|||||||||||||||||||||||||||||||||||
+995|87310|0|1|10 Dose Greater Potion Of Vigor||59|59|0|0|0|1|0|-1|14493|10 Dose Greater Potion of Vigor|10||||||||||14425|Greater Potion of Vigor|10|||||||||||||||||||||||||||||||||||
+996|87311|0|1|10 Dose Hawks Eye Tonic||59|59|0|0|0|1|0|-1|14900|10 Dose Hawks Eye Tonic|10||||||||||14888|Hawks Eye Tonic|10|||||||||||||||||||||||||||||||||||
+1001|87312|0|1|10 Dose Kilva's Blistering Flesh||59|59|0|0|0|1|0|-1|14539|10 Dose Kilva's Blistering Flesh|10||||||||||14444|Kilva's Blistering Flesh|10|||||||||||||||||||||||||||||||||||
+1002|87313|0|1|10 Dose Kilva's Skin Of Flame||59|59|0|0|0|1|0|-1|14548|10 Dose Kilva's Skin of Flame|10||||||||||14453|Kilva's Skin of Flame|10|||||||||||||||||||||||||||||||||||
+1003|87314|0|1|10 Dose Kithar's Disease Treatment||59|59|0|0|0|1|0|-1|14543|10 Dose Kithar's Disease Treatment|10||||||||||14448|Kithar's Disease Treatment|10|||||||||||||||||||||||||||||||||||
+1008|87315|0|1|10 Dose Minor Null Potion||59|59|0|0|0|1|0|-1|14478|10 Dose Minor Null Potion|10||||||||||14410|Minor Null Potion|10|||||||||||||||||||||||||||||||||||
+1009|87316|0|1|10 Dose Minor Potion Of Antibody||59|59|0|0|0|1|0|-1|14477|10 Dose Minor Potion of Antibody|10||||||||||14409|Minor Potion of Antibody|10|||||||||||||||||||||||||||||||||||
+1010|87317|0|1|10 Dose Minor Potion Of Cold||59|59|0|0|0|1|0|-1|14479|10 Dose Minor Potion of Cold|10||||||||||14411|Minor Potion of Cold|10|||||||||||||||||||||||||||||||||||
+1011|87318|0|1|10 Dose Minor Potion Of Heat||59|59|0|0|0|1|0|-1|14480|10 Dose Minor Potion of Heat|10||||||||||14412|Minor Potion of Heat|10|||||||||||||||||||||||||||||||||||
+1012|87319|0|1|10 Dose Minor Potion Of Purity||59|59|0|0|0|1|0|-1|14481|10 Dose Minor Potion of Purity|10||||||||||14413|Minor Potion of Purity|10|||||||||||||||||||||||||||||||||||
+1014|87320|0|1|10 Dose Mystical Aptitude Potion||59|59|0|0|0|1|0|-1|14898|10 Dose Mystical Aptitude Potion|10||||||||||14579|Potion of Mystical Aptitude|10|||||||||||||||||||||||||||||||||||
+1015|87321|0|1|10 Dose Mystical Infusion||59|59|0|0|0|1|0|-1|16448|10 Dose Mystical Infusion|10||||||||||14889|Mystical Infusion|10|||||||||||||||||||||||||||||||||||
+1016|87322|0|1|10 Dose Null Potion||59|59|0|0|0|1|0|-1|14489|10 Dose Null Potion|10||||||||||14421|Null Potion|10|||||||||||||||||||||||||||||||||||
+1021|87323|0|1|10 Dose Potion Of Accuracy||59|59|0|0|0|1|0|-1|14485|10 Dose Potion of Accuracy|10||||||||||14417|Potion of Accuracy|10|||||||||||||||||||||||||||||||||||
+1022|87324|0|1|10 Dose Potion Of Adroitness||59|59|0|0|0|1|0|-1|14486|10 Dose Potion of Adroitness|10||||||||||14418|Potion of Adroitness|10|||||||||||||||||||||||||||||||||||
+1023|87325|0|1|10 Dose Potion Of Antibody||59|59|0|0|0|1|0|-1|14488|10 Dose Potion of Antibody|10||||||||||14420|Potion of Antibody|10|||||||||||||||||||||||||||||||||||
+1024|87326|0|1|10 Dose Potion Of Antiweight||59|59|0|0|0|1|0|-1|14540|10 Dose Potion of Antiweight|10||||||||||14445|Potion of Antiweight|10|||||||||||||||||||||||||||||||||||
+1025|87327|0|1|10 Dose Potion Of Aquatic Haunt||59|59|0|0|0|1|0|-1|14541|10 Dose Potion of Aquatic Haunt|10||||||||||14446|Potion of Aquatic Haunt|10|||||||||||||||||||||||||||||||||||
+1026|87328|0|1|10 Dose Potion Of Assailing||59|59|0|0|0|1|0|-1|14461|10 Dose Potion of Assailing|10||||||||||16469|Potion of Assailing|10|||||||||||||||||||||||||||||||||||
+1027|87329|0|1|10 Dose Potion Of Calimony||59|59|0|0|0|1|0|-1|14467|10 Dose Potion of Calimony|10||||||||||16475|Potion of Calimony|10|||||||||||||||||||||||||||||||||||
+1028|87330|0|1|10 Dose Potion Of Charming Deceit||59|59|0|0|0|1|0|-1|14388|10 Dose Potion of Charming Deceit|10||||||||||16453|Potion of Charming Deceit|10|||||||||||||||||||||||||||||||||||
+1029|87331|0|1|10 Dose Potion Of Cohesion||59|59|0|0|0|1|0|-1|14483|10 Dose Potion of Cohesion|10||||||||||14415|Potion of Cohesion|10|||||||||||||||||||||||||||||||||||
+1030|87332|0|1|10 Dose Potion Of Cold||59|59|0|0|0|1|0|-1|14490|10 Dose Potion of Cold|10||||||||||14422|Potion of Cold|10|||||||||||||||||||||||||||||||||||
+1031|87333|0|1|10 Dose Potion Of Copal's Demise||59|59|0|0|0|1|0|-1|14458|10 Dose Potion of Copal's Demise|10||||||||||16466|Potion of Copal's Demise|10|||||||||||||||||||||||||||||||||||
+1032|87334|0|1|10 Dose Potion Of Dulsehound||59|59|0|0|0|1|0|-1|14464|10 Dose Potion of Dulsehound|10||||||||||16472|Potion of Dulsehound|10|||||||||||||||||||||||||||||||||||
+1033|87335|0|1|10 Dose Potion Of Fleeting Languor||59|59|0|0|0|1|0|-1|14397|10 Dose Potion of Fleeting Languor|10||||||||||16462|Potion of Fleeting Languor|10|||||||||||||||||||||||||||||||||||
+1034|87336|0|1|10 Dose Potion Of Gnomish Boils||59|59|0|0|0|1|0|-1|14395|10 Dose Potion of Gnomish Boils|10||||||||||16460|Potion of Gnomish Boils|10|||||||||||||||||||||||||||||||||||
+1035|87337|0|1|10 Dose Potion Of Gorging Toxin||59|59|0|0|0|1|0|-1|14393|10 Dose Potion of Gorging Toxin|10||||||||||16458|Potion of Gorging Toxin|10|||||||||||||||||||||||||||||||||||
+1036|87338|0|1|10 Dose Potion Of Graveyard Dust||59|59|0|0|0|1|0|-1|14470|10 Dose Potion of Graveyard Dust|10||||||||||16478|Potion of Graveyard Dust|10|||||||||||||||||||||||||||||||||||
+1037|87339|0|1|10 Dose Potion Of Gulon's Impunity||59|59|0|0|0|1|0|-1|14457|10 Dose Potion of Gulon's Impunity|10||||||||||16465|Potion of Gulon's Impunity|10|||||||||||||||||||||||||||||||||||
+1038|87340|0|1|10 Dose Potion Of Heat||59|59|0|0|0|1|0|-1|14491|10 Dose Potion of Heat|10||||||||||14423|Potion of Heat|10|||||||||||||||||||||||||||||||||||
+1039|87341|0|1|10 Dose Potion Of Lesser Accuracy||59|59|0|0|0|1|0|-1|14474|10 Dose Potion of Lesser Accuracy|10||||||||||14406|Potion of Lesser Accuracy|10|||||||||||||||||||||||||||||||||||
+1040|87342|0|1|10 Dose Potion Of Lesser Cohesion||59|59|0|0|0|1|0|-1|14472|10 Dose Potion of Lesser Cohesion|10||||||||||14404|Potion of Lesser Cohesion|10|||||||||||||||||||||||||||||||||||
+1041|87343|0|1|10 Dose Potion Of Lesser Power||59|59|0|0|0|1|0|-1|14476|10 Dose Potion of Lesser Power|10||||||||||14408|Potion of Lesser Power|10|||||||||||||||||||||||||||||||||||
+1042|87344|0|1|10 Dose Potion Of Lesser Stability||59|59|0|0|0|1|0|-1|14473|10 Dose Potion of Lesser Stability|10||||||||||14405|Potion of Lesser Stability|10|||||||||||||||||||||||||||||||||||
+1043|87345|0|1|10 Dose Potion Of Lesser Vigor||59|59|0|0|0|1|0|-1|14471|10 Dose Potion of Lesser Vigor|10||||||||||14403|Potion of Lesser Vigor|10|||||||||||||||||||||||||||||||||||
+1044|87346|0|1|10 Dose Potion Of Negation||59|59|0|0|0|1|0|-1|14544|10 Dose Potion of Negation|10||||||||||14449|Potion of Negation|10|||||||||||||||||||||||||||||||||||
+1045|87347|0|1|10 Dose Potion Of Power||59|59|0|0|0|1|0|-1|14487|10 Dose Potion of Power|10||||||||||14419|Potion of Power|10|||||||||||||||||||||||||||||||||||
+1046|87348|0|1|10 Dose Potion Of Purity||59|59|0|0|0|1|0|-1|14492|10 Dose Potion of Purity|10||||||||||14424|Potion of Purity|10|||||||||||||||||||||||||||||||||||
+1047|87349|0|1|10 Dose Potion Of Rejuvenation||59|59|0|0|0|1|0|-1|14532|10 Dose Potion of Rejuvenation|10||||||||||14437|Potion of Rejuvenation|10|||||||||||||||||||||||||||||||||||
+1049|87350|0|1|10 Dose Potion Of Shumar's Breath||59|59|0|0|0|1|0|-1|14460|10 Dose Potion of Shumar's Breath|10||||||||||16468|Potion of Shumar's Breath|10|||||||||||||||||||||||||||||||||||
+1050|87351|0|1|10 Dose Potion Of Soluan's Vigor||59|59|0|0|0|1|0|-1|14459|10 Dose Potion of Soluan's Vigor|10||||||||||16467|Potion of Soluan's Vigor|10|||||||||||||||||||||||||||||||||||
+1051|87352|0|1|10 Dose Potion Of Spirit Shield||59|59|0|0|0|1|0|-1|14546|10 Dose Potion of Spirit Shield|10||||||||||14451|Potion of Spirit Shield|10|||||||||||||||||||||||||||||||||||
+1052|87353|0|1|10 Dose Potion Of Spurn Affliction||59|59|0|0|0|1|0|-1|14390|10 Dose Potion of Spurn Affliction|10||||||||||16455|Potion of Spurn Affliction|10|||||||||||||||||||||||||||||||||||
+1053|87354|0|1|10 Dose Potion Of Stability||59|59|0|0|0|1|0|-1|14484|10 Dose Potion of Stability|10||||||||||14416|Potion of Stability|10|||||||||||||||||||||||||||||||||||
+1054|87355|0|1|10 Dose Potion Of Stinging Wort||59|59|0|0|0|1|0|-1|14468|10 Dose Potion of Stinging Wort|10||||||||||16476|Potion of Stinging Wort|10|||||||||||||||||||||||||||||||||||
+1055|87356|0|1|10 Dose Potion Of The Bone Field||59|59|0|0|0|1|0|-1|14576|10 Dose Potion of the Bone Field|10||||||||||14574|Potion of the Bone Field|10|||||||||||||||||||||||||||||||||||
+1056|87357|0|1|10 Dose Potion Of The Frost||59|59|0|0|0|1|0|-1|14570|10 Dose Potion of the Frost|10||||||||||14455|Potion of the Frost|10|||||||||||||||||||||||||||||||||||
+1057|87358|0|1|10 Dose Potion Of The Swamp||59|59|0|0|0|1|0|-1|14571|10 Dose Potion of the Swamp|10||||||||||14456|Potion of the Swamp|10|||||||||||||||||||||||||||||||||||
+1058|87359|0|1|10 Dose Potion Of Troll's Essence||59|59|0|0|0|1|0|-1|14389|10 Dose Potion of Troll's Essence|10||||||||||16454|Potion of Troll's Essence|10|||||||||||||||||||||||||||||||||||
+1059|87360|0|1|10 Dose Potion Of Unlife Awareness||59|59|0|0|0|1|0|-1|14545|10 Dose Potion of Unlife Awareness|10||||||||||14450|Potion of Unlife Awareness|10|||||||||||||||||||||||||||||||||||
+1060|87361|0|1|10 Dose Potion Of Vampiric Spirit||59|59|0|0|0|1|0|-1|14462|10 Dose Potion of Vampiric Spirit|10||||||||||16470|Potion of Vampiric Spirit|10|||||||||||||||||||||||||||||||||||
+1061|87362|0|1|10 Dose Potion Of Vigor||59|59|0|0|0|1|0|-1|14482|10 Dose Potion of Vigor|10||||||||||14414|Potion of Vigor|10|||||||||||||||||||||||||||||||||||
+1062|87363|0|1|10 Dose Potion Of Vox's Vitality||59|59|0|0|0|1|0|-1|14396|10 Dose Potion of Vox's Vitality|10||||||||||16461|Potion of Vox's Vitality|10|||||||||||||||||||||||||||||||||||
+1063|87364|0|1|10 Dose Potion Of Wolves Blood||59|59|0|0|0|1|0|-1|14391|10 Dose Potion of Wolves Blood|10||||||||||16456|Potion of Wolves Blood|10|||||||||||||||||||||||||||||||||||
+1064|87365|0|1|10 Dose Potion Of Wrackbane||59|59|0|0|0|1|0|-1|14463|10 Dose Potion of Wrackbane|10||||||||||16471|Potion of Wrackbane|10|||||||||||||||||||||||||||||||||||
+1065|87366|0|1|10 Dose Serpent's Conviction||59|59|0|0|0|1|0|-1|14537|10 Dose Serpent's Conviction|10||||||||||14442|Serpent's Conviction|10|||||||||||||||||||||||||||||||||||
+1066|87367|0|1|10 Dose Soul Of The Incorporeal||59|59|0|0|0|1|0|-1|14398|10 Dose Soul of the Incorporeal|10||||||||||16463|Potion Soul of the Incorporeal|10|||||||||||||||||||||||||||||||||||
+1067|87368|0|1|10 Dose Titan Potion||59|59|0|0|0|1|0|-1|19018|10 Dose Titan Potion|10||||||||||14891|Titan Potion|10|||||||||||||||||||||||||||||||||||
+1068|87369|0|1|10 Dose Turtle's Drink||59|59|0|0|0|1|0|-1|14538|10 Dose Turtle's Drink|10||||||||||14443|Turtle's Drink|10|||||||||||||||||||||||||||||||||||
+1069|87370|0|1|10 Dose Vial Of Tamed Mercury||59|59|0|0|0|1|0|-1|14535|10 Dose Vial of Tamed Mercury|10||||||||||14440|Vial of Tamed Mercury|10|||||||||||||||||||||||||||||||||||
+1071|87371|0|1|10 Doses Of Frosty Insurgency||59|59|0|0|0|1|0|-1|14392|10 Doses of Frosty Insurgency|10||||||||||16457|Potion of Frosty Insurgency|10|||||||||||||||||||||||||||||||||||
+1072|87372|0|1|10 Doses Of Greater Accuracy||59|59|0|0|0|1|0|-1|14496|10 Doses of Greater Accuracy|10||||||||||14428|Greater Potion of Accuracy|10|||||||||||||||||||||||||||||||||||
+1073|87373|0|1|10 Doses Of Greater Adroitness||59|59|0|0|0|1|0|-1|14497|10 Doses of Greater Adroitness|10||||||||||14429|Greater Potion of Adroitness|10|||||||||||||||||||||||||||||||||||
+1074|87374|0|1|10 Doses Of Greater Power||59|59|0|0|0|1|0|-1|14498|10 Doses of Greater Power|10||||||||||14430|Greater Potion of Power|10|||||||||||||||||||||||||||||||||||
+1075|87375|0|1|10 Doses Of Greater Rejuvenation||59|59|0|0|0|1|0|-1|14533|10 Doses of Greater Rejuvenation|10||||||||||14438|Potion of Greater Rejuvenation|10|||||||||||||||||||||||||||||||||||
+1076|87376|0|1|10 Doses Of Greater Stability||59|59|0|0|0|1|0|-1|14495|10 Doses of Greater Stability|10||||||||||14427|Greater Potion of Stability|10|||||||||||||||||||||||||||||||||||
+1077|87377|0|1|10 Doses Of Hathcoat's Spirit||59|59|0|0|0|1|0|-1|14469|10 Doses of Hathcoat's Spirit|10||||||||||16477|Potion of Hathcoat's Spirit|10|||||||||||||||||||||||||||||||||||
+1078|87378|0|1|10 Doses Of Lesser Adroitness||59|59|0|0|0|1|0|-1|14475|10 Doses of Lesser Adroitness|10||||||||||14407|Potion of Lesser Adroitness|10|||||||||||||||||||||||||||||||||||
+1079|87379|0|1|10 Doses Of Lesser Rejuvenation||59|59|0|0|0|1|0|-1|14531|10 Doses of Lesser Rejuvenation|10||||||||||14436|Potion of Lesser Rejuvenation|10|||||||||||||||||||||||||||||||||||
+1080|87380|0|1|10 Doses Of Undead's Recourse||59|59|0|0|0|1|0|-1|14399|10 Doses of Undead's Recourse|10||||||||||16464|Potion of Undead's Recourse|10|||||||||||||||||||||||||||||||||||
+1081|87381|0|1|5 Dose Adrenaline Tap||59|59|0|0|0|1|0|-1|14297|5 Dose Adrenaline Tap|5||||||||||14454|Adrenaline Tap|5|||||||||||||||||||||||||||||||||||
+1082|87382|0|1|5 Dose Ant's Potion||59|59|0|0|0|1|0|-1|14284|5 Dose Ant's Potion|5||||||||||14441|Ant's Potion|5|||||||||||||||||||||||||||||||||||
+1088|87383|0|1|5 Dose Blood Of The Wolf||59|59|0|0|0|1|0|-1|14282|5 Dose Blood of the Wolf|5||||||||||14439|Blood of the Wolf|5|||||||||||||||||||||||||||||||||||
+1098|87384|0|1|5 Dose Divine Endurance Elixir||59|59|0|0|0|1|0|-1|19019|5 Dose Divine Endurance Elixir|5||||||||||14892|Elixir of Divine Endurance|5|||||||||||||||||||||||||||||||||||
+1099|87385|0|1|5 Dose Elixir Of Concentration||59|59|0|0|0|1|0|-1|14893|5 Dose Elixir of Concentration|5||||||||||14577|Elixir of Concentration|5|||||||||||||||||||||||||||||||||||
+1116|87386|0|1|5 Dose Ethira's Poison Antidote||59|59|0|0|0|1|0|-1|14290|5 Dose Ethira's Poison Antidote|5||||||||||14447|Ethira's Poison Antidote|5|||||||||||||||||||||||||||||||||||
+1118|87387|0|1|5 Dose Great Concentration Elixir||59|59|0|0|0|1|0|-1|14895|5 Dose Great Concentration Elixir|5||||||||||14578|Greater Elixir of Concentration|5|||||||||||||||||||||||||||||||||||
+1119|87388|0|1|5 Dose Great Mystical Infusion||59|59|0|0|0|1|0|-1|16449|5 Dose Great Mystical Infusion|5||||||||||14890|Greater Mystical Infusion|5|||||||||||||||||||||||||||||||||||
+1120|87389|0|1|5 Dose Greater Null Potion||59|59|0|0|0|1|0|-1|14275|5 Dose Greater Null Potion|5||||||||||14432|Greater Null Potion|5|||||||||||||||||||||||||||||||||||
+1121|87390|0|1|5 Dose Greater Potion Of Accuracy||59|59|0|0|0|1|0|-1|14271|5 Dose Greater Potion of Accuracy|5||||||||||14428|Greater Potion of Accuracy|5|||||||||||||||||||||||||||||||||||
+1122|87391|0|1|5 Dose Greater Potion Of Antibody||59|59|0|0|0|1|0|-1|14274|5 Dose Greater Potion of Antibody|5||||||||||14431|Greater Potion of Antibody|5|||||||||||||||||||||||||||||||||||
+1123|87392|0|1|5 Dose Greater Potion Of Cohesion||59|59|0|0|0|1|0|-1|14269|5 Dose Greater Potion of Cohesion|5||||||||||14426|Greater Potion of Cohesion|5|||||||||||||||||||||||||||||||||||
+1124|87393|0|1|5 Dose Greater Potion Of Cold||59|59|0|0|0|1|0|-1|14276|5 Dose Greater Potion of Cold|5||||||||||14433|Greater Potion of Cold|5|||||||||||||||||||||||||||||||||||
+1125|87394|0|1|5 Dose Greater Potion Of Heat||59|59|0|0|0|1|0|-1|14277|5 Dose Greater Potion of Heat|5||||||||||14434|Greater Potion of Heat|5|||||||||||||||||||||||||||||||||||
+1126|87395|0|1|5 Dose Greater Potion Of Negation||59|59|0|0|0|1|0|-1|14295|5 Dose Greater Potion of Negation|5||||||||||14452|Greater Potion of Negation|5|||||||||||||||||||||||||||||||||||
+1127|87396|0|1|5 Dose Greater Potion Of Power||59|59|0|0|0|1|0|-1|14273|5 Dose Greater Potion of Power|5||||||||||14430|Greater Potion of Power|5|||||||||||||||||||||||||||||||||||
+1128|87397|0|1|5 Dose Greater Potion Of Purity||59|59|0|0|0|1|0|-1|14278|5 Dose Greater Potion of Purity|5||||||||||14435|Greater Potion of Purity|5|||||||||||||||||||||||||||||||||||
+1129|87398|0|1|5 Dose Greater Potion Of Stability||59|59|0|0|0|1|0|-1|14270|5 Dose Greater Potion of Stability|5||||||||||14427|Greater Potion of Stability|5|||||||||||||||||||||||||||||||||||
+1130|87399|0|1|5 Dose Greater Potion Of Vigor||59|59|0|0|0|1|0|-1|14268|5 Dose Greater Potion of Vigor|5||||||||||14425|Greater Potion of Vigor|5|||||||||||||||||||||||||||||||||||
+1131|87400|0|1|5 Dose Hawks Eye Tonic||59|59|0|0|0|1|0|-1|14899|5 Dose Hawks Eye Tonic|5||||||||||14888|Hawks Eye Tonic|5|||||||||||||||||||||||||||||||||||
+1136|87401|0|1|5 Dose Kilva's Blistering Flesh||59|59|0|0|0|1|0|-1|14287|5 Dose Kilva's Blistering Flesh|5||||||||||14444|Kilva's Blistering Flesh|5|||||||||||||||||||||||||||||||||||
+1137|87402|0|1|5 Dose Kilva's Skin Of Flame||59|59|0|0|0|1|0|-1|14296|5 Dose Kilva's Skin of Flame|5||||||||||14453|Kilva's Skin of Flame|5|||||||||||||||||||||||||||||||||||
+1138|87403|0|1|5 Dose Kithar's Disease Treatment||59|59|0|0|0|1|0|-1|14291|5 Dose Kithar's Disease Treatment|5||||||||||14448|Kithar's Disease Treatment|5|||||||||||||||||||||||||||||||||||
+1143|87404|0|1|5 Dose Minor Null Potion||59|59|0|0|0|1|0|-1|14253|5 Dose Minor Null Potion|5||||||||||14410|Minor Null Potion|5|||||||||||||||||||||||||||||||||||
+1144|87405|0|1|5 Dose Minor Potion Of Antibody||59|59|0|0|0|1|0|-1|14252|5 Dose Minor Potion of Antibody|5||||||||||14409|Minor Potion of Antibody|5|||||||||||||||||||||||||||||||||||
+1145|87406|0|1|5 Dose Minor Potion Of Cold||59|59|0|0|0|1|0|-1|14254|5 Dose Minor Potion of Cold|5||||||||||14411|Minor Potion of Cold|5|||||||||||||||||||||||||||||||||||
+1146|87407|0|1|5 Dose Minor Potion Of Heat||59|59|0|0|0|1|0|-1|14255|5 Dose Minor Potion of Heat|5||||||||||14412|Minor Potion of Heat|5|||||||||||||||||||||||||||||||||||
+1147|87408|0|1|5 Dose Minor Potion Of Purity||59|59|0|0|0|1|0|-1|14256|5 Dose Minor Potion of Purity|5||||||||||14413|Minor Potion of Purity|5|||||||||||||||||||||||||||||||||||
+1149|87409|0|1|5 Dose Mystical Aptitude Potion||59|59|0|0|0|1|0|-1|14897|5 Dose Mystical Aptitude Potion|5||||||||||14579|Potion of Mystical Aptitude|5|||||||||||||||||||||||||||||||||||
+1150|87410|0|1|5 Dose Mystical Infusion||59|59|0|0|0|1|0|-1|16447|5 Dose Mystical Infusion|5||||||||||14889|Mystical Infusion|5|||||||||||||||||||||||||||||||||||
+1151|87411|0|1|5 Dose Null Potion||59|59|0|0|0|1|0|-1|14264|5 Dose Null Potion|5||||||||||14421|Null Potion|5|||||||||||||||||||||||||||||||||||
+1156|87412|0|1|5 Dose Potion Of Accuracy||59|59|0|0|0|1|0|-1|14260|5 Dose Potion of Accuracy|5||||||||||14417|Potion of Accuracy|5|||||||||||||||||||||||||||||||||||
+1157|87413|0|1|5 Dose Potion Of Adroitness||59|59|0|0|0|1|0|-1|14261|5 Dose Potion of Adroitness|5||||||||||14418|Potion of Adroitness|5|||||||||||||||||||||||||||||||||||
+1158|87414|0|1|5 Dose Potion Of Antibody||59|59|0|0|0|1|0|-1|14263|5 Dose Potion of Antibody|5||||||||||14420|Potion of Antibody|5|||||||||||||||||||||||||||||||||||
+1159|87415|0|1|5 Dose Potion Of Antiweight||59|59|0|0|0|1|0|-1|14288|5 Dose Potion of Antiweight|5||||||||||14445|Potion of Antiweight|5|||||||||||||||||||||||||||||||||||
+1160|87416|0|1|5 Dose Potion Of Aquatic Haunt||59|59|0|0|0|1|0|-1|14289|5 Dose Potion of Aquatic Haunt|5||||||||||14446|Potion of Aquatic Haunt|5|||||||||||||||||||||||||||||||||||
+1161|87417|0|1|5 Dose Potion Of Assailing||59|59|0|0|0|1|0|-1|14185|5 Dose Potion of Assailing|5||||||||||16469|Potion of Assailing|5|||||||||||||||||||||||||||||||||||
+1162|87418|0|1|5 Dose Potion Of Calimony||59|59|0|0|0|1|0|-1|14191|5 Dose Potion of Calimony|5||||||||||16475|Potion of Calimony|5|||||||||||||||||||||||||||||||||||
+1163|87419|0|1|5 Dose Potion Of Charming Deceit||59|59|0|0|0|1|0|-1|14169|5 Dose Potion of Charming Deceit|5||||||||||16453|Potion of Charming Deceit|5|||||||||||||||||||||||||||||||||||
+1164|87420|0|1|5 Dose Potion Of Cohesion||59|59|0|0|0|1|0|-1|14258|5 Dose Potion of Cohesion|5||||||||||14415|Potion of Cohesion|5|||||||||||||||||||||||||||||||||||
+1165|87421|0|1|5 Dose Potion Of Cold||59|59|0|0|0|1|0|-1|14265|5 Dose Potion of Cold|5||||||||||14422|Potion of Cold|5|||||||||||||||||||||||||||||||||||
+1166|87422|0|1|5 Dose Potion Of Copal's Demise||59|59|0|0|0|1|0|-1|14182|5 Dose Potion of Copal's Demise|5||||||||||16466|Potion of Copal's Demise|5|||||||||||||||||||||||||||||||||||
+1167|87423|0|1|5 Dose Potion Of Dulsehound||59|59|0|0|0|1|0|-1|14188|5 Dose Potion of Dulsehound|5||||||||||16472|Potion of Dulsehound|5|||||||||||||||||||||||||||||||||||
+1168|87424|0|1|5 Dose Potion Of Fleeting Languor||59|59|0|0|0|1|0|-1|14178|5 Dose Potion of Fleeting Languor|5||||||||||16462|Potion of Fleeting Languor|5|||||||||||||||||||||||||||||||||||
+1169|87425|0|1|5 Dose Potion Of Frosty Insurgency||59|59|0|0|0|1|0|-1|14173|5 Dose Potion of Frosty Insurgency|5||||||||||16457|Potion of Frosty Insurgency|5|||||||||||||||||||||||||||||||||||
+1170|87426|0|1|5 Dose Potion Of Gnomish Boils||59|59|0|0|0|1|0|-1|14176|5 Dose Potion of Gnomish Boils|5||||||||||16460|Potion of Gnomish Boils|5|||||||||||||||||||||||||||||||||||
+1171|87427|0|1|5 Dose Potion Of Gorging Toxin||59|59|0|0|0|1|0|-1|14174|5 Dose Potion of Gorging Toxin|5||||||||||16458|Potion of Gorging Toxin|5|||||||||||||||||||||||||||||||||||
+1172|87428|0|1|5 Dose Potion Of Graveyard Dust||59|59|0|0|0|1|0|-1|14194|5 Dose Potion of Graveyard Dust|5||||||||||16478|Potion of Graveyard Dust|5|||||||||||||||||||||||||||||||||||
+1173|87429|0|1|5 Dose Potion Of Gulon's Impunity||59|59|0|0|0|1|0|-1|14181|5 Dose Potion of Gulon's Impunity|5||||||||||16465|Potion of Gulon's Impunity|5|||||||||||||||||||||||||||||||||||
+1174|87430|0|1|5 Dose Potion Of Hathcoat's Spirit||59|59|0|0|0|1|0|-1|14193|5 Dose Potion of Hathcoat's Spirit|5||||||||||16477|Potion of Hathcoat's Spirit|5|||||||||||||||||||||||||||||||||||
+1175|87431|0|1|5 Dose Potion Of Heat||59|59|0|0|0|1|0|-1|14266|5 Dose Potion of Heat|5||||||||||14423|Potion of Heat|5|||||||||||||||||||||||||||||||||||
+1176|87432|0|1|5 Dose Potion Of Lesser Accuracy||59|59|0|0|0|1|0|-1|14198|5 Dose Potion of Lesser Accuracy|5||||||||||14406|Potion of Lesser Accuracy|5|||||||||||||||||||||||||||||||||||
+1177|87433|0|1|5 Dose Potion Of Lesser Adroitness||59|59|0|0|0|1|0|-1|14250|5 Dose Potion of Lesser Adroitness|5||||||||||14407|Potion of Lesser Adroitness|5|||||||||||||||||||||||||||||||||||
+1178|87434|0|1|5 Dose Potion Of Lesser Cohesion||59|59|0|0|0|1|0|-1|14196|5 Dose Potion of Lesser Cohesion|5||||||||||14404|Potion of Lesser Cohesion|5|||||||||||||||||||||||||||||||||||
+1179|87435|0|1|5 Dose Potion Of Lesser Power||59|59|0|0|0|1|0|-1|14251|5 Dose Potion of Lesser Power|5||||||||||14408|Potion of Lesser Power|5|||||||||||||||||||||||||||||||||||
+1180|87436|0|1|5 Dose Potion Of Lesser Stability||59|59|0|0|0|1|0|-1|14197|5 Dose Potion of Lesser Stability|5||||||||||14405|Potion of Lesser Stability|5|||||||||||||||||||||||||||||||||||
+1181|87437|0|1|5 Dose Potion Of Lesser Vigor||59|59|0|0|0|1|0|-1|14195|5 Dose Potion of Lesser Vigor|5||||||||||14403|Potion of Lesser Vigor|5|||||||||||||||||||||||||||||||||||
+1182|87438|0|1|5 Dose Potion Of Negation||59|59|0|0|0|1|0|-1|14292|5 Dose Potion of Negation|5||||||||||14449|Potion of Negation|5|||||||||||||||||||||||||||||||||||
+1183|87439|0|1|5 Dose Potion Of Power||59|59|0|0|0|1|0|-1|14262|5 Dose Potion of Power|5||||||||||14419|Potion of Power|5|||||||||||||||||||||||||||||||||||
+1184|87440|0|1|5 Dose Potion Of Purity||59|59|0|0|0|1|0|-1|14267|5 Dose Potion of Purity|5||||||||||14424|Potion of Purity|5|||||||||||||||||||||||||||||||||||
+1185|87441|0|1|5 Dose Potion Of Rejuvenation||59|59|0|0|0|1|0|-1|14280|5 Dose Potion of Rejuvenation|5||||||||||14437|Potion of Rejuvenation|5|||||||||||||||||||||||||||||||||||
+1187|87442|0|1|5 Dose Potion Of Soluan's Vigor||59|59|0|0|0|1|0|-1|14183|5 Dose Potion of Soluan's Vigor|5||||||||||16467|Potion of Soluan's Vigor|5|||||||||||||||||||||||||||||||||||
+1188|87443|0|1|5 Dose Potion Of Spirit Shield||59|59|0|0|0|1|0|-1|14294|5 Dose Potion of Spirit Shield|5||||||||||14451|Potion of Spirit Shield|5|||||||||||||||||||||||||||||||||||
+1189|87444|0|1|5 Dose Potion Of Spurn Affliction||59|59|0|0|0|1|0|-1|14171|5 Dose Potion of Spurn Affliction|5||||||||||16455|Potion of Spurn Affliction|5|||||||||||||||||||||||||||||||||||
+1190|87445|0|1|5 Dose Potion Of Stability||59|59|0|0|0|1|0|-1|14259|5 Dose Potion of Stability|5||||||||||14416|Potion of Stability|5|||||||||||||||||||||||||||||||||||
+1191|87446|0|1|5 Dose Potion Of Stinging Wort||59|59|0|0|0|1|0|-1|14192|5 Dose Potion of Stinging Wort|5||||||||||16476|Potion of Stinging Wort|5|||||||||||||||||||||||||||||||||||
+1192|87447|0|1|5 Dose Potion Of The Bone Field||59|59|0|0|0|1|0|-1|14575|5 Dose Potion of the Bone Field|5||||||||||14574|Potion of the Bone Field|5|||||||||||||||||||||||||||||||||||
+1193|87448|0|1|5 Dose Potion Of The Frost||59|59|0|0|0|1|0|-1|14298|5 Dose Potion of the Frost|5||||||||||14455|Potion of the Frost|5|||||||||||||||||||||||||||||||||||
+1194|87449|0|1|5 Dose Potion Of The Incorporeal||59|59|0|0|0|1|0|-1|14179|5 Dose Potion of the Incorporeal|5||||||||||16463|Potion Soul of the Incorporeal|5|||||||||||||||||||||||||||||||||||
+1195|87450|0|1|5 Dose Potion Of The Swamp||59|59|0|0|0|1|0|-1|14299|5 Dose Potion of the Swamp|5||||||||||14456|Potion of the Swamp|5|||||||||||||||||||||||||||||||||||
+1196|87451|0|1|5 Dose Potion Of Troll's Essence||59|59|0|0|0|1|0|-1|14170|5 Dose Potion of Troll's Essence|5||||||||||16454|Potion of Troll's Essence|5|||||||||||||||||||||||||||||||||||
+1197|87452|0|1|5 Dose Potion Of Undead's Recourse||59|59|0|0|0|1|0|-1|14180|5 Dose Potion of Undead's Recourse|5||||||||||16464|Potion of Undead's Recourse|5|||||||||||||||||||||||||||||||||||
+1198|87453|0|1|5 Dose Potion Of Unlife Awareness||59|59|0|0|0|1|0|-1|14293|5 Dose Potion of Unlife Awareness|5||||||||||14450|Potion of Unlife Awareness|5|||||||||||||||||||||||||||||||||||
+1199|87454|0|1|5 Dose Potion Of Vampiric Spirit||59|59|0|0|0|1|0|-1|14186|5 Dose Potion of Vampiric Spirit|5||||||||||16470|Potion of Vampiric Spirit|5|||||||||||||||||||||||||||||||||||
+1200|87455|0|1|5 Dose Potion Of Vigor||59|59|0|0|0|1|0|-1|14257|5 Dose Potion of Vigor|5||||||||||14414|Potion of Vigor|5|||||||||||||||||||||||||||||||||||
+1201|87456|0|1|5 Dose Potion Of Vox's Vitality||59|59|0|0|0|1|0|-1|14177|5 Dose Potion of Vox's Vitality|5||||||||||16461|Potion of Vox's Vitality|5|||||||||||||||||||||||||||||||||||
+1202|87457|0|1|5 Dose Potion Of Wolves Blood||59|59|0|0|0|1|0|-1|14172|5 Dose Potion of Wolves Blood|5||||||||||16456|Potion of Wolves Blood|5|||||||||||||||||||||||||||||||||||
+1203|87458|0|1|5 Dose Potion Of Wrackbane||59|59|0|0|0|1|0|-1|14187|5 Dose Potion of Wrackbane|5||||||||||16471|Potion of Wrackbane|5|||||||||||||||||||||||||||||||||||
+1204|87459|0|1|5 Dose Serpent's Conviction||59|59|0|0|0|1|0|-1|14285|5 Dose Serpent's Conviction|5||||||||||14442|Serpent's Conviction|5|||||||||||||||||||||||||||||||||||
+1205|87460|0|1|5 Dose Titan Potion||59|59|0|0|0|1|0|-1|19017|5 Dose Titan Potion|5||||||||||14891|Titan Potion|5|||||||||||||||||||||||||||||||||||
+1206|87461|0|1|5 Dose Turtle's Drink||59|59|0|0|0|1|0|-1|14286|5 Dose Turtle's Drink|5||||||||||14443|Turtle's Drink|5|||||||||||||||||||||||||||||||||||
+1207|87462|0|1|5 Dose Vial Of Tamed Mercury||59|59|0|0|0|1|0|-1|14283|5 Dose Vial of Tamed Mercury|5||||||||||14440|Vial of Tamed Mercury|5|||||||||||||||||||||||||||||||||||
+1209|87463|0|1|5 Doses Of Greater Adroitness||59|59|0|0|0|1|0|-1|14272|5 Doses of Greater Adroitness|5||||||||||14429|Greater Potion of Adroitness|5|||||||||||||||||||||||||||||||||||
+1210|87464|0|1|5 Doses Of Greater Rejuvenation||59|59|0|0|0|1|0|-1|14281|5 Doses of Greater Rejuvenation|5||||||||||14438|Potion of Greater Rejuvenation|5|||||||||||||||||||||||||||||||||||
+1211|87465|0|1|5 Doses Of Lesser Rejuvenation||59|59|0|0|0|1|0|-1|14279|5 Doses of Lesser Rejuvenation|5||||||||||14436|Potion of Lesser Rejuvenation|5|||||||||||||||||||||||||||||||||||
 1212|87466|1||A Potion Of Swirling Liquid||59|59|0|40|40|0|0|-1|12752|A Potion of Swirling Liquid|1||||||||||12759|Opal Slush|1|12760|Dristilate|1||||||||||||||||||||||||||||||||
 1215|87467|1||Adrenaline Tap||59|59|0|170|170|0|0|-1|14454|Adrenaline Tap|1||||||||||14224|Dhea|1|14228|Comfrey|1||||||||||||||||||||||||||||||||
 1216|87468|1||Amber Resin||59|59|0|46|46|0|0|-1|24079|Amber Resin|2||||||||||10022|Amber|1|13037|Gnomish Spirits|1||||||||||||||||||||||||||||||||
