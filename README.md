@@ -17,12 +17,13 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Creatures
 - Transports (boats, lifts)
 - Equipment (including held equipment visuals, minus particles)
+- Quests
+- Armor visuals
+- Tradeskills
 
 What's currently missing:
 - Creature Spells
 - Particles (spells / equipment with particles)
-- Armor visuals
-- Quests / NPC conversations
 
 # Requirements
 - Windows build environment
