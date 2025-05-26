@@ -158,10 +158,7 @@ namespace EQWOWConverter
                 GenerateCustomSpells(out spellTemplates);
 
                 // Tradeskills
-                if (Configuration.GENERATE_TRADESKILLS == true)
-                    GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
-                else
-                    Logger.WriteInfo("- Note: GENERATE_TRADESKILLS is false in the Configuration");
+                GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
                 Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
@@ -2196,10 +2193,14 @@ namespace EQWOWConverter
             }
 
             // Tradeskills
+            int curTradeskillTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING), "Toolbox", curTradeskillTotemCategoryID, 1);
+            curTradeskillTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING), "Sewing Kit", curTradeskillTotemCategoryID, 1);
+            curTradeskillTotemCategoryID++;
             Dictionary<string, UInt32> tradeskillTotems = TradeskillRecipe.GetTotemIDsByItemName();
             int curTradeskillTotemCategoryMaskValue = 1;
             int curTradeskillTotemCategoryMaskCount = 0;
-            int curTradeskillTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
             foreach (var tradeskillTotemData in tradeskillTotems)
             {
                 totemCategoryDBC.AddRow(tradeskillTotemData.Value, tradeskillTotemData.Key, curTradeskillTotemCategoryID, curTradeskillTotemCategoryMaskValue);

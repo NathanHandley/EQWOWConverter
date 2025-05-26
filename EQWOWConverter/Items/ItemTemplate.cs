@@ -760,7 +760,6 @@ namespace EQWOWConverter.Items
                     {
                         if (bagType != 0)
                         {
-                            itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                             switch (bagType)
                             {
                                 case 2: // Quiver
@@ -768,21 +767,35 @@ namespace EQWOWConverter.Items
                                         itemTemplate.ClassID = 2;
                                         itemTemplate.SubClassID = 3;
                                         itemTemplate.InventoryType = ItemWOWInventoryType.Quiver;
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                                     } break;
-                                case 10: // Toolbox => Engineering Bag
+                                case 10: // Toolbox => Misc
                                     {
-                                        itemTemplate.ClassID = 1;
-                                        itemTemplate.SubClassID = 4;
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING;
+                                        itemTemplate.Description = "Used by Engineers to produce any item.";
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+                                    }
+                                    break;
+                                case 13: // Quest Bag => Misc
+                                    {
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
                                     } break;
-                                case 16: // Sewing Kit => Leatherworking Bag (TODO: Add Tailoring Bag?)
+                                case 16: // Sewing Kit => Misc
                                     {
-                                        itemTemplate.ClassID = 1;
-                                        itemTemplate.SubClassID = 7;
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING;
+                                        itemTemplate.Description = "Used by Tailors to produce most items.";
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
                                     } break;
                                 default: // Normal Bag
                                     {
                                         itemTemplate.ClassID = 1;
                                         itemTemplate.SubClassID = 0;
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                                     } break;
                             }
                             return;
@@ -1286,6 +1299,8 @@ namespace EQWOWConverter.Items
 
                 // Other
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
+                if (newItemTemplate.BagSlots > 0 && newItemTemplate.ClassID == 2 && newItemTemplate.SubClassID == 14) // Remove slots for EQ tradeskill containers
+                    newItemTemplate.BagSlots = 0;
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);

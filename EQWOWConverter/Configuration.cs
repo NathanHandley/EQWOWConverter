@@ -120,9 +120,6 @@ namespace EQWOWConverter
         // If true, quests are generated
         public static readonly bool GENERATE_QUESTS = true;
 
-        // If true, tradeskills are generated
-        public static readonly bool GENERATE_TRADESKILLS = true;
-
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
@@ -433,6 +430,10 @@ namespace EQWOWConverter
         // Tradeskill items that need a totem in TotemCategory.dbc will align under this
         public static readonly int TRADESKILL_TOTEM_CATEGORY_START = 30;
 
+        // ID for TotemCategory.dbc for specific tradeskills
+        public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING = 210;
+        public static readonly int TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING = 211;
+        
         //=====================================================================
         // Transports
         //=====================================================================
@@ -525,7 +526,8 @@ namespace EQWOWConverter
         public static readonly int DBCID_TAXIPATHNODE_ID_START = 48000;
 
         // ID for TotemCategory.dbc
-        public static readonly UInt32 DBCID_TOTEMCATEGORY_ID_START = 210;
+        // NOTE: Categories 210-219 are also reserved, but used for tradeskill containers
+        public static readonly UInt32 DBCID_TOTEMCATEGORY_ID_START = 220;
 
         // ID for TransportAnimation.dbc
         public static readonly int DBCID_TRANSPORTANIMATION_ID_START = 180000;
