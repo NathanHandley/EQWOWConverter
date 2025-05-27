@@ -1710,7 +1710,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 2917|87953|1||Mithril Fern Boots||61|61|0|181|181|0|0|-1|8877|Mithril Fern Boots|1||||||||||8880|Blackened Mithril Boots|1|8881|Shadowjade Hide|1||||||||||||||||||||||||||||||||
 2918|87954|1||Monk Training Bag||61|61|0|0|0|1|0|-1|12688|Monk Training Bag|1||||||||||12689|Pile of Granite Pebbles|3|12687|Training Bag Husk|1||||||||||||||||||||||||||||||||
 2919|87955|1||Moss-threaded Rawhide Leggings||61|61|0|150|150|0|0|-1|8790|Moss-Threaded Rawhide Leggings|1||||||||||8791|Ruined Rawhide Leggings|1|8792|Shadowjade Moss|1|8793|Threads of the Hatchling|1|||||||||||||||||||||||||||||
-2930|87956|0||Mystic Cloak (Recharge)||61|100|0|34|35|0|0|-1|1057|Mystic Cloak|1||||||||||1057|Mystic Cloak|1|15982|Mystic Brooch|1||||||||||||||||||||||||||||||||
+8841|-1|0||Happy Dragon (Recharge)||69|100|0|0|0|1|0|-1|8997|Happy Dragon|1||||||||||8997|Happy Dragon|1|9180|Saltpeter|1|16877|Gnomish Firework|1|||||||||||||||||||||||||||||
 2931|-1|0||Neriad's Woven Platinum Cap||61|61|0|335|335|0|0|-1|24301|Neriad's Woven Platinum Cap|1||||||||||24272|Infused Terrorantula Silk|2|12095|Silver Thread|1|13801|Cap Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1||||||||||||||||||||9724|Embroidering Needle||
 2932|-1|0||Neriad's Woven Platinum Choker||61|61|0|335|335|0|0|-1|24298|Neriad's Woven Platinum Choker|1||||||||||12095|Silver Thread|1|13803|Gorget Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1|24272|Infused Terrorantula Silk|1||||||||||||||||||||9724|Embroidering Needle||
 2933|-1|0||Neriad's Woven Platinum Cloak||61|61|0|335|335|0|0|-1|24307|Neriad's Woven Platinum Cloak|1||||||||||24272|Infused Terrorantula Silk|3|12095|Silver Thread|1|13806|Cloak Pattern|1|22548|Imbued Black Pearl|1|24271|Enchanted Platinum Thread|1||||||||||||||||||||9724|Embroidering Needle||
@@ -5693,7 +5693,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 8837|90300|1||Green Flower Of Functionality||69|69|0|0|0|1|0|-1|6816|Green Flower of Functionality|1||||||||||24552|a black knight|1|24556|a red knight|1|24560|a blue knight|1|24564|a white knight|1||||||||||||||||||||||||||
 8838|90301|1||Green Wristguard||69|69|0|0|0|1|0|-1|6820|Green Wristguard|1||||||||||24554|a red throne|1|24555|a red crown|1|24556|a red knight|1|24562|a white throne|1||||||||||||||||||||||||||
 8839|-1|0||Grimling Bone Powder||69|69|0|0|0|1|0|-1|3649|INVALID_ID|1||||||||||3443|INVALID_ID|4|||||||||||||||||||||||||||||||||||
-8841|-1|0||Happy Dragon (Recharge)||69|100|0|0|0|1|0|-1|8997|Happy Dragon|1||||||||||8997|Happy Dragon|1|9180|Saltpeter|1|16877|Gnomish Firework|1|||||||||||||||||||||||||||||
+13611|-1|0||Shadowscream Steel Helm (recharge) (Recharge)||63|100|0|188|0|0|0|-1|29829|Shadowscream Steel Helm|1||||||||||29817|INVALID_ID|2|29829|Shadowscream Steel Helm|1|||||||||||||||||||||||||||||29824|Humming Luclinite Mallet|29816|INVALID_ID
 8842|90302|1||Hardened Mixture||69|69|0|0|0|1|0|-1|20473|Hardened Mixture|1||||||||||20464|Ripened Heartfruit|1|20465|Sweetened Mudroot|1|20466|Speckled Molded Mushroom|1|20467|Chilled Tundra Root|1||||||||||||||||||||||||||
 8843|-1|0||Heavy Pie Crock||69|69|0|15|15|0|0|3|9776|Heavy Pie Crock|6||||||||||9775|Unfired Heavy Pie Crock|1|16908|High Quality Firing Sheet|1||||||||||||||||||||||||||||||||
 8848|-1|0||Helm Of The Pestilence Priest||69|69|0|0|0|1|0|-1|20215|Helm of the Pestilence Priest|1||||||||||19638|Crude Iron Helm|1|19945|INVALID_ID|1|20180|Gnoll Skull|1|||||||||||||||||||||||||||||
@@ -7105,7 +7105,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13335|91028|1||Dragon Crafted Urn||75|75|0|0|0|0|1|-1|1887|Dragon Crafted Urn|1||||||||||1889|Dragonbone Dust|1|1888|Dragonwing Skin|1|||||||||||||||||||||||||17050|Dragon Crafted Urn||||||
 13336|91029|1||Dusted Starmetal Block||63|63|0|171|171|0|0|-1|2398|Dusted Starmetal Block|1||||||||||2066|Portion of Starmetal|1|2089|Remaining Bone dust|1||||||||||||||||||||||||||||||||
 13337|91030|1||Chronium Plate||63|63|0|118|118|0|0|-1|2059|Chronium Plate|1||||||||||2058|Chunk of Chronium Ore|1|13006|Water Flask|1|||||||||||||||||||||||||||||6027|Forging Hammer||
-13338|91031|1||Duennan Shielding Ring (Recharge)||75|100|0|0|155|1|1|-1|11687|Duennan Shielding Ring|1||||||||||11687|Duennan Shielding Ring|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20000|91197|1||Enchant Clay|Level 08 (Enchanter)|-1|100|0|0|20|1|1|-1|16896|Large Block of Magic Clay|1||||||||||16902|Large Block of Clay|1|||||||||||||||||||||||||||||||||||
 13339|91032|1||Unfired Poison Vial||69|69|0|148|148|0|0|-1|16885|Unfired Poison Vial|1||||||||||13758|Black Wolf Skin|1|16900|Small Block of Clay|1|16968|Vial Sketch|1|13006|Water Flask|1||||||||||||||||||||||||||
 13340|91033|1||Purified Water||69|69|0|0|0|1|0|-1|12607|Purified Water|3||||||||||12638|Sop Bark|1|12630|Purification Tablet|1||||||||||||||||||||||||||||||||
 13341|91034|1||Funny Money||69|69|0|0|0|1|0|-1|9504|Funny Money|1||||||||||18008|Words of Wealth|1|9500|Words of Wealth: Top Left|1||||||||||||||||||||||||||||||||
@@ -7191,31 +7191,31 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13422|-1|0||Locked Satchel - Dar Khura||75|75|0|0|0|1|1|-1|8478|Locked Satchel|1||||||||||8417|Dar Khura Officer's Cloak|1|6271|INVALID_ID|1|||||||||||||||||||||||||17132|Security Satchel||||||
 13423|-1|0||Locked Satchel - Taruun||75|75|0|0|0|1|1|-1|8479|Locked Satchel|1||||||||||8418|Taruun Officer's Cloak|1|6271|INVALID_ID|1|||||||||||||||||||||||||17132|Security Satchel||||||
 13424|-1|0||Griffon Casserole||60|60|0|218|218|0|0|-1|8182|Griffon Casserole|1||||||||||8153|Griffon Meat|1|8175|Noodles|1|13425|Spices|1||||||||||||||||||||||||||8237|Casserole Dish||
-13425|91075|1||Transparent Mask (Recharge)||75|100|0|0|95|1|1|-1|2702|Transparent Mask|1||||||||||2702|Transparent Mask|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13426|91076|1||Griffon Wing Spauldors (Recharge)||75|100|0|0|155|1|1|-1|2703|Griffon Wing Spauldors|1||||||||||2703|Griffon Wing Spauldors|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20001|91198|1||Enchant Silver|Level 08 (Enchanter)|-1|100|0|0|25|1|1|-1|16504|Enchanted Silver Bar|1||||||||||16500|Silver Bar|1|||||||||||||||||||||||||||||||||||
+20002|91199|1||Enchant Electrum Bar|Level 16 (Enchanter)|-1|100|0|0|30|1|1|-1|16505|Enchanted Electrum Bar|1||||||||||16501|Electrum Bar|1|||||||||||||||||||||||||||||||||||
+2930|87956|0||Mystic Cloak (Recharge)||61|100|0|34|35|0|0|-1|1057|Mystic Cloak|1||||||||||1057|Mystic Cloak|1|15982|Mystic Brooch|1||||||||||||||||||||||||||||||||
 13427|91077|1||Mask of Empowerment (Recharge)||75|100|0|0|35|1|1|-1|2707|Mask of Empowerment|1||||||||||2707|Mask of Empowerment|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13428|91078|1||Rotted Griffon-Hide Wrist Guard (Recharge)||75|100|0|0|35|1|1|-1|2709|Rotted Griffon-Hide Wrist Guard|1||||||||||2709|Rotted Griffon-Hide Wrist Guard|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13429|91079|1||Sphinx-Hide Mantle (Recharge)||75|100|0|0|95|1|1|-1|2712|Sphinx-Hide Mantle|1||||||||||2712|Sphinx-Hide Mantle|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13430|91080|1||Elder Shaman's Ceremonial Bracelet (Recharge)||75|100|0|0|35|1|1|-1|2713|Elder Shaman's Ceremonial Bracelet|1||||||||||2713|Elder Shaman's Ceremonial Bracelet|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13431|91081|1||Earthshaker's Mantle (Recharge)||75|100|0|0|125|1|1|-1|2714|Earthshaker's Mantle|1||||||||||2714|Earthshaker's Mantle|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13432|91082|1||Spiroc Healer's Cloak (Recharge)||75|100|0|0|95|1|1|-1|2715|Spiroc Healer's Cloak|1||||||||||2715|Spiroc Healer's Cloak|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13433|91083|1||Aerated Pauldrons (Recharge)||75|100|0|0|155|1|1|-1|4321|Aerated Pauldrons|1||||||||||4321|Aerated Pauldrons|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13434|91084|1||Solidate Mithril Ring (Recharge)||75|100|0|0|35|1|1|-1|11686|Solidate Mithril Ring|1||||||||||11686|Solidate Mithril Ring|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13435|91085|1||Rod of Warding Winds (Recharge)||75|100|0|0|95|1|1|-1|11688|Rod of Warding Winds|1||||||||||11688|Rod of Warding Winds|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13447|91096|1||Bloody Griffon-Hide Wrist Guard (Recharge)||75|100|0|0|35|1|1|-1|27712|Bloody Griffon-Hide Wrist Guard|1||||||||||27712|Bloody Griffon-Hide Wrist Guard|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13449|91098|1||Bracelet of the Spirits (Recharge)||75|100|0|0|35|1|1|-1|27727|Bracelet of the Spirits|1||||||||||27727|Bracelet of the Spirits|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20004|91201|1||Enchant Gold|Level 24 (Enchanter)|-1|100|0|0|35|1|1|-1|16506|Enchanted Gold Bar|1||||||||||16502|Gold Bar|1|||||||||||||||||||||||||||||||||||
+20025|91222|1||Imbued Amber|Level 29 (Cleric)|-1|100|0|0|45|1|1|-1|22502|Imbued Amber|1||||||||||10022|Amber|1|||||||||||||||||||||||||||||||||||
+20026|91223|1||Imbue Black Pearl|Level 29 (Cleric)|-1|100|0|0|55|1|1|-1|22548|Imbued Black Pearl|1||||||||||19762|Black Pearl|1|||||||||||||||||||||||||||||||||||
 13436|91086|1||Truwian Baton (Recharge)||75|100|0|0|65|1|1|-1|11691|Truwian Baton|1||||||||||11691|Truwian Baton|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13437|91087|1||Crimson Ring of Desinence (Recharge)||75|100|0|0|155|1|1|-1|11695|Crimson Ring of Desinence|1||||||||||11695|Crimson Ring of Desinence|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13438|91088|1||Amulet of Planar Transference (Recharge)||75|100|0|0|155|1|1|-1|14556|Amulet of Planar Transference|1||||||||||14556|Amulet of Planar Transference|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13439|91089|1||Necklace of Whispering Winds (Recharge)||75|100|0|0|65|1|1|-1|14558|Necklace of Whispering Winds|1||||||||||14558|Necklace of Whispering Winds|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13440|91090|1||Earring of Displacement (Recharge)||75|100|0|0|65|1|1|-1|14559|Earring of Displacement|1||||||||||14559|Earring of Displacement|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13441|91091|1||Band of Screaming Winds (Recharge)||75|100|0|0|125|1|1|-1|14561|Band of Screaming Winds|1||||||||||14561|Band of Screaming Winds|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13442|91092|1||Necklace of Resolution (Recharge)||75|100|0|0|125|1|1|-1|14562|Necklace of Resolution|1||||||||||14562|Necklace of Resolution|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13443|91093|1||Fae Amulet (Recharge)||75|100|0|0|65|1|1|-1|14565|Fae Amulet|1||||||||||14565|Fae Amulet|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13445|91094|1||Pauldrons of the Blue Sky (Recharge)||75|100|0|0|95|1|1|-1|27701|Pauldrons of the Blue Sky|1||||||||||27701|Pauldrons of the Blue Sky|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13446|91095|1||Rod of the Protecting Winds (Recharge)||75|100|0|0|95|1|1|-1|27711|Rod of the Protecting Winds|1||||||||||27711|Rod of the Protecting Winds|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13447|91096|1||Bloody Griffon-Hide Wrist Guard (Recharge)||75|100|0|0|35|1|1|-1|27712|Bloody Griffon-Hide Wrist Guard|1||||||||||27712|Bloody Griffon-Hide Wrist Guard|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13448|91097|1||Band of Wailing Winds (Recharge)||75|100|0|0|125|1|1|-1|27713|Band of Wailing Winds|1||||||||||27713|Band of Wailing Winds|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13449|91098|1||Bracelet of the Spirits (Recharge)||75|100|0|0|35|1|1|-1|27727|Bracelet of the Spirits|1||||||||||27727|Bracelet of the Spirits|1|14800|Mana Battery - Class One|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13450|91099|1||Vermilion Sky Ring (Recharge)||75|100|0|0|155|1|1|-1|27730|Vermilion Sky Ring|1||||||||||27730|Vermilion Sky Ring|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13630|91194|1||Amulet of the Fae (Recharge)||75|100|0|0|65|1|1|-1|27723|Amulet of the Fae|1||||||||||27723|Amulet of the Fae|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20003|91200|1||Crystallize Mana|Level 20 (Enchanter)|-1|100|0|0|65|1|1|-1|10251|Vial of Cloudy Mana|1||||||||||10028|Peridot|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20027|91224|1||Imbue Black Sapphire|Level 29 (Cleric)|-1|100|0|0|65|1|1|-1|22551|Imbued Black Sapphire|1||||||||||10036|Black Sapphire|1|||||||||||||||||||||||||||||||||||
+20028|91225|1||Imbue Diamond|Level 29 (Cleric)|-1|100|0|0|75|1|1|-1|22549|Imbued Diamond|1||||||||||10037|Diamond|1|||||||||||||||||||||||||||||||||||
+20029|91226|1||Imbue Emerald|Level 29 (Cleric)|-1|100|0|0|85|1|1|-1|22507|Imbued Emerald|1||||||||||10029|Emerald|1|||||||||||||||||||||||||||||||||||
+13425|91075|1||Transparent Mask (Recharge)||75|100|0|0|95|1|1|-1|2702|Transparent Mask|1||||||||||2702|Transparent Mask|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13429|91079|1||Sphinx-Hide Mantle (Recharge)||75|100|0|0|95|1|1|-1|2712|Sphinx-Hide Mantle|1||||||||||2712|Sphinx-Hide Mantle|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13432|91082|1||Spiroc Healer's Cloak (Recharge)||75|100|0|0|95|1|1|-1|2715|Spiroc Healer's Cloak|1||||||||||2715|Spiroc Healer's Cloak|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13435|91085|1||Rod of Warding Winds (Recharge)||75|100|0|0|95|1|1|-1|11688|Rod of Warding Winds|1||||||||||11688|Rod of Warding Winds|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13451|91100|1||Wily Warlock Boots||69|69|0|0|0|1|0|-1|6864|Wily Warlock Boots|1||||||||||6827|Boots of Distraction|1|29652|a Wily Warlock doll|1||||||||||||||||||||||||||||||||
 13452|91101|1||Clockwork Watchman Breastplate||57|57|0|252|252|0|0|-1|29507|Clockwork Watchman Breastplate|1||||||||||14804|Mana Battery - Class Five|1|40008|Clockwork Base Mechanism|1|16861|Gnomish Bolts|1|16888|Metal Fastening|1|29502|Gnomish Vanishing Device|1|21016|Small Fine Steel Breastplate|1||||||||||||||||||||
 13453|-1|0||Small Acrylia Plate Gauntlets||63|63|0|228|0|0|0|-1|22450|INVALID_ID|1||||||||||23535|INVALID_ID|2|11398|INVALID_ID|1|11590|INVALID_ID|1|16488|Leather Padding|1|22030|Small Plate Gauntlet Mold|1||||||||||||||||||||11397|Combine Smithy Hammer||
@@ -7354,7 +7354,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13586|-1|0||Prepared Fish||55|55|0|171|0|0|0|-1|23580|Prepared Fish|1|24497|Fish Bones|1|||||||14238|Celandine Herb|1|14975|Evergreen Salmon|1|13047|Roots|1||||||||||||||||||||||||||9753|Filleting Knife||
 13587|-1|0||Prepared Fish||55|55|0|182|0|0|0|-1|23580|Prepared Fish|1|24496|High Quality Fish Bones|1|||||||14238|Celandine Herb|1|14979|Chokai Bass|1|13047|Roots|1||||||||||||||||||||||||||9753|Filleting Knife||
 13588|-1|0||5 Dose Anger of Incapacitation||56|56|0|0|0|1|0|-1|22791|5 Dose Anger of Incapacitation|1|24076|INVALID_ID|5|||||||10282|Anger of Incapacitation|5|||||||||||||||||||||||||||||||||||
-13589|91176|1||Amulet of the Void (Recharge)||75|100|0|0|155|1|1|-1|27710|Amulet of the Void|1||||||||||27710|Amulet of the Void|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13445|91094|1||Pauldrons of the Blue Sky (Recharge)||75|100|0|0|95|1|1|-1|27701|Pauldrons of the Blue Sky|1||||||||||27701|Pauldrons of the Blue Sky|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13590|91177|1||Collapsed Jeweler's Kit||57|57|0|224|224|0|0|-1|32548|Collapsed Jeweller's Kit|1||||||||||7486|Gem Setter Parts|1|9179|Coiled Spring|1|12062|Container Base Mold|1|12069|Container Lid Mold|1|16861|Gnomish Bolts|1|16905|Metal Bits|1||||||||||||||||||||
 13591|-1|0||Grimror's Guard Of The Plagues||75|75|0|0|0|1|1|-1|32602|INVALID_ID|1||||||||||16283|Ethereal Sheet of Metal|3|16270|Shadowknight Emblem|1|16375|Timeless Breastplate Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
 13592|-1|0||Ultor's Chestguard Of Faith||75|75|0|0|0|1|1|-1|32603|INVALID_ID|1||||||||||16283|Ethereal Sheet of Metal|3|16271|Cleric Emblem|1|16375|Timeless Breastplate Mold|1||||||||||||||||||||||17184|Mystical Furnace of Ro|||29546|INVALID_ID||
@@ -7375,7 +7375,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13608|91178|1||Soul Trap||75|75|0|0|0|1|1|-1|7114|Soul Trap|1||||||||||7110|Bloody Mantle|1|14113|Heart of the Pure Druid|1|7112|Empty Crystal Sphere|1||||||||||||||||||||||17803|Soul Trap||||||
 13609|91179|1||Beetle Eye Chest||75|75|0|0|0|1|0|-1|13395|Beetle Eye Chest|1||||||||||13997|Kerra Isle Beetle Eye|4||||||||||||||||||||||||||||17932|Empty Chest||||||
 13610|-1|0||Shadowscream Steel Helm||63|63|0|248|0|0|0|-1|29829|Shadowscream Steel Helm|1||||||||||29817|INVALID_ID|3|12038|Helm Mold|1|13006|Water Flask|1|29823|Humming Orb|1|||||||||||||||||||||||29816|INVALID_ID|29824|Humming Luclinite Mallet
-13611|-1|0||Shadowscream Steel Helm (recharge) (Recharge)||63|100|0|188|0|0|0|-1|29829|Shadowscream Steel Helm|1||||||||||29817|INVALID_ID|2|29829|Shadowscream Steel Helm|1|||||||||||||||||||||||||||||29824|Humming Luclinite Mallet|29816|INVALID_ID
+13446|91095|1||Rod of the Protecting Winds (Recharge)||75|100|0|0|95|1|1|-1|27711|Rod of the Protecting Winds|1||||||||||27711|Rod of the Protecting Winds|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
 13612|-1|0||Shadowscream Steel Veil||63|63|0|248|0|0|0|-1|29830|Shadowscream Steel Veil|1||||||||||29817|INVALID_ID|3|29823|Humming Orb|1|12039|Mask Mold|1|13006|Water Flask|1|||||||||||||||||||||||29824|Humming Luclinite Mallet|29816|INVALID_ID
 13613|-1|0||Spiced Hollow Palm Tea||65|65|0|162|0|0|0|-1|31773|Spiced Hollow Palm Tea|1||||||||||31762|Crystal clear water|1|31767|Hollow palm roots|1|31771|Runed Metal strainer|1|13425|Spices|1||||||||||||||||||||||||||
 13614|-1|0||Spiced Hollow Palm Tea||65|65|0|162|0|0|0|-1|31773|Spiced Hollow Palm Tea|1||||||||||31777|INVALID_ID|1|31767|Hollow palm roots|1|13425|Spices|1|13006|Water Flask|1||||||||||||||||||||||||||
@@ -7394,19 +7394,19 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13627|91191|0|1|Study Rune (beza)||58|58|0|0|0|1|0|-1|15909|Study Rune (Beza)|1||||||||||3126|Large Iron Visor|1|7005|Giant Snake Fang|1|10022|Amber|1|13063|A Piece of Parchment|1|||||||||||||||||||||||13051|A Quill||
 13628|91192|0|1|Study Rune (beza)||58|58|0|0|0|1|0|-1|15909|Study Rune (Beza)|1||||||||||3114|Small Iron Visor|1|7005|Giant Snake Fang|1|10022|Amber|1|13063|A Piece of Parchment|1|||||||||||||||||||||||13051|A Quill||
 13629|91193|1||Fairy-Hide Mantle (Recharge)||75|100|0|0|95|1|1|-1|27728|Fairy-Hide Mantle|1||||||||||27728|Fairy-Hide Mantle|1|14802|Mana Battery - Class Three|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13630|91194|1||Amulet of the Fae (Recharge)||75|100|0|0|65|1|1|-1|27723|Amulet of the Fae|1||||||||||27723|Amulet of the Fae|1|14801|Mana Battery - Class Two|1|||||||||||||||||||||||||17100|Box of the Void||||||
-13631|91195|1||Mantle of the Songweaver (Recharge)||75|100|0|0|125|1|1|-1|27721|Mantle of the Songweaver|1||||||||||27721|Mantle of the Songweaver|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20030|91227|1||Imbue Opal|Level 29 (Cleric)|-1|100|0|0|95|1|1|-1|22560|Imbued Opal|1||||||||||10030|Opal|1|||||||||||||||||||||||||||||||||||
+20031|91228|1||Imbue Peridot|Level 29 (Cleric)|-1|100|0|0|105|1|1|-1|22554|Imbued Peridot|1||||||||||10028|Peridot|1|||||||||||||||||||||||||||||||||||
 13632|91196|1||Filled Slave Shackle Bag||75|75|0|0|0|1|1|-1|12661|Filled Slave Shackle Bag|1||||||||||12660|Busted Froglok Slave Shackles|8||||||||||||||||||||||||||||17994|Slave Shackle Bag||||||
-20000|91197|1||Enchant Clay|Level 08 (Enchanter)|-1|100|0|0|20|1|1|-1|16896|Large Block of Magic Clay|1||||||||||16902|Large Block of Clay|1|||||||||||||||||||||||||||||||||||
-20001|91198|1||Enchant Silver|Level 08 (Enchanter)|-1|100|0|0|25|1|1|-1|16504|Enchanted Silver Bar|1||||||||||16500|Silver Bar|1|||||||||||||||||||||||||||||||||||
-20002|91199|1||Enchant Electrum Bar|Level 16 (Enchanter)|-1|100|0|0|30|1|1|-1|16505|Enchanted Electrum Bar|1||||||||||16501|Electrum Bar|1|||||||||||||||||||||||||||||||||||
-20003|91200|1||Crystallize Mana|Level 20 (Enchanter)|-1|100|0|0|65|1|1|-1|10251|Vial of Cloudy Mana|1||||||||||10028|Peridot|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20004|91201|1||Enchant Gold|Level 24 (Enchanter)|-1|100|0|0|35|1|1|-1|16506|Enchanted Gold Bar|1||||||||||16502|Gold Bar|1|||||||||||||||||||||||||||||||||||
-20005|91202|1||Clarify Mana|Level 29 (Enchanter)|-1|100|0|0|205|1|1|-1|10252|Vial of Clear Mana|1||||||||||10029|Emerald|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20006|91203|1||Enchant Platinum|Level 34 (Enchanter)|-1|100|0|0|220|1|1|-1|16507|Enchanted Platinum Bar|1||||||||||16503|Platinum Bar|1|||||||||||||||||||||||||||||||||||
-20007|91204|1||Distill Mana|Level 39 (Enchanter)|-1|100|0|0|245|1|1|-1|10253|Vial of Distilled Mana|1||||||||||10034|Sapphire|2|16965|Poison Vial|1||||||||||||||||||||||||||||||||
-20008|91205|1||Enchant Velium|Level 44 (Enchanter)|-1|100|0|0|240|1|1|-1|22099|Enchanted Velium Bar|1||||||||||22098|Velium Bar|1|||||||||||||||||||||||||||||||||||
-20009|91206|1||Purify Mana|Level 49 (Enchanter)|-1|100|0|0|265|1|1|-1|10254|Vial of Purified Mana|1||||||||||10035|Ruby|4|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20032|91229|1||Imbue Plains Pebble|Level 29 (Cleric)|-1|100|0|0|115|1|1|-1|22553|Imbued Plains Pebble|1||||||||||12832|Plains Pebble|1|||||||||||||||||||||||||||||||||||
+13431|91081|1||Earthshaker's Mantle (Recharge)||75|100|0|0|125|1|1|-1|2714|Earthshaker's Mantle|1||||||||||2714|Earthshaker's Mantle|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13441|91091|1||Band of Screaming Winds (Recharge)||75|100|0|0|125|1|1|-1|14561|Band of Screaming Winds|1||||||||||14561|Band of Screaming Winds|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13442|91092|1||Necklace of Resolution (Recharge)||75|100|0|0|125|1|1|-1|14562|Necklace of Resolution|1||||||||||14562|Necklace of Resolution|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13448|91097|1||Band of Wailing Winds (Recharge)||75|100|0|0|125|1|1|-1|27713|Band of Wailing Winds|1||||||||||27713|Band of Wailing Winds|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13631|91195|1||Mantle of the Songweaver (Recharge)||75|100|0|0|125|1|1|-1|27721|Mantle of the Songweaver|1||||||||||27721|Mantle of the Songweaver|1|14803|Mana Battery - Class Four|1|||||||||||||||||||||||||17100|Box of the Void||||||
+20033|91230|1||Imbue Rose Quartz|Level 29 (Cleric)|-1|100|0|0|125|1|1|-1|22550|Imbued Rose Quartz|1||||||||||10021|Star Rose Quartz|1|||||||||||||||||||||||||||||||||||
+20034|91231|1||Imbue Ruby|Level 29 (Cleric)|-1|100|0|0|135|1|1|-1|22506|Imbued Ruby|1||||||||||10035|Ruby|1|||||||||||||||||||||||||||||||||||
+20035|91232|1||Imbue Sapphire|Level 29 (Cleric)|-1|100|0|0|145|1|1|-1|22508|Imbued Sapphire|1||||||||||10034|Sapphire|1|||||||||||||||||||||||||||||||||||
+13338|91031|1||Duennan Shielding Ring (Recharge)||75|100|0|0|155|1|1|-1|11687|Duennan Shielding Ring|1||||||||||11687|Duennan Shielding Ring|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
 20010|91207|1||Clockwork Base Mechanism||-1|57|0|207|207|0|0|-1|40008|Clockwork Base Mechanism|1||||||||||16857|Metal Twine|1|16852|Grease|1|16859|Sprockets|1|29513|Cogs|1||||||||||||||||||||||||||
 20011|91208|1||Tax Payment Set 1||-1|75|0|0|0|1|0|-1|40009|Tax Payment Set 1|1||||||||||13170|Firepride's Tax Payment|1|13171|Sedder's Tax Payment|1|13172|Galliway's Tax Payment|1|13173|Tallaherd's Tax Payment|1|13179|Tassen's Tax Payment|1||||||||||||||||-1|Any||||||
 20012|91209|1||Tax Payment Set 2||-1|75|0|0|0|1|0|-1|40010|Tax Payment Set 2|1||||||||||13174|Sayer's Tax Payment|1|13175|Semhart's Tax Payment|1|13176|Huntlan's Tax Payment|1|13177|Rohand's Tax Payment|1|13178|Ranamer's Tax Payment|1||||||||||||||||-1|Any||||||
@@ -7422,17 +7422,17 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 20022|91219|1||Second Half of Bladesoul's Spritual Pouch||-1|75|0|0|0|1|0|-1|40020|Second Half of Bladesoul's Spritual Pouch|1||||||||||29471|Serrated Gargoyle Claw|1|29475|Stinted Velium Drapes|1|29479|Founder's Velium Creation|1|29482|Sightless Velium Eye|1|29483|Drakeen Scales|1||||||||||||||||-1|Any||||||
 20023|91220|1||First Half Filled Tin Box||-1|75|0|0|0|1|0|-1|40021|First Half Filled Tin Box|1||||||||||12434|Petrified Redwood|1|12483|Radiant Meteorite|1|12776|Gold Nugget|1|12794|Rile's Sand Coin|1|12830|A Scarlet Stone|1||||||||||||||||-1|Any||||||
 20024|91221|1||Second Half Filled Tin Box||-1|75|0|0|0|1|0|-1|40022|Second Half Filled Tin Box|1||||||||||12831|Tektite|1|12832|Plains Pebble|1|12833|Jade Magma|1|12834|Heart of Ice|1|12835|Unholy Coldstone|1||||||||||||||||-1|Any||||||
-20025|91222|1||Imbued Amber|Level 29 (Cleric)|-1|100|0|0|45|1|1|-1|22502|Imbued Amber|1||||||||||10022|Amber|1|||||||||||||||||||||||||||||||||||
-20026|91223|1||Imbue Black Pearl|Level 29 (Cleric)|-1|100|0|0|55|1|1|-1|22548|Imbued Black Pearl|1||||||||||19762|Black Pearl|1|||||||||||||||||||||||||||||||||||
-20027|91224|1||Imbue Black Sapphire|Level 29 (Cleric)|-1|100|0|0|65|1|1|-1|22551|Imbued Black Sapphire|1||||||||||10036|Black Sapphire|1|||||||||||||||||||||||||||||||||||
-20028|91225|1||Imbue Diamond|Level 29 (Cleric)|-1|100|0|0|75|1|1|-1|22549|Imbued Diamond|1||||||||||10037|Diamond|1|||||||||||||||||||||||||||||||||||
-20029|91226|1||Imbue Emerald|Level 29 (Cleric)|-1|100|0|0|85|1|1|-1|22507|Imbued Emerald|1||||||||||10029|Emerald|1|||||||||||||||||||||||||||||||||||
-20030|91227|1||Imbue Opal|Level 29 (Cleric)|-1|100|0|0|95|1|1|-1|22560|Imbued Opal|1||||||||||10030|Opal|1|||||||||||||||||||||||||||||||||||
-20031|91228|1||Imbue Peridot|Level 29 (Cleric)|-1|100|0|0|105|1|1|-1|22554|Imbued Peridot|1||||||||||10028|Peridot|1|||||||||||||||||||||||||||||||||||
-20032|91229|1||Imbue Plains Pebble|Level 29 (Cleric)|-1|100|0|0|115|1|1|-1|22553|Imbued Plains Pebble|1||||||||||12832|Plains Pebble|1|||||||||||||||||||||||||||||||||||
-20033|91230|1||Imbue Rose Quartz|Level 29 (Cleric)|-1|100|0|0|125|1|1|-1|22550|Imbued Rose Quartz|1||||||||||10021|Star Rose Quartz|1|||||||||||||||||||||||||||||||||||
-20034|91231|1||Imbue Ruby|Level 29 (Cleric)|-1|100|0|0|135|1|1|-1|22506|Imbued Ruby|1||||||||||10035|Ruby|1|||||||||||||||||||||||||||||||||||
-20035|91232|1||Imbue Sapphire|Level 29 (Cleric)|-1|100|0|0|145|1|1|-1|22508|Imbued Sapphire|1||||||||||10034|Sapphire|1|||||||||||||||||||||||||||||||||||
+13426|91076|1||Griffon Wing Spauldors (Recharge)||75|100|0|0|155|1|1|-1|2703|Griffon Wing Spauldors|1||||||||||2703|Griffon Wing Spauldors|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13433|91083|1||Aerated Pauldrons (Recharge)||75|100|0|0|155|1|1|-1|4321|Aerated Pauldrons|1||||||||||4321|Aerated Pauldrons|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13437|91087|1||Crimson Ring of Desinence (Recharge)||75|100|0|0|155|1|1|-1|11695|Crimson Ring of Desinence|1||||||||||11695|Crimson Ring of Desinence|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13438|91088|1||Amulet of Planar Transference (Recharge)||75|100|0|0|155|1|1|-1|14556|Amulet of Planar Transference|1||||||||||14556|Amulet of Planar Transference|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13450|91099|1||Vermilion Sky Ring (Recharge)||75|100|0|0|155|1|1|-1|27730|Vermilion Sky Ring|1||||||||||27730|Vermilion Sky Ring|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
+13589|91176|1||Amulet of the Void (Recharge)||75|100|0|0|155|1|1|-1|27710|Amulet of the Void|1||||||||||27710|Amulet of the Void|1|14804|Mana Battery - Class Five|1|||||||||||||||||||||||||17100|Box of the Void||||||
 20036|91233|1||Imbue Topaz|Level 29 (Cleric)|-1|100|0|0|160|1|1|-1|22555|Imbued Topaz|1||||||||||10025|Topaz|1|||||||||||||||||||||||||||||||||||
-20037|91234|1||Imbue Ivory|Level 29 (Shaman)|-1|100|0|0|175|1|1|-1|22501|Imbued Ivory|1||||||||||22504|Ivory|1|||||||||||||||||||||||||||||||||||
-20038|91235|1||Imbue Jade|Level 29 (Shaman)|-1|100|0|0|205|1|1|-1|22500|Imbued Jade|1||||||||||10023|Jade|1|||||||||||||||||||||||||||||||||||
+20005|91202|1||Clarify Mana|Level 29 (Enchanter)|-1|100|0|0|170|1|1|-1|10252|Vial of Clear Mana|1||||||||||10029|Emerald|1|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20038|91235|1||Imbue Jade|Level 29 (Shaman)|-1|100|0|0|180|1|1|-1|22500|Imbued Jade|1||||||||||10023|Jade|1|||||||||||||||||||||||||||||||||||
+20006|91203|1||Enchant Platinum|Level 34 (Enchanter)|-1|100|0|0|190|1|1|-1|16507|Enchanted Platinum Bar|1||||||||||16503|Platinum Bar|1|||||||||||||||||||||||||||||||||||
+20037|91234|1||Imbue Ivory|Level 29 (Shaman)|-1|100|0|0|200|1|1|-1|22501|Imbued Ivory|1||||||||||22504|Ivory|1|||||||||||||||||||||||||||||||||||
+20007|91204|1||Distill Mana|Level 39 (Enchanter)|-1|100|0|0|210|1|1|-1|10253|Vial of Distilled Mana|1||||||||||10034|Sapphire|2|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20009|91206|1||Purify Mana|Level 49 (Enchanter)|-1|100|0|0|220|1|1|-1|10254|Vial of Purified Mana|1||||||||||10035|Ruby|4|16965|Poison Vial|1||||||||||||||||||||||||||||||||
+20008|91205|1||Enchant Velium|Level 44 (Enchanter)|-1|100|0|0|230|1|1|-1|22099|Enchanted Velium Bar|1||||||||||22098|Velium Bar|1|||||||||||||||||||||||||||||||||||
