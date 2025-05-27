@@ -133,6 +133,7 @@ namespace EQWOWConverter.Tradeskills
                     }
                     TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
                     recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
+                    bool itemLookupFailed = false;
                     for (int i = 0; i < 4; i++)
                     {
                         string producedEQItemIDString = columns[string.Concat("produced_eqid_", i)];
@@ -142,6 +143,7 @@ namespace EQWOWConverter.Tradeskills
                             if (itemTemplatesByEQDBID.ContainsKey(producedEQItemID) == false)
                             {
                                 Logger.WriteError(string.Concat("Tried to add a tradeskill produced item with EQ Id of ", producedEQItemID, " but it did not exist"));
+                                itemLookupFailed = true;
                                 continue;
                             }
                             int producedWOWItemID = itemTemplatesByEQDBID[producedEQItemID].WOWEntryID;
@@ -162,6 +164,7 @@ namespace EQWOWConverter.Tradeskills
                             if (itemTemplatesByEQDBID.ContainsKey(componentEQItemID) == false)
                             {
                                 Logger.WriteError(string.Concat("Tried to add a tradeskill component item with EQ Id of ", componentEQItemID, " but it did not exist"));
+                                itemLookupFailed = true;
                                 continue;
                             }
                             int componentWOWItemID = itemTemplatesByEQDBID[componentEQItemID].WOWEntryID;
@@ -181,6 +184,7 @@ namespace EQWOWConverter.Tradeskills
                             if (itemTemplatesByEQDBID.ContainsKey(requiredEQItemID) == false)
                             {
                                 Logger.WriteError(string.Concat("Tried to add a tradeskill required item with EQ Id of ", requiredEQItemID, " but it did not exist"));
+                                itemLookupFailed = true;
                                 continue;
                             }
                             int requiredWOWItemID = itemTemplatesByEQDBID[requiredEQItemID].WOWEntryID;
@@ -209,11 +213,14 @@ namespace EQWOWConverter.Tradeskills
                             if (itemTemplatesByEQDBID.ContainsKey(containerItemEQID) == false)
                             {
                                 Logger.WriteError(string.Concat("Tried to add a 'none' combiner item with EQ Id of ", containerItemEQID, " but it did not exist"));
+                                itemLookupFailed = true;
                                 continue;
                             }
                             recipe.CombinerWOWItemIDs.Add(itemTemplatesByEQDBID[containerItemEQID].WOWEntryID);
                         }
                     }
+                    if (itemLookupFailed == true)
+                        continue;
 
                     // Don't create the recipe if there aren't any components
                     if (recipe.ComponentItemCountsByWOWItemID.Count() == 0)

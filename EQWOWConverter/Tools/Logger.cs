@@ -94,6 +94,27 @@ namespace EQWOWConverter
             }
         }
 
+        // TODO: Make this its own log level
+        public static void WriteWarning(string text)
+        {
+            if (Configuration.LOGGING_CONSOLE_MIN_LEVEL < 3 && Configuration.LOGGING_FILE_MIN_LEVEL < 3)
+                return;
+
+            lock (writeLock)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("[!] Warning| ");
+                stringBuilder.Append(text);
+                if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
+                    WriteToConsole(stringBuilder.ToString());
+                if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
+                {
+                    stringBuilder.Append("\n");
+                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                }
+            }
+        }
+
         public static void WriteError(string text)
         {
             lock (writeLock)

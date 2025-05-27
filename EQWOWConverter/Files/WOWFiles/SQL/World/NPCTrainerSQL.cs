@@ -16,8 +16,6 @@
 
 using EQWOWConverter.Spells;
 using EQWOWConverter.Tradeskills;
-using Mysqlx.Crud;
-using System.Collections.Generic;
 using System.Text;
 
 namespace EQWOWConverter.WOWFiles

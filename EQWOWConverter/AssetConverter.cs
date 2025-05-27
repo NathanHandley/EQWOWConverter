@@ -2052,6 +2052,7 @@ namespace EQWOWConverter
 
             // Character start data
             // Note: Must come BEFORE item data
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
             {
                 // Create the non-eq items to be used
@@ -2061,7 +2062,6 @@ namespace EQWOWConverter
                 ItemTemplate itemTotem = new ItemTemplate(46978, ItemWOWInventoryType.NoEquip);
                 itemTotem.IsGivenAsStartItem = true;
                 itemTotem.IsExistingItemAlready = true;
-                SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
 
                 // Populate for all combinations, all races
                 foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
@@ -2092,7 +2092,7 @@ namespace EQWOWConverter
 
             // Item data
             // Note: Must come AFTER character start data
-            foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
+            foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntry.Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
@@ -2112,8 +2112,32 @@ namespace EQWOWConverter
                 spellIconDBC.AddItemIconRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                spellDBC.AddRow(spellTemplate);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
+                // Make sure any required items are valid
+                bool itemsAreValid = true;
+                for (int i = 0; i < 8; i++)
+                {
+                    if (i < spellTemplate.Reagents.Count)
+                    {
+                        if (itemTemplatesByWOWEntry.ContainsKey(spellTemplate.Reagents[i].ItemID) == true)
+                        {
+                            if (itemTemplatesByWOWEntry[spellTemplate.Reagents[i].ItemID].IsPlayerObtainable() == false)
+                            {
+                                Logger.WriteWarning(string.Concat("SpellTemplate with ID ", spellTemplate.ID, " had a reagant with ID ", spellTemplate.Reagents[i].ItemID, " which is not player obtainable"));
+                                itemsAreValid = false;
+                            }
+                        }
+                        else
+                        {
+                            Logger.WriteWarning(string.Concat("SpellTemplate with ID ", spellTemplate.ID, " had an invalid reagant with ID ", spellTemplate.Reagents[i].ItemID));
+                            itemsAreValid = false;
+                        }
+                    }
+                }
+                if (itemsAreValid == true)
+                {
+                    spellDBC.AddRow(spellTemplate);
+                    skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
+                }
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
@@ -2770,22 +2794,6 @@ namespace EQWOWConverter
                 }
             }
 
-            // Tradeskills
-            foreach (TradeskillRecipe recipe in tradeskillRecipes)
-            {
-                // Multi-item containers
-                if (recipe.ProducedFilledContainer != null)
-                {
-                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
-                    {
-                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
-                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
-                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
-                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i+1, 100, curItemCount, comment);
-                    }
-                }
-            }
-
             // Trainer Abilities - Class
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
@@ -2820,6 +2828,43 @@ namespace EQWOWConverter
                     }
                     if (allComponentsAvailable == true)
                         npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
+                }
+            }
+
+            // Tradeskills
+            foreach (TradeskillRecipe recipe in tradeskillRecipes)
+            {
+                // Skip invalid
+                bool hasInvalidItems = false;
+                foreach (var countByItemID in recipe.ComponentItemCountsByWOWItemID)
+                {
+                    if (itemTemplatesByWOWEntryID.ContainsKey(countByItemID.Key) == true)
+                    {
+                        if (itemTemplatesByWOWEntryID[countByItemID.Key].IsPlayerObtainable() == false)
+                        {
+                            Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had a reagant with ID ", countByItemID.Key, " which is not player obtainable"));
+                            hasInvalidItems = true;
+                        }
+                    }
+                    else
+                    {
+                        Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had an invalid reagant with ID ", countByItemID.Key));
+                        hasInvalidItems = true;
+                    }
+                }
+                if (hasInvalidItems == true)
+                    continue;
+
+                // Multi-item containers
+                if (recipe.ProducedFilledContainer != null)
+                {
+                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
+                    {
+                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
+                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
+                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
+                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i + 1, 100, curItemCount, comment);
+                    }
                 }
             }
 
