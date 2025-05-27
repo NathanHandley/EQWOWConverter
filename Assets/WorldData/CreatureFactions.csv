@@ -26,7 +26,7 @@ FactionID|FactionTemplateID|ReputationIndex|Name|BaseRepOverride|BaseRepGoodClas
 1224|2301|-1|EQ Creature KOS Nature Neutral|-42000|-1|-1|-1|-1|0|0|0||1|0|0|0|0|Druid/Ranger rep, DO NOT CHANGE FactionID / FactionTemplateID as it's used by mod-EverQuest
 1225|2302|-1|EQ Creature Neutral|0|-1|-1|-1|-1|0|0|0||0|0|0|0|0|Snakes, etc
 1227|2307|85|League of Light|-1|3500|-3500|3500|-3500|1|1|0|Paladins, clerics, warriors, and bards united by faith and honor. They guard Antonica's people from tyranny and darkness.|0|0|0|0|0|"Takeover ""Test Faction 1"", Look into splitting out bards, warriors, paladins.  These are the good freeport guards too."
-1228|2308|86|Temple of Solusek Ro|0|-1|-1|-1|-1|0|0|0|Disciples of the Burning Prince, they seek power through flame and fury. Their devotion to fire knows no limits or mercy.|0|0|0|0|0|"Takeover ""Test Faction 2"""
+1228|2308|86|Temple of Solusek Ro|3500|-1|-1|-1|-1|0|0|0|Disciples of the Burning Prince, they seek power through flame and fury. Their devotion to fire knows no limits or mercy.|0|0|0|0|0|"Takeover ""Test Faction 2"""
 1229|2309|87|Brood of Di`Zok|0|-1|-1|-1|-1|0|0|0|The sarnak of Chardok, bred for war and conquest. Brutal, cunning, and ever-expanding, they serve their emperor without question.|0|0|0|0|0|"Takeover ""Test Faction 3"""
 1230|2306|82|Highpass Citizens|-1|3500|-1000|3500|-1000|1|1|0|Traders, guards, and adventurers who keep Highpass safe from goblins and orcs. Their survival depends on vigilance and steel.|0|0|0|0|0|"Takeover ""REUSE"""
 1231|2304|8|Iksar of Cabilis|-1|-3500|3500|3500|-3500|0|0|1|Cunning reptilian warriors from Kunark, cold-blooded in battle and spirit. Ruthless and proud, they bow only to their own power.|0|0|0|0|0|"Takeover ""Wildhammer Clan"".  Iksar, Cazic-Thule"
