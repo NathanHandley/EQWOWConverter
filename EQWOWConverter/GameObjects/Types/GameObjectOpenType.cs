@@ -14,9 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.Zones
+namespace EQWOWConverter.GameObjects
 {
-    internal enum ZoneGameObjectOpenType
+    internal enum GameObjectOpenType
     {
         Unknown,
         TYPE0,
