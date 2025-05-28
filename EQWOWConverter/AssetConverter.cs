@@ -1823,7 +1823,6 @@ namespace EQWOWConverter
             itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
 
             // Remove invalid tradeskill recipes (and related spell trainer ability)
-            List<int> tradeskillSpellIDsToRemove = new List<int>();
             bool moreToRemove = true;
             while (moreToRemove)
             {
@@ -1852,9 +1851,6 @@ namespace EQWOWConverter
                     {
                         moreToRemove = true;
 
-                        // Mark tradeskill ability spell ID to be removed
-                        tradeskillSpellIDsToRemove.Add(recipe.SpellID);
-
                         // Clear any produced items, if needed.  Need to check any other items to see if other tradeskills produce them to be sure
                         if (recipe.ProducedFilledContainer != null)
                             ItemTemplate.RemoveItemTemplate(recipe.ProducedFilledContainer);
@@ -1881,26 +1877,6 @@ namespace EQWOWConverter
                 foreach (ItemTemplate itemTemplate in itemTemplatesToRemove)
                     ItemTemplate.RemoveItemTemplate(itemTemplate);
             }
-
-            // Remove invalid spells
-            //List<int> validSpellIDs = new List<int>();
-            //for (int i = spellTemplates.Count - 1; i >= 0; i--)
-            //{
-            //    SpellTemplate spellTemplate = spellTemplates[i];
-            //    if (tradeskillSpellIDsToRemove.Contains(spellTemplate.ID))
-            //        spellTemplates.RemoveAt(i);
-            //    else
-            //        validSpellIDs.Add(spellTemplate.ID);
-            //}
-
-            // Remove items that now have an invalid spell ID
-            //foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
-            //{
-            //    if (itemTemplate.SpellID1 != 0 && itemTemplate.SpellID1 >= Configuration.DBCID_SPELL_ID_START && validSpellIDs.Contains(itemTemplate.SpellID1) == false)
-            //        itemTemplatesToRemove.Add(itemTemplate);
-            //}
-            //foreach (ItemTemplate itemTemplate in itemTemplatesToRemove)
-            //    ItemTemplate.RemoveItemTemplate(itemTemplate);
         }
 
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
