@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.WOWFiles;
+using System.Drawing;
 
 namespace EQWOWConverter.Items
 {

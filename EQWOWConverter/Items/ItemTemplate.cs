@@ -81,6 +81,7 @@ namespace EQWOWConverter.Items
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
+        public string EQItemDisplayFileName = string.Empty;
 
         public ItemTemplate()
         {
@@ -1296,7 +1297,6 @@ namespace EQWOWConverter.Items
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;
-                string iconName = "INV_EQ_" + (iconID).ToString();
                 newItemTemplate.IconID = iconID;
 
                 // Binding Properties
@@ -1321,8 +1321,7 @@ namespace EQWOWConverter.Items
                 // Model information
                 newItemTemplate.EQArmorMaterialType = int.Parse(columns["material"]);
                 newItemTemplate.ColorPacked = Int64.Parse(columns["color"]);
-                newItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + columns["item_display_file"].Trim().ToLower(), iconName,
-                    newItemTemplate.InventoryType, newItemTemplate.EQArmorMaterialType, newItemTemplate.ColorPacked);
+                newItemTemplate.EQItemDisplayFileName = columns["item_display_file"].Trim().ToLower();
 
                 // Price
                 newItemTemplate.BuyPriceInCopper = int.Parse(columns["price"]);

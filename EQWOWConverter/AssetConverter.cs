@@ -112,52 +112,13 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
 
                 // Generate item templates
-                Logger.WriteInfo("Generating item templates and visual information...");
-                if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
-                    Logger.WriteInfo("- Note: Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
+                Logger.WriteInfo("Generating item templates...");
                 itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
                 SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
                 foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
                     foreach (int itemID in classRaceProperties.Value.StartItemIDs)
                         if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
-
-                // Build output directory
-                Logger.WriteInfo("Generating and copying blp files for equipment...");
-                string outputFolderPathRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
-                if (Directory.Exists(outputFolderPathRoot) == true)
-                    Directory.Delete(outputFolderPathRoot, true);
-                Directory.CreateDirectory(outputFolderPathRoot);
-
-                // Convert and copy all of the BLP files
-                LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
-                Task equipTexConv1Task = Task.Factory.StartNew(() =>
-                {
-                    Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 1] Started");
-                    ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
-                    Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 1] Ended");
-                }, TaskCreationOptions.LongRunning);
-                if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                    equipTexConv1Task.Wait();
-                Task equipTexConv2Task = Task.Factory.StartNew(() =>
-                {
-                    Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 2] Started");
-                    ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
-                    ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);                    
-                    Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 2] Ended");
-                }, TaskCreationOptions.LongRunning);
-                if (Configuration.CORE_ENABLE_MULTITHREADING == false)
-                    equipTexConv2Task.Wait();
-                if (Configuration.CORE_ENABLE_MULTITHREADING == true)
-                {
-                    equipTexConv1Task.Wait();
-                    equipTexConv2Task.Wait();
-                }
 
                 // Spells
                 GenerateCustomSpells(out spellTemplates);
@@ -201,7 +162,10 @@ namespace EQWOWConverter
 
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
-            ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID, ref spellTemplates);
+            ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
+
+            // Finish the items
+            CreateItemGraphics(ref itemTemplatesByEQDBID);
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
@@ -1121,6 +1085,58 @@ namespace EQWOWConverter
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        private void CreateItemGraphics(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
+        {
+            Logger.WriteInfo("Creating item graphics started");
+
+            // Generating the item display information
+            Logger.WriteInfo("Generating item display info...");
+            foreach (ItemTemplate itemTemplate in itemTemplatesByEQDBID.Values)
+            {
+                string iconName = "INV_EQ_" + (itemTemplate.IconID).ToString();
+                itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo("eq_" + itemTemplate.EQItemDisplayFileName, iconName,
+                    itemTemplate.InventoryType, itemTemplate.EQArmorMaterialType, itemTemplate.ColorPacked);
+            }
+
+            // Build output directory
+            Logger.WriteInfo("Generating and copying blp files for equipment...");
+            string outputFolderPathRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "ITEM", "TEXTURECOMPONENTS");
+            if (Directory.Exists(outputFolderPathRoot) == true)
+                Directory.Delete(outputFolderPathRoot, true);
+            Directory.CreateDirectory(outputFolderPathRoot);
+
+            // Convert and copy all of the BLP files
+            LogCounter progressionCounter = new LogCounter("Converting and copying equipment textures... ");
+            Task equipTexConv1Task = Task.Factory.StartNew(() =>
+            {
+                Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 1] Started");
+                ConvertAndCopyEquipmentTextures("ArmLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("ArmUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("LegLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("LegUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("FootTexture", progressionCounter);
+                Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 1] Ended");
+            }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConv1Task.Wait();
+            Task equipTexConv2Task = Task.Factory.StartNew(() =>
+            {
+                Logger.WriteInfo("<+> Thread [Equipment Texture Subworker 2] Started");
+                ConvertAndCopyEquipmentTextures("TorsoLowerTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("TorsoUpperTexture", progressionCounter);
+                ConvertAndCopyEquipmentTextures("HandTexture", progressionCounter);
+                Logger.WriteInfo("<-> Thread [Equipment Texture Subworker 2] Ended");
+            }, TaskCreationOptions.LongRunning);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == false)
+                equipTexConv2Task.Wait();
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+            {
+                equipTexConv1Task.Wait();
+                equipTexConv2Task.Wait();
+            }
+            Logger.WriteInfo("Creating item graphics ended");
         }
 
         private void ConvertAndCopyEquipmentTextures(string subfolderName, LogCounter progressionCounter)
