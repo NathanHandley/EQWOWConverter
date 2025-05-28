@@ -201,7 +201,7 @@ namespace EQWOWConverter
 
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
-            ClearNonPlayerObtainableItemsSpellsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID, ref spellTemplates);
+            ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID, ref spellTemplates);
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
@@ -1806,10 +1806,9 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
-        public void ClearNonPlayerObtainableItemsSpellsAndRecipes(ref List<TradeskillRecipe> tradeskillRecipes, ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID,
-            ref List<SpellTemplate> spellTemplates)
+        public void ClearNonPlayerObtainableItemsAndRecipes(ref List<TradeskillRecipe> tradeskillRecipes, ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
-            Logger.WriteInfo("Removing non-player obtainable items, spells, and recipes...");
+            Logger.WriteInfo("Removing non-player obtainable items and recipes...");
 
             // Remove invalid items and refresh the item list
             List<ItemTemplate> itemTemplatesToRemove = new List<ItemTemplate>();
