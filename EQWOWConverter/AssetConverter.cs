@@ -116,6 +116,11 @@ namespace EQWOWConverter
                 if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                     Logger.WriteInfo("- Note: Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
                 itemTemplatesByEQDBID = ItemTemplate.GetItemTemplatesByEQDBIDs();
+                SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+                    foreach (int itemID in classRaceProperties.Value.StartItemIDs)
+                        if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
+                            itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
                 // Build output directory
                 Logger.WriteInfo("Generating and copying blp files for equipment...");
@@ -193,6 +198,10 @@ namespace EQWOWConverter
 
             // If there are any neutral creatures that should be interactive, remap
             RemapDefaultFactionsForInteractiveCreatures(ref creatureTemplates);
+
+            // If there are any non player obtainable things (spells, items), clear them out
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            ClearNonPlayerObtainableItemsSpellsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID, ref spellTemplates);
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -1322,7 +1331,7 @@ namespace EQWOWConverter
                     recipeNameCounts.Add(curSpellTemplate.Name, 1);
 
                 curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
-                curSpellTemplate.EFfectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
+                curSpellTemplate.EffectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 curSpellTemplate.SchoolMask = 1; // "Normal"
                 curSpellTemplate.TradeskillRecipe = recipe;
@@ -1791,6 +1800,103 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
         }
 
+        public void ClearNonPlayerObtainableItemsSpellsAndRecipes(ref List<TradeskillRecipe> tradeskillRecipes, ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID,
+            ref List<SpellTemplate> spellTemplates)
+        {
+            Logger.WriteInfo("Removing non-player obtainable items, spells, and recipes...");
+
+            // Remove invalid items and refresh the item list
+            List<ItemTemplate> itemTemplatesToRemove = new List<ItemTemplate>();
+            foreach(ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+            {
+                if (itemTemplate.IsPlayerObtainable() == false)
+                    itemTemplatesToRemove.Add(itemTemplate);
+            }
+            foreach (ItemTemplate itemTemplate in itemTemplatesToRemove)
+                ItemTemplate.RemoveItemTemplate(itemTemplate);
+            itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+
+            // Remove invalid tradeskill recipes (and related spell trainer ability)
+            List<int> tradeskillSpellIDsToRemove = new List<int>();
+            bool moreToRemove = true;
+            while (moreToRemove)
+            {
+                moreToRemove = false;
+                for (int i = tradeskillRecipes.Count - 1; i >= 0; i--)
+                {
+                    TradeskillRecipe recipe = tradeskillRecipes[i];
+                    bool hasInvalidItems = false;
+                    foreach (var countByItemID in recipe.ComponentItemCountsByWOWItemID)
+                    {
+                        if (itemTemplatesByWOWEntryID.ContainsKey(countByItemID.Key) == true)
+                        {
+                            if (itemTemplatesByWOWEntryID[countByItemID.Key].IsPlayerObtainable() == false)
+                            {
+                                Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had a reagant with ID ", countByItemID.Key, " which is not player obtainable"));
+                                hasInvalidItems = true;
+                            }
+                        }
+                        else
+                        {
+                            Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had an invalid reagant with ID ", countByItemID.Key));
+                            hasInvalidItems = true;
+                        }
+                    }
+                    if (hasInvalidItems == true)
+                    {
+                        moreToRemove = true;
+
+                        // Mark tradeskill ability spell ID to be removed
+                        tradeskillSpellIDsToRemove.Add(recipe.SpellID);
+
+                        // Clear any produced items, if needed.  Need to check any other items to see if other tradeskills produce them to be sure
+                        if (recipe.ProducedFilledContainer != null)
+                            ItemTemplate.RemoveItemTemplate(recipe.ProducedFilledContainer);
+                        foreach (int producedItemID in recipe.ProducedItemCountsByWOWItemID.Keys)
+                            if (itemTemplatesByWOWEntryID.ContainsKey(producedItemID) == true)
+                                itemTemplatesByWOWEntryID[producedItemID].NumOfTradeskillsThatCreateIt--;
+
+                        // Remove any trainer ability associated
+                        if (recipe.Type != TradeskillType.Unknown && recipe.Type != TradeskillType.None)
+                            SpellTrainerAbility.RemoveTrainerAbilityUsingTradeskillRecipe(recipe);
+
+                        // Remove the recipe
+                        TradeskillRecipe.RemoveRecipe(recipe);
+                    }
+                }
+
+                // Remove invalid items again and refresh the list
+                itemTemplatesToRemove.Clear();
+                foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+                {
+                    if (itemTemplate.IsPlayerObtainable() == false)
+                        itemTemplatesToRemove.Add(itemTemplate);
+                }
+                foreach (ItemTemplate itemTemplate in itemTemplatesToRemove)
+                    ItemTemplate.RemoveItemTemplate(itemTemplate);
+            }
+
+            // Remove invalid spells
+            //List<int> validSpellIDs = new List<int>();
+            //for (int i = spellTemplates.Count - 1; i >= 0; i--)
+            //{
+            //    SpellTemplate spellTemplate = spellTemplates[i];
+            //    if (tradeskillSpellIDsToRemove.Contains(spellTemplate.ID))
+            //        spellTemplates.RemoveAt(i);
+            //    else
+            //        validSpellIDs.Add(spellTemplate.ID);
+            //}
+
+            // Remove items that now have an invalid spell ID
+            //foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+            //{
+            //    if (itemTemplate.SpellID1 != 0 && itemTemplate.SpellID1 >= Configuration.DBCID_SPELL_ID_START && validSpellIDs.Contains(itemTemplate.SpellID1) == false)
+            //        itemTemplatesToRemove.Add(itemTemplate);
+            //}
+            //foreach (ItemTemplate itemTemplate in itemTemplatesToRemove)
+            //    ItemTemplate.RemoveItemTemplate(itemTemplate);
+        }
+
         public void CreateDBCFiles(List<Zone> zones, List<CreatureModelTemplate> creatureModelTemplates, List<SpellTemplate> spellTemplates)
         {
             string wowExportPath = Configuration.PATH_EXPORT_FOLDER;
@@ -2051,7 +2157,7 @@ namespace EQWOWConverter
             }
 
             // Character start data
-            // Note: Must come BEFORE item data
+            // Must come before "Item Data"
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntry = ItemTemplate.GetItemTemplatesByWOWEntryID();
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
             {
@@ -2075,10 +2181,7 @@ namespace EQWOWConverter
                         else if (itemTemplatesByWOWEntry.ContainsKey(itemID) == false)
                             Logger.WriteError(string.Concat("Failed to pull startup item with wow entry id '", itemID, "' since it did not exist"));
                         else
-                        {
                             startingItems.Add(itemTemplatesByWOWEntry[itemID]);
-                            itemTemplatesByWOWEntry[itemID].IsGivenAsStartItem = true;
-                        }
                     }
 
                     // Add the hearthstone if configured to do so
@@ -2096,8 +2199,7 @@ namespace EQWOWConverter
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
-                if (itemTemplate.IsPlayerObtainable() == true)
-                    itemDBC.AddRow(itemTemplate);
+                itemDBC.AddRow(itemTemplate);
             }
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                 itemDisplayInfoDBC.AddRow(itemDisplayInfo);
@@ -2112,32 +2214,8 @@ namespace EQWOWConverter
                 spellIconDBC.AddItemIconRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                // Make sure any required items are valid
-                bool itemsAreValid = true;
-                for (int i = 0; i < 8; i++)
-                {
-                    if (i < spellTemplate.Reagents.Count)
-                    {
-                        if (itemTemplatesByWOWEntry.ContainsKey(spellTemplate.Reagents[i].ItemID) == true)
-                        {
-                            if (itemTemplatesByWOWEntry[spellTemplate.Reagents[i].ItemID].IsPlayerObtainable() == false)
-                            {
-                                Logger.WriteWarning(string.Concat("SpellTemplate with ID ", spellTemplate.ID, " had a reagant with ID ", spellTemplate.Reagents[i].ItemID, " which is not player obtainable"));
-                                itemsAreValid = false;
-                            }
-                        }
-                        else
-                        {
-                            Logger.WriteWarning(string.Concat("SpellTemplate with ID ", spellTemplate.ID, " had an invalid reagant with ID ", spellTemplate.Reagents[i].ItemID));
-                            itemsAreValid = false;
-                        }
-                    }
-                }
-                if (itemsAreValid == true)
-                {
-                    spellDBC.AddRow(spellTemplate);
-                    skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
-                }
+                spellDBC.AddRow(spellTemplate);
+                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
@@ -2676,8 +2754,7 @@ namespace EQWOWConverter
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
-                if (itemTemplate.IsPlayerObtainable() == true)
-                    itemTemplateSQL.AddRow(itemTemplate);
+                itemTemplateSQL.AddRow(itemTemplate);
             }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
@@ -2814,47 +2891,12 @@ namespace EQWOWConverter
                 int lineID = SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(tradeskillType);
                 npcTrainerSQL.AddDevelopmentSkillsForTradeskill(lineID, tradeskillType);
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
-                {
-                    bool allComponentsAvailable = true;
-                    if (trainerAbility.TradeskillRecipe != null)
-                    {
-                        foreach (int componentWOWItemID in trainerAbility.TradeskillRecipe.ComponentItemCountsByWOWItemID.Keys)
-                        {
-                            if (itemTemplatesByWOWEntryID.ContainsKey(componentWOWItemID) == false)
-                                allComponentsAvailable = false;
-                            else if (itemTemplatesByWOWEntryID[componentWOWItemID].IsPlayerObtainable() == false)
-                                allComponentsAvailable = false;
-                        }
-                    }
-                    if (allComponentsAvailable == true)
-                        npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
-                }
+                    npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
             }
 
             // Tradeskills
             foreach (TradeskillRecipe recipe in tradeskillRecipes)
             {
-                // Skip invalid
-                bool hasInvalidItems = false;
-                foreach (var countByItemID in recipe.ComponentItemCountsByWOWItemID)
-                {
-                    if (itemTemplatesByWOWEntryID.ContainsKey(countByItemID.Key) == true)
-                    {
-                        if (itemTemplatesByWOWEntryID[countByItemID.Key].IsPlayerObtainable() == false)
-                        {
-                            Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had a reagant with ID ", countByItemID.Key, " which is not player obtainable"));
-                            hasInvalidItems = true;
-                        }
-                    }
-                    else
-                    {
-                        Logger.WriteWarning(string.Concat("TradeskillRecipe with ID ", recipe.EQID, " had an invalid reagant with ID ", countByItemID.Key));
-                        hasInvalidItems = true;
-                    }
-                }
-                if (hasInvalidItems == true)
-                    continue;
-
                 // Multi-item containers
                 if (recipe.ProducedFilledContainer != null)
                 {

@@ -25,8 +25,7 @@ namespace EQWOWConverter.Tradeskills
     {
         private static Dictionary<TradeskillType, List<TradeskillRecipe>> RecipesByTradeskillType = new Dictionary<TradeskillType, List<TradeskillRecipe>>();
         private static List<TradeskillRecipe> AllRecipes = new List<TradeskillRecipe>();
-        private static readonly object TradeskillReadLock = new object();
-        private static readonly object TradeskillWriteLock = new object();
+        private static readonly object TradeskillLock = new object();
         private static Dictionary<string, UInt32> TotemIDsByItemName = new Dictionary<string, UInt32>();
 
         public int EQID;
@@ -59,9 +58,25 @@ namespace EQWOWConverter.Tradeskills
             TrivialEQ = trivialEQ;
         }
 
+        public static void RemoveRecipe(TradeskillRecipe recipe)
+        {
+            lock (TradeskillLock)
+            {
+                for (int i = AllRecipes.Count-1; i >= 0; i--)
+                    if (AllRecipes[i] == recipe)
+                        AllRecipes.RemoveAt(i);
+                foreach (List<TradeskillRecipe> tradeskillRecipes in RecipesByTradeskillType.Values)
+                {
+                    for (int i = tradeskillRecipes.Count - 1; i >= 0; i--)
+                        if (tradeskillRecipes[i] == recipe)
+                            tradeskillRecipes.RemoveAt(i);
+                }
+            }
+        }
+
         public static Dictionary<TradeskillType, List<TradeskillRecipe>> GetRecipesByTradeskillType()
         {
-            lock (TradeskillReadLock)
+            lock (TradeskillLock)
             {
                 if (RecipesByTradeskillType.Count == 0)
                 {
@@ -75,7 +90,7 @@ namespace EQWOWConverter.Tradeskills
 
         public static List<TradeskillRecipe> GetAllRecipes()
         {
-            lock (TradeskillReadLock)
+            lock (TradeskillLock)
             {
                 if (RecipesByTradeskillType.Count == 0)
                 {
@@ -89,7 +104,7 @@ namespace EQWOWConverter.Tradeskills
 
         public static Dictionary<string, UInt32> GetTotemIDsByItemName()
         {
-            lock (TradeskillReadLock)
+            lock (TradeskillLock)
             {
                 return TotemIDsByItemName;
             }
@@ -97,7 +112,7 @@ namespace EQWOWConverter.Tradeskills
 
         public static void PopulateTradeskillRecipes(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
-            lock (TradeskillWriteLock)
+            lock (TradeskillLock)
             {
                 // Clear if already loaded
                 if (RecipesByTradeskillType.Count > 0)
@@ -147,7 +162,7 @@ namespace EQWOWConverter.Tradeskills
                                 continue;
                             }
                             int producedWOWItemID = itemTemplatesByEQDBID[producedEQItemID].WOWEntryID;
-                            itemTemplatesByEQDBID[producedEQItemID].IsMadeByTradeskill = true;
+                            itemTemplatesByEQDBID[producedEQItemID].NumOfTradeskillsThatCreateIt++;
                             int producedItemCount = int.Parse(columns[string.Concat("produced_count_", i)]);
                             if (recipe.ProducedItemCountsByWOWItemID.ContainsKey(producedWOWItemID) == true)
                                 recipe.ProducedItemCountsByWOWItemID[producedWOWItemID] += producedItemCount;

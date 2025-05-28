@@ -76,9 +76,9 @@ namespace EQWOWConverter.Items
         public bool IsDroppedByCreature = false;
         public bool IsSoldByVendor = false;
         public bool IsRewardedFromQuest = false;
-        public bool IsMadeByTradeskill = false;
         public bool IsCreatedBySpell = false;
         public bool IsFoundInGameObject = false;
+        public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
 
@@ -99,7 +99,7 @@ namespace EQWOWConverter.Items
                 return true;
             if (IsRewardedFromQuest == true)
                 return true;
-            if (IsMadeByTradeskill == true)
+            if (NumOfTradeskillsThatCreateIt > 0)
                 return true;
             if (IsCreatedBySpell == true)
                 return true;
@@ -126,6 +126,22 @@ namespace EQWOWConverter.Items
             if (ItemTemplatesByWOWEntryID.Count == 0)
                 PopulateItemTemplateListFromDisk();
             return ItemTemplatesByWOWEntryID;
+        }
+
+        public static void RemoveItemTemplate(ItemTemplate itemTemplate)
+        {
+            List<ItemTemplate> itemTemplates = ItemTemplatesByWOWEntryID.Values.ToList();
+            for (int i = itemTemplates.Count - 1; i >= 0; i--)
+            {
+                ItemTemplate curItemTemplate = itemTemplates[i];
+                if (curItemTemplate == itemTemplate)
+                {
+                    int curWOWID = curItemTemplate.WOWEntryID;
+                    ItemTemplatesByWOWEntryID.Remove(curWOWID);
+                    int curEQID = curItemTemplate.EQItemID;
+                    ItemTemplatesByEQDBID.Remove(curEQID);
+                }
+            }
         }
 
         private static float GetConvertedEqToWowStat(ItemWOWInventoryType itemSlot, string statName, float eqStatValue)
@@ -1519,7 +1535,7 @@ namespace EQWOWConverter.Items
             string iconName = string.Concat("INV_EQ_", Configuration.TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID);
 
             // Complete the object
-            itemTemplate.IsMadeByTradeskill = true;
+            itemTemplate.NumOfTradeskillsThatCreateIt = 1;
             itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
             itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
             itemTemplate.ClassID = 0;

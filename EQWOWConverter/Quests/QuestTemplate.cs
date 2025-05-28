@@ -99,17 +99,17 @@ namespace EQWOWConverter.Quests
 
         public bool AreRequiredItemsPlayerObtainable(SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
-            if (RequiredItem1WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem1WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem1WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem1WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem1WOWID].IsPlayerObtainable() == false))
                 return false;
-            if (RequiredItem2WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem2WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem2WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem2WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem2WOWID].IsPlayerObtainable() == false))
                 return false;
-            if (RequiredItem3WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem3WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem3WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem3WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem3WOWID].IsPlayerObtainable() == false))
                 return false;
-            if (RequiredItem4WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem4WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem4WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem4WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem4WOWID].IsPlayerObtainable() == false))
                 return false;
-            if (RequiredItem5WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem5WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem5WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem5WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem5WOWID].IsPlayerObtainable() == false))
                 return false;
-            if (RequiredItem6WOWID != 0 && itemTemplatesByWOWEntryID[RequiredItem6WOWID].IsPlayerObtainable() == false)
+            if (RequiredItem6WOWID != 0 && (itemTemplatesByWOWEntryID.ContainsKey(RequiredItem6WOWID) == false || itemTemplatesByWOWEntryID[RequiredItem6WOWID].IsPlayerObtainable() == false))
                 return false;
             return true;
         }

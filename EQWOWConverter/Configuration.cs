@@ -513,7 +513,7 @@ namespace EQWOWConverter
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999.  See "Spells"
         // - Recipes reserve IDs 87000 to 91221
-        public static readonly int DBCID_SPELL_ID_START = 87000;
+        public static readonly int DBCID_SPELL_ID_START = 86900;
 
         // ID for spellcasttimes.dbc
         public static readonly int DBCID_SPELLCASTTIME_ID_START = 215;

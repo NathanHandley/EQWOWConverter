@@ -39,6 +39,22 @@ namespace EQWOWConverter.Spells
         public int ReqLevel = 0;
         public int ReqSpellID = 0;
 
+        public static void RemoveTrainerAbilityUsingTradeskillRecipe(TradeskillRecipe recipe)
+        {
+            lock (SpellTrainerReadLock)
+            {
+                int numOfRecipes = TradeskillTrainerAbilitiesByTradeskillType[recipe.Type].Count;
+                for (int i = numOfRecipes-1; i >= 0; i--)
+                {
+                    if (TradeskillTrainerAbilitiesByTradeskillType[recipe.Type][i].TradeskillRecipe == recipe)
+                    {
+                        TradeskillTrainerAbilitiesByTradeskillType[recipe.Type].RemoveAt(i);
+                        return;
+                    }
+                }
+            }
+        }
+
         public static List<SpellTrainerAbility> GetTrainerSpellsForClass(ClassType classType)
         {
             lock (SpellTrainerReadLock)

@@ -65,7 +65,7 @@ namespace EQWOWConverter.Spells
         public UInt32 DurationIndex = 0;
         public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
-        public UInt32 EFfectItemType1 = 0;
+        public UInt32 EffectItemType1 = 0;
         public Int32 EffectDieSides1 = 0;
         public Int32 EffectBasePoints1 = 0;
         public int EffectMiscValue1 = 0;
