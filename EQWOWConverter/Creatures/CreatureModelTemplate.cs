@@ -18,8 +18,6 @@ using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.ObjectModels;
 using System.Text;
 using EQWOWConverter.WOWFiles;
-using System.Linq;
-
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureModelTemplate

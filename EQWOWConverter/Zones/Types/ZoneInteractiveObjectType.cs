@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Zones
 {
-    internal enum ZoneInteractiveObjectType
+    internal enum ZoneGameObjectType
     {
         Unknown,
         NonInteract,
