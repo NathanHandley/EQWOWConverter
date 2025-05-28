@@ -192,7 +192,7 @@ namespace EQWOWConverter
             // Quests
             List<QuestTemplate> questTemplates = new List<QuestTemplate>();
             if (Configuration.GENERATE_QUESTS == true)
-                ConvertQuests(itemTemplatesByEQDBID, out questTemplates);
+                ConvertQuestItems(itemTemplatesByEQDBID, out questTemplates);
             else
                 Logger.WriteInfo("- Note: Quest generation is set to false in the Configuration");
 
@@ -202,6 +202,10 @@ namespace EQWOWConverter
             // If there are any non player obtainable things (spells, items), clear them out
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             ClearNonPlayerObtainableItemsSpellsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID, ref spellTemplates);
+
+            // Quests Finish-up
+            if (Configuration.GENERATE_QUESTS == true)
+                ConvertQuests(itemTemplatesByEQDBID, ref questTemplates);
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -511,18 +515,15 @@ namespace EQWOWConverter
             return true;
         }
 
-        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, out List<QuestTemplate> questTemplates)
+        public void ConvertQuestItems(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, out List<QuestTemplate> questTemplates)
         {
-            Logger.WriteInfo("Converting quests...");
+            Logger.WriteInfo("Converting quest items...");
 
             // Build the return quest templates
             questTemplates = new List<QuestTemplate>();
 
             // Work through each of the quest templates
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
-            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
-
-            // Map and mark all rewards as quest obtainable so related quests will be generated
             foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
             {
                 // Skip any quests that are in zones we're not processing
@@ -542,8 +543,13 @@ namespace EQWOWConverter
                 // Mark all of the rewards so they get included in the final output
                 foreach (int eqItemTemplateID in questTemplate.RewardItemEQIDs)
                     itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
-            }
+            }        
+        }
 
+        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<QuestTemplate> questTemplates)
+        {
+            Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
+            Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
             foreach (QuestTemplate questTemplate in QuestTemplate.GetQuestTemplates())
             {
                 // Skip any quests that are in zones we're not processing
