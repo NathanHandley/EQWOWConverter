@@ -27,6 +27,7 @@ namespace EQWOWConverter.GameObjects
         protected static Dictionary<string, List<GameObject>> GameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static readonly object GameObjectsLock = new object();
         protected static Dictionary<string, ObjectModel> ObjectModelByName = new Dictionary<string, ObjectModel>();
+        protected static Dictionary<string, int> GameObjectDisplayInfoIDByModelName = new Dictionary<string, int>();
 
         public int ID;
         public int DoorID;
@@ -38,6 +39,7 @@ namespace EQWOWConverter.GameObjects
         public Vector3 Position = new Vector3();
         public float Orientation;
         public ObjectModel? ObjectModel = null;
+        public int GameObjectDisplayInfoID = -1;
 
         public static Dictionary<string, List<GameObject>> GetAllGameObjectsByZoneShortNames()
         {
@@ -101,9 +103,11 @@ namespace EQWOWConverter.GameObjects
                         }
 
                         // Store it
-                        //int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                         gameObject.ObjectModel = curObjectModel;
                         ObjectModelByName.Add(gameObject.ModelName, curObjectModel);
+                        int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                        gameObject.GameObjectDisplayInfoID = gameObjectDisplayInfoID;
+                        GameObjectDisplayInfoIDByModelName.Add(gameObject.ModelName, gameObjectDisplayInfoID);
                     }
                 }
             }
@@ -119,6 +123,9 @@ namespace EQWOWConverter.GameObjects
             // Process the rows
             foreach(Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
+                if (int.Parse(gameObjectsRow["enabled"]) != 1)
+                    continue;
+
                 GameObject newGameObject = new GameObject();
                 newGameObject.ID = int.Parse(gameObjectsRow["id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
