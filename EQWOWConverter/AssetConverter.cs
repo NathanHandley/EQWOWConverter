@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
 using EQWOWConverter.Items;
+using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Player;
@@ -103,13 +104,13 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 creaturesAndSpawnsTask.Wait();
 
-            // Thread 3: Items, Spells, and Tradeskills
+            // Thread 3: Items, Spells, Tradeskills, GameObjects
             List<SpellTemplate> spellTemplates = new List<SpellTemplate>();
             List<TradeskillRecipe> tradeskillRecipes = new List<TradeskillRecipe>();
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, GameObjects] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -120,13 +121,17 @@ namespace EQWOWConverter
                         if (itemTemplatesByWOWEntryID.ContainsKey(itemID) == true)
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
-                // Spells
+                // Spells                                        
                 GenerateCustomSpells(out spellTemplates);
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
+                // GameObjects
+                if (Configuration.GENERATE_OBJECTS == true)
+                    GenerateGameObjects();
+
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills, GameObjects] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsSpellsTradeskillsTask.Wait();
@@ -1259,6 +1264,12 @@ namespace EQWOWConverter
             spellTemplates.Add(nightPhaseSpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");
+        }
+
+        public void GenerateGameObjects()
+        {
+            Logger.WriteInfo("Converting game objects (doors, etc)...");
+            GameObject.GetAllGameObjectsByZoneShortNames();
         }
 
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
