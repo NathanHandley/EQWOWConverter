@@ -15,6 +15,10 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels.Properties;
+using EQWOWConverter.Transports;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.GameObjects
 {
@@ -22,6 +26,7 @@ namespace EQWOWConverter.GameObjects
     {
         protected static Dictionary<string, List<GameObject>> GameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static readonly object GameObjectsLock = new object();
+        protected static Dictionary<string, ObjectModel> ObjectModelByName = new Dictionary<string, ObjectModel>();
 
         public int ID;
         public int DoorID;
@@ -29,8 +34,10 @@ namespace EQWOWConverter.GameObjects
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
         public string ZoneShortName = string.Empty;
         public string ModelName = string.Empty;
+        public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
         public float Orientation;
+        public ObjectModel? ObjectModel = null;
 
         public static Dictionary<string, List<GameObject>> GetAllGameObjectsByZoneShortNames()
         {
@@ -39,6 +46,66 @@ namespace EQWOWConverter.GameObjects
                 if (GameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
                 return GameObjectsByZoneShortname;
+            }
+        }
+
+        public static void LoadModelObjectsForGameObjects()
+        {
+            Logger.WriteInfo("Loading model objects for game objects...");
+            string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
+
+            Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetAllGameObjectsByZoneShortNames();
+            foreach (var gameObjectByShortName in allGameObjectsByZoneShortName)
+            {
+                foreach (GameObject gameObject in gameObjectByShortName.Value)
+                {
+                    if (gameObject.ObjectModel != null)
+                    {
+                        Logger.WriteError("Attempted to LoadModelObjects for GameObject, but one already had a model");
+                        return;
+                    }
+
+                    // Reuse an assigned, otherwise load
+                    if (ObjectModelByName.ContainsKey(gameObject.ModelName) == true)
+                        gameObject.ObjectModel = ObjectModelByName[gameObject.ModelName];
+                    else
+                    {
+                        // Load it
+                        ObjectModel curObjectModel = new ObjectModel(gameObject.ModelName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "'");
+                        curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName); // TODO: Animation
+                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "' complete");
+                        // TODO: Sound
+
+                        // Create the M2 and Skin
+                        string relativeMPQPath = Path.Combine("World", "Everquest", "GameObjects", gameObject.ModelName);
+                        M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
+                        string curGameObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "GameObjects", gameObject.ModelName);
+                        objectM2.WriteToDisk(curObjectModel.Name, curGameObjectOutputFolder);
+
+                        // Place the related textures
+                        string objectTextureFolder = Path.Combine(objectsFolderRoot, "textures");
+                        foreach (ObjectModelTexture texture in curObjectModel.ModelTextures)
+                        {
+                            string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
+                            string outputTextureName = Path.Combine(curGameObjectOutputFolder, texture.TextureName + ".blp");
+                            if (Path.Exists(inputTextureName) == false)
+                            {
+                                Logger.WriteError("- [" + curObjectModel.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                                return;
+                            }
+                            FileTool.CopyFile(inputTextureName, outputTextureName);
+                            Logger.WriteDebug("- [" + curObjectModel.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                        }
+
+                        // Store it
+                        //int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
+                        gameObject.ObjectModel = curObjectModel;
+                        ObjectModelByName.Add(gameObject.ModelName, curObjectModel);
+                    }
+                }
             }
         }
 
@@ -68,6 +135,7 @@ namespace EQWOWConverter.GameObjects
                 if (eqHeading != 0)
                     wowHeading = eqHeading / (256f / 360f);
                 newGameObject.Orientation = wowHeading;
+                newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
 
                 // Add it
                 if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)

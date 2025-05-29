@@ -1269,7 +1269,12 @@ namespace EQWOWConverter
         public void GenerateGameObjects()
         {
             Logger.WriteInfo("Converting game objects (doors, etc)...");
+
+            // Get the initial list
             GameObject.GetAllGameObjectsByZoneShortNames();
+
+            // Load the models
+            GameObject.LoadModelObjectsForGameObjects();
         }
 
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
@@ -2153,6 +2158,17 @@ namespace EQWOWConverter
                 }
             }
 
+            // GameObjects
+            if (Configuration.GENERATE_OBJECTS == true)
+            {
+
+
+
+
+
+
+            }
+
             // Graveyards
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
@@ -2754,6 +2770,22 @@ namespace EQWOWConverter
                     int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
                     creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
                         graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true, string.Empty);
+                }
+            }
+
+            // Game Objects
+            if (Configuration.GENERATE_OBJECTS == true)
+            {
+                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetAllGameObjectsByZoneShortNames();
+                foreach(var gameObjectByShortName in gameObjectsByZoneShortNames)
+                {
+                    // Skip invalid objects (zones not loaded)
+                    if (zonePropertiesByShortName.ContainsKey(gameObjectByShortName.Key) == false)
+                        continue;
+
+
+
+
                 }
             }
 
