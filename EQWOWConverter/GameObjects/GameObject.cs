@@ -53,6 +53,26 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
+        public static Dictionary<string, int> GetGameObjectDisplayInfoIDsByModelName()
+        {
+            lock (GameObjectsLock)
+            {
+                if (GameObjectDisplayInfoIDByModelName.Count == 0)
+                    Logger.WriteError("GetGameObjectDisplayInfoIDsByModelName called before models were loaded");
+                return GameObjectDisplayInfoIDByModelName;
+            }
+        }
+
+        public static Dictionary<string, ObjectModel> GetObjectModelsByName()
+        {
+            lock (GameObjectsLock)
+            {
+                if (ObjectModelByName.Count == 0)
+                    Logger.WriteError("GetObjectModelsByName called before models were loaded");
+                return ObjectModelByName;
+            }
+        }
+
         public static void LoadModelObjectsForGameObjects()
         {
             Logger.WriteInfo("Loading model objects for game objects...");
@@ -73,7 +93,10 @@ namespace EQWOWConverter.GameObjects
 
                     // Reuse an assigned, otherwise load
                     if (ObjectModelByName.ContainsKey(gameObject.ModelName) == true)
+                    {
                         gameObject.ObjectModel = ObjectModelByName[gameObject.ModelName];
+                        gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDByModelName[gameObject.ModelName];
+                    }
                     else
                     {
                         // Load it

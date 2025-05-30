@@ -2161,12 +2161,15 @@ namespace EQWOWConverter
             // GameObjects
             if (Configuration.GENERATE_OBJECTS == true)
             {
-
-
-
-
-
-
+                Dictionary<string, int> gameObjectDisplayInfoIDsByModelName = GameObject.GetGameObjectDisplayInfoIDsByModelName();
+                Dictionary<string, ObjectModel> objectModelsByName = GameObject.GetObjectModelsByName();
+                foreach (string modelName in gameObjectDisplayInfoIDsByModelName.Keys)
+                {
+                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", modelName, modelName + ".mdx");
+                    gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelName[modelName],
+                        relativeObjectFileName.ToLower(),
+                        objectModelsByName[modelName].BoundingBox);
+                }
             }
 
             // Graveyards
