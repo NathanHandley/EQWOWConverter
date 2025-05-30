@@ -23,9 +23,9 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject_template_addon WHERE `entry` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `entry` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRowForLiftTrigger(int entryID)
+        public void AddRowNoDespawn(int entryID)
         {
-            AddRow(entryID, 0, 32, 0, 0, 0, 0, 0, 0); // Flag 1 = don't allow while in use, and 32 = nodespawn
+            AddRow(entryID, 0, 32, 0, 0, 0, 0, 0, 0); // 32 = no despawn
         }
 
         public void AddRowForTransport(int entryID)

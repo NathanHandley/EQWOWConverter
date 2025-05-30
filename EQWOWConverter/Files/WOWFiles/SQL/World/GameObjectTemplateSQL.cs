@@ -14,11 +14,13 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.GameObjects;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class GameObjectTemplateSQL : SQLFile
     {
-        private static int CUR_ID = Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START;
+        //private static int CUR_ID = Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START;
 
         public override string DeleteRowSQL()
         {
@@ -38,6 +40,11 @@ namespace EQWOWConverter.WOWFiles
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
             AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, string.Empty);
+        }
+
+        public void AddRowForGameObject(string name, GameObject gameObject)
+        {
+            AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, string.Empty);
         }
 
         public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, string scriptName)
@@ -81,11 +88,11 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        public static int GenerateID()
-        {
-            int id = CUR_ID;
-            CUR_ID++;
-            return id;
-        }
+        //public static int GenerateID()
+        //{
+        //    int id = CUR_ID;
+        //    CUR_ID++;
+        //    return id;
+        //}
     }
 }

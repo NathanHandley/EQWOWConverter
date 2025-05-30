@@ -574,6 +574,8 @@ namespace EQWOWConverter
         public static readonly int SQL_GAMEEVENT_ID_NIGHT = 126;
 
         // Start and end IDs for gameobject_template rows
+        // - GameObjects.csv owns rows 270000 - 274999
+        // - TarnsportLifts.csv and TransportLiftTriggers.csv own rows 279900 - 279999
         public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_START = 270000;
         public static readonly int SQL_GAMEOBJECTTEMPLATE_ID_END = 279999;
 

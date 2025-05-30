@@ -2508,6 +2508,9 @@ namespace EQWOWConverter
                     areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
                 }
             }
+            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
 
             // Pre-generate class trainer menus
             Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
@@ -2782,10 +2785,19 @@ namespace EQWOWConverter
                     // Skip invalid objects (zones not loaded)
                     if (zonePropertiesByShortName.ContainsKey(gameObjectByShortName.Key) == false)
                         continue;
+                    int areaID = 0;
+                    foreach (Zone zone in zones)
+                        if (zone.ShortName.ToLower().Trim() == gameObjectByShortName.Key)
+                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
-
-
-
+                    foreach (GameObject gameObject in gameObjectByShortName.Value)
+                    {
+                        string name = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName);
+                        int mapID = mapIDsByShortName[gameObjectByShortName.Key];
+                        gameObjectSQL.AddRow(gameObject.GameObjectID, gameObject.GameObjectTemplateID, mapID, areaID, gameObject.Position, gameObject.Orientation);
+                        gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
+                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateID);
+                    }
                 }
             }
 
@@ -2804,11 +2816,9 @@ namespace EQWOWConverter
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
             {
                 // Restrict to loaded zones
-                Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
                 Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
                 foreach (Zone zone in zones)
                 {
-                    mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
                     areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
                 }
                 foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
@@ -2953,9 +2963,6 @@ namespace EQWOWConverter
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
             {
-                Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-                foreach (Zone zone in zones)
-                    mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
                 foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
                 {
                     // Only add this transport ship if the full path is zones that are loaded
@@ -2992,7 +2999,6 @@ namespace EQWOWConverter
                             areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
                     string name = "Lift EQ (" + transportLift.Name + ")";
-                    string longName = transportLift.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
                     gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
                     gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
@@ -3012,10 +3018,9 @@ namespace EQWOWConverter
                             areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
 
                     string name = transportLiftTrigger.Name;
-                    string longName = "EQ Lift Trigger " + transportLiftTrigger.SpawnZoneShortName + " (" + name + ")";
                     int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
                     gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
-                    gameObjectTemplateAddonSQL.AddRowForLiftTrigger(transportLiftTrigger.GameObjectTemplateID);
+                    gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
                         transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
                 }

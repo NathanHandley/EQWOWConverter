@@ -39,6 +39,8 @@ namespace EQWOWConverter.GameObjects
         public Vector3 Position = new Vector3();
         public float Orientation;
         public ObjectModel? ObjectModel = null;
+        public int GameObjectID;
+        public int GameObjectTemplateID;
         public int GameObjectDisplayInfoID = -1;
 
         public static Dictionary<string, List<GameObject>> GetAllGameObjectsByZoneShortNames()
@@ -128,6 +130,7 @@ namespace EQWOWConverter.GameObjects
 
                 GameObject newGameObject = new GameObject();
                 newGameObject.ID = int.Parse(gameObjectsRow["id"]);
+                newGameObject.GameObjectTemplateID = int.Parse(gameObjectsRow["gotemplate_id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
                 newGameObject.ObjectType = GetType(gameObjectsRow["type"]);
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
@@ -143,6 +146,7 @@ namespace EQWOWConverter.GameObjects
                     wowHeading = eqHeading / (256f / 360f);
                 newGameObject.Orientation = wowHeading;
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
+                newGameObject.GameObjectID = GameObjectSQL.GenerateGUID();
 
                 // Add it
                 if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
