@@ -289,6 +289,9 @@ namespace EQWOWConverter
         // How much space between each step of a ladder along the Z axis (value is before world scaling)
         public static readonly float OBJECT_STATIC_LADDER_STEP_DISTANCE = 0.5f;
 
+        // How long (in ms) the open/close animation will be for game objects
+        public static readonly int OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS = 1000;
+
         //=====================================================================
         // Creatures
         //=====================================================================

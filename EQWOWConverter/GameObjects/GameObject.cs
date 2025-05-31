@@ -106,7 +106,27 @@ namespace EQWOWConverter.GameObjects
                         // Load it
                         ObjectModel curObjectModel = new ObjectModel(gameObject.ModelName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "'");
-                        curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0.7071f, 1000);
+                        switch(gameObject.ObjectType)
+                        {
+                            case GameObjectType.Door:
+                                {
+                                    switch (gameObject.OpenType)
+                                    {
+                                        case GameObjectOpenType.TYPE7:
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            } break;
+                                        default:
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            } break;
+                                    }
+                                } break;
+                            default:
+                                {
+                                    Logger.WriteError("When trying to create the object model for a gameobject, this object type is not implemented: " + gameObject.ObjectType);
+                                } break;
+                        }
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "' complete");
 
                         // Attach sounds

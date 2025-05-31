@@ -20,6 +20,7 @@ namespace EQWOWConverter.Common
     {
         SlideUpDown,
         RotateAroundZClockwiseHalf,
+        RotateAroundZCounterclockwiseQuarter,
         RotateAroundZClockwiseQuarter
     }
 }
