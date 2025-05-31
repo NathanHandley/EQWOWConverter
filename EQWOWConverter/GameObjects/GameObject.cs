@@ -148,14 +148,18 @@ namespace EQWOWConverter.GameObjects
             // Process the rows
             foreach(Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
+                // Only process some for now
                 if (int.Parse(gameObjectsRow["enabled"]) != 1)
+                    continue;
+                GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
+                if (gameObjectType != GameObjectType.Door)
                     continue;
 
                 GameObject newGameObject = new GameObject();
                 newGameObject.ID = int.Parse(gameObjectsRow["id"]);
                 newGameObject.GameObjectTemplateID = int.Parse(gameObjectsRow["gotemplate_id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
-                newGameObject.ObjectType = GetType(gameObjectsRow["type"]);
+                newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
                 newGameObject.ModelName = gameObjectsRow["name"];
@@ -163,13 +167,19 @@ namespace EQWOWConverter.GameObjects
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
-                float eqHeading = float.Parse(gameObjectsRow["heading"]);
-                float wowHeading = 0;
-                if (eqHeading != 0)
-                    wowHeading = eqHeading / (256f / 360f);
-                newGameObject.Orientation = wowHeading;
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectID = GameObjectSQL.GenerateGUID();
+
+                // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
+                float eqHeading = float.Parse(gameObjectsRow["heading"]);
+                if (eqHeading == 0)
+                    newGameObject.Orientation = MathF.PI;
+                if (eqHeading != 0)
+                {
+                    float orientationInDegrees = (eqHeading / 512) * 360;
+                    float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
+                    newGameObject.Orientation = orientationInRadians + MathF.PI;
+                }
 
                 // Add it
                 if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
