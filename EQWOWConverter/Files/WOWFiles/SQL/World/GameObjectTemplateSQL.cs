@@ -29,25 +29,25 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, string.Empty);
+            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, 1, string.Empty);
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)
         {
-            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, string.Empty);
+            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 1, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, string.Empty);
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 1, string.Empty);
         }
 
         public void AddRowForGameObject(string name, GameObject gameObject)
         {
-            AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, string.Empty);
+            AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, string.Empty);
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, string scriptName)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, float scale, string scriptName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -57,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddString("IconName", 100, string.Empty);
             newRow.AddString("castBarCaption", 100, string.Empty);
             newRow.AddString("unk1", 100, string.Empty);
-			newRow.AddFloat("size", 1);
+			newRow.AddFloat("size", scale);
             newRow.AddInt("Data0", data0);
             newRow.AddInt("Data1", data1);
             newRow.AddInt("Data2", data2); 
