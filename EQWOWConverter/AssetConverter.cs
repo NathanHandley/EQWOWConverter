@@ -1275,6 +1275,19 @@ namespace EQWOWConverter
 
             // Load the models
             GameObject.LoadModelObjectsForGameObjects();
+
+            // Sounds
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
+            {
+                string outputGameObjectSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "GameObjects");
+                if (Directory.Exists(outputGameObjectSoundFolder) == false)
+                    FileTool.CreateBlankDirectory(outputGameObjectSoundFolder, true);
+                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                string targetFullPath = Path.Combine(outputGameObjectSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
         }
 
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
@@ -2161,15 +2174,25 @@ namespace EQWOWConverter
             // GameObjects
             if (Configuration.GENERATE_OBJECTS == true)
             {
-                Dictionary<string, int> gameObjectDisplayInfoIDsByModelName = GameObject.GetGameObjectDisplayInfoIDsByModelName();
-                Dictionary<string, ObjectModel> objectModelsByName = GameObject.GetObjectModelsByName();
-                foreach (string modelName in gameObjectDisplayInfoIDsByModelName.Keys)
+                Dictionary<(string, GameObjectOpenType), int> gameObjectDisplayInfoIDsByModelNameAndOpenType = GameObject.GetGameObjectDisplayInfoIDsByModelNameAndOpenType();
+                Dictionary<(string, GameObjectOpenType), ObjectModel> gameObjectModelsByNameAndOpenType = GameObject.GetObjectModelsByNameAndOpenType();
+                Dictionary<(string, GameObjectOpenType), Sound> openSoundsByModelNameAndOpenType = GameObject.OpenSoundsByModelNameAndOpenType;
+                Dictionary<(string, GameObjectOpenType), Sound> closeSoundsByModelNameAndOpenType = GameObject.CloseSoundsByModelNameAndOpenType;
+                foreach (ValueTuple<string, GameObjectOpenType> nameAndOpenType in gameObjectDisplayInfoIDsByModelNameAndOpenType.Keys)
                 {
-                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", modelName, modelName + ".mdx");
-                    gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelName[modelName],
+                    // Sounds
+                    int openSoundEntryID = openSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
+                    int closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
+
+                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", nameAndOpenType.Item1, nameAndOpenType.Item1 + ".mdx");
+                    gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
                         relativeObjectFileName.ToLower(),
-                        objectModelsByName[modelName].BoundingBox);
+                        gameObjectModelsByNameAndOpenType[nameAndOpenType].BoundingBox, 
+                        openSoundEntryID, closeSoundEntryID);
                 }
+                string soundDirectoryRelative = Path.Combine("Sound", "GameObjects");
+                foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
+                    soundEntriesDBC.AddRow(sound, sound.AudioFileNameNoExt + ".wav", soundDirectoryRelative);
             }
 
             // Graveyards

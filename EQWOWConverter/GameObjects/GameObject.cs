@@ -17,7 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
-using EQWOWConverter.Transports;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.GameObjects
@@ -26,8 +25,11 @@ namespace EQWOWConverter.GameObjects
     {
         protected static Dictionary<string, List<GameObject>> GameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static readonly object GameObjectsLock = new object();
-        protected static Dictionary<string, ObjectModel> ObjectModelByName = new Dictionary<string, ObjectModel>();
-        protected static Dictionary<string, int> GameObjectDisplayInfoIDByModelName = new Dictionary<string, int>();
+        protected static Dictionary<(string, GameObjectOpenType), ObjectModel> ObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
+        protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
+        public static Dictionary<(string, GameObjectOpenType), Sound> OpenSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
+        public static Dictionary<(string, GameObjectOpenType), Sound> CloseSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
+        public static Dictionary<string, Sound> AllSoundsBySoundName = new Dictionary<string, Sound>();
 
         public int ID;
         public int DoorID;
@@ -42,6 +44,8 @@ namespace EQWOWConverter.GameObjects
         public int GameObjectID;
         public int GameObjectTemplateID;
         public int GameObjectDisplayInfoID = -1;
+        public Sound? OpenSound = null;
+        public Sound? CloseSound = null;
 
         public static Dictionary<string, List<GameObject>> GetAllGameObjectsByZoneShortNames()
         {
@@ -53,23 +57,23 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static Dictionary<string, int> GetGameObjectDisplayInfoIDsByModelName()
+        public static Dictionary<(string, GameObjectOpenType), int> GetGameObjectDisplayInfoIDsByModelNameAndOpenType()
         {
             lock (GameObjectsLock)
             {
-                if (GameObjectDisplayInfoIDByModelName.Count == 0)
-                    Logger.WriteError("GetGameObjectDisplayInfoIDsByModelName called before models were loaded");
-                return GameObjectDisplayInfoIDByModelName;
+                if (GameObjectDisplayInfoIDsByModelNameAndOpenType.Count == 0)
+                    Logger.WriteError("GameObjectDisplayInfoIDsByModelNameAndOpenType called before models were loaded");
+                return GameObjectDisplayInfoIDsByModelNameAndOpenType;
             }
         }
 
-        public static Dictionary<string, ObjectModel> GetObjectModelsByName()
+        public static Dictionary<(string, GameObjectOpenType), ObjectModel> GetObjectModelsByNameAndOpenType()
         {
             lock (GameObjectsLock)
             {
-                if (ObjectModelByName.Count == 0)
-                    Logger.WriteError("GetObjectModelsByName called before models were loaded");
-                return ObjectModelByName;
+                if (ObjectModelsByNameAndOpenType.Count == 0)
+                    Logger.WriteError("ObjectModelsByNameAndOpenType called before models were loaded");
+                return ObjectModelsByNameAndOpenType;
             }
         }
 
@@ -92,10 +96,10 @@ namespace EQWOWConverter.GameObjects
                     }
 
                     // Reuse an assigned, otherwise load
-                    if (ObjectModelByName.ContainsKey(gameObject.ModelName) == true)
+                    if (ObjectModelsByNameAndOpenType.ContainsKey((gameObject.ModelName, gameObject.OpenType)) == true)
                     {
-                        gameObject.ObjectModel = ObjectModelByName[gameObject.ModelName];
-                        gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDByModelName[gameObject.ModelName];
+                        gameObject.ObjectModel = ObjectModelsByNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
+                        gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByModelNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
                     }
                     else
                     {
@@ -104,7 +108,12 @@ namespace EQWOWConverter.GameObjects
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "'");
                         curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0.7071f, 1000);
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "' complete");
-                        // TODO: Sound
+
+                        // Attach sounds
+                        if (gameObject.OpenSound != null)
+                            curObjectModel.SoundsByAnimationType.Add(AnimationType.Open, gameObject.OpenSound);
+                        if (gameObject.CloseSound != null)
+                            curObjectModel.SoundsByAnimationType.Add(AnimationType.Close, gameObject.CloseSound);
 
                         // Create the M2 and Skin
                         string relativeMPQPath = Path.Combine("World", "Everquest", "GameObjects", gameObject.ModelName);
@@ -129,10 +138,10 @@ namespace EQWOWConverter.GameObjects
 
                         // Store it
                         gameObject.ObjectModel = curObjectModel;
-                        ObjectModelByName.Add(gameObject.ModelName, curObjectModel);
+                        ObjectModelsByNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), curObjectModel);
                         int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                         gameObject.GameObjectDisplayInfoID = gameObjectDisplayInfoID;
-                        GameObjectDisplayInfoIDByModelName.Add(gameObject.ModelName, gameObjectDisplayInfoID);
+                        GameObjectDisplayInfoIDsByModelNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), gameObjectDisplayInfoID);
                     }
                 }
             }
@@ -180,6 +189,15 @@ namespace EQWOWConverter.GameObjects
                     float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
+
+                // Sounds
+                GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
+                if (newGameObject.OpenSound != null)
+                    if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
+                        OpenSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.OpenSound);
+                if (newGameObject.CloseSound != null)
+                    if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
+                        CloseSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.CloseSound);
 
                 // Add it
                 if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
@@ -264,6 +282,117 @@ namespace EQWOWConverter.GameObjects
                         return GameObjectType.Unknown;
                     }
 
+            }
+        }
+
+        // The sound data references here was shared from "kicnlag" from the Project Latern project, 3/13/2025
+        private static void GetSoundsForOpenType(GameObjectOpenType openType, out Sound openSound, out Sound closeSound)
+        {
+            switch (openType)
+            {
+                case GameObjectOpenType.TYPE0: // STANDARD_WOOD
+                case GameObjectOpenType.TYPE5: // STANDARD_WOOD_CLOCKWISE
+                    {
+                        openSound = GetSound("doorwd_o.wav");
+                        closeSound = GetSound("doorwd_c.wav");
+                    } break;
+                case GameObjectOpenType.TYPE1: // STANDARD_METAL
+                case GameObjectOpenType.TYPE6: // STANDARD_METAL_CLOCKWISE
+                    {
+                        openSound = GetSound("doormt_o.wav");
+                        closeSound = GetSound("doormt_c.wav");
+                    } break;
+                case GameObjectOpenType.TYPE2: // STANDARD_STONE
+                case GameObjectOpenType.TYPE7: // STANDARD_STONE_CLOCKWISE
+                case GameObjectOpenType.TYPE74: // Marble door in Skyshrine
+                case GameObjectOpenType.TYPE140: // BLOCK_ON_CHAIN
+                case GameObjectOpenType.TYPE145:
+                    {
+                        openSound = GetSound("doorst_o.wav");
+                        closeSound = GetSound("doorst_c.wav");
+                    } break;
+                case GameObjectOpenType.TYPE10: // SMALL_SLIDING
+                case GameObjectOpenType.TYPE12: // SMALL_SLIDING_STONE
+                case GameObjectOpenType.TYPE15: // MEDIUM_SLIDING
+                case GameObjectOpenType.TYPE16: // MEDIUM_SLIDING_METAL
+                case GameObjectOpenType.TYPE17: // MEDIUM_SLIDING_STONE
+                case GameObjectOpenType.TYPE21: // LARGE_SLIDING_METAL
+                case GameObjectOpenType.TYPE22: // LARGE_SLIDING_STONE
+                case GameObjectOpenType.TYPE25:
+                case GameObjectOpenType.TYPE26: // GIANT_SLIDING_METAL
+                    {
+                        openSound = GetSound("sldorsto.wav");
+                        closeSound = GetSound("sldorstc.wav");
+                    } break;
+                case GameObjectOpenType.TYPE30: // DRAW_BRIDGE
+                    {
+                        openSound = GetSound("dbrdg_lp.wav");
+                        closeSound = GetSound("dbrdgstp.wav");
+                    } break;
+                case GameObjectOpenType.TYPE35:
+                    {
+                        openSound = GetSound("trapdoor.wav");
+                        closeSound = GetSound("trapdoor.wav");
+                    } break;
+                case GameObjectOpenType.TYPE40: // LEVER
+                case GameObjectOpenType.TYPE45: // TOGGLE
+                    {
+                        openSound = GetSound("lever.wav");
+                        closeSound = GetSound("lever.wav");
+                    } break;
+                case GameObjectOpenType.TYPE59: // ELEVATOR
+                    {
+                        openSound = GetSound("elevloop.wav");
+                        closeSound = GetSound("elevloop.wav");
+                    } break;
+                case GameObjectOpenType.TYPE60: // SMALL_SLIDING_UPWARDS
+                case GameObjectOpenType.TYPE61: // SMALL_SLIDING_UPWARDS_METAL
+                case GameObjectOpenType.TYPE65: // MEDIUM_SLIDING_UPWARDS
+                case GameObjectOpenType.TYPE66: // MEDIUM_SLIDING_UPWARDS_METAL
+                case GameObjectOpenType.TYPE70: // LARGE_SLIDING_UPWARDS
+                case GameObjectOpenType.TYPE71: // LARGE_SLIDING_UPWARDS_METAL
+                case GameObjectOpenType.TYPE72: // LARGE_SLIDING_UPWARDS_STONE
+                case GameObjectOpenType.TYPE75: // GIANT_SLIDING_UPWARDS
+                case GameObjectOpenType.TYPE76: // GIANT_SLIDING_UPWARDS_METAL
+                case GameObjectOpenType.TYPE77:
+                    {
+                        openSound = GetSound("portc_lp.wav");
+                        closeSound = GetSound("portcstp.wav");
+                    } break;                
+                case GameObjectOpenType.TYPE120: // SPEAR_DOWN
+                    {
+                        openSound = GetSound("speardn.wav");
+                        closeSound = GetSound("speardn.wav");
+                    } break;
+                case GameObjectOpenType.TYPE125: // SPEAR_UP
+                    {
+                        openSound = GetSound("spearup.wav");
+                        closeSound = GetSound("spearup.wav");
+                    } break;
+                case GameObjectOpenType.TYPE130: // PENDULUM
+                    {
+                        openSound = GetSound("null1.wav");
+                        closeSound = GetSound("null1.wav");
+                    } break;
+                default:
+                    {
+                        openSound = GetSound("null1.wav");
+                        closeSound = GetSound("null1.wav");
+                        Logger.WriteError("Unhandled GameObject open type of " + openType);
+                    } break;
+            }
+        }
+
+        private static Sound GetSound(string soundName)
+        {
+            if (AllSoundsBySoundName.ContainsKey(soundName.Trim()) == true)
+                return AllSoundsBySoundName[soundName.Trim()];
+            else
+            {
+                string name = "EQ GameObject " + Path.GetFileNameWithoutExtension(soundName);
+                Sound returnSound = new Sound(name, Path.GetFileNameWithoutExtension(soundName), SoundType.GameObject, 8, 20, false);
+                AllSoundsBySoundName.Add(soundName.Trim(), returnSound);
+                return returnSound;
             }
         }
     }
