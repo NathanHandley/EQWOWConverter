@@ -78,7 +78,7 @@ namespace EQWOWConverter.ObjectModels
         }
 
         public void LoadEQObjectFromFile(string inputRootFolder, string eqInputObjectFileName, CreatureModelTemplate? creatureModelTemplate = null,
-            ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
+            ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimSlideValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             if (IsLoaded == true)
             {
@@ -99,12 +99,12 @@ namespace EQWOWConverter.ObjectModels
 
             // Load it
             Load(EQObjectModelData.Materials, EQObjectModelData.MeshData, EQObjectModelData.CollisionVertices, EQObjectModelData.CollisionTriangleFaces,
-                activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
+                activeDoodadAnimationType, activeDoodadAnimSlideValue, activeDoodadAnimTimeInMS);
         }
 
         // TODO: Vertex Colors
         public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
+            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimSlideValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             if (IsLoaded == true)
             {
@@ -166,7 +166,7 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(0);
 
             // Build the bones and animation structures
-            ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
+            ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimSlideValue, activeDoodadAnimTimeInMS);
 
             // Collision data
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
@@ -182,7 +182,7 @@ namespace EQWOWConverter.ObjectModels
             IsLoaded = true;
         }
 
-        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimModValue = 0, int activeDoodadAnimTimeInMS = 0)
+        private void ProcessBonesAndAnimation(ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimSlideValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             // Static types
             if ((!IsSkeletal) && EQObjectModelData.Animations.Count == 0)
@@ -203,7 +203,7 @@ namespace EQWOWConverter.ObjectModels
                 else
                 {
                     // For lift triggers, there is animation build-out that occurs specific to the behavior of it
-                    BuildAnimationsForActiveDoodad(activeDoodadAnimationType, activeDoodadAnimModValue, activeDoodadAnimTimeInMS);
+                    BuildAnimationsForActiveDoodad(activeDoodadAnimationType, activeDoodadAnimSlideValue, activeDoodadAnimTimeInMS);
                 }
             }
 
@@ -298,7 +298,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimModValue, int activeDoodadAnimTimeInMS)
+        private void BuildAnimationsForActiveDoodad(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS)
         {
             // Associate all of the verts with the single bone that should already be set up
             if (ModelBones.Count == 0)
@@ -323,7 +323,7 @@ namespace EQWOWConverter.ObjectModels
             // Scale the mod value if translation
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.SlideUpDown: activeDoodadAnimModValue *= Configuration.GENERATE_WORLD_SCALE; break;
+                case ActiveDoodadAnimType.SlideUpDown: activeDoodadAnimSlideValue *= Configuration.GENERATE_WORLD_SCALE; break;
                 default: break; // nothing
             }
 
@@ -338,13 +338,19 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.SlideUpDown:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimSlideValue));
                     } break;
-                case ActiveDoodadAnimType.RotateAroundZ:
+                case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
                         ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
-                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, activeDoodadAnimModValue, 1));
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, 1f, 0));
                     } break;
+                case ActiveDoodadAnimType.RotateAroundZClockwiseQuarter:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, 0, new QuaternionShort());
+                        ModelBones[0].RotationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, 0.7071f, 0.7071f));
+                    }
+                    break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
             }
             ModelAnimations.Add(animationOpen);
@@ -359,11 +365,16 @@ namespace EQWOWConverter.ObjectModels
             {
                 case ActiveDoodadAnimType.SlideUpDown:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimSlideValue));
                     } break;
-                case ActiveDoodadAnimType.RotateAroundZ:
+                case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
-                        ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, activeDoodadAnimModValue, 1));
+                        ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, 1f, 0));
+                    }
+                    break;
+                case ActiveDoodadAnimType.RotateAroundZClockwiseQuarter:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, 0.7071f, 0.7071f));
                     }
                     break;
                 default: Logger.WriteError("BuildAnimationsForActiveDoodad failed due to unhandled ActiveDoodadAnimType of '" + activeDoodadAnimationType + "'"); return;
@@ -380,13 +391,19 @@ namespace EQWOWConverter.ObjectModels
             {
                 case ActiveDoodadAnimType.SlideUpDown:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimModValue));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimSlideValue));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));
                     }
                     break;
-                case ActiveDoodadAnimType.RotateAroundZ:
+                case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
-                        ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort(0, 0, activeDoodadAnimModValue * -1, 1));
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort(0, 0, 1f, 0));
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort());
+                    }
+                    break;
+                case ActiveDoodadAnimType.RotateAroundZClockwiseQuarter:
+                    {
+                        ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort(0, 0, 0.7071f, 0.7071f));
                         ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort());
                     }
                     break;

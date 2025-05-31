@@ -70,7 +70,7 @@ namespace EQWOWConverter.Transports
                 switch (columns["anim_type"].ToLower().Trim())
                 {
                     case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.SlideUpDown; break;
-                    case "rot_z": curLiftTrigger.AnimationType = ActiveDoodadAnimType.RotateAroundZ; break;
+                    case "rot_z": curLiftTrigger.AnimationType = ActiveDoodadAnimType.RotateAroundZClockwiseHalf; break;
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
                 curLiftTrigger.GameObjectTemplateID = int.Parse(columns["gotemplate_id"]);

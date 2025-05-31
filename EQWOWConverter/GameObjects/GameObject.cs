@@ -102,7 +102,7 @@ namespace EQWOWConverter.GameObjects
                         // Load it
                         ObjectModel curObjectModel = new ObjectModel(gameObject.ModelName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "'");
-                        curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName); // TODO: Animation
+                        curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0.7071f, 1000);
                         Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "' complete");
                         // TODO: Sound
 

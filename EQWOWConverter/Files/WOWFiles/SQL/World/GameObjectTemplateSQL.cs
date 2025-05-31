@@ -44,7 +44,25 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForGameObject(string name, GameObject gameObject)
         {
-            AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, string.Empty);
+            switch (gameObject.ObjectType)
+            {
+                case GameObjects.GameObjectType.Door:
+                    {
+                        AddRow(gameObject.GameObjectTemplateID, 
+                            0, // Door
+                            gameObject.GameObjectDisplayInfoID, name, 
+                            0, // Start open
+                            0, // "ID" from Lock.dbc
+                            5000, // Autoclose time in MS
+                            0, gameObject.Scale, string.Empty);
+                    }
+                    break;
+                default:
+                    {
+                        AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, string.Empty);
+                    }
+                    break;
+            }
         }
 
         public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, float scale, string scriptName)
