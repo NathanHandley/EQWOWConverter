@@ -2795,7 +2795,7 @@ namespace EQWOWConverter
 
                     foreach (GameObject gameObject in gameObjectByShortName.Value)
                     {
-                        string name = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName);
+                        string name = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
                         gameObjectSQL.AddRow(gameObject.GameObjectID, gameObject.GameObjectTemplateID, mapID, areaID, gameObject.Position, gameObject.Orientation);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
