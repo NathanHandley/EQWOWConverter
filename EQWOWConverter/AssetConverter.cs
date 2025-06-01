@@ -2829,7 +2829,7 @@ namespace EQWOWConverter
                             name = comment;
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
                         gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
-                        gameObjectTemplateSQL.AddRowForGameObject(comment, gameObject);
+                        gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
 
                         // Attach any smart scripts
