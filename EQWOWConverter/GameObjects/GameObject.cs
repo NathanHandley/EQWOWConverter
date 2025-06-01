@@ -137,12 +137,18 @@ namespace EQWOWConverter.GameObjects
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE12:
-                                        case GameObjectOpenType.TYPE15: 
+                                        case GameObjectOpenType.TYPE15:
+                                        case GameObjectOpenType.TYPE17: // TODO: Test, neraikc
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
+                                        case GameObjectOpenType.TYPE65: // TODO: Test, neriakc
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            } break;
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
+                                        case GameObjectOpenType.TYPE16: // TODO: Only one, HHCELL in "hole".  Check it
                                         default:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
