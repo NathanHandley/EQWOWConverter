@@ -29,17 +29,17 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForTransportShip(int entryID, int displayID, string name, int taxiPathID, int spawnMap)
         {
-            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, 1, string.Empty);
+            AddRow(entryID, 15, displayID, name, taxiPathID, Configuration.TRANSPORT_MOVE_SPEED, Configuration.TRANSPORT_ACCELERATION, spawnMap, 0, 1, string.Empty);
         }
 
         public void AddRowForTransportLift(int entryID, int displayID, string name, int endTimestamp)
         {
-            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 1, string.Empty);
+            AddRow(entryID, 11, displayID, name, endTimestamp, 0, 0, 0, 0, 1, string.Empty);
         }
 
         public void AddRowForTransportLiftTrigger(int entryID, int displayID, string name, int resetInMS)
         {
-            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 1, string.Empty);
+            AddRow(entryID, 1, displayID, name, 0, 0, resetInMS, 0, 0, 1, string.Empty);
         }
 
         public void AddRowForGameObject(string name, GameObject gameObject)
@@ -58,18 +58,19 @@ namespace EQWOWConverter.WOWFiles
                             0, // Start open
                             0, // "ID" from Lock.dbc
                             Configuration.OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS, // Autoclose time in MS
+                            1, // "Area of Interest" is set to infinite (see from any distance)
                             0, gameObject.Scale, aiName);
                     }
                     break;
                 default:
                     {
-                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, aiName);
+                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, gameObject.Scale, aiName);
                     }
                     break;
             }
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, float scale, string aiName)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, int data10, float scale, string aiName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -90,7 +91,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Data7", 0);
             newRow.AddInt("Data8", 0);
             newRow.AddInt("Data9", 0);
-            newRow.AddInt("Data10", 0);
+            newRow.AddInt("Data10", data10);
             newRow.AddInt("Data11", 0);
             newRow.AddInt("Data12", 0);
             newRow.AddInt("Data13", 0);
