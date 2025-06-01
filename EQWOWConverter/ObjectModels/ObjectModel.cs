@@ -166,6 +166,7 @@ namespace EQWOWConverter.ObjectModels
             ModelReplaceableTextureLookups.Add(0);
 
             // Build the bones and animation structures
+            // Note: Must come after bounding box generation (in GenerateModelVertices)
             ProcessBonesAndAnimation(activeDoodadAnimationType, activeDoodadAnimSlideValue, activeDoodadAnimTimeInMS);
 
             // Collision data
@@ -320,10 +321,10 @@ namespace EQWOWConverter.ObjectModels
             ModelBones[0].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
             ModelBones[0].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
 
-            // Scale the mod value if translation
+            // Scale the mod value if translation and mod controlled
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.SlideUpDown: activeDoodadAnimSlideValue *= Configuration.GENERATE_WORLD_SCALE; break;
+                case ActiveDoodadAnimType.SlideUpDownWithMod: activeDoodadAnimSlideValue *= Configuration.GENERATE_WORLD_SCALE; break;
                 default: break; // nothing
             }
 
@@ -335,10 +336,15 @@ namespace EQWOWConverter.ObjectModels
             animationOpen.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.SlideUpDown:
+                case ActiveDoodadAnimType.SlideUpDownWithMod:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimSlideValue));
+                    } break;
+                case ActiveDoodadAnimType.SlideLeft:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, BoundingBox.GetYDistance(), 0));
                     } break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
@@ -369,10 +375,15 @@ namespace EQWOWConverter.ObjectModels
             animationOpened.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.SlideUpDown:
+                case ActiveDoodadAnimType.SlideUpDownWithMod:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, activeDoodadAnimSlideValue));
                     } break;
+                case ActiveDoodadAnimType.SlideLeft:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, BoundingBox.GetYDistance(), 0));
+                    }
+                    break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
                         ModelBones[0].RotationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new QuaternionShort(0, 0, 1f, 0));
@@ -400,10 +411,16 @@ namespace EQWOWConverter.ObjectModels
             animationClose.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
-                case ActiveDoodadAnimType.SlideUpDown:
+                case ActiveDoodadAnimType.SlideUpDownWithMod:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, activeDoodadAnimSlideValue));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));
+                    }
+                    break;
+                case ActiveDoodadAnimType.SlideLeft:
+                    {
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, BoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));                        
                     }
                     break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:

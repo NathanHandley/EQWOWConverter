@@ -27,7 +27,7 @@ namespace EQWOWConverter.Transports
         public string SpawnZoneShortName = string.Empty;
         public string Name = string.Empty;
         public string MeshName = string.Empty;
-        public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.SlideUpDown;
+        public ActiveDoodadAnimType AnimationType = ActiveDoodadAnimType.SlideUpDownWithMod;
         public float SpawnX = 0;
         public float SpawnY = 0;
         public float SpawnZ = 0;
@@ -69,7 +69,7 @@ namespace EQWOWConverter.Transports
                 curLiftTrigger.SpawnZoneShortName = columns["spawn_zone"];
                 switch (columns["anim_type"].ToLower().Trim())
                 {
-                    case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.SlideUpDown; break;
+                    case "up_down": curLiftTrigger.AnimationType = ActiveDoodadAnimType.SlideUpDownWithMod; break;
                     case "rot_z": curLiftTrigger.AnimationType = ActiveDoodadAnimType.RotateAroundZClockwiseHalf; break;
                     default: Logger.WriteError("Unable to load transport lift trigger due to unhandled anim type of '" + columns["anim_type"] + "'"); continue;
                 }
