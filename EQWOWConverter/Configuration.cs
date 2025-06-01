@@ -280,9 +280,6 @@ namespace EQWOWConverter
         //=====================================================================
         // Objects
         //=====================================================================
-        // The minimum size of a bounding box for a static doodad.  Bigger means it can be seen further away
-        public static readonly float OBJECT_STATIC_MIN_BOUNDING_BOX_SIZE = 25.1f;
-
         // For ladders, this is how far to extend out the steppable area in front and back of it (value is before world scaling)
         public static readonly float OBJECT_STATIC_LADDER_EXTEND_DISTANCE = 1.0f;
 
