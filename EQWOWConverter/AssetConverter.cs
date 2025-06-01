@@ -2823,17 +2823,20 @@ namespace EQWOWConverter
 
                     foreach (GameObject gameObject in gameObjectByShortName.Value)
                     {
-                        string name = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
+                        string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
+                        string name = gameObject.DisplayName;
+                        if (name.Length == 0)
+                            name = comment;
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, name);
-                        gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
+                        gameObjectTemplateSQL.AddRowForGameObject(comment, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
 
                         // Attach any smart scripts
                         if (gameObject.TriggerGameObjectGUID != 0)
                         {
-                            string comment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
-                            smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, comment);
+                            string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
+                            smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
                         }
                     }
                 }

@@ -39,6 +39,7 @@ namespace EQWOWConverter.GameObjects
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
         public string ZoneShortName = string.Empty;
         public string ModelName = string.Empty;
+        public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
         public float Orientation;
@@ -255,7 +256,8 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
-                newGameObject.ModelName = gameObjectsRow["name"];
+                newGameObject.ModelName = gameObjectsRow["model_name"];
+                newGameObject.DisplayName = gameObjectsRow["display_name"];
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]) * Configuration.GENERATE_WORLD_SCALE;
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]) * Configuration.GENERATE_WORLD_SCALE;
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]) * Configuration.GENERATE_WORLD_SCALE;
