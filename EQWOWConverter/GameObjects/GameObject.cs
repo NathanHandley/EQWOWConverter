@@ -138,17 +138,37 @@ namespace EQWOWConverter.GameObjects
                                             } break;
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
-                                        case GameObjectOpenType.TYPE17: // TODO: Test, neraikc
+                                        case GameObjectOpenType.TYPE17:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
-                                        case GameObjectOpenType.TYPE65: // TODO: Test, neriakc
+                                        case GameObjectOpenType.TYPE60: // TODO: Test SPEARDOWN in Najena
+                                        case GameObjectOpenType.TYPE61: // TODO: Test, spears in Permafrost
+                                        case GameObjectOpenType.TYPE65:
+                                        case GameObjectOpenType.TYPE66: // TODO: Test qeynos "PORT1414" and "SPEARDOWN"
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
+                                        case GameObjectOpenType.TYPE16: // TODO: Only one, HHCELL in "hole".  "Rotate up" 142 -51 -58
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            } break;
+                                        case GameObjectOpenType.TYPE70: // TODO: Paw (PAWCELL, PAWPORTC)
+                                        case GameObjectOpenType.TYPE75: // TODO: Permafrost (PORT5628) and soldungb (PORTC2)
+                                        case GameObjectOpenType.TYPE76: // TODO: soldungb (PORTc1)
+
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
-                                        case GameObjectOpenType.TYPE16: // TODO: Only one, HHCELL in "hole".  Check it
+                                        case GameObjectOpenType.TYPE21: // TODO: two in CityMist. CMGATE101
+                                        case GameObjectOpenType.TYPE22: // TODO: Only in charasis.  SBDOOR102
+                                        case GameObjectOpenType.TYPE25: // TODO: Only in mischiefplane (KNBOOKC101 and BRISPORT202)
+                                        case GameObjectOpenType.TYPE30: // TODO: Only in mischiefplane (POMDOOR206)
+                                        case GameObjectOpenType.TYPE35: // TODO: Only in sleeper (SLTDOOR200)
+                                        case GameObjectOpenType.TYPE71: // TODO: Only in Sebilis (SBDOOR103)
+                                        case GameObjectOpenType.TYPE72: // TODO: Only in CityMist (CMDOOR2) and Sebilis (SBDOOR101)
+                                        case GameObjectOpenType.TYPE74: // TODO: Only in Skyshrine (MARBDOOR200)
+                                        case GameObjectOpenType.TYPE77: // TODO: Only in sleeper (SHRINEGATE200)
+                                        case GameObjectOpenType.TYPE145: // TODO: Only in Timorous (FAYBRAZIER)
                                         default:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);

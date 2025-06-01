@@ -23,6 +23,7 @@ namespace EQWOWConverter.Common
         SlideUp,
         RotateAroundZClockwiseHalf,
         RotateAroundZCounterclockwiseQuarter,
-        RotateAroundZClockwiseQuarter
+        RotateAroundZClockwiseQuarter,
+        RotateUpOpen
     }
 }
