@@ -2820,9 +2820,16 @@ namespace EQWOWConverter
                     {
                         string name = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        gameObjectSQL.AddRow(gameObject.GameObjectID, gameObject.GameObjectTemplateID, mapID, areaID, gameObject.Position, gameObject.Orientation);
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, name);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
-                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateID);
+                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
+
+                        // Attach any smart scripts
+                        if (gameObject.TriggerGameObjectGUID != 0)
+                        {
+                            string comment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
+                            smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, comment);
+                        }
                     }
                 }
             }

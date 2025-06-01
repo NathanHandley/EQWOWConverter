@@ -44,28 +44,32 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddRowForGameObject(string name, GameObject gameObject)
         {
+            string aiName = string.Empty;
+            if (gameObject.TriggerGameObjectGUID != 0)
+                aiName = "SmartGameObjectAI";
+
             switch (gameObject.ObjectType)
             {
                 case GameObjects.GameObjectType.Door:
                     {
-                        AddRow(gameObject.GameObjectTemplateID, 
+                        AddRow(gameObject.GameObjectTemplateEntryID, 
                             0, // Door
                             gameObject.GameObjectDisplayInfoID, name, 
                             0, // Start open
                             0, // "ID" from Lock.dbc
                             5000, // Autoclose time in MS
-                            0, gameObject.Scale, string.Empty);
+                            0, gameObject.Scale, aiName);
                     }
                     break;
                 default:
                     {
-                        AddRow(gameObject.GameObjectTemplateID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, string.Empty);
+                        AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, gameObject.Scale, aiName);
                     }
                     break;
             }
         }
 
-        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, float scale, string scriptName)
+        public void AddRow(int entryID, int type, int displayID, string name, int data0, int data1, int data2, int data6, float scale, string aiName)
         {
             SQLRow newRow = new SQLRow();
 			newRow.AddInt("entry", entryID);
@@ -100,8 +104,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("Data21", 0);
             newRow.AddInt("Data22", 0);
             newRow.AddInt("Data23", 0);
-            newRow.AddString("AIName", 64, string.Empty);
-            newRow.AddString("ScriptName", 64, scriptName);
+            newRow.AddString("AIName", 64, aiName);
+            newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 12340);            
             Rows.Add(newRow);
         }

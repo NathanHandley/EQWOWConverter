@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
+using EQWOWConverter.Zones;
 
 namespace EQWOWConverter.GameObjects
 {
@@ -33,6 +34,7 @@ namespace EQWOWConverter.GameObjects
 
         public int ID;
         public int DoorID;
+        public int TriggerDoorID;
         public GameObjectType ObjectType = GameObjectType.Unknown;
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
         public string ZoneShortName = string.Empty;
@@ -41,8 +43,10 @@ namespace EQWOWConverter.GameObjects
         public Vector3 Position = new Vector3();
         public float Orientation;
         public ObjectModel? ObjectModel = null;
-        public int GameObjectID;
-        public int GameObjectTemplateID;
+        public int GameObjectGUID;
+        public int GameObjectTemplateEntryID;
+        public int TriggerGameObjectGUID = 0;
+        public int TriggerGameObjectTemplateEntryID = 0;
         public int GameObjectDisplayInfoID = -1;
         public Sound? OpenSound = null;
         public Sound? CloseSound = null;
@@ -112,10 +116,16 @@ namespace EQWOWConverter.GameObjects
                                 {
                                     switch (gameObject.OpenType)
                                     {
-                                        case GameObjectOpenType.TYPE7:
+                                        case GameObjectOpenType.TYPE0:
+                                        case GameObjectOpenType.TYPE6:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
+                                        case GameObjectOpenType.TYPE1:
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            }
+                                            break;
                                         default:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
@@ -174,8 +184,13 @@ namespace EQWOWConverter.GameObjects
             Logger.WriteDebug(string.Concat("Populating Game Object list via file '", gameObjectsFile, "'"));
             List<Dictionary<string, string>> gameObjectsRows = FileTool.ReadAllRowsFromFileWithHeader(gameObjectsFile, "|");
 
+            // Track chain reaction lookups
+            Dictionary<(string, int), GameObject> gameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
+
             // Process the rows
-            foreach(Dictionary<string, string> gameObjectsRow in gameObjectsRows)
+            List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
+            List<GameObject> gameObjects = new List<GameObject>();
+            foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
                 // Only process some for now
                 if (int.Parse(gameObjectsRow["enabled"]) != 1)
@@ -184,10 +199,16 @@ namespace EQWOWConverter.GameObjects
                 if (gameObjectType != GameObjectType.Door)
                     continue;
 
+                // Skip zones not being loaded
+                string zoneShortName = gameObjectsRow["zone"];
+                if (validZoneShortNames.Contains(zoneShortName) == false)
+                    continue;
+
                 GameObject newGameObject = new GameObject();
                 newGameObject.ID = int.Parse(gameObjectsRow["id"]);
-                newGameObject.GameObjectTemplateID = int.Parse(gameObjectsRow["gotemplate_id"]);
+                newGameObject.GameObjectTemplateEntryID = int.Parse(gameObjectsRow["gotemplate_id"]);
                 newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
+                newGameObject.TriggerDoorID = int.Parse(gameObjectsRow["triggerdoor"]);
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
@@ -197,7 +218,10 @@ namespace EQWOWConverter.GameObjects
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]) * Configuration.GENERATE_WORLD_SCALE;
                 newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
-                newGameObject.GameObjectID = GameObjectSQL.GenerateGUID();
+                newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
+
+                // Save this up in the trigger chain lookup
+                gameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
 
                 // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
                 float eqHeading = float.Parse(gameObjectsRow["heading"]);
@@ -223,6 +247,19 @@ namespace EQWOWConverter.GameObjects
                 if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
                     GameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
                 GameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
+                gameObjects.Add(newGameObject);
+            }
+
+            // Store the chain reactions from the lookup
+            foreach (GameObject gameObject in gameObjects)
+            {
+                if (gameObject.TriggerDoorID == 0)
+                    continue;
+                if (gameObjectsByZoneShortNameAndDoorID.ContainsKey((gameObject.ZoneShortName, gameObject.TriggerDoorID)))
+                {
+                    gameObject.TriggerGameObjectGUID = gameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
+                    gameObject.TriggerGameObjectTemplateEntryID = gameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
+                }   
             }
         }
 

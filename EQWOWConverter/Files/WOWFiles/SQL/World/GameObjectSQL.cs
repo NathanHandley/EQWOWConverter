@@ -15,13 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -34,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation)
+        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, string comment = "")
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", gameObjectGUID);
@@ -57,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("state", 1);
             newRow.AddString("ScriptName", 64, string.Empty);
             newRow.AddInt("VerifiedBuild", 0);
-            newRow.AddString("Comment", string.Empty);
+            newRow.AddString("Comment", comment);
             Rows.Add(newRow);
         }
 
