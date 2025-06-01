@@ -1586,6 +1586,10 @@ namespace EQWOWConverter
                 string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
                 string fullStaticDoodadsPath = Path.Combine(mpqReadyFolder, relativeStaticDoodadsPath);
                 mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullStaticDoodadsPath + "\" \"" + relativeStaticDoodadsPath + "\" /r");
+
+                string relativeGameObjectsPath = Path.Combine("World", "Everquest", "GameObjects");
+                string fullGameObjectsPath = Path.Combine(mpqReadyFolder, relativeGameObjectsPath);
+                mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullGameObjectsPath + "\" \"" + relativeGameObjectsPath + "\" /r");
             }
 
             // Creatures
