@@ -1145,7 +1145,10 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Generate bounding box
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices);
+            float minBoundarySize = 0;
+            if (ModelType == ObjectModelType.Creature)
+                minBoundarySize = Configuration.CREATURE_BOUNDING_BOX_MIN_SIZE;
+            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, minBoundarySize);
             BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
         }
 
