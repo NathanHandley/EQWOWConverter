@@ -57,7 +57,7 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name, 
                             0, // Start open
                             0, // "ID" from Lock.dbc
-                            5000, // Autoclose time in MS
+                            Configuration.OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS, // Autoclose time in MS
                             0, gameObject.Scale, aiName);
                     }
                     break;

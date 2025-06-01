@@ -289,6 +289,9 @@ namespace EQWOWConverter
         // How long (in ms) the open/close animation will be for game objects
         public static readonly int OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS = 1000;
 
+        // How long (in ms) a door should remain open before automatically closing
+        public static readonly int OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS = 10000;
+
         //=====================================================================
         // Creatures
         //=====================================================================
