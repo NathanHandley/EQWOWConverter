@@ -88,6 +88,13 @@ namespace EQWOWConverter.GameObjects
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
 
+            // Clear the folder first
+            string gameObjectOutputFolderRoot = Path.Combine(exportMPQRootFolder, "World", "Everquest", "GameObjects");
+            if (Directory.Exists(gameObjectOutputFolderRoot))
+                Directory.Delete(gameObjectOutputFolderRoot, true);
+            Directory.CreateDirectory(gameObjectOutputFolderRoot);
+
+            // Process the objects
             Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetAllGameObjectsByZoneShortNames();
             foreach (var gameObjectByShortName in allGameObjectsByZoneShortName)
             {
@@ -108,8 +115,9 @@ namespace EQWOWConverter.GameObjects
                     else
                     {
                         // Load it
-                        ObjectModel curObjectModel = new ObjectModel(gameObject.ModelName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
-                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "'");
+                        string modelFileName = string.Concat(gameObject.ModelName, "_", gameObject.OpenType.ToString());
+                        ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ game object '" + gameObject.ModelName + "'");
                         switch(gameObject.ObjectType)
                         {
                             case GameObjectType.Door:
@@ -117,19 +125,24 @@ namespace EQWOWConverter.GameObjects
                                     switch (gameObject.OpenType)
                                     {
                                         case GameObjectOpenType.TYPE0:
+                                        case GameObjectOpenType.TYPE1:
+                                        case GameObjectOpenType.TYPE2:                                        
+                                            {
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                            } break;
+                                        case GameObjectOpenType.TYPE5:
                                         case GameObjectOpenType.TYPE6:
+                                        case GameObjectOpenType.TYPE7:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
-                                        case GameObjectOpenType.TYPE1:
-                                            {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
-                                            }
-                                            break;
-                                        case GameObjectOpenType.TYPE26:
+                                        case GameObjectOpenType.TYPE12:
+                                        case GameObjectOpenType.TYPE15: 
+                                        case GameObjectOpenType.TYPE26:                                        
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
+                                        case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
                                         default:
                                             {
                                                 curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
@@ -150,10 +163,10 @@ namespace EQWOWConverter.GameObjects
                             curObjectModel.SoundsByAnimationType.Add(AnimationType.Close, gameObject.CloseSound);
 
                         // Create the M2 and Skin
-                        string relativeMPQPath = Path.Combine("World", "Everquest", "GameObjects", gameObject.ModelName);
+                        string relativeMPQPath = Path.Combine("World", "Everquest", "GameObjects", modelFileName);
                         M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
-                        string curGameObjectOutputFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "GameObjects", gameObject.ModelName);
-                        objectM2.WriteToDisk(curObjectModel.Name, curGameObjectOutputFolder);
+                        string curGameObjectOutputFolder = Path.Combine(gameObjectOutputFolderRoot, modelFileName);
+                        objectM2.WriteToDisk(modelFileName, curGameObjectOutputFolder);
 
                         // Place the related textures
                         string objectTextureFolder = Path.Combine(objectsFolderRoot, "textures");

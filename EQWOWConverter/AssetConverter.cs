@@ -2184,7 +2184,8 @@ namespace EQWOWConverter
                     int openSoundEntryID = openSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
                     int closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
 
-                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", nameAndOpenType.Item1, nameAndOpenType.Item1 + ".mdx");
+                    string fileName = string.Concat(nameAndOpenType.Item1, "_", nameAndOpenType.Item2.ToString());
+                    string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", fileName, fileName + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
                         relativeObjectFileName.ToLower(),
                         gameObjectModelsByNameAndOpenType[nameAndOpenType].BoundingBox, 
