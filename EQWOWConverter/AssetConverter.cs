@@ -63,10 +63,11 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<+> Thread [Zone and Objects] Started");
 
                 // Objects (must always come before zones)
-                if (Configuration.GENERATE_OBJECTS == false)
-                    Logger.WriteInfo("- Note: Object generation is set to false in the Configuration");
-                else
+                if (Configuration.GENERATE_OBJECTS == true)
+                {
                     ConvertEQObjectsToWOW();
+                    GenerateGameObjects();
+                }
 
                 // Zones
                 ConvertEQZonesToWOW(out zones);
@@ -110,7 +111,7 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, GameObjects] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -127,11 +128,7 @@ namespace EQWOWConverter
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
-                // GameObjects
-                if (Configuration.GENERATE_OBJECTS == true)
-                    GenerateGameObjects();
-
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills, GameObjects] Ended");
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsSpellsTradeskillsTask.Wait();

@@ -61,6 +61,8 @@ internal class Program
                 Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
             if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                 Logger.WriteInfo("- GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
+            if (Configuration.GENERATE_OBJECTS == false)
+                Logger.WriteInfo("- GENERATE_OBJECTS is set to false");
         }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
