@@ -24,7 +24,8 @@ namespace EQWOWConverter.GameObjects
 {
     internal class GameObject
     {
-        protected static Dictionary<string, List<GameObject>> GameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
+        protected static Dictionary<string, List<GameObject>> InteractiveGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
+        protected static Dictionary<string, List<GameObject>> ZoneDoodadGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static readonly object GameObjectsLock = new object();
         protected static Dictionary<(string, GameObjectOpenType), ObjectModel> ObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
         protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
@@ -51,14 +52,25 @@ namespace EQWOWConverter.GameObjects
         public int GameObjectDisplayInfoID = -1;
         public Sound? OpenSound = null;
         public Sound? CloseSound = null;
+        public bool LoadAsZoneDoodad = false;
 
-        public static Dictionary<string, List<GameObject>> GetAllGameObjectsByZoneShortNames()
+        public static Dictionary<string, List<GameObject>> GetAllInteractiveGameObjectsByZoneShortNames()
         {
             lock (GameObjectsLock)
             {
-                if (GameObjectsByZoneShortname.Count == 0)
+                if (InteractiveGameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
-                return GameObjectsByZoneShortname;
+                return InteractiveGameObjectsByZoneShortname;
+            }
+        }
+
+        public static Dictionary<string, List<GameObject>> GetAllZoneDoodadGameObjectsByZoneShortname()
+        {
+            lock (GameObjectsLock)
+            {
+                if (ZoneDoodadGameObjectsByZoneShortname.Count == 0)
+                    LoadGameObjects();
+                return ZoneDoodadGameObjectsByZoneShortname;
             }
         }
 
@@ -82,9 +94,9 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static void LoadModelObjectsForGameObjects()
+        public static void LoadModelObjectsForInteractiveGameObjects()
         {
-            Logger.WriteInfo("Loading model objects for game objects...");
+            Logger.WriteInfo("Loading model objects for interactive game objects...");
             string eqExportsConditionedPath = Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER;
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
@@ -96,7 +108,7 @@ namespace EQWOWConverter.GameObjects
             Directory.CreateDirectory(gameObjectOutputFolderRoot);
 
             // Process the objects
-            Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetAllGameObjectsByZoneShortNames();
+            Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetAllInteractiveGameObjectsByZoneShortNames();
             foreach (var gameObjectByShortName in allGameObjectsByZoneShortName)
             {
                 foreach (GameObject gameObject in gameObjectByShortName.Value)
@@ -229,18 +241,18 @@ namespace EQWOWConverter.GameObjects
             List<Dictionary<string, string>> gameObjectsRows = FileTool.ReadAllRowsFromFileWithHeader(gameObjectsFile, "|");
 
             // Track chain reaction lookups
-            Dictionary<(string, int), GameObject> gameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
+            List<GameObject> interactiveGameObjects = new List<GameObject>();
+            Dictionary<(string, int), GameObject> interactiveGameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
 
             // Process the rows
             List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
-            List<GameObject> gameObjects = new List<GameObject>();
             foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
                 // Only process some for now
                 if (int.Parse(gameObjectsRow["enabled"]) != 1)
                     continue;
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
-                if (gameObjectType != GameObjectType.Door)
+                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract)
                     continue;
 
                 // Skip zones not being loaded
@@ -265,9 +277,6 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
 
-                // Save this up in the trigger chain lookup
-                gameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
-
                 // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
                 float eqHeading = float.Parse(gameObjectsRow["heading"]);
                 if (eqHeading == 0)
@@ -279,31 +288,46 @@ namespace EQWOWConverter.GameObjects
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
 
-                // Sounds
-                GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
-                if (newGameObject.OpenSound != null)
-                    if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
-                        OpenSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.OpenSound);
-                if (newGameObject.CloseSound != null)
-                    if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
-                        CloseSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.CloseSound);
+                // Different logic based on interactive vs non-interactive
+                if (gameObjectType != GameObjectType.NonInteract)
+                {
+                    // Save this up in the trigger chain lookup
+                    interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
 
-                // Add it
-                if (GameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
-                    GameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
-                GameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
-                gameObjects.Add(newGameObject);
+                    // Sounds
+                    GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
+                    if (newGameObject.OpenSound != null)
+                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
+                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.OpenSound);
+                    if (newGameObject.CloseSound != null)
+                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
+                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.CloseSound);
+                    
+                    // Add it
+                    if (InteractiveGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
+                        InteractiveGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
+                    InteractiveGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
+                    interactiveGameObjects.Add(newGameObject);
+                }
+                else
+                {
+                    // Add it as a doodad item
+                    newGameObject.LoadAsZoneDoodad = true;
+                    if (ZoneDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
+                        ZoneDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
+                    ZoneDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);                    
+                }
             }
 
             // Store the chain reactions from the lookup
-            foreach (GameObject gameObject in gameObjects)
+            foreach (GameObject gameObject in interactiveGameObjects)
             {
                 if (gameObject.TriggerDoorID == 0)
                     continue;
-                if (gameObjectsByZoneShortNameAndDoorID.ContainsKey((gameObject.ZoneShortName, gameObject.TriggerDoorID)))
+                if (interactiveGameObjectsByZoneShortNameAndDoorID.ContainsKey((gameObject.ZoneShortName, gameObject.TriggerDoorID)))
                 {
-                    gameObject.TriggerGameObjectGUID = gameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
-                    gameObject.TriggerGameObjectTemplateEntryID = gameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
+                    gameObject.TriggerGameObjectGUID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
+                    gameObject.TriggerGameObjectTemplateEntryID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
                 }   
             }
         }

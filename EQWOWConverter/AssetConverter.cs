@@ -65,8 +65,8 @@ namespace EQWOWConverter
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == true)
                 {
-                    ConvertEQObjectsToWOW();
                     GenerateGameObjects();
+                    ConvertEQObjectsToWOW();                    
                 }
 
                 // Zones
@@ -477,6 +477,8 @@ namespace EQWOWConverter
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
                 skeletalObjectProgressCounter.Write();
             }
+
+            // Generate the skeletal non-interactive zone game objects 
 
             return true;
         }
@@ -1268,10 +1270,10 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting game objects (doors, etc)...");
 
             // Get the initial list
-            GameObject.GetAllGameObjectsByZoneShortNames();
+            GameObject.GetAllInteractiveGameObjectsByZoneShortNames();
 
             // Load the models
-            GameObject.LoadModelObjectsForGameObjects();
+            GameObject.LoadModelObjectsForInteractiveGameObjects();
 
             // Sounds
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
@@ -2807,7 +2809,7 @@ namespace EQWOWConverter
             // Game Objects
             if (Configuration.GENERATE_OBJECTS == true)
             {
-                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetAllGameObjectsByZoneShortNames();
+                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetAllInteractiveGameObjectsByZoneShortNames();
                 foreach(var gameObjectByShortName in gameObjectsByZoneShortNames)
                 {
                     // Skip invalid objects (zones not loaded)
