@@ -46,8 +46,8 @@ namespace EQWOWConverter.ObjectModels
         public List<UInt16> ModelSecondTextureMaterialOverrides = new List<UInt16>();
         public List<TriangleFace> ModelTriangles = new List<TriangleFace>();
         public List<string> GeneratedTextureNames = new List<string>();
-        public BoundingBox BoundingBox = new BoundingBox();
-        public float BoundingSphereRadius = 0f;
+        public BoundingBox GeometryBoundingBox = new BoundingBox();
+        public BoundingBox VisibilityBoundingBox = new BoundingBox();
         public Dictionary<AnimationType, Sound> SoundsByAnimationType = new Dictionary<AnimationType, Sound>();
         public float ModelScalePreWorldScale = 1f;
         public float ModelLiftPreWorldScale = 0f;
@@ -198,8 +198,8 @@ namespace EQWOWConverter.ObjectModels
                 {
                     // Make one animation (standing) for normal static objects
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
+                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                 }
                 else
                 {
@@ -220,8 +220,8 @@ namespace EQWOWConverter.ObjectModels
                     ObjectModelBone newBone = new ObjectModelBone("root", -1);
                     ModelBones.Add(newBone);
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
+                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                     return;
                 }
 
@@ -231,8 +231,8 @@ namespace EQWOWConverter.ObjectModels
 
                     // Make one animation (standing)
                     ModelAnimations.Add(new ObjectModelAnimation());
-                    ModelAnimations[0].BoundingBox = new BoundingBox(BoundingBox);
-                    ModelAnimations[0].BoundingRadius = BoundingSphereRadius;
+                    ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
+                    ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                     return;
                 }
 
@@ -331,8 +331,8 @@ namespace EQWOWConverter.ObjectModels
             // Open
             ObjectModelAnimation animationOpen = new ObjectModelAnimation();
             animationOpen.AnimationType = AnimationType.Open;
-            animationOpen.BoundingBox = new BoundingBox(BoundingBox);
-            animationOpen.BoundingRadius = BoundingSphereRadius;
+            animationOpen.BoundingBox = VisibilityBoundingBox;
+            animationOpen.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationOpen.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -344,12 +344,12 @@ namespace EQWOWConverter.ObjectModels
                 case ActiveDoodadAnimType.SlideLeft:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, BoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
                     } break;
                 case ActiveDoodadAnimType.SlideUp:
                     {
                         ModelBones[0].TranslationTrack.AddValueToSequence(0, 0, new Vector3(0, 0, 0));
-                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, BoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(0, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
                     } break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
@@ -378,8 +378,8 @@ namespace EQWOWConverter.ObjectModels
             // Opened
             ObjectModelAnimation animationOpened = new ObjectModelAnimation();
             animationOpened.AnimationType = AnimationType.Opened;
-            animationOpened.BoundingBox = new BoundingBox(BoundingBox);
-            animationOpened.BoundingRadius = BoundingSphereRadius;
+            animationOpened.BoundingBox = VisibilityBoundingBox;
+            animationOpened.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationOpened.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -389,11 +389,11 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ActiveDoodadAnimType.SlideLeft:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, BoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
                     } break;
                 case ActiveDoodadAnimType.SlideUp:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, BoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(1, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
                     } break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
                     {
@@ -418,8 +418,8 @@ namespace EQWOWConverter.ObjectModels
             // Close
             ObjectModelAnimation animationClose = new ObjectModelAnimation();
             animationClose.AnimationType = AnimationType.Close;
-            animationClose.BoundingBox = new BoundingBox(BoundingBox);
-            animationClose.BoundingRadius = BoundingSphereRadius;
+            animationClose.BoundingBox = VisibilityBoundingBox;
+            animationClose.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationClose.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -430,12 +430,12 @@ namespace EQWOWConverter.ObjectModels
                     } break;
                 case ActiveDoodadAnimType.SlideLeft:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, BoundingBox.GetYDistance(), 0));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, GeometryBoundingBox.GetYDistance(), 0));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));                        
                     } break;
                 case ActiveDoodadAnimType.SlideUp:
                     {
-                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, BoundingBox.GetZDistance()));
+                        ModelBones[0].TranslationTrack.AddValueToSequence(2, 0, new Vector3(0, 0, GeometryBoundingBox.GetZDistance()));
                         ModelBones[0].TranslationTrack.AddValueToSequence(2, Convert.ToUInt32(activeDoodadAnimTimeInMS), new Vector3(0, 0, 0));
                     } break;
                 case ActiveDoodadAnimType.RotateAroundZClockwiseHalf:
@@ -465,8 +465,8 @@ namespace EQWOWConverter.ObjectModels
             // Stand
             ObjectModelAnimation animationStand = new ObjectModelAnimation();
             animationStand.AnimationType = AnimationType.Stand;
-            animationStand.BoundingBox = new BoundingBox(BoundingBox);
-            animationStand.BoundingRadius = BoundingSphereRadius;
+            animationStand.BoundingBox = VisibilityBoundingBox;
+            animationStand.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationStand.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -483,8 +483,8 @@ namespace EQWOWConverter.ObjectModels
             // Closed
             ObjectModelAnimation animationClosed = new ObjectModelAnimation();
             animationClosed.AnimationType = AnimationType.Closed;
-            animationClosed.BoundingBox = new BoundingBox(BoundingBox);
-            animationClosed.BoundingRadius = BoundingSphereRadius;
+            animationClosed.BoundingBox = VisibilityBoundingBox;
+            animationClosed.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
             animationClosed.DurationInMS = Convert.ToUInt32(activeDoodadAnimTimeInMS);
             switch (activeDoodadAnimationType)
             {
@@ -794,8 +794,8 @@ namespace EQWOWConverter.ObjectModels
                         newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                         newAnimation.AnimationType = animationType;
                         newAnimation.EQAnimationType = animation.Value.EQAnimationType;
-                        newAnimation.BoundingBox = new BoundingBox(BoundingBox);
-                        newAnimation.BoundingRadius = BoundingSphereRadius;
+                        newAnimation.BoundingBox = VisibilityBoundingBox;
+                        newAnimation.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
                         ModelAnimations.Add(newAnimation);
 
@@ -1145,11 +1145,9 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Generate bounding box
-            float minBoundarySize = 0;
-            if (ModelType == ObjectModelType.Creature)
-                minBoundarySize = Configuration.CREATURE_BOUNDING_BOX_MIN_SIZE;
-            BoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices, minBoundarySize);
-            BoundingSphereRadius = BoundingBox.FurthestPointDistanceFromCenter();
+            GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices);
+            VisibilityBoundingBox = new BoundingBox(GeometryBoundingBox);
+            VisibilityBoundingBox.ExpandToMinimumSize(Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
         }
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)

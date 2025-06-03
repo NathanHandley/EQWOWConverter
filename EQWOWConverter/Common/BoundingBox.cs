@@ -282,28 +282,31 @@ namespace EQWOWConverter.Common
 
             // Enforce a min size if needed
             if (minSize > 0)
-            {
-                if (boundingBox.GetXDistance() < minSize)
-                {
-                    float amountToAdd = (minSize - boundingBox.GetXDistance()) * 0.5f;
-                    boundingBox.TopCorner.X += amountToAdd;
-                    boundingBox.BottomCorner.X -= amountToAdd;
-                }
-                if (boundingBox.GetYDistance() < minSize)
-                {
-                    float amountToAdd = (minSize - boundingBox.GetYDistance()) * 0.5f;
-                    boundingBox.TopCorner.Y += amountToAdd;
-                    boundingBox.BottomCorner.Y -= amountToAdd;
-                }
-                if (boundingBox.GetZDistance() < minSize)
-                {
-                    float amountToAdd = (minSize - boundingBox.GetZDistance()) * 0.5f;
-                    boundingBox.TopCorner.Z += amountToAdd;
-                    boundingBox.BottomCorner.Z -= amountToAdd;
-                }
-            }
+                boundingBox.ExpandToMinimumSize(minSize);
 
             return boundingBox;
+        }
+
+        public void ExpandToMinimumSize(float minSize)
+        {
+            if (GetXDistance() < minSize)
+            {
+                float amountToAdd = (minSize - GetXDistance()) * 0.5f;
+                TopCorner.X += amountToAdd;
+                BottomCorner.X -= amountToAdd;
+            }
+            if (GetYDistance() < minSize)
+            {
+                float amountToAdd = (minSize - GetYDistance()) * 0.5f;
+                TopCorner.Y += amountToAdd;
+                BottomCorner.Y -= amountToAdd;
+            }
+            if (GetZDistance() < minSize)
+            {
+                float amountToAdd = (minSize - GetZDistance()) * 0.5f;
+                TopCorner.Z += amountToAdd;
+                BottomCorner.Z -= amountToAdd;
+            }
         }
 
         public bool DoesIntersectBox(BoundingBox other, float edgePad)

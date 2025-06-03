@@ -2247,7 +2247,7 @@ namespace EQWOWConverter
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", fileName, fileName + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
                         relativeObjectFileName.ToLower(),
-                        gameObjectModelsByNameAndOpenType[nameAndOpenType].BoundingBox, 
+                        gameObjectModelsByNameAndOpenType[nameAndOpenType].VisibilityBoundingBox, 
                         openSoundEntryID, closeSoundEntryID);
                 }
                 string soundDirectoryRelative = Path.Combine("Sound", "GameObjects");
@@ -2379,7 +2379,7 @@ namespace EQWOWConverter
                 foreach (var m2ByGameObjectID in TransportLift.ObjectModelM2ByMeshGameObjectDisplayID)
                 {
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "Transports", m2ByGameObjectID.Value.ObjectModel.Name, m2ByGameObjectID.Value.ObjectModel.Name + ".mdx");
-                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox);
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.VisibilityBoundingBox);
                 }
                 foreach (var m2ByGameObjectID in TransportLiftTrigger.ObjectModelM2ByMeshGameObjectDisplayID)
                 {

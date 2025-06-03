@@ -141,6 +141,9 @@ namespace EQWOWConverter
         // If true, SQL files will be generated in a way where they will have a unique ID to force an update if ran by azerothcore, regardless of changes
         public static readonly bool GENERATE_FORCE_SQL_UPDATES = true;
 
+        // The minimum size that boundary boxes should be for any object models when output
+        public static readonly float GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE = 25.1f;
+
         //=====================================================================
         // Player
         //=====================================================================
@@ -350,9 +353,6 @@ namespace EQWOWConverter
         // IDs for menus specific to class trainer
         public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists
         public static readonly int CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = 10371; // Pre-exists
-
-        // Minimum size of boundary boxes for creatures, to allow click-on
-        public static readonly float CREATURE_BOUNDING_BOX_MIN_SIZE = 25f;
 
         //=====================================================================
         // Items
