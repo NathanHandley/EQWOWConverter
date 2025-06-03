@@ -479,6 +479,64 @@ namespace EQWOWConverter
             }
 
             // Generate the skeletal non-interactive zone game objects 
+            List<GameObject> nonInteractiveGameObjects = GameObject.GetAllNonInteractiveGameObjects();
+            List<string> loadedNonInteractiveGameObjectNames = new List<string>();
+            LogCounter gameObjectProgressCounter = new LogCounter("Converting non-interactive Game Objects...", 0, nonInteractiveGameObjects.Count);
+            foreach (GameObject nonInteractiveGameObject in nonInteractiveGameObjects)
+            {
+                gameObjectProgressCounter.AddToProgress(1);
+                string modelFileName = string.Concat(nonInteractiveGameObject.ModelName, "_", nonInteractiveGameObject.OpenType.ToString());
+                if (loadedNonInteractiveGameObjectNames.Contains(modelFileName))
+                {
+                    gameObjectProgressCounter.Write();
+                    continue;
+                }
+
+                // Load the object
+                ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                Logger.WriteDebug("- [" + modelFileName + "]: Importing EQ skeletal object '" + modelFileName + "'");
+                switch (nonInteractiveGameObject.OpenType)
+                {
+                    case GameObjectOpenType.TYPE53: // TODO: Is this Floating in water?
+                    case GameObjectOpenType.TYPE58:
+                        {
+                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
+                        } break;
+                    default:
+                        {
+                            Logger.WriteError("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);
+                            continue;
+                        }
+                }
+                Logger.WriteDebug("- [" + modelFileName + "]: Importing EQ skeletal object '" + modelFileName + "' complete");
+
+                // Create the M2 and Skin
+                string curObjectOutputFolder = Path.Combine(exportObjectsFolder, modelFileName);
+                string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", modelFileName);
+                M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
+                string curGameObjectOutputFolder = Path.Combine(curObjectOutputFolder, modelFileName);
+                objectM2.WriteToDisk(modelFileName, curGameObjectOutputFolder);
+
+                // Place the related textures
+                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
+                foreach (ObjectModelTexture texture in curObjectModel.ModelTextures)
+                {
+                    string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
+                    string outputTextureName = Path.Combine(curGameObjectOutputFolder, texture.TextureName + ".blp");
+                    if (Path.Exists(inputTextureName) == false)
+                    {
+                        Logger.WriteError("- [" + curObjectModel.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                        continue;
+                    }
+                    FileTool.CopyFile(inputTextureName, outputTextureName);
+                    Logger.WriteDebug("- [" + curObjectModel.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
+                }
+
+                // Save it for use elsewhere
+                ObjectModel.StaticObjectModelsByName.Add(curObjectModel.Name, curObjectModel);
+                loadedNonInteractiveGameObjectNames.Add(curObjectModel.Name);
+                gameObjectProgressCounter.Write();
+            }            
 
             return true;
         }
@@ -1270,7 +1328,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Converting game objects (doors, etc)...");
 
             // Get the initial list
-            GameObject.GetAllInteractiveGameObjectsByZoneShortNames();
+            GameObject.GetInteractiveGameObjectsByZoneShortNames();
 
             // Load the models
             GameObject.LoadModelObjectsForInteractiveGameObjects();
@@ -2178,7 +2236,7 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_OBJECTS == true)
             {
                 Dictionary<(string, GameObjectOpenType), int> gameObjectDisplayInfoIDsByModelNameAndOpenType = GameObject.GetGameObjectDisplayInfoIDsByModelNameAndOpenType();
-                Dictionary<(string, GameObjectOpenType), ObjectModel> gameObjectModelsByNameAndOpenType = GameObject.GetObjectModelsByNameAndOpenType();
+                Dictionary<(string, GameObjectOpenType), ObjectModel> gameObjectModelsByNameAndOpenType = GameObject.GetInteractiveObjectModelsByNameAndOpenType();
                 Dictionary<(string, GameObjectOpenType), Sound> openSoundsByModelNameAndOpenType = GameObject.OpenSoundsByModelNameAndOpenType;
                 Dictionary<(string, GameObjectOpenType), Sound> closeSoundsByModelNameAndOpenType = GameObject.CloseSoundsByModelNameAndOpenType;
                 foreach (ValueTuple<string, GameObjectOpenType> nameAndOpenType in gameObjectDisplayInfoIDsByModelNameAndOpenType.Keys)
@@ -2809,7 +2867,7 @@ namespace EQWOWConverter
             // Game Objects
             if (Configuration.GENERATE_OBJECTS == true)
             {
-                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetAllInteractiveGameObjectsByZoneShortNames();
+                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetInteractiveGameObjectsByZoneShortNames();
                 foreach(var gameObjectByShortName in gameObjectsByZoneShortNames)
                 {
                     // Skip invalid objects (zones not loaded)

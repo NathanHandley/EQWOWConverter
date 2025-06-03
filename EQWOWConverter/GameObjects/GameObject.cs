@@ -25,9 +25,9 @@ namespace EQWOWConverter.GameObjects
     internal class GameObject
     {
         protected static Dictionary<string, List<GameObject>> InteractiveGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
-        protected static Dictionary<string, List<GameObject>> ZoneDoodadGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
+        protected static Dictionary<string, List<GameObject>> NonInteractiveGameObjectsByZoneShortname = new Dictionary<string, List<GameObject>>();
         protected static readonly object GameObjectsLock = new object();
-        protected static Dictionary<(string, GameObjectOpenType), ObjectModel> ObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
+        protected static Dictionary<(string, GameObjectOpenType), ObjectModel> InteractiveObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
         protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
         public static Dictionary<(string, GameObjectOpenType), Sound> OpenSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<(string, GameObjectOpenType), Sound> CloseSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
@@ -54,7 +54,7 @@ namespace EQWOWConverter.GameObjects
         public Sound? CloseSound = null;
         public bool LoadAsZoneDoodad = false;
 
-        public static Dictionary<string, List<GameObject>> GetAllInteractiveGameObjectsByZoneShortNames()
+        public static Dictionary<string, List<GameObject>> GetInteractiveGameObjectsByZoneShortNames()
         {
             lock (GameObjectsLock)
             {
@@ -64,13 +64,26 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static Dictionary<string, List<GameObject>> GetAllZoneDoodadGameObjectsByZoneShortname()
+        public static Dictionary<string, List<GameObject>> GetNonInteractiveGameObjectsByZoneShortname()
         {
             lock (GameObjectsLock)
             {
-                if (ZoneDoodadGameObjectsByZoneShortname.Count == 0)
+                if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
-                return ZoneDoodadGameObjectsByZoneShortname;
+                return NonInteractiveGameObjectsByZoneShortname;
+            }
+        }
+
+        public static List<GameObject> GetAllNonInteractiveGameObjects()
+        {
+            lock (GameObjectsLock)
+            {
+                if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
+                    LoadGameObjects();
+                List<GameObject> returnGameObjects = new List<GameObject>();
+                foreach (var objectsByZone in NonInteractiveGameObjectsByZoneShortname)
+                    returnGameObjects.AddRange(objectsByZone.Value);
+                return returnGameObjects;
             }
         }
 
@@ -84,13 +97,13 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static Dictionary<(string, GameObjectOpenType), ObjectModel> GetObjectModelsByNameAndOpenType()
+        public static Dictionary<(string, GameObjectOpenType), ObjectModel> GetInteractiveObjectModelsByNameAndOpenType()
         {
             lock (GameObjectsLock)
             {
-                if (ObjectModelsByNameAndOpenType.Count == 0)
-                    Logger.WriteError("ObjectModelsByNameAndOpenType called before models were loaded");
-                return ObjectModelsByNameAndOpenType;
+                if (InteractiveObjectModelsByNameAndOpenType.Count == 0)
+                    Logger.WriteError("GetInteractiveObjectModelsByNameAndOpenType called before models were loaded");
+                return InteractiveObjectModelsByNameAndOpenType;
             }
         }
 
@@ -108,7 +121,7 @@ namespace EQWOWConverter.GameObjects
             Directory.CreateDirectory(gameObjectOutputFolderRoot);
 
             // Process the objects
-            Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetAllInteractiveGameObjectsByZoneShortNames();
+            Dictionary<string, List<GameObject>> allGameObjectsByZoneShortName = GetInteractiveGameObjectsByZoneShortNames();
             foreach (var gameObjectByShortName in allGameObjectsByZoneShortName)
             {
                 foreach (GameObject gameObject in gameObjectByShortName.Value)
@@ -119,10 +132,14 @@ namespace EQWOWConverter.GameObjects
                         return;
                     }
 
+                    // Skip non-interactive
+                    if (gameObject.ObjectType == GameObjectType.NonInteract)
+                        continue;
+
                     // Reuse an assigned, otherwise load
-                    if (ObjectModelsByNameAndOpenType.ContainsKey((gameObject.ModelName, gameObject.OpenType)) == true)
+                    if (InteractiveObjectModelsByNameAndOpenType.ContainsKey((gameObject.ModelName, gameObject.OpenType)) == true)
                     {
-                        gameObject.ObjectModel = ObjectModelsByNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
+                        gameObject.ObjectModel = InteractiveObjectModelsByNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
                         gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByModelNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
                     }
                     else
@@ -224,7 +241,7 @@ namespace EQWOWConverter.GameObjects
 
                         // Store it
                         gameObject.ObjectModel = curObjectModel;
-                        ObjectModelsByNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), curObjectModel);
+                        InteractiveObjectModelsByNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), curObjectModel);
                         int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                         gameObject.GameObjectDisplayInfoID = gameObjectDisplayInfoID;
                         GameObjectDisplayInfoIDsByModelNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), gameObjectDisplayInfoID);
@@ -313,9 +330,9 @@ namespace EQWOWConverter.GameObjects
                 {
                     // Add it as a doodad item
                     newGameObject.LoadAsZoneDoodad = true;
-                    if (ZoneDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
-                        ZoneDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
-                    ZoneDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);                    
+                    if (NonInteractiveGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
+                        NonInteractiveGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
+                    NonInteractiveGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);                    
                 }
             }
 
