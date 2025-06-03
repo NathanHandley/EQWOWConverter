@@ -485,7 +485,7 @@ namespace EQWOWConverter
             foreach (GameObject nonInteractiveGameObject in nonInteractiveGameObjects)
             {
                 gameObjectProgressCounter.AddToProgress(1);
-                string modelFileName = string.Concat(nonInteractiveGameObject.ModelName, "_", nonInteractiveGameObject.OpenType.ToString());
+                string modelFileName = nonInteractiveGameObject.GenerateModelFileNameNoExt();
                 if (loadedNonInteractiveGameObjectNames.Contains(modelFileName))
                 {
                     gameObjectProgressCounter.Write();
@@ -497,14 +497,13 @@ namespace EQWOWConverter
                 Logger.WriteDebug("- [" + modelFileName + "]: Importing EQ skeletal object '" + modelFileName + "'");
                 switch (nonInteractiveGameObject.OpenType)
                 {
-                    case GameObjectOpenType.TYPE53: // TODO: Is this Floating in water?
                     case GameObjectOpenType.TYPE58:
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
                         } break;
                     default:
                         {
-                            Logger.WriteError("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);
+                            Logger.WriteWarning("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);
                             continue;
                         }
                 }
@@ -514,15 +513,14 @@ namespace EQWOWConverter
                 string curObjectOutputFolder = Path.Combine(exportObjectsFolder, modelFileName);
                 string relativeMPQPath = Path.Combine("World", "Everquest", "StaticDoodads", modelFileName);
                 M2 objectM2 = new M2(curObjectModel, relativeMPQPath);
-                string curGameObjectOutputFolder = Path.Combine(curObjectOutputFolder, modelFileName);
-                objectM2.WriteToDisk(modelFileName, curGameObjectOutputFolder);
+                objectM2.WriteToDisk(modelFileName, curObjectOutputFolder);
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
                 foreach (ObjectModelTexture texture in curObjectModel.ModelTextures)
                 {
                     string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
-                    string outputTextureName = Path.Combine(curGameObjectOutputFolder, texture.TextureName + ".blp");
+                    string outputTextureName = Path.Combine(curObjectOutputFolder, texture.TextureName + ".blp");
                     if (Path.Exists(inputTextureName) == false)
                     {
                         Logger.WriteError("- [" + curObjectModel.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
@@ -803,7 +801,7 @@ namespace EQWOWConverter
             Zone curZone = new Zone(zoneShortName, zoneProperties);
             Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
             string curZoneDirectory = Path.Combine(inputZoneFolder, zoneShortName);
-            curZone.LoadFromEQZone(zoneShortName, curZoneDirectory);
+            curZone.LoadFromEQZone(zoneShortName, curZoneDirectory, GameObject.GetNonInteractiveGameObjectsForZoneShortname(zoneShortName));
 
             // Create the zone WMO objects
             WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);

@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.GameObjects;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using System.Text.RegularExpressions;
@@ -66,7 +67,7 @@ namespace EQWOWConverter.Zones
             SubAreas = zoneProperties.ZoneAreas;
         }
 
-        public void LoadFromEQZone(string inputZoneFolderName, string inputZoneFolderFullPath)
+        public void LoadFromEQZone(string inputZoneFolderName, string inputZoneFolderFullPath, List<GameObject> nonInteractiveGameObjects)
         {
             if (IsLoaded == true)
             {
@@ -115,7 +116,7 @@ namespace EQWOWConverter.Zones
             AssignLiquidsToAreas();
 
             // Create doodad instances
-            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, nonInteractiveGameObjects, renderMeshData);
 
             // Generate the collidable areas (zone areas, liquid)
             GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
@@ -172,7 +173,7 @@ namespace EQWOWConverter.Zones
             Materials = EQZoneData.Materials;
 
             // Create doodad instances
-            GenerateDoodadInstances(EQZoneData.ObjectInstances, renderMeshData);
+            GenerateDoodadInstances(EQZoneData.ObjectInstances, new List<GameObject>(), renderMeshData);
 
             // Generate the collidable areas (zone areas, liquid)
             GenerateCollidableWorldObjectModels(renderMeshData, collisionMeshData);
@@ -327,8 +328,20 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, MeshData renderMeshData)
+        private void GenerateDoodadInstances(List<ObjectInstance> eqObjectInstances, List<GameObject> nonInteractiveGameObjects, MeshData renderMeshData)
         {
+            // Add the game objects to the object instance list
+            foreach (GameObject nonInteractiveGameObject in nonInteractiveGameObjects)
+            {
+                ObjectInstance goObjectInstance = new ObjectInstance();
+                goObjectInstance.ModelName = nonInteractiveGameObject.GenerateModelFileNameNoExt();
+                goObjectInstance.Position = nonInteractiveGameObject.Position;
+                float rotationDegrees = nonInteractiveGameObject.Orientation * (180.0f / MathF.PI);
+                goObjectInstance.Rotation = new Vector3(0, rotationDegrees, 0);
+                goObjectInstance.Scale = new Vector3(nonInteractiveGameObject.Scale, nonInteractiveGameObject.Scale, nonInteractiveGameObject.Scale);
+                eqObjectInstances.Add(goObjectInstance);
+            }
+
             // Create doodad instances from EQ object instances
             foreach (ObjectInstance objectInstance in eqObjectInstances)
             {

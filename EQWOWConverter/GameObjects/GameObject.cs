@@ -64,13 +64,16 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static Dictionary<string, List<GameObject>> GetNonInteractiveGameObjectsByZoneShortname()
+        public static List<GameObject> GetNonInteractiveGameObjectsForZoneShortname(string zoneShortName)
         {
             lock (GameObjectsLock)
             {
                 if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
-                return NonInteractiveGameObjectsByZoneShortname;
+                if (NonInteractiveGameObjectsByZoneShortname.ContainsKey(zoneShortName) == false)
+                    return new List<GameObject>();
+                else
+                    return NonInteractiveGameObjectsByZoneShortname[zoneShortName];
             }
         }
 
@@ -287,10 +290,22 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
                 newGameObject.ModelName = gameObjectsRow["model_name"];
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
-                float xPosition = float.Parse(gameObjectsRow["pos_x"]) * Configuration.GENERATE_WORLD_SCALE;
-                float yPosition = float.Parse(gameObjectsRow["pos_y"]) * Configuration.GENERATE_WORLD_SCALE;
-                float zPosition = float.Parse(gameObjectsRow["pos_z"]) * Configuration.GENERATE_WORLD_SCALE;
-                newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
+                float xPosition = float.Parse(gameObjectsRow["pos_x"]);
+                float yPosition = float.Parse(gameObjectsRow["pos_y"]);
+                float zPosition = float.Parse(gameObjectsRow["pos_z"]);
+                // Non-interact should be in EQ coordinate properties since they are loaded as doodads
+                if (gameObjectType != GameObjectType.NonInteract)
+                {
+                    xPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    yPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    zPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
+                }
+                else
+                {
+                    // Also make sure to flip Z and Y for non-interact since doodads get changed later
+                    newGameObject.Position = new Vector3(xPosition, zPosition, yPosition);
+                }
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
 
@@ -537,6 +552,11 @@ namespace EQWOWConverter.GameObjects
                 AllSoundsBySoundName.Add(soundName.Trim(), returnSound);
                 return returnSound;
             }
+        }
+
+        public string GenerateModelFileNameNoExt()
+        {
+            return string.Concat("go_", ModelName, "_", OpenType.ToString());
         }
     }
 }
