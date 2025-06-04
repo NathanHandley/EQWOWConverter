@@ -29,6 +29,7 @@ namespace EQWOWConverter.GameObjects
         protected static readonly object GameObjectsLock = new object();
         protected static Dictionary<(string, GameObjectOpenType), ObjectModel> InteractiveObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
         protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
+        protected static Dictionary<string, List<string>> SourceModelNamesByZoneShortName = new Dictionary<string, List<string>>();
         public static Dictionary<(string, GameObjectOpenType), Sound> OpenSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<(string, GameObjectOpenType), Sound> CloseSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<string, Sound> AllSoundsBySoundName = new Dictionary<string, Sound>();
@@ -75,6 +76,16 @@ namespace EQWOWConverter.GameObjects
                     return new List<GameObject>();
                 else
                     return NonInteractiveGameObjectsByZoneShortname[zoneShortName];
+            }
+        }
+
+        public static Dictionary<string, List<string>> GetSourceModelNamesByZoneShortName()
+        {
+            lock (GameObjectsLock)
+            {
+                if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
+                    LoadGameObjects();
+                return SourceModelNamesByZoneShortName;
             }
         }
 
@@ -269,15 +280,24 @@ namespace EQWOWConverter.GameObjects
             List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
             foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
             {
-                // Only process some for now
+                // Skip disabled
                 if (int.Parse(gameObjectsRow["enabled"]) != 1)
                     continue;
+
+                // Store the model name in the lookup
+                string zoneShortName = gameObjectsRow["zone"];
+                string modelName = gameObjectsRow["model_name"].ToLower(); // Make lower so it works with the asset conditioner
+                if (SourceModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                    SourceModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                if (SourceModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                    SourceModelNamesByZoneShortName[zoneShortName].Add(modelName);
+
+                // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract)
                     continue;
 
                 // Skip zones not being loaded
-                string zoneShortName = gameObjectsRow["zone"];
                 if (validZoneShortNames.Contains(zoneShortName) == false)
                     continue;
 
@@ -289,7 +309,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
-                newGameObject.ModelName = gameObjectsRow["model_name"];
+                newGameObject.ModelName = 
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
@@ -557,7 +577,7 @@ namespace EQWOWConverter.GameObjects
 
         public string GenerateModelFileNameNoExt()
         {
-            return string.Concat("go_", ModelName, "_", OpenType.ToString());
+            return string.Concat("go_", ModelName, "_", OpenType.ToString()).ToLower();
         }
     }
 }
