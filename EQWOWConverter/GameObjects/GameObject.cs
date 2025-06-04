@@ -41,6 +41,7 @@ namespace EQWOWConverter.GameObjects
         public GameObjectType ObjectType = GameObjectType.Unknown;
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
         public string ZoneShortName = string.Empty;
+        public string OriginalModelName = string.Empty;
         public string ModelName = string.Empty;
         public bool ModelIsSkeletal = false;
         public string DisplayName = string.Empty;
@@ -65,6 +66,16 @@ namespace EQWOWConverter.GameObjects
                 if (InteractiveGameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
                 return InteractiveGameObjectsByZoneShortname;
+            }
+        }
+
+        public static Dictionary<string, List<GameObject>> GetNonInteractiveGameObjectsByZoneShortNames()
+        {
+            lock (GameObjectsLock)
+            {
+                if (InteractiveGameObjectsByZoneShortname.Count == 0)
+                    LoadGameObjects();
+                return NonInteractiveGameObjectsByZoneShortname;
             }
         }
 
@@ -164,17 +175,17 @@ namespace EQWOWConverter.GameObjects
                         continue;
 
                     // Reuse an assigned, otherwise load
-                    if (InteractiveObjectModelsByNameAndOpenType.ContainsKey((gameObject.ModelName, gameObject.OpenType)) == true)
+                    if (InteractiveObjectModelsByNameAndOpenType.ContainsKey((gameObject.OriginalModelName, gameObject.OpenType)) == true)
                     {
-                        gameObject.ObjectModel = InteractiveObjectModelsByNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
-                        gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByModelNameAndOpenType[(gameObject.ModelName, gameObject.OpenType)];
+                        gameObject.ObjectModel = InteractiveObjectModelsByNameAndOpenType[(gameObject.OriginalModelName, gameObject.OpenType)];
+                        gameObject.GameObjectDisplayInfoID = GameObjectDisplayInfoIDsByModelNameAndOpenType[(gameObject.OriginalModelName, gameObject.OpenType)];
                     }
                     else
                     {
                         // Load it
-                        string modelFileName = string.Concat(gameObject.ModelName, "_", gameObject.OpenType.ToString());
+                        string modelFileName = string.Concat(gameObject.OriginalModelName, "_", gameObject.OpenType.ToString());
                         ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
-                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ game object '" + gameObject.ModelName + "'");
+                        Logger.WriteDebug("- [" + gameObject.OriginalModelName + "]: Importing EQ game object '" + gameObject.OriginalModelName + "'");
                         switch(gameObject.ObjectType)
                         {
                             case GameObjectType.Door:
@@ -185,20 +196,20 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE1:
                                         case GameObjectOpenType.TYPE2:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE5:
                                         case GameObjectOpenType.TYPE6:
                                         case GameObjectOpenType.TYPE7:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
                                         case GameObjectOpenType.TYPE17:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE60: 
                                         case GameObjectOpenType.TYPE61: 
@@ -208,11 +219,11 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.SlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.SlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.ModelName, null, ActiveDoodadAnimType.RotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
                                         case GameObjectOpenType.TYPE21: // TODO: two in CityMist. CMGATE101
@@ -237,7 +248,7 @@ namespace EQWOWConverter.GameObjects
                                     Logger.WriteError("When trying to create the object model for a gameobject, this object type is not implemented: " + gameObject.ObjectType);
                                 } break;
                         }
-                        Logger.WriteDebug("- [" + gameObject.ModelName + "]: Importing EQ transport lift trigger object '" + gameObject.ModelName + "' complete");
+                        Logger.WriteDebug("- [" + gameObject.OriginalModelName + "]: Importing EQ transport lift trigger object '" + gameObject.OriginalModelName + "' complete");
 
                         // Attach sounds
                         if (gameObject.OpenSound != null)
@@ -268,10 +279,10 @@ namespace EQWOWConverter.GameObjects
 
                         // Store it
                         gameObject.ObjectModel = curObjectModel;
-                        InteractiveObjectModelsByNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), curObjectModel);
+                        InteractiveObjectModelsByNameAndOpenType.Add((gameObject.OriginalModelName, gameObject.OpenType), curObjectModel);
                         int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
                         gameObject.GameObjectDisplayInfoID = gameObjectDisplayInfoID;
-                        GameObjectDisplayInfoIDsByModelNameAndOpenType.Add((gameObject.ModelName, gameObject.OpenType), gameObjectDisplayInfoID);
+                        GameObjectDisplayInfoIDsByModelNameAndOpenType.Add((gameObject.OriginalModelName, gameObject.OpenType), gameObjectDisplayInfoID);
                     }
                 }
             }
@@ -332,6 +343,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
+                newGameObject.OriginalModelName = modelName;
                 newGameObject.ModelName = modelName;
                 newGameObject.ModelIsSkeletal = isSkeletal;
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
@@ -374,11 +386,11 @@ namespace EQWOWConverter.GameObjects
                     // Sounds
                     GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
                     if (newGameObject.OpenSound != null)
-                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
-                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.OpenSound);
+                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.OpenSound);
                     if (newGameObject.CloseSound != null)
-                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.ModelName, newGameObject.OpenType)) == false)
-                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.ModelName, newGameObject.OpenType), newGameObject.CloseSound);
+                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.CloseSound);
                     
                     // Add it
                     if (InteractiveGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)

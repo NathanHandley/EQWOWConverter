@@ -64,10 +64,7 @@ namespace EQWOWConverter
 
                 // Objects (must always come before zones)
                 if (Configuration.GENERATE_OBJECTS == true)
-                {
-                    GenerateGameObjects();
-                    ConvertEQObjectsToWOW();                    
-                }
+                    ConvertEQObjectsToWOW();
 
                 // Zones
                 ConvertEQZonesToWOW(out zones);
@@ -478,6 +475,92 @@ namespace EQWOWConverter
                 skeletalObjectProgressCounter.Write();
             }
 
+            // Update all game object model references
+            Logger.WriteInfo("Updating game object model references...");
+            Dictionary<string, List<GameObject>> interactiveGameObjectsByZoneShortname = GameObject.GetInteractiveGameObjectsByZoneShortNames();
+            foreach (var interactiveGameObjectsInZone in interactiveGameObjectsByZoneShortname)
+            {
+                string curZoneFolder = Path.Combine(eqExportsConditionedPath, "zones", interactiveGameObjectsInZone.Key);
+                string curZoneStaticObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_static_map.txt");
+                Dictionary<string, string> staticObjectNameMap = new Dictionary<string, string>();
+                foreach(string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                    staticObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
+                string curZoneSkeletalObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_skeletal_map.txt");
+                Dictionary<string, string> skeletalObjectNameMap = new Dictionary<string, string>();
+                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                    skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
+                foreach(GameObject curObject in interactiveGameObjectsInZone.Value)
+                {
+                    if (curObject.ModelIsSkeletal == true)
+                    {
+                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        {
+                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            continue;
+                        }
+                        curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
+                    }
+                    else
+                    {
+                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        {
+                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", interactiveGameObjectsInZone.Key));
+                            continue;
+                        }
+                        curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
+                    }
+                }
+            }
+            Dictionary<string, List<GameObject>> nonInteractiveGameObjectsByZoneShortname = GameObject.GetNonInteractiveGameObjectsByZoneShortNames();
+            foreach (var nonInteractiveGameObjectsInZone in nonInteractiveGameObjectsByZoneShortname)
+            {
+                string curZoneFolder = Path.Combine(eqExportsConditionedPath, "zones", nonInteractiveGameObjectsInZone.Key);
+                string curZoneStaticObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_static_map.txt");
+                Dictionary<string, string> staticObjectNameMap = new Dictionary<string, string>();
+                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                    staticObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
+                string curZoneSkeletalObjectNameMapFileName = Path.Combine(curZoneFolder, "gameobject_skeletal_map.txt");
+                Dictionary<string, string> skeletalObjectNameMap = new Dictionary<string, string>();
+                foreach (string row in FileTool.ReadAllStringLinesFromFile(curZoneStaticObjectNameMapFileName, false, true))
+                    skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
+                foreach (GameObject curObject in nonInteractiveGameObjectsInZone.Value)
+                {
+                    if (curObject.ModelIsSkeletal == true)
+                    {
+                        if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        {
+                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
+                            continue;
+                        }
+                        curObject.ModelName = skeletalObjectNameMap[curObject.OriginalModelName];
+                    }
+                    else
+                    {
+                        if (staticObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
+                        {
+                            Logger.WriteError(string.Concat("Unable to find original model name ", curObject.OriginalModelName, " in zone ", nonInteractiveGameObjectsInZone.Key));
+                            continue;
+                        }
+                        curObject.ModelName = staticObjectNameMap[curObject.OriginalModelName];
+                    }
+                }
+            }
+
+            // Load the models for GameObjects
+            GameObject.LoadModelObjectsForInteractiveGameObjects();
+
+            // Game Object Sounds
+            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
+            {
+                string outputGameObjectSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "GameObjects");
+                if (Directory.Exists(outputGameObjectSoundFolder) == false)
+                    FileTool.CreateBlankDirectory(outputGameObjectSoundFolder, true);
+                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                string targetFullPath = Path.Combine(outputGameObjectSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
+
             // Generate the skeletal non-interactive zone game objects 
             List<GameObject> nonInteractiveGameObjects = GameObject.GetAllNonInteractiveGameObjects();
             List<string> loadedNonInteractiveGameObjectNames = new List<string>();
@@ -798,6 +881,8 @@ namespace EQWOWConverter
             Logger.WriteDebug(" - Processing zone '" + zoneShortName + "'");
             string relativeZoneObjectsPath = Path.Combine("World", "Everquest", "ZoneObjects", zoneShortName);
             ZoneProperties zoneProperties = ZoneProperties.GetZonePropertiesForZone(zoneShortName);
+
+            // Grab any game objects that 
 
             // Generate the zone
             Zone curZone = new Zone(zoneShortName, zoneProperties);
@@ -1321,30 +1406,6 @@ namespace EQWOWConverter
             spellTemplates.Add(nightPhaseSpellTemplate);
 
             Logger.WriteDebug("Generating spells completed.");
-        }
-
-        public void GenerateGameObjects()
-        {
-            Logger.WriteInfo("Converting game objects (doors, etc)...");
-
-            // Get the initial list
-            GameObject.GetInteractiveGameObjectsByZoneShortNames();
-
-            // Load the models
-            GameObject.LoadModelObjectsForInteractiveGameObjects();
-
-            // Sounds
-            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
-            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
-            foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
-            {
-                string outputGameObjectSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "GameObjects");
-                if (Directory.Exists(outputGameObjectSoundFolder) == false)
-                    FileTool.CreateBlankDirectory(outputGameObjectSoundFolder, true);
-                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
-                string targetFullPath = Path.Combine(outputGameObjectSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
-                FileTool.CopyFile(sourceFullPath, targetFullPath);
-            }
         }
 
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
