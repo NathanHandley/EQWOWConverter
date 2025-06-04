@@ -498,6 +498,8 @@ namespace EQWOWConverter
                 switch (nonInteractiveGameObject.OpenType)
                 {
                     case GameObjectOpenType.TYPE58:
+                    case GameObjectOpenType.TYPE100: // TODO: Rotate
+                    case GameObjectOpenType.TYPE105: // TODO: Rotate
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
                         } break;
@@ -2390,7 +2392,7 @@ namespace EQWOWConverter
                     int closeSoundEntryID = 0;
                     if (m2ByGameObjectID.Value.ObjectModel.SoundsByAnimationType.ContainsKey(AnimationType.Close) == true)
                         closeSoundEntryID = m2ByGameObjectID.Value.ObjectModel.SoundsByAnimationType[AnimationType.Close].DBCID;
-                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.BoundingBox, openSoundEntryID, closeSoundEntryID);
+                    gameObjectDisplayInfoDBC.AddRow(m2ByGameObjectID.Key, relativeObjectFileName.ToLower(), m2ByGameObjectID.Value.ObjectModel.VisibilityBoundingBox, openSoundEntryID, closeSoundEntryID);
                 }
                 foreach (TransportLiftPathNode pathNode in TransportLiftPathNode.GetAllPathNodesSorted())
                 {

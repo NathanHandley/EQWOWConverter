@@ -336,9 +336,12 @@ namespace EQWOWConverter.Zones
                 ObjectInstance goObjectInstance = new ObjectInstance();
                 goObjectInstance.ModelName = nonInteractiveGameObject.GenerateModelFileNameNoExt();
                 goObjectInstance.Position = nonInteractiveGameObject.Position;
-                float rotationDegrees = nonInteractiveGameObject.Orientation * (180.0f / MathF.PI);
-                goObjectInstance.Rotation = new Vector3(0, rotationDegrees, 0);
                 goObjectInstance.Scale = new Vector3(nonInteractiveGameObject.Scale, nonInteractiveGameObject.Scale, nonInteractiveGameObject.Scale);
+
+                // "Heading" in EQ was 0-512 instead of 0-360
+                float rotationDegrees = ((nonInteractiveGameObject.EQHeading / 512) * -360f);
+                goObjectInstance.Rotation = new Vector3(0, rotationDegrees, 0);
+                
                 eqObjectInstances.Add(goObjectInstance);
             }
 

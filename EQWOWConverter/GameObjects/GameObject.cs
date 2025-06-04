@@ -44,6 +44,7 @@ namespace EQWOWConverter.GameObjects
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
         public float Orientation;
+        public float EQHeading;
         public ObjectModel? ObjectModel = null;
         public int GameObjectGUID;
         public int GameObjectTemplateEntryID;
@@ -293,7 +294,6 @@ namespace EQWOWConverter.GameObjects
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]);
-                // Non-interact should be in EQ coordinate properties since they are loaded as doodads
                 if (gameObjectType != GameObjectType.NonInteract)
                 {
                     xPosition *= Configuration.GENERATE_WORLD_SCALE;
@@ -303,6 +303,7 @@ namespace EQWOWConverter.GameObjects
                 }
                 else
                 {
+                    // Non-interact should be in EQ coordinate properties since they are loaded as doodads
                     // Also make sure to flip Z and Y for non-interact since doodads get changed later
                     newGameObject.Position = new Vector3(xPosition, zPosition, yPosition);
                 }
@@ -310,12 +311,12 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
 
                 // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
-                float eqHeading = float.Parse(gameObjectsRow["heading"]);
-                if (eqHeading == 0)
+                newGameObject.EQHeading = float.Parse(gameObjectsRow["heading"]);
+                if (newGameObject.EQHeading == 0)
                     newGameObject.Orientation = MathF.PI;
-                if (eqHeading != 0)
+                if (newGameObject.EQHeading != 0)
                 {
-                    float orientationInDegrees = (eqHeading / 512) * 360;
+                    float orientationInDegrees = (newGameObject.EQHeading / 512) * 360;
                     float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
