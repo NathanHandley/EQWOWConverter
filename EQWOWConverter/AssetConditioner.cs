@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.GameObjects;
 using System.Drawing;
 using System.Text;
 
@@ -67,6 +68,10 @@ namespace EQWOWConverter
             // Keep a store of all objects found
             SortedSet<string> staticObjectNames = new SortedSet<string>();
             SortedSet<string> skeletalObjectNames = new SortedSet<string>();
+
+            // Read in the game objects by zone for reference updating
+            Dictionary<string, List<string>> staticGameObjectSourceModelNamesByZoneShortName = GameObject.GetSourceStaticModelNamesByZoneShortName();
+            Dictionary<string, List<string>> skeletalGameObjectSourceModelNamesByZoneShortName = GameObject.GetSourceSkeletalModelNamesByZoneShortName();
 
             // Iterate through each exported directory and process objects and zones
             string[] topDirectories = Directory.GetDirectories(eqExportsRawPath);
@@ -136,8 +141,10 @@ namespace EQWOWConverter
                     FileTool.CopyDirectoryAndContents(tempZoneObjectVertexColorFolder, outputZoneObjectVertexColorFolder, true, true);
                 }
 
-                // Process actor objects
+                // Track renames
                 Dictionary<string, string> oldToNewObjectRenames = new Dictionary<string, string>();
+                
+                // Process actor objects
                 string actorSkeletalFile = Path.Combine(tempObjectsFolder, "actors_skeletal.txt");
                 if (File.Exists(actorSkeletalFile))
                 {
@@ -150,13 +157,33 @@ namespace EQWOWConverter
                             inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
                         ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, inputObjectName, outputObjectsFolderRoot, true, out outputObjectName);
-                        if (inputObjectName != outputObjectName)
-                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
                         if (skeletalObjectNames.Contains(outputObjectName) == false)
                             skeletalObjectNames.Add(outputObjectName);
+                        if (oldToNewObjectRenames.ContainsKey(inputObjectName) == false)
+                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
                     }
                 }
+                Dictionary<string, string> skeletalGameObjectNameMap = new Dictionary<string, string>();
+                if (skeletalGameObjectSourceModelNamesByZoneShortName.ContainsKey(topDirectoryFolderNameOnly) == true)
+                {
+                    foreach (string sourceModelName in skeletalGameObjectSourceModelNamesByZoneShortName[topDirectoryFolderNameOnly])
+                    {
+                        // If the object wasn't mapped yet, process it
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false)
+                        {
+                            string outputObjectName;
+                            ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, sourceModelName, outputObjectsFolderRoot, true, out outputObjectName);
+                            if (sourceModelName != outputObjectName)
+                                oldToNewObjectRenames.Add(sourceModelName, outputObjectName);
+                        }
+                        skeletalGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
+                    }
+                }
+
+                // Clear the rename cache
                 oldToNewObjectRenames.Clear();
+
+                // Process static objects
                 string actorStaticFile = Path.Combine(tempObjectsFolder, "actors_static.txt");
                 if (File.Exists(actorStaticFile))
                 {
@@ -169,10 +196,33 @@ namespace EQWOWConverter
                             inputObjectName = oldToNewObjectRenames[inputObjectName];
                         string outputObjectName;
                         ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, inputObjectName, outputObjectsFolderRoot, false, out outputObjectName);
-                        if (inputObjectName != outputObjectName)
-                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
                         if (staticObjectNames.Contains(outputObjectName) == false)
                             staticObjectNames.Add(outputObjectName);
+                        if (oldToNewObjectRenames.ContainsKey(inputObjectName) == false)
+                            oldToNewObjectRenames.Add(inputObjectName, outputObjectName);
+                    }
+                }
+                Dictionary<string, string> staticGameObjectNameMap = new Dictionary<string, string>();
+                if (staticGameObjectSourceModelNamesByZoneShortName.ContainsKey(topDirectoryFolderNameOnly) == true)
+                {
+                    foreach (string sourceModelName in staticGameObjectSourceModelNamesByZoneShortName[topDirectoryFolderNameOnly])
+                    {
+                        // Special logic for these objects that will show up in future folders
+                        if (topDirectoryFolderNameOnly == "highkeep" && sourceModelName == "bbboard") // It's in qeynos
+                        {
+                            staticGameObjectNameMap.Add(sourceModelName, sourceModelName);
+                            continue;
+                        }
+
+                        // If the object wasn't mapped yet, process it
+                        if (oldToNewObjectRenames.ContainsKey(sourceModelName) == false)
+                        {
+                            string outputObjectName;
+                            ProcessAndCopyObject(topDirectory, tempObjectsFolder, tempZoneFolder, sourceModelName, outputObjectsFolderRoot, false, out outputObjectName);
+                            if (sourceModelName != outputObjectName)
+                                oldToNewObjectRenames.Add(sourceModelName, outputObjectName);
+                        }
+                        staticGameObjectNameMap.Add(sourceModelName, oldToNewObjectRenames[sourceModelName]);
                     }
                 }
 
@@ -190,6 +240,16 @@ namespace EQWOWConverter
                 using (var outputFile = new StreamWriter(outputSkeletalObjectListFileName))
                     foreach (string line in skeletalObjectNames)
                         outputFile.WriteLine(line);
+
+                // Generate an object lists for game objects, but put it in the zone folder
+                string outputStaticGameObjectObjectMapFileName = Path.Combine(outputZoneFolder, "gameobject_static_map.txt");
+                using (var outputFile = new StreamWriter(outputStaticGameObjectObjectMapFileName))
+                    foreach (var curGameObjectNameMap in staticGameObjectNameMap)
+                        outputFile.WriteLine(string.Concat(curGameObjectNameMap.Key, ",", curGameObjectNameMap.Value));
+                string outputSkeletalGameObjectObjectMapFileName = Path.Combine(outputZoneFolder, "gameobject_skeletal_map.txt");
+                using (var outputFile = new StreamWriter(outputSkeletalGameObjectObjectMapFileName))
+                    foreach (var curGameObjectNameMap in skeletalGameObjectNameMap)
+                        outputFile.WriteLine(string.Concat(curGameObjectNameMap.Key, ",", curGameObjectNameMap.Value));
 
                 // Copy files that were missing in the original folders for some reason
                 if (topDirectoryFolderNameOnly == "fearplane")
@@ -249,7 +309,7 @@ namespace EQWOWConverter
             ReplaceCustomTextures(outputCharactersFolderRoot, outputObjectsFolderRoot);
 
             // Convert music
-            ConditionMusicFiles(outputMusicFolderRoot);
+            //ConditionMusicFiles(outputMusicFolderRoot);
 
             // Create icons
             CreateIndividualIconFiles();

@@ -29,7 +29,8 @@ namespace EQWOWConverter.GameObjects
         protected static readonly object GameObjectsLock = new object();
         protected static Dictionary<(string, GameObjectOpenType), ObjectModel> InteractiveObjectModelsByNameAndOpenType = new Dictionary<(string, GameObjectOpenType), ObjectModel>();
         protected static Dictionary<(string, GameObjectOpenType), int> GameObjectDisplayInfoIDsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), int>();
-        protected static Dictionary<string, List<string>> SourceModelNamesByZoneShortName = new Dictionary<string, List<string>>();
+        protected static Dictionary<string, List<string>> SourceStaticModelNamesByZoneShortName = new Dictionary<string, List<string>>();
+        protected static Dictionary<string, List<string>> SourceSkeletalModelNamesByZoneShortName = new Dictionary<string, List<string>>();
         public static Dictionary<(string, GameObjectOpenType), Sound> OpenSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<(string, GameObjectOpenType), Sound> CloseSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<string, Sound> AllSoundsBySoundName = new Dictionary<string, Sound>();
@@ -41,6 +42,7 @@ namespace EQWOWConverter.GameObjects
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
         public string ZoneShortName = string.Empty;
         public string ModelName = string.Empty;
+        public bool ModelIsSkeletal = false;
         public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
@@ -79,13 +81,23 @@ namespace EQWOWConverter.GameObjects
             }
         }
 
-        public static Dictionary<string, List<string>> GetSourceModelNamesByZoneShortName()
+        public static Dictionary<string, List<string>> GetSourceStaticModelNamesByZoneShortName()
         {
             lock (GameObjectsLock)
             {
                 if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
                     LoadGameObjects();
-                return SourceModelNamesByZoneShortName;
+                return SourceStaticModelNamesByZoneShortName;
+            }
+        }
+
+        public static Dictionary<string, List<string>> GetSourceSkeletalModelNamesByZoneShortName()
+        {
+            lock (GameObjectsLock)
+            {
+                if (NonInteractiveGameObjectsByZoneShortname.Count == 0)
+                    LoadGameObjects();
+                return SourceSkeletalModelNamesByZoneShortName;
             }
         }
 
@@ -287,10 +299,21 @@ namespace EQWOWConverter.GameObjects
                 // Store the model name in the lookup
                 string zoneShortName = gameObjectsRow["zone"];
                 string modelName = gameObjectsRow["model_name"].ToLower(); // Make lower so it works with the asset conditioner
-                if (SourceModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
-                    SourceModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
-                if (SourceModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
-                    SourceModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                bool isSkeletal = gameObjectsRow["model_is_skeletal"] == "0" ? false : true;
+                if (isSkeletal == true)
+                {
+                    if (SourceSkeletalModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                        SourceSkeletalModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                    if (SourceSkeletalModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                        SourceSkeletalModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                }
+                else
+                {
+                    if (SourceStaticModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                        SourceStaticModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                    if (SourceStaticModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                        SourceStaticModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                }
 
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
@@ -309,7 +332,8 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ObjectType = gameObjectType;
                 newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
                 newGameObject.ZoneShortName = gameObjectsRow["zone"];
-                newGameObject.ModelName = 
+                newGameObject.ModelName = modelName;
+                newGameObject.ModelIsSkeletal = isSkeletal;
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
