@@ -309,7 +309,7 @@ namespace EQWOWConverter
             ReplaceCustomTextures(outputCharactersFolderRoot, outputObjectsFolderRoot);
 
             // Convert music
-            //ConditionMusicFiles(outputMusicFolderRoot);
+            ConditionMusicFiles(outputMusicFolderRoot);
 
             // Create icons
             CreateIndividualIconFiles();
