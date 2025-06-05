@@ -569,11 +569,14 @@ namespace EQWOWConverter
                 switch (nonInteractiveGameObject.OpenType)
                 {
                     case GameObjectOpenType.TYPE58:
-                    case GameObjectOpenType.TYPE100: // TODO: Rotate
-                    case GameObjectOpenType.TYPE105: // TODO: Rotate
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
                         } break;
+                    case GameObjectOpenType.TYPE105:
+                        {
+                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000);
+                        } break;
+                    case GameObjectOpenType.TYPE100:
                     case GameObjectOpenType.TYPE101:
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
