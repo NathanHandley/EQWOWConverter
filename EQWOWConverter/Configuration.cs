@@ -109,10 +109,10 @@ namespace EQWOWConverter
         public static readonly bool GENERATE_OBJECTS = true;
 
         // If true, then creatures are generated
-        public static readonly bool GENERATE_CREATURES_AND_SPAWNS = true;
+        public static readonly bool GENERATE_CREATURES_AND_SPAWNS = false;
 
         // If true, then item armor player graphics are generated (and if set in [PATH_ASSETS_FOLDER]\CustomTextures\item\texturecomponents)
-        public static readonly bool GENERATE_PLAYER_ARMOR_GRAPHICS = true;
+        public static readonly bool GENERATE_PLAYER_ARMOR_GRAPHICS = false;
 
         // If true, transports (ships, ferries) will be generated
         public static readonly bool GENERATE_TRANSPORTS = true;
@@ -123,7 +123,7 @@ namespace EQWOWConverter
         // If this has any zone short names in it, the ouput of the generator will perform an update only for these zones. If there is no previously
         // built patch mpq, it will be forced to do a complete build first.  Note that if any zones are entered in here, ONLY those zones
         // will load and work properly
-        public static readonly List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { };
+        public static readonly List<string> GENERATE_ONLY_LISTED_ZONE_SHORTNAMES = new List<string>() { "akanon" };
 
         // An extra amount to add to the boundary boxes when generating wow assets from EQ.  Needed to handle rounding.
         public static readonly float GENERATE_ADDED_BOUNDARY_AMOUNT = 0.01f;

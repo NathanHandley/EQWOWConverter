@@ -574,6 +574,10 @@ namespace EQWOWConverter
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
                         } break;
+                    case GameObjectOpenType.TYPE101:
+                        {
+                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
+                        } break;
                     default:
                         {
                             Logger.WriteWarning("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);

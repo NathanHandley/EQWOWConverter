@@ -24,6 +24,7 @@ namespace EQWOWConverter.Common
         OnActivateRotateAroundZClockwiseHalf,
         OnActivateRotateAroundZCounterclockwiseQuarter,
         OnActivateRotateAroundZClockwiseQuarter,
-        OnActivateRotateUpOpen
+        OnActivateRotateUpOpen,
+        OnIdleRotateAroundZCounterclockwise
     }
 }
