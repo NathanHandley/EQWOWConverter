@@ -565,9 +565,13 @@ namespace EQWOWConverter
 
                 // Load the object
                 ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
-                Logger.WriteDebug("- [" + modelFileName + "]: Importing EQ skeletal object '" + modelFileName + "'");
+                Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object object '" + modelFileName + "'");
                 switch (nonInteractiveGameObject.OpenType)
                 {
+                    case GameObjectOpenType.TYPE0: // TODO: Need these?  Check for them
+                    case GameObjectOpenType.TYPE55:
+                    case GameObjectOpenType.TYPE56: // TODO: Check this, qeynos
+                    case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
@@ -581,13 +585,16 @@ namespace EQWOWConverter
                         {
                             curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
                         } break;
+                    case GameObjectOpenType.TYPE59: // TODO: mischiefplane (POMTORCH2000), frontiermtns (FRONTROCK102B)
+                    case GameObjectOpenType.TYPE106: // TODO: Droga, DNWINCH102
+                    case GameObjectOpenType.TYPE156: // TODO: Sleeper, SLFF200
                     default:
                         {
-                            Logger.WriteWarning("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);
+                            Logger.WriteError("Error loading non interactive game object named " + modelFileName + " due to unhandled OpenType " + nonInteractiveGameObject.OpenType);
                             continue;
                         }
                 }
-                Logger.WriteDebug("- [" + modelFileName + "]: Importing EQ skeletal object '" + modelFileName + "' complete");
+                Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object '" + modelFileName + "' complete");
 
                 // Create the M2 and Skin
                 string curObjectOutputFolder = Path.Combine(exportObjectsFolder, modelFileName);
