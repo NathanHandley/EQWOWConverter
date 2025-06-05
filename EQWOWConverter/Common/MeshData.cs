@@ -38,7 +38,8 @@ namespace EQWOWConverter.Common
             VertexColors = new List<ColorRGBA>(meshData.VertexColors);
             BoneIDs = new List<byte>(meshData.BoneIDs);
             AnimatedVertexFramesByVertexIndex = new List<AnimatedVertexFrames>(meshData.AnimatedVertexFramesByVertexIndex.Count);
-            foreach(AnimatedVertexFrames frames in meshData.AnimatedVertexFramesByVertexIndex)
+            AnimatedVerticesDelayInMS = meshData.AnimatedVerticesDelayInMS;
+            foreach (AnimatedVertexFrames frames in meshData.AnimatedVertexFramesByVertexIndex)
             {
                 AnimatedVertexFramesByVertexIndex.Add(new AnimatedVertexFrames());
                 foreach (Vector3 frameVertex in frames.VertexOffsetFrames)
