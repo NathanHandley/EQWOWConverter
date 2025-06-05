@@ -1116,7 +1116,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 2081|87680|1||Mephit Sandwich||60|60|0|276|276|0|0|-1|15957|Mephit Sandwich|1||||||||||13015|Loaf of Bread|1|29744|Mephit Meat|1|29766|Dressing|1|||||||||||||||||||||||||||||
 2082|87681|1||Mind Worm Steaks||60|60|0|188|188|0|0|-1|30191|Mind Worm Steaks|2||||||||||13425|Spices|1|13427|Jug of Sauces|1|32518|Mind worm meat|1|||||||||||||||||||||||||||||
 2084|-1|0||Misty Thicket Picnic||60|60|0|335|335|0|0|-1|9662|Misty Thicket Picnic|4||||||||||9655|Slice of Jumjum Cake|2|9656|Picnic Basket|1|9657|Royal Mints|1|9658|Jumjum Spiced Beer|1|9659|Mature Cheese|1|9661|Jumjum Salad|1|24465|Marmalade Sandwich|1|||||||||||||||||
-2085|87682|1||Moonstone Tear||60|60|0|102|102|0|0|-1|29784|Moonstone Tear|2||||||||||28022|Rain Water|1|29795|Moonstone Crystal|1||||||||||||||||||||||||||||||||
+2085|87682|0||Moonstone Tear||60|60|0|102|102|0|0|-1|29784|Moonstone Tear|2||||||||||28022|Rain Water|1|29795|Moonstone Crystal|1||||||||||||||||||||||||||||||||
 2088|87683|1||Muffin||60|60|0|135|135|0|0|-1|13487|Muffin|6||||||||||13046|Fruit|1|13090|Clump of Dough|1|||||||||||||||||||||||||||||13437|Muffin Tin||
 2089|87684|1||Muskie Marinade||60|60|0|142|142|0|0|-1|20384|Muskie Marinade|1||||||||||13040|Fish Wine|1|13425|Spices|1|13428|Vinegar|1|16495|Snake Egg Oil|1|22749|Rathe Muskie|1|||||||||||||||||||||||
 2091|-1|0||Noodles||60|60|0|31|31|0|0|3|8175|Noodles|1||||||||||3458|INVALID_ID|1|13006|Water Flask|1|13193|Cup of Flour|1|||||||||||||||||||||||||||||
@@ -2686,11 +2686,11 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 4183|88304|1||Dwarven Plate Vambraces||63|63|0|242|242|0|0|-1|4423|Dwarven Plate Vambraces|1||||||||||10428|Enchanted Folded Brellium Sheet|2|10433|Enchanted Brellium Jointing|1|16488|Leather Padding|1|22025|Small Plate Vambrace Mold|1|22506|Imbued Ruby|1|22511|Earthen Temper|1|||||||||||||||||10477|Dwarven Smithy Hammer||
 4184|88305|1||Dwarven Plate Visor||63|63|0|163|163|0|0|-1|4449|Dwarven Plate Visor|1||||||||||10470|Brellium Chain Jointing|1|10495|Folded Sheet of Brellium|1|16488|Leather Padding|1|22022|Small Plate Visor Mold|1|22511|Earthen Temper|1||||||||||||||||||||10477|Dwarven Smithy Hammer||
 4185|88306|1||Dwarven Plate Visor||63|63|0|230|230|0|0|-1|4417|Dwarven Plate Visor|1||||||||||10428|Enchanted Folded Brellium Sheet|1|10433|Enchanted Brellium Jointing|1|16488|Leather Padding|1|22022|Small Plate Visor Mold|1|22506|Imbued Ruby|1|22511|Earthen Temper|1|||||||||||||||||10477|Dwarven Smithy Hammer||
-4186|88307|1||E'cian Ice Bolts||63|63|0|102|102|0|0|-1|30487|E'cian Ice Gears|1|30497|E'cian Ice Bolts|1|||||||29535|Chunk of E'cian Ice|1|30471|Cam Parts Mold|1|||||||||||||||||||||||||||||12011|File||
+4186|88307|0||E'cian Ice Bolts||63|63|0|102|102|0|0|-1|30487|E'cian Ice Gears|1|30497|E'cian Ice Bolts|1|||||||29535|Chunk of E'cian Ice|1|30471|Cam Parts Mold|1|||||||||||||||||||||||||||||12011|File||
 4187|-1|0||E'cian Ice Chain Jointing||63|63|0|228|228|0|0|-1|28245|E'cian Ice Chain Jointing|1||||||||||29529|Povarian Mist Temper|1|29586|E'cian Ice Scales|1|||||||||||||||||||||||||||||12011|File|29546|INVALID_ID
-4189|88308|1||E'cian Ice Scales||63|63|0|68|68|0|0|-1|29586|E'cian Ice Scales|2||||||||||29529|Povarian Mist Temper|1|29535|Chunk of E'cian Ice|1|||||||||||||||||||||||||||||12011|File||
-4190|88309|1||E'cian Ice Shards||63|63|0|28|28|0|0|-1|29580|E'cian Ice Shards|3||||||||||29535|Chunk of E'cian Ice|1||||||||||||||||||||||||||||||||7052|Smithing Chisel||
-4191|88310|1||E'cian Ice Studs||63|63|0|54|54|0|0|-1|29574|E'cian Ice Studs|2||||||||||29580|E'cian Ice Shards|3|29529|Povarian Mist Temper|1|||||||||||||||||||||||||||||12011|File||
+4189|88308|0||E'cian Ice Scales||63|63|0|68|68|0|0|-1|29586|E'cian Ice Scales|2||||||||||29529|Povarian Mist Temper|1|29535|Chunk of E'cian Ice|1|||||||||||||||||||||||||||||12011|File||
+4190|88309|0||E'cian Ice Shards||63|63|0|28|28|0|0|-1|29580|E'cian Ice Shards|3||||||||||29535|Chunk of E'cian Ice|1||||||||||||||||||||||||||||||||7052|Smithing Chisel||
+4191|88310|0||E'cian Ice Studs||63|63|0|54|54|0|0|-1|29574|E'cian Ice Studs|2||||||||||29580|E'cian Ice Shards|3|29529|Povarian Mist Temper|1|||||||||||||||||||||||||||||12011|File||
 4192|-1|0||Electrified Copper Bits||63|63|0|103|103|0|0|-1|29584|Electrified Copper Bits|3||||||||||29539|INVALID_ID|1||||||||||||||||||||||||||||||||7052|Smithing Chisel||
 4193|-1|0||Electrified Copper Chain Jointing||63|63|0|228|228|0|0|-1|28249|Electrified Copper Chain Jointing|1||||||||||29533|Hurricane Temper|1|29590|Electrified Copper Rings|1|||||||||||||||||||||||||||||12011|File|29546|INVALID_ID
 4194|-1|0||Electrified Copper Rings||63|63|0|66|66|0|0|-1|29590|Electrified Copper Rings|2||||||||||29533|Hurricane Temper|1|29539|INVALID_ID|1|||||||||||||||||||||||||||||12011|File||
@@ -4424,7 +4424,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 6672|89422|1||Wind Metal Bits||63|63|0|28|28|0|0|-1|29582|Wind Metal Bits|3||||||||||29537|Chunk of Wind Metal|1||||||||||||||||||||||||||||||||7052|Smithing Chisel||
 6673|89423|1||Wind Metal Bolts||63|63|0|102|102|0|0|-1|30486|Wind Metal Gears|1|30496|Wind Metal Bolts|1|||||||29537|Chunk of Wind Metal|1|30471|Cam Parts Mold|1|||||||||||||||||||||||||||||12011|File||
 6674|-1|0||Wind Metal Chain Jointing||63|63|0|228|228|0|0|-1|28247|Wind Metal Chain Jointing|1||||||||||29531|Flowing Rainbow Temper|1|29588|Wind Metal Rings|1|||||||||||||||||||||||||||||12011|File|29546|INVALID_ID
-6676|89424|1||Wind Metal Rings||63|63|0|66|66|0|0|-1|29588|Wind Metal Rings|2||||||||||29531|Flowing Rainbow Temper|1|29537|Chunk of Wind Metal|1|||||||||||||||||||||||||||||12011|File||
+6676|89424|0||Wind Metal Rings||63|63|0|66|66|0|0|-1|29588|Wind Metal Rings|2||||||||||29531|Flowing Rainbow Temper|1|29537|Chunk of Wind Metal|1|||||||||||||||||||||||||||||12011|File||
 6677|89425|1||Wind Metal Studs||63|63|0|54|54|0|0|-1|29576|Wind Metal Studs|2||||||||||29582|Wind Metal Bits|3|29531|Flowing Rainbow Temper|1|||||||||||||||||||||||||||||12011|File||
 6678|-1|0||Wind Spirits Armguards||63|63|0|0|0|1|0|-1|27367|INVALID_ID|1||||||||||22613|INVALID_ID|1|27469|INVALID_ID|1||||||||||||||||||||||||||||||||
 6679|-1|0||Wind Spirits Boots||63|63|0|0|0|1|0|-1|27368|INVALID_ID|1||||||||||22612|INVALID_ID|1|27470|INVALID_ID|1||||||||||||||||||||||||||||||||
@@ -4896,8 +4896,8 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7682|89793|1||Flask Of Rathe Berry Juice||65|65|0|26|26|0|0|-1|22561|Flask of Rathe Berry Juice|5||||||||||14951|Rathe Berries|2|13006|Water Flask|1||||||||||||||||||||||||||||||||
 7683|-1|0||Flask Of Sweetwater||65|65|0|41|41|0|0|-1|3646|INVALID_ID|1||||||||||3490|Xakra Bile|1|3492|Scorpion Blood|1|13006|Water Flask|1|||||||||||||||||||||||||||||
 7684|89794|1||Flask Of Sylvan Berry Juice||65|65|0|26|26|0|0|-1|22562|Flask of Sylvan Berry Juice|5||||||||||14957|Sylvan Berries|2|13006|Water Flask|1||||||||||||||||||||||||||||||||
-7685|89795|1||Flowing Rainbow Temper||65|65|0|135|135|0|0|-1|29531|Flowing Rainbow Temper|1||||||||||26716|Gaseous Condensate|1|29518|Powdered Fog|1|29524|Air Mephit Blood|1|||||||||||||||||||||||||||||
-7686|89796|1||Frost Temper||65|65|0|135|135|0|0|-1|22531|Frost Temper|1||||||||||22532|Essence of Winter|2|13034|Brandy|1|22533|Ice Goblin Blood|1|||||||||||||||||||||||||||||
+7685|89795|0||Flowing Rainbow Temper||65|65|0|135|135|0|0|-1|29531|Flowing Rainbow Temper|1||||||||||26716|Gaseous Condensate|1|29518|Powdered Fog|1|29524|Air Mephit Blood|1|||||||||||||||||||||||||||||
+7686|89796|0||Frost Temper||65|65|0|135|135|0|0|-1|22531|Frost Temper|1||||||||||22532|Essence of Winter|2|13034|Brandy|1|22533|Ice Goblin Blood|1|||||||||||||||||||||||||||||
 7687|89797|1||Frothy Frostbite||65|65|0|182|182|0|0|-1|22537|Frothy Frostbite|1||||||||||11789|Ice of Velious|1|13037|Gnomish Spirits|1|13425|Spices|1|16582|Vodka|1|16598|Bottle|1|||||||||||||||||||||||
 7691|89798|1||Ginesh||65|65|0|168|168|0|0|-1|16588|Ginesh|2||||||||||13006|Water Flask|1|13032|Short Beer|1|13419|Vegetables|1|16599|Shotglass|1||||||||||||||||||||||||||
 7692|89799|1||Glacier Oil Tannin||65|65|0|102|102|0|0|-1|11659|Glacier Oil Tannin|1||||||||||11637|Oily Goo Secretion|1|13006|Water Flask|1|19980|Melted Glacier Whiskey|1|||||||||||||||||||||||||||||
@@ -4942,7 +4942,7 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7752|89819|1||Mead||65|65|0|41|41|0|0|-1|13008|Mead|1||||||||||16580|Cask|1|16591|Hops|1|16595|Malt|1|16596|Yeast|1||||||||||||||||||||||||||
 7755|89820|1||Minotaur Hero's Brew||65|65|0|248|248|0|0|-1|16598|Bottle|2|19198|Minotaur Hero's Brew|1|||||||16595|Malt|3|13006|Water Flask|2|13032|Short Beer|2|16580|Cask|1|16596|Yeast|1|||||||||||||||||||||||
 7756|-1|0||Mistletoe Temper||65|65|0|136|136|0|0|3|9723|Mistletoe Temper|1||||||||||9650|INVALID_ID|1|13035|Elven Wine|1|13082|Mistletoe|1|||||||||||||||||||||||||||||
-7757|89821|1||Moonlight Temper||65|65|0|135|135|0|0|-1|22510|Moonlight Temper|1||||||||||22520|Essence of Moonlight|2|16594|Morning Dew|1|22523|Swirling Mist|1|||||||||||||||||||||||||||||
+7757|89821|0||Moonlight Temper||65|65|0|135|135|0|0|-1|22510|Moonlight Temper|1||||||||||22520|Essence of Moonlight|2|16594|Morning Dew|1|22523|Swirling Mist|1|||||||||||||||||||||||||||||
 7758|89822|1||Murky Gray Liquid||65|65|0|88|88|0|0|-1|5539|Murky Gray Liquid|1||||||||||5533|Dulfis Mushroom|1|13006|Water Flask|1||||||||||||||||||||||||||||||||
 7759|-1|0||Nektulos Essence||65|65|0|122|122|0|0|3|24449|Nektulos Essence|1||||||||||13006|Water Flask|1|14925|Glow Lichen|1||||||||||||||||||||||||||||||||
 7760|89823|1||Night Terror Curing Agent||65|65|0|135|135|0|0|-1|29874|Night Terror Curing Agent|1||||||||||29499|Nightmarewood Sap|3|10253|Vial of Distilled Mana|1||||||||||||||||||||||||||||||||
@@ -4958,19 +4958,19 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 7772|-1|0||Paineel Essence||65|65|0|122|122|0|0|3|24450|Paineel Essence|1||||||||||13006|Water Flask|1|22758|Hatch Dace|1||||||||||||||||||||||||||||||||
 7775|-1|0||Planar Blood Brew||65|65|0|216|216|0|0|-1|28787|INVALID_ID|3||||||||||9644|Soda Water|1|16580|Cask|1|16592|Grapes|1|16851|Cork|1|28786|Slarghilug Blood|1|29346|INVALID_ID|1|29525|Nightmare Mephit Blood|1||||||||||||||9777|Corking Device||
 7777|-1|0||Portable Drink||65|65|220|255|255|0|0|-1|15993|Portable Drink|1||||||||||15994|INVALID_ID|3|16249|Hardened Leather Signet|1||||||||||||||||||||||||||||||||
-7778|89832|1||Povarian Mist Temper||65|65|0|135|135|0|0|-1|29529|Povarian Mist Temper|1||||||||||21732|Shimmering Fish Gills|1|29515|Soapstone Powder|1|29522|Water Mephit Blood|1|||||||||||||||||||||||||||||
+7778|89832|0||Povarian Mist Temper||65|65|0|135|135|0|0|-1|29529|Povarian Mist Temper|1||||||||||21732|Shimmering Fish Gills|1|29515|Soapstone Powder|1|29522|Water Mephit Blood|1|||||||||||||||||||||||||||||
 7780|-1|0||Purified Water||65|65|0|58|58|0|0|-1|12607|Purified Water|1||||||||||13006|Water Flask|2|9650|INVALID_ID|1||||||||||||||||||||||||||||||||
 7781|-1|0||Qeynos Afternoon Tea||65|65|0|226|226|0|0|3|9758|Qeynos Afternoon Tea|6||||||||||9650|INVALID_ID|1|9726|Cream|1|9759|Bayle's Delight|1|13006|Water Flask|1|14239|Eucalyptus Leaf|1|14915|Tea Leaves|1||||||||||||||||||||
 7785|89833|1||Red Porter||65|65|0|68|68|0|0|-1|16598|Bottle|4|19969|Red Porter|1|||||||13030|Red Wine|4|16580|Cask|1||||||||||||||||||||||||||||||||
 7786|89834|1||Red Wine||65|65|0|95|95|0|0|-1|13030|Red Wine|1||||||||||13045|Berries|1|16592|Grapes|1|16597|Wine Yeast|1|16598|Bottle|1||||||||||||||||||||||||||
 7787|89835|1||Ro Porter||65|65|0|68|68|0|0|-1|16598|Bottle|4|19971|Ro Porter|1|||||||13030|Red Wine|2|13035|Elven Wine|2|16580|Cask|1|||||||||||||||||||||||||||||
 7788|89836|1||Root Beer Float||65|65|0|21|21|0|0|-1|22539|Root Beer Float|1||||||||||13429|Frosting|1|22545|Stormguard Root Beer|1|28020|Chunk of Ice|1|||||||||||||||||||||||||||||
-7789|89837|1||Royal Temper||65|65|0|135|135|0|0|-1|22525|Royal Temper|1||||||||||22527|Essence of Sunlight|2|22526|Griffenne Blood|1|28022|Rain Water|1|||||||||||||||||||||||||||||
+7789|89837|0||Royal Temper||65|65|0|135|135|0|0|-1|22525|Royal Temper|1||||||||||22527|Essence of Sunlight|2|22526|Griffenne Blood|1|28022|Rain Water|1|||||||||||||||||||||||||||||
 7791|-1|0||Sacred Velium Ink||65|65|0|168|168|0|0|-1|2048|Sacred Velium Ink|1||||||||||1857|Liquid velium|1|1858|Royal Kromrif blood|1|1886|Cutlassfish Oil|1|||||||||||||||||||||||||||||
 7793|89838|1||Scale Temper||65|65|0|135|135|0|0|-1|22513|Scale Temper|1||||||||||12616|Flask of Bloodwater|1|22519|Sarnak Blood|1|22522|Iksar Blood|1|22524|Froglok Blood|1||||||||||||||||||||||||||
 7794|89839|1||Sea Temper||65|65|0|135|135|0|0|-1|22546|Sea Temper|1||||||||||22547|Mug of Sea Foam|2|13040|Fish Wine|1|19113|Saltwater Seaweed|1|||||||||||||||||||||||||||||
 7795|-1|0||Sec Champagne||65|65|0|250|250|0|0|-1|9673|Sec Champagne|1||||||||||9644|Soda Water|1|9671|Champagne Magnum|1|16592|Grapes|1|16597|Wine Yeast|1||||||||||||||||||||||||||
-7797|89840|1||Shadow Temper||65|65|0|135|135|0|0|-1|22512|Shadow Temper|1||||||||||22518|Essence of Shadow|2|13021|Neriak Nectar|1|22515|Elven Blood|1|||||||||||||||||||||||||||||
+7797|89840|0||Shadow Temper||65|65|0|135|135|0|0|-1|22512|Shadow Temper|1||||||||||22518|Essence of Shadow|2|13021|Neriak Nectar|1|22515|Elven Blood|1|||||||||||||||||||||||||||||
 7798|-1|0||Shar Vahl Essence||65|65|0|187|187|0|0|3|32554|Shar Vahl Essence|1||||||||||13006|Water Flask|1|30619|INVALID_ID|1||||||||||||||||||||||||||||||||
 7799|89841|1||Short Ale||65|65|0|51|51|0|0|-1|13018|Short Ale|1||||||||||13006|Water Flask|1|16580|Cask|1|16590|Barley|1|16591|Hops|1||||||||||||||||||||||||||
 7800|89842|1||Short Beer||65|65|0|31|31|0|0|-1|13032|Short Beer|1||||||||||16580|Cask|1|16590|Barley|1|16591|Hops|1|16595|Malt|1||||||||||||||||||||||||||
@@ -7330,8 +7330,8 @@ eq_recipeID|wow_spellID|enabled|could_enable|name|Comment|eq_tradeskillID_orig|e
 13562|91157|1||Enchanted Antonian Long Sword||63|63|0|142|142|0|0|-1|21551|Enchanted Antonian Long Sword|1||||||||||10437|Enchanted Folded Sheet Metal|1|10033|Fire Emerald|1|12046|Hilt Mold|1|22085|Long Blade Mold|1|12060|Pommel Mold|1|22525|Royal Temper|1||||||||||||||||||||
 13563|91158|1||Imbued Northman Long Dagger||63|63|0|98|98|0|0|-1|21561|Imbued Northman Long Dagger|1||||||||||22074|Dagger Blade Mold|1|22531|Frost Temper|1|12046|Hilt Mold|1|22500|Imbued Jade|1|10464|Medium Quality Sheet Metal|1|12060|Pommel Mold|1||||||||||||||||||||
 13564|91159|1||Imbued Northman Battle Axe||63|63|0|122|122|0|0|-1|21562|Imbued Northman Battle Axe|1||||||||||22077|Axe Head Mold|1|22531|Frost Temper|1|22500|Imbued Jade|1|10463|Medium Quality Folded Sheet Metal|1|10456|Oak Shaft|1|||||||||||||||||||||||
-13565|91160|1||Imbued Northman Claymore||63|63|0|128|128|0|0|-1|21563|Imbued Northman Claymore|1||||||||||22531|Frost Temper|1|12037|Heavy Steel Blade Mold|1|12046|Hilt Mold|1|22500|Imbued Jade|1|10463|Medium Quality Folded Sheet Metal|1|12060|Pommel Mold|1||||||||||||||||||||
-13566|91161|1||Imbued Northman Mace||63|63|0|115|115|0|0|-1|21564|Imbued Northman Mace|1||||||||||22531|Frost Temper|1|22500|Imbued Jade|1|22080|Mace Head Mold|1|10464|Medium Quality Sheet Metal|1|10456|Oak Shaft|1|||||||||||||||||||||||
+13565|91160|0||Imbued Northman Claymore||63|63|0|128|128|0|0|-1|21563|Imbued Northman Claymore|1||||||||||22531|Frost Temper|1|12037|Heavy Steel Blade Mold|1|12046|Hilt Mold|1|22500|Imbued Jade|1|10463|Medium Quality Folded Sheet Metal|1|12060|Pommel Mold|1||||||||||||||||||||
+13566|91161|0||Imbued Northman Mace||63|63|0|115|115|0|0|-1|21564|Imbued Northman Mace|1||||||||||22531|Frost Temper|1|22500|Imbued Jade|1|22080|Mace Head Mold|1|10464|Medium Quality Sheet Metal|1|10456|Oak Shaft|1|||||||||||||||||||||||
 13567|91162|1||Mithril Feir`Dal Spear||63|63|0|122|122|0|0|-1|21582|Mithril Feir'Dal Spear|1||||||||||16594|Morning Dew|1|10456|Oak Shaft|1|10496|Sheet of Mithril|1|22087|Spear Head Mold|1||||||||||||||||||||||||||
 13568|91163|1||Mithril Feir`Dal Dagger||63|63|0|135|135|0|0|-1|21586|Mithril FierDal Dagger|1||||||||||22074|Dagger Blade Mold|1|12046|Hilt Mold|1|22507|Imbued Emerald|1|16594|Morning Dew|1|12060|Pommel Mold|1|10496|Sheet of Mithril|1||||||||||||||||||||
 13569|91164|1||Mithril Feir`Dal Spear||63|63|0|152|152|0|0|-1|21587|Mithril Feir'Dal Spear|1||||||||||22507|Imbued Emerald|1|16594|Morning Dew|1|10456|Oak Shaft|1|10496|Sheet of Mithril|1|22087|Spear Head Mold|1|||||||||||||||||||||||

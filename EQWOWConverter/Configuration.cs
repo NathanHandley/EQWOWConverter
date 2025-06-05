@@ -155,7 +155,7 @@ namespace EQWOWConverter
         public static readonly bool PLAYER_USE_EQ_START_ITEMS = true;
 
         // If true, this will also add a hearthstone if using EQ items
-        public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = true;
+        public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;
 
         //=====================================================================
         // Zone General
