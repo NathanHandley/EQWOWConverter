@@ -381,11 +381,11 @@ namespace EQWOWConverter.Tradeskills
                 case TradeskillType.Alchemy: spellTemplate.SpellVisualID1 = 92; break; // Same as "Potion of Wild Magic"
                 case TradeskillType.Blacksmithing: spellTemplate.SpellVisualID1 = 395; break; // Same as "Imperial Plate Helm"
                 case TradeskillType.Cooking: spellTemplate.SpellVisualID1 = 3881; break; // Same as "Blood Sausage"
-                case TradeskillType.Engineering: spellTemplate.SpellVisualID1 = 3182; break; // Same as "Enchant 2H Weapon - Minor Impact"
+                case TradeskillType.Engineering: spellTemplate.SpellVisualID1 = 2641; break; // Same as "Flying Tiger Goggles"
                 case TradeskillType.Jewelcrafting: spellTemplate.SpellVisualID1 = 7374; break; // Same as "Heavy Jade Ring"
                 case TradeskillType.Inscription: spellTemplate.SpellVisualID1 = 10130; break; // Same as "Ink of the Sea"
                 case TradeskillType.Tailoring: spellTemplate.SpellVisualID1 = 1168; break; // Same as "Bolt of Linen Cloth"
-                case TradeskillType.Enchanting: spellTemplate.SpellVisualID1 = 2641; break; // Same as "Flying Tiger Goggles"
+                case TradeskillType.Enchanting: spellTemplate.SpellVisualID1 = 3182; break; // Same as "Enchant 2H Weapon - Minor Impact"
                 default: spellTemplate.SpellVisualID1 = 1168; break; // Same as "Join map fragments" for the Tanaris treasure map
             }
         }
