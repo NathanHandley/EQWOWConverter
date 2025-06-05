@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM gameobject WHERE `id` >= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_START.ToString() + " AND `id` <= " + Configuration.SQL_GAMEOBJECTTEMPLATE_ID_END + ";";
         }
 
-        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, string comment = "")
+        public void AddRow(int gameObjectGUID, int gameObjectTemplateID, int mapID, int areaID, Vector3 position, float orientation, float rotationZ, string comment = "")
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("guid", gameObjectGUID);
