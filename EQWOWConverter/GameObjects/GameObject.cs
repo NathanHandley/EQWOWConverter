@@ -49,6 +49,7 @@ namespace EQWOWConverter.GameObjects
         public Vector3 Position = new Vector3();
         public float Orientation;
         public float EQHeading;
+        public float EQIncline;
         public ObjectModel? ObjectModel = null;
         public int GameObjectGUID;
         public int GameObjectTemplateEntryID;
@@ -376,6 +377,7 @@ namespace EQWOWConverter.GameObjects
                     float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
                     newGameObject.Orientation = orientationInRadians + MathF.PI;
                 }
+                newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
 
                 // Different logic based on interactive vs non-interactive
                 if (gameObjectType != GameObjectType.NonInteract)

@@ -103,8 +103,8 @@ namespace EQWOWConverter.ObjectModels
         }
 
         // TODO: Vertex Colors
-        public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices,
-            List<TriangleFace> collisionTriangleFaces, ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimSlideValue = 0, int activeDoodadAnimTimeInMS = 0)
+        public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces, 
+            ActiveDoodadAnimType? activeDoodadAnimationType = null, float activeDoodadAnimSlideValue = 0, int activeDoodadAnimTimeInMS = 0)
         {
             if (IsLoaded == true)
             {
