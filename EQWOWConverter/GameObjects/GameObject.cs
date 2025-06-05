@@ -196,20 +196,20 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE1:
                                         case GameObjectOpenType.TYPE2:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE5:
                                         case GameObjectOpenType.TYPE6:
                                         case GameObjectOpenType.TYPE7:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
                                         case GameObjectOpenType.TYPE17:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.SlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE60: 
                                         case GameObjectOpenType.TYPE61: 
@@ -219,11 +219,11 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.SlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.RotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
                                             } break;
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
                                         case GameObjectOpenType.TYPE21: // TODO: two in CityMist. CMGATE101

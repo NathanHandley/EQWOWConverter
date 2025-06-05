@@ -549,18 +549,6 @@ namespace EQWOWConverter
             // Load the models for GameObjects
             GameObject.LoadModelObjectsForInteractiveGameObjects();
 
-            // Game Object Sounds
-            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
-            foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
-            {
-                string outputGameObjectSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "GameObjects");
-                if (Directory.Exists(outputGameObjectSoundFolder) == false)
-                    FileTool.CreateBlankDirectory(outputGameObjectSoundFolder, true);
-                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
-                string targetFullPath = Path.Combine(outputGameObjectSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
-                FileTool.CopyFile(sourceFullPath, targetFullPath);
-            }
-
             // Generate the skeletal non-interactive zone game objects 
             List<GameObject> nonInteractiveGameObjects = GameObject.GetAllNonInteractiveGameObjects();
             List<string> loadedNonInteractiveGameObjectNames = new List<string>();
@@ -619,7 +607,19 @@ namespace EQWOWConverter
                 ObjectModel.StaticObjectModelsByName.Add(curObjectModel.Name, curObjectModel);
                 loadedNonInteractiveGameObjectNames.Add(curObjectModel.Name);
                 gameObjectProgressCounter.Write();
-            }            
+            }
+
+            // Game Object Sounds
+            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            foreach (Sound sound in GameObject.AllSoundsBySoundName.Values)
+            {
+                string outputGameObjectSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "GameObjects");
+                if (Directory.Exists(outputGameObjectSoundFolder) == false)
+                    FileTool.CreateBlankDirectory(outputGameObjectSoundFolder, true);
+                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                string targetFullPath = Path.Combine(outputGameObjectSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
 
             return true;
         }
