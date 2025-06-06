@@ -34,6 +34,7 @@ namespace EQWOWConverter.GameObjects
         public static Dictionary<(string, GameObjectOpenType), Sound> OpenSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<(string, GameObjectOpenType), Sound> CloseSoundsByModelNameAndOpenType = new Dictionary<(string, GameObjectOpenType), Sound>();
         public static Dictionary<string, Sound> AllSoundsBySoundName = new Dictionary<string, Sound>();
+        protected static bool DataIsLoaded = false;
 
         public int ID;
         public int DoorID;
@@ -66,8 +67,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (NonDoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 return NonDoodadGameObjectsByZoneShortname;
             }
         }
@@ -76,8 +76,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (NonDoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 return DoodadGameObjectsByZoneShortname;
             }
         }
@@ -86,8 +85,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (DoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 if (DoodadGameObjectsByZoneShortname.ContainsKey(zoneShortName) == false)
                     return new List<GameObject>();
                 else
@@ -99,8 +97,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (DoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 return SourceStaticModelNamesByZoneShortName;
             }
         }
@@ -109,8 +106,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (DoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 return SourceSkeletalModelNamesByZoneShortName;
             }
         }
@@ -119,8 +115,7 @@ namespace EQWOWConverter.GameObjects
         {
             lock (GameObjectsLock)
             {
-                if (DoodadGameObjectsByZoneShortname.Count == 0)
-                    LoadGameObjects();
+                LoadGameObjects();
                 List<GameObject> returnGameObjects = new List<GameObject>();
                 foreach (var objectsByZone in DoodadGameObjectsByZoneShortname)
                     returnGameObjects.AddRange(objectsByZone.Value);
@@ -310,6 +305,9 @@ namespace EQWOWConverter.GameObjects
 
         private static void LoadGameObjects()
         {
+            if (DataIsLoaded == true)
+                return;
+
             // Load the file first
             string gameObjectsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "GameObjects.csv");
             Logger.WriteDebug(string.Concat("Populating Game Object list via file '", gameObjectsFile, "'"));
@@ -452,6 +450,7 @@ namespace EQWOWConverter.GameObjects
                     gameObject.TriggerGameObjectTemplateEntryID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
                 }   
             }
+            DataIsLoaded = true;
         }
 
         private static GameObjectOpenType GetOpenType(int openTypeID)
