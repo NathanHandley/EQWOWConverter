@@ -63,7 +63,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt64(0); // ShapeshiftExclude
             newRow.AddUInt32(GetTargetValue(spellTemplate)); // Targets
             newRow.AddUInt32(0); // TargetCreatureType
-            newRow.AddUInt32(0); // RequiresSpellFocus
+            newRow.AddUInt32(spellTemplate.SpellFocusID); // RequiresSpellFocus
             newRow.AddUInt32(0); // FacingCasterFlags
             newRow.AddUInt32(0); // CasterAuraState
             newRow.AddUInt32(0); // TargetAuraState

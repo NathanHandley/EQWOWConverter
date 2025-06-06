@@ -47,6 +47,7 @@ namespace EQWOWConverter.Tradeskills
         public ItemTemplate? ProducedFilledContainer = null;
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
+        public int RequiredFocus = 0;
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -146,7 +147,17 @@ namespace EQWOWConverter.Tradeskills
                         Logger.WriteDebug(string.Concat("Skipping tradeskill item with name '", name, "' as the tradeskill type is Unknown"));
                         continue;
                     }
+
+                    // Assign the focus
+                    int focusID = 0;
+                    switch (type)
+                    {
+                        case TradeskillType.Blacksmithing: focusID = 3; break;
+                        case TradeskillType.Cooking: focusID = 4; break;
+                        default: break; // Do Nothing
+                    }
                     TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
+                    recipe.RequiredFocus = focusID;
                     recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
                     bool itemLookupFailed = false;
                     for (int i = 0; i < 4; i++)

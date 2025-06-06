@@ -316,7 +316,7 @@ namespace EQWOWConverter
                         folderRoot = charactersFolderRoot;
 
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                    ObjectModel curObjectModel = new ObjectModel(transportLift.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                     Logger.WriteDebug("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "'");
                     curObjectModel.LoadEQObjectFromFile(folderRoot, transportLift.MeshName);
                     Logger.WriteDebug("- [" + transportLift.MeshName + "]: Importing EQ transport lift object '" + transportLift.MeshName + "' complete");
@@ -353,7 +353,7 @@ namespace EQWOWConverter
                 if (transportLiftTriggerObjectModelsByMeshName.ContainsKey(transportLiftTrigger.MeshName) == false)
                 {
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                     Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
                     curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName, null, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
                     Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
@@ -427,7 +427,7 @@ namespace EQWOWConverter
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(staticObjectName);
-                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad);
+                ObjectModel curObject = new ObjectModel(staticObjectName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "'");
                 curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, staticObjectName);
                 Logger.WriteDebug("- [" + staticObjectName + "]: Importing EQ static object '" + staticObjectName + "' complete");
@@ -457,7 +457,7 @@ namespace EQWOWConverter
 
                 // Load the EQ object
                 ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletalObjectName);
-                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodad);
+                ObjectModel curObject = new ObjectModel(skeletalObjectName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "'");
                 curObject.LoadEQObjectFromFile(conditionedObjectFolderRoot, skeletalObjectName);
                 Logger.WriteDebug("- [" + skeletalObjectName + "]: Importing EQ skeletal object '" + skeletalObjectName + "' complete");
@@ -478,7 +478,7 @@ namespace EQWOWConverter
 
             // Update all game object model references
             Logger.WriteInfo("Updating game object model references...");
-            Dictionary<string, List<GameObject>> interactiveGameObjectsByZoneShortname = GameObject.GetInteractiveGameObjectsByZoneShortNames();
+            Dictionary<string, List<GameObject>> interactiveGameObjectsByZoneShortname = GameObject.GetNonDoodadGameObjectsByZoneShortNames();
             foreach (var interactiveGameObjectsInZone in interactiveGameObjectsByZoneShortname)
             {
                 string curZoneFolder = Path.Combine(eqExportsConditionedPath, "zones", interactiveGameObjectsInZone.Key);
@@ -517,7 +517,7 @@ namespace EQWOWConverter
                     }
                 }
             }
-            Dictionary<string, List<GameObject>> nonInteractiveGameObjectsByZoneShortname = GameObject.GetNonInteractiveGameObjectsByZoneShortNames();
+            Dictionary<string, List<GameObject>> nonInteractiveGameObjectsByZoneShortname = GameObject.GetDoodadGameObjectsByZoneShortNames();
             foreach (var nonInteractiveGameObjectsInZone in nonInteractiveGameObjectsByZoneShortname)
             {
                 string curZoneFolder = Path.Combine(eqExportsConditionedPath, "zones", nonInteractiveGameObjectsInZone.Key);
@@ -558,10 +558,10 @@ namespace EQWOWConverter
             }
 
             // Load the models for GameObjects
-            GameObject.LoadModelObjectsForInteractiveGameObjects();
+            GameObject.LoadModelObjectsForNonDoodadGameObjects();
 
             // Generate the skeletal non-interactive zone game objects 
-            List<GameObject> nonInteractiveGameObjects = GameObject.GetAllNonInteractiveGameObjects();
+            List<GameObject> nonInteractiveGameObjects = GameObject.GetAllDoodadGameObjects();
             List<string> loadedNonInteractiveGameObjectNames = new List<string>();
             LogCounter gameObjectProgressCounter = new LogCounter("Converting non-interactive Game Objects...", 0, nonInteractiveGameObjects.Count);
             foreach (GameObject nonInteractiveGameObject in nonInteractiveGameObjects)
@@ -580,7 +580,7 @@ namespace EQWOWConverter
                     modelDataRootFolder = conditionedEquipmentFolderRoot;
 
                 // Load the object
-                ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
+                ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object object '" + modelFileName + "'");
                 switch (nonInteractiveGameObject.OpenType)
                 {
@@ -918,7 +918,7 @@ namespace EQWOWConverter
             Zone curZone = new Zone(zoneShortName, zoneProperties);
             Logger.WriteDebug("- [" + curZone.ShortName + "]: Converting zone '" + curZone.ShortName + "' into a wow zone...");
             string curZoneDirectory = Path.Combine(inputZoneFolder, zoneShortName);
-            curZone.LoadFromEQZone(zoneShortName, curZoneDirectory, GameObject.GetNonInteractiveGameObjectsForZoneShortname(zoneShortName));
+            curZone.LoadFromEQZone(zoneShortName, curZoneDirectory, GameObject.GetDoodadGameObjectsForZoneShortname(zoneShortName));
 
             // Create the zone WMO objects
             WMO zoneWMO = new WMO(curZone, exportMPQRootFolder, "WORLD\\EVERQUEST\\ZONETEXTURES", relativeStaticDoodadsPath, relativeZoneObjectsPath, false);
@@ -1537,10 +1537,8 @@ namespace EQWOWConverter
                 curSpellTemplate.SkillLine = recipe.SkillLineWOW;
                 curSpellTemplate.RequiredTotemID1 = recipe.RequiredTotemID1;
                 curSpellTemplate.RequiredTotemID2 = recipe.RequiredTotemID2;
+                curSpellTemplate.SpellFocusID = Convert.ToUInt32(recipe.RequiredFocus);
                 recipe.SetSpellVisualData(curSpellTemplate);
-
-                // Todo: Focus items
-
                 spellTemplates.Add(curSpellTemplate);
             }
 
@@ -2327,15 +2325,21 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_OBJECTS == true)
             {
                 Dictionary<(string, GameObjectOpenType), int> gameObjectDisplayInfoIDsByModelNameAndOpenType = GameObject.GetGameObjectDisplayInfoIDsByModelNameAndOpenType();
-                Dictionary<(string, GameObjectOpenType), ObjectModel> gameObjectModelsByNameAndOpenType = GameObject.GetInteractiveObjectModelsByNameAndOpenType();
+                Dictionary<(string, GameObjectOpenType), ObjectModel> gameObjectModelsByNameAndOpenType = GameObject.GetNonDoodadObjectModelsByNameAndOpenType();
                 Dictionary<(string, GameObjectOpenType), Sound> openSoundsByModelNameAndOpenType = GameObject.OpenSoundsByModelNameAndOpenType;
                 Dictionary<(string, GameObjectOpenType), Sound> closeSoundsByModelNameAndOpenType = GameObject.CloseSoundsByModelNameAndOpenType;
                 foreach (ValueTuple<string, GameObjectOpenType> nameAndOpenType in gameObjectDisplayInfoIDsByModelNameAndOpenType.Keys)
                 {
                     // Sounds
-                    int openSoundEntryID = openSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
-                    int closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
+                    int openSoundEntryID = 0;
+                    int closeSoundEntryID = 0;
+                    if (openSoundsByModelNameAndOpenType.ContainsKey(nameAndOpenType) == true)
+                    {
+                        openSoundEntryID = openSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
+                        closeSoundEntryID = closeSoundsByModelNameAndOpenType[nameAndOpenType].DBCID;
+                    }
 
+                    // Display info
                     string fileName = string.Concat(nameAndOpenType.Item1, "_", nameAndOpenType.Item2.ToString());
                     string relativeObjectFileName = Path.Combine("World", "Everquest", "GameObjects", fileName, fileName + ".mdx");
                     gameObjectDisplayInfoDBC.AddRow(gameObjectDisplayInfoIDsByModelNameAndOpenType[nameAndOpenType],
@@ -2958,7 +2962,7 @@ namespace EQWOWConverter
             // Game Objects
             if (Configuration.GENERATE_OBJECTS == true)
             {
-                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetInteractiveGameObjectsByZoneShortNames();
+                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetNonDoodadGameObjectsByZoneShortNames();
                 foreach(var gameObjectByShortName in gameObjectsByZoneShortNames)
                 {
                     // Skip invalid objects (zones not loaded)

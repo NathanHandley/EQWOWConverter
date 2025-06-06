@@ -802,7 +802,7 @@ namespace EQWOWConverter.Zones
 
                 // Generate the object
                 string name = material.UniqueName + "_" + i.ToString();
-                ObjectModel newObject = new ObjectModel(name, ObjectModelProperties.GetObjectPropertiesForObject(""), ObjectModelType.ZoneModel);
+                ObjectModel newObject = new ObjectModel(name, ObjectModelProperties.GetObjectPropertiesForObject(""), ObjectModelType.ZoneModel, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 newObject.Load(new List<Material> { new Material(material) }, curMeshData, new List<Vector3>(), new List<TriangleFace>());
                 GeneratedZoneObjects.Add(newObject);
 
@@ -913,7 +913,7 @@ namespace EQWOWConverter.Zones
                 BoundingBox objectModelBoundingBox = new BoundingBox(new Vector3(0, 0, 0), Configuration.AUDIO_SOUNDINSTANCE_RENDEROBJECT_BOX_SIZE);
                 objectModelMesh.GenerateAsBox(objectModelBoundingBox, Convert.ToUInt16(material.Index), MeshBoxRenderType.Both);
             }
-            ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"), ObjectModelType.SoundInstance);
+            ObjectModel soundInstanceObjectModel = new ObjectModel(objectModelName, ObjectModelProperties.GetObjectPropertiesForObject("SoundInstance"), ObjectModelType.SoundInstance, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
             soundInstanceObjectModel.Load(new List<Material>() { material }, objectModelMesh, new List<Vector3>(), new List<TriangleFace>());
             if (soundInstance.Sound != null)
                 soundInstanceObjectModel.SoundsByAnimationType.Add(AnimationType.Stand, soundInstance.Sound);

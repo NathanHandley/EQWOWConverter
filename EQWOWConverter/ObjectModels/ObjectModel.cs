@@ -65,16 +65,18 @@ namespace EQWOWConverter.ObjectModels
         public float CollisionSphereRaidus = 0f;
 
         private CreatureModelTemplate? CreatureModelTemplate = null;
+        private float MinimumVisibilityBoundingBoxSize;
 
         public static Dictionary<string, ObjectModel> StaticObjectModelsByName = new Dictionary<string, ObjectModel>();
 
-        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float modelScale = 1, float modelLift = 0)
+        public ObjectModel(string name, ObjectModelProperties objectProperties, ObjectModelType modelType, float minimumVisibilityBoundingBoxSize, float modelScale = 1, float modelLift = 0)
         {
             Name = name;
             Properties = objectProperties;
             ModelType = modelType;
             ModelScalePreWorldScale = modelScale;
             ModelLiftPreWorldScale = modelLift;
+            MinimumVisibilityBoundingBoxSize = minimumVisibilityBoundingBoxSize;
         }
 
         public void LoadEQObjectFromFile(string inputRootFolder, string eqInputObjectFileName, CreatureModelTemplate? creatureModelTemplate = null,
@@ -1227,7 +1229,7 @@ namespace EQWOWConverter.ObjectModels
             // Generate bounding box
             GeometryBoundingBox = BoundingBox.GenerateBoxFromVectors(ModelVertices);
             VisibilityBoundingBox = new BoundingBox(GeometryBoundingBox);
-            VisibilityBoundingBox.ExpandToMinimumSize(Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            VisibilityBoundingBox.ExpandToMinimumSize(MinimumVisibilityBoundingBoxSize);
         }
 
         private void ProcessMaterials(List<Material> initialMaterials, ref MeshData meshData)

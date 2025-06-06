@@ -50,7 +50,7 @@ namespace EQWOWConverter.WOWFiles
 
             switch (gameObject.ObjectType)
             {
-                case GameObjects.GameObjectType.Door:
+                case GameObjectType.Door:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID, 
                             0, // Door
@@ -60,13 +60,27 @@ namespace EQWOWConverter.WOWFiles
                             Configuration.OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, gameObject.Scale, aiName);
-                    }
-                    break;
+                    } break;
+                case GameObjectType.TradeskillFocus:
+                    {
+                        int spellFocusTypeID = 0;
+                        switch (gameObject.TradeskillFocusType)
+                        {
+                            case GameObjectTradeskillFocusType.CookingFire: spellFocusTypeID = 4; break;
+                            case GameObjectTradeskillFocusType.Forge: spellFocusTypeID = 3; break;
+                            default: break; // Do Nothing
+                        }
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            8, // Spell focus (forge, etc)
+                            gameObject.GameObjectDisplayInfoID, name,
+                            spellFocusTypeID, // Fire vs Forge
+                            Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE,
+                            0, 0, 0, gameObject.Scale, aiName);
+                        } break;
                 default:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID, 0, gameObject.GameObjectDisplayInfoID, name, 0, 0, 0, 0, 0, gameObject.Scale, aiName);
-                    }
-                    break;
+                    } break;
             }
         }
 
