@@ -568,9 +568,9 @@ namespace EQWOWConverter
                 Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object object '" + modelFileName + "'");
                 switch (nonInteractiveGameObject.OpenType)
                 {
-                    case GameObjectOpenType.TYPE0: // TODO: Need these?  Check for them
+                    case GameObjectOpenType.TYPE0:
                     case GameObjectOpenType.TYPE55:
-                    case GameObjectOpenType.TYPE56: // TODO: Check this, qeynos
+                    case GameObjectOpenType.TYPE56:
                     case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
                         {

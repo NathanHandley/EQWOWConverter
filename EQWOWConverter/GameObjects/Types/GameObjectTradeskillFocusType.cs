@@ -16,16 +16,10 @@
 
 namespace EQWOWConverter.GameObjects
 {
-    internal enum GameObjectType
+    internal enum GameObjectTradeskillFocusType
     {
-        Unknown,
-        NonInteract,
-        Door,
-        Boat,
-        Bridge,
-        Lever,
-        Teleport,
-        Trap,
-        TradeskillFocus
+        None,
+        CookingFire,
+        Forge
     }
 }

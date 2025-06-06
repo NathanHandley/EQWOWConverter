@@ -40,10 +40,12 @@ namespace EQWOWConverter.GameObjects
         public int TriggerDoorID;
         public GameObjectType ObjectType = GameObjectType.Unknown;
         public GameObjectOpenType OpenType = GameObjectOpenType.Unknown;
+        public GameObjectTradeskillFocusType TradeskillFocusType = GameObjectTradeskillFocusType.None;
         public string ZoneShortName = string.Empty;
         public string OriginalModelName = string.Empty;
         public string ModelName = string.Empty;
         public bool ModelIsSkeletal = false;
+        public bool ModelIsInEquipmentFolder = false;
         public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
@@ -366,6 +368,14 @@ namespace EQWOWConverter.GameObjects
                 }
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                newGameObject.ModelIsInEquipmentFolder = gameObjectsRow["model_in_equipment"].Trim() == "1" ? true : false;
+                string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
+                switch(tradeskillFocusTypeString)
+                {
+                    case "cookingfire": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.CookingFire; break;
+                    case "forge": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.Forge; break;
+                    default: break; // Nothing
+                }
 
                 // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
                 newGameObject.EQHeading = float.Parse(gameObjectsRow["heading"]);
