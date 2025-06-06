@@ -408,6 +408,7 @@ namespace EQWOWConverter
                 Logger.WriteError("Failed to convert objects, as there is no object folder at '" + conditionedObjectFolderRoot + "', did you run the conditoning step?");
                 return false;
             }
+            string conditionedEquipmentFolderRoot = Path.Combine(eqExportsConditionedPath, "equipment");
 
             // Clean out the target objects folder
             string exportMPQRootFolder = Path.Combine(wowExportPath, "MPQReady");
@@ -491,7 +492,12 @@ namespace EQWOWConverter
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach(GameObject curObject in interactiveGameObjectsInZone.Value)
                 {
-                    if (curObject.ModelIsSkeletal == true)
+                    if (curObject.ModelIsInEquipmentFolder == true)
+                    {
+                        // Never need to remap equipment-based models
+                        curObject.ModelName = curObject.OriginalModelName;
+                    }
+                    else if (curObject.ModelIsSkeletal == true)
                     {
                         if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
@@ -525,7 +531,12 @@ namespace EQWOWConverter
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach (GameObject curObject in nonInteractiveGameObjectsInZone.Value)
                 {
-                    if (curObject.ModelIsSkeletal == true)
+                    if (curObject.ModelIsInEquipmentFolder == true)
+                    {
+                        // Never need to remap equipment-based models
+                        curObject.ModelName = curObject.OriginalModelName;
+                    }
+                    else if (curObject.ModelIsSkeletal == true)
                     {
                         if (skeletalObjectNameMap.ContainsKey(curObject.OriginalModelName) == false)
                         {
@@ -563,6 +574,11 @@ namespace EQWOWConverter
                     continue;
                 }
 
+                // Determine folder to load from
+                string modelDataRootFolder = conditionedObjectFolderRoot;
+                if (nonInteractiveGameObject.ModelIsInEquipmentFolder == true)
+                    modelDataRootFolder = conditionedEquipmentFolderRoot;
+
                 // Load the object
                 ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad);
                 Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object object '" + modelFileName + "'");
@@ -574,16 +590,16 @@ namespace EQWOWConverter
                     case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
                         {
-                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName);
+                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
                     case GameObjectOpenType.TYPE105:
                         {
-                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000);
+                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000);
                         } break;
                     case GameObjectOpenType.TYPE100:
                     case GameObjectOpenType.TYPE101:
                         {
-                            curObjectModel.LoadEQObjectFromFile(conditionedObjectFolderRoot, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
+                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
                         } break;
                     case GameObjectOpenType.TYPE59: // TODO: mischiefplane (POMTORCH2000), frontiermtns (FRONTROCK102B)
                     case GameObjectOpenType.TYPE106: // TODO: Droga, DNWINCH102
@@ -603,10 +619,10 @@ namespace EQWOWConverter
                 objectM2.WriteToDisk(modelFileName, curObjectOutputFolder);
 
                 // Place the related textures
-                string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
+                string inputTextureFolder = Path.Combine(modelDataRootFolder, "textures");
                 foreach (ObjectModelTexture texture in curObjectModel.ModelTextures)
                 {
-                    string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
+                    string inputTextureName = Path.Combine(inputTextureFolder, texture.TextureName + ".blp");
                     string outputTextureName = Path.Combine(curObjectOutputFolder, texture.TextureName + ".blp");
                     if (Path.Exists(inputTextureName) == false)
                     {

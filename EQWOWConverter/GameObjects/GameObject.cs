@@ -503,6 +503,7 @@ namespace EQWOWConverter.GameObjects
                 case "lever": return GameObjectType.Lever;
                 case "teleport": return GameObjectType.Teleport;
                 case "trap": return GameObjectType.Trap;
+                case "tradeskillfocus": return GameObjectType.TradeskillFocus;
                 default:
                     {
                         Logger.WriteError("Can't determine GameObjectType due to an unmapped open type name value of " + typeNameValue);
