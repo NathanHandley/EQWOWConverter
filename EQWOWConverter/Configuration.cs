@@ -295,6 +295,9 @@ namespace EQWOWConverter
         // How long (in ms) a door should remain open before automatically closing
         public static readonly int OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS = 6000;
 
+        // Minimum distance/size that doors should be interactable
+        public static readonly int OBJECT_GAMEOBJECT_DOOR_INTERACT_BOUNDARY_MIN_SIZE = 5;
+
         // How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect
         public static readonly int OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE = 5;
 

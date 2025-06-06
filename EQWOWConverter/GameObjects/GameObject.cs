@@ -192,13 +192,15 @@ namespace EQWOWConverter.GameObjects
                             modelDataRootFolder = equipmentFolderRoot;
 
                         // Tradeskill items have an atypically small visibility range
-                        float objectVisibilityBoundingBoxApothem = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
+                        float objectVisibilityBoundingBoxMinSize = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
                         if (gameObject.TradeskillFocusType != GameObjectTradeskillFocusType.None)
-                            objectVisibilityBoundingBoxApothem = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
+                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
+                        else if (gameObject.ObjectType == GameObjectType.Door)
+                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOOR_INTERACT_BOUNDARY_MIN_SIZE;
 
                         // Load it
                         string modelFileName = string.Concat(gameObject.OriginalModelName, "_", gameObject.OpenType.ToString());
-                        ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxApothem);
+                        ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                         Logger.WriteDebug("- [" + gameObject.OriginalModelName + "]: Importing EQ game object '" + gameObject.OriginalModelName + "'");
                         switch(gameObject.ObjectType)
                         {
