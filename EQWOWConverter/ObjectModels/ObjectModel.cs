@@ -1567,7 +1567,8 @@ namespace EQWOWConverter.ObjectModels
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
             // Generate collision data if there is none and it's from an EQ object
-            if (collisionVertices.Count == 0 && (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
+            if (collisionVertices.Count == 0 && Properties.HasCollision == true && 
+                (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))
             {
                 // Skeletal objects need specially generated mesh data utilizing the animation positioning
                 MeshData workingMeshData;

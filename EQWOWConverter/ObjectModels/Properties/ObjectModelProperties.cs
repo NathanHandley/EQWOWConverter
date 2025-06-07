@@ -33,6 +33,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public ActiveDoodadAnimType? ActiveDoodadAnimationType = null;
         public float ActiveDoodadAnimSlideValue = 0; 
         public int ActiveDoodadAnimTimeInMS = 0;
+        public bool HasCollision = true;
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -47,13 +48,15 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimationType = other.ActiveDoodadAnimationType;
             ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
+            HasCollision = other.HasCollision;
         }
 
-        public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS)
+        public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS, bool hasCollision)
         {
             ActiveDoodadAnimationType = activeDoodadAnimationType;
             ActiveDoodadAnimSlideValue = activeDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = activeDoodadAnimTimeInMS;
+            HasCollision = hasCollision;
         }
 
         protected ObjectModelProperties(string name)

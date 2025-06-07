@@ -47,6 +47,7 @@ namespace EQWOWConverter.GameObjects
         public string ModelName = string.Empty;
         public bool ModelIsSkeletal = false;
         public bool ModelIsInEquipmentFolder = false;
+        public bool HasColission = false;
         public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
@@ -207,7 +208,7 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE1:
                                         case GameObjectOpenType.TYPE2:                                        
                                             {
-                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
@@ -215,7 +216,7 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE6:
                                         case GameObjectOpenType.TYPE7:
                                             {
-                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
@@ -224,7 +225,7 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE17:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
-                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
@@ -236,13 +237,13 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
                                             {
-                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
                                             {
-                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                                 curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                                 curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
@@ -266,13 +267,14 @@ namespace EQWOWConverter.GameObjects
                                 } break;
                             case GameObjectType.Bridge:
                                 {
-                                    ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission);
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                 } break;
                             case GameObjectType.TradeskillFocus:
                                 {
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
+                                    objectProperties.HasCollision = gameObject.HasColission;
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
@@ -383,6 +385,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.OriginalModelName = modelName;
                 newGameObject.ModelName = modelName;
                 newGameObject.ModelIsSkeletal = isSkeletal;
+                newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
