@@ -33,7 +33,8 @@ namespace EQWOWConverter.ObjectModels.Properties
         public ActiveDoodadAnimType? ActiveDoodadAnimationType = null;
         public float ActiveDoodadAnimSlideValue = 0; 
         public int ActiveDoodadAnimTimeInMS = 0;
-        public bool HasCollision = true;
+        public bool DoGenerateCollisionFromMeshData = true;
+        public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
 
         public ObjectModelProperties() { }
         public ObjectModelProperties(ObjectModelProperties other)
@@ -48,15 +49,18 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimationType = other.ActiveDoodadAnimationType;
             ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
-            HasCollision = other.HasCollision;
+            DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
+            RenderingEnabled = other.RenderingEnabled;
         }
 
-        public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS, bool hasCollision)
+        public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS, bool hasCollision,
+            bool renderingEnabled)
         {
             ActiveDoodadAnimationType = activeDoodadAnimationType;
             ActiveDoodadAnimSlideValue = activeDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = activeDoodadAnimTimeInMS;
-            HasCollision = hasCollision;
+            DoGenerateCollisionFromMeshData = hasCollision;
+            RenderingEnabled = renderingEnabled;
         }
 
         protected ObjectModelProperties(string name)
