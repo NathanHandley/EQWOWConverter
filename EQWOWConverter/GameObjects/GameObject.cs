@@ -49,6 +49,7 @@ namespace EQWOWConverter.GameObjects
         public bool ModelIsInEquipmentFolder = false;
         public bool HasColission = false;
         public bool RenderingEnabled = true;
+        public bool SoundEnabled = true;
         public string DisplayName = string.Empty;
         public float Scale = 1.0f;
         public Vector3 Position = new Vector3();
@@ -390,6 +391,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.ModelIsSkeletal = isSkeletal;
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
+                newGameObject.SoundEnabled = int.Parse(gameObjectsRow["sound_enabled"]) == 1 ? true : false;
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
                 newGameObject.CloseTimeInMS = int.Parse(gameObjectsRow["close_time"]) * 1000;
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
@@ -431,7 +433,19 @@ namespace EQWOWConverter.GameObjects
                 }
                 newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
 
-                // Different logic based on type
+                // Sound, if enabled
+                if (newGameObject.SoundEnabled)
+                {
+                    GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
+                    if (newGameObject.OpenSound != null)
+                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.OpenSound);
+                    if (newGameObject.CloseSound != null)
+                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.CloseSound);
+                }
+
+                // Add to either doodad or nondoodad lists
                 if (gameObjectType == GameObjectType.NonInteract)
                 {
                     // Add it as a doodad item
@@ -442,24 +456,17 @@ namespace EQWOWConverter.GameObjects
                 }
                 else
                 {
-                    if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
-                    {
-                        // Save this up in the trigger chain lookup
-                        interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
-
-                        GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
-                        if (newGameObject.OpenSound != null)
-                            if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
-                                OpenSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.OpenSound);
-                        if (newGameObject.CloseSound != null)
-                            if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
-                                CloseSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.CloseSound);
-                    }
-
                     // Add it
                     if (NonDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
                         NonDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
                     NonDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
+                    
+                }
+
+                // Save this up in the trigger chain lookup
+                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
+                {
+                    interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
                     interactiveGameObjects.Add(newGameObject);
                 }
             }

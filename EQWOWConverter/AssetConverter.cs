@@ -2989,13 +2989,7 @@ namespace EQWOWConverter
                         if (name.Length == 0)
                             name = comment;
                         int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        float rotationZ = 0;
-                        if (gameObject.EQIncline != 0)
-                        {
-                            // "Incline" in EQ is -512 to 512, convert to -1 to 1
-                            rotationZ = (gameObject.EQIncline / 512);
-                        }
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, rotationZ, comment);
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
                         gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
                         gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
 
@@ -3210,7 +3204,7 @@ namespace EQWOWConverter
                     int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
                     gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
                     gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation, 0);
+                    gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
                 }
                 foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
                 {
@@ -3230,7 +3224,7 @@ namespace EQWOWConverter
                     gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
                     gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
                     gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
-                        transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation, 0);
+                        transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
                 }
             }
 
