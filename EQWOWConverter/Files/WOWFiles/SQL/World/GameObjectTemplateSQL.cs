@@ -50,6 +50,7 @@ namespace EQWOWConverter.WOWFiles
 
             switch (gameObject.ObjectType)
             {
+                case GameObjectType.Bridge:
                 case GameObjectType.Door:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID, 

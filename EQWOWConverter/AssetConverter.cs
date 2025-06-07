@@ -353,9 +353,10 @@ namespace EQWOWConverter
                 if (transportLiftTriggerObjectModelsByMeshName.ContainsKey(transportLiftTrigger.MeshName) == false)
                 {
                     // Load it
-                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                    ObjectModelProperties objectProperties = new ObjectModelProperties(transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
+                    ObjectModel curObjectModel = new ObjectModel(transportLiftTrigger.MeshName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                     Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "'");
-                    curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName, null, transportLiftTrigger.AnimationType, transportLiftTrigger.AnimMod, transportLiftTrigger.AnimTimeInMS);
+                    curObjectModel.LoadEQObjectFromFile(objectsFolderRoot, transportLiftTrigger.MeshName);
                     Logger.WriteDebug("- [" + transportLiftTrigger.MeshName + "]: Importing EQ transport lift trigger object '" + transportLiftTrigger.MeshName + "' complete");
                     if (transportLiftTrigger.OpenSound != null)
                         curObjectModel.SoundsByAnimationType.Add(AnimationType.Open, transportLiftTrigger.OpenSound);
@@ -580,8 +581,8 @@ namespace EQWOWConverter
                     modelDataRootFolder = conditionedEquipmentFolderRoot;
 
                 // Load the object
-                ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                 Logger.WriteDebug("- [" + modelFileName + "]: Importing Game Object object '" + modelFileName + "'");
+                ObjectModel curObjectModel;
                 switch (nonInteractiveGameObject.OpenType)
                 {
                     case GameObjectOpenType.TYPE0:
@@ -590,16 +591,22 @@ namespace EQWOWConverter
                     case GameObjectOpenType.TYPE57:
                     case GameObjectOpenType.TYPE58:
                         {
+                            ObjectModelProperties objectProperties = new ObjectModelProperties();
+                            curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                             curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
                     case GameObjectOpenType.TYPE105:
                         {
-                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000);
+                            ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnIdleRotateAroundYClockwise, 0, 9000);
+                            curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
                     case GameObjectOpenType.TYPE100:
                     case GameObjectOpenType.TYPE101:
                         {
-                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName, null, ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
+                            ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnIdleRotateAroundZCounterclockwise, 0, 9000);
+                            curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                            curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, nonInteractiveGameObject.ModelName);
                         } break;
                     case GameObjectOpenType.TYPE59: // TODO: mischiefplane (POMTORCH2000), frontiermtns (FRONTROCK102B)
                     case GameObjectOpenType.TYPE106: // TODO: Droga, DNWINCH102

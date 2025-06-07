@@ -136,9 +136,12 @@ namespace EQWOWConverter.Creatures
 
             // Load in an object
             float lift = Race.Lift;
-            ObjectModelProperties objectProperties = ObjectModelProperties.GetObjectPropertiesForObject(skeletonName);
-            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE, Race.ModelScale, lift);
-            curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName, this);
+            ObjectModelProperties objectProperties = new ObjectModelProperties(ObjectModelProperties.GetObjectPropertiesForObject(skeletonName));
+            objectProperties.CreatureModelTemplate = this;
+            objectProperties.ModelScalePreWorldScale = Race.ModelScale;
+            objectProperties.ModelLiftPreWorldScale = lift;
+            ObjectModel curObject = new ObjectModel(skeletonName, objectProperties, ObjectModelType.Creature, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            curObject.LoadEQObjectFromFile(charactersFolderRoot, skeletonName);
             StringBuilder nameSB = new StringBuilder();
             nameSB.Append(Race.Name);
             nameSB.Append(" ");

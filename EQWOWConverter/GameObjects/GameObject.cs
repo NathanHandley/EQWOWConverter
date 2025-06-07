@@ -190,12 +190,12 @@ namespace EQWOWConverter.GameObjects
                         float objectVisibilityBoundingBoxMinSize = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
                         if (gameObject.TradeskillFocusType != GameObjectTradeskillFocusType.None)
                             objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
-                        else if (gameObject.ObjectType == GameObjectType.Door)
+                        else if (gameObject.ObjectType == GameObjectType.Door || gameObject.ObjectType == GameObjectType.Bridge)
                             objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOOR_INTERACT_BOUNDARY_MIN_SIZE;
 
                         // Load it
                         string modelFileName = string.Concat(gameObject.OriginalModelName, "_", gameObject.OpenType.ToString());
-                        ObjectModel curObjectModel = new ObjectModel(modelFileName, new ObjectModelProperties(), ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                        ObjectModel curObjectModel;
                         Logger.WriteDebug("- [" + gameObject.OriginalModelName + "]: Importing EQ game object '" + gameObject.OriginalModelName + "'");
                         switch(gameObject.ObjectType)
                         {
@@ -207,20 +207,26 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE1:
                                         case GameObjectOpenType.TYPE2:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZClockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE5:
                                         case GameObjectOpenType.TYPE6:
                                         case GameObjectOpenType.TYPE7:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateAroundZCounterclockwiseQuarter, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE12:
                                         case GameObjectOpenType.TYPE15:
                                         case GameObjectOpenType.TYPE17:
                                         case GameObjectOpenType.TYPE26:                                        
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideLeft, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE60: 
                                         case GameObjectOpenType.TYPE61: 
@@ -230,11 +236,15 @@ namespace EQWOWConverter.GameObjects
                                         case GameObjectOpenType.TYPE75:
                                         case GameObjectOpenType.TYPE76:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateSlideUp, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE16:
                                             {
-                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName, null, ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                                curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                                curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                             } break;
                                         case GameObjectOpenType.TYPE10: // TODO: Figure this out, Thurgadin Door (probably slide).  Velious.
                                         case GameObjectOpenType.TYPE21: // TODO: two in CityMist. CMGATE101
@@ -254,14 +264,23 @@ namespace EQWOWConverter.GameObjects
                                             }
                                     }
                                 } break;
+                            case GameObjectType.Bridge:
+                                {
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS);
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
+                                    curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
+                                } break;
                             case GameObjectType.TradeskillFocus:
                                 {
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties();
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
                             default:
                                 {
                                     Logger.WriteError("When trying to create the object model for a gameobject, this object type is not implemented: " + gameObject.ObjectType);
-                                } break;
+                                    continue;
+                                }
                         }
                         Logger.WriteDebug("- [" + gameObject.OriginalModelName + "]: Importing EQ transport lift trigger object '" + gameObject.OriginalModelName + "' complete");
 
@@ -346,7 +365,7 @@ namespace EQWOWConverter.GameObjects
 
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
-                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus)
+                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus && gameObjectType != GameObjectType.Bridge)
                     continue;
 
                 // Skip zones not being loaded
@@ -415,13 +434,11 @@ namespace EQWOWConverter.GameObjects
                 }
                 else
                 {
-                    // Save this up in the trigger chain lookup
-                    if (gameObjectType == GameObjectType.Door)
+                    if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
+                    {
+                        // Save this up in the trigger chain lookup
                         interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
 
-                    // Sounds for doors
-                    if (gameObjectType == GameObjectType.Door)
-                    {
                         GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
                         if (newGameObject.OpenSound != null)
                             if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)

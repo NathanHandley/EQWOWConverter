@@ -15,12 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
-using EQWOWConverter.Zones;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EQWOWConverter.Creatures;
 
 namespace EQWOWConverter.ObjectModels.Properties
 {
@@ -32,8 +27,35 @@ namespace EQWOWConverter.ObjectModels.Properties
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
         public HashSet<string> AlwaysBrightMaterialsByName = new HashSet<string>();
         public HashSet<string> AlphaBlendMaterialsByName = new HashSet<string>();
+        public float ModelScalePreWorldScale = 1f;
+        public float ModelLiftPreWorldScale = 0f;
+        public CreatureModelTemplate? CreatureModelTemplate = null;
+        public ActiveDoodadAnimType? ActiveDoodadAnimationType = null;
+        public float ActiveDoodadAnimSlideValue = 0; 
+        public int ActiveDoodadAnimTimeInMS = 0;
 
         public ObjectModelProperties() { }
+        public ObjectModelProperties(ObjectModelProperties other)
+        {
+            Name = other.Name;
+            CustomCollisionType = other.CustomCollisionType;
+            AlwaysBrightMaterialsByName = new HashSet<string>(other.AlwaysBrightMaterialsByName);
+            AlphaBlendMaterialsByName = new HashSet<string>(other.AlphaBlendMaterialsByName);
+            ModelScalePreWorldScale = other.ModelScalePreWorldScale;
+            ModelLiftPreWorldScale = other.ModelLiftPreWorldScale;
+            CreatureModelTemplate = other.CreatureModelTemplate;
+            ActiveDoodadAnimationType = other.ActiveDoodadAnimationType;
+            ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
+            ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
+        }
+
+        public ObjectModelProperties(ActiveDoodadAnimType? activeDoodadAnimationType, float activeDoodadAnimSlideValue, int activeDoodadAnimTimeInMS)
+        {
+            ActiveDoodadAnimationType = activeDoodadAnimationType;
+            ActiveDoodadAnimSlideValue = activeDoodadAnimSlideValue;
+            ActiveDoodadAnimTimeInMS = activeDoodadAnimTimeInMS;
+        }
+
         protected ObjectModelProperties(string name)
         {
             Name = name;
