@@ -64,6 +64,7 @@ namespace EQWOWConverter.GameObjects
         public Sound? OpenSound = null;
         public Sound? CloseSound = null;
         public bool LoadAsZoneDoodad = false;
+        public int CloseTimeInMS;
 
         public static Dictionary<string, List<GameObject>> GetNonDoodadGameObjectsByZoneShortNames()
         {
@@ -268,7 +269,7 @@ namespace EQWOWConverter.GameObjects
                                 } break;
                             case GameObjectType.Bridge:
                                 {
-                                    ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateUpOpen, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties(ActiveDoodadAnimType.OnActivateRotateDownClosedBackwards, 0, Configuration.OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS, gameObject.HasColission, gameObject.RenderingEnabled);
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.OriginalModelName);
                                 } break;
@@ -390,6 +391,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
                 newGameObject.DisplayName = gameObjectsRow["display_name"];
+                newGameObject.CloseTimeInMS = int.Parse(gameObjectsRow["close_time"]) * 1000;
                 float xPosition = float.Parse(gameObjectsRow["pos_x"]);
                 float yPosition = float.Parse(gameObjectsRow["pos_y"]);
                 float zPosition = float.Parse(gameObjectsRow["pos_z"]);

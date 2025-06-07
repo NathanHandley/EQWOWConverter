@@ -51,6 +51,17 @@ namespace EQWOWConverter.WOWFiles
             switch (gameObject.ObjectType)
             {
                 case GameObjectType.Bridge:
+                    {
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            0, // Door
+                            gameObject.GameObjectDisplayInfoID, name,
+                            0, // Start open
+                            0, // "ID" from Lock.dbc
+                            gameObject.CloseTimeInMS, // Autoclose time in MS
+                            1, // "Area of Interest" is set to infinite (see from any distance)
+                            0, gameObject.Scale, aiName);
+                    }
+                    break;
                 case GameObjectType.Door:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID, 
@@ -58,7 +69,7 @@ namespace EQWOWConverter.WOWFiles
                             gameObject.GameObjectDisplayInfoID, name, 
                             0, // Start open
                             0, // "ID" from Lock.dbc
-                            Configuration.OBJECT_GAMEOBJECT_DOOR_TIME_UNTIL_AUTOCLOSE_IN_MS, // Autoclose time in MS
+                            gameObject.CloseTimeInMS, // Autoclose time in MS
                             1, // "Area of Interest" is set to infinite (see from any distance)
                             0, gameObject.Scale, aiName);
                     } break;
