@@ -20,8 +20,6 @@ using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
-using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace EQWOWConverter.GameObjects
 {
@@ -50,6 +48,7 @@ namespace EQWOWConverter.GameObjects
         public string ModelName = string.Empty;
         public bool ModelIsSkeletal = false;
         public bool ModelIsInEquipmentFolder = false;
+        public int ModelRaceID = 0;
         public bool HasColission = false;
         public bool RenderingEnabled = true;
         public bool SoundEnabled = true;
@@ -148,6 +147,165 @@ namespace EQWOWConverter.GameObjects
                     Logger.WriteError("GetNonDoodadObjectModelsByNameAndOpenType called before models were loaded");
                 return NonDoodadObjectModelsByNameAndOpenType;
             }
+        }
+
+        private static void LoadGameObjects()
+        {
+            if (DataIsLoaded == true)
+                return;
+
+            // Load the file first
+            string gameObjectsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "GameObjects.csv");
+            Logger.WriteDebug(string.Concat("Populating Game Object list via file '", gameObjectsFile, "'"));
+            List<Dictionary<string, string>> gameObjectsRows = FileTool.ReadAllRowsFromFileWithHeader(gameObjectsFile, "|");
+
+            // Track chain reaction lookups
+            List<GameObject> interactiveGameObjects = new List<GameObject>();
+            Dictionary<(string, int), GameObject> interactiveGameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
+
+            // Process the rows
+            List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
+            foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
+            {
+                // Skip disabled
+                if (int.Parse(gameObjectsRow["enabled"]) != 1)
+                    continue;
+
+                // Store the model name in the lookup
+                string zoneShortName = gameObjectsRow["zone"];
+                string modelName = gameObjectsRow["model_name"].ToLower(); // Make lower so it works with the asset conditioner
+                bool isSkeletal = gameObjectsRow["model_is_skeletal"] == "0" ? false : true;
+                if (isSkeletal == true)
+                {
+                    if (SourceSkeletalModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                        SourceSkeletalModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                    if (SourceSkeletalModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                        SourceSkeletalModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                }
+                else
+                {
+                    if (SourceStaticModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                        SourceStaticModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                    if (SourceStaticModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                        SourceStaticModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                }
+
+                // Skip invalid object types
+                GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
+                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
+                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox)
+                    continue;
+
+                // Skip zones not being loaded
+                if (validZoneShortNames.Contains(zoneShortName) == false)
+                    continue;
+
+                GameObject newGameObject = new GameObject();
+                newGameObject.ID = int.Parse(gameObjectsRow["id"]);
+                newGameObject.GameObjectTemplateEntryID = int.Parse(gameObjectsRow["gotemplate_id"]);
+                newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
+                newGameObject.TriggerDoorID = int.Parse(gameObjectsRow["triggerdoor"]);
+                newGameObject.ObjectType = gameObjectType;
+                newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
+                newGameObject.ZoneShortName = gameObjectsRow["zone"];
+                newGameObject.OriginalModelName = modelName;
+                newGameObject.ModelName = modelName;
+                newGameObject.ModelIsSkeletal = isSkeletal;
+                newGameObject.ModelRaceID = int.Parse(gameObjectsRow["model_race_id"]);
+                newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
+                newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
+                newGameObject.SoundEnabled = int.Parse(gameObjectsRow["sound_enabled"]) == 1 ? true : false;
+                newGameObject.DisplayName = gameObjectsRow["display_name"];
+                newGameObject.CloseTimeInMS = int.Parse(gameObjectsRow["close_time"]) * 1000;
+                float xPosition = float.Parse(gameObjectsRow["pos_x"]);
+                float yPosition = float.Parse(gameObjectsRow["pos_y"]);
+                float zPosition = float.Parse(gameObjectsRow["pos_z"]);
+                if (gameObjectType != GameObjectType.NonInteract)
+                {
+                    xPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    yPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    zPosition *= Configuration.GENERATE_WORLD_SCALE;
+                    newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
+                }
+                else
+                {
+                    // Non-interact should be in EQ coordinate properties since they are loaded as doodads
+                    // Also make sure to flip Z and Y for non-interact since doodads get changed later
+                    newGameObject.Position = new Vector3(xPosition, zPosition, yPosition);
+                }
+                newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
+                newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
+                newGameObject.ModelIsInEquipmentFolder = gameObjectsRow["model_in_equipment"].Trim() == "1" ? true : false;
+                string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
+                switch (tradeskillFocusTypeString)
+                {
+                    case "cookingfire": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.CookingFire; break;
+                    case "forge": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.Forge; break;
+                    default: break; // Nothing
+                }
+
+                // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
+                newGameObject.EQHeading = float.Parse(gameObjectsRow["heading"]);
+                if (newGameObject.EQHeading == 0)
+                    newGameObject.Orientation = MathF.PI;
+                if (newGameObject.EQHeading != 0)
+                {
+                    float orientationInDegrees = (newGameObject.EQHeading / 512) * 360;
+                    float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
+                    newGameObject.Orientation = orientationInRadians + MathF.PI;
+                }
+                newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
+
+                // Sound, if enabled
+                if (newGameObject.SoundEnabled)
+                {
+                    GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
+                    if (newGameObject.OpenSound != null)
+                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.OpenSound);
+                    if (newGameObject.CloseSound != null)
+                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
+                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.CloseSound);
+                }
+
+                // Add to either doodad or nondoodad lists
+                if (gameObjectType == GameObjectType.NonInteract)
+                {
+                    // Add it as a doodad item
+                    newGameObject.LoadAsZoneDoodad = true;
+                    if (DoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
+                        DoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
+                    DoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
+                }
+                else
+                {
+                    // Add it
+                    if (NonDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
+                        NonDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
+                    NonDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
+
+                }
+
+                // Save this up in the trigger chain lookup
+                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
+                {
+                    interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
+                    interactiveGameObjects.Add(newGameObject);
+                }
+            }
+
+            // Store the chain reactions from the lookup
+            foreach (GameObject gameObject in interactiveGameObjects)
+            {
+                if (gameObject.TriggerDoorID == 0)
+                    continue;
+                if (interactiveGameObjectsByZoneShortNameAndDoorID.ContainsKey((gameObject.ZoneShortName, gameObject.TriggerDoorID)))
+                {
+                    gameObject.TriggerGameObjectGUID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
+                    gameObject.TriggerGameObjectTemplateEntryID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
+                }
+            }
+            DataIsLoaded = true;
         }
 
         public static void LoadModelObjectsForNonDoodadGameObjects()
@@ -293,23 +451,19 @@ namespace EQWOWConverter.GameObjects
                                 } break;
                             case GameObjectType.Mailbox:
                                 {
-                                    int modelRaceID = 0;
-                                    if (gameObject.OriginalModelName.ToUpper().StartsWith("H") == true)
-                                        modelRaceID = 1;
-                                    else
-                                        modelRaceID = 6;
-                                        CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0);
+                                    CreatureTemplate creatureTemplate = new CreatureTemplate();
+                                    int modelRaceID = gameObject.ModelRaceID;
+                                    CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0);
                                     if (creatureRace == null)
                                     {
                                         Logger.WriteError("Could not load the race information for the mail carrier game object");
                                         continue;
                                     }
-                                    CreatureTemplate creatureTemplate = new CreatureTemplate();
                                     creatureTemplate.GenderType = CreatureGenderType.Male;
-                                    creatureTemplate.TextureID = 3;
-                                    creatureTemplate.HelmTextureID = 0; // 3
+                                    creatureTemplate.TextureID = 2; // 3 = plate
+                                    creatureTemplate.HelmTextureID = 0; // 3 = plate
                                     creatureTemplate.FaceID = 2;
-                                    creatureTemplate.ColorTintID = 300001; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
+                                    creatureTemplate.ColorTintID = 300002;// 300001; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, creatureTemplate);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;
@@ -370,165 +524,6 @@ namespace EQWOWConverter.GameObjects
                 }
             }
         }
-
-        private static void LoadGameObjects()
-        {
-            if (DataIsLoaded == true)
-                return;
-
-            // Load the file first
-            string gameObjectsFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "GameObjects.csv");
-            Logger.WriteDebug(string.Concat("Populating Game Object list via file '", gameObjectsFile, "'"));
-            List<Dictionary<string, string>> gameObjectsRows = FileTool.ReadAllRowsFromFileWithHeader(gameObjectsFile, "|");
-
-            // Track chain reaction lookups
-            List<GameObject> interactiveGameObjects = new List<GameObject>();
-            Dictionary<(string, int), GameObject> interactiveGameObjectsByZoneShortNameAndDoorID = new Dictionary<(string, int), GameObject>();
-
-            // Process the rows
-            List<string> validZoneShortNames = ZoneProperties.GetZonePropertyListByShortName().Keys.ToList();
-            foreach (Dictionary<string, string> gameObjectsRow in gameObjectsRows)
-            {
-                // Skip disabled
-                if (int.Parse(gameObjectsRow["enabled"]) != 1)
-                    continue;
-
-                // Store the model name in the lookup
-                string zoneShortName = gameObjectsRow["zone"];
-                string modelName = gameObjectsRow["model_name"].ToLower(); // Make lower so it works with the asset conditioner
-                bool isSkeletal = gameObjectsRow["model_is_skeletal"] == "0" ? false : true;
-                if (isSkeletal == true)
-                {
-                    if (SourceSkeletalModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
-                        SourceSkeletalModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
-                    if (SourceSkeletalModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
-                        SourceSkeletalModelNamesByZoneShortName[zoneShortName].Add(modelName);
-                }
-                else
-                {
-                    if (SourceStaticModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
-                        SourceStaticModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
-                    if (SourceStaticModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
-                        SourceStaticModelNamesByZoneShortName[zoneShortName].Add(modelName);
-                }
-
-                // Skip invalid object types
-                GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
-                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus 
-                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox)
-                    continue;
-
-                // Skip zones not being loaded
-                if (validZoneShortNames.Contains(zoneShortName) == false)
-                    continue;
-
-                GameObject newGameObject = new GameObject();
-                newGameObject.ID = int.Parse(gameObjectsRow["id"]);
-                newGameObject.GameObjectTemplateEntryID = int.Parse(gameObjectsRow["gotemplate_id"]);
-                newGameObject.DoorID = int.Parse(gameObjectsRow["doorid"]);
-                newGameObject.TriggerDoorID = int.Parse(gameObjectsRow["triggerdoor"]);
-                newGameObject.ObjectType = gameObjectType;
-                newGameObject.OpenType = GetOpenType(int.Parse(gameObjectsRow["opentype"]));
-                newGameObject.ZoneShortName = gameObjectsRow["zone"];
-                newGameObject.OriginalModelName = modelName;
-                newGameObject.ModelName = modelName;
-                newGameObject.ModelIsSkeletal = isSkeletal;
-                newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
-                newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
-                newGameObject.SoundEnabled = int.Parse(gameObjectsRow["sound_enabled"]) == 1 ? true : false;
-                newGameObject.DisplayName = gameObjectsRow["display_name"];
-                newGameObject.CloseTimeInMS = int.Parse(gameObjectsRow["close_time"]) * 1000;
-                float xPosition = float.Parse(gameObjectsRow["pos_x"]);
-                float yPosition = float.Parse(gameObjectsRow["pos_y"]);
-                float zPosition = float.Parse(gameObjectsRow["pos_z"]);
-                if (gameObjectType != GameObjectType.NonInteract)
-                {
-                    xPosition *= Configuration.GENERATE_WORLD_SCALE;
-                    yPosition *= Configuration.GENERATE_WORLD_SCALE;
-                    zPosition *= Configuration.GENERATE_WORLD_SCALE;
-                    newGameObject.Position = new Vector3(xPosition, yPosition, zPosition);
-                }
-                else
-                {
-                    // Non-interact should be in EQ coordinate properties since they are loaded as doodads
-                    // Also make sure to flip Z and Y for non-interact since doodads get changed later
-                    newGameObject.Position = new Vector3(xPosition, zPosition, yPosition);
-                }
-                newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
-                newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
-                newGameObject.ModelIsInEquipmentFolder = gameObjectsRow["model_in_equipment"].Trim() == "1" ? true : false;
-                string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
-                switch(tradeskillFocusTypeString)
-                {
-                    case "cookingfire": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.CookingFire; break;
-                    case "forge": newGameObject.TradeskillFocusType = GameObjectTradeskillFocusType.Forge; break;
-                    default: break; // Nothing
-                }
-
-                // "Heading" in EQ was 0-512 instead of 0-360, and the result needs to rotate 180 degrees due to y axis difference
-                newGameObject.EQHeading = float.Parse(gameObjectsRow["heading"]);
-                if (newGameObject.EQHeading == 0)
-                    newGameObject.Orientation = MathF.PI;
-                if (newGameObject.EQHeading != 0)
-                {
-                    float orientationInDegrees = (newGameObject.EQHeading / 512) * 360;
-                    float orientationInRadians = orientationInDegrees * MathF.PI / 180.0f;
-                    newGameObject.Orientation = orientationInRadians + MathF.PI;
-                }
-                newGameObject.EQIncline = float.Parse(gameObjectsRow["incline"]);
-
-                // Sound, if enabled
-                if (newGameObject.SoundEnabled)
-                {
-                    GetSoundsForOpenType(newGameObject.OpenType, out newGameObject.OpenSound, out newGameObject.CloseSound);
-                    if (newGameObject.OpenSound != null)
-                        if (OpenSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
-                            OpenSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.OpenSound);
-                    if (newGameObject.CloseSound != null)
-                        if (CloseSoundsByModelNameAndOpenType.ContainsKey((newGameObject.OriginalModelName, newGameObject.OpenType)) == false)
-                            CloseSoundsByModelNameAndOpenType.Add((newGameObject.OriginalModelName, newGameObject.OpenType), newGameObject.CloseSound);
-                }
-
-                // Add to either doodad or nondoodad lists
-                if (gameObjectType == GameObjectType.NonInteract)
-                {
-                    // Add it as a doodad item
-                    newGameObject.LoadAsZoneDoodad = true;
-                    if (DoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
-                        DoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
-                    DoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
-                }
-                else
-                {
-                    // Add it
-                    if (NonDoodadGameObjectsByZoneShortname.ContainsKey(newGameObject.ZoneShortName) == false)
-                        NonDoodadGameObjectsByZoneShortname.Add(newGameObject.ZoneShortName, new List<GameObject>());
-                    NonDoodadGameObjectsByZoneShortname[newGameObject.ZoneShortName].Add(newGameObject);
-                    
-                }
-
-                // Save this up in the trigger chain lookup
-                if (gameObjectType == GameObjectType.Door || gameObjectType == GameObjectType.Bridge)
-                {
-                    interactiveGameObjectsByZoneShortNameAndDoorID.Add((newGameObject.ZoneShortName, newGameObject.DoorID), newGameObject);
-                    interactiveGameObjects.Add(newGameObject);
-                }
-            }
-
-            // Store the chain reactions from the lookup
-            foreach (GameObject gameObject in interactiveGameObjects)
-            {
-                if (gameObject.TriggerDoorID == 0)
-                    continue;
-                if (interactiveGameObjectsByZoneShortNameAndDoorID.ContainsKey((gameObject.ZoneShortName, gameObject.TriggerDoorID)))
-                {
-                    gameObject.TriggerGameObjectGUID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectGUID;
-                    gameObject.TriggerGameObjectTemplateEntryID = interactiveGameObjectsByZoneShortNameAndDoorID[(gameObject.ZoneShortName, gameObject.TriggerDoorID)].GameObjectTemplateEntryID;
-                }   
-            }
-            DataIsLoaded = true;
-        }
-
         private static GameObjectOpenType GetOpenType(int openTypeID)
         {
             switch (openTypeID)
