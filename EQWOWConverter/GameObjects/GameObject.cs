@@ -195,6 +195,8 @@ namespace EQWOWConverter.GameObjects
                 if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus
                     && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox)
                     continue;
+                if (Configuration.OBJECT_GAMEOBJECT_ENABLE_MAILBOXES == false && gameObjectType == GameObjectType.Mailbox)
+                    continue;
 
                 // Skip zones not being loaded
                 if (validZoneShortNames.Contains(zoneShortName) == false)
@@ -463,7 +465,7 @@ namespace EQWOWConverter.GameObjects
                                     creatureTemplate.TextureID = 2; // 3 = plate
                                     creatureTemplate.HelmTextureID = 0; // 3 = plate
                                     creatureTemplate.FaceID = 2;
-                                    creatureTemplate.ColorTintID = 300002;// 300001; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
+                                    creatureTemplate.ColorTintID = 300002; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
                                     CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, creatureTemplate);
                                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                                     objectProperties.CreatureModelTemplate = creatureModelTemplate;

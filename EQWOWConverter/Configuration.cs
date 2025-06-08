@@ -299,6 +299,9 @@ namespace EQWOWConverter
         // How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect
         public static readonly int OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE = 5;
 
+        // If true, custom mailboxes are put into the game as 'postmen'
+        public static readonly bool OBJECT_GAMEOBJECT_ENABLE_MAILBOXES = true;
+
         //=====================================================================
         // Creatures
         //=====================================================================
