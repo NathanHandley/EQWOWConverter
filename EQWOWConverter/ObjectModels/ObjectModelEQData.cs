@@ -35,8 +35,7 @@ namespace EQWOWConverter.ObjectModels
         private string MaterialListFileName = string.Empty;
         public EQSkeleton SkeletonData = new EQSkeleton();
 
-        public void LoadObjectDataFromDisk(string name, ObjectModelType modelType, string eqInputObjectFileName, 
-            string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
+        public void LoadObjectDataFromDisk(string name, string eqInputObjectFileName, string inputObjectFolder, CreatureModelTemplate? creatureModelTemplate = null)
         {
             if (Directory.Exists(inputObjectFolder) == false)
             {

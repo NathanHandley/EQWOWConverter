@@ -493,7 +493,7 @@ namespace EQWOWConverter
                     skeletalObjectNameMap.Add(row.Split(",")[0], row.Split(",")[1]);
                 foreach(GameObject curObject in interactiveGameObjectsInZone.Value)
                 {
-                    if (curObject.ModelIsInEquipmentFolder == true)
+                    if (curObject.ModelIsInEquipmentFolder == true || curObject.ObjectType == GameObjects.GameObjectType.Mailbox)
                     {
                         // Never need to remap equipment-based models
                         curObject.ModelName = curObject.OriginalModelName;

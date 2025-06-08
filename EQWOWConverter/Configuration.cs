@@ -292,8 +292,9 @@ namespace EQWOWConverter
         // How long (in ms) the open/close animation will be for game objects
         public static readonly int OBJECT_GAMEOBJECT_OPENCLOSE_ANIMATIONTIME_INMS = 1000;
 
-        // Minimum distance/size that doors should be interactable
-        public static readonly int OBJECT_GAMEOBJECT_DOOR_INTERACT_BOUNDARY_MIN_SIZE = 5;
+        // Minimum distance/size that clickable items (doors, mailboxes, bridges, etc) should be interactable
+        public static readonly int OBJECT_GAMEOBJECT_DOORBRIDGE_INTERACT_BOUNDARY_MIN_SIZE = 5;
+        public static readonly int OBJECT_GAMEOBJECT_MAILBOX_INTERACT_BOUNDARY_MIN_SIZE = 3;
 
         // How big of an area that a tradeskill focus item (forge, cooking fire) covers in effect
         public static readonly int OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE = 5;

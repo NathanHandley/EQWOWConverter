@@ -81,7 +81,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Clear any old data and reload it
             EQObjectModelData = new ObjectModelEQData();
-            EQObjectModelData.LoadObjectDataFromDisk(Name, ModelType, eqInputObjectFileName, inputRootFolder, Properties.CreatureModelTemplate);
+            EQObjectModelData.LoadObjectDataFromDisk(Name, eqInputObjectFileName, inputRootFolder, Properties.CreatureModelTemplate);
 
             // Store if it had a skeleton
             if (EQObjectModelData.SkeletonData.BoneStructures.Count > 0)

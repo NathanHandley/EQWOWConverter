@@ -26,6 +26,7 @@ namespace EQWOWConverter.GameObjects
         Lever,
         Teleport,
         Trap,
-        TradeskillFocus
+        TradeskillFocus,
+        Mailbox
     }
 }

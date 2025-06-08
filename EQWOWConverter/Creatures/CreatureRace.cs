@@ -21,6 +21,7 @@ namespace EQWOWConverter.Creatures
     internal class CreatureRace
     {
         private static List<CreatureRace> CreatureRaces = new List<CreatureRace>();
+        private static readonly object CreatureLock = new object();
 
         public int ID;
         public CreatureGenderType Gender = CreatureGenderType.Neutral;
@@ -65,50 +66,55 @@ namespace EQWOWConverter.Creatures
 
         public static void GenerateAllSounds()
         {
-            if (CreatureRaces.Count == 0)
+            lock (CreatureLock)
             {
-                PopulateCreatureRaceList();
-
-                // Set the default 'blank' sound for footstep
-                FootstepIDBySoundName.Add("null24.wav", 0);
-            }
-
-            foreach (CreatureRace creatureRace in CreatureRaces)
-            {
-                GenerateSoundIfUnique(creatureRace.SoundLoopName);
-                GenerateSoundIfUnique(creatureRace.SoundIdle1Name);
-                GenerateSoundIfUnique(creatureRace.SoundIdle2Name);
-                GenerateSoundIfUnique(creatureRace.SoundJumpName);
-                GenerateSoundIfUnique(creatureRace.SoundHit1Name);
-                GenerateSoundIfUnique(creatureRace.SoundHit2Name);
-                GenerateSoundIfUnique(creatureRace.SoundHit3Name);
-                GenerateSoundIfUnique(creatureRace.SoundHit4Name);
-                GenerateSoundIfUnique(creatureRace.SoundGasp1Name);
-                GenerateSoundIfUnique(creatureRace.SoundGasp2Name);
-                GenerateSoundIfUnique(creatureRace.SoundDeathName);
-                GenerateSoundIfUnique(creatureRace.SoundDrownName);
-                GenerateSoundIfUnique(creatureRace.SoundWalkingName);
-                GenerateSoundIfUnique(creatureRace.SoundAttackName);
-                GenerateSoundIfUnique(creatureRace.SoundSpellAttackName);
-                GenerateSoundIfUnique(creatureRace.SoundTechnicalAttackName);
-                GenerateSoundIfUnique(creatureRace.SoundRunningName);
-
-                if (FootstepIDBySoundName.ContainsKey(creatureRace.SoundWalkingName) == false)
+                if (CreatureRaces.Count == 0)
                 {
-                    FootstepIDBySoundName.Add(creatureRace.SoundWalkingName, CUR_CREATURE_FOOTSTEP_ID);
-                    FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName), CUR_CREATURE_FOOTSTEP_ID);
-                    CUR_CREATURE_FOOTSTEP_ID++;
+                    PopulateCreatureRaceList();
+
+                    // Set the default 'blank' sound for footstep
+                    FootstepIDBySoundName.Add("null24.wav", 0);
+                }
+
+                foreach (CreatureRace creatureRace in CreatureRaces)
+                {
+                    GenerateSoundIfUnique(creatureRace.SoundLoopName);
+                    GenerateSoundIfUnique(creatureRace.SoundIdle1Name);
+                    GenerateSoundIfUnique(creatureRace.SoundIdle2Name);
+                    GenerateSoundIfUnique(creatureRace.SoundJumpName);
+                    GenerateSoundIfUnique(creatureRace.SoundHit1Name);
+                    GenerateSoundIfUnique(creatureRace.SoundHit2Name);
+                    GenerateSoundIfUnique(creatureRace.SoundHit3Name);
+                    GenerateSoundIfUnique(creatureRace.SoundHit4Name);
+                    GenerateSoundIfUnique(creatureRace.SoundGasp1Name);
+                    GenerateSoundIfUnique(creatureRace.SoundGasp2Name);
+                    GenerateSoundIfUnique(creatureRace.SoundDeathName);
+                    GenerateSoundIfUnique(creatureRace.SoundDrownName);
+                    GenerateSoundIfUnique(creatureRace.SoundWalkingName);
+                    GenerateSoundIfUnique(creatureRace.SoundAttackName);
+                    GenerateSoundIfUnique(creatureRace.SoundSpellAttackName);
+                    GenerateSoundIfUnique(creatureRace.SoundTechnicalAttackName);
+                    GenerateSoundIfUnique(creatureRace.SoundRunningName);
+
+                    if (FootstepIDBySoundName.ContainsKey(creatureRace.SoundWalkingName) == false)
+                    {
+                        FootstepIDBySoundName.Add(creatureRace.SoundWalkingName, CUR_CREATURE_FOOTSTEP_ID);
+                        FootstepIDBySoundID.Add(GetSoundIDForSound(creatureRace.SoundWalkingName), CUR_CREATURE_FOOTSTEP_ID);
+                        CUR_CREATURE_FOOTSTEP_ID++;
+                    }
                 }
             }
         }
 
         public static int GetSoundIDForSound(string soundName)
         {
-            if (SoundsBySoundName.ContainsKey(soundName))
-                return SoundsBySoundName[soundName].DBCID;
-            else
-                return 0;
-
+            lock (CreatureLock)
+            {
+                if (SoundsBySoundName.ContainsKey(soundName))
+                    return SoundsBySoundName[soundName].DBCID;
+                else
+                    return 0;
+            }
         }
 
         private static void GenerateSoundIfUnique(string soundName)
@@ -124,9 +130,26 @@ namespace EQWOWConverter.Creatures
 
         public static List<CreatureRace> GetAllCreatureRaces()
         {
-            if (CreatureRaces.Count == 0)
-                PopulateCreatureRaceList();
-            return CreatureRaces;
+            lock (CreatureLock)
+            {
+                if (CreatureRaces.Count == 0)
+                    PopulateCreatureRaceList();
+                return CreatureRaces;
+            }
+        }
+
+        public static CreatureRace? GetRaceForRaceGenderVariant(int raceID, CreatureGenderType gender, int variant)
+        {
+            lock (CreatureLock)
+            {
+                if (CreatureRaces.Count == 0)
+                    PopulateCreatureRaceList();
+                foreach (CreatureRace race in CreatureRaces)
+                    if (race.ID == raceID && race.Gender == gender && race.VariantID == variant)
+                        return race;
+                Logger.WriteError(string.Concat("Could not find a creature race with ID ", raceID, ", gender ", gender, ", varient ", variant));
+                return null;
+            }
         }
 
         private static void PopulateCreatureRaceList()

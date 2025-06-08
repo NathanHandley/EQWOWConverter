@@ -1,5 +1,6 @@
 ID|Name|HelmRed|HelmGreen|HelmBlue|ChestRed|ChestGreen|ChestBlue|ArmsRed|ArmsGreen|ArmsBlue|BracerRed|BracerGreen|BracerBlue|HandsRed|HandsGreen|HandsBlue|LegsRed|LegsGreen|LegsBlue|FeetRed|FeetGreen|FeetBlue
 1017|an_investigator17|0|0|0|129|83|14|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
+1020|Natasha_Whitewater|0|200|225|0|200|255|0|200|255|0|200|255|0|200|255|0|200|255|0|200|255
 1037|Xantomo_Salmor37|0|0|0|175|10|50|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
 1038|#D`mitrious_Irska38|0|0|0|10|50|200|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
 1062|Daenor_Casthopur62|0|0|0|70|50|210|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
@@ -316,4 +317,5 @@ ID|Name|HelmRed|HelmGreen|HelmBlue|ChestRed|ChestGreen|ChestBlue|ArmsRed|ArmsGre
 204070||0|0|0|125|25|50|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
 204071||0|0|0|200|0|0|200|0|0|200|0|0|0|0|0|0|0|0|0|0|0
 204072||0|0|0|129|83|14|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0
-1020|Natasha_Whitewater|0|200|225|0|200|255|0|200|255|0|200|255|0|200|255|0|200|255|0|200|255
+300000|Postman Lambent|1|1|200|1|1|200|1|1|200|1|1|200|1|1|200|1|1|200|1|1|200
+300001|Bronze|201|102|7|201|102|7|201|102|7|201|102|7|201|102|7|201|102|7|201|102|7

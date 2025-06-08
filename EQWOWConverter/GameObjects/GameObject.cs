@@ -15,10 +15,13 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Common;
+using EQWOWConverter.Creatures;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
 using EQWOWConverter.Zones;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace EQWOWConverter.GameObjects
 {
@@ -154,6 +157,8 @@ namespace EQWOWConverter.GameObjects
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             string objectsFolderRoot = Path.Combine(eqExportsConditionedPath, "objects");
             string equipmentFolderRoot = Path.Combine(eqExportsConditionedPath, "equipment");
+            string charactersFolderRoot = Path.Combine(eqExportsConditionedPath, "characters");
+            string generatedTexturesFolderPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedCreatureTextures");
 
             // Clear the folder first
             string gameObjectOutputFolderRoot = Path.Combine(exportMPQRootFolder, "World", "Everquest", "GameObjects");
@@ -189,13 +194,17 @@ namespace EQWOWConverter.GameObjects
                         string modelDataRootFolder = objectsFolderRoot;
                         if (gameObject.ModelIsInEquipmentFolder == true)
                             modelDataRootFolder = equipmentFolderRoot;
+                        if (gameObject.ObjectType == GameObjectType.Mailbox)
+                            modelDataRootFolder = charactersFolderRoot;
 
                         // Tradeskill items have an atypically small visibility range
                         float objectVisibilityBoundingBoxMinSize = Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE;
                         if (gameObject.TradeskillFocusType != GameObjectTradeskillFocusType.None)
                             objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_TRADESKILLFOCUS_EFFECT_AREA_MIN_SIZE;
                         else if (gameObject.ObjectType == GameObjectType.Door || gameObject.ObjectType == GameObjectType.Bridge)
-                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOOR_INTERACT_BOUNDARY_MIN_SIZE;
+                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_DOORBRIDGE_INTERACT_BOUNDARY_MIN_SIZE;
+                        else if (gameObject.ObjectType == GameObjectType.Mailbox)
+                            objectVisibilityBoundingBoxMinSize = Configuration.OBJECT_GAMEOBJECT_MAILBOX_INTERACT_BOUNDARY_MIN_SIZE;
 
                         // Load it
                         string modelFileName = string.Concat(gameObject.OriginalModelName, "_", gameObject.OpenType.ToString());
@@ -282,6 +291,33 @@ namespace EQWOWConverter.GameObjects
                                     curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.StaticDoodad, objectVisibilityBoundingBoxMinSize);
                                     curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
                                 } break;
+                            case GameObjectType.Mailbox:
+                                {
+                                    int modelRaceID = 0;
+                                    if (gameObject.OriginalModelName.ToUpper().StartsWith("H") == true)
+                                        modelRaceID = 1;
+                                    else
+                                        modelRaceID = 6;
+                                        CreatureRace? creatureRace = CreatureRace.GetRaceForRaceGenderVariant(modelRaceID, CreatureGenderType.Male, 0);
+                                    if (creatureRace == null)
+                                    {
+                                        Logger.WriteError("Could not load the race information for the mail carrier game object");
+                                        continue;
+                                    }
+                                    CreatureTemplate creatureTemplate = new CreatureTemplate();
+                                    creatureTemplate.GenderType = CreatureGenderType.Male;
+                                    creatureTemplate.TextureID = 3;
+                                    creatureTemplate.HelmTextureID = 0; // 3
+                                    creatureTemplate.FaceID = 2;
+                                    creatureTemplate.ColorTintID = 300001; // If this isn't zero, it needs to be in CreatureTemplateColors.csv
+                                    CreatureModelTemplate creatureModelTemplate = new CreatureModelTemplate(creatureRace, creatureTemplate);
+                                    ObjectModelProperties objectProperties = new ObjectModelProperties();
+                                    objectProperties.CreatureModelTemplate = creatureModelTemplate;
+                                    objectProperties.ModelScalePreWorldScale = creatureRace.ModelScale;
+                                    objectProperties.ModelLiftPreWorldScale = creatureRace.Lift;
+                                    curObjectModel = new ObjectModel(modelFileName, objectProperties, ObjectModelType.Creature, objectVisibilityBoundingBoxMinSize);
+                                    curObjectModel.LoadEQObjectFromFile(modelDataRootFolder, gameObject.ModelName);
+                                } break;
                             default:
                                 {
                                     Logger.WriteError("When trying to create the object model for a gameobject, this object type is not implemented: " + gameObject.ObjectType);
@@ -308,12 +344,19 @@ namespace EQWOWConverter.GameObjects
                         {
                             string inputTextureName = Path.Combine(objectTextureFolder, texture.TextureName + ".blp");
                             string outputTextureName = Path.Combine(curGameObjectOutputFolder, texture.TextureName + ".blp");
-                            if (Path.Exists(inputTextureName) == false)
+                            if (Path.Exists(inputTextureName) == true)
+                                FileTool.CopyFile(inputTextureName, outputTextureName);
+                            else
                             {
-                                Logger.WriteError("- [" + curObjectModel.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
-                                return;
+                                string generatedInputTextureName = Path.Combine(generatedTexturesFolderPath, texture.TextureName + ".blp");
+                                if (Path.Exists(generatedInputTextureName) == true)
+                                    FileTool.CopyFile(generatedInputTextureName, outputTextureName);
+                                else
+                                {
+                                    Logger.WriteError("- [" + curObjectModel.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
+                                    return;
+                                }
                             }
-                            FileTool.CopyFile(inputTextureName, outputTextureName);
                             Logger.WriteDebug("- [" + curObjectModel.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
                         }
 
@@ -371,7 +414,8 @@ namespace EQWOWConverter.GameObjects
 
                 // Skip invalid object types
                 GameObjectType gameObjectType = GetType(gameObjectsRow["type"]);
-                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus && gameObjectType != GameObjectType.Bridge)
+                if (gameObjectType != GameObjectType.Door && gameObjectType != GameObjectType.NonInteract && gameObjectType != GameObjectType.TradeskillFocus 
+                    && gameObjectType != GameObjectType.Bridge && gameObjectType != GameObjectType.Mailbox)
                     continue;
 
                 // Skip zones not being loaded
@@ -556,6 +600,7 @@ namespace EQWOWConverter.GameObjects
                 case "teleport": return GameObjectType.Teleport;
                 case "trap": return GameObjectType.Trap;
                 case "tradeskillfocus": return GameObjectType.TradeskillFocus;
+                case "mailbox": return GameObjectType.Mailbox;
                 default:
                     {
                         Logger.WriteError("Can't determine GameObjectType due to an unmapped open type name value of " + typeNameValue);

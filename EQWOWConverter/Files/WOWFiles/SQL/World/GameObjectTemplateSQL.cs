@@ -50,6 +50,16 @@ namespace EQWOWConverter.WOWFiles
 
             switch (gameObject.ObjectType)
             {
+                case GameObjectType.Mailbox:
+                    {
+                        AddRow(gameObject.GameObjectTemplateEntryID,
+                            19, // Mailbox
+                            gameObject.GameObjectDisplayInfoID, 
+                            name,
+                            0, 0, 0, 0, 0, 
+                            gameObject.Scale, aiName);
+                    }
+                    break;
                 case GameObjectType.Bridge:
                     {
                         AddRow(gameObject.GameObjectTemplateEntryID,
