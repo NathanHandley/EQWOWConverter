@@ -2512,7 +2512,7 @@ namespace EQWOWConverter
 
             // Tradeskills
             int curTradeskillTotemCategoryID = Configuration.TRADESKILL_TOTEM_CATEGORY_START;
-            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING), "Toolbox", curTradeskillTotemCategoryID, 1);
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX), "Toolbox", curTradeskillTotemCategoryID, 1);
             curTradeskillTotemCategoryID++;
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING), "Sewing Kit", curTradeskillTotemCategoryID, 1);
             curTradeskillTotemCategoryID++;
@@ -2520,6 +2520,7 @@ namespace EQWOWConverter
             curTradeskillTotemCategoryID++;
             totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY), "Medicine Bag", curTradeskillTotemCategoryID, 1);
             curTradeskillTotemCategoryID++;
+            totemCategoryDBC.AddRow(Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING), "Fletching Kit", curTradeskillTotemCategoryID, 1);
             Dictionary<string, UInt32> tradeskillTotems = TradeskillRecipe.GetTotemIDsByItemName();
             int curTradeskillTotemCategoryMaskValue = 1;
             int curTradeskillTotemCategoryMaskCount = 0;

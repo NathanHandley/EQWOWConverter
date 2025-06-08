@@ -32,6 +32,7 @@ namespace EQWOWConverter.Tradeskills
         public int SpellID;
         public string Name = string.Empty;
         public TradeskillType Type;
+        public int EQTradeskillID;
         public int SkillNeededEQ;
         public int TrivialEQ;
         public int SkillLineWOW;
@@ -141,7 +142,8 @@ namespace EQWOWConverter.Tradeskills
                     string name = columns["name"];
                     int eqSkillNeeded = int.Parse(columns["eq_skill_needed"]);
                     int eqTrivial = int.Parse(columns["eq_trivial"]);
-                    TradeskillType type = ConvertTradeskillType(int.Parse(columns["eq_tradeskillID"]));
+                    int eqTradeskillID = int.Parse(columns["eq_tradeskillID"]);
+                    TradeskillType type = ConvertTradeskillType(eqTradeskillID);
                     if (type == TradeskillType.Unknown)
                     {
                         Logger.WriteDebug(string.Concat("Skipping tradeskill item with name '", name, "' as the tradeskill type is Unknown"));
@@ -157,6 +159,7 @@ namespace EQWOWConverter.Tradeskills
                         default: break; // Do Nothing
                     }
                     TradeskillRecipe recipe = new TradeskillRecipe(spellID, eqID, name, type, eqSkillNeeded, eqTrivial);
+                    recipe.EQTradeskillID = eqTradeskillID;
                     recipe.RequiredFocus = focusID;
                     recipe.DoReplaceContainer = columns["replace_container"] == "0" ? false : true;
                     bool itemLookupFailed = false;
@@ -256,7 +259,12 @@ namespace EQWOWConverter.Tradeskills
                     }
 
                     if (type == TradeskillType.Engineering && recipe.RequiredTotemID1 == 0)
-                        recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING);
+                    {
+                        if (recipe.EQTradeskillID == 64) // fletching
+                            recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING);
+                        else
+                            recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX);
+                    }   
                     if (type == TradeskillType.Tailoring && recipe.RequiredTotemID1 == 0)
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING);
                     if (type == TradeskillType.Jewelcrafting && recipe.RequiredTotemID1 == 0)

@@ -798,8 +798,8 @@ namespace EQWOWConverter.Items
                                     {
                                         itemTemplate.ClassID = 2;
                                         itemTemplate.SubClassID = 14;
-                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING;
-                                        itemTemplate.Description = "Used by Engineers to produce any item.";
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_TOOLBOX;
+                                        itemTemplate.Description = "Used by Engineers to produce contraptions.";
                                         itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
                                     }
                                     break;
@@ -814,6 +814,14 @@ namespace EQWOWConverter.Items
                                         itemTemplate.SubClassID = 14;
                                         itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_TAILORING;
                                         itemTemplate.Description = "Used by Tailors to produce most items.";
+                                        itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
+                                    } break;
+                                case 18: // Fletching Kit => Misc
+                                    {
+                                        itemTemplate.ClassID = 2;
+                                        itemTemplate.SubClassID = 14;
+                                        itemTemplate.TotemDBCID = Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ENGINEERING_FLETCHING;
+                                        itemTemplate.Description = "Used by Engineers to produce arrows and bows.";
                                         itemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
                                     } break;
                                 case 20: // Jeweller's Kit => Misc
