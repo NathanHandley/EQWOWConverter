@@ -168,7 +168,7 @@ namespace EQWOWConverter
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
-                ConvertQuests(itemTemplatesByEQDBID, ref questTemplates);
+                ConvertQuests(itemTemplatesByEQDBID, ref questTemplates, ref creatureTemplates);
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -691,10 +691,10 @@ namespace EQWOWConverter
                 // Mark all of the rewards so they get included in the final output
                 foreach (int eqItemTemplateID in questTemplate.RewardItemEQIDs)
                     itemTemplatesByEQDBID[eqItemTemplateID].IsRewardedFromQuest = true;
-            }        
+            }
         }
 
-        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<QuestTemplate> questTemplates)
+        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<QuestTemplate> questTemplates, ref List<CreatureTemplate> creatureTemplates)
         {
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
@@ -747,9 +747,12 @@ namespace EQWOWConverter
 
                     questTemplate.QuestgiverWOWCreatureTemplateIDs.Add(creatureTemplate.WOWCreatureTemplateID);
                     creatureTemplate.IsQuestGiver = true;
-
                     if (questTemplate.HasMinimumFactionRequirement == true)
                         questTemplate.QuestgiverWOWFactionID = CreatureFaction.GetWOWFactionIDForEQFactionID(creatureTemplate.EQFactionID);
+
+                    // If this quest giver is aligned to an otherwise otherwise only-attackable reputation, realign to "Norrath Settlers)
+                    if (creatureTemplate.WOWFactionTemplateID == 2300 || creatureTemplate.WOWFactionTemplateID == 2301 || creatureTemplate.WOWFactionTemplateID == 2302 || creatureTemplate.WOWFactionTemplateID == 2337)
+                        creatureTemplate.WOWFactionTemplateID = 2313;
                 }
 
                 // Add the default area id for quest sorting
