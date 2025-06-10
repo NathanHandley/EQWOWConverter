@@ -28,6 +28,7 @@ namespace EQWOWConverter.Creatures
 
         public int MerchantID = 0;
         public int EQItemID = 0;
+        public int WOWItemID = 0;
         public int Slot = 0;
         public int FactionRequired = -1100; // Unsure how to read this exactly (found in merchantlist inside TAKP database). Looks like a packed flag, but why negative?
         public int Quantity = 0;
@@ -62,7 +63,8 @@ namespace EQWOWConverter.Creatures
                 CreatureVendorItem newVendorItem = new CreatureVendorItem();
                 newVendorItem.MerchantID = int.Parse(columns["merchantid"]);
                 newVendorItem.Slot = int.Parse(columns["slot"]);
-                newVendorItem.EQItemID = int.Parse(columns["item"]);
+                newVendorItem.EQItemID = int.Parse(columns["eq_itemid"]);
+                newVendorItem.WOWItemID = int.Parse(columns["wow_itemid"]);
                 newVendorItem.FactionRequired = int.Parse(columns["faction_required"]);
                 newVendorItem.Quantity = int.Parse(columns["quantity"]);
                 if (CreatureVendorItemsByMerchantID.ContainsKey(newVendorItem.MerchantID) == false)

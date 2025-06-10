@@ -361,6 +361,9 @@ namespace EQWOWConverter
         public static readonly int CREATURE_CLASS_TRAINER_UNLEARN_MENU_ID = 4461; // Pre-exists
         public static readonly int CREATURE_CLASS_TRAINER_DUALTALENT_MENU_ID = 10371; // Pre-exists
 
+        // If true, riding trainers will be generated
+        public static readonly bool CREATURE_RIDING_TRAINERS_ENABLED = true;
+
         //=====================================================================
         // Items
         //=====================================================================

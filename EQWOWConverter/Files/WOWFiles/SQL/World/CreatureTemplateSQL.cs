@@ -55,11 +55,18 @@ namespace EQWOWConverter.WOWFiles
                 iconName = "Trainer";
                 numOfRoles+=2;
             }
-            if (creatureTemplate.ClassTrainerType == ClassType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+            else if (creatureTemplate.ClassTrainerType == ClassType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
             {
                 npcFlags |= 16;    // 0x00000010 = Is a trainer
                 npcFlags |= 64;    // 0x00000040 = Is Profession Trainer
                 trainerType = 2;    // 2 = Profession Trainer
+                iconName = "Trainer";
+                numOfRoles += 1;
+            }
+            else if (creatureTemplate.IsRidingTrainer == true)
+            {
+                npcFlags |= 16;    // 0x00000010 = Is a trainer
+                trainerType = 1;   // 1 = Mount Trainer
                 iconName = "Trainer";
                 numOfRoles += 1;
             }

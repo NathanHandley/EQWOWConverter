@@ -144,8 +144,8 @@ namespace EQWOWConverter
 
             // Update vendor references for future culling
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
-            foreach(var vendorItemList in vendorItems.Values)
-                foreach(CreatureVendorItem vendorItem in vendorItemList)
+            foreach (var vendorItemList in vendorItems.Values)
+                foreach (CreatureVendorItem vendorItem in vendorItemList)
                     if (itemTemplatesByEQDBID.ContainsKey(vendorItem.EQItemID) == true)
                         itemTemplatesByEQDBID[vendorItem.EQItemID].IsSoldByVendor = true;
 
@@ -2755,10 +2755,12 @@ namespace EQWOWConverter
                     {
                         // Trainers need a line in the npc trainers table
                         npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(creatureTemplate.TradeskillTrainerType), creatureTemplate.WOWCreatureTemplateID);
+                    }
 
-                        // Associate the menu
-                        // TODO:?
-                        // creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                    // Riding trainers
+                    if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
+                    {
+                        npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
                     }
 
                     // Determine the display id
@@ -2775,13 +2777,18 @@ namespace EQWOWConverter
                     {
                         foreach(CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
                         {
-                            if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
+                            if (vendorItem.WOWItemID != -1)
+                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, vendorItem.Slot);
+                            else
                             {
-                                Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
-                                continue;
-                            }
+                                if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
+                                {
+                                    Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
+                                    continue;
+                                }
 
-                            npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
+                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
+                            }
                         }
                     }                      
 

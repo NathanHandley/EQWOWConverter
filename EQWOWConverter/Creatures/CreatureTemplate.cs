@@ -59,6 +59,7 @@ namespace EQWOWConverter.Creatures
         public float DetectionRange = 0;
         public bool CanAssist = false;
         public bool IsBanker = false;
+        public bool IsRidingTrainer = false;
         public ClassType ClassTrainerType = ClassType.None;
         public TradeskillType TradeskillTrainerType = TradeskillType.None;
         public int GossipMenuID = 0;
@@ -197,7 +198,9 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.DetectionRange = Configuration.CREATURE_DEFAULT_DETECTION_RANGE;
                 newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                 ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);
-                ProcessTradeskillTrainerType(ref newCreatureTemplate, int.Parse(columns["tradeskill_trainer"]));
+                ProcessProfessionTrainerType(ref newCreatureTemplate, int.Parse(columns["skill_trainer"]));
+                if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
+                    continue;
 
                 // Special logic for a few variations of kobolds, which look wrong if not adjusted
                 if (raceID == 48)
@@ -266,7 +269,7 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        private static void ProcessTradeskillTrainerType(ref CreatureTemplate creatureTemplate, int tradeskillTrainerType)
+        private static void ProcessProfessionTrainerType(ref CreatureTemplate creatureTemplate, int tradeskillTrainerType)
         {
             switch (tradeskillTrainerType)
             {
@@ -279,44 +282,42 @@ namespace EQWOWConverter.Creatures
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Blacksmithing;
                         creatureTemplate.SubName = "Blacksmithing Trainer";
-                    }
-                    break;
+                    } break;
                 case 3: // Cooking
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Cooking;
                         creatureTemplate.SubName = "Cooking Trainer";
-                    }
-                    break;
+                    } break;
                 case 4: // Engineering
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Engineering;
                         creatureTemplate.SubName = "Engineering Trainer";
-                    }
-                    break;
+                    } break;
                 case 5: // Jewelcrafting
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Jewelcrafting;
                         creatureTemplate.SubName = "Jewelcrafting Trainer";
-                    }
-                    break;
+                    } break;
                 case 6: // Inscription
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Inscription;
                         creatureTemplate.SubName = "Inscription Trainer";
-                    }
-                    break;
+                    } break;
                 case 7: // Tailoring
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Tailoring;
                         creatureTemplate.SubName = "Tailoring Trainer";
-                    }
-                    break;
+                    } break;
                 case 8: // Enchanting
                     {
                         creatureTemplate.TradeskillTrainerType = TradeskillType.Enchanting;
                         creatureTemplate.SubName = "Enchanting Trainer";
-                    }
-                    break;
+                    } break;
+                case 9: // Riding
+                    {
+                        creatureTemplate.IsRidingTrainer = true;
+                        creatureTemplate.SubName = "Riding Trainer";
+                    } break;
                 default:  break;// Nothing
             }
         }
