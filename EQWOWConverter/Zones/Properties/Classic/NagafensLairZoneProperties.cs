@@ -24,7 +24,6 @@ namespace EQWOWConverter.Zones.Properties
             // TODO: More zone areas
             SetZonewideEnvironmentAsIndoorWithSky(180, 30, 30, ZoneFogType.Heavy, 0.5f);
             OverrideVertexColorIntensity(0.3);
-            DisableSunlight();           
 
             AddZoneArea("Nagafen's Approach", "soldungb-01", "soldungb-01");
             AddZoneAreaBox("Nagafen's Approach", -1026.479004f, -697.811218f, 191.205917f, -1171.921631f, -925.477905f, -105.790352f);
