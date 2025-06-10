@@ -2646,6 +2646,7 @@ namespace EQWOWConverter
             GameEventSQL gameEventSQL = new GameEventSQL();
             GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
             GameTeleSQL gameTeleSQL = new GameTeleSQL();
+            GameWeatherSQL gameWeatherSQL = new GameWeatherSQL();
             GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
             GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
             GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
@@ -2681,6 +2682,11 @@ namespace EQWOWConverter
                 gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
                 if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
                     gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+
+                // Weather data
+                gameWeatherSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), zone.ZoneProperties.RainChanceWinter, zone.ZoneProperties.SnowChanceWinter,
+                    zone.ZoneProperties.RainChanceSpring, zone.ZoneProperties.SnowChanceSpring, zone.ZoneProperties.RainChanceSummer, zone.ZoneProperties.SnowChanceSummer,
+                    zone.ZoneProperties.RainChanceFall, zone.ZoneProperties.RainChanceWinter);
 
                 // Zone lines
                 foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
@@ -3259,6 +3265,7 @@ namespace EQWOWConverter
             gameObjectTemplateSQL.SaveToDisk("gameobject_template", SQLFileType.World);
             gameObjectTemplateAddonSQL.SaveToDisk("gameobject_template_addon", SQLFileType.World);
             gameTeleSQL.SaveToDisk("game_tele", SQLFileType.World);
+            gameWeatherSQL.SaveToDisk("game_weather", SQLFileType.World);
             gossipMenuSQL.SaveToDisk("gossip_menu", SQLFileType.World);
             gossipMenuOptionSQL.SaveToDisk("gossip_menu_option", SQLFileType.World);
             graveyardZoneSQL.SaveToDisk("graveyard_zone", SQLFileType.World);

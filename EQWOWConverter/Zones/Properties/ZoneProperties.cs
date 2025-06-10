@@ -43,6 +43,14 @@ namespace EQWOWConverter.Zones
         public List<ZoneArea> ZoneAreas = new List<ZoneArea>();
         public HashSet<string> Enabled2DSoundInstancesByDaySoundName = new HashSet<string>();
         public bool IsRestingZoneWide = false;
+        public int RainChanceWinter = 0;
+        public int RainChanceSpring = 0;
+        public int RainChanceSummer = 0;
+        public int RainChanceFall = 0;
+        public int SnowChanceWinter = 0;
+        public int SnowChanceSpring = 0;
+        public int SnowChanceSummer = 0;
+        public int SnowChanceFall = 0;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -695,6 +703,14 @@ namespace EQWOWConverter.Zones
                 zoneProperties.ExpansionID = int.Parse(propertiesRow["ExpansionID"]);
                 zoneProperties.DefaultZoneArea.DisplayName = propertiesRow["DescriptiveName"];
                 zoneProperties.IsRestingZoneWide = int.Parse(propertiesRow["RestZoneWide"]) == 1 ? true : false;
+                zoneProperties.RainChanceWinter = int.Parse(propertiesRow["rain_chance_winter"]);
+                zoneProperties.RainChanceSpring = int.Parse(propertiesRow["rain_chance_spring"]);
+                zoneProperties.RainChanceSummer = int.Parse(propertiesRow["rain_chance_summer"]);
+                zoneProperties.RainChanceFall = int.Parse(propertiesRow["rain_chance_fall"]);
+                zoneProperties.SnowChanceWinter = int.Parse(propertiesRow["snow_chance_winter"]);
+                zoneProperties.SnowChanceSpring = int.Parse(propertiesRow["snow_chance_spring"]);
+                zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
+                zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
