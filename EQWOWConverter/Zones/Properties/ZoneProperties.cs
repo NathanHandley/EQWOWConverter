@@ -107,6 +107,15 @@ namespace EQWOWConverter.Zones
             CustomZonewideEnvironmentProperties.SetAsOutdoors(fogRed, fogGreen, fogBlue, fogType, true, cloudDensity, ambientBrightnessMod, ZoneSkySpecialType.None);
         }
 
+        protected void SetZonewideEnvironmentAsIndoorWithSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float cloudDensity)
+        {
+            if (CustomZonewideEnvironmentProperties != null)
+                Logger.WriteInfo("Warning: Environment set as indoor with sky, but the zonewide environment settings were already set.");
+            CustomZonewideEnvironmentProperties = new ZoneEnvironmentSettings();
+            CustomZonewideEnvironmentProperties.SetAsIndoorsWithSky(fogRed, fogGreen, fogBlue, fogType, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE,
+                Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, Configuration.LIGHT_DEFAULT_INDOOR_AMBIENCE, cloudDensity);
+        }
+
         protected void SetZonewideEnvironmentAsOutdoorsNoSky(byte fogRed, byte fogGreen, byte fogBlue, ZoneFogType fogType, float ambientBrightnessMod)
         {
             if (CustomZonewideEnvironmentProperties != null)
