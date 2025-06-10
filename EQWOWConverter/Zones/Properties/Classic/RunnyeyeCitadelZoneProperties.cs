@@ -28,9 +28,8 @@ namespace EQWOWConverter.Zones.Properties
         public RunnyeyeCitadelZoneProperties() : base()
         {
             // TODO: Add zone areas
-            SetZonewideEnvironmentAsIndoors(26, 52, 9, ZoneFogType.Heavy);
+            SetZonewideEnvironmentAsIndoorWithSky(26, 52, 9, ZoneFogType.Heavy, 0);
             OverrideVertexColorIntensity(0.4f);
-            DisableSunlight();
             Enable2DSoundInstances("slmeloop", "slmestrm");
 
             AddZoneArea("Upper Pools", "runnyeye-00", "runnyeye-00");

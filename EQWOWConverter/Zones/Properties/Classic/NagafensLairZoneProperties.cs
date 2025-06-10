@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NagafensLairZoneProperties : ZoneProperties
@@ -28,10 +21,8 @@ namespace EQWOWConverter.Zones.Properties
         public NagafensLairZoneProperties() : base()
         {
             // TODO: Traps, like the crushing rock at -624 -243 -74
-            // TODO: Drawbridges, like the one to the giants room
             // TODO: More zone areas
-            // TODO: Lava damage zones
-            SetZonewideEnvironmentAsOutdoorsWithSky(180, 30, 30, ZoneFogType.Heavy, 0.5f, 1f);
+            SetZonewideEnvironmentAsIndoorWithSky(180, 30, 30, ZoneFogType.Heavy, 0.5f);
             OverrideVertexColorIntensity(0.3);
             DisableSunlight();           
 
