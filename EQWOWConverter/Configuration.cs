@@ -199,6 +199,9 @@ namespace EQWOWConverter
         // ID for the creature template for the spirit healer.
         public static readonly int ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID = 6491;
 
+        // If true, enable weather in zones.  Note that it currently doesn't work properly.
+        public static readonly bool ZONE_WEATHER_ENABLED = false;
+
         //=====================================================================
         // Liquid
         //=====================================================================
