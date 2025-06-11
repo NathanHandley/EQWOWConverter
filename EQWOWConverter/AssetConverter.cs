@@ -170,6 +170,10 @@ namespace EQWOWConverter
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(itemTemplatesByEQDBID, ref questTemplates, ref creatureTemplates);
 
+            // Make taller races have a shorter collision height
+            if (Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT == true)
+                ReplacePlayerModelCollision();
+
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
@@ -1274,6 +1278,81 @@ namespace EQWOWConverter
             }
 
             Logger.WriteInfo("Item and loot conversion complete.");
+        }
+
+        public void ReplacePlayerModelCollision()
+        {
+            Logger.WriteInfo("Replacing player model collision...");
+
+            // Clear the old folder
+            string exportedCharacterFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "ExportedCharacterModels");
+            if (Directory.Exists(exportedCharacterFolder) == true)
+                Directory.Delete(exportedCharacterFolder, true);
+            Directory.CreateDirectory(exportedCharacterFolder);
+
+            // Get a list of valid patch files (it's done this way to ensure sorting order is exactly right). Also ignore existing patch file
+            string wowBasePatchesFolder = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Data");
+            if (Directory.Exists(wowBasePatchesFolder) == false)
+                throw new Exception("WoW client patches folder does not exist at '" + wowBasePatchesFolder + "', did you set PATH_WOW_ENUS_CLIENT_FOLDER?");
+            List<string> mpqFileNames = new List<string>();
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "common.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "common-1.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "expansion.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "lichking.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "patch.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "patch-2.MPQ"));
+            mpqFileNames.Add(Path.Combine(wowBasePatchesFolder, "patch-3.MPQ"));
+            string wowLocalizedPatchesFolder = Path.Combine(wowBasePatchesFolder, "enUS");
+            mpqFileNames.Add(Path.Combine(wowLocalizedPatchesFolder, "patch-enUS.MPQ"));
+            string[] existingPatchFiles = Directory.GetFiles(wowLocalizedPatchesFolder, "patch-*-*.MPQ");
+            foreach (string existingPatchName in existingPatchFiles)
+                if (existingPatchName.Contains(Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT) == false)
+                    mpqFileNames.Add(existingPatchName);
+
+            // Extract out the existing wow model data for characters
+            string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
+            FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
+            StringBuilder characterExtractScriptText = new StringBuilder();
+            foreach (string patchFileName in mpqFileNames)
+            {
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\BloodElf\\Female\\*.M2 \"", exportedCharacterFolder, "\\BloodElf\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\BloodElf\\Male\\*.M2 \"", exportedCharacterFolder, "\\BloodElf\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Draenei\\Female\\*.M2 \"", exportedCharacterFolder, "\\Draenei\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Draenei\\Male\\*.M2 \"", exportedCharacterFolder, "\\Draenei\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Dwarf\\Female\\*.M2 \"", exportedCharacterFolder, "\\Dwarf\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Dwarf\\Male\\*.M2 \"", exportedCharacterFolder, "\\Dwarf\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Gnome\\Female\\*.M2 \"", exportedCharacterFolder, "\\Gnome\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Gnome\\Male\\*.M2 \"", exportedCharacterFolder, "\\Gnome\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Human\\Female\\*.M2 \"", exportedCharacterFolder, "\\Human\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Human\\Male\\*.M2 \"", exportedCharacterFolder, "\\Human\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\NightElf\\Female\\*.M2 \"", exportedCharacterFolder, "\\NightElf\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\NightElf\\Male\\*.M2 \"", exportedCharacterFolder, "\\NightElf\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Orc\\Female\\*.M2 \"", exportedCharacterFolder, "\\Orc\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Orc\\Male\\*.M2 \"", exportedCharacterFolder, "\\Orc\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Scourge\\Female\\*.M2 \"", exportedCharacterFolder, "\\Scourge\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Scourge\\Male\\*.M2 \"", exportedCharacterFolder, "\\Scourge\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Tauren\\Female\\*.M2 \"", exportedCharacterFolder, "\\Tauren\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Tauren\\Male\\*.M2 \"", exportedCharacterFolder, "\\Tauren\\Male\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Troll\\Female\\*.M2 \"", exportedCharacterFolder, "\\Troll\\Female\""));
+                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Troll\\Male\\*.M2 \"", exportedCharacterFolder, "\\Troll\\Male\""));
+            }
+            string characterExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "characterextract.txt");
+            using (var dbcExtractionScriptFile = new StreamWriter(characterExtractionScriptFileName))
+                dbcExtractionScriptFile.WriteLine(characterExtractScriptText.ToString());
+
+            // Extract the files using the script
+            Logger.WriteDebug("Extracting Character files");
+            string mpqEditorFullPath = Path.Combine(Configuration.PATH_TOOLS_FOLDER, "ladikmpqeditor", "MPQEditor.exe");
+            if (File.Exists(mpqEditorFullPath) == false)
+                throw new Exception("Failed to extract Character files. '" + mpqEditorFullPath + "' does not exist. (Be sure to set your Configuration.PATH_TOOLS_FOLDER properly)");
+            string args = "console \"" + characterExtractionScriptFileName + "\"";
+            System.Diagnostics.Process process = new System.Diagnostics.Process();
+            process.StartInfo.RedirectStandardOutput = true;
+            process.StartInfo.Arguments = args;
+            process.StartInfo.FileName = mpqEditorFullPath;
+            process.Start();
+            process.WaitForExit();
+
         }
 
         private void CreateItemGraphics(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)

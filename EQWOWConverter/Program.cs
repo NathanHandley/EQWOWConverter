@@ -64,6 +64,7 @@ internal class Program
             if (Configuration.GENERATE_OBJECTS == false)
                 Logger.WriteInfo("- GENERATE_OBJECTS is set to false");
             Logger.WriteInfo(string.Concat("- GENERATE_RIDING_TRAINERS_ENABLED is set to ", Configuration.CREATURE_RIDING_TRAINERS_ENABLED));
+            Logger.WriteInfo(string.Concat("- PLAYER_REPLACE_MODEL_COLLISION_HEIGHT is set to ", Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT));
         }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();
