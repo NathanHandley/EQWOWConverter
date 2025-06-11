@@ -513,6 +513,23 @@ namespace EQWOWConverter.Zones
                 collisionMeshData.AddMeshData(allObjectMeshData);
             }
 
+            // Constrain the maximum collision area, if set
+            if (ZoneProperties.CollisionMaxZ != 0)
+            {
+                float scaledCollisionMaxZ = ZoneProperties.CollisionMaxZ * Configuration.GENERATE_WORLD_SCALE;
+                BoundingBox removalBoundingArea = BoundingBox.GenerateBoxFromVectors(collisionMeshData.Vertices, Configuration.GENERATE_ADDED_BOUNDARY_AMOUNT);
+                removalBoundingArea.BottomCorner.Z = scaledCollisionMaxZ;
+                if (removalBoundingArea.BottomCorner.Z > removalBoundingArea.TopCorner.Z)
+                    Logger.WriteError(string.Concat("Error attempting to constrain max collision area for zone ", ZoneProperties.ShortName, " as the Z value was higher than the top"));
+                else
+                {
+                    MeshData discardedMeshData;
+                    MeshData keptMeshData;
+                    MeshData.GetSplitMeshDataWithClipping(collisionMeshData, removalBoundingArea, out discardedMeshData, out keptMeshData);
+                    collisionMeshData = keptMeshData;
+                }
+            }
+
             // Helper for clipping operations below
             void GenerateLiquidCollisionAreas(ZoneArea zoneArea, ZoneLiquidGroup liquidGroup)
             {

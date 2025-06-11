@@ -51,6 +51,7 @@ namespace EQWOWConverter.Zones
         public int SnowChanceSpring = 0;
         public int SnowChanceSummer = 0;
         public int SnowChanceFall = 0;
+        public float CollisionMaxZ = 0;
 
         private static readonly object ListReadLock = new object();
         private static readonly object DBCWMOIDLock = new object();
@@ -711,6 +712,7 @@ namespace EQWOWConverter.Zones
                 zoneProperties.SnowChanceSpring = int.Parse(propertiesRow["snow_chance_spring"]);
                 zoneProperties.SnowChanceSummer = int.Parse(propertiesRow["snow_chance_summer"]);
                 zoneProperties.SnowChanceFall = int.Parse(propertiesRow["snow_chance_fall"]);
+                zoneProperties.CollisionMaxZ = float.Parse(propertiesRow["CollisionGeometryMaxZ"]);
                 ZonePropertyListByShortName.Add(shortName, zoneProperties);
             }
             else
