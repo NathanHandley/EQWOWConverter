@@ -530,8 +530,8 @@ namespace EQWOWConverter.WOWFiles
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 92);
 
             // CollisionBox - Min and Max corners
-            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, 188);
-            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, 200);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, 196);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, 208);
 
             // CollisionBoxRadius
             float collisionRadius = (Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z - Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z) / 2f;
