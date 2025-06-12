@@ -156,11 +156,6 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                             }
                             break;
-                        case "9":
-                            {
-                                AssetConverter converter = new AssetConverter();
-                                converter.ReplacePlayerModelCollision();                                
-                            } break;
                         default: break;
                     }
                     Logger.WriteInfo("Exiting....");

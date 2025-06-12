@@ -108,7 +108,7 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, Characters] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, PlayerCollision] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -129,7 +129,7 @@ namespace EQWOWConverter
                 if (Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT == true)
                     ReplacePlayerModelCollision();
 
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills, Characters] Ended");
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills, PlayerCollision] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsSpellsTradeskillsTask.Wait();

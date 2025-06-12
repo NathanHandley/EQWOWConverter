@@ -518,7 +518,7 @@ namespace EQWOWConverter.WOWFiles
             int collisionPositionsHeaderOffset = 228; // E4h
             int collisionDataOffset = BitConverter.ToInt32(fileBytes.GetRange(collisionPositionsHeaderOffset, 4).ToArray());
 
-            // There are 8 character collision positions in x/y/z float format.
+            // CollisionPositions block - There are 8 character collision positions in x/y/z float format.
             // First 4 are the bottom corners of the player box, last 4 are the top
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 8);
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 20);
@@ -528,7 +528,15 @@ namespace EQWOWConverter.WOWFiles
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 68);
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 80);
             ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 92);
-            
+
+            // CollisionBox - Min and Max corners
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, 188);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, 200);
+
+            // CollisionBoxRadius
+            float collisionRadius = (Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z - Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z) / 2f;
+            ReplaceBytesWithFloat(ref fileBytes, collisionRadius, 212);
+
             // Write out the file
             FileTool.WriteFileBytes(targetFileNameAndPath, fileBytes);
         }
