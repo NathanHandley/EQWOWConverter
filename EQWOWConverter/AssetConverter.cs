@@ -1310,32 +1310,14 @@ namespace EQWOWConverter
                     mpqFileNames.Add(existingPatchName);
 
             // Extract out the existing wow model data for characters
+            List<string> genderNames = new List<string>() { "Female", "Male" };
             string workingGeneratedScriptsFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedWorkingScripts");
             FileTool.CreateBlankDirectory(workingGeneratedScriptsFolder, true);
             StringBuilder characterExtractScriptText = new StringBuilder();
             foreach (string patchFileName in mpqFileNames)
-            {
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\BloodElf\\Female\\*.M2 \"", exportedCharacterFolder, "\\BloodElf\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\BloodElf\\Male\\*.M2 \"", exportedCharacterFolder, "\\BloodElf\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Draenei\\Female\\*.M2 \"", exportedCharacterFolder, "\\Draenei\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Draenei\\Male\\*.M2 \"", exportedCharacterFolder, "\\Draenei\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Dwarf\\Female\\*.M2 \"", exportedCharacterFolder, "\\Dwarf\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Dwarf\\Male\\*.M2 \"", exportedCharacterFolder, "\\Dwarf\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Gnome\\Female\\*.M2 \"", exportedCharacterFolder, "\\Gnome\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Gnome\\Male\\*.M2 \"", exportedCharacterFolder, "\\Gnome\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Human\\Female\\*.M2 \"", exportedCharacterFolder, "\\Human\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Human\\Male\\*.M2 \"", exportedCharacterFolder, "\\Human\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\NightElf\\Female\\*.M2 \"", exportedCharacterFolder, "\\NightElf\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\NightElf\\Male\\*.M2 \"", exportedCharacterFolder, "\\NightElf\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Orc\\Female\\*.M2 \"", exportedCharacterFolder, "\\Orc\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Orc\\Male\\*.M2 \"", exportedCharacterFolder, "\\Orc\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Scourge\\Female\\*.M2 \"", exportedCharacterFolder, "\\Scourge\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Scourge\\Male\\*.M2 \"", exportedCharacterFolder, "\\Scourge\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Tauren\\Female\\*.M2 \"", exportedCharacterFolder, "\\Tauren\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Tauren\\Male\\*.M2 \"", exportedCharacterFolder, "\\Tauren\\Male\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Troll\\Female\\*.M2 \"", exportedCharacterFolder, "\\Troll\\Female\""));
-                characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\Troll\\Male\\*.M2 \"", exportedCharacterFolder, "\\Troll\\Male\""));
-            }
+                foreach (string raceName in Configuration.PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES)
+                    foreach (string genderName in genderNames)
+                        characterExtractScriptText.AppendLine(string.Concat("extract \"", patchFileName, "\" Character\\", raceName, "\\", genderName, "\\*.M2 \"", exportedCharacterFolder, "\\", raceName, "\\", genderName , "\""));
             string characterExtractionScriptFileName = Path.Combine(workingGeneratedScriptsFolder, "characterextract.txt");
             using (var dbcExtractionScriptFile = new StreamWriter(characterExtractionScriptFileName))
                 dbcExtractionScriptFile.WriteLine(characterExtractScriptText.ToString());
@@ -1353,6 +1335,14 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
+            // Change the Z collision of the objects            
+            foreach (string raceName in Configuration.PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES)
+            {
+                foreach (string genderName in genderNames)
+                {
+                    string m2FileNameAndPath = Path.Combine(exportedCharacterFolder, raceName, genderName, string.Concat(raceName, genderName, ".M2"));
+                }
+            }
         }
 
         private void CreateItemGraphics(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)

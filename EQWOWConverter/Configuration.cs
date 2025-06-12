@@ -161,6 +161,8 @@ namespace EQWOWConverter
         public static readonly bool PLAYER_REPLACE_MODEL_COLLISION_HEIGHT = true;
         public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MAX_Z = 2.031265f; // Human max Z
         public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MIN_Z = 0f; // Human min Z
+        // Omitting Dwarf, Gnome since they are short enough already
+        public static readonly List<string> PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES = new List<string>() { "BloodElf", "Draenei", "Human", "NightElf", "Orc", "Scourge", "Tauren", "Troll" };
 
         //=====================================================================
         // Zone General
