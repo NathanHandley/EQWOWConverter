@@ -48,22 +48,23 @@ internal class Program
         }
         if (enteredCommand == "5")
         {
+            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
+                Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRADESKILLS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS));
             Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS));
-            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
-                Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
-            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
-                Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
-            if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
-                Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
             if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                 Logger.WriteInfo("- GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
             if (Configuration.GENERATE_OBJECTS == false)
                 Logger.WriteInfo("- GENERATE_OBJECTS is set to false");
             Logger.WriteInfo(string.Concat("- GENERATE_RIDING_TRAINERS_ENABLED is set to ", Configuration.CREATURE_RIDING_TRAINERS_ENABLED));
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
+                Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
+            if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
+                Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
+          
             Logger.WriteInfo(string.Concat("- PLAYER_REPLACE_MODEL_COLLISION_HEIGHT is set to ", Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT));
         }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
@@ -155,6 +156,11 @@ internal class Program
                                     Logger.WriteInfo("EQ to WoW conversion Failed.");
                             }
                             break;
+                        case "9":
+                            {
+                                AssetConverter converter = new AssetConverter();
+                                converter.ReplacePlayerModelCollision();                                
+                            } break;
                         default: break;
                     }
                     Logger.WriteInfo("Exiting....");

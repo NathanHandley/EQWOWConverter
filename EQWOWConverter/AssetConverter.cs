@@ -108,7 +108,7 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
             Task itemsSpellsTradeskillsTask = Task.Factory.StartNew(() =>
             {
-                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills] Started");
+                Logger.WriteInfo("<+> Thread [Items, Spells, Tradeskills, Characters] Started");
 
                 // Generate item templates
                 Logger.WriteInfo("Generating item templates...");
@@ -125,7 +125,11 @@ namespace EQWOWConverter
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
 
-                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills] Ended");
+                // Make taller races have a shorter collision height
+                if (Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT == true)
+                    ReplacePlayerModelCollision();
+
+                Logger.WriteInfo("<-> Thread [Items, Spells, Tradeskills, Characters] Ended");
             }, TaskCreationOptions.LongRunning);
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsSpellsTradeskillsTask.Wait();
@@ -169,10 +173,6 @@ namespace EQWOWConverter
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(itemTemplatesByEQDBID, ref questTemplates, ref creatureTemplates);
-
-            // Make taller races have a shorter collision height
-            if (Configuration.PLAYER_REPLACE_MODEL_COLLISION_HEIGHT == true)
-                ReplacePlayerModelCollision();
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
@@ -1335,12 +1335,22 @@ namespace EQWOWConverter
             process.Start();
             process.WaitForExit();
 
-            // Change the Z collision of the objects            
+            // Clean the output folder
+            string outputCharacterFolderRoot = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady", "Character");
+            if (Directory.Exists(outputCharacterFolderRoot) == true)
+                Directory.Delete(outputCharacterFolderRoot, true);
+            Directory.CreateDirectory(outputCharacterFolderRoot);
+
+            // Change the Z collision of the objects
             foreach (string raceName in Configuration.PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES)
             {
                 foreach (string genderName in genderNames)
                 {
-                    string m2FileNameAndPath = Path.Combine(exportedCharacterFolder, raceName, genderName, string.Concat(raceName, genderName, ".M2"));
+                    string sourceFileNameAndPath = Path.Combine(exportedCharacterFolder, raceName, genderName, string.Concat(raceName, genderName, ".M2"));
+                    string targetFolder = Path.Combine(outputCharacterFolderRoot, raceName, genderName);
+                    string targetFileNameAndPath = Path.Combine(targetFolder, string.Concat(raceName, genderName, ".M2"));
+                    Directory.CreateDirectory(targetFolder);
+                    M2.ReplaceCollisionZsForCharacter(sourceFileNameAndPath, targetFileNameAndPath, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z);
                 }
             }
         }

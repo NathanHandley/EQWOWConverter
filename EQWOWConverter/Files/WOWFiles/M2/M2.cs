@@ -508,6 +508,37 @@ namespace EQWOWConverter.WOWFiles
                 headerBytes.AddRange(SecondTextureMaterialOverrides.GetHeaderBytes());
             return headerBytes;
         }
+
+        public static void ReplaceCollisionZsForCharacter(string sourceFileNameAndPath, string targetFileNameAndPath, float minZ, float maxZ)
+        {
+            // Load in the whole file stream
+            List<byte> fileBytes = FileTool.GetFileBytes(sourceFileNameAndPath);
+
+            // Get the data offset of the collision positions
+            int collisionPositionsHeaderOffset = 228; // E4h
+            int collisionDataOffset = BitConverter.ToInt32(fileBytes.GetRange(collisionPositionsHeaderOffset, 4).ToArray());
+
+            // There are 8 character collision positions in x/y/z float format.
+            // First 4 are the bottom corners of the player box, last 4 are the top
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 8);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 20);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 32);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MIN_Z, collisionDataOffset + 44);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 56);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 68);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 80);
+            ReplaceBytesWithFloat(ref fileBytes, Configuration.PLAYER_REPLACE_MODEL_COLLISION_MAX_Z, collisionDataOffset + 92);
+            
+            // Write out the file
+            FileTool.WriteFileBytes(targetFileNameAndPath, fileBytes);
+        }
+
+        private static void ReplaceBytesWithFloat(ref List<byte> bytes, float replaceValue, int startIndex)
+        {
+            byte[] floatBytes = BitConverter.GetBytes(replaceValue);
+            for (int i = 0; i < 4; i++)
+                bytes[startIndex + i] = floatBytes[i];
+        }
     }
 }
 

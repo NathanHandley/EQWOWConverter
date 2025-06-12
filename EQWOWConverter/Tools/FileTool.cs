@@ -283,5 +283,15 @@ namespace EQWOWConverter
                 }
             }
         }
+
+        static public List<byte> GetFileBytes(string filePath)
+        {
+            return new List<byte>(File.ReadAllBytes(filePath));
+        }
+
+        static public void WriteFileBytes (string filePath, List<byte> bytes)
+        {
+            File.WriteAllBytes(filePath, bytes.ToArray());
+        }
     }
 }

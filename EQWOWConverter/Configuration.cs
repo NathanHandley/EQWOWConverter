@@ -159,10 +159,10 @@ namespace EQWOWConverter
 
         // These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways
         public static readonly bool PLAYER_REPLACE_MODEL_COLLISION_HEIGHT = true;
-        public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MAX_Z = 2.031265f; // Human max Z
-        public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MIN_Z = 0f; // Human min Z
-        // Omitting Dwarf, Gnome since they are short enough already
-        public static readonly List<string> PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES = new List<string>() { "BloodElf", "Draenei", "Human", "NightElf", "Orc", "Scourge", "Tauren", "Troll" };
+        public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MAX_Z = 2.031265f; // Human Max Z
+        public static readonly float PLAYER_REPLACE_MODEL_COLLISION_MIN_Z = 0f; // Human Min Z
+        // Omitting Gnome since they are short enough already
+        public static readonly List<string> PLAYER_REPLACE_MODEL_COLLISION_RACE_NAMES = new List<string>() { "BloodElf", "Draenei", "Human", "NightElf", "Orc", "Scourge", "Tauren", "Troll", "Dwarf" };
 
         //=====================================================================
         // Zone General
