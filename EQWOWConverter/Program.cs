@@ -65,7 +65,7 @@ internal class Program
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
           
-            Logger.WriteInfo(string.Concat("- PLAYER_REPLACE_MODEL_COLLISION_HEIGHT is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT));
+            Logger.WriteInfo(string.Concat("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED));
         }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();

@@ -157,8 +157,11 @@ namespace EQWOWConverter
         // If true, this will also add a hearthstone if using EQ items
         public static readonly bool PLAYER_ADD_HEARTHSTONE_IF_USE_EQ_START_ITEMS = false;
 
-        // These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways
-        public static readonly bool PLAYER_REDUCE_MODEL_COLLISION_HEIGHT = true;
+        // These properties are for replacing the collision for many race models that otherwise wouldn't fit in most doorways (bigger than human male)
+        // NOTE: This WILL change the camera-center value for any reduced models.
+        public static readonly bool PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED = true;
+        // Default value here is max that allows all but Halfling doors to be entered by all, which seems to be just above Night Elf Female
+        public static readonly float PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX = 2.275f;
 
         //=====================================================================
         // Zone General

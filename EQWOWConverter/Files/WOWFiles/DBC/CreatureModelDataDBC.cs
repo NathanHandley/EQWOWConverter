@@ -15,12 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.Creatures;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -58,6 +52,99 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // MissileCollisionPush
             newRow.AddFloat(0); // MissileCollisionRaise
             Rows.Add(newRow);
+
+            // Sort by ID
+            newRow.SortValue1 = creatureModelTemplate.DBCCreatureModelDataID;
+        }
+
+        protected override void OnPostLoadDataFromDisk()
+        {
+            // Convert any raw data rows to actual data rows (which should be all of them)
+            foreach (DBCRow row in Rows)
+            {
+                // This shouldn't be possible, but control for it just in case
+                if (row.SourceRawBytes.Count == 0)
+                {
+                    Logger.WriteError("FactionDBC had no source raw bytes when converting a row in OnPostLoadDataFromDisk");
+                    continue;
+                }
+
+                // Fill every field
+                int byteCursor = 0;
+                row.AddIntFromSourceRawBytes(ref byteCursor); // ID
+                row.AddPackedFlagsFromSourceRawBytes(ref byteCursor); // Flags
+                row.AddStringFromSourceRawBytes(ref byteCursor, StringBlock); // Model Path
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SizeClass
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // ModelScale
+                row.AddIntFromSourceRawBytes(ref byteCursor); // BloodID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // FootprintTextureID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // FootprintTextureLength
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // FootprintTextureWidth
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // FootprintParticleScale
+                row.AddIntFromSourceRawBytes(ref byteCursor); // FoleyMaterialID
+                row.AddIntFromSourceRawBytes(ref byteCursor); // FootstepShakeSize
+                row.AddIntFromSourceRawBytes(ref byteCursor); // DeathThudShakeSize
+                row.AddIntFromSourceRawBytes(ref byteCursor); // SoundID
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // CollisionWidth
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // CollisionHeight
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // MountHeight
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMinX
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMinY
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMinZ
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMaxX
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMaxY
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // GeoBoxMaxZ
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // WorldEffectScale
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // AttachedEffectScale
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // MissileCollisionRadius
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // MissileCollisionPush
+                row.AddFloatFromSourceRawBytes(ref byteCursor); // MissileCollisionRase
+
+                // Purge raw data
+                row.SourceRawBytes.Clear();
+
+                // Sort on ID
+                row.SortValue1 = ((DBCRow.DBCFieldInt32)row.AddedFields[0]).Value; // ID
+            }
+
+            // Update collision heights if needed
+            if (Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED == true)
+            {
+                // IDs to update
+                HashSet<int> playerModelIDs = new HashSet<int>();
+                playerModelIDs.Add(49); // Human Male
+                playerModelIDs.Add(50); // Human Female
+                playerModelIDs.Add(51); // Orc Male
+                playerModelIDs.Add(52); // Orc Female
+                playerModelIDs.Add(53); // Dwarf Male
+                playerModelIDs.Add(54); // Dwarf Female
+                playerModelIDs.Add(55); // Night Elf Male
+                playerModelIDs.Add(56); // Night Elf Female
+                playerModelIDs.Add(57); // Undead Male
+                playerModelIDs.Add(58); // Undead Female
+                playerModelIDs.Add(59); // Tauren Male
+                playerModelIDs.Add(60); // Tauren Female
+                playerModelIDs.Add(182); // Gnome Male
+                playerModelIDs.Add(183); // Gnome Female
+                playerModelIDs.Add(185); // Troll Male
+                playerModelIDs.Add(186); // Troll Female
+                playerModelIDs.Add(2208); // Blood Elf Male
+                playerModelIDs.Add(2209); // Blood Elf Female
+                playerModelIDs.Add(2248); // Draenei Male
+                playerModelIDs.Add(2250); // Draenei Female
+
+                // Look for these IDs and update them if they are larger than the max
+                foreach (DBCRow row in Rows)
+                {
+                    DBCRow.DBCFieldInt32 idField = (DBCRow.DBCFieldInt32)row.AddedFields[0];
+                    if (playerModelIDs.Contains(idField.Value))
+                    {
+                        DBCRow.DBCFieldFloat collisionHeight = (DBCRow.DBCFieldFloat)row.AddedFields[15];
+                        if (collisionHeight.Value > Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX)
+                            collisionHeight.Value = Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_MAX;
+                    }
+                }
+            }
         }
     }
 }
