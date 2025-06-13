@@ -22,6 +22,7 @@ namespace EQWOWConverter.ObjectModels.Properties
     internal class ObjectModelProperties
     {
         static private Dictionary<string, ObjectModelProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectModelProperties>();
+        static private readonly object ObjectModelsLock = new object();
 
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;
@@ -82,12 +83,15 @@ namespace EQWOWConverter.ObjectModels.Properties
 
         public static ObjectModelProperties GetObjectPropertiesForObject(string objectName)
         {
-            if (ObjectPropertiesByByName.Count == 0)
-                PopulateObjectPropertiesList();
-            if (ObjectPropertiesByByName.ContainsKey(objectName) == false)
-                return new ObjectModelProperties(objectName);
-            else
-                return ObjectPropertiesByByName[objectName];
+            lock (ObjectModelsLock)
+            {
+                if (ObjectPropertiesByByName.Count == 0)
+                    PopulateObjectPropertiesList();
+                if (ObjectPropertiesByByName.ContainsKey(objectName) == false)
+                    return new ObjectModelProperties(objectName);
+                else
+                    return ObjectPropertiesByByName[objectName];
+            }            
         }
 
         private static void PopulateObjectPropertiesList()
