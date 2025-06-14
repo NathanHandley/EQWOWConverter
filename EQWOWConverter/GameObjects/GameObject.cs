@@ -175,19 +175,24 @@ namespace EQWOWConverter.GameObjects
                 string zoneShortName = gameObjectsRow["zone"];
                 string modelName = gameObjectsRow["model_name"].ToLower(); // Make lower so it works with the asset conditioner
                 bool isSkeletal = gameObjectsRow["model_is_skeletal"] == "0" ? false : true;
-                if (isSkeletal == true)
+                int modelRaceID = int.Parse(gameObjectsRow["model_race_id"]);
+                bool modelIsInEquipmentFolder = gameObjectsRow["model_in_equipment"].Trim() == "1" ? true : false;
+                if (modelRaceID == 0 && modelIsInEquipmentFolder == false)
                 {
-                    if (SourceSkeletalModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
-                        SourceSkeletalModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
-                    if (SourceSkeletalModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
-                        SourceSkeletalModelNamesByZoneShortName[zoneShortName].Add(modelName);
-                }
-                else
-                {
-                    if (SourceStaticModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
-                        SourceStaticModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
-                    if (SourceStaticModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
-                        SourceStaticModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                    if (isSkeletal == true)
+                    {
+                        if (SourceSkeletalModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                            SourceSkeletalModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                        if (SourceSkeletalModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                            SourceSkeletalModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                    }
+                    else
+                    {
+                        if (SourceStaticModelNamesByZoneShortName.ContainsKey(zoneShortName) == false)
+                            SourceStaticModelNamesByZoneShortName.Add(zoneShortName, new List<string>());
+                        if (SourceStaticModelNamesByZoneShortName[zoneShortName].Contains(modelName) == false)
+                            SourceStaticModelNamesByZoneShortName[zoneShortName].Add(modelName);
+                    }
                 }
 
                 // Skip invalid object types
@@ -213,7 +218,7 @@ namespace EQWOWConverter.GameObjects
                 newGameObject.OriginalModelName = modelName;
                 newGameObject.ModelName = modelName;
                 newGameObject.ModelIsSkeletal = isSkeletal;
-                newGameObject.ModelRaceID = int.Parse(gameObjectsRow["model_race_id"]);
+                newGameObject.ModelRaceID = modelRaceID;
                 newGameObject.HasColission = int.Parse(gameObjectsRow["has_collision"]) == 1 ? true : false;
                 newGameObject.RenderingEnabled = int.Parse(gameObjectsRow["render_enabled"]) == 1 ? true : false;
                 newGameObject.SoundEnabled = int.Parse(gameObjectsRow["sound_enabled"]) == 1 ? true : false;
@@ -237,7 +242,7 @@ namespace EQWOWConverter.GameObjects
                 }
                 newGameObject.Scale = float.Parse(gameObjectsRow["size"]) / 100f;
                 newGameObject.GameObjectGUID = GameObjectSQL.GenerateGUID();
-                newGameObject.ModelIsInEquipmentFolder = gameObjectsRow["model_in_equipment"].Trim() == "1" ? true : false;
+                newGameObject.ModelIsInEquipmentFolder = modelIsInEquipmentFolder;
                 string tradeskillFocusTypeString = gameObjectsRow["tradeskill_focus"].Trim().ToLower();
                 switch (tradeskillFocusTypeString)
                 {
