@@ -25,8 +25,21 @@ namespace EQWOWConverter.EQFiles
 
         public Animation Animation = new Animation("", AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
 
+        private string RenameFileNameForSpecialCases(string fileNameIn)
+        {
+            if (fileNameIn.ToLower().Contains("gnn_l01")) // Gnoll/Minotaur walk
+                return fileNameIn.ToLower().Replace("gnn_l01", "gnn_l02");
+            else if (fileNameIn.ToLower().Contains("ikf_o01")) // Iksar female idle
+                return fileNameIn.ToLower().Replace("ikf_o01", "ikm_o01");
+            else
+                return fileNameIn;
+        }
+
         public bool LoadFromDisk(string fileFullPath)
         {
+            // Special logic for a few animations
+            fileFullPath = RenameFileNameForSpecialCases(fileFullPath);
+
             Logger.WriteDebug(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
             if (File.Exists(fileFullPath) == false)
             {
