@@ -130,10 +130,9 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == false)
                 itemsSpellsTradeskillsTask.Wait();
 
-            // Wait for threads above to complete
+            // Wait for some of the threads above to complete
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                zoneAndObjectTask.Wait();
                 creaturesAndSpawnsTask.Wait();
                 itemsSpellsTradeskillsTask.Wait();
             }            
@@ -169,6 +168,10 @@ namespace EQWOWConverter
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(itemTemplatesByEQDBID, ref questTemplates, ref creatureTemplates);
+
+            // Make sure zones are done
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
+                zoneAndObjectTask.Wait();
 
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
