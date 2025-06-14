@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Zones.Properties
 {
     internal class NorthFreeportZoneProperties : ZoneProperties
@@ -55,13 +48,11 @@ namespace EQWOWConverter.Zones.Properties
 
             if (Configuration.AUDIO_USE_ALTERNATE_TRACKS == true)
             {
-                //AddZoneArea("Hall of Truth", "freportn-14", "freportn-14");
                 AddZoneArea("Office of the People", "freportn-04", "freportn-04");
                 AddZoneArea("The Jade Tiger's Den", "freportn-01", "freportn-01");
             }
             else
             {
-                //AddZoneArea("Hall of Truth", "freportn-10", "freportn-10", false);
                 AddZoneArea("Office of the People");     
                 AddZoneArea("The Jade Tiger's Den");
             }

@@ -262,7 +262,7 @@ namespace EQWOWConverter
         public static readonly string AUDIO_SOUNDFONT_FILE_NAME = "AweROMGM.sf2";
 
         // If set to true, some audio tracks are swapped vs the original tracks.  Make it false if you want a more classic-like experience
-        public static readonly bool AUDIO_USE_ALTERNATE_TRACKS = false;
+        public static readonly bool AUDIO_USE_ALTERNATE_TRACKS = true;
 
         // How much to increase the music sound when converted from EverQuest
         public static readonly decimal AUDIO_MUSIC_CONVERSION_GAIN_AMOUNT = 1;
