@@ -316,7 +316,7 @@ namespace EQWOWConverter
         //=====================================================================
         // This is the percent of the idle time that a 'fidget' occurs (1-100)
         // Note: There are two fidget animations, 1/2 this number applies to each fidget
-        public static readonly int CREATURE_FIDGET_TIME_PERCENT = 20;
+        public static readonly int CREATURE_FIDGET_TIME_PERCENT = 30;
 
         // If true, additional data is added in the creature name for easy debugging. Default to false.
         public static readonly bool CREATURE_ADD_DEBUG_VALUES_TO_NAME = false;

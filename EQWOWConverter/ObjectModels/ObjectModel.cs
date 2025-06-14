@@ -162,7 +162,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
-                GlobalLoopSequenceLimits.Add(0);
+                GlobalLoopSequenceLimits.Add(5000);
 
             // Store the final state mesh data
             MeshData = meshData;
@@ -711,8 +711,8 @@ namespace EQWOWConverter.ObjectModels
             if (IsSkeletal)
             {
                 FindAndSetAnimationForType(AnimationType.Stand); // Stand mid-idle
-                FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 1 / Fidget            
-                FindAndSetAnimationForType(AnimationType.Stand, EQAnimationType.o01StandIdle); // Idle 2 / Fidget
+                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o01StandIdle, EQAnimationType.o02StandArmsToSide, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 1 / Fidget            
+                FindAndSetAnimationForType(AnimationType.Stand, new List<EQAnimationType>() { EQAnimationType.o02StandArmsToSide, EQAnimationType.o01StandIdle, EQAnimationType.p01StandPassive, EQAnimationType.posStandPose }); // Idle 2 / Fidget
                 FindAndSetAnimationForType(AnimationType.AttackUnarmed);
                 FindAndSetAnimationForType(AnimationType.Walk);
                 FindAndSetAnimationForType(AnimationType.Run);
@@ -853,15 +853,16 @@ namespace EQWOWConverter.ObjectModels
             }            
         }
 
-        public void FindAndSetAnimationForType(AnimationType animationType, EQAnimationType overrideEQAnimationType = EQAnimationType.Unknown)
+        public void FindAndSetAnimationForType(AnimationType animationType, List<EQAnimationType>? overrideEQAnimationTypes = null)
         {
             // Determine what animations can work
-            List<EQAnimationType> compatibleAnimationTypes = new List<EQAnimationType>();
-            if (ModelType == ObjectModelType.Creature && overrideEQAnimationType != EQAnimationType.Unknown)
-                compatibleAnimationTypes.Add(overrideEQAnimationType);
-            else
+            List<EQAnimationType> compatibleAnimationTypes;
+            if (overrideEQAnimationTypes == null)
                 compatibleAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
-            foreach(EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
+            else
+                compatibleAnimationTypes = overrideEQAnimationTypes;
+
+            foreach (EQAnimationType compatibleAnimationType in compatibleAnimationTypes)
             {
                 // Look for a match, and process it if found
                 foreach(var animation in EQObjectModelData.Animations)

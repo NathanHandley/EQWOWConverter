@@ -63,8 +63,8 @@ namespace EQWOWConverter.ObjectModels
             {
                 case AnimationType.Stand:
                     {
-                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);
                         returnTypes.Add(EQAnimationType.p01StandPassive);
+                        returnTypes.Add(EQAnimationType.o02StandArmsToSide);                        
                         returnTypes.Add(EQAnimationType.o01StandIdle);
                         returnTypes.Add(EQAnimationType.l09SwimIdle);
                         returnTypes.Add(EQAnimationType.posStandPose);
