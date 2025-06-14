@@ -24,6 +24,9 @@ namespace EQWOWConverter
 {
     internal class AssetConditioner
     {
+        private static List<string> PNGtoBLPFilesToConvert = new List<string>();
+        private static readonly object PNGtoBLPLock = new object();
+
         public bool ConditionEQOutput()
         {
             LogCounter progressCounter = new LogCounter("Conditioning EQ folders...");
@@ -84,7 +87,7 @@ namespace EQWOWConverter
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
 
                 // Skip client data and sky for now
-                if (topDirectoryFolderNameOnly == "clientdata" || topDirectoryFolderNameOnly == "sky")
+                if (topDirectoryFolderNameOnly == "clientdata" || topDirectoryFolderNameOnly == "sky" || topDirectoryFolderNameOnly == "frontend" || topDirectoryFolderNameOnly == "video")
                     continue;
 
                 // If it's the character, music, equipment, or sound folder then copy it as-is
@@ -674,46 +677,90 @@ namespace EQWOWConverter
 
             // Get all the individual files to process
             Logger.WriteInfo("Building list of png files to convert...");
-            List<string> pngFilesToConvert = new List<string>();
             foreach(string folderToProcess in textureFoldersToProcess)
             {
                 string[] curFolderPNGFiles = Directory.GetFiles(folderToProcess, "*.png");
                 foreach(string curPngFile in curFolderPNGFiles)
                 {
                     Logger.WriteDebug("Adding file '" + curPngFile + "' for conversion");
-                    pngFilesToConvert.Add(curPngFile);
+                    PNGtoBLPFilesToConvert.Add(curPngFile);
                 }
             }
 
-            // Convert them
-            LogCounter progressCounter = new LogCounter("Converting png files to blp files...", 0, pngFilesToConvert.Count);
-            StringBuilder curFileArgListSB = new StringBuilder();
-            for(int i = 0; i < pngFilesToConvert.Count; i++)
+            LogCounter progressCounter = new LogCounter("Converting png files to blp files...", 0, PNGtoBLPFilesToConvert.Count);
+            progressCounter.Write(0);
+            if (Configuration.CORE_ENABLE_MULTITHREADING == true)
             {
-                string curFile = pngFilesToConvert[i];
-                curFileArgListSB.Append(" \"");
-                curFileArgListSB.Append(curFile);
-                curFileArgListSB.Append("\"");
-                if (i != 0 && i % Configuration.GENERATE_BLPCONVERTBATCHSIZE == 0 || i == pngFilesToConvert.Count-1)
+                int taskCount = Configuration.CORE_PNGTOBLPCONVERSION_THREAD_COUNT;
+                Task[] tasks = new Task[taskCount];
+                for (int i = 0; i < taskCount; i++)
                 {
-                    Logger.WriteDebug("Converting png files '" + curFileArgListSB.ToString() + "'");
-                    string args = "/M /FBLP_DXT5 " + curFileArgListSB.ToString();
-                    System.Diagnostics.Process process = new System.Diagnostics.Process();
-                    process.StartInfo.RedirectStandardOutput = true;
-                    process.StartInfo.Arguments = args;
-                    process.StartInfo.FileName = blpConverterFullPath;
-                    process.Start();
-                    //process.WaitForExit();
-                    Logger.WriteDebug(process.StandardOutput.ReadToEnd());
-                    Console.Title = "EverQuest to WoW Converter";
-                    curFileArgListSB.Clear();
-
-                    progressCounter.SetProgress(i);
-                    progressCounter.Write();
+                    int iCopy = i + 1;
+                    tasks[i] = Task.Factory.StartNew(() =>
+                    {
+                        PNGToBLPConversionThreadWorker(iCopy, blpConverterFullPath, progressCounter);
+                    });
                 }
+                Task.WaitAll(tasks);
+            }
+            else
+            {
+                PNGToBLPConversionThreadWorker(1, blpConverterFullPath, progressCounter);
             }
 
             return true;
+        }
+
+        private void PNGToBLPConversionThreadWorker(int threadID, string blpConverterFullPath, LogCounter progressCounter)
+        {
+            Logger.WriteInfo(string.Concat("<+> Thread [PNG to BLP Subworker ", threadID.ToString(), "] Started"));
+
+            bool moreToProcess = true;
+            while (moreToProcess)
+            {
+                // Create the batch
+                List<string> fileNameBatch = new List<string>();
+                lock (PNGtoBLPLock)
+                {
+                    if (PNGtoBLPFilesToConvert.Count == 0)
+                    {
+                        moreToProcess = false;
+                        continue;
+                    }
+                    else
+                    {
+                        int batchSize = Math.Min(Configuration.GENERATE_BLPCONVERTBATCHSIZE, PNGtoBLPFilesToConvert.Count);
+                        fileNameBatch = PNGtoBLPFilesToConvert.Take(batchSize).ToList();
+                        PNGtoBLPFilesToConvert.RemoveRange(0, batchSize);
+                    }
+                }
+
+                // Convert to a parameter
+                StringBuilder curFileArgListSB = new StringBuilder();
+                for (int i = 0; i < fileNameBatch.Count; i++)
+                {
+                    string curFile = fileNameBatch[i];
+                    curFileArgListSB.Append(" \"");
+                    curFileArgListSB.Append(curFile);
+                    curFileArgListSB.Append("\"");
+                }
+
+                // Convert them
+                Logger.WriteDebug("Converting png files '" + curFileArgListSB.ToString() + "'");
+                string args = "/M /FBLP_DXT5 " + curFileArgListSB.ToString();
+                System.Diagnostics.Process process = new System.Diagnostics.Process();
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.Arguments = args;
+                process.StartInfo.FileName = blpConverterFullPath;
+                process.Start();
+                //process.WaitForExit();
+                Logger.WriteDebug(process.StandardOutput.ReadToEnd());
+                Console.Title = "EverQuest to WoW Converter";
+                curFileArgListSB.Clear();
+                progressCounter.Write(fileNameBatch.Count);
+            }
+
+            Logger.WriteInfo(string.Concat("<-> Thread [PNG to BLP Subworker ", threadID.ToString(), "] Ended"));
         }
 
         private void RenameMeshInSkeletonFile(string skeletonFileFullName, string oldMeshName, string newMeshName)

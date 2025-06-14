@@ -24,9 +24,10 @@ namespace EQWOWConverter
         // Plays a beep sound when the generate completes if set to true
         public static readonly bool CORE_CONSOLE_BEEP_ON_COMPLETE = true;
 
-        // If true, the generator will run in multithreading mode
+        // If true, the conditioner & generator will run in multithreading mode
         public static readonly bool CORE_ENABLE_MULTITHREADING = true;
         public static readonly int CORE_ZONEGEN_THREAD_COUNT = 4;
+        public static readonly int CORE_PNGTOBLPCONVERSION_THREAD_COUNT = 20;
 
         // ====================================================================
         // Logging
@@ -132,7 +133,7 @@ namespace EQWOWConverter
         public static readonly int GENERATE_SQL_FILE_BATCH_SIZE = 50000;
         public static readonly int GENERATE_SQL_FILE_INLINE_INSERT_ROWCOUNT_SIZE = 5000;
 
-        // How many file names to batch up when converting 
+        // How many file names to batch up when converting (must be >= 1)
         public static readonly int GENERATE_BLPCONVERTBATCHSIZE = 50;
 
         // What edge buffer to add when doing floating point month
