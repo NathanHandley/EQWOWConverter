@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using LanternExtractor.EQ.Wld.DataTypes;
 using LanternExtractor.EQ.Wld.Helpers;
+using LanternExtractor.Infrastructure;
 using LanternExtractor.Infrastructure.Logger;
 
 namespace LanternExtractor.EQ.Wld.Fragments
@@ -31,6 +33,8 @@ namespace LanternExtractor.EQ.Wld.Fragments
         /// </summary>
         public bool IsHandled { get; set; }
 
+        public bool IsTwoSided { get; set; }
+
         public override void Initialize(int index, int size, byte[] data,
             List<WldFragment> fragments,
             Dictionary<int, string> stringHash, bool isNewWldFormat, ILogger logger)
@@ -38,7 +42,8 @@ namespace LanternExtractor.EQ.Wld.Fragments
             base.Initialize(index, size, data, fragments, stringHash, isNewWldFormat, logger);
             Name = stringHash[-Reader.ReadInt32()];
             int flags = Reader.ReadInt32();
-            int parameters = Reader.ReadInt32();
+            IsTwoSided = new BitAnalyzer(flags).IsBitSet(0);
+            int renderMethod = Reader.ReadInt32();
 
             // Unsure what this color is used for
             // Referred to as the RGB pen
@@ -58,7 +63,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
             }
 
             // Thanks to PixelBound for figuring this out
-            MaterialType materialType = (MaterialType) (parameters & ~0x80000000);
+            MaterialType materialType = (MaterialType)(renderMethod & ~0x80000000);
 
             switch (materialType)
             {

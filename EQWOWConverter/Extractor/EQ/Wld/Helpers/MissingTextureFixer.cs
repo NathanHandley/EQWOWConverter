@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace LanternExtractor.EQ.Wld.Helpers
 {
@@ -13,15 +14,30 @@ namespace LanternExtractor.EQ.Wld.Helpers
     {
         public static void Fix(string shortname)
         {
-            if (shortname == "oasis_obj")
-                CopyTexture("Exports/oasis/Objects/Textures/canwall1.png",
-                    "Exports/oasis/Zone/Textures/canwall1.png");
-            else if (shortname == "fearplane_obj")
-                CopyTexture("Exports/fearplane/Objects/Textures/maywall.png",
-                    "Exports/fearplane/Zone/Textures/maywall.png");
-            else if (shortname == "swampofnohope_obj")
-                CopyTexture("Exports/swampofnohope/Objects/Textures/kruphse3.png",
-                    "Exports/swampofnohope/Zone/Textures/kruphse3.png");
+            switch (shortname)
+            {
+                case "oasis_obj":
+                    CopyTexture("Exports/oasis/Objects/Textures/canwall1.png",
+                        "Exports/oasis/Zone/Textures/canwall1.png");
+                    break;
+                case "fearplane_obj":
+                    CopyTexture("Exports/fearplane/Objects/Textures/maywall.png",
+                        "Exports/fearplane/Zone/Textures/maywall.png");
+                    break;
+                case "swampofnohope_obj":
+                    CopyTexture("Exports/swampofnohope/Objects/Textures/kruphse3.png",
+                        "Exports/swampofnohope/Zone/Textures/kruphse3.png");
+                    break;
+                case "bothunder":
+                case "postorms":
+                case "solrotower":
+                    // Only needed when characters are exported into zone folders or obj/gltf exports
+                    CopyTexture("Exports/airplane/Characters/Textures/shield round-metal.png",
+                        $"Exports/{shortname}/Characters/Textures/shield round-metal.png");
+                    CopyTexture("Exports/airplane/Characters/Textures/shield round-metalback.png",
+                        $"Exports/{shortname}/Characters/Textures/shield round-metalback.png");
+                    break;
+            }
         }
 
         private static void CopyTexture(string source, string destination)

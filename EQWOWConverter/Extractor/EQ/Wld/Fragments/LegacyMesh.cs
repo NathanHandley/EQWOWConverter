@@ -19,10 +19,10 @@ namespace LanternExtractor.EQ.Wld.Fragments
         public List<vec3> Vertices = new List<vec3>();
         public List<vec2> TexCoords = new List<vec2>();
         public List<vec3> Normals = new List<vec3>();
-        public List<Polygon> Polygons = new List<Polygon>();
+        public List<Triangle> Polygons = new List<Triangle>();
         public List<ivec2> VertexTex = new List<ivec2>();
         public List<Color> Colors = new List<Color>();
-        public List<RenderGroup> RenderGroups = new List<RenderGroup>();
+        public List<MaterialGroup> RenderGroups = new List<MaterialGroup>();
         public MaterialList MaterialList;
         public PolyhedronReference PolyhedronReference;
         public Dictionary<int, MobVertexPiece> MobPieces { get; private set; }
@@ -141,12 +141,12 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 int i1 = Reader.ReadInt16();
                 int i2 = Reader.ReadInt16();
                 int i3 = Reader.ReadInt16();
-                Polygons.Add(new Polygon
+                Polygons.Add(new Triangle
                 {
                     IsSolid = true,
-                    Vertex1 = i1,
-                    Vertex2 = i2,
-                    Vertex3 = i3,
+                    Index1 = i1,
+                    Index2 = i2,
+                    Index3 = i3,
                     MaterialIndex = materialIndex
                 });
             }
@@ -204,7 +204,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
                     int r = colorBytes[2];
                     int a = colorBytes[3];
 
-                    Colors.Add(new Color( r, g, b, a));
+                    Colors.Add(new Color(r, g, b, a));
                 }
             }
 
@@ -214,9 +214,9 @@ namespace LanternExtractor.EQ.Wld.Fragments
 
                 for (int i = 0; i < polygonTexCount; ++i)
                 {
-                    RenderGroups.Add(new RenderGroup
+                    RenderGroups.Add(new MaterialGroup
                     {
-                        PolygonCount = Reader.ReadInt16(),
+                        TriangleCount = Reader.ReadInt16(),
                         MaterialIndex = Reader.ReadInt16()
                     });
                 }

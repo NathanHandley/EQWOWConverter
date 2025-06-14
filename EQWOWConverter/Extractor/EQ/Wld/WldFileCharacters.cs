@@ -184,16 +184,15 @@ namespace LanternExtractor.EQ.Wld
 
                         string basename = cleanedName;
 
-                        bool endsWithNumber = char.IsDigit(cleanedName[cleanedName.Length - 1]);
+                        bool endsWithTwoDigits = cleanedName.Substring(cleanedName.Length - 2).All((c) => char.IsDigit(c));
 
-                        if (endsWithNumber)
+                        if (endsWithTwoDigits)
                         {
-                            int id = Convert.ToInt32(cleanedName.Substring(cleanedName.Length - 2));
                             cleanedName = cleanedName.Substring(0, cleanedName.Length - 2);
 
                             if (cleanedName.Length != 3)
                             {
-                                string modelType = cleanedName.Substring(cleanedName.Length - 3);
+
                                 cleanedName = cleanedName.Substring(0, cleanedName.Length - 2);
                             }
 

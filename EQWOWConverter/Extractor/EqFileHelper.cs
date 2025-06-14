@@ -1,3 +1,5 @@
+using LanternExtractor.EQ.Archive;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -35,13 +37,20 @@ namespace LanternExtractor
                 case "sounds":
                     validFiles = GetValidSoundFiles(eqFiles);
                     break;
-                default:
-                {
-                    validFiles = GetValidFiles(archiveName, directory);
+                case "frontend":
+                    validFiles = GetValidFrontendFiles(eqFiles);
                     break;
-                }
+                default:
+                    {
+                        validFiles = GetValidFiles(archiveName, directory);
+                        break;
+                    }
             }
 
+            validFiles = validFiles
+                .OrderBy(file => file, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(file => file.Length)
+                .ToList();
             return validFiles;
         }
 
@@ -70,10 +79,18 @@ namespace LanternExtractor
             return eqFiles.Where(x => IsSoundArchive(Path.GetFileName(x))).ToList();
         }
 
+        private static List<string> GetValidFrontendFiles(string[] eqFiles)
+        {
+            return eqFiles.Where(x => IsFrontendArchive(Path.GetFileName(x))).ToList();
+        }
+
         private static List<string> GetValidFiles(string archiveName, string directory)
         {
             var validFiles = new List<string>();
-            if (archiveName.EndsWith(".s3d") || archiveName.EndsWith(".pfs") || archiveName.EndsWith(".t3d"))
+            if (archiveName.EndsWith(LanternStrings.S3dFormatExtension) ||
+                archiveName.EndsWith(LanternStrings.T3dFormatExtension) ||
+                archiveName.EndsWith(LanternStrings.PfsFormatExtension) ||
+                archiveName.EndsWith(LanternStrings.PakFormatExtension))
             {
                 string archivePath = Path.Combine(directory, archiveName);
                 if (File.Exists(archivePath))
@@ -165,7 +182,10 @@ namespace LanternExtractor
                 return false;
             }
 
-            return archiveName.EndsWith(".s3d") || archiveName.EndsWith(".t3d") || archiveName.EndsWith(".pfs");
+            return archiveName.EndsWith(LanternStrings.S3dFormatExtension) ||
+                   archiveName.EndsWith(LanternStrings.T3dFormatExtension) ||
+                   archiveName.EndsWith(LanternStrings.PfsFormatExtension) ||
+                   archiveName.EndsWith(LanternStrings.PakFormatExtension);
         }
 
         private static bool IsZoneArchive(string archiveName)
@@ -176,7 +196,7 @@ namespace LanternExtractor
 
         public static bool IsEquipmentArchive(string archiveName)
         {
-            return archiveName.StartsWith("gequip");
+            return archiveName.Contains("gequip");
         }
 
         public static bool IsCharacterArchive(string archiveName)
@@ -211,6 +231,11 @@ namespace LanternExtractor
             return archiveName.StartsWith("snd");
         }
 
+        public static bool IsFrontendArchive(string archiveName)
+        {
+            return archiveName.StartsWith("eqfeart");
+        }
+
         public static bool IsClientDataFile(string archiveName)
         {
             return archiveName == "clientdata";
@@ -221,9 +246,14 @@ namespace LanternExtractor
             return filename.EndsWith(".xmi");
         }
 
+        public static bool IsVideoFile(string filename)
+        {
+            return filename.EndsWith(".smk");
+        }
+
         public static bool IsSpecialCaseExtraction(string archiveName)
         {
-            return archiveName == "clientdata" || archiveName == "music";
+            return archiveName == "clientdata" || archiveName == "music" || archiveName == "video";
         }
 
         public static bool IsUsedSoundArchive(string archiveName)
@@ -241,5 +271,16 @@ namespace LanternExtractor
 
             return true;
         }
+        public static bool IsUsedFrontendArchive(string archiveName)
+        {
+            // Not used in kunark and later clients. Potentially discontinued around eq launch.
+            if (archiveName == "eqfeart")
+            {
+                return false;
+            }
+
+            return IsFrontendArchive(archiveName);
+        }
+
     }
 }

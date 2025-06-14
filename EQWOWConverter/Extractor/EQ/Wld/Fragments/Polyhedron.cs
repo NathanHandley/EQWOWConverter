@@ -28,7 +28,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
         public float BoundingRadius { get; set; }
         public float ScaleFactor { get; set; }
         public List<vec3> Vertices { get; set; }
-        public List<Polygon> Faces { get; set; }
+        public List<Triangle> Faces { get; set; }
 
         public override void Initialize(int index, int size, byte[] data,
             List<WldFragment> fragments,
@@ -62,7 +62,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 Vertices.Add(vertex);
             }
 
-            Faces = new List<Polygon>();
+            Faces = new List<Triangle>();
             for (var i = 0; i < faceCount; i++)
             {
                 var faceVertexCount = Reader.ReadInt32();
@@ -86,12 +86,12 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 var polygonCount = faceVertexCount - 2;
                 for (var f = 0; f < polygonCount; f++)
                 {
-                    var polygon = new Polygon
+                    var polygon = new Triangle
                     {
                         IsSolid = true,
-                        Vertex1 = faceVertices[0],
-                        Vertex2 = faceVertices[f + 1],
-                        Vertex3 = faceVertices[f + 2],
+                        Index1 = faceVertices[0],
+                        Index2 = faceVertices[f + 1],
+                        Index3 = faceVertices[f + 2],
                     };
                     Faces.Add(polygon);
                 }

@@ -148,10 +148,10 @@ namespace LanternExtractor.EQ.Wld.Exporters
             var faceOutput = new StringBuilder();
 
             // First assemble the faces that are needed
-            foreach (RenderGroup group in mesh.MaterialGroups)
+            foreach (MaterialGroup group in mesh.MaterialGroups)
             {
                 int textureIndex = group.MaterialIndex;
-                int polygonCount = group.PolygonCount;
+                int polygonCount = group.TriangleCount;
 
                 bool shouldExport = true;
 
@@ -199,19 +199,19 @@ namespace LanternExtractor.EQ.Wld.Exporters
 
                 for (int j = 0; j < polygonCount; ++j)
                 {
-                    if (currentPolygon < 0 || currentPolygon >= mesh.Indices.Count)
+                    if (currentPolygon < 0 || currentPolygon >= mesh.Triangles.Count)
                     {
                         //logger.LogError("Invalid polygon index");
                         continue;
                     }
 
                     // This is the culprit.
-                    if (!mesh.Indices[currentPolygon].IsSolid && _objExportType == ObjExportType.Collision)
+                    if (!mesh.Triangles[currentPolygon].IsSolid && _objExportType == ObjExportType.Collision)
                     {
                         activeArray = unusedVertices;
-                        AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex1);
-                        AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex2);
-                        AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex3);
+                        AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index1);
+                        AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index2);
+                        AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index3);
 
                         currentPolygon++;
                         continue;
@@ -223,9 +223,9 @@ namespace LanternExtractor.EQ.Wld.Exporters
                         textureChange = string.Empty;
                     }
 
-                    int vertex1 = mesh.Indices[currentPolygon].Vertex1 + _baseVertex + 1;
-                    int vertex2 = mesh.Indices[currentPolygon].Vertex2 + _baseVertex + 1;
-                    int vertex3 = mesh.Indices[currentPolygon].Vertex3 + _baseVertex + 1;
+                    int vertex1 = mesh.Triangles[currentPolygon].Index1 + _baseVertex + 1;
+                    int vertex2 = mesh.Triangles[currentPolygon].Index2 + _baseVertex + 1;
+                    int vertex3 = mesh.Triangles[currentPolygon].Index3 + _baseVertex + 1;
 
                     if (activeArray == usedVertices)
                     {
@@ -248,9 +248,9 @@ namespace LanternExtractor.EQ.Wld.Exporters
                         }
                     }
 
-                    AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex1);
-                    AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex2);
-                    AddIfNotContained(activeArray, mesh.Indices[currentPolygon].Vertex3);
+                    AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index1);
+                    AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index2);
+                    AddIfNotContained(activeArray, mesh.Triangles[currentPolygon].Index3);
 
                     currentPolygon++;
                 }
@@ -331,14 +331,14 @@ namespace LanternExtractor.EQ.Wld.Exporters
                         continue;
                     }
 
-                    if (usedVertex >= mesh.TextureUvCoordinates.Count)
+                    if (usedVertex >= mesh.Uvs.Count)
                     {
                         vertexOutput.Append("vt " + 0.0f + " " + 0.0f);
 
                         continue;
                     }
 
-                    vec2 vertexUvs = mesh.TextureUvCoordinates[usedVertex];
+                    vec2 vertexUvs = mesh.Uvs[usedVertex];
                     vertexOutput.AppendLine("vt " + vertexUvs.x.ToString(NumberFormat) + " " +
                                             vertexUvs.y.ToString(NumberFormat));
                 }

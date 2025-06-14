@@ -29,77 +29,24 @@ namespace LanternExtractor.EQ.Wld.Exporters
 
         public override void AddFragmentData(WldFragment data)
         {
-            Mesh mesh = data as Mesh;
-
-            if (mesh == null)
+            if (!(data is Mesh mesh))
             {
                 return;
             }
 
-            HashSet<int> usedVertices = new HashSet<int>();
-            List<Polygon> newIndices = new List<Polygon>();
-
-            int currentPolygon = 0;
-
-            foreach (RenderGroup group in mesh.MaterialGroups)
+            if (_isCollisionMesh)
             {
-                for (int i = 0; i < group.PolygonCount; ++i)
-                {
-                    Polygon polygon = mesh.Indices[currentPolygon];
-
-                    newIndices.Add(polygon.GetCopy());
-                    currentPolygon++;
-
-                    if (!polygon.IsSolid && _isCollisionMesh)
-                    {
-                        continue;
-                    }
-
-                    usedVertices.Add(polygon.Vertex1);
-                    usedVertices.Add(polygon.Vertex2);
-                    usedVertices.Add(polygon.Vertex3);
-                }
+                WriteCollisionMeshData(mesh);
             }
-
-            // Get rid of this hack
-            if (!_isCollisionMesh)
+            else
             {
-                usedVertices.Clear();
-
-                for (int i = 0; i < mesh.Vertices.Count; ++i)
-                {
-                    usedVertices.Add(i);
-                }
+                WriteMeshData(mesh);
             }
+        }
 
-            int unusedVertices = 0;
-            for (int i = mesh.Vertices.Count - 1; i >= 0; i--)
-            {
-                if (usedVertices.Contains(i))
-                {
-                    continue;
-                }
-
-                unusedVertices++;
-
-                foreach (var polygon in newIndices)
-                {
-                    if (polygon.Vertex1 >= i && polygon.Vertex1 != 0)
-                    {
-                        polygon.Vertex1--;
-                    }
-                    if (polygon.Vertex2 >= i && polygon.Vertex2 != 0)
-                    {
-                        polygon.Vertex2--;
-                    }
-                    if (polygon.Vertex3 >= i && polygon.Vertex3 != 0)
-                    {
-                        polygon.Vertex3--;
-                    }
-                }
-            }
-
-            if (!_isCollisionMesh && (_isFirstMesh || _useGroups))
+        private void WriteMeshData(Mesh mesh)
+        {
+            if (_isFirstMesh || _useGroups)
             {
                 Export.Append("ml");
                 Export.Append(",");
@@ -108,48 +55,33 @@ namespace LanternExtractor.EQ.Wld.Exporters
                 _isFirstMesh = false;
             }
 
-            for (var i = 0; i < mesh.Vertices.Count; i++)
+            var centerX = mesh.Center.x;
+            var centerY = mesh.Center.y;
+            var centerZ = mesh.Center.z;
+            foreach (var vertex in mesh.Vertices)
             {
-                if (!usedVertices.Contains(i))
-                {
-                    continue;
-                }
-
-                var vertex = mesh.Vertices[i];
                 Export.Append("v");
                 Export.Append(",");
-                Export.Append(vertex.x + mesh.Center.x);
+                Export.Append(vertex.x + centerX);
                 Export.Append(",");
-                Export.Append(vertex.z + mesh.Center.z);
+                Export.Append(vertex.z + centerZ);
                 Export.Append(",");
-                Export.Append(vertex.y + mesh.Center.y);
+                Export.Append(vertex.y + centerY);
                 Export.AppendLine();
             }
 
-            for (var i = 0; i < mesh.TextureUvCoordinates.Count; i++)
+            foreach (var uv in mesh.Uvs)
             {
-                if (!usedVertices.Contains(i) || _isCollisionMesh)
-                {
-                    continue;
-                }
-
-                var textureUv = mesh.TextureUvCoordinates[i];
                 Export.Append("uv");
                 Export.Append(",");
-                Export.Append(textureUv.x);
+                Export.Append(uv.x);
                 Export.Append(",");
-                Export.Append(textureUv.y);
+                Export.Append(uv.y);
                 Export.AppendLine();
             }
 
-            for (var i = 0; i < mesh.Normals.Count; i++)
+            foreach (var normal in mesh.Normals)
             {
-                if (!usedVertices.Contains(i) || _isCollisionMesh)
-                {
-                    continue;
-                }
-
-                var normal = mesh.Normals[i];
                 Export.Append("n");
                 Export.Append(",");
                 Export.Append(normal.x);
@@ -160,14 +92,8 @@ namespace LanternExtractor.EQ.Wld.Exporters
                 Export.AppendLine();
             }
 
-            for (var i = 0; i < mesh.Colors.Count; i++)
+            foreach (var vertexColor in mesh.Colors)
             {
-                if (!usedVertices.Contains(i) || _isCollisionMesh)
-                {
-                    continue;
-                }
-
-                var vertexColor = mesh.Colors[i];
                 Export.Append("c");
                 Export.Append(",");
                 Export.Append(vertexColor.B);
@@ -180,36 +106,23 @@ namespace LanternExtractor.EQ.Wld.Exporters
                 Export.AppendLine();
             }
 
-            currentPolygon = 0;
-
-            foreach (RenderGroup group in mesh.MaterialGroups)
+            int currentPolygon = 0;
+            foreach (MaterialGroup group in mesh.MaterialGroups)
             {
-                /*if (!_isCollisionMesh)
+                for (int i = 0; i < group.TriangleCount; ++i)
                 {
-                    _export.Append("mg");
-                    _export.Append(",");
-                    _export.Append(group.MaterialIndex - mesh.StartTextureIndex);
-                    _export.Append(",");
-                    _export.Append(group.PolygonCount);
-                    _export.AppendLine();
-                }*/
-
-                for (int i = 0; i < group.PolygonCount; ++i)
-                {
-                    Polygon polygon = newIndices[currentPolygon];
-
-                    currentPolygon++;
-
+                    Triangle triangle = mesh.Triangles[currentPolygon];
                     Export.Append("i");
                     Export.Append(",");
                     Export.Append(group.MaterialIndex);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex1);
+                    Export.Append(_currentBaseIndex + triangle.Index1);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex2);
+                    Export.Append(_currentBaseIndex + triangle.Index2);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex3);
+                    Export.Append(_currentBaseIndex + triangle.Index3);
                     Export.AppendLine();
+                    currentPolygon++;
                 }
             }
 
@@ -226,7 +139,7 @@ namespace LanternExtractor.EQ.Wld.Exporters
             }
 
             var animatedVertices = mesh.AnimatedVerticesReference?.GetAnimatedVertices();
-            if (animatedVertices != null && !_isCollisionMesh)
+            if (animatedVertices != null)
             {
                 Export.Append("ad");
                 Export.Append(",");
@@ -254,13 +167,93 @@ namespace LanternExtractor.EQ.Wld.Exporters
 
             if (!_useGroups)
             {
-                _currentBaseIndex += mesh.Vertices.Count - unusedVertices;
+                _currentBaseIndex += mesh.Vertices.Count;
             }
+        }
+
+        private void WriteCollisionMeshData(Mesh mesh)
+        {
+            HashSet<int> usedVertexIndices = new HashSet<int>();
+            int currentPolygon = 0;
+
+            foreach (MaterialGroup mg in mesh.MaterialGroups)
+            {
+                for (int i = 0; i < mg.TriangleCount; ++i)
+                {
+                    Triangle triangle = mesh.Triangles[currentPolygon];
+                    currentPolygon++;
+
+                    if (!triangle.IsSolid)
+                    {
+                        continue;
+                    }
+
+                    usedVertexIndices.Add(triangle.Index1);
+                    usedVertexIndices.Add(triangle.Index2);
+                    usedVertexIndices.Add(triangle.Index3);
+                }
+            }
+
+            var oldToNewIndexMap = new Dictionary<int, int>();
+            int newIndex = 0;
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                if (usedVertexIndices.Contains(i))
+                {
+                    oldToNewIndexMap[i] = newIndex++;
+                }
+            }
+
+            for (int i = 0; i < mesh.Vertices.Count; i++)
+            {
+                if (!usedVertexIndices.Contains(i))
+                {
+                    continue;
+                }
+
+                var vertex = mesh.Vertices[i];
+                Export.Append("v");
+                Export.Append(",");
+                Export.Append(vertex.x + mesh.Center.x);
+                Export.Append(",");
+                Export.Append(vertex.z + mesh.Center.z);
+                Export.Append(",");
+                Export.Append(vertex.y + mesh.Center.y);
+                Export.AppendLine();
+            }
+
+            currentPolygon = 0;
+            foreach (MaterialGroup group in mesh.MaterialGroups)
+            {
+                for (int i = 0; i < group.TriangleCount; ++i)
+                {
+                    Triangle triangle = mesh.Triangles[currentPolygon];
+                    currentPolygon++;
+
+                    if (!triangle.IsSolid)
+                    {
+                        continue;
+                    }
+
+                    Export.Append("i");
+                    Export.Append(",");
+                    Export.Append(group.MaterialIndex);
+                    Export.Append(",");
+                    Export.Append(_currentBaseIndex + oldToNewIndexMap[triangle.Index1]);
+                    Export.Append(",");
+                    Export.Append(_currentBaseIndex + oldToNewIndexMap[triangle.Index2]);
+                    Export.Append(",");
+                    Export.Append(_currentBaseIndex + oldToNewIndexMap[triangle.Index3]);
+                    Export.AppendLine();
+                }
+            }
+
+            _currentBaseIndex += newIndex;
         }
 
         public override void WriteAssetToFile(string fileName)
         {
-            if (Export.Length == 0)
+            if (Export.Length == 0 && !_isCollisionMesh)
             {
                 return;
             }

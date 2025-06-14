@@ -59,11 +59,11 @@ namespace LanternExtractor.EQ.Wld.Exporters
                     Export.Append(",");
                     Export.Append(0);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex1);
+                    Export.Append(_currentBaseIndex + polygon.Index1);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex2);
+                    Export.Append(_currentBaseIndex + polygon.Index2);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex3);
+                    Export.Append(_currentBaseIndex + polygon.Index3);
                     Export.AppendLine();
                 }
 
@@ -117,20 +117,20 @@ namespace LanternExtractor.EQ.Wld.Exporters
             for (var i = 0; i < lm.RenderGroups.Count; i++)
             {
                 var renderGroup = lm.RenderGroups[i];
-                for (int j = 0; j < renderGroup.PolygonCount; ++j)
+                for (int j = 0; j < renderGroup.TriangleCount; ++j)
                 {
-                    Polygon polygon = lm.Polygons[currentPolygon];
+                    Triangle polygon = lm.Polygons[currentPolygon];
                     currentPolygon++;
 
                     Export.Append("i");
                     Export.Append(",");
                     Export.Append(renderGroup.MaterialIndex);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex1);
+                    Export.Append(_currentBaseIndex + polygon.Index1);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex2);
+                    Export.Append(_currentBaseIndex + polygon.Index2);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex3);
+                    Export.Append(_currentBaseIndex + polygon.Index3);
                     Export.AppendLine();
                 }
             }
@@ -143,11 +143,11 @@ namespace LanternExtractor.EQ.Wld.Exporters
                     Export.Append(",");
                     Export.Append(polygon.MaterialIndex);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex1);
+                    Export.Append(_currentBaseIndex + polygon.Index1);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex2);
+                    Export.Append(_currentBaseIndex + polygon.Index2);
                     Export.Append(",");
-                    Export.Append(_currentBaseIndex + polygon.Vertex3);
+                    Export.Append(_currentBaseIndex + polygon.Index3);
                     Export.AppendLine();
                 }
             }

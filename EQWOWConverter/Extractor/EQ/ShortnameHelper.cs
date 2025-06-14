@@ -9,9 +9,16 @@ namespace LanternExtractor.EQ
         {
             if (char.IsDigit(shortName.Last()))
             {
-                if (shortName != "qeynos2" && shortName != "qey2hh1" && !shortName.StartsWith("global"))
+                switch (shortName)
                 {
-                    shortName = Regex.Replace(shortName, @"[\d-]", string.Empty);
+                    case "load2":
+                    case "qey2hh1":
+                    case "qeynos2":
+                    case var s when s.StartsWith("global"):
+                        return shortName;
+                    default:
+                        shortName = Regex.Replace(shortName, @"[\d-]", string.Empty);
+                        break;
                 }
             }
 

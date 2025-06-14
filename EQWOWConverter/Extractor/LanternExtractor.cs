@@ -95,6 +95,7 @@ namespace LanternExtractor
             ClientDataCopier.Copy(archiveName, extractDirectory, _logger, _settings);
             Logger.WriteInfo("Extractor copying music...");
             MusicCopier.Copy(archiveName, extractDirectory, _logger, _settings);
+            VideoCopier.Copy(archiveName, _settings);
 
             return true;
         }

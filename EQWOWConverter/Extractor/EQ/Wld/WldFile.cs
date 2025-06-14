@@ -169,19 +169,7 @@ namespace LanternExtractor.EQ.Wld
                     Logger);
                 newFragment.OutputInfo(Logger);
 
-                Fragments.Add(newFragment);
-
-                if (!FragmentTypeDictionary.ContainsKey(newFragment.GetType()))
-                {
-                    FragmentTypeDictionary[newFragment.GetType()] = new List<WldFragment>();
-                }
-
-                if (!string.IsNullOrEmpty(newFragment.Name) && !FragmentNameDictionary.ContainsKey(newFragment.Name))
-                {
-                    FragmentNameDictionary[newFragment.Name] = newFragment;
-                }
-
-                FragmentTypeDictionary[newFragment.GetType()].Add(newFragment);
+                AddFragment(newFragment);
             }
 
             Logger.LogInfo("-----------------------------------");
@@ -215,6 +203,23 @@ namespace LanternExtractor.EQ.Wld
             }
 
             return FragmentNameDictionary[fragmentName] as T;
+        }
+
+        protected void AddFragment(WldFragment fragment)
+        {
+            Fragments.Add(fragment);
+
+            if (!FragmentTypeDictionary.ContainsKey(fragment.GetType()))
+            {
+                FragmentTypeDictionary[fragment.GetType()] = new List<WldFragment>();
+            }
+
+            if (!string.IsNullOrEmpty(fragment.Name) && !FragmentNameDictionary.ContainsKey(fragment.Name))
+            {
+                FragmentNameDictionary[fragment.Name] = fragment;
+            }
+
+            FragmentTypeDictionary[fragment.GetType()].Add(fragment);
         }
 
         protected virtual void ProcessData()
@@ -256,8 +261,8 @@ namespace LanternExtractor.EQ.Wld
         /// Returns a mapping of the material name to the shader type
         /// Used in exporting the bitmaps from the PFS archive
         /// </summary>
-        /// <returns>Dictionary with material to shader mapping</returns>
-        public List<string> GetMaskedBitmaps()
+        /// <returns>HashSet of masked bitmap materials</returns>Add commentMore actions
+        public HashSet<string> GetMaskedBitmaps()
         {
             var materialLists = GetFragmentsOfType<MaterialList>();
 
@@ -267,7 +272,7 @@ namespace LanternExtractor.EQ.Wld
                 return null;
             }
 
-            List<string> maskedTextures = new List<string>();
+            HashSet<string> maskedTextures = new HashSet<string>();
 
             foreach (var list in materialLists)
             {
@@ -278,7 +283,7 @@ namespace LanternExtractor.EQ.Wld
                         continue;
                     }
 
-                    maskedTextures.AddRange(material.GetAllBitmapNames(true));
+                    maskedTextures.UnionWith(material.GetAllBitmapNames(true));
                 }
 
                 if (list.AdditionalMaterials != null)
@@ -290,7 +295,7 @@ namespace LanternExtractor.EQ.Wld
                             continue;
                         }
 
-                        maskedTextures.AddRange(material.GetAllBitmapNames(true));
+                        maskedTextures.UnionWith(material.GetAllBitmapNames(true));
                     }
                 }
             }
@@ -475,9 +480,9 @@ namespace LanternExtractor.EQ.Wld
             }
         }
 
-        public List<string> GetAllBitmapNames()
+        public HashSet<string> GetAllBitmapNames()
         {
-            List<string> bitmaps = new List<string>();
+            HashSet<string> bitmaps = new HashSet<string>();
             var bitmapFragments = GetFragmentsOfType<BitmapName>();
             foreach (var fragment in bitmapFragments)
             {

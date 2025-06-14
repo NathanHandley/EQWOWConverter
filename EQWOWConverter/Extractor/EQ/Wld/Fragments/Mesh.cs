@@ -9,7 +9,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
     /// <summary>
     /// Mesh (0x36)
     /// Internal name: _DMSPRITEDEF
-    /// Contains geometric data for a mesh.
+    /// Contains mesh data
     /// </summary>
     public class Mesh : WldFragment
     {
@@ -36,38 +36,41 @@ namespace LanternExtractor.EQ.Wld.Fragments
 
         /// <summary>
         /// The texture list used to render this mesh
-        /// In zone meshes, it's always the same one
+        /// In zone meshes, there is only one
         /// In object meshes, it can be unique
         /// </summary>
         public MaterialList MaterialList { get; private set; }
 
         /// <summary>
-        /// The vertices of the mesh
+        /// Mesh vertices
         /// </summary>
         public List<vec3> Vertices { get; set; }
 
         /// <summary>
-        /// The normals of the mesh
+        /// Vertex UV coordinates
+        /// </summary>
+        public List<vec2> Uvs { get; private set; }
+
+        /// <summary>
+        /// Mesh vertex normals
         /// </summary>
         public List<vec3> Normals { get; private set; }
 
         /// <summary>
-        /// The polygon indices of the mesh
+        /// Mesh vertex colors
         /// </summary>
-        public List<Polygon> Indices { get; private set; }
-
         public List<Color> Colors { get; set; }
 
         /// <summary>
-        /// The UV texture coordinates of the vertex
+        /// Mesh triangles
         /// </summary>
-        public List<vec2> TextureUvCoordinates { get; private set; }
+        public List<Triangle> Triangles { get; private set; }
 
         /// <summary>
-        /// The mesh render groups
-        /// Defines which texture index corresponds with groups of vertices
+        /// The material render groups
+        /// Defines which material index corresponds with groups of vertices
         /// </summary>
-        public List<RenderGroup> MaterialGroups { get; private set; }
+        public List<MaterialGroup> MaterialGroups { get; private set; }
 
         /// <summary>
         /// The animated vertex fragment (0x37) reference
@@ -109,34 +112,25 @@ namespace LanternExtractor.EQ.Wld.Fragments
             }
 
             int unknown = Reader.ReadInt32();
-
-            // maybe references the first 0x03 in the WLD - unknown
             int unknown2 = Reader.ReadInt32();
 
             Center = new vec3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle());
 
-            // 3 unknown dwords
             int unknownDword1 = Reader.ReadInt32();
             int unknownDword2 = Reader.ReadInt32();
             int unknownDword3 = Reader.ReadInt32();
-
-            // Seems to be related to lighting models? (torches, etc.)
-            if (unknownDword1 != 0 || unknownDword2 != 0 || unknownDword3 != 0)
-            {
-
-            }
 
             MaxDistance = Reader.ReadSingle();
             MinPosition = new vec3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle());
             MaxPosition = new vec3(Reader.ReadSingle(), Reader.ReadSingle(), Reader.ReadSingle());
 
             Vertices = new List<vec3>();
+            Uvs = new List<vec2>();
             Normals = new List<vec3>();
             Colors = new List<Color>();
-            TextureUvCoordinates = new List<vec2>();
 
             short vertexCount = Reader.ReadInt16();
-            short textureCoordinateCount = Reader.ReadInt16();
+            short uvCount = Reader.ReadInt16();
             short normalsCount = Reader.ReadInt16();
             short colorsCount = Reader.ReadInt16();
             short polygonCount = Reader.ReadInt16();
@@ -148,20 +142,17 @@ namespace LanternExtractor.EQ.Wld.Fragments
 
             for (int i = 0; i < vertexCount; ++i)
             {
-                Vertices.Add(new vec3(Reader.ReadInt16() * scale, Reader.ReadInt16() * scale,
-                    Reader.ReadInt16() * scale));
+                float x = Reader.ReadInt16() * scale;
+                float y = Reader.ReadInt16() * scale;
+                float z = Reader.ReadInt16() * scale;
+                Vertices.Add(new vec3(x, y, z));
             }
 
-            for (int i = 0; i < textureCoordinateCount; ++i)
+            for (int i = 0; i < uvCount; ++i)
             {
-                if (isNewWldFormat)
-                {
-                    TextureUvCoordinates.Add(new vec2(Reader.ReadSingle(), Reader.ReadSingle()));
-                }
-                else
-                {
-                    TextureUvCoordinates.Add(new vec2(Reader.ReadInt16() / 256.0f, Reader.ReadInt16() / 256.0f));
-                }
+                Uvs.Add(isNewWldFormat
+                    ? new vec2(Reader.ReadSingle(), Reader.ReadSingle())
+                    : new vec2(Reader.ReadInt16() / 256.0f, Reader.ReadInt16() / 256.0f));
             }
 
             for (int i = 0; i < normalsCount; ++i)
@@ -179,28 +170,30 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 int g = colorBytes[1];
                 int r = colorBytes[2];
                 int a = colorBytes[3];
-
-                Colors.Add(new Color( r, g, b, a));
+                Colors.Add(new Color(r, g, b, a));
             }
 
-            Indices = new List<Polygon>();
+            Triangles = new List<Triangle>();
 
             for (int i = 0; i < polygonCount; ++i)
             {
-                bool isSolid = (Reader.ReadInt16() == 0);
+                bool isSolid = Reader.ReadInt16() == 0;
+                short vertex1 = Reader.ReadInt16();
+                short vertex2 = Reader.ReadInt16();
+                short vertex3 = Reader.ReadInt16();
+
+                Triangles.Add(new Triangle
+                {
+                    IsSolid = isSolid,
+                    Index1 = vertex1,
+                    Index2 = vertex2,
+                    Index3 = vertex3,
+                });
 
                 if (!isSolid)
                 {
                     ExportSeparateCollision = true;
                 }
-
-                Indices.Add(new Polygon()
-                {
-                    IsSolid = isSolid,
-                    Vertex1 = Reader.ReadInt16(),
-                    Vertex2 = Reader.ReadInt16(),
-                    Vertex3 = Reader.ReadInt16(),
-                });
             }
 
             MobPieces = new Dictionary<int, MobVertexPiece>();
@@ -221,14 +214,14 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 MobPieces[index1] = mobVertexPiece;
             }
 
-            MaterialGroups = new List<RenderGroup>();
+            MaterialGroups = new List<MaterialGroup>();
 
             StartTextureIndex = Int32.MaxValue;
 
             for (int i = 0; i < polygonTextureCount; ++i)
             {
-                var group = new RenderGroup();
-                group.PolygonCount = Reader.ReadUInt16();
+                var group = new MaterialGroup();
+                group.TriangleCount = Reader.ReadUInt16();
                 group.MaterialIndex = Reader.ReadUInt16();
                 MaterialGroups.Add(group);
 
@@ -248,14 +241,15 @@ namespace LanternExtractor.EQ.Wld.Fragments
                 Reader.BaseStream.Position += 12;
             }
 
-            // In some rare cases, the number of uvs does not match the number of vertices
-            if (Vertices.Count != TextureUvCoordinates.Count)
+            // In rare cases, the number of UVs does not match the number of vertices
+            // We correct that here
+            if (Vertices.Count != Uvs.Count)
             {
-                int difference = Vertices.Count - TextureUvCoordinates.Count;
+                int difference = Vertices.Count - Uvs.Count;
 
                 for (int i = 0; i < difference; ++i)
                 {
-                    TextureUvCoordinates.Add(new vec2(0.0f, 0.0f));
+                    Uvs.Add(new vec2(0.0f, 0.0f));
                 }
             }
         }
@@ -270,8 +264,8 @@ namespace LanternExtractor.EQ.Wld.Fragments
             logger.LogInfo("Mesh: Max position: " + MaxDistance);
             logger.LogInfo("Mesh: Texture list reference: " + MaterialList.Index);
             logger.LogInfo("Mesh: Vertex count: " + Vertices.Count);
-            logger.LogInfo("Mesh: Polygon count: " + Indices.Count);
-            logger.LogInfo("Mesh: Texture coordinate count: " + TextureUvCoordinates.Count);
+            logger.LogInfo("Mesh: Polygon count: " + Triangles.Count);
+            logger.LogInfo("Mesh: Texture coordinate count: " + Uvs.Count);
             logger.LogInfo("Mesh: Render group count: " + MaterialGroups.Count);
             logger.LogInfo("Mesh: Export separate collision: " + ExportSeparateCollision);
 
@@ -283,7 +277,7 @@ namespace LanternExtractor.EQ.Wld.Fragments
 
         public void ClearCollision()
         {
-            foreach (var poly in Indices)
+            foreach (var poly in Triangles)
             {
                 poly.IsSolid = false;
             }

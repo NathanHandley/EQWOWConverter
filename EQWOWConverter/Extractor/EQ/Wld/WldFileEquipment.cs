@@ -59,7 +59,12 @@ namespace LanternExtractor.EQ.Wld
 
                 if (!FragmentNameDictionary.ContainsKey(actorName))
                 {
-                    continue;
+                    // Create dummy Actor for exporting equipment which lack an ACTORDEF (ex. IT145)
+                    // Technically equipment just needs a HS_DEF and not an ACTORDEF for eqgame to load it
+                    AddFragment(new Actor()
+                    {
+                        Name = actorName
+                    });
                 }
 
                 (FragmentNameDictionary[actorName] as Actor)?.AssignSkeletonReference(skeleton, Logger);

@@ -39,6 +39,9 @@ HOF,DWF
 GNM,DWM
 GNF,DWF
 
+# 13 - Aviak
+AVM,AVI
+
 # 15 - Brownie
 BRM,ELM
 BRF,ELF
@@ -51,6 +54,7 @@ GOL,GIA
 BET,SPI
 
 # 23 - Kerra
+CPM,GNN
 CPF,CPM
 
 # 27 - Froglok Ghoul
@@ -59,11 +63,30 @@ FRG,FRO
 # 29 - Gargoyle
 GAM,GAR
 
+# 32 - Ghost
+GHM,ELM
+GHF,ELF
+
 # 33 - Ghoul
 GHU,GOB
 
+# 34 - Giant Bat
+BAT,ELT
+
+# 35 - Giant Eel
+# HUM,ELM
+# HUF,ELF
+
+# 38 - Giant Spider
+SPM,SPI
+
+# 42 - Wolf
+WOM,WOL
+WOF,WOL
+
 # 44 - Freeport Guards
 FPM,ELM
+FPF,ELF
 
 # 46 - Imp
 IMP,GAR
@@ -97,6 +120,10 @@ TIG,LIM
 
 # 67 - Highpass Citizen
 HHM,ELM
+HHF,ELF
+
+# 68 - Tentacle
+TEM,TEN
 
 # 70 - Zombie
 ZOM,ELM
@@ -111,9 +138,11 @@ PUM,LIM
 
 # 77 - Neriak Citizen
 NGM,ELM
+NGF,ELF
 
-# 78 - Erudin Citizen
+# 78 - Erudite Citizen
 EGM,ELM
+EGF,ELF
 
 # 81 - Rivervale Citizen
 RIM,DWM
@@ -121,6 +150,9 @@ RIF,DWF
 
 # 83 - Skunk
 SKU,RAT
+
+# 84 - Snake Elemental
+SNE,SNA
 
 # 86 - Sphinx
 SPH,DRK
@@ -154,28 +186,52 @@ KA,DWM
 FEM,ELM
 FEF,ELF
 
+# 111 - Harpie
+HAR,ELR
+
 # 112 - Fayguard
 GFM,ELM
 GFF,ELF
 
+# 117 - Ghost Dwarf
+GDM,DWM
+GDF,DWF
+
+# 118 - Erudite Ghost
+GEM,ELM
+GEF,ELF
+
 # 119 - Sabertooth Cat
 STC,LIM
+
+# 120 - Wolf Elemental
+WOE,WOL
+
+# 127 - Invisible Man
+IVM,ELM
+IVF,ELF
 
 # 128 - Iksar
 IKF,IKM
 
-# 139 - Iksar Citizen (verify ICF)
+# 139 - Iksar Citizen
 ICM,IKM
 ICF,IKM
 ICN,IKM
 
-# 150 - Erollisi (guess)
+# 144 - Burynai
+BRN,ELN
+
+# 148 - Kunark Fish
+BAC,ELC
+
+# 150 - Erollisi
 ERO,ELF
 
-# 151 - Tribunal (guess)
+# 151 - Tribunal
 TRI,ELM
 
-# 153 - Bristlebane (guess)
+# 153 - Bristlebane
 BRI,DWM
 
 # 154 - Fay Drake - this is only for the global export
@@ -196,26 +252,36 @@ IKS,IKM
 # 166 - Iksar Hand
 IKH,REA
 
-# 168 - Flying Monkey (guess)
+# 168 - Flying Monkey
 FMO,DRK
 
 # 169 - Brontotherium
 BTM,RHI
 
-# 170 - Snow Dervish (Guess)
+# 170 - Snow Dervish
 SDE,DML
 
-# 173 - Totem (guess)
+# 172 - Manticore
+MTC,LIM
+
+# 173 - Totem
 TOT,SCA
 
 # 174 - Cold Spectre
 SPC,SPE
 
-# 175 - Enchanted Armor (guess)
+# 175 - Enchanted Armor
 ENA,ELM
 
-# 181 - Yak Man (Guess)
+# 177 - Walrus
+WAM,WAL
+WAF,WAL
+
+# 181 - Yak Man
 YAK,GNN
+
+# 182 - Faun
+FAN,GNN
 
 # 183 - Coldain
 COM,DWM
@@ -225,26 +291,58 @@ COK,DWM
 # 184 - Velious Dragons
 DR2,TRK
 
-# 185 - Hag (Guess)
+# 185 - Hag
 HAG,ELF
 
-# 187 - Siren (Guess)
+# 186 - Hippogriff
+HIP,ELP
+
+# 187 - Siren
 SIR,ELF
 
 # 189 - Storm Giant
+STM,FSG
 STG,FSG
 
 # 192 - Clockwork Dragon
 CCD,TRK
 
-# 193 - Abhorent (Guess)
+# 193 - Abhorent
 ABH,ELF
 
 # 195 - Black and White Dragons
 BWD,TRK
 
 # 196 - Ghost Dragon
-GDR,DRA
+GDR,DWR
 
 # 198 - Prismatic Dragon
 PRI,TRK
+
+# 202 - Grimling
+GMM,GMN
+
+# 211 - Water Elemental
+WEL,AEL
+
+# 212 - Fire Elemental
+FEL,AEL
+
+# 217 - Shissar
+SHF,SHM
+SHN,SHM
+
+# 224 - Shade
+SDF,SDM
+
+# 234 - Vah Shir Skeleton
+KES,KEM
+
+# 238 - Vah Shir King
+VSK,KEM
+
+# 239 - Vah Shir Guard
+VSG,KEM
+
+# 242 - Naiad
+NYD,NYM

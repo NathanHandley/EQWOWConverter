@@ -39,13 +39,28 @@ namespace LanternExtractor.EQ
             // The difference between this and the raw export is that it will convert images to PNG
             if (!archive.IsWldArchive)
             {
-                WriteS3dTextures(archive, rootFolder + shortName, logger);
+                if (EqFileHelper.IsUsedFrontendArchive(archiveName))
+                {
+                    // write to archiveName instead of shortName to preserve _french _german etc.Add commentMore actions
+                    WriteS3dTextures(archive,
+                        Path.Combine(rootFolder, settings.ExportFrontendToSingleFolder ? "frontend" : archiveName), logger);
+                    return;
+                }
 
                 if (EqFileHelper.IsUsedSoundArchive(archiveName))
                 {
                     WriteS3dSounds(archive,
                         Path.Combine(rootFolder, settings.ExportSoundsToSingleFolder ? "sounds" : shortName), logger);
+                    return;
                 }
+
+                // unused archivesAdd commentMore actions
+                if (EqFileHelper.IsFrontendArchive(archiveName) || EqFileHelper.IsSoundArchive(archiveName))
+                {
+                    return;
+                }
+
+                WriteS3dTextures(archive, rootFolder + shortName, logger);
 
                 return;
             }
@@ -237,6 +252,7 @@ namespace LanternExtractor.EQ
                 wldFile.Initialize(rootFolder, false);
                 archive.FilenameChanges = wldFile.FilenameChanges;
                 WriteWldTextures(archive, wldFile, texturePath, logger);
+                MissingTextureFixer.Fix(wldFile.ZoneShortname);
                 wldFile.ExportData();
             }
         }

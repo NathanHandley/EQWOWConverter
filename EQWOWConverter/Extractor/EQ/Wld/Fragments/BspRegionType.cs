@@ -24,6 +24,10 @@ namespace LanternExtractor.EQ.Wld.Fragments
         
         public ZonelineInfo Zoneline;
 
+        public bool PvpRegion => RegionString?.ElementAtOrDefault(2) == 'p'; 
+        public bool TeleportRegion => RegionString?.ElementAtOrDefault(3) == 't' && RegionString?.ElementAtOrDefault(4) == 'p';
+        public bool SlipperyRegion => RegionString?.ElementAtOrDefault(32) == 's';
+
         public override void Initialize(int index, int size, byte[] data,
             List<WldFragment> fragments,
             Dictionary<int, string> stringHash, bool isNewWldFormat, ILogger logger)
@@ -41,110 +45,101 @@ namespace LanternExtractor.EQ.Wld.Fragments
             
             int regionStringSize = Reader.ReadInt32();
 
-            string regionTypeString = regionStringSize == 0 ? Name.ToLower() : 
-                WldStringDecoder.DecodeString(Reader.ReadBytes(regionStringSize)).ToLower();
+            RegionString = regionStringSize == 0 ? Name.ToLower() :
+               WldStringDecoder.DecodeString(Reader.ReadBytes(regionStringSize)).ToLower();
 
             RegionTypes = new List<RegionType>();
-            
-            if(regionTypeString.StartsWith("wtn_") || regionTypeString.StartsWith("wt_"))
-            {
-                // Ex: wt_zone, wtn_XXXXXX
-                RegionTypes.Add(RegionType.Water);
-            }
-            else if (regionTypeString.StartsWith("wtntp"))
-            {
-                RegionTypes.Add(RegionType.Water);
-                RegionTypes.Add(RegionType.Zoneline);
-                DecodeZoneline(regionTypeString);
-                RegionString = regionTypeString;
-            }
-            else if (regionTypeString.StartsWith("lan_") || regionTypeString.StartsWith("la_"))
-            {
-                RegionTypes.Add(RegionType.Lava);
-            }
-            else if (regionTypeString.StartsWith("lantp"))
-            {
-                // TODO: Figure this out - soldunga
-                RegionTypes.Add(RegionType.Lava);
-                RegionTypes.Add(RegionType.Zoneline);
-                DecodeZoneline(regionTypeString);
-                RegionString = regionTypeString;
-            }
-            else if (regionTypeString.StartsWith("drntp"))
-            {
-                RegionTypes.Add(RegionType.Zoneline);
-                DecodeZoneline(regionTypeString);
-                RegionString = regionTypeString;
-            }
-            else if (regionTypeString.StartsWith("drp_"))
+
+            RegionType prefixRegionType = PrefixRegionType(RegionString.Substring(0, 2));
+
+            if (PvpRegion)
             {
                 RegionTypes.Add(RegionType.Pvp);
             }
-            else if (regionTypeString.StartsWith("drn_"))
+
+            if (TeleportRegion)
             {
-                if(regionTypeString.Contains("_s_"))
-                {
-                    RegionTypes.Add(RegionType.Slippery);
-                }
-                else
-                {
-                    RegionTypes.Add(RegionType.Unknown);
-                }
+                RegionTypes.Add(RegionType.Zoneline);
+                DecodeZoneline();
             }
-            else if (regionTypeString.StartsWith("sln_"))
+
+            if (SlipperyRegion)
             {
-                // gukbottom, cazicthule (gumdrop), runnyeye, velketor
-                RegionTypes.Add(RegionType.WaterBlockLos);
+                RegionTypes.Add(RegionType.Slippery);
             }
-            else if (regionTypeString.StartsWith("vwn_"))
+
+            // This condition replicates the previous implementation where pvp/zoneline/slippery are assumed normal.
+            // EQ treats pvp/zoneline/slippery as flags in addition to the region's environment type
+            if (prefixRegionType == RegionType.Normal && (PvpRegion || TeleportRegion || SlipperyRegion))
             {
-                RegionTypes.Add(RegionType.FreezingWater);
+                // Let region flags replace normal
             }
             else
             {
-                // All trilogy client region types are accounted for
-                // This is here in case newer clients have newer types
-                // tox - "wt_zone' - Possible legacy water zonepoint for boat?
-                RegionTypes.Add(RegionType.Normal);
+                RegionTypes.Insert(0, prefixRegionType);
             }
         }
 
-        private void DecodeZoneline(string regionTypeString)
+        private RegionType PrefixRegionType(string prefix)
+        {
+            switch (prefix)
+            {
+                case "dr":
+                    return RegionType.Normal;
+                case "wt":
+                    return RegionType.Water;
+                case "sl":
+                    return RegionType.WaterBlockLos;
+                case "la":
+                    return RegionType.Lava;
+                case "vw":
+                    return RegionType.FreezingWater;
+                case "w2":
+                case "w3":
+                    // Newer clients
+                    return RegionType.Unknown;
+                default:
+                    // Technically EQ defaults to a normal fallback
+                    return RegionType.Unknown;
+            }
+        }
+
+        private void DecodeZoneline()
         {
             Zoneline = new ZonelineInfo();
-            
+
             // TODO: Verify this
-            if (regionTypeString == "drntp_zone")
+            if (RegionString == "drntp_zone")
             {
                 Zoneline.Type = ZonelineType.Reference;
                 Zoneline.Index = 0;
                 return;
             }
-            
-            int zoneId = Convert.ToInt32(regionTypeString.Substring(5, 5));
+
+            int zoneId = Convert.ToInt32(RegionString.Substring(5, 5));
 
             if (zoneId == 255)
             {
-                int zonelineId = Convert.ToInt32(regionTypeString.Substring(10, 6));
+                int zonelineId = Convert.ToInt32(RegionString.Substring(10, 6));
                 Zoneline.Type = ZonelineType.Reference;
                 Zoneline.Index = zonelineId;
-                
+
                 return;
             }
 
             Zoneline.ZoneIndex = zoneId;
-            
-            float x = GetValueFromRegionString(regionTypeString.Substring(10, 6));
-            float y = GetValueFromRegionString(regionTypeString.Substring(16, 6));
-            float z = GetValueFromRegionString(regionTypeString.Substring(22, 6));
-            int rot = Convert.ToInt32(regionTypeString.Substring(28, 3));
-            
+
+            float x = GetFloatFromRegionString(RegionString.Substring(10, 6));
+            float y = GetFloatFromRegionString(RegionString.Substring(16, 6));
+            float z = GetFloatFromRegionString(RegionString.Substring(22, 6));
+            int rot = Convert.ToInt32(RegionString.Substring(28, 3));
+
             Zoneline.Type = ZonelineType.Absolute;
             Zoneline.Position = new vec3(x, y, z);
             Zoneline.Heading = rot;
         }
 
-        private float GetValueFromRegionString(string substring)
+        private float GetFloatFromRegionString(string substring)
         {
             if (substring.StartsWith("-"))
             {

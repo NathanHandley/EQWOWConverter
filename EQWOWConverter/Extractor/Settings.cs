@@ -90,6 +90,8 @@ namespace LanternExtractor
         
         public bool ExportSoundsToSingleFolder { get; set; }
 
+        public bool ExportFrontendToSingleFolder { get; private set; } = true;
+
         /// <summary>
         /// Exports all OBJ frames for all animations
         /// </summary>
@@ -125,6 +127,8 @@ namespace LanternExtractor
         /// If enabled, XMI files will be copied to the 'Exports/Music' folder
         /// </summary>
         public bool CopyMusic { get; set; }
+
+        public bool CopyVideo { get; private set; } = true;
 
         /// <summary>
         /// The verbosity of the logger
