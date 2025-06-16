@@ -37,100 +37,99 @@ namespace EQWOWConverter.EQFiles
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            // Special logic for a few animations
-            fileFullPath = RenameFileNameForSpecialCases(fileFullPath);
-
-            Logger.WriteDebug(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
-            if (File.Exists(fileFullPath) == false)
-            {
-                Logger.WriteError("- Could not find EQ Animation file that should be at '" + fileFullPath + "'");
-                return false;
-            }
-
-            // If there is a cached version, just use that
             lock (AnimationLock)
             {
+                // Special logic for a few animations
+                fileFullPath = RenameFileNameForSpecialCases(fileFullPath);
+
+                Logger.WriteDebug(" - Reading EQ Animation Data from '" + fileFullPath + "'...");
+                if (File.Exists(fileFullPath) == false)
+                {
+                    Logger.WriteError("- Could not find EQ Animation file that should be at '" + fileFullPath + "'");
+                    return false;
+                }
+
+                // If there is a cached version, just use that
                 if (CachedAnimationDataForFile.ContainsKey(fileFullPath) == true)
                 {
                     Animation = new Animation(CachedAnimationDataForFile[fileFullPath]);
                     Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "' via cache");
                     return true;
                 }
-            }
 
-            string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
-            string animationName = animationFileName.Split("_")[1];
-            Animation = new Animation(animationName, DetermineAnimationType(animationName), DetermineEQAnimationType(animationName), 0, 0);
+                string animationFileName = Path.GetFileNameWithoutExtension(fileFullPath);
+                string animationName = animationFileName.Split("_")[1];
+                Animation = new Animation(animationName, DetermineAnimationType(animationName), DetermineEQAnimationType(animationName), 0, 0);
 
-            // Load the core data
-            string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
-            string[] inputRows = inputData.Split(Environment.NewLine);
+                // Load the core data
+                string inputData = FileTool.ReadAllDataFromFile(fileFullPath);
+                string[] inputRows = inputData.Split(Environment.NewLine);
 
-            // Make sure there is the minimum number of rows
-            if (inputRows.Length < 4)
-            {
-                Logger.WriteError("- Could not load EQ Animation file because there were less than 4 rows at '" + fileFullPath + "'");
-                return false;
-            }
-
-            foreach (string inputRow in inputRows)
-            {
-                // Nothing for blank lines
-                if (inputRow.Length == 0)
-                    continue;
-
-                // # = comment
-                else if (inputRow.StartsWith("#"))
-                    continue;
-
-                // Get the blocks for this row
-                string[] blocks = inputRow.Split(",");
-                if (blocks.Length == 0)
-                    continue;
-
-                // Number of frames
-                if (blocks[0] == "framecount")
+                // Make sure there is the minimum number of rows
+                if (inputRows.Length < 4)
                 {
-                    Animation.FrameCount = int.Parse(blocks[1]);
-                    continue;
+                    Logger.WriteError("- Could not load EQ Animation file because there were less than 4 rows at '" + fileFullPath + "'");
+                    return false;
                 }
 
-                // Total time of animation
-                if (blocks[0] == "totalTimeMs")
+                foreach (string inputRow in inputRows)
                 {
-                    Animation.TotalTimeInMS = int.Parse(blocks[1]);
-                    continue;
+                    // Nothing for blank lines
+                    if (inputRow.Length == 0)
+                        continue;
+
+                    // # = comment
+                    else if (inputRow.StartsWith("#"))
+                        continue;
+
+                    // Get the blocks for this row
+                    string[] blocks = inputRow.Split(",");
+                    if (blocks.Length == 0)
+                        continue;
+
+                    // Number of frames
+                    if (blocks[0] == "framecount")
+                    {
+                        Animation.FrameCount = int.Parse(blocks[1]);
+                        continue;
+                    }
+
+                    // Total time of animation
+                    if (blocks[0] == "totalTimeMs")
+                    {
+                        Animation.TotalTimeInMS = int.Parse(blocks[1]);
+                        continue;
+                    }
+
+                    // Ensure it's an animation block
+                    if (blocks.Length != 11)
+                    {
+                        Logger.WriteError("EQ Animation Frame data must be 11 components");
+                        continue;
+                    }
+
+                    Animation.BoneAnimationFrame animationFrame = new Animation.BoneAnimationFrame();
+                    animationFrame.BoneFullNameInPath = blocks[0];
+                    animationFrame.FrameIndex = int.Parse(blocks[1]);
+                    animationFrame.XPosition = float.Parse(blocks[2]);
+                    animationFrame.ZPosition = float.Parse(blocks[3]);
+                    animationFrame.YPosition = float.Parse(blocks[4]);
+                    animationFrame.XRotation = float.Parse(blocks[5]);
+                    animationFrame.ZRotation = float.Parse(blocks[6]);
+                    animationFrame.YRotation = float.Parse(blocks[7]);
+                    animationFrame.WRotation = float.Parse(blocks[8]);
+                    animationFrame.Scale = float.Parse(blocks[9]);
+                    animationFrame.FramesMS = int.Parse(blocks[10]);
+                    Animation.AnimationFrames.Add(animationFrame);
                 }
 
-                // Ensure it's an animation block
-                if (blocks.Length != 11)
-                {
-                    Logger.WriteError("EQ Animation Frame data must be 11 components");
-                    continue;
-                }
+                Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
 
-                Animation.BoneAnimationFrame animationFrame = new Animation.BoneAnimationFrame();
-                animationFrame.BoneFullNameInPath = blocks[0];
-                animationFrame.FrameIndex = int.Parse(blocks[1]);
-                animationFrame.XPosition = float.Parse(blocks[2]);
-                animationFrame.ZPosition = float.Parse(blocks[3]);
-                animationFrame.YPosition = float.Parse(blocks[4]);
-                animationFrame.XRotation = float.Parse(blocks[5]);
-                animationFrame.ZRotation = float.Parse(blocks[6]);
-                animationFrame.YRotation = float.Parse(blocks[7]);
-                animationFrame.WRotation = float.Parse(blocks[8]);
-                animationFrame.Scale = float.Parse(blocks[9]);
-                animationFrame.FramesMS = int.Parse(blocks[10]);
-                Animation.AnimationFrames.Add(animationFrame);
-            }
-
-            Logger.WriteDebug(" - Done reading EQ Animation Data from '" + fileFullPath + "'");
-
-            // Store on the cache
-            lock (AnimationLock)
+                // Store on the cache
                 CachedAnimationDataForFile.Add(fileFullPath, new Animation(Animation));
 
-            return true;
+                return true;
+            }
         }
 
         // TODO: Consider deleting this since it mirrors ObjectModel.GetAnimationIndexForAnimationType, kind of
