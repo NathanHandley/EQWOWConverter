@@ -209,6 +209,9 @@ namespace EQWOWConverter
         // If true, enable weather in zones.  Note that it currently doesn't work properly.
         public static readonly bool ZONE_WEATHER_ENABLED = false;
 
+        // If true, characters can fly in the zones if they have a mount
+        public static readonly bool ZONE_FLYING_ALLOWED = true;
+
         //=====================================================================
         // Liquid
         //=====================================================================

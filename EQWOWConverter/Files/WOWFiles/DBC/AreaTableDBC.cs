@@ -52,7 +52,16 @@ namespace EQWOWConverter.WOWFiles
             // Flags
             int flags = 0;
             if (isRestingArea == true)
-                flags = 2097448; // AREA_FLAG_AllowTradeChannel + AREA_FLAG_AllowResting + AREA_FLAG_LinkedChat + AREA_FLAG_PlayersCallGuards 
+            {
+                flags += 8; // AREA_FLAG_AllowTradeChannel
+                flags += 32; // AREA_FLAG_AllowResting
+                flags += 256; // AREA_FLAG_LinkedChat
+                flags += 2097152; // AREA_FLAG_PlayersCallGuards
+            }
+            if (Configuration.ZONE_FLYING_ALLOWED == true)
+            {
+                flags += 1024; // AREA_FLAG_FLYING
+            }
 
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id);
