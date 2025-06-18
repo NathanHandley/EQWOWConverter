@@ -374,6 +374,9 @@ namespace EQWOWConverter
         // If true, riding trainers will be generated
         public static readonly bool CREATURE_RIDING_TRAINERS_ENABLED = true;
 
+        // If true, riding trainers will include flying mounts as well
+        public static readonly bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = true;
+
         //=====================================================================
         // Items
         //=====================================================================

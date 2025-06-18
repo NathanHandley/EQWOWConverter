@@ -2770,6 +2770,8 @@ namespace EQWOWConverter
                     if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
                     {
                         npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
+                        if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
+                            npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
                     }
 
                     // Determine the display id

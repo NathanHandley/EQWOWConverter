@@ -14,12 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Creatures
 {
     internal class CreatureVendorItem
@@ -49,6 +43,14 @@ namespace EQWOWConverter.Creatures
             {
                 // Skip disabled
                 if (int.Parse(columns["enabled"]) == 0)
+                    continue;
+
+                // Only show mount-related ones if enabled
+                bool isMount = columns["is_mount"] == "1" ? true : false;
+                if (isMount && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
+                    continue;
+                bool isFlyingMount = columns["is_flying_mount"] == "1" ? true : false;
+                if (isFlyingMount && Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == false)
                     continue;
 
                 // Only add if it's within this target expansion

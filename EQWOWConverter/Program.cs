@@ -60,6 +60,8 @@ internal class Program
             if (Configuration.GENERATE_OBJECTS == false)
                 Logger.WriteInfo("- GENERATE_OBJECTS is set to false");
             Logger.WriteInfo(string.Concat("- GENERATE_RIDING_TRAINERS_ENABLED is set to ", Configuration.CREATURE_RIDING_TRAINERS_ENABLED));
+            if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true)
+                Logger.WriteInfo(string.Concat(" - CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY is set to ", Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY));
             if (Configuration.PLAYER_USE_EQ_START_LOCATION == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)

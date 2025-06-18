@@ -186,7 +186,13 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.FaceID = 0;
                 }
                 newCreatureTemplate.EQLootTableID = int.Parse(columns["loottable_id"]);
+                int skillTrainerType = int.Parse(columns["skill_trainer"]);
+                ProcessProfessionTrainerType(ref newCreatureTemplate, skillTrainerType);
                 newCreatureTemplate.MerchantID = int.Parse(columns["merchant_id"]);
+                // Clear vendor lists for riding trainers if riding trainers are disabled
+                if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false && skillTrainerType == 9)
+                    newCreatureTemplate.MerchantID = 0;
+
                 newCreatureTemplate.ColorTintID = int.Parse(columns["armortint_id"]);
                 newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
                 newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
@@ -198,7 +204,6 @@ namespace EQWOWConverter.Creatures
                     newCreatureTemplate.DetectionRange = Configuration.CREATURE_DEFAULT_DETECTION_RANGE;
                 newCreatureTemplate.EQClass = int.Parse(columns["class"]);
                 ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);
-                ProcessProfessionTrainerType(ref newCreatureTemplate, int.Parse(columns["skill_trainer"]));
                 if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
                     continue;
 
@@ -315,8 +320,11 @@ namespace EQWOWConverter.Creatures
                     } break;
                 case 9: // Riding
                     {
-                        creatureTemplate.IsRidingTrainer = true;
-                        creatureTemplate.SubName = "Riding Trainer";
+                        if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true)
+                        {
+                            creatureTemplate.IsRidingTrainer = true;
+                            creatureTemplate.SubName = "Riding Trainer";
+                        }
                     } break;
                 default:  break;// Nothing
             }
