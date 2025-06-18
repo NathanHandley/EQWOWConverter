@@ -34,9 +34,11 @@ namespace EQWOWConverter.ObjectModels
         public float BoundingRadius = 0f;
         public Int16 NextAnimation = -1; // aka, variationNext
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
+        public int NumOfFramesFromEQTemplate = -1;
         public bool Loop = true;
         public EQAnimationType EQAnimationType = EQAnimationType.Unknown;
         private AnimationType _AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
+        
         public AnimationType AnimationType
         {
             get { return _AnimationType; }

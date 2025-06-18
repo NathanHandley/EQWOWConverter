@@ -162,7 +162,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Create a global sequence if there is none
             if (GlobalLoopSequenceLimits.Count == 0)
-                GlobalLoopSequenceLimits.Add(5000);
+                GlobalLoopSequenceLimits.Add(0);
 
             // Store the final state mesh data
             MeshData = meshData;
@@ -751,6 +751,14 @@ namespace EQWOWConverter.ObjectModels
             {
                 for (int i = 0; i < ModelAnimations.Count; i++)
                 {
+                    // If more than one frame of animation. reduce the new frame timestamp by half a frame to avoid too long of a 'freeze' between loops, which is more EQ like
+                    UInt32 newFrameTimestamp = Convert.ToUInt32(ModelAnimations[i].DurationInMS);
+                    if (ModelAnimations[i].NumOfFramesFromEQTemplate > 1)
+                    {
+                        UInt32 avgAnimationFrameDuration = Convert.ToUInt32(ModelAnimations[i].DurationInMS / ModelAnimations[i].NumOfFramesFromEQTemplate);
+                        newFrameTimestamp -= (avgAnimationFrameDuration / 2);
+                    }
+
                     if (bone.ScaleTrack.Timestamps[i].Timestamps.Count > 1)
                     {
                         bone.ScaleTrack.Timestamps[i].Timestamps.Add(Convert.ToUInt32(ModelAnimations[i].DurationInMS));
@@ -872,14 +880,26 @@ namespace EQWOWConverter.ObjectModels
                         // Capture and set this animation
                         Logger.WriteDebug(string.Concat("Found usable candidate, setting to eq type '", animation.Key, "' for object '", Name, "'"));
 
+                        // Calculate the animation duration for output
+                        // Note: The total duration needs to reduce by 1/2 frame since EQ loops but reserves the first and last frame for the same amount,
+                        // causes "pauses" in WoW.  While this isn't a smooth frame loop, it does come out pretty close to EQ
+                        int animationDuration = animation.Value.TotalTimeInMS;
+                        int avgAnimationFrameDuration = animation.Value.TotalTimeInMS;
+                        if (animation.Value.FrameCount > 1)
+                        {
+                            avgAnimationFrameDuration = (animation.Value.TotalTimeInMS) / (animation.Value.FrameCount);
+                            animationDuration -= avgAnimationFrameDuration ;
+                        }
+
                         // Create the base animation object
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
-                        newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
+                        newAnimation.DurationInMS = Convert.ToUInt32(animationDuration);
                         newAnimation.AnimationType = animationType;
                         newAnimation.EQAnimationType = animation.Value.EQAnimationType;
                         newAnimation.BoundingBox = VisibilityBoundingBox;
                         newAnimation.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
+                        newAnimation.NumOfFramesFromEQTemplate = animation.Value.FrameCount;
                         ModelAnimations.Add(newAnimation);
 
                         // Create an animation track sequence for each bone
