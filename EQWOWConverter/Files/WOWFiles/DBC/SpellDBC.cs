@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRow(SpellTemplate spellTemplate)
         {
             DBCRow newRow = new DBCRow();            
-            newRow.AddInt32(spellTemplate.ID); // ID
+            newRow.AddInt32(spellTemplate.WOWSpellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
@@ -91,7 +91,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ManaCostPerLevel
             newRow.AddUInt32(0); // ManaPerSecond
             newRow.AddUInt32(0); // ManaPerSecondPerLevel
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.RangeIndexDBCID)); // RangeIndex (SpellRange.ID)
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellRangeDBCID)); // RangeIndex (SpellRange.ID)
             newRow.AddFloat(0); // Speed
             newRow.AddUInt32(0); // ModalNextSpell
             newRow.AddUInt32(0); // CumulativeAura
@@ -100,7 +100,7 @@ namespace EQWOWConverter.WOWFiles
             for (int i = 0; i < 8; i++)
             {
                 if (i < spellTemplate.Reagents.Count)
-                    newRow.AddInt32(spellTemplate.Reagents[i].ItemID); // ReagentX
+                    newRow.AddInt32(spellTemplate.Reagents[i].WOWItemTemplateEntryID); // ReagentX
                 else
                     newRow.AddInt32(0); // ReagentX
             }

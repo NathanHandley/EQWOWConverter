@@ -21,21 +21,25 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
+        static public Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
+        static public Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
+
+        static private List<SpellTemplate> SpellTemplates = new List<SpellTemplate>();
+        static private readonly object SpellTemplateLock = new object();
+
         public class Reagent
         {
-            public int ItemID;
+            public int WOWItemTemplateEntryID;
             public int Count;
 
-            public Reagent(int itemID, int count)
+            public Reagent(int wowItemTemplateEntryID, int count)
             {
-                ItemID = itemID;
+                WOWItemTemplateEntryID = wowItemTemplateEntryID;
                 Count = count;
             }
         }
 
-        public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
-
-        public int ID = 0;
+        public int WOWSpellID = 0;
         public string Name = string.Empty;
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
@@ -43,6 +47,8 @@ namespace EQWOWConverter.Spells
         public UInt32 InterruptFlags = 15;
         public int SpellIconID = 0;
         public TradeskillRecipe? TradeskillRecipe = null;
+        protected int _SpellCastTimeDBCID = 1; // First row, instant cast
+        public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
         protected int _CastTimeInMS = 0;
         public int CastTimeInMS
         {
@@ -54,9 +60,19 @@ namespace EQWOWConverter.Spells
                 _SpellCastTimeDBCID = SpellCastTimeDBCIDsByCastTime[value];
             }
         }
-        protected int _SpellCastTimeDBCID = 1; // First row, instant cast
-        public int SpellCastTimeDBCID { get { return _SpellCastTimeDBCID; } }
-        public int RangeIndexDBCID = 1; // 1 = self for now
+        protected int _SpellRangeDBCID = 1; // First row, self only (no range)
+        public int SpellRangeDBCID { get { return _SpellRangeDBCID; } }
+        protected int _SpellRange = 0;
+        public int SpellRange
+        {
+            get { return _SpellRange; }
+            set
+            {
+                if (SpellRangeDBCIDsBySpellRange.ContainsKey(value) == false)
+                    SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
+                _SpellRange = SpellRangeDBCIDsBySpellRange[value];
+            }
+        }        
         public UInt32 RecoveryTimeInMS = 0;
         public SpellTargetType TargetType = SpellTargetType.SelfSingle;
         public UInt32 SpellVisualID1 = 0;
@@ -77,5 +93,28 @@ namespace EQWOWConverter.Spells
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
+
+        static public List<SpellTemplate> GetSpellTemplates()
+        {
+            lock (SpellTemplateLock)
+            {
+                if (SpellTemplates.Count == 0)
+                    LoadSpellTemplates();
+                return SpellTemplates;
+            }
+        }
+
+        static private void LoadSpellTemplates()
+        {
+            // Load the spell templates
+            string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
+            Logger.WriteDebug(string.Concat("Loading spell templates via file '", spellTemplatesFile, "'"));
+            List<Dictionary<string, string>> spellTemplateRows = FileTool.ReadAllRowsFromFileWithHeader(spellTemplatesFile, "|");
+            foreach (Dictionary<string, string> columns in spellTemplateRows)
+            {
+                
+
+            }
+        }
     }
 }

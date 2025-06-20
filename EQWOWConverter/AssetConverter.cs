@@ -1362,7 +1362,7 @@ namespace EQWOWConverter
             // Gate
             SpellTemplate gateSpellTemplate = new SpellTemplate();
             gateSpellTemplate.Name = "Gate";
-            gateSpellTemplate.ID = Configuration.SPELLS_GATE_SPELLDBC_ID;
+            gateSpellTemplate.WOWSpellID = Configuration.SPELLS_GATE_SPELLDBC_ID;
             gateSpellTemplate.Description = "Opens a magical portal that returns you to your bind point in Norrath.";
             if (Configuration.SPELLS_GATE_TETHER_ENABLED == true)
             {
@@ -1385,7 +1385,7 @@ namespace EQWOWConverter
             // Bind Affinity (Self)
             SpellTemplate bindAffinitySelfSpellTemplate = new SpellTemplate();
             bindAffinitySelfSpellTemplate.Name = "Bind Affinity (Self)";
-            bindAffinitySelfSpellTemplate.ID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
+            bindAffinitySelfSpellTemplate.WOWSpellID = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
             bindAffinitySelfSpellTemplate.Description = "Binds the soul of the caster to their current location. Only works in Norrath.";
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
@@ -1400,12 +1400,12 @@ namespace EQWOWConverter
             // Bind Affinity
             SpellTemplate bindAffinitySpellTemplate = new SpellTemplate();
             bindAffinitySpellTemplate.Name = "Bind Affinity";
-            bindAffinitySpellTemplate.ID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
+            bindAffinitySpellTemplate.WOWSpellID = Configuration.SPELLS_BINDANY_SPELLDBC_ID;
             bindAffinitySpellTemplate.Description = "Binds the soul of the target to their current location. Only works in Norrath.";
             bindAffinitySpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
             bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
-            bindAffinitySpellTemplate.RangeIndexDBCID = 4; // Medium Range - 30 yards
+            bindAffinitySpellTemplate.SpellRange = 30;
             bindAffinitySpellTemplate.TargetType = SpellTargetType.AllyGroupedSingle;
             bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
@@ -1418,7 +1418,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.Name = "EQ Phase Day";
             dayPhaseSpellTemplate.Category = 0;
             dayPhaseSpellTemplate.InterruptFlags = 0;
-            dayPhaseSpellTemplate.ID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
+            dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
             dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
             dayPhaseSpellTemplate.SpellIconID = 253;
             dayPhaseSpellTemplate.Effect1 = 6;
@@ -1436,7 +1436,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.Name = "EQ Phase Day";
             nightPhaseSpellTemplate.Category = 0;
             nightPhaseSpellTemplate.InterruptFlags = 0;
-            nightPhaseSpellTemplate.ID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
+            nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
             nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
             nightPhaseSpellTemplate.Effect1 = 6;
             nightPhaseSpellTemplate.EffectDieSides1 = 1;
@@ -1468,7 +1468,7 @@ namespace EQWOWConverter
             {
                 SpellTemplate curSpellTemplate = new SpellTemplate();
                 curSpellTemplate.CastTimeInMS = Configuration.TRADESKILL_CAST_TIME_IN_MS;
-                curSpellTemplate.ID = recipe.SpellID;
+                curSpellTemplate.WOWSpellID = recipe.SpellID;
 
                 // "None" recipes aren't regular recipes, but rather (typically) quest item combines
                 if (recipe.Type == TradeskillType.None)
@@ -1489,7 +1489,7 @@ namespace EQWOWConverter
                             Logger.WriteError(string.Concat("Unable to attach spell to combiner item ", itemID, " as that item already had a spell attached"));
                             continue;
                         }
-                        curItemTemplate.SpellID1 = curSpellTemplate.ID;
+                        curItemTemplate.SpellID1 = curSpellTemplate.WOWSpellID;
                         curItemTemplate.Description = recipe.GetGeneratedDescription(itemTemplatesByWOWEntryID);
 
                         // These can't be containers anymore
@@ -2169,6 +2169,8 @@ namespace EQWOWConverter
             spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
+            SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
+            spellRangeDBC.LoadFromDisk(dbcInputFolder, "SpellRange.dbc");
             TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
@@ -2440,6 +2442,8 @@ namespace EQWOWConverter
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
+            foreach (var spellRangeDBCIDByRange in SpellTemplate.SpellRangeDBCIDsBySpellRange)
+                spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
@@ -2600,6 +2604,8 @@ namespace EQWOWConverter
             spellCastTimesDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
+            spellRangeDBC.SaveToDisk(dbcOutputClientFolder);
+            spellRangeDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);

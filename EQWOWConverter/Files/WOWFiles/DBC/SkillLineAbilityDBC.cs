@@ -27,7 +27,7 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(id); // ID
             newRow.AddInt32(spellTemplate.SkillLine); // SkillLine
-            newRow.AddInt32(spellTemplate.ID); // Spell
+            newRow.AddInt32(spellTemplate.WOWSpellID); // Spell
             newRow.AddInt32(0); // RaceMask
             newRow.AddInt32(0); // ClassMask
             newRow.AddInt32(0); // ExcludeRace
