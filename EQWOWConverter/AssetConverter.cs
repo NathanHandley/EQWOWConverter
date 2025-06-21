@@ -120,7 +120,7 @@ namespace EQWOWConverter
                             itemTemplatesByWOWEntryID[itemID].IsGivenAsStartItem = true;
 
                 // Spells                                        
-                GenerateCustomSpells(out spellTemplates);
+                GenerateSpells(out spellTemplates);
 
                 // Tradeskills
                 GenerateTradeskills(itemTemplatesByEQDBID, ref spellTemplates, out tradeskillRecipes);
@@ -1350,11 +1350,19 @@ namespace EQWOWConverter
             FileTool.CopyDirectoryAndContents(workingFolder, outputFolder, true, false, "*.blp");
         }
 
-        public void GenerateCustomSpells(out List<SpellTemplate> spellTemplates)
+        public void GenerateSpells(out List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Generating spells...");
-            spellTemplates = new List<SpellTemplate>();
+            spellTemplates = SpellTemplate.GetSpellTemplates();
 
+            // Add any custom spells
+            GenerateCustomSpells(ref spellTemplates);
+
+            Logger.WriteDebug("Generating spells complete.");
+        }
+
+        public void GenerateCustomSpells(ref List<SpellTemplate> spellTemplates)
+        {
             Logger.WriteDebug("Creating custom spells");
             List<ClassType> casterClassTypes = new List<ClassType> { ClassType.Priest, ClassType.Shaman, ClassType.Mage, ClassType.Druid, ClassType.Warlock };
             List<ClassType> meleeClassTypes = new List<ClassType> { ClassType.Warrior, ClassType.Paladin, ClassType.Hunter, ClassType.Rogue, ClassType.DeathKnight };
@@ -1449,7 +1457,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(nightPhaseSpellTemplate);
 
-            Logger.WriteDebug("Generating spells completed.");
+            Logger.WriteDebug("Generating custom spells completed.");
         }
 
         public void GenerateTradeskills(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<SpellTemplate> spellTemplates,
