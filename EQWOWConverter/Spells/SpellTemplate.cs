@@ -24,7 +24,7 @@ namespace EQWOWConverter.Spells
         static public Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         static public Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
 
-        static private List<SpellTemplate> SpellTemplates = new List<SpellTemplate>();
+        static private Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         static private readonly object SpellTemplateLock = new object();
 
         public class Reagent
@@ -94,13 +94,13 @@ namespace EQWOWConverter.Spells
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
 
-        static public List<SpellTemplate> GetSpellTemplates()
+        static public Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
             lock (SpellTemplateLock)
             {
-                if (SpellTemplates.Count == 0)
+                if (SpellTemplatesByEQID.Count == 0)
                     LoadSpellTemplates();
-                return SpellTemplates;
+                return SpellTemplatesByEQID;
             }
         }
 
