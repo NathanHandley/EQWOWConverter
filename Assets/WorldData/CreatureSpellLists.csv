@@ -1,4 +1,4 @@
-id|name|parent_group|attack_proc|proc_chance
+id|name|parent_list|attack_proc|proc_chance
 1|Default Cleric List|0|-1|3
 2|Default Wizard List|0|-1|3
 3|Default Necromancer List|0|-1|3

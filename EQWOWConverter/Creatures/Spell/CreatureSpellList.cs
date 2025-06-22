@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal class CreatureSpellGroup
+    internal class CreatureSpellList
     {
         public int ID;
         public string Name = string.Empty;
