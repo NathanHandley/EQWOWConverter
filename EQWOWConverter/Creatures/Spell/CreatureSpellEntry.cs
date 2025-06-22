@@ -18,5 +18,13 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpellEntry
     {
+        public int ID;
+        public int CreatureSpellListID;
+        public int TypeID;
+        public int MinLevel;
+        public int MaxLevel;
+        public int ManaCost;
+        public int RecastDelay;
+        public int Priority;
     }
 }
