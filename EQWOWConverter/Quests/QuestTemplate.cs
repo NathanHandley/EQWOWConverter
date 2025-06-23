@@ -21,8 +21,8 @@ namespace EQWOWConverter.Quests
 {
     internal class QuestTemplate
     {
-        static private List<QuestTemplate> QuestTemplates = new List<QuestTemplate>();
-        static private readonly object QuestLock = new object();
+        private static List<QuestTemplate> QuestTemplates = new List<QuestTemplate>();
+        private static readonly object QuestLock = new object();
 
         public int QuestIDWOW;
         public string Name = string.Empty;
@@ -312,7 +312,7 @@ namespace EQWOWConverter.Quests
             }
         }
 
-        static private string GetOrGenerateName(string questName, string questGiverName, int questID, string firstRewardItemName, List<int> rewardItemCounts)
+        private static string GetOrGenerateName(string questName, string questGiverName, int questID, string firstRewardItemName, List<int> rewardItemCounts)
         {
             if (questName.Length != 0)
                 return questName;
@@ -321,7 +321,7 @@ namespace EQWOWConverter.Quests
             return String.Concat(questGiverName, " Quest (", questID, ")");
         }
 
-        static private List<QuestCompletionFactionReward> GetCompletionFactionRewards(List<int> eqFactionIDs, List<int> factionValues)
+        private static List<QuestCompletionFactionReward> GetCompletionFactionRewards(List<int> eqFactionIDs, List<int> factionValues)
         {
             // Generate the initial faction rewards based on what the quest is configured to give
             List<QuestCompletionFactionReward> initialFactionRewards = new List<QuestCompletionFactionReward>();

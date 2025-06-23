@@ -58,7 +58,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        static public List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
+        public static List<EQAnimationType> GetPrioritizedCompatibleEQAnimationTypes(AnimationType animationType)
         {
             List<EQAnimationType> returnTypes = new List<EQAnimationType>();
             switch (animationType)

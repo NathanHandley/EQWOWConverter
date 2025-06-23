@@ -763,7 +763,7 @@ namespace EQWOWConverter.Items
             return false;
         }
 
-        static private void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
+        private static void PopulateItemClassSpecificProperties(ref ItemTemplate itemTemplate, int eqItemType, int bagType, int classMask, int slotMask, 
             int iconID, int damage, int castTime)
         {
             bool allowBothHands = false;
@@ -1223,7 +1223,7 @@ namespace EQWOWConverter.Items
             CalculateAndSetSheatheType(ref itemTemplate);
         }
 
-        static private void CalculateAndSetSheatheType(ref ItemTemplate itemTemplate)
+        private static void CalculateAndSetSheatheType(ref ItemTemplate itemTemplate)
         {
             if (itemTemplate.InventoryType == ItemWOWInventoryType.TwoHand)
             {
@@ -1250,7 +1250,7 @@ namespace EQWOWConverter.Items
             }
         }                     
 
-        static public void PopulateItemTemplateListFromDisk()
+        public static void PopulateItemTemplateListFromDisk()
         {
             // Clear out the working texture folder for character clothes
             string wornEquipmentTexturesWorkingFullPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "GeneratedEquipmentTextures");

@@ -54,7 +54,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        static public int GenerateGUID()
+        public static int GenerateGUID()
         {
             int curGUID = CUR_GUID;
             CUR_GUID++;

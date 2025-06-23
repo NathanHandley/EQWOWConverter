@@ -369,7 +369,7 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating colored texture completed for '" + outputBLPFullPath + "'");
         }
 
-        static public void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, LogCounter? progressionCounter = null)
+        public static void ConvertPNGTexturesToBLP(List<string> fullFileInputPaths, ImageAssociationType imageType, LogCounter? progressionCounter = null)
         {
             string formatArg = "/FBLP_DXT5";
             switch (imageType)

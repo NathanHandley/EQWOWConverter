@@ -21,8 +21,8 @@ namespace EQWOWConverter.ObjectModels.Properties
 {
     internal class ObjectModelProperties
     {
-        static private Dictionary<string, ObjectModelProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectModelProperties>();
-        static private readonly object ObjectModelsLock = new object();
+        private static Dictionary<string, ObjectModelProperties> ObjectPropertiesByByName = new Dictionary<string, ObjectModelProperties>();
+        private static readonly object ObjectModelsLock = new object();
 
         public string Name = string.Empty;
         public ObjectModelCustomCollisionType CustomCollisionType = ObjectModelCustomCollisionType.None;

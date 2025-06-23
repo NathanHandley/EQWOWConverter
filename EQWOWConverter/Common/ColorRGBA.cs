@@ -95,7 +95,7 @@ namespace EQWOWConverter.Common
             return this;
         }
 
-        static public ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
+        public static ColorRGBA GetBlendedColor(ColorRGBA colorA, ColorRGBA colorB, float colorBWeight)
         {
             ColorRGBA returnColor = new ColorRGBA();
             returnColor.R = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.R) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.R)) * colorBWeight), 255));

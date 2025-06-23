@@ -71,7 +71,7 @@ namespace EQWOWConverter.Creatures
             }
         }
 
-        static public void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
+        public static void CreateAllCreatureModelTemplates(List<CreatureTemplate> creatureTemplates)
         {
             // Clear the old list
             AllTemplatesByRaceID.Clear();

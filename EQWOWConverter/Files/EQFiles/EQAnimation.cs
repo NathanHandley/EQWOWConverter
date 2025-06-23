@@ -20,8 +20,8 @@ namespace EQWOWConverter.EQFiles
 {
     internal class EQAnimation
     {
-        static private Dictionary<string, Animation> CachedAnimationDataForFile = new Dictionary<string, Animation>();
-        static private readonly object AnimationLock = new object();
+        private static Dictionary<string, Animation> CachedAnimationDataForFile = new Dictionary<string, Animation>();
+        private static readonly object AnimationLock = new object();
 
         public Animation Animation = new Animation("", AnimationType.Stand, EQAnimationType.Unknown, 0, 0);
 

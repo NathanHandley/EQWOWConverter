@@ -21,8 +21,8 @@ namespace EQWOWConverter.Zones
 {
     internal class ZoneProperties
     {
-        static private Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
-        static public ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
+        private static Dictionary<string, ZoneProperties> ZonePropertyListByShortName = new Dictionary<string, ZoneProperties>();
+        public static ZoneEnvironmentSettings CommonOutdoorEnvironmentProperties = new ZoneEnvironmentSettings();
 
         public int DBCMapID;
         public int DBCMapDifficultyID;
@@ -632,7 +632,7 @@ namespace EQWOWConverter.Zones
             }
         }
 
-        static public Dictionary<string, ZoneProperties> GetZonePropertyListByShortName()
+        public static Dictionary<string, ZoneProperties> GetZonePropertyListByShortName()
         {
             lock (ListReadLock)
             {

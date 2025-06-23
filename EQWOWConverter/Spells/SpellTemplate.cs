@@ -21,11 +21,11 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
-        static public Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
-        static public Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
+        public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
+        public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
 
-        static private Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
-        static private readonly object SpellTemplateLock = new object();
+        private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
+        private static readonly object SpellTemplateLock = new object();
 
         public class Reagent
         {
@@ -94,7 +94,7 @@ namespace EQWOWConverter.Spells
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
 
-        static public Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
+        public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
             lock (SpellTemplateLock)
             {
@@ -104,7 +104,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        static private void LoadSpellTemplates()
+        private static void LoadSpellTemplates()
         {
             // Load the spell templates
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");

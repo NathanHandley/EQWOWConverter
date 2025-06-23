@@ -22,10 +22,10 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelEQData
     {
-        static private Dictionary<string, EQMesh> CachedRenderMeshByFileName = new Dictionary<string, EQMesh>();
-        static private readonly object MeshLock = new object();
-        static private Dictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new Dictionary<string, EQSkeleton>();
-        static private readonly object SkeletonLock = new object();
+        private static Dictionary<string, EQMesh> CachedRenderMeshByFileName = new Dictionary<string, EQMesh>();
+        private static readonly object MeshLock = new object();
+        private static Dictionary<string, EQSkeleton> CachedSkeletonDataByFileName = new Dictionary<string, EQSkeleton>();
+        private static readonly object SkeletonLock = new object();
 
         public MeshData MeshData = new MeshData();
         public List<Material> Materials = new List<Material>();

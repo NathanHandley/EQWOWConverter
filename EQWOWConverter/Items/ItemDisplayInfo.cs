@@ -277,7 +277,7 @@ namespace EQWOWConverter.Items
             return newItemDisplayInfo;
         }
 
-        static private ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
+        private static ObjectModel GetOrCreateModelForHeldItem(string itemDisplayCommonName, ItemWOWInventoryType inventoryType)
         {
             // Make sure things are loaded
             string equipmentSourceBasePath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment");
@@ -364,7 +364,7 @@ namespace EQWOWConverter.Items
             }
         }
 
-        static private bool IsHeld(ItemWOWInventoryType inventoryType)
+        private static bool IsHeld(ItemWOWInventoryType inventoryType)
         {
             // Fallback if it's not held
             if (inventoryType != ItemWOWInventoryType.OneHand && inventoryType != ItemWOWInventoryType.Ranged && inventoryType != ItemWOWInventoryType.Shield &&
@@ -376,7 +376,7 @@ namespace EQWOWConverter.Items
             return true;
         }
 
-        static private bool IsVisableArmor(ItemWOWInventoryType inventoryType)
+        private static bool IsVisableArmor(ItemWOWInventoryType inventoryType)
         {
             if (inventoryType != ItemWOWInventoryType.Shoulder && inventoryType != ItemWOWInventoryType.Chest && inventoryType != ItemWOWInventoryType.Legs &&
                 inventoryType != ItemWOWInventoryType.Wrists && inventoryType != ItemWOWInventoryType.Hands && inventoryType != ItemWOWInventoryType.Feet)

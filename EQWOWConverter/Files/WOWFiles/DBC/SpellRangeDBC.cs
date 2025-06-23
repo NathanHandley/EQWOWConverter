@@ -18,8 +18,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellRangeDBC : DBCFile
     {
-        static private int CUR_DBCID = Configuration.DBCID_SPELLRANGE_ID_START;
-        static private readonly object SpellRangeDBCLock = new object();
+        private static int CUR_DBCID = Configuration.DBCID_SPELLRANGE_ID_START;
+        private static readonly object SpellRangeDBCLock = new object();
 
         public void AddRow(int dbcID, float range)
         {
@@ -36,7 +36,7 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        static public int GenerateDBCID()
+        public static int GenerateDBCID()
         {
             lock (SpellRangeDBCLock)
             {
