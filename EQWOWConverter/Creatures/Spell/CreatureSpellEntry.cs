@@ -18,13 +18,57 @@ namespace EQWOWConverter.Creatures
 {
     internal class CreatureSpellEntry
     {
+        private static Dictionary<int, List<CreatureSpellEntry>> CreatureSpellEntriesByListID = new Dictionary<int, List<CreatureSpellEntry>>();
+        private static readonly object CreatureSpellEntryLock = new object();
         public int ID;
         public int CreatureSpellListID;
+        public int EQSpellID;
         public int TypeID;
         public int MinLevel;
         public int MaxLevel;
         public int ManaCost;
         public int RecastDelay;
         public int Priority;
+
+        public static Dictionary<int, List<CreatureSpellEntry>> GetCreatureSpellEntriesByListID()
+        {
+            lock (CreatureSpellEntryLock)
+            {
+                if (CreatureSpellEntriesByListID.Count == 0)
+                    PopulateCreatureSpellEntries();
+                return CreatureSpellEntriesByListID;
+            }
+        }
+
+        private static void PopulateCreatureSpellEntries()
+        {
+            string spellEntriesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "CreatureSpellEntries.csv");
+            Logger.WriteDebug("Populating creature spell entries via file '" + spellEntriesFile + "'");
+            List<Dictionary<string, string>> spellEntryRows = FileTool.ReadAllRowsFromFileWithHeader(spellEntriesFile, "|");
+            foreach (Dictionary<string, string> columns in spellEntryRows)
+            {
+                // Skip any invalid rows
+                int minExpansion = int.Parse(columns["min_expansion"]);
+                if (minExpansion > Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL)
+                    continue;
+
+                // Load the row
+                CreatureSpellEntry newSpellEntry = new CreatureSpellEntry();
+                newSpellEntry.ID = int.Parse(columns["id"]);
+                newSpellEntry.CreatureSpellListID = int.Parse(columns["creature_spell_list_id"]);
+                newSpellEntry.EQSpellID = int.Parse(columns["eq_spell_id"]);
+                newSpellEntry.TypeID = int.Parse(columns["type"]);
+                newSpellEntry.MinLevel = int.Parse(columns["minlevel"]);
+                newSpellEntry.MaxLevel = int.Parse(columns["maxlevel"]);
+                newSpellEntry.ManaCost = int.Parse(columns["manacost"]);
+                newSpellEntry.RecastDelay = int.Parse(columns["recast_delay"]);
+                newSpellEntry.Priority = int.Parse(columns["priority"]);
+
+                // Add it
+                if (CreatureSpellEntriesByListID.ContainsKey(newSpellEntry.CreatureSpellListID) == false)
+                    CreatureSpellEntriesByListID.Add(newSpellEntry.CreatureSpellListID, new List<CreatureSpellEntry>());
+                CreatureSpellEntriesByListID[newSpellEntry.CreatureSpellListID].Add(newSpellEntry);
+            }
+        }
     }
 }
