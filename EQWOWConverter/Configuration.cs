@@ -434,6 +434,9 @@ namespace EQWOWConverter
         public static readonly int SPELLS_BIND_SPELL_LEARN_COST = 100;
         public static readonly bool SPELLS_GATE_TETHER_ENABLED = true;
 
+        // How much to multiply the EQ range value for WoW
+        public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================

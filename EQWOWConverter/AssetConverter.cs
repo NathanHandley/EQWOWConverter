@@ -1353,6 +1353,8 @@ namespace EQWOWConverter
         public void GenerateSpells(out List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Generating spells...");
+
+            // Load spell templates
             spellTemplates = SpellTemplate.GetSpellTemplatesByEQID().Values.ToList();
 
             // Add any custom spells

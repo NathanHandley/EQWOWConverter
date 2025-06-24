@@ -40,6 +40,7 @@ namespace EQWOWConverter.Spells
         }
 
         public int WOWSpellID = 0;
+        public int EQSpellID = -1;
         public string Name = string.Empty;
         public string Description = string.Empty;
         public string AuraDescription = string.Empty;
@@ -112,10 +113,22 @@ namespace EQWOWConverter.Spells
             List<Dictionary<string, string>> spellTemplateRows = FileTool.ReadAllRowsFromFileWithHeader(spellTemplatesFile, "|");
             foreach (Dictionary<string, string> columns in spellTemplateRows)
             {
-                
+                // Load the row
+                SpellTemplate newSpellTemplate = new SpellTemplate();
+                newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
+                newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
+                newSpellTemplate.Name = columns["Name"];
+                newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
+                newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
+                newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
+                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recovery_time"]);
+                // TODO: AOE range?
 
 
 
+
+                // Add it
+                SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
         }
     }
