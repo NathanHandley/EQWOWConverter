@@ -162,12 +162,22 @@ namespace EQWOWConverter.Spells
             if (slotID < 12)
             {
                 int formulaRaw = int.Parse(rowColumns[string.Concat("formula", slotID)]);
-                if (Enum.IsDefined(typeof(SpellEQFormulaType), formulaRaw) == false)
+                if (Enum.IsDefined(typeof(SpellEQBaseValueFormulaType), formulaRaw) == true)
                 {
-                    Logger.WriteError(string.Concat("Failed population of SpellEffect with EQID of ", spellTemplate.EQSpellID, " as the formula type id ", formulaRaw, " was invalid"));
-                    return;
+                    curEffect.EQBaseValueFormulaType = (SpellEQBaseValueFormulaType)formulaRaw;
                 }
-                curEffect.EQFormulaType = (SpellEQFormulaType)formulaRaw;
+                else
+                {
+                    switch (formulaRaw)
+                    {
+                        case 101: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo; break;
+                        case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
+                        case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
+                        case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
+                        default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue; break;
+                    }
+                }
+                curEffect.EQFormulaTypeValue = formulaRaw;
             }
             curEffect.EQBaseValue = int.Parse(rowColumns[string.Concat("effect_base_value", slotID)]);
             if (slotID < 4)

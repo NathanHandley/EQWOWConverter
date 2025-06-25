@@ -16,33 +16,29 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal enum SpellEQFormulaType : int
+    internal enum SpellEQBaseValueFormulaType : int
     {
         BaseValue = 100,
 
         BaseAddLevelTimesMultiplier = 1,
         BaseDivideBy100 = 60,
-        BaseAddHalfLevel = 101, // Base + Level / 2
         BaseAddLevel = 102,
         BaseAddLevelTimesTwo = 103,
         BaseAddLevelTimesThree = 104,
         BaseAddLevelTimesFour = 105,
-        BaseAddLevelDivideTwo = 107, // Base + Level / 2 (same as BaseAddHalfLevel?)
-        BaseAddLevelDivideThree = 108,
+        BaseAddLevelDivideTwo = 107, // Base + Level / 2 (Same as 101)
+        BaseAddLevelDivideThree = 108, // (Same as 121)
         BaseAddLevelDivideFour = 109,
         BaseAddLevelDivideFive = 110,
-        BaseAddSixTimesLevelMinusSpellLevel = 111, // Base * (Level - Spell Level)
-        BaseAddEightTimesLevelMinusSpellLevel = 112,
+        BaseAddSixTimesLevelMinusSpellLevel = 111, // Base * (Level - Spell Level), (Same as 115)
+        BaseAddEightTimesLevelMinusSpellLevel = 112, // (Same as 116)
         BaseAddTenTimesLevelMinusSpellLevel = 113,
         BaseAddFifteenTimesLevelMinusSpellLevel = 114,
-        BaseAddSixTimesLevelMinusSpellLevel2 = 115, // Same as BaseAddSixTimesLevelMinusSpellLevel?
-        BaseAddEightTimesLevelMinusSpellLevel2 = 116,
         BaseAddTwelveTimesLevelMinusSpellLevel = 117,
         BaseAddTwentyTimesLevelMinusSpellLevel = 118,
         BaseAddLevelDivideEight = 119,
-        BaseAddLevelDivideThree2 = 121, // Same as BaseAddLevelDivideThree?
-        Splurt = 122, // What is this?
+        //Splurt = 122, // What is this?
         RandomBetweenBaseAndMax = 123,
-        EffectMa = 203 // What is this?
+        //EffectMa = 203 // What is this? Unknown?
     }
 }
