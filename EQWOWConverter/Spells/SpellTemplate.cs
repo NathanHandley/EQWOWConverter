@@ -94,6 +94,7 @@ namespace EQWOWConverter.Spells
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
+        public List<SpellEffect> SpellEffects = new List<SpellEffect>();
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -117,21 +118,65 @@ namespace EQWOWConverter.Spells
                 SpellTemplate newSpellTemplate = new SpellTemplate();
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
-                newSpellTemplate.Name = columns["Name"];
+                newSpellTemplate.Name = columns["name"];
                 newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recovery_time"]);
                 // TODO: AOE range?
-
-                // Determine the effect, and currently only load in spells that modify hitpoints
-
+                PopulateSpellEffect(ref newSpellTemplate, 1, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 2, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 3, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 4, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 5, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 6, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 7, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 8, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 9, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 10, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 11, columns);
+                PopulateSpellEffect(ref newSpellTemplate, 12, columns);
 
 
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
+        }
+
+        private static void PopulateSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
+        {
+            // Skip non and unmapped effects
+            int effectIDRaw = int.Parse(rowColumns[string.Concat("effectid", slotID)]);          
+            if (effectIDRaw == 254)
+                return;
+            if (Enum.IsDefined(typeof(SpellEQEffectType), effectIDRaw) == false)
+            {
+                Logger.WriteDebug(string.Concat("Skipping population of SpellEffect with EQID of ", spellTemplate.EQSpellID, " as the type ID ", effectIDRaw, " is not mapped"));
+                return;
+            }
+
+            // Fill in the effect details
+            SpellEffect curEffect = new SpellEffect();
+            curEffect.EQEffectType = (SpellEQEffectType)effectIDRaw;
+            if (slotID < 12)
+            {
+                int formulaRaw = int.Parse(rowColumns[string.Concat("formula", slotID)]);
+                if (Enum.IsDefined(typeof(SpellEQFormulaType), formulaRaw) == false)
+                {
+                    Logger.WriteError(string.Concat("Failed population of SpellEffect with EQID of ", spellTemplate.EQSpellID, " as the formula type id ", formulaRaw, " was invalid"));
+                    return;
+                }
+                curEffect.EQFormulaType = (SpellEQFormulaType)formulaRaw;
+            }
+            curEffect.EQBaseValue = int.Parse(rowColumns[string.Concat("effect_base_value", slotID)]);
+            if (slotID < 4)
+                curEffect.EQLimitValue = int.Parse(rowColumns[string.Concat("effect_limit_value", slotID)]);
+            if (slotID < 11)
+                curEffect.EQMaxValue = int.Parse(rowColumns[string.Concat("max", slotID)]);
+
+            // Add it
+            spellTemplate.SpellEffects.Add(curEffect);
         }
     }
 }

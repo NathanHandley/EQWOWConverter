@@ -21,7 +21,7 @@ namespace EQWOWConverter.Spells
         public SpellEQEffectType EQEffectType = SpellEQEffectType.None;
         public SpellEQFormulaType EQFormulaType = SpellEQFormulaType.BaseValue;
         public int EQBaseValue = 0;
-        public int EQMax = 0;
-        public int EQLimit = 0;
+        public int EQLimitValue = 0;
+        public int EQMaxValue = 0;        
     }
 }
