@@ -124,6 +124,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recovery_time"]);
                 // TODO: AOE range?
 
+                // Determine the effect, and currently only load in spells that modify hitpoints
+
 
 
 
