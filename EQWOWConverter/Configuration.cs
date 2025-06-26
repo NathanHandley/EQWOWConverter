@@ -556,6 +556,9 @@ namespace EQWOWConverter
         // ID for spellcasttimes.dbc
         public static readonly int DBCID_SPELLCASTTIME_ID_START = 215;
 
+        // ID for spellduration.dbc
+        public static readonly int DBCID_SPELLDURATION_ID_START = 610;
+
         // ID for spellicon.dbc
         public static readonly int DBCID_SPELLICON_ID_START = 4400;
 

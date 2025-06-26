@@ -23,6 +23,7 @@ namespace EQWOWConverter.Spells
     {
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
+        public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();
@@ -73,13 +74,25 @@ namespace EQWOWConverter.Spells
                     SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
                 _SpellRange = SpellRangeDBCIDsBySpellRange[value];
             }
-        }        
+        }
+        protected int _SpellDurationDBCID = 21; // "Infinate" by default"
+        public int SpellDurationDBCID { get { return _SpellDurationDBCID; } }
+        protected int _SpellDurationInMS = -1;
+        public int SpellDurationInMS
+        {
+            get { return _SpellDurationInMS; }
+            set
+            {
+                if (SpellDurationDBCIDsByDurationInMS.ContainsKey(value) == false)
+                    SpellDurationDBCIDsByDurationInMS.Add(value, SpellDurationDBC.GenerateDBCID());
+                SpellDurationInMS = SpellDurationDBCIDsByDurationInMS[value];
+            }
+        }
         public UInt32 RecoveryTimeInMS = 0;
         public SpellTargetType TargetType = SpellTargetType.SelfSingle;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
-        public UInt32 DurationIndex = 0;
         public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
         public UInt32 EffectItemType1 = 0;
@@ -95,6 +108,7 @@ namespace EQWOWConverter.Spells
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
         public List<SpellEffect> SpellEffects = new List<SpellEffect>();
+        public UInt32 ManaCost = 0;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -122,7 +136,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
-                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recovery_time"]);
+                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
                 // TODO: AOE range?
                 PopulateSpellEffect(ref newSpellTemplate, 1, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 2, columns);
@@ -136,6 +150,7 @@ namespace EQWOWConverter.Spells
                 PopulateSpellEffect(ref newSpellTemplate, 10, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 11, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 12, columns);
+                newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
 
 
 
@@ -163,19 +178,14 @@ namespace EQWOWConverter.Spells
             {
                 int formulaRaw = int.Parse(rowColumns[string.Concat("formula", slotID)]);
                 if (Enum.IsDefined(typeof(SpellEQBaseValueFormulaType), formulaRaw) == true)
-                {
                     curEffect.EQBaseValueFormulaType = (SpellEQBaseValueFormulaType)formulaRaw;
-                }
-                else
+                else switch (formulaRaw)
                 {
-                    switch (formulaRaw)
-                    {
-                        case 101: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo; break;
-                        case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
-                        case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
-                        case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
-                        default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue; break;
-                    }
+                    case 101: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo; break;
+                    case 115: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel; break;
+                    case 116: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel; break;
+                    case 121: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseAddLevelDivideThree; break;
+                    default: curEffect.EQBaseValueFormulaType = SpellEQBaseValueFormulaType.BaseValue; break;
                 }
                 curEffect.EQFormulaTypeValue = formulaRaw;
             }

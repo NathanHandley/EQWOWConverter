@@ -1378,7 +1378,7 @@ namespace EQWOWConverter
             {
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
-                gateSpellTemplate.DurationIndex = 30; // SpellDuration.dbc index 30 has a 30 minute timer
+                gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
                 gateSpellTemplate.Effect1 = 6; // Aura
                 gateSpellTemplate.EffectAura1 = 4; // Dummy
             }
@@ -1436,7 +1436,6 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
             dayPhaseSpellTemplate.EffectMiscValue1 = 2;
             dayPhaseSpellTemplate.EffectBasePoints1 = -1;
-            dayPhaseSpellTemplate.DurationIndex = 21; // Infinate
             dayPhaseSpellTemplate.SchoolMask = 1;
             dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(dayPhaseSpellTemplate);
@@ -1454,7 +1453,6 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
             nightPhaseSpellTemplate.EffectMiscValue1 = 4;
             nightPhaseSpellTemplate.EffectBasePoints1 = -1;
-            nightPhaseSpellTemplate.DurationIndex = 21; // Infinate
             nightPhaseSpellTemplate.SchoolMask = 1;
             nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(nightPhaseSpellTemplate);
@@ -2177,6 +2175,8 @@ namespace EQWOWConverter
             spellDBC.LoadFromDisk(dbcInputFolder, "Spell.dbc");
             SpellCastTimesDBC spellCastTimesDBC = new SpellCastTimesDBC();
             spellCastTimesDBC.LoadFromDisk(dbcInputFolder, "SpellCastTimes.dbc");
+            SpellDurationDBC spellDurationDBC = new SpellDurationDBC();
+            spellDurationDBC.LoadFromDisk(dbcInputFolder, "SpellDuration.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
             SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
@@ -2454,6 +2454,8 @@ namespace EQWOWConverter
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
             foreach (var spellRangeDBCIDByRange in SpellTemplate.SpellRangeDBCIDsBySpellRange)
                 spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
+            foreach (var spellDurationDBCIDByDurationInMS in SpellTemplate.SpellDurationDBCIDsByDurationInMS)
+                spellDurationDBC.AddRow(spellDurationDBCIDByDurationInMS.Value, spellDurationDBCIDByDurationInMS.Key);
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
@@ -2612,6 +2614,8 @@ namespace EQWOWConverter
             spellDBC.SaveToDisk(dbcOutputServerFolder);
             spellCastTimesDBC.SaveToDisk(dbcOutputClientFolder);
             spellCastTimesDBC.SaveToDisk(dbcOutputServerFolder);
+            spellDurationDBC.SaveToDisk(dbcOutputClientFolder);
+            spellDurationDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
             spellRangeDBC.SaveToDisk(dbcOutputClientFolder);
