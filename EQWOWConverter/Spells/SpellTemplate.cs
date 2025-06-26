@@ -75,7 +75,7 @@ namespace EQWOWConverter.Spells
                 _SpellRange = SpellRangeDBCIDsBySpellRange[value];
             }
         }
-        protected int _SpellDurationDBCID = 21; // "Infinate" by default"
+        protected int _SpellDurationDBCID = 21; // "Infinite" by default"
         public int SpellDurationDBCID { get { return _SpellDurationDBCID; } }
         protected int _SpellDurationInMS = -1;
         public int SpellDurationInMS
@@ -85,7 +85,7 @@ namespace EQWOWConverter.Spells
             {
                 if (SpellDurationDBCIDsByDurationInMS.ContainsKey(value) == false)
                     SpellDurationDBCIDsByDurationInMS.Add(value, SpellDurationDBC.GenerateDBCID());
-                SpellDurationInMS = SpellDurationDBCIDsByDurationInMS[value];
+                _SpellDurationInMS = SpellDurationDBCIDsByDurationInMS[value];
             }
         }
         public UInt32 RecoveryTimeInMS = 0;
@@ -151,8 +151,9 @@ namespace EQWOWConverter.Spells
                 PopulateSpellEffect(ref newSpellTemplate, 11, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 12, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-
-
+                int buffDuration = Convert.ToInt32(columns["buffduration"]);
+                if (buffDuration > 0)
+                    newSpellTemplate.SpellDurationInMS = buffDuration * 1000;
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
