@@ -139,6 +139,9 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
                 // TODO: AOE range?
                 PopulateSpellEffect(ref newSpellTemplate, 1, columns);
+                // Skip if there isn't an effect
+                if (newSpellTemplate.SpellEffects.Count == 0)
+                    continue;
                 PopulateSpellEffect(ref newSpellTemplate, 2, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 3, columns);
                 PopulateSpellEffect(ref newSpellTemplate, 4, columns);
