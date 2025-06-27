@@ -880,20 +880,9 @@ namespace EQWOWConverter.ObjectModels
                         // Capture and set this animation
                         Logger.WriteDebug(string.Concat("Found usable candidate, setting to eq type '", animation.Key, "' for object '", Name, "'"));
 
-                        // Calculate the animation duration for output
-                        // Note: The total duration needs to reduce by 1/2 frame since EQ loops but reserves the first and last frame for the same amount,
-                        // causes "pauses" in WoW.  While this isn't a smooth frame loop, it does come out pretty close to EQ
-                        int animationDuration = animation.Value.TotalTimeInMS;
-                        int avgAnimationFrameDuration = animation.Value.TotalTimeInMS;
-                        if (animation.Value.FrameCount > 1)
-                        {
-                            avgAnimationFrameDuration = (animation.Value.TotalTimeInMS) / (animation.Value.FrameCount);
-                            animationDuration -= avgAnimationFrameDuration ;
-                        }
-
                         // Create the base animation object
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
-                        newAnimation.DurationInMS = Convert.ToUInt32(animationDuration);
+                        newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                         newAnimation.AnimationType = animationType;
                         newAnimation.EQAnimationType = animation.Value.EQAnimationType;
                         newAnimation.BoundingBox = VisibilityBoundingBox;
