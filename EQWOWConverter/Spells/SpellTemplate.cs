@@ -93,7 +93,7 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
-        public Int32 Effect1 = 0; // 6 = SPELL_EFFECT_APPLY_AURA
+        public SpellWOWEffectType EffectType1 = SpellWOWEffectType.None;
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
         public UInt32 EffectItemType1 = 0;
         public Int32 EffectDieSides1 = 0;
@@ -137,7 +137,9 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
+                newSpellTemplate.Category = 1; // Temp / TODO: Figure out how/what to set here
                 // TODO: AOE range?
+                // TODO: FacingCasterFlags
                 PopulateSpellEffect(ref newSpellTemplate, 1, columns);
                 // Skip if there isn't an effect
                 if (newSpellTemplate.SpellEffects.Count == 0)
@@ -157,6 +159,15 @@ namespace EQWOWConverter.Spells
                 int buffDuration = Convert.ToInt32(columns["buffduration"]);
                 if (buffDuration > 0)
                     newSpellTemplate.SpellDurationInMS = buffDuration * 1000;
+
+                // Setting the spell effect type (TODO: Refine this)
+                if (newSpellTemplate.SpellEffects[0].EQEffectType == SpellEQEffectType.CurrentHitPoints)
+                {
+                    if (newSpellTemplate.SpellEffects[0].EQBaseValue < 0)
+                        newSpellTemplate.EffectType1 = SpellWOWEffectType.SchoolDamage;
+                    else if (newSpellTemplate.SpellEffects[0].EQBaseValue > 0)
+                        newSpellTemplate.EffectType1 = SpellWOWEffectType.Heal;
+                }
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
@@ -198,6 +209,21 @@ namespace EQWOWConverter.Spells
                 curEffect.EQLimitValue = int.Parse(rowColumns[string.Concat("effect_limit_value", slotID)]);
             if (slotID < 11)
                 curEffect.EQMaxValue = int.Parse(rowColumns[string.Concat("max", slotID)]);
+
+            // Set the effect amount
+            switch (curEffect.EQEffectType)
+            {
+                case SpellEQEffectType.CurrentHitPoints:
+                    {
+                        // TODO: Formulas
+                        spellTemplate.EffectDieSides1 = curEffect.EQBaseValue;
+                    } break;
+                default:
+                    {
+                        Logger.WriteError(string.Concat("Unhandled SpellTemplate EQEffectType of ", curEffect.EQEffectType, " for eq spell id ", spellTemplate.EQSpellID));
+                        return;
+                    }
+            }
 
             // Add it
             spellTemplate.SpellEffects.Add(curEffect);

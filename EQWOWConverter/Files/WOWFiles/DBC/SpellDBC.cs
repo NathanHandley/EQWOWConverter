@@ -114,7 +114,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(-1); // EquippedItemClass
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes
-            newRow.AddInt32(spellTemplate.Effect1); // Effect1
+            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType1)); // Effect1
             newRow.AddInt32(0); // Effect2
             newRow.AddInt32(0); // Effect3
             newRow.AddInt32(spellTemplate.EffectDieSides1); // EffectDieSides1
@@ -228,6 +228,7 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 16; // SPELL_ATTR0_IS_ABILITY (0x00000010)
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
+            attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
             return attributeFlags;
         }
 

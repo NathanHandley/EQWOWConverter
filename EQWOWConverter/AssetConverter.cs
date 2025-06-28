@@ -1379,7 +1379,7 @@ namespace EQWOWConverter
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
-                gateSpellTemplate.Effect1 = 6; // Aura
+                gateSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
                 gateSpellTemplate.EffectAura1 = 4; // Dummy
             }
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
@@ -1431,7 +1431,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
             dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
             dayPhaseSpellTemplate.SpellIconID = 253;
-            dayPhaseSpellTemplate.Effect1 = 6;
+            dayPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             dayPhaseSpellTemplate.EffectDieSides1 = 1;
             dayPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
             dayPhaseSpellTemplate.EffectMiscValue1 = 2;
@@ -1447,7 +1447,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.InterruptFlags = 0;
             nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
             nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
-            nightPhaseSpellTemplate.Effect1 = 6;
+            nightPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             nightPhaseSpellTemplate.EffectDieSides1 = 1;
             nightPhaseSpellTemplate.SpellIconID = 253;
             nightPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
@@ -1551,7 +1551,7 @@ namespace EQWOWConverter
                 else
                     recipeNameCounts.Add(curSpellTemplate.Name, 1);
 
-                curSpellTemplate.Effect1 = 24; // SPELL_EFFECT_CREATE_ITEM
+                curSpellTemplate.EffectType1 = SpellWOWEffectType.CreateItem;
                 curSpellTemplate.EffectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 curSpellTemplate.SchoolMask = 1; // "Normal"
