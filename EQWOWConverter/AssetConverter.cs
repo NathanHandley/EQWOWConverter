@@ -2448,7 +2448,8 @@ namespace EQWOWConverter
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 spellDBC.AddRow(spellTemplate);
-                skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
+                if (spellTemplate.SkillLine != 0)
+                    skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
             }
             foreach (var spellCastTimeDBCIDByCastTime in SpellTemplate.SpellCastTimeDBCIDsByCastTime)
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
