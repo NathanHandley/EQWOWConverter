@@ -138,6 +138,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
                 newSpellTemplate.Category = 1; // Temp / TODO: Figure out how/what to set here
+                newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: AOE range?
                 // TODO: FacingCasterFlags
                 PopulateSpellEffect(ref newSpellTemplate, 1, columns);
@@ -168,6 +169,10 @@ namespace EQWOWConverter.Spells
                     else if (newSpellTemplate.SpellEffects[0].EQBaseValue > 0)
                         newSpellTemplate.EffectType1 = SpellWOWEffectType.Heal;
                 }
+
+                int spellIconID = int.Parse(columns["icon"]);
+                if (spellIconID >= 2500)
+                    newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
