@@ -89,7 +89,7 @@ namespace EQWOWConverter.Spells
             }
         }
         public UInt32 RecoveryTimeInMS = 0;
-        public SpellTargetType TargetType = SpellTargetType.SelfSingle;
+        public SpellWOWTargetType TargetType = SpellWOWTargetType.SelfSingle;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
@@ -109,6 +109,7 @@ namespace EQWOWConverter.Spells
         public int SkillLine = 0;
         public List<SpellEffect> SpellEffects = new List<SpellEffect>();
         public UInt32 ManaCost = 0;
+        public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -128,6 +129,10 @@ namespace EQWOWConverter.Spells
             List<Dictionary<string, string>> spellTemplateRows = FileTool.ReadAllRowsFromFileWithHeader(spellTemplatesFile, "|");
             foreach (Dictionary<string, string> columns in spellTemplateRows)
             {
+                // Skip invalid
+                if (columns["enabled"] == "0")
+                    continue;
+
                 // Load the row
                 SpellTemplate newSpellTemplate = new SpellTemplate();
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
@@ -136,10 +141,10 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
-                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
-                newSpellTemplate.Category = 1; // Temp / TODO: Figure out how/what to set here
-                newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: AOE range?
+                newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
+                newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
+                newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: FacingCasterFlags
                 PopulateSpellEffect(ref newSpellTemplate, 1, columns);
                 // Skip if there isn't an effect
@@ -170,9 +175,17 @@ namespace EQWOWConverter.Spells
                         newSpellTemplate.EffectType1 = SpellWOWEffectType.Heal;
                 }
 
+                // Icon
                 int spellIconID = int.Parse(columns["icon"]);
                 if (spellIconID >= 2500)
                     newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
+
+                // Target
+                int eqTargetTypeID = int.Parse(columns["targettype"]);
+                if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
+                    Logger.WriteError("SpellTemplate with EQID ", newSpellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
+                else
+                    newSpellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
@@ -221,7 +234,8 @@ namespace EQWOWConverter.Spells
                 case SpellEQEffectType.CurrentHitPoints:
                     {
                         // TODO: Formulas
-                        spellTemplate.EffectDieSides1 = curEffect.EQBaseValue;
+                        spellTemplate.EffectDieSides1 = 1;
+                        spellTemplate.EffectBasePoints1 = Math.Abs(curEffect.EQBaseValue);
                     } break;
                 default:
                     {

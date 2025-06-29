@@ -288,8 +288,8 @@ namespace EQWOWConverter.WOWFiles
         {
             switch (spellTemplate.TargetType)
             {
-                case SpellTargetType.SelfSingle: return 1;
-                case SpellTargetType.AllyGroupedSingle: return 35; // Unit Target Party
+                case SpellWOWTargetType.SelfSingle: return 1;
+                case SpellWOWTargetType.AllyGroupedSingle: return 35; // Unit Target Party
                 default: return 0;
             }
         }

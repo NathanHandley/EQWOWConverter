@@ -74,7 +74,25 @@ namespace EQWOWConverter
             }
         }
 
-        public static void WriteDebug(string text)
+        public static void WriteInfo(params string[] textParts)
+        {
+            lock (writeLock)
+            {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.Append("[ ] Info | ");
+                foreach (string text in textParts)
+                    stringBuilder.Append(text);
+                if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
+                    WriteToConsole(stringBuilder.ToString());
+                if (Configuration.LOGGING_FILE_MIN_LEVEL >= 1)
+                {
+                    stringBuilder.Append("\n");
+                    File.AppendAllText("log.txt", stringBuilder.ToString());
+                }
+            }
+        }
+
+        public static void WriteDebug(params string[] textParts)
         {
             if (Configuration.LOGGING_CONSOLE_MIN_LEVEL < 3 && Configuration.LOGGING_FILE_MIN_LEVEL < 3)
                 return;
@@ -83,7 +101,8 @@ namespace EQWOWConverter
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("[.] Detail| ");
-                stringBuilder.Append(text);
+                foreach (string text in textParts)
+                    stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
                     WriteToConsole(stringBuilder.ToString());
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
@@ -95,7 +114,7 @@ namespace EQWOWConverter
         }
 
         // TODO: Make this its own log level
-        public static void WriteWarning(string text)
+        public static void WriteWarning(params string[] textParts)
         {
             if (Configuration.LOGGING_CONSOLE_MIN_LEVEL < 3 && Configuration.LOGGING_FILE_MIN_LEVEL < 3)
                 return;
@@ -104,7 +123,8 @@ namespace EQWOWConverter
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("[!] Warning| ");
-                stringBuilder.Append(text);
+                foreach (string text in textParts)
+                    stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 3)
                     WriteToConsole(stringBuilder.ToString());
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 3)
@@ -115,13 +135,14 @@ namespace EQWOWConverter
             }
         }
 
-        public static void WriteError(string text)
+        public static void WriteError(params string[] textParts)
         {
             lock (writeLock)
             {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.Append("[*] Error| ");
-                stringBuilder.Append(text);
+                foreach(string text in textParts)
+                    stringBuilder.Append(text);
                 if (Configuration.LOGGING_CONSOLE_MIN_LEVEL >= 2)
                     WriteToConsole(stringBuilder.ToString());
                 if (Configuration.LOGGING_FILE_MIN_LEVEL >= 2)

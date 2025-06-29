@@ -16,9 +16,26 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal enum SpellTargetType
+    internal enum SpellEQTargetType : int
     {
-        SelfSingle,
-        AllyGroupedSingle
+        LineOfSight = 1,
+        GroupV1 = 3,
+        PointBlankAreaOfEffect = 4,
+        Single = 5,
+        Self = 6,
+        TargetedAreaOfEffect = 8,
+        Animal = 9,
+        Undead = 10,
+        Summoned = 11,
+        LifeTap = 13, 
+        Pet = 14, 
+        Corpse = 15,
+        Plant = 16, 
+        UberGiants = 17,
+        UberDragons = 18,
+        TargetedAreaOfEffectLifeTap = 20,
+        AreaOfEffectUndead = 24,
+        AreaOfEffectSummoned = 25, // May not be needed, as "Rebuke Summoned" may not be in use
+        Groupv2 = 41
     }
 }
