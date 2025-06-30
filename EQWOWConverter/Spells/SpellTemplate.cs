@@ -72,7 +72,7 @@ namespace EQWOWConverter.Spells
             {
                 if (SpellRangeDBCIDsBySpellRange.ContainsKey(value) == false)
                     SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
-                _SpellRange = SpellRangeDBCIDsBySpellRange[value];
+                _SpellRangeDBCID = SpellRangeDBCIDsBySpellRange[value];
             }
         }
         protected int _SpellDurationDBCID = 21; // "Infinite" by default"
