@@ -62,7 +62,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt64(0); // ShapeshiftMask
             newRow.AddUInt64(0); // ShapeshiftExclude
             newRow.AddUInt32(GetTargetValue(spellTemplate)); // Targets
-            newRow.AddUInt32(0); // TargetCreatureType
+            newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType
             newRow.AddUInt32(spellTemplate.SpellFocusID); // RequiresSpellFocus
             newRow.AddUInt32(0); // FacingCasterFlags
             newRow.AddUInt32(0); // CasterAuraState
@@ -276,7 +276,7 @@ namespace EQWOWConverter.WOWFiles
 
         private UInt32 GetTargetValue(SpellTemplate spellTemplate)
         {
-            switch (spellTemplate.TargetType)
+            switch (spellTemplate.WOWTargetType)
             {
                 //case SpellTargetType.SelfSingle: return 0;
                 //case SpellTargetType.AllyGroupedSingle: return 16;
@@ -286,12 +286,7 @@ namespace EQWOWConverter.WOWFiles
 
         private UInt32 GetImplicitTargetA1Value(SpellTemplate spellTemplate)
         {
-            switch (spellTemplate.TargetType)
-            {
-                case SpellWOWTargetType.SelfSingle: return 1;
-                case SpellWOWTargetType.AllyGroupedSingle: return 35; // Unit Target Party
-                default: return 0;
-            }
+            return Convert.ToUInt32(spellTemplate.WOWTargetType);
         }
     }
 }

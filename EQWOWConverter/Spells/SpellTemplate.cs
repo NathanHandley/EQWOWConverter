@@ -89,7 +89,7 @@ namespace EQWOWConverter.Spells
             }
         }
         public UInt32 RecoveryTimeInMS = 0;
-        public SpellWOWTargetType TargetType = SpellWOWTargetType.SelfSingle;
+        public SpellWOWTargetType WOWTargetType = SpellWOWTargetType.Self;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
@@ -110,6 +110,7 @@ namespace EQWOWConverter.Spells
         public List<SpellEffect> SpellEffects = new List<SpellEffect>();
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
+        public UInt32 TargetCreatureType = 0; // No specific creature type
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -182,15 +183,137 @@ namespace EQWOWConverter.Spells
 
                 // Target
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
-                if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
-                    Logger.WriteError("SpellTemplate with EQID ", newSpellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
-                else
-                    newSpellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
+                bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
+                PopulateTarget(ref newSpellTemplate, eqTargetTypeID, isDetrimental);
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
         }
+
+        private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental)
+        {
+            // Capture the EQ Target type
+            if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
+            {
+                Logger.WriteError("SpellTemplate with EQID ", spellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
+                spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
+                return;
+            }
+            else
+                spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
+
+            // Map the EQ target type to WOW
+            switch (spellTemplate.EQTargetType)
+            {
+                case SpellEQTargetType.LineOfSight:
+                    {
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
+                    } break;
+                case SpellEQTargetType.GroupV1:
+                case SpellEQTargetType.GroupV2:
+                    {
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.CasterParty;
+                    } break;
+                case SpellEQTargetType.PointBlankAreaOfEffect:
+                case SpellEQTargetType.AreaOfEffectUndead: // TODO, may not be needed.  See "Words of the Undead King"
+                    {
+                        // This is from Circle of Healing and Thunderclap.  May have differences for good vs bad effects
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundCaster;
+                    } break;
+                case SpellEQTargetType.Single:
+                    {
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
+                    } break;
+                case SpellEQTargetType.Self:
+                    {
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
+                    } break;
+                case SpellEQTargetType.TargetedAreaOfEffect:
+                case SpellEQTargetType.TargetedAreaOfEffectLifeTap:
+                {
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundTargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundTargetAlly;
+                    } break;
+                case SpellEQTargetType.Animal:
+                    {
+                        spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" put into this for now
+                    } break;
+                case SpellEQTargetType.Undead:
+                    {
+                        spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+                    } break;
+                case SpellEQTargetType.Summoned:
+                    {
+                        spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "Any" is probably wrong, figure out good vs bad
+                    } break;
+                case SpellEQTargetType.LifeTap:
+                    {
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
+                    } break;
+                case SpellEQTargetType.Pet:
+                    {
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.Pet;
+                    } break;
+                case SpellEQTargetType.Corpse:
+                    {
+                        // TODO: Make only work on corpses
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.Corpse;
+                    } break;
+                case SpellEQTargetType.Plant:
+                    {
+                        // Using "elemental" for now
+                        spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+                    } break;
+                case SpellEQTargetType.UberGiants:
+                    {
+                        spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+                    } break;
+                case SpellEQTargetType.UberDragons:
+                    {
+                        spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
+                        if (isDetrimental == true)
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                        else
+                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+                    } break;
+
+                default:
+                    {
+                        Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
+                        spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
+                    } break;
+            }
+        }
+
 
         private static void PopulateSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
         {

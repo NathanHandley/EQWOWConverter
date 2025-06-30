@@ -135,7 +135,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("trainer_spell", 0);
             newRow.AddInt("trainer_class", trainerClass);
             newRow.AddInt("trainer_race", 0);
-            newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
+            newRow.AddInt("type", creatureTemplate.Race.WOWCreatureType); // 0: None, 1: Beast, 2: Dragonkin, 3: Demon, 4: Elemental, 5: Giant, 6: Undead, 7: Humanoid, 8: Critter, 9: Mechanical, 10: Non-Specified, 11: Totem, 12: Non-Combat Pet, 13: Gas Cloud
             newRow.AddInt("type_flags", typeFlags); // "Is this minable, tameable, etc"
             newRow.AddInt("lootid", creatureTemplate.WOWLootID);
             newRow.AddInt("pickpocketloot", 0);

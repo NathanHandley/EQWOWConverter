@@ -1385,7 +1385,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
-            gateSpellTemplate.TargetType = SpellWOWTargetType.SelfSingle;
+            gateSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
             gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
@@ -1400,7 +1400,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
-            bindAffinitySelfSpellTemplate.TargetType = SpellWOWTargetType.SelfSingle;
+            bindAffinitySelfSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
             bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
@@ -1416,7 +1416,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
             bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySpellTemplate.SpellRange = 30;
-            bindAffinitySpellTemplate.TargetType = SpellWOWTargetType.AllyGroupedSingle;
+            bindAffinitySpellTemplate.WOWTargetType = SpellWOWTargetType.TargetParty;
             bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;

@@ -36,6 +36,6 @@ namespace EQWOWConverter.Spells
         TargetedAreaOfEffectLifeTap = 20,
         AreaOfEffectUndead = 24,
         AreaOfEffectSummoned = 25, // May not be needed, as "Rebuke Summoned" may not be in use
-        Groupv2 = 41
+        GroupV2 = 41
     }
 }

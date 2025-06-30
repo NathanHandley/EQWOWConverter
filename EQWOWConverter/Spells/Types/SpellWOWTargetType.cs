@@ -16,9 +16,18 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal enum SpellWOWTargetType
+    internal enum SpellWOWTargetType : int
     {
-        SelfSingle,
-        AllyGroupedSingle
+        Corpse = 0, // This isn't actually a wow target type
+        Self = 1,
+        Pet = 5,
+        TargetEnemy = 6,
+        AreaAroundTargetEnemy = 16,
+        CasterParty = 20,
+        TargetFriendly = 21,
+        AreaAroundCaster = 22,
+        AreaAroundTargetAlly = 31,
+        TargetParty = 35,
+        TargetAny = 63
     }
 }
