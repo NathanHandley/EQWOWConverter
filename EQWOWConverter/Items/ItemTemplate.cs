@@ -61,7 +61,9 @@ namespace EQWOWConverter.Items
         public bool DoesVanishOnLogout = false;
         public bool IsNoDrop = false;
         public ItemDisplayInfo? ItemDisplayInfo = null;
-        public int SpellID1 = 0;
+        public bool DoesTeachSpell = false;
+        public int WOWSpellID1 = 0;
+        public int EQSpellID = 0;
         public int SpellCooldown1 = -1;
         public int SpellCategory1 = 0; // 11 = food, 59 = water/alcohol
         public int SpellCategoryCooldown1 = -1;
@@ -1004,23 +1006,23 @@ namespace EQWOWConverter.Items
                         itemTemplate.WOWItemMaterialType = -1;
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 70)
-                            itemTemplate.SpellID1 = 45548;
+                            itemTemplate.WOWSpellID1 = 45548;
                         else if (castTime >= 50)
-                            itemTemplate.SpellID1 = 43180;
+                            itemTemplate.WOWSpellID1 = 43180;
                         else if (castTime >= 40)
-                            itemTemplate.SpellID1 = 27094;
+                            itemTemplate.WOWSpellID1 = 27094;
                         else if (castTime >= 30)
-                            itemTemplate.SpellID1 = 1131;
+                            itemTemplate.WOWSpellID1 = 1131;
                         else if (castTime >= 20)
-                            itemTemplate.SpellID1 = 1129;
+                            itemTemplate.WOWSpellID1 = 1129;
                         else if (castTime >= 15)
-                            itemTemplate.SpellID1 = 1127;
+                            itemTemplate.WOWSpellID1 = 1127;
                         else if (castTime >= 10)
-                            itemTemplate.SpellID1 = 435;
+                            itemTemplate.WOWSpellID1 = 435;
                         else if (castTime >= 5)
-                            itemTemplate.SpellID1 = 434;
+                            itemTemplate.WOWSpellID1 = 434;
                         else
-                            itemTemplate.SpellID1 = 433;
+                            itemTemplate.WOWSpellID1 = 433;
                     } break;
                 case 15: // Drink => Food and Drink
                     {
@@ -1031,23 +1033,23 @@ namespace EQWOWConverter.Items
                         itemTemplate.SpellCategoryCooldown1 = 1000;
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 80)
-                            itemTemplate.SpellID1 = 43183;
+                            itemTemplate.WOWSpellID1 = 43183;
                         else if (castTime >= 60)
-                            itemTemplate.SpellID1 = 27089;
+                            itemTemplate.WOWSpellID1 = 27089;
                         else if (castTime >= 30)
-                            itemTemplate.SpellID1 = 22734;
+                            itemTemplate.WOWSpellID1 = 22734;
                         else if (castTime >= 25)
-                            itemTemplate.SpellID1 = 1137;
+                            itemTemplate.WOWSpellID1 = 1137;
                         else if (castTime >= 20)
-                            itemTemplate.SpellID1 = 1135;
+                            itemTemplate.WOWSpellID1 = 1135;
                         else if (castTime >= 15)
-                            itemTemplate.SpellID1 = 1133;
+                            itemTemplate.WOWSpellID1 = 1133;
                         else if (castTime >= 10)
-                            itemTemplate.SpellID1 = 432;
+                            itemTemplate.WOWSpellID1 = 432;
                         else if (castTime >= 8)
-                            itemTemplate.SpellID1 = 431;
+                            itemTemplate.WOWSpellID1 = 431;
                         else
-                            itemTemplate.SpellID1 = 430;
+                            itemTemplate.WOWSpellID1 = 430;
                     } break;
                 case 16: // Light Source => Misc
                     {
@@ -1302,6 +1304,10 @@ namespace EQWOWConverter.Items
                     damage = int.Parse(columns["alt_damage"]);
                     delay = int.Parse(columns["alt_delay"]) * 100;
                 }
+
+                // Spell associations
+                newItemTemplate.EQSpellID = int.Parse(columns["scrolleffect"]);
+                newItemTemplate.DoesTeachSpell = columns["scrolltype"] == "7" ? true : false;
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;

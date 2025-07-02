@@ -147,34 +147,25 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: FacingCasterFlags
-                PopulateSpellEffect(ref newSpellTemplate, 1, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 1, columns);
                 // Skip if there isn't an effect
                 if (newSpellTemplate.SpellEffects.Count == 0)
                     continue;
-                PopulateSpellEffect(ref newSpellTemplate, 2, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 3, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 4, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 5, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 6, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 7, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 8, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 9, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 10, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 11, columns);
-                PopulateSpellEffect(ref newSpellTemplate, 12, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 2, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 3, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 4, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 5, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 6, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 7, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 8, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 9, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 10, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 11, columns);
+                PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int buffDuration = Convert.ToInt32(columns["buffduration"]);
                 if (buffDuration > 0)
                     newSpellTemplate.SpellDurationInMS = buffDuration * 1000;
-
-                // Setting the spell effect type (TODO: Refine this)
-                if (newSpellTemplate.SpellEffects[0].EQEffectType == SpellEQEffectType.CurrentHitPoints)
-                {
-                    if (newSpellTemplate.SpellEffects[0].EQBaseValue < 0)
-                        newSpellTemplate.EffectType1 = SpellWOWEffectType.SchoolDamage;
-                    else if (newSpellTemplate.SpellEffects[0].EQBaseValue > 0)
-                        newSpellTemplate.EffectType1 = SpellWOWEffectType.Heal;
-                }
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -185,6 +176,9 @@ namespace EQWOWConverter.Spells
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
                 PopulateTarget(ref newSpellTemplate, eqTargetTypeID, isDetrimental);
+
+                // Convert the spell effects
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate);
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
@@ -315,7 +309,7 @@ namespace EQWOWConverter.Spells
         }
 
 
-        private static void PopulateSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
+        private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
         {
             // Skip non and unmapped effects
             int effectIDRaw = int.Parse(rowColumns[string.Concat("effectid", slotID)]);          
@@ -351,24 +345,37 @@ namespace EQWOWConverter.Spells
             if (slotID < 11)
                 curEffect.EQMaxValue = int.Parse(rowColumns[string.Concat("max", slotID)]);
 
+            // Add it
+            spellTemplate.SpellEffects.Add(curEffect);
+        }
+
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate)
+        {
+            // Setting the spell effect type (TODO: Refine this)
+            if (spellTemplate.SpellEffects[0].EQEffectType == SpellEQEffectType.CurrentHitPoints)
+            {
+                if (spellTemplate.SpellEffects[0].EQBaseValue < 0)
+                    spellTemplate.EffectType1 = SpellWOWEffectType.SchoolDamage;
+                else if (spellTemplate.SpellEffects[0].EQBaseValue > 0)
+                    spellTemplate.EffectType1 = SpellWOWEffectType.Heal;
+            }
+
             // Set the effect amount
-            switch (curEffect.EQEffectType)
+            switch (spellTemplate.SpellEffects[0].EQEffectType)
             {
                 case SpellEQEffectType.CurrentHitPoints:
                     {
                         // TODO: Formulas
                         spellTemplate.EffectDieSides1 = 1;
-                        spellTemplate.EffectBasePoints1 = Math.Abs(curEffect.EQBaseValue);
-                    } break;
+                        spellTemplate.EffectBasePoints1 = Math.Abs(spellTemplate.SpellEffects[0].EQBaseValue);
+                    }
+                    break;
                 default:
                     {
-                        Logger.WriteError(string.Concat("Unhandled SpellTemplate EQEffectType of ", curEffect.EQEffectType, " for eq spell id ", spellTemplate.EQSpellID));
+                        Logger.WriteError(string.Concat("Unhandled SpellTemplate EQEffectType of ", spellTemplate.SpellEffects[0].EQEffectType, " for eq spell id ", spellTemplate.EQSpellID));
                         return;
                     }
             }
-
-            // Add it
-            spellTemplate.SpellEffects.Add(curEffect);
         }
     }
 }

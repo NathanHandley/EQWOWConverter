@@ -1492,12 +1492,12 @@ namespace EQWOWConverter
                             continue;
                         }
                         ItemTemplate curItemTemplate = itemTemplatesByWOWEntryID[itemID];
-                        if (curItemTemplate.SpellID1 != 0)
+                        if (curItemTemplate.WOWSpellID1 != 0)
                         {
                             Logger.WriteError(string.Concat("Unable to attach spell to combiner item ", itemID, " as that item already had a spell attached"));
                             continue;
                         }
-                        curItemTemplate.SpellID1 = curSpellTemplate.WOWSpellID;
+                        curItemTemplate.WOWSpellID1 = curSpellTemplate.WOWSpellID;
                         curItemTemplate.Description = recipe.GetGeneratedDescription(itemTemplatesByWOWEntryID);
 
                         // These can't be containers anymore
@@ -3047,10 +3047,32 @@ namespace EQWOWConverter
             }
 
             // Items
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
+
+                // Associate spells if it's a learnable item
+                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQSpellID != 0)
+                {
+                    // Make items "junk" if there is no spell to learn and there should be
+                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                    {
+                        itemTemplate.EQSpellID = 0;
+                        itemTemplate.DoesTeachSpell = false;
+                        itemTemplate.Quality = ItemWOWQuality.Poor;
+                        itemTemplate.Description = "The magic in this scroll has faded to time";
+                    }
+                    else
+                    {
+                        itemTemplate.ClassID = 9;
+                        itemTemplate.SubClassID = 0;
+                        itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQSpellID].WOWSpellID;
+                        itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplatesByEQID[itemTemplate.EQSpellID].Name);
+                    }
+                }
+
                 itemTemplateSQL.AddRow(itemTemplate);
             }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)

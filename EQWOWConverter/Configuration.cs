@@ -437,6 +437,9 @@ namespace EQWOWConverter
         // How much to multiply the EQ range value for WoW
         public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
+        // If true, you can learn spells from items
+        public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================

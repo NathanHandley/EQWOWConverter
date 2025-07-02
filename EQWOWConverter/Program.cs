@@ -50,11 +50,11 @@ internal class Program
         {
             if (Configuration.GENERATE_CREATURES_AND_SPAWNS == true && Configuration.CREATURE_ADD_DEBUG_VALUES_TO_NAME == true)
                 Logger.WriteInfo("- CREATURE_ADD_DEBUG_VALUES_TO_NAME is true, so creature names will be in debug mode");
-            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL));
-            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES));
-            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS));
-            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_TRADESKILLS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS));
-            Logger.WriteInfo(string.Concat("- GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS));
+            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_GENERAL is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_GENERAL.ToString());
+            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_ZONES is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_ZONES.ToString());
+            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_TRANSPORTS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRANSPORTS.ToString());
+            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_TRADESKILLS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_TRADESKILLS.ToString());
+            Logger.WriteInfo("- GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS is set to ", Configuration.GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS.ToString());
             if (Configuration.GENERATE_PLAYER_ARMOR_GRAPHICS == false)
                 Logger.WriteInfo("- GENERATE_PLAYER_ARMOR_GRAPHICS is false, so no player armor will be generated");
             if (Configuration.GENERATE_OBJECTS == false)
@@ -66,8 +66,8 @@ internal class Program
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_LOCATION is true, so player start locations will be changed");
             if (Configuration.PLAYER_USE_EQ_START_ITEMS == true)
                 Logger.WriteInfo("- PLAYER_USE_EQ_START_ITEMS is true, so player start items will be changed");
-          
             Logger.WriteInfo(string.Concat("- PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED is set to ", Configuration.PLAYER_REDUCE_MODEL_COLLISION_HEIGHT_ENABLED));
+            Logger.WriteInfo("- SPELLS_LEARNABLE_FROM_ITEMS_ENABLED is set to ", Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED.ToString());
         }            
         Logger.WriteInfo("Are you sure Y/N? (Default: Y): ", false);
         string? enteredConfirm = Console.ReadLine();

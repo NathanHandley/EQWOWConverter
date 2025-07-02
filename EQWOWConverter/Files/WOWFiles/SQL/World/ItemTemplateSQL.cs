@@ -99,20 +99,40 @@ namespace EQWOWConverter.WOWFiles
                 newRow.AddInt("ammo_type", 0);
                 newRow.AddFloat("RangedModRange", 0);
             }
-            newRow.AddInt("spellid_1", itemTemplate.SpellID1);
-            newRow.AddInt("spelltrigger_1", 0);
-            newRow.AddInt("spellcharges_1", 0);
-            newRow.AddFloat("spellppmRate_1", 0);
-            newRow.AddInt("spellcooldown_1", itemTemplate.SpellCooldown1);
-            newRow.AddInt("spellcategory_1", itemTemplate.SpellCategory1);
-            newRow.AddInt("spellcategorycooldown_1", itemTemplate.SpellCategoryCooldown1);
-            newRow.AddInt("spellid_2", 0);
-            newRow.AddInt("spelltrigger_2", 0);
-            newRow.AddInt("spellcharges_2", 0);
-            newRow.AddFloat("spellppmRate_2", 0);
-            newRow.AddInt("spellcooldown_2", -1);
-            newRow.AddInt("spellcategory_2", 0);
-            newRow.AddInt("spellcategorycooldown_2", -1);
+            if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
+            {
+                newRow.AddInt("spellid_1", 483); // "Learning" wow spell ID
+                newRow.AddInt("spelltrigger_1", 0);
+                newRow.AddInt("spellcharges_1", -1);
+                newRow.AddFloat("spellppmRate_1", -1);
+                newRow.AddInt("spellcooldown_1", -1);
+                newRow.AddInt("spellcategory_1", 0);
+                newRow.AddInt("spellcategorycooldown_1", -1);
+                newRow.AddInt("spellid_2", itemTemplate.WOWSpellID1);
+                newRow.AddInt("spelltrigger_2", 6); // Learn Spell ID
+                newRow.AddInt("spellcharges_2", 0);
+                newRow.AddFloat("spellppmRate_2", 0);
+                newRow.AddInt("spellcooldown_2", -1);
+                newRow.AddInt("spellcategory_2", 0);
+                newRow.AddInt("spellcategorycooldown_2", -1);
+            }
+            else
+            {
+                newRow.AddInt("spellid_1", itemTemplate.WOWSpellID1);
+                newRow.AddInt("spelltrigger_1", 0);
+                newRow.AddInt("spellcharges_1", 0);
+                newRow.AddFloat("spellppmRate_1", 0);
+                newRow.AddInt("spellcooldown_1", itemTemplate.SpellCooldown1);
+                newRow.AddInt("spellcategory_1", itemTemplate.SpellCategory1);
+                newRow.AddInt("spellcategorycooldown_1", itemTemplate.SpellCategoryCooldown1);
+                newRow.AddInt("spellid_2", 0);
+                newRow.AddInt("spelltrigger_2", 0);
+                newRow.AddInt("spellcharges_2", 0);
+                newRow.AddFloat("spellppmRate_2", 0);
+                newRow.AddInt("spellcooldown_2", -1);
+                newRow.AddInt("spellcategory_2", 0);
+                newRow.AddInt("spellcategorycooldown_2", -1);
+            }
             newRow.AddInt("spellid_3", 0);
             newRow.AddInt("spelltrigger_3", 0);
             newRow.AddInt("spellcharges_3", 0);
@@ -196,6 +216,8 @@ namespace EQWOWConverter.WOWFiles
                 flags += 2;
             if (itemTemplate.CanBeOpened == true)
                 flags += 4;
+            if (itemTemplate.DoesTeachSpell == true && itemTemplate.WOWSpellID1 != 0)
+                flags += 64; // ITEM_FLAG_PLAYERCAST
             return flags;
         }
     }
