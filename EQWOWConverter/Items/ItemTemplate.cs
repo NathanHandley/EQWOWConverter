@@ -83,6 +83,7 @@ namespace EQWOWConverter.Items
         public int NumOfTradeskillsThatCreateIt = 0;
         public int IconID = 0;
         public int TotemDBCID = 0;
+        public int RequiredLevel = 1;
         public string EQItemDisplayFileName = string.Empty;
 
         public ItemTemplate()

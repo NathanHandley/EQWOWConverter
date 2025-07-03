@@ -47,7 +47,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 500);
-            newRow.AddInt("RequiredLevel", 1);
+            newRow.AddInt("RequiredLevel", itemTemplate.RequiredLevel);
             newRow.AddInt("RequiredSkill", 0);
             newRow.AddInt("RequiredSkillRank", 0);
             newRow.AddInt("requiredspell", 0);

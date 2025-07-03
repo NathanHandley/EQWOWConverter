@@ -3066,10 +3066,18 @@ namespace EQWOWConverter
                     }
                     else
                     {
+                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
-                        itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQSpellID].WOWSpellID;
-                        itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplatesByEQID[itemTemplate.EQSpellID].Name);
+                        itemTemplate.WOWSpellID1 = spellTemplate.WOWSpellID;
+                        itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplate.Name);
+                        int minLevel = 256;
+                        foreach (ClassType classType in itemTemplate.AllowedClassTypes)
+                            minLevel = Math.Min(minLevel, spellTemplate.MinimumLearnLevels[classType]);
+                        if (minLevel < 100)
+                            itemTemplate.RequiredLevel = minLevel;
+                        else
+                            itemTemplate.RequiredLevel = 1;
                     }
                 }
 
