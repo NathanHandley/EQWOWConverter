@@ -191,16 +191,16 @@ namespace EQWOWConverter.Spells
         private static void PopulateMinimumLearnLevels(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns)
         {
             // In EQ, a scroll can be learned by multiple classes at different levels
-            spellTemplate.MinimumLearnLevels[ClassType.Warrior] = Math.Min(int.Parse(rowColumns["classes1"]), int.Parse(rowColumns["classes8"])); // EQ Warrior + EQ Bard
-            spellTemplate.MinimumLearnLevels[ClassType.Paladin] = int.Parse(rowColumns["classes3"]); // EQ Paladin
-            spellTemplate.MinimumLearnLevels[ClassType.Hunter] = Math.Min(int.Parse(rowColumns["classes4"]), int.Parse(rowColumns["classes15"])); // EQ Ranger + EQ Beastlord
-            spellTemplate.MinimumLearnLevels[ClassType.Rogue] = Math.Min(int.Parse(rowColumns["classes7"]), int.Parse(rowColumns["classes9"])); // EQ Monk + EQ Rogue
-            spellTemplate.MinimumLearnLevels[ClassType.Priest] = int.Parse(rowColumns["classes2"]); // EQ Cleric
-            spellTemplate.MinimumLearnLevels[ClassType.DeathKnight] = int.Parse(rowColumns["classes5"]); // EQ Shadowknight
-            spellTemplate.MinimumLearnLevels[ClassType.Shaman] = int.Parse(rowColumns["classes10"]); // EQ Shaman
-            spellTemplate.MinimumLearnLevels[ClassType.Mage] = Math.Min(int.Parse(rowColumns["classes12"]), int.Parse(rowColumns["classes13"])); // EQ Mage + EQ Wizard
-            spellTemplate.MinimumLearnLevels[ClassType.Warlock] = Math.Min(int.Parse(rowColumns["classes11"]), int.Parse(rowColumns["classes14"])); // EQ Necromancer + EQ Enchanter
-            spellTemplate.MinimumLearnLevels[ClassType.Druid] = int.Parse(rowColumns["classes6"]); // EQ Druid
+            spellTemplate.MinimumLearnLevels[ClassType.Warrior] = Math.Min(int.Parse(rowColumns["warrior_learn_level"]), int.Parse(rowColumns["bard_learn_level"])); // EQ Warrior + EQ Bard
+            spellTemplate.MinimumLearnLevels[ClassType.Paladin] = int.Parse(rowColumns["paladin_learn_level"]); // EQ Paladin
+            spellTemplate.MinimumLearnLevels[ClassType.Hunter] = Math.Min(int.Parse(rowColumns["ranger_learn_level"]), int.Parse(rowColumns["beastlord_learn_level"])); // EQ Ranger + EQ Beastlord
+            spellTemplate.MinimumLearnLevels[ClassType.Rogue] = Math.Min(int.Parse(rowColumns["monk_learn_level"]), int.Parse(rowColumns["rogue_learn_level"])); // EQ Monk + EQ Rogue
+            spellTemplate.MinimumLearnLevels[ClassType.Priest] = int.Parse(rowColumns["cleric_learn_level"]); // EQ Cleric
+            spellTemplate.MinimumLearnLevels[ClassType.DeathKnight] = int.Parse(rowColumns["shadowknight_learn_level"]); // EQ Shadowknight
+            spellTemplate.MinimumLearnLevels[ClassType.Shaman] = int.Parse(rowColumns["shaman_learn_level"]); // EQ Shaman
+            spellTemplate.MinimumLearnLevels[ClassType.Mage] = Math.Min(int.Parse(rowColumns["magician_learn_level"]), int.Parse(rowColumns["wizard_learn_level"])); // EQ Mage + EQ Wizard
+            spellTemplate.MinimumLearnLevels[ClassType.Warlock] = Math.Min(int.Parse(rowColumns["necromancer_learn_level"]), int.Parse(rowColumns["enchanter_learn_level"])); // EQ Necromancer + EQ Enchanter
+            spellTemplate.MinimumLearnLevels[ClassType.Druid] = int.Parse(rowColumns["druid_learn_level"]); // EQ Druid
         }
 
         private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental)
