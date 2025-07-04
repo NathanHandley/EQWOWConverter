@@ -20,19 +20,26 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ItemTemplateSQL : SQLFile
     {
+        private HashSet<int> insertedItemTemplateEntryIDs = new HashSet<int>();
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(ItemTemplate itemTemplate)
+        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel)
         {
+            // Prevent double-add
+            if (insertedItemTemplateEntryIDs.Contains(entryID))
+                return;
+            insertedItemTemplateEntryIDs.Add(entryID);
+
             SQLRow newRow = new SQLRow();
-            newRow.AddInt("entry", itemTemplate.WOWEntryID);
+            newRow.AddInt("entry", entryID);
             newRow.AddInt("class", itemTemplate.ClassID);
             newRow.AddInt("subclass", itemTemplate.SubClassID);
             newRow.AddInt("SoundOverrideSubclass", -1);
-            newRow.AddString("name", 255, itemTemplate.Name);
+            newRow.AddString("name", 255, name);
             if (itemTemplate.ItemDisplayInfo != null)
                 newRow.AddInt("displayid", itemTemplate.ItemDisplayInfo.ItemDisplayInfoDBCID);
             else
@@ -47,7 +54,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 500);
-            newRow.AddInt("RequiredLevel", itemTemplate.RequiredLevel);
+            newRow.AddInt("RequiredLevel", requiredLevel);
             newRow.AddInt("RequiredSkill", 0);
             newRow.AddInt("RequiredSkillRank", 0);
             newRow.AddInt("requiredspell", 0);
@@ -155,7 +162,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spellcategory_5", 0);
             newRow.AddInt("spellcategorycooldown_5", -1);
             newRow.AddInt("bonding", itemTemplate.IsNoDrop == true ? 1 : 0);
-            newRow.AddString("description", 255, itemTemplate.Description);
+            newRow.AddString("description", 255, description);
             newRow.AddInt("PageText", 0);
             newRow.AddInt("LanguageID", 0);
             newRow.AddInt("PageMaterial", 0);

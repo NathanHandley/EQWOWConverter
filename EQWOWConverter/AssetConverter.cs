@@ -2428,11 +2428,27 @@ namespace EQWOWConverter
 
             // Item data
             // Note: Must come AFTER character start data
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             foreach (ItemTemplate itemTemplate in itemTemplatesByWOWEntry.Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
-                itemDBC.AddRow(itemTemplate);
+                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQSpellID != 0)
+                {
+                    // Spell scrolls get multiplied out by classes
+                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                        itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID);
+                    else
+                    {
+                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                        itemTemplate.ClassID = 9;
+                        itemTemplate.SubClassID = 0;
+                        foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                            itemDBC.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID);
+                    }
+                }
+                else
+                    itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID);
             }
             foreach (ItemDisplayInfo itemDisplayInfo in ItemDisplayInfo.ItemDisplayInfos)
                 itemDisplayInfoDBC.AddRow(itemDisplayInfo);
@@ -2761,6 +2777,7 @@ namespace EQWOWConverter
 
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 if (creatureTemplate.ModelTemplate == null)
@@ -2807,10 +2824,14 @@ namespace EQWOWConverter
                     // If it's a vendor, add the vendor records too
                     if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
                     {
+                        int curSlotNum = 0;
                         foreach(CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
                         {
                             if (vendorItem.WOWItemID != -1)
-                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, vendorItem.Slot);
+                            {
+                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
+                                curSlotNum++;
+                            }
                             else
                             {
                                 if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
@@ -2818,8 +2839,23 @@ namespace EQWOWConverter
                                     Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
                                     continue;
                                 }
+                                ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
 
-                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID].WOWEntryID, vendorItem.Slot);
+                                // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
+                                if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                                {
+                                    npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
+                                    curSlotNum++;
+                                }
+                                else
+                                {
+                                    SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                                    foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                                    {
+                                        npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
+                                        curSlotNum++;
+                                    }
+                                }
                             }
                         }
                     }                      
@@ -3047,7 +3083,6 @@ namespace EQWOWConverter
             }
 
             // Items
-            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
@@ -3063,25 +3098,26 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel);
                     }
                     else
                     {
+                        // If it is a valid spell scroll, there is one scroll per class that can learn it
                         SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
                         itemTemplate.WOWSpellID1 = spellTemplate.WOWSpellID;
                         itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplate.Name);
-                        int minLevel = 256;
-                        foreach (ClassType classType in itemTemplate.AllowedClassTypes)
-                            minLevel = Math.Min(minLevel, spellTemplate.MinimumLearnLevels[classType]);
-                        if (minLevel < 100)
-                            itemTemplate.RequiredLevel = minLevel;
-                        else
-                            itemTemplate.RequiredLevel = 1;
+                        foreach(var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
+                        {
+                            string scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
+                            itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName, itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel);
+                        }
                     }
                 }
+                else
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel);
 
-                itemTemplateSQL.AddRow(itemTemplate);
             }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)

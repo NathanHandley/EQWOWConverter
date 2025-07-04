@@ -22,6 +22,12 @@ namespace EQWOWConverter.Spells
 {
     internal class SpellTemplate
     {
+        internal class SpellLearnScrollProperties
+        {
+            public int LearnLevel = -1;
+            public int WOWItemTemplateID = -1;
+        }
+
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
@@ -112,7 +118,7 @@ namespace EQWOWConverter.Spells
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public UInt32 TargetCreatureType = 0; // No specific creature type
-        public Dictionary<ClassType, int> MinimumLearnLevels = new Dictionary<ClassType, int>();
+        public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -164,7 +170,7 @@ namespace EQWOWConverter.Spells
                 PopulateEQSpellEffect(ref newSpellTemplate, 10, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 11, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
-                PopulateMinimumLearnLevels(ref newSpellTemplate, columns);
+                PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int buffDuration = Convert.ToInt32(columns["buffduration"]);
                 if (buffDuration > 0)
@@ -188,19 +194,39 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void PopulateMinimumLearnLevels(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns)
+        private static void PopulateAllClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns)
         {
             // In EQ, a scroll can be learned by multiple classes at different levels
-            spellTemplate.MinimumLearnLevels[ClassType.Warrior] = Math.Min(int.Parse(rowColumns["warrior_learn_level"]), int.Parse(rowColumns["bard_learn_level"])); // EQ Warrior + EQ Bard
-            spellTemplate.MinimumLearnLevels[ClassType.Paladin] = int.Parse(rowColumns["paladin_learn_level"]); // EQ Paladin
-            spellTemplate.MinimumLearnLevels[ClassType.Hunter] = Math.Min(int.Parse(rowColumns["ranger_learn_level"]), int.Parse(rowColumns["beastlord_learn_level"])); // EQ Ranger + EQ Beastlord
-            spellTemplate.MinimumLearnLevels[ClassType.Rogue] = Math.Min(int.Parse(rowColumns["monk_learn_level"]), int.Parse(rowColumns["rogue_learn_level"])); // EQ Monk + EQ Rogue
-            spellTemplate.MinimumLearnLevels[ClassType.Priest] = int.Parse(rowColumns["cleric_learn_level"]); // EQ Cleric
-            spellTemplate.MinimumLearnLevels[ClassType.DeathKnight] = int.Parse(rowColumns["shadowknight_learn_level"]); // EQ Shadowknight
-            spellTemplate.MinimumLearnLevels[ClassType.Shaman] = int.Parse(rowColumns["shaman_learn_level"]); // EQ Shaman
-            spellTemplate.MinimumLearnLevels[ClassType.Mage] = Math.Min(int.Parse(rowColumns["magician_learn_level"]), int.Parse(rowColumns["wizard_learn_level"])); // EQ Mage + EQ Wizard
-            spellTemplate.MinimumLearnLevels[ClassType.Warlock] = Math.Min(int.Parse(rowColumns["necromancer_learn_level"]), int.Parse(rowColumns["enchanter_learn_level"])); // EQ Necromancer + EQ Enchanter
-            spellTemplate.MinimumLearnLevels[ClassType.Druid] = int.Parse(rowColumns["druid_learn_level"]); // EQ Druid
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Warrior, "warrior", "bard");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Paladin, "paladin");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Hunter, "ranger", "beastlord");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Rogue, "monk", "rogue");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Priest, "cleric");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.DeathKnight, "shadowknight");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Shaman, "shaman");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Mage, "magician", "wizard");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Warlock, "necromancer", "enchanter");
+            PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Druid, "druid");
+        }
+
+        private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassType wowClassType, params string[] eqClassNames)
+        {
+            SpellLearnScrollProperties spellLearnScrollProperties = new SpellLearnScrollProperties();
+            
+            // Use the lowest learn level id properties
+            foreach(string className in eqClassNames)
+            {
+                int curClassLearnlevel = int.Parse(rowColumns[string.Concat(className, "_learn_level")]);
+                if (curClassLearnlevel != -1 && curClassLearnlevel <= 100 && (curClassLearnlevel < spellLearnScrollProperties.LearnLevel || spellLearnScrollProperties.LearnLevel == -1))
+                {
+                    spellLearnScrollProperties.LearnLevel = curClassLearnlevel;
+                    spellLearnScrollProperties.WOWItemTemplateID = int.Parse(rowColumns[string.Concat(className, "_learn_wowitemid")]);
+                }
+            }
+
+            // Only save it if a valid one was found
+            if (spellLearnScrollProperties.LearnLevel > -1)
+                spellTemplate.LearnScrollPropertiesByClassType[wowClassType] = spellLearnScrollProperties;
         }
 
         private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental)

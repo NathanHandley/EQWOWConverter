@@ -20,10 +20,17 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class ItemDBC : DBCFile
     {
-        public void AddRow(ItemTemplate itemTemplate)
+        private HashSet<int> insertedItemTemplateEntryIDs = new HashSet<int>();
+
+        public void AddRow(ItemTemplate itemTemplate, int itemTemplateEntryID)
         {
+            // Prevent double-add
+            if (insertedItemTemplateEntryIDs.Contains(itemTemplateEntryID))
+                return;
+            insertedItemTemplateEntryIDs.Add(itemTemplateEntryID);
+
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(itemTemplate.WOWEntryID);
+            newRow.AddInt32(itemTemplateEntryID);
             newRow.AddInt32(itemTemplate.ClassID);
             newRow.AddInt32(itemTemplate.SubClassID);
             newRow.AddInt32(-1); // Sound Override SubclassID
