@@ -3098,7 +3098,7 @@ namespace EQWOWConverter
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
-                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel);
+                        itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
                     }
                     else
                     {
@@ -3110,13 +3110,16 @@ namespace EQWOWConverter
                         itemTemplate.Description = string.Concat("Teaches the spell: ", spellTemplate.Name);
                         foreach(var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
                         {
-                            string scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
-                            itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName, itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel);
+                            string scrollName = itemTemplate.Name;
+                            if (spellTemplate.LearnScrollPropertiesByClassType.Count != 1)
+                                scrollName = string.Concat(itemTemplate.Name, " (", scrollPropertiesByClassType.Key.ToString(), ")");
+                            itemTemplateSQL.AddRow(itemTemplate, scrollPropertiesByClassType.Value.WOWItemTemplateID, scrollName, 
+                                itemTemplate.Description, scrollPropertiesByClassType.Value.LearnLevel, new List<ClassType>() { scrollPropertiesByClassType.Key });
                         }
                     }
                 }
                 else
-                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel);
+                    itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
 
             }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)

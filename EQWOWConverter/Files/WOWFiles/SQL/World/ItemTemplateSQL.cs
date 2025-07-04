@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using EQWOWConverter.Common;
 using EQWOWConverter.Items;
+using System.Collections.Generic;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -27,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
             return "DELETE FROM `item_template` WHERE `entry` >= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_START + " AND `entry` <= " + Configuration.SQL_ITEM_TEMPLATE_ENTRY_END + ";";
         }
 
-        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel)
+        public void AddRow(ItemTemplate itemTemplate, int entryID, string name, string description, int requiredLevel, List<ClassType> allowedClassTypes)
         {
             // Prevent double-add
             if (insertedItemTemplateEntryIDs.Contains(entryID))
@@ -51,7 +52,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("BuyPrice", itemTemplate.BuyPriceInCopper);
             newRow.AddInt("SellPrice", itemTemplate.SellPriceInCopper);
             newRow.AddInt("InventoryType", Convert.ToInt32(itemTemplate.InventoryType));
-            newRow.AddInt("AllowableClass", CalculateAllowableClasses(itemTemplate));
+            newRow.AddInt("AllowableClass", CalculateAllowableClasses(allowedClassTypes));
             newRow.AddInt("AllowableRace", -1);
             newRow.AddInt("ItemLevel", 500);
             newRow.AddInt("RequiredLevel", requiredLevel);
@@ -202,10 +203,10 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        private int CalculateAllowableClasses(ItemTemplate itemTemplate)
+        private int CalculateAllowableClasses(List<ClassType> allowedClassTypes)
         {
             int allowableClass = 0;
-            foreach (ClassType classType in itemTemplate.AllowedClassTypes)
+            foreach (ClassType classType in allowedClassTypes)
             {
                 if (classType == ClassType.All)
                     return -1;
