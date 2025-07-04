@@ -637,6 +637,7 @@ namespace EQWOWConverter
         // Start and end IDs for template entries
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
+        public static readonly int SQL_ITEM_TEMPLATE_CLASS_SPECIFIC_SPELL_SCROLL_START_ID = 110500; // Through 112887
         public static readonly int SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID = 116000;
 
         // Stand and end IDs for npc_text sql records
