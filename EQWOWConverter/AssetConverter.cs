@@ -1380,7 +1380,7 @@ namespace EQWOWConverter
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
                 gateSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
-                gateSpellTemplate.EffectAura1 = 4; // Dummy
+                gateSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
             }
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
@@ -1433,7 +1433,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.SpellIconID = 253;
             dayPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             dayPhaseSpellTemplate.EffectDieSides1 = 1;
-            dayPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
+            dayPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
             dayPhaseSpellTemplate.EffectMiscValue1 = 2;
             dayPhaseSpellTemplate.EffectBasePoints1 = -1;
             dayPhaseSpellTemplate.SchoolMask = 1;
@@ -1450,7 +1450,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             nightPhaseSpellTemplate.EffectDieSides1 = 1;
             nightPhaseSpellTemplate.SpellIconID = 253;
-            nightPhaseSpellTemplate.EffectAura1 = 261; // Phase Aura
+            nightPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
             nightPhaseSpellTemplate.EffectMiscValue1 = 4;
             nightPhaseSpellTemplate.EffectBasePoints1 = -1;
             nightPhaseSpellTemplate.SchoolMask = 1;

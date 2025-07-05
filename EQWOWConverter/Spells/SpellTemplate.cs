@@ -103,7 +103,9 @@ namespace EQWOWConverter.Spells
         public SpellWOWEffectType EffectType1 = SpellWOWEffectType.None;
         public SpellWOWEffectType EffectType2 = SpellWOWEffectType.None;
         public SpellWOWEffectType EffectType3 = SpellWOWEffectType.None;
-        public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
+        public SpellWOWAuraType EffectAuraType1 = SpellWOWAuraType.None;
+        public SpellWOWAuraType EffectAuraType2 = SpellWOWAuraType.None;
+        public SpellWOWAuraType EffectAuraType3 = SpellWOWAuraType.None;
         public UInt32 EffectItemType1 = 0;
         public UInt32 EffectItemType2 = 0;
         public UInt32 EffectItemType3 = 0;
@@ -404,6 +406,7 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate)
         {
             // Process all spell effects
+            // TODO: Formulas
             int curEffectID = 0;
             foreach(SpellEffect effect in spellTemplate.SpellEffects)
             {
@@ -411,7 +414,6 @@ namespace EQWOWConverter.Spells
                 {
                     case SpellEQEffectType.CurrentHitPoints:
                         {
-                            // TODO: Formulas
                             int effectDieSides = 1;
                             int effectBasePoints = Math.Abs(spellTemplate.SpellEffects[0].EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;

@@ -138,9 +138,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectRadiusIndex1
             newRow.AddUInt32(0); // EffectRadiusIndex2
             newRow.AddUInt32(0); // EffectRadiusIndex3
-            newRow.AddUInt32(spellTemplate.EffectAura1); // EffectAura1
-            newRow.AddUInt32(0); // EffectAura2
-            newRow.AddUInt32(0); // EffectAura3
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType1)); // EffectAura1
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType2)); // EffectAura2
+            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType3)); // EffectAura3
             newRow.AddUInt32(0); // EffectAuraPeriod1
             newRow.AddUInt32(0); // EffectAuraPeriod2
             newRow.AddUInt32(0); // EffectAuraPeriod3
@@ -218,7 +218,7 @@ namespace EQWOWConverter.WOWFiles
 
         private UInt32 GetAttributes(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
             UInt32 attributeFlags = 0;
             if (spellTemplate.AllowCastInCombat == false)
@@ -234,42 +234,42 @@ namespace EQWOWConverter.WOWFiles
 
         private UInt32 GetAttributesEx(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 3072;
             return 0;
         }
 
         private UInt32 GetAttributesExB(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 16385;
             return 0;
         }
 
         private UInt32 GetAttributesExC(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 1048576;
             return 0;
         }
 
         private UInt32 GetAttributesExD(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 128;
             return 0;
         }
 
         private UInt32 GetAttributesExE(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 393224;
             return 0;
         }
 
         private UInt32 GetAttributesExF(SpellTemplate spellTemplate)
         {
-            if (spellTemplate.EffectAura1 == 261) // Phase Aura
+            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
                 return 4096;
             return 0;
         }
