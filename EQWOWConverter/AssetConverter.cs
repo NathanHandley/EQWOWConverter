@@ -1434,7 +1434,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             dayPhaseSpellTemplate.EffectDieSides1 = 1;
             dayPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
-            dayPhaseSpellTemplate.EffectMiscValue1 = 2;
+            dayPhaseSpellTemplate.EffectMiscValueA1 = 2;
             dayPhaseSpellTemplate.EffectBasePoints1 = -1;
             dayPhaseSpellTemplate.SchoolMask = 1;
             dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
@@ -1451,7 +1451,7 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.EffectDieSides1 = 1;
             nightPhaseSpellTemplate.SpellIconID = 253;
             nightPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
-            nightPhaseSpellTemplate.EffectMiscValue1 = 4;
+            nightPhaseSpellTemplate.EffectMiscValueA1 = 4;
             nightPhaseSpellTemplate.EffectBasePoints1 = -1;
             nightPhaseSpellTemplate.SchoolMask = 1;
             nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;

@@ -21,7 +21,7 @@ namespace EQWOWConverter.Spells
         None = 254,
 
         CurrentHitPoints = 0, // value of Negative = Damage and Positive = Heal. 
-        //ArmorClass = 1,
+        ArmorClass = 1,
         //Attack = 2,
         //MovementSpeed = 3,
         //Strength = 4,
@@ -42,6 +42,7 @@ namespace EQWOWConverter.Spells
         //ModFaction = 19,
         //Blind = 20,
         //Stun = 21,
+        TotalHP = 69,
         // TODO: Like 500 more...
     }
 }

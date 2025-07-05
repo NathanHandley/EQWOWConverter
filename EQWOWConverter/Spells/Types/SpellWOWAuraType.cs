@@ -248,7 +248,7 @@ namespace EQWOWConverter.Spells
         PeriodicTriggerSpellWithValue = 227,
         DetectStealth = 228,
         ModAoeDamageAvoidance = 229,
-        Unknown230 = 230,
+        ModMaximumHealth = 230,
         ProcTriggerSpellWithValue = 231,
         MechanicDurationMod = 232,
         ChangeModelForAllHumanoids = 233,

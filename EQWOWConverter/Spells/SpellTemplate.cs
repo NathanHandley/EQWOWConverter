@@ -115,7 +115,12 @@ namespace EQWOWConverter.Spells
         public Int32 EffectBasePoints1 = 0;
         public Int32 EffectBasePoints2 = 0;
         public Int32 EffectBasePoints3 = 0;
-        public int EffectMiscValue1 = 0;
+        public int EffectMiscValueA1 = 0;
+        public int EffectMiscValueA2 = 0;
+        public int EffectMiscValueA3 = 0;
+        public int EffectMiscValueB1 = 0;
+        public int EffectMiscValueB2 = 0;
+        public int EffectMiscValueB3 = 0;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 0;
         public UInt32 RequiredTotemID1 = 0;
@@ -415,12 +420,12 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.CurrentHitPoints:
                         {
                             int effectDieSides = 1;
-                            int effectBasePoints = Math.Abs(spellTemplate.SpellEffects[0].EQBaseValue);
+                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
                             if (effect.EQBaseValue > 0)
                                 wowEffectType = SpellWOWEffectType.Heal;
                             if (curEffectID < 3)
-                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType);
+                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.None, 0, 0);
                             else
                             {
                                 Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
@@ -428,6 +433,35 @@ namespace EQWOWConverter.Spells
                             }
                             curEffectID++;
                         } break;
+                    case SpellEQEffectType.ArmorClass:
+                        {
+                            int effectDieSides = 1;
+                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
+                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            if (curEffectID < 3)
+                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0);
+                            else
+                            {
+                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
+                                continue;
+                            }
+                            curEffectID++;
+                        } break;
+                    case SpellEQEffectType.TotalHP:
+                        {
+                            int effectDieSides = 1;
+                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
+                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            if (curEffectID < 3)
+                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0);
+                            else
+                            {
+                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
+                                continue;
+                            }
+                            curEffectID++;
+                        }
+                        break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", effect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -438,28 +472,37 @@ namespace EQWOWConverter.Spells
         }
 
         private static void PopulateSpellEffectDetailsAtID(ref SpellTemplate spellTemplate, int effectIndex, int effectDieSides, int effectBasePoints, 
-            SpellWOWEffectType wowEffectType)
+            SpellWOWEffectType wowEffectType, SpellWOWAuraType wowAuraType, int miscEffectValueA, int miscEffectValueB)
         {
             switch (effectIndex)
             {
-                case 1:
+                case 0:
                     {
                         spellTemplate.EffectDieSides1 = effectDieSides;
                         spellTemplate.EffectBasePoints1 = effectBasePoints;
                         spellTemplate.EffectType1 = wowEffectType;
+                        spellTemplate.EffectAuraType1 = wowAuraType;
+                        spellTemplate.EffectMiscValueA1 = miscEffectValueA;
+                        spellTemplate.EffectMiscValueB1 = miscEffectValueB;
                     } break;
-                case 2:
+                case 1:
                     {
                         spellTemplate.EffectDieSides2 = effectDieSides;
                         spellTemplate.EffectBasePoints2 = effectBasePoints;
                         spellTemplate.EffectType2 = wowEffectType;
+                        spellTemplate.EffectAuraType2 = wowAuraType;
+                        spellTemplate.EffectMiscValueA2 = miscEffectValueA;
+                        spellTemplate.EffectMiscValueB2 = miscEffectValueB;
                     }
                     break;
-                case 3:
+                case 2:
                     {
                         spellTemplate.EffectDieSides3 = effectDieSides;
                         spellTemplate.EffectBasePoints3 = effectBasePoints;
                         spellTemplate.EffectType3 = wowEffectType;
+                        spellTemplate.EffectAuraType3 = wowAuraType;
+                        spellTemplate.EffectMiscValueA3 = miscEffectValueA;
+                        spellTemplate.EffectMiscValueB3 = miscEffectValueB;
                     }
                     break;
                 default:

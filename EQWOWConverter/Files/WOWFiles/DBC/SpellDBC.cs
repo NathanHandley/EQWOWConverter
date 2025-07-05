@@ -153,12 +153,12 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.EffectItemType1); // EffectItemType1
             newRow.AddUInt32(spellTemplate.EffectItemType2); // EffectItemType2
             newRow.AddUInt32(spellTemplate.EffectItemType3); // EffectItemType3
-            newRow.AddInt32(spellTemplate.EffectMiscValue1); // EffectMiscValue1
-            newRow.AddInt32(0); // EffectMiscValue2
-            newRow.AddInt32(0); // EffectMiscValue3
-            newRow.AddInt32(0); // EffectMiscValueB1
-            newRow.AddInt32(0); // EffectMiscValueB2
-            newRow.AddInt32(0); // EffectMiscValueB3
+            newRow.AddInt32(spellTemplate.EffectMiscValueA1); // EffectMiscValue1
+            newRow.AddInt32(spellTemplate.EffectMiscValueA2); // EffectMiscValue2
+            newRow.AddInt32(spellTemplate.EffectMiscValueA3); // EffectMiscValue3
+            newRow.AddInt32(spellTemplate.EffectMiscValueB1); // EffectMiscValueB1
+            newRow.AddInt32(spellTemplate.EffectMiscValueB2); // EffectMiscValueB2
+            newRow.AddInt32(spellTemplate.EffectMiscValueB3); // EffectMiscValueB3
             newRow.AddUInt32(0); // EffectTriggerSpell1
             newRow.AddUInt32(0); // EffectTriggerSpell2
             newRow.AddUInt32(0); // EffectTriggerSpell3
