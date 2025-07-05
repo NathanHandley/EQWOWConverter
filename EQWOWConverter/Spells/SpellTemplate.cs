@@ -101,10 +101,18 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public SpellWOWEffectType EffectType1 = SpellWOWEffectType.None;
+        public SpellWOWEffectType EffectType2 = SpellWOWEffectType.None;
+        public SpellWOWEffectType EffectType3 = SpellWOWEffectType.None;
         public UInt32 EffectAura1 = 0; // 4 = SPELL_AURA_DUMMY
         public UInt32 EffectItemType1 = 0;
+        public UInt32 EffectItemType2 = 0;
+        public UInt32 EffectItemType3 = 0;
         public Int32 EffectDieSides1 = 0;
+        public Int32 EffectDieSides2 = 0;
+        public Int32 EffectDieSides3 = 0;
         public Int32 EffectBasePoints1 = 0;
+        public Int32 EffectBasePoints2 = 0;
+        public Int32 EffectBasePoints3 = 0;
         public int EffectMiscValue1 = 0;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 0;
@@ -395,31 +403,70 @@ namespace EQWOWConverter.Spells
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate)
         {
-            // Setting the spell effect type (TODO: Refine this)
-            if (spellTemplate.SpellEffects[0].EQEffectType == SpellEQEffectType.CurrentHitPoints)
+            // Process all spell effects
+            int curEffectID = 0;
+            foreach(SpellEffect effect in spellTemplate.SpellEffects)
             {
-                if (spellTemplate.SpellEffects[0].EQBaseValue < 0)
-                    spellTemplate.EffectType1 = SpellWOWEffectType.SchoolDamage;
-                else if (spellTemplate.SpellEffects[0].EQBaseValue > 0)
-                    spellTemplate.EffectType1 = SpellWOWEffectType.Heal;
+                switch (effect.EQEffectType)
+                {
+                    case SpellEQEffectType.CurrentHitPoints:
+                        {
+                            // TODO: Formulas
+                            int effectDieSides = 1;
+                            int effectBasePoints = Math.Abs(spellTemplate.SpellEffects[0].EQBaseValue);
+                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
+                            if (effect.EQBaseValue > 0)
+                                wowEffectType = SpellWOWEffectType.Heal;
+                            if (curEffectID < 3)
+                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType);
+                            else
+                            {
+                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
+                                continue;
+                            }
+                            curEffectID++;
+                        } break;
+                    default:
+                        {
+                            Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", effect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
+                            continue;
+                        }
+                }
             }
+        }
 
-            // Set the effect amount
-            switch (spellTemplate.SpellEffects[0].EQEffectType)
+        private static void PopulateSpellEffectDetailsAtID(ref SpellTemplate spellTemplate, int effectIndex, int effectDieSides, int effectBasePoints, 
+            SpellWOWEffectType wowEffectType)
+        {
+            switch (effectIndex)
             {
-                case SpellEQEffectType.CurrentHitPoints:
+                case 1:
                     {
-                        // TODO: Formulas
-                        spellTemplate.EffectDieSides1 = 1;
-                        spellTemplate.EffectBasePoints1 = Math.Abs(spellTemplate.SpellEffects[0].EQBaseValue);
+                        spellTemplate.EffectDieSides1 = effectDieSides;
+                        spellTemplate.EffectBasePoints1 = effectBasePoints;
+                        spellTemplate.EffectType1 = wowEffectType;
+                    } break;
+                case 2:
+                    {
+                        spellTemplate.EffectDieSides2 = effectDieSides;
+                        spellTemplate.EffectBasePoints2 = effectBasePoints;
+                        spellTemplate.EffectType2 = wowEffectType;
+                    }
+                    break;
+                case 3:
+                    {
+                        spellTemplate.EffectDieSides3 = effectDieSides;
+                        spellTemplate.EffectBasePoints3 = effectBasePoints;
+                        spellTemplate.EffectType3 = wowEffectType;
                     }
                     break;
                 default:
                     {
-                        Logger.WriteError(string.Concat("Unhandled SpellTemplate EQEffectType of ", spellTemplate.SpellEffects[0].EQEffectType, " for eq spell id ", spellTemplate.EQSpellID));
+                        Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex > 3");
                         return;
                     }
             }
+
         }
     }
 }

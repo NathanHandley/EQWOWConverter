@@ -115,17 +115,17 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes
             newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType1)); // Effect1
-            newRow.AddInt32(0); // Effect2
-            newRow.AddInt32(0); // Effect3
+            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType2)); // Effect2
+            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType3)); // Effect3
             newRow.AddInt32(spellTemplate.EffectDieSides1); // EffectDieSides1
-            newRow.AddInt32(0); // EffectDieSides2
-            newRow.AddInt32(0); // EffectDieSides3
+            newRow.AddInt32(spellTemplate.EffectDieSides2); // EffectDieSides2
+            newRow.AddInt32(spellTemplate.EffectDieSides3); // EffectDieSides3
             newRow.AddFloat(0); // EffectRealPointsPerLevel1
             newRow.AddFloat(0); // EffectRealPointsPerLevel2
             newRow.AddFloat(0); // EffectRealPointsPerLevel3
             newRow.AddInt32(spellTemplate.EffectBasePoints1); // EffectBasePoints1
-            newRow.AddInt32(0); // EffectBasePoints2
-            newRow.AddUInt32(0); // EffectBasePoints3
+            newRow.AddInt32(spellTemplate.EffectBasePoints2); // EffectBasePoints2
+            newRow.AddInt32(spellTemplate.EffectBasePoints3); // EffectBasePoints3
             newRow.AddUInt32(0); // EffectMechanic1
             newRow.AddUInt32(0); // EffectMechanic2
             newRow.AddUInt32(0); // EffectMechanic3
@@ -151,8 +151,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectChainTargets2
             newRow.AddUInt32(0); // EffectChainTargets3
             newRow.AddUInt32(spellTemplate.EffectItemType1); // EffectItemType1
-            newRow.AddUInt32(0); // EffectItemType2
-            newRow.AddUInt32(0); // EffectItemType3
+            newRow.AddUInt32(spellTemplate.EffectItemType2); // EffectItemType2
+            newRow.AddUInt32(spellTemplate.EffectItemType3); // EffectItemType3
             newRow.AddInt32(spellTemplate.EffectMiscValue1); // EffectMiscValue1
             newRow.AddInt32(0); // EffectMiscValue2
             newRow.AddInt32(0); // EffectMiscValue3
