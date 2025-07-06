@@ -86,12 +86,12 @@ namespace EQWOWConverter
                 // Bring in the objects of this directory
                 FileTool.CopyDirectoryAndContents(topDirectory, tempFolderRoot, true, true);
 
-                // Skip client data and sky for now
-                if (topDirectoryFolderNameOnly == "clientdata" || topDirectoryFolderNameOnly == "sky" || topDirectoryFolderNameOnly == "frontend" || topDirectoryFolderNameOnly == "video")
+                // Skip some the following folders
+                if (topDirectoryFolderNameOnly == "sky" || topDirectoryFolderNameOnly == "frontend" || topDirectoryFolderNameOnly == "video")
                     continue;
 
-                // If it's the character, music, equipment, or sound folder then copy it as-is
-                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment")
+                // If it's the character, music, equipment, clientdata, or sound folder then copy it as-is
+                if (topDirectoryFolderNameOnly == "characters" || topDirectoryFolderNameOnly == "sounds" || topDirectoryFolderNameOnly == "music" || topDirectoryFolderNameOnly == "equipment" || topDirectoryFolderNameOnly == "clientdata")
                 {
                     Logger.WriteDebug("- [" + topDirectoryFolderNameOnly + "] Copying special folder containing these objects");
                     string outputFolder = Path.Combine(eqExportsCondensedPath, topDirectoryFolderNameOnly);
