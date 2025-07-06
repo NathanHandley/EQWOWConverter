@@ -162,8 +162,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
                 newSpellTemplate.Name = columns["name"];
-                newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
-                newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
+                //newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
+                //newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 // TODO: AOE range?
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["recast_time"]); // "recovery_time" is if interrupted 
@@ -412,6 +412,7 @@ namespace EQWOWConverter.Spells
         {
             // Process all spell effects
             // TODO: Formulas
+            // TODO: Spell / Attack power
             int curEffectID = 0;
             foreach(SpellEffect effect in spellTemplate.SpellEffects)
             {
@@ -423,7 +424,12 @@ namespace EQWOWConverter.Spells
                             int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
                             if (effect.EQBaseValue > 0)
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Heal the target for ", effectBasePoints));
                                 wowEffectType = SpellWOWEffectType.Heal;
+                            }
+                            else
+                                spellTemplate.AddToDescription(string.Concat("Damage the target for ", effectBasePoints));
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.None, 0, 0);
                             curEffectID++;
                         } break;
@@ -432,6 +438,8 @@ namespace EQWOWConverter.Spells
                             int effectDieSides = 1;
                             int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            spellTemplate.AddToDescription(string.Concat("Increase the target's armor by ", effectBasePoints));
+                            spellTemplate.AddToAuraDescription(string.Concat("Armor increased by ", effectBasePoints));
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0);
                             curEffectID++;
                         } break;
@@ -440,6 +448,8 @@ namespace EQWOWConverter.Spells
                             int effectDieSides = 1;
                             int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            spellTemplate.AddToDescription(string.Concat("Increase the target's maximum health by ", effectBasePoints));
+                            spellTemplate.AddToAuraDescription(string.Concat("Maximum health increased by ", effectBasePoints));
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0);
                             curEffectID++;
                         }
@@ -493,7 +503,45 @@ namespace EQWOWConverter.Spells
                         return;
                     }
             }
+        }
 
+        private void AddToDescription(string descriptionToAdd)
+        {
+            Description = GetFormattedDescription(Description, descriptionToAdd);
+        }
+
+        private void AddToAuraDescription(string descriptionToAdd)
+        {
+            AuraDescription = GetFormattedDescription(AuraDescription, descriptionToAdd);
+        }
+
+        private static string GetFormattedDescription(string initialDescription, string descriptionToAdd)
+        {
+            // Remove a period from the added description if added by mistake
+            if (descriptionToAdd.EndsWith("."))
+                descriptionToAdd = descriptionToAdd.Substring(0, descriptionToAdd.Length - 1);
+            if (descriptionToAdd.Length == 0)
+                return initialDescription;
+
+            // Different logic if appending vs new
+            if (initialDescription.Length > 0)
+            {
+                // Strip the last period
+                if (initialDescription.EndsWith(".") == true)
+                    initialDescription = initialDescription.Substring(0, initialDescription.Length - 1);
+
+                // Make sure the first character is lowercase since there's already text
+                string descriptionToAddLowerFirst = char.ToLower(descriptionToAdd[0]) + descriptionToAdd.Substring(1);
+
+                // Add it
+                return string.Concat(initialDescription, ", and ", descriptionToAddLowerFirst, ".");
+            }
+            else
+            {
+                // Make sure the first letter is uppercase before adding
+                descriptionToAdd = char.ToUpper(descriptionToAdd[0]) + descriptionToAdd.Substring(1);
+                return string.Concat(descriptionToAdd, ".");
+            }
         }
     }
 }
