@@ -122,7 +122,7 @@ namespace EQWOWConverter.Spells
         public int EffectMiscValueB2 = 0;
         public int EffectMiscValueB3 = 0;
         public int RequiredAreaIDs = -1;
-        public UInt32 SchoolMask = 0;
+        public UInt32 SchoolMask = 1;
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
         public UInt32 SpellFocusID = 0;
@@ -424,13 +424,7 @@ namespace EQWOWConverter.Spells
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
                             if (effect.EQBaseValue > 0)
                                 wowEffectType = SpellWOWEffectType.Heal;
-                            if (curEffectID < 3)
-                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.None, 0, 0);
-                            else
-                            {
-                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
-                                continue;
-                            }
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.None, 0, 0);
                             curEffectID++;
                         } break;
                     case SpellEQEffectType.ArmorClass:
@@ -438,13 +432,7 @@ namespace EQWOWConverter.Spells
                             int effectDieSides = 1;
                             int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            if (curEffectID < 3)
-                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0);
-                            else
-                            {
-                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
-                                continue;
-                            }
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0);
                             curEffectID++;
                         } break;
                     case SpellEQEffectType.TotalHP:
@@ -452,13 +440,7 @@ namespace EQWOWConverter.Spells
                             int effectDieSides = 1;
                             int effectBasePoints = Math.Abs(effect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            if (curEffectID < 3)
-                                PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0);
-                            else
-                            {
-                                Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " had more than 3 effect types");
-                                continue;
-                            }
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0);
                             curEffectID++;
                         }
                         break;
@@ -507,7 +489,7 @@ namespace EQWOWConverter.Spells
                     break;
                 default:
                     {
-                        Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex > 3");
+                        Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex >= 3, so this effect is ignored");
                         return;
                     }
             }
