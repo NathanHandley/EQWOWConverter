@@ -29,7 +29,7 @@ namespace EQWOWConverter.EQFiles
             public int[] EmissionTypeIDs = new int[3]; // -1 = None, 0 = Hands, 1 = Cone to the right, 2 = Sphere around player, 3 = Disc on the ground, 4 = Column from the ground, 5 = Disc at the player center
             public string[] SpriteListNames = new string[12]; // Up to 12 sprites used for animating particles. Loop through until the end and start at begining. Porticles oriented in a circle, with each 30 degrees from the next for a total of 360 degrees.
             public int SpriteListEffect; // 1 = Projectile, 2 = Disc pulsating outward and then inward
-            public int Flags = 0; // (zero based) Bit3 = Rain Effect, Bit5 and 6 are always 1.  7-15 are unused.  Others are unknown.
+            public int SoundID = 0; // Values look to be between 103-113. -1 for no sound
             public ColorRGBA[] EmitterColors = new ColorRGBA[3]; // BGRX formation, where X (otherwise alpha) is unused
             public float[] EmitterGravities = new float[3];
             public float[] EmitterSpawnXs = new float[3]; // #1 can be 1 or -1, #2 can be 1, #3 can be 1 or -1 (?)
@@ -61,7 +61,7 @@ namespace EQWOWConverter.EQFiles
                 for (int i = 0; i < 12; i++)
                     SpriteListNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                 SpriteListEffect = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
-                Flags = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
+                SoundID = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
                     EmitterColors[i] = ByteTool.ReadColorBGRAFromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
