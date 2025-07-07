@@ -568,6 +568,11 @@ namespace EQWOWConverter
         // ID for SpellRange.dbc
         public static readonly int DBCID_SPELLRANGE_ID_START = 190;
 
+        // IDs for the SpellVisual line of DBC files
+        public static readonly int DBCID_SPELLVISUAL_ID_START = 17000;
+        public static readonly int DBCID_SPELLVISUALKIT_ID_START = 16000;
+        public static readonly int DBCID_SPELLVISUALEFFECTNAME_ID_START = 7200;
+
         // ID for TaxiPath.dbc
         public static readonly int DBCID_TAXIPATH_ID_START = 2000;
 

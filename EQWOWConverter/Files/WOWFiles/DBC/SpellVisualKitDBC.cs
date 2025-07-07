@@ -18,6 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellVisualKitDBC : DBCFile
     {
+        private static int CUR_ID = Configuration.DBCID_SPELLVISUALKIT_ID_START;
+        private static readonly object SpellVisualKitIDLock = new object();
+
         public void AddRow(int id)
         {
             DBCRow newRow = new DBCRow();
@@ -60,6 +63,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // CharParamThree
             newRow.AddInt32(0); // Flags
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            lock (SpellVisualKitIDLock)
+            {
+                int id = CUR_ID;
+                CUR_ID++;
+                return id;
+            }
         }
     }
 }

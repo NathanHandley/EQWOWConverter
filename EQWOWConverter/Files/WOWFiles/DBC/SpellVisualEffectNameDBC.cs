@@ -18,6 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellVisualEffectNameDBC : DBCFile
     {
+        private static int CUR_ID = Configuration.DBCID_SPELLVISUALEFFECTNAME_ID_START;
+        private static readonly object SpellVisualEffectNameIDLock = new object();
+
         public void AddRow(int id, string name, string relativeFileName)
         {
             DBCRow newRow = new DBCRow();
@@ -29,6 +32,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0.01f); // MinAllowedScale (Lots of 0.01)
             newRow.AddFloat(100); // MaxAllowedScale (mostly 100, but see some 10)
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            lock (SpellVisualEffectNameIDLock)
+            {
+                int id = CUR_ID;
+                CUR_ID++;
+                return id;
+            }
         }
     }
 }

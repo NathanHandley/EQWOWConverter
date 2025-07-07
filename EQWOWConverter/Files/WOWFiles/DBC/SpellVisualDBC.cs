@@ -18,6 +18,9 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellVisualDBC : DBCFile
     {
+        private static int CUR_ID = Configuration.DBCID_SPELLVISUAL_ID_START;
+        private static readonly object SpellVisualIDLock = new object();
+
         public void AddRow(int id, string name, string relativeFileName)
         {
             DBCRow newRow = new DBCRow();
@@ -54,6 +57,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddFloat(0); // MissileImpactOffsetY
             newRow.AddFloat(0); // MissileImpactOffsetZ
             Rows.Add(newRow);
+        }
+
+        public static int GenerateID()
+        {
+            lock (SpellVisualIDLock)
+            {
+                int id = CUR_ID;
+                CUR_ID++;
+                return id;
+            }
         }
     }
 }
