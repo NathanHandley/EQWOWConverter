@@ -18,7 +18,7 @@ using EQWOWConverter.Common;
 
 namespace EQWOWConverter.EQFiles
 {
-    // Much of this structure data was from research from "Stolistic" on the Project Latern discord
+    // Much of this structure data was from research from "Stolistic" on the Project Latern discord (posted 12/30/2022 in #latern-general)
     internal class EQSpellsEFF
     {
         internal class SectionData
