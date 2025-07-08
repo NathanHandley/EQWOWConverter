@@ -131,7 +131,7 @@ namespace EQWOWConverter.Common
             {
                 return Configuration.AUDIO_CREATURE_SOUND_VOLUME;
             }
-            else if (Type == SoundType.Casting)
+            else if (Type == SoundType.Spell)
             {
                 return Configuration.AUDIO_SPELL_SOUND_VOLUME;
             }

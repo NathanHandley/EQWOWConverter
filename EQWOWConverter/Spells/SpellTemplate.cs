@@ -203,7 +203,7 @@ namespace EQWOWConverter.Spells
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
-                if (spellVisualEffectIndex > 0 && spellVisualEffectIndex < 52)
+                if (spellVisualEffectIndex >= 0 && spellVisualEffectIndex < 52)
                     newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisualByEffectID(spellVisualEffectIndex).SpellVisualDBCID);
 
                 // Convert the spell effects

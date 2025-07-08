@@ -117,11 +117,14 @@ namespace EQWOWConverter.Spells
                 if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == false)
                 {
                     string name = string.Concat("EQ Spell ", soundFileNameNoExt);
-                    Sound sound = new Sound(name, soundFileNameNoExt, SoundType.Casting, 8, 45, false);
+                    Sound sound = new Sound(name, soundFileNameNoExt, SoundType.Spell, 8, 45, false);
                     SoundsByFileNameNoExt.Add(soundFileNameNoExt, sound);
                 }
                 spellVisual.SoundEntryDBCIDInStage[(int)stageType] = SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
             }
+
+            // Animation
+            spellVisual.AnimationIDInStage[(int)stageType] = GetCasterAnimationIDByEffectIndex(0); // Temp
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)
@@ -145,7 +148,8 @@ namespace EQWOWConverter.Spells
 
         private static int GetCasterAnimationIDByEffectIndex(int effectIndex)
         {
-            return 0;
+            // Temp value for testing
+            return 52;
         }
     }
 }

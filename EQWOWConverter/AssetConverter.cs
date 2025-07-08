@@ -2502,7 +2502,7 @@ namespace EQWOWConverter
             foreach (var soundByFileNameNoExt in SpellVisual.SoundsByFileNameNoExt)
             {
                 string soundDirectoryRelative = Path.Combine("Sound", "Spells", "Everquest");
-                soundEntriesDBC.AddRow(soundByFileNameNoExt.Value, soundByFileNameNoExt.Key, soundDirectoryRelative);
+                soundEntriesDBC.AddRow(soundByFileNameNoExt.Value, soundByFileNameNoExt.Key + ".wav", soundDirectoryRelative);
             }
             foreach (SpellVisual spellVisual in SpellVisual.GetSpellVisuals())
             {
