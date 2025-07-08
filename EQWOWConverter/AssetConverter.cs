@@ -1360,6 +1360,22 @@ namespace EQWOWConverter
             // Add any custom spells
             GenerateCustomSpells(ref spellTemplates);
 
+            // Create the spell visual data
+            SpellVisual.GenerateWOWSpellVisualData();
+
+            // Copy the spell sounds for staging
+            string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
+            string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            foreach (Sound sound in SpellVisual.SoundsByFileNameNoExt.Values)
+            {
+                string outputSpellSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "Spells", "Everquest");
+                if (Directory.Exists(outputSpellSoundFolder) == false)
+                    FileTool.CreateBlankDirectory(outputSpellSoundFolder, true);
+                string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                string targetFullPath = Path.Combine(outputSpellSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
+                FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
+
             Logger.WriteDebug("Generating spells complete.");
         }
 
@@ -1797,6 +1813,11 @@ namespace EQWOWConverter
             string fullLiquidMaterialsPath = Path.Combine(mpqReadyFolder, relativeLiquidMaterialsPath);
             mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullLiquidMaterialsPath + "\" \"" + relativeLiquidMaterialsPath + "\" /r");
 
+            // Spell Sounds
+            string relativeSpellSoundsPath = Path.Combine("Sound", "Spells", "Everquest");
+            string fullSpellSoundsPath = Path.Combine(mpqReadyFolder, relativeSpellSoundsPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullSpellSoundsPath + "\" \"" + relativeSpellSoundsPath + "\" /r");
+
             // DBC Files
             string relativeDBCClientPath = Path.Combine("DBFilesClient");
             string fullDBCClientPath = Path.Combine(mpqReadyFolder, relativeDBCClientPath);
@@ -2181,6 +2202,10 @@ namespace EQWOWConverter
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
             SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
             spellRangeDBC.LoadFromDisk(dbcInputFolder, "SpellRange.dbc");
+            SpellVisualDBC spellVisualDBC = new SpellVisualDBC();
+            spellVisualDBC.LoadFromDisk(dbcInputFolder, "SpellVisual.dbc");
+            SpellVisualKitDBC spellVisualKitDBC = new SpellVisualKitDBC();
+            spellVisualKitDBC.LoadFromDisk(dbcInputFolder, "SpellVisualKit.dbc");
             TaxiPathDBC taxiPathDBC = new TaxiPathDBC();
             taxiPathDBC.LoadFromDisk(dbcInputFolder, "TaxiPath.dbc");
             TaxiPathNodeDBC taxiPathNodeDBC = new TaxiPathNodeDBC();
@@ -2473,6 +2498,11 @@ namespace EQWOWConverter
                 spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
             foreach (var spellDurationDBCIDByDurationInMS in SpellTemplate.SpellDurationDBCIDsByDurationInMS)
                 spellDurationDBC.AddRow(spellDurationDBCIDByDurationInMS.Value, spellDurationDBCIDByDurationInMS.Key);
+            foreach (var soundByFileNameNoExt in SpellVisual.SoundsByFileNameNoExt)
+            {
+                string soundDirectoryRelative = Path.Combine("Sound", "Spells", "Everquest");
+                soundEntriesDBC.AddRow(soundByFileNameNoExt.Value, soundByFileNameNoExt.Key, soundDirectoryRelative);
+            }
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)

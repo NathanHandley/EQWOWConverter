@@ -96,14 +96,13 @@ namespace EQWOWConverter.Spells
             spellVisual.SoundEntryDBCIDInStage[(int)stageType] = 0;
             if (soundFileNameNoExt != string.Empty)
             {
-                if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == true)
-                    spellVisual.SoundEntryDBCIDInStage[(int)stageType] = SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
-                else
+                if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == false)
                 {
                     string name = string.Concat("EQ Spell ", soundFileNameNoExt);
                     Sound sound = new Sound(name, soundFileNameNoExt, SoundType.Casting, 8, 45, false);
                     SoundsByFileNameNoExt.Add(soundFileNameNoExt, sound);
                 }
+                spellVisual.SoundEntryDBCIDInStage[(int)stageType] = SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
             }
         }
 
