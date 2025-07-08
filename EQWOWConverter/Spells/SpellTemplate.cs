@@ -145,7 +145,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void LoadSpellTemplates()
+        public static void LoadSpellTemplates()
         {
             // Load the spell templates
             string spellTemplatesFile = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellTemplates.csv");
@@ -200,6 +200,11 @@ namespace EQWOWConverter.Spells
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
                 PopulateTarget(ref newSpellTemplate, eqTargetTypeID, isDetrimental);
+
+                // Visual
+                int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
+                if (spellVisualEffectIndex > 0 && spellVisualEffectIndex < 52)
+                    newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisualByEffectID(spellVisualEffectIndex).SpellVisualDBCID);
 
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate);

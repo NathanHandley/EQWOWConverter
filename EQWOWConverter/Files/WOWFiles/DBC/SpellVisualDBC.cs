@@ -14,6 +14,8 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Spells;
+
 namespace EQWOWConverter.WOWFiles
 {
     internal class SpellVisualDBC : DBCFile
@@ -21,13 +23,13 @@ namespace EQWOWConverter.WOWFiles
         private static int CUR_ID = Configuration.DBCID_SPELLVISUAL_ID_START;
         private static readonly object SpellVisualIDLock = new object();
 
-        public void AddRow(int id, string name, string relativeFileName)
+        public void AddRow(SpellVisual spellVisual)
         {
             DBCRow newRow = new DBCRow();
-            newRow.AddInt32(id); // ID
-            newRow.AddInt32(0); // PrecastKit (SpellVisualKit.ID for the casting)
-            newRow.AddInt32(0); // CastKit" (SpellVisualKit.ID when the spell lets loose)
-            newRow.AddInt32(0); // ImpactKit (SpellVisualKit.ID on the target)
+            newRow.AddInt32(spellVisual.SpellVisualDBCID); // ID
+            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Precast]); // PrecastKit (SpellVisualKit.ID for the casting)
+            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Cast]); // CastKit" (SpellVisualKit.ID when the spell lets loose)
+            newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)SpellVisualStageType.Impact]); // ImpactKit (SpellVisualKit.ID on the target)
             newRow.AddInt32(0); // StateKit (SpellVisualKit.ID shown when a buff/debuff is on the target)
             newRow.AddInt32(0); // StateDoneKit (SpellVisualKit.ID)
             newRow.AddInt32(0); // ChannelKit (SpellVisualKit.ID for channeling a spell)

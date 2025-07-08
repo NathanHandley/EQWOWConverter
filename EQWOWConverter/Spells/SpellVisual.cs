@@ -16,23 +16,19 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Spells
 {
     internal class SpellVisual
     {
-        enum SpellVisualStageType : int
-        {
-            Precast,
-            Cast,
-            Impact
-        }
-
         private static EQSpellsEFF? EQSpellsEFF = null;
         private static readonly object SpellVisualLock = new object();
         private static List<SpellVisual> SpellVisuals = new List<SpellVisual>();
         public static Dictionary<string, Sound> SoundsByFileNameNoExt = new Dictionary<string, Sound>();
 
+        public int SpellVisualDBCID = 0;
+        public int[] SpellVisualKitDBCIDsInStage = new int[3];
         public int[] AnimationIDInStage = new int[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
 
@@ -48,6 +44,24 @@ namespace EQWOWConverter.Spells
             EQSpellsEFF = new EQSpellsEFF();
             EQSpellsEFF.LoadFromDisk(spellsEFFFileFullPath);
             Logger.WriteDebug("Loading EQ Spell Visual Effects Data complete...");
+        }
+
+        public static List<SpellVisual> GetSpellVisuals()
+        {
+            lock (SpellVisualLock)
+            {
+                return SpellVisuals;
+            }
+        }
+
+        public static SpellVisual GetSpellVisualByEffectID(int effectID)
+        {
+            lock (SpellVisualLock)
+            {
+                if (SpellVisuals.Count == 0)
+                    GenerateWOWSpellVisualData();
+                return SpellVisuals[effectID];
+            }
         }
 
         public static void GenerateWOWSpellVisualData()
@@ -70,6 +84,7 @@ namespace EQWOWConverter.Spells
                 {
                     EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
                     SpellVisual spellVisual = new SpellVisual();
+                    spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
 
                     // Source data
                     EQSpellsEFF.SectionData sourceSectionData = spellEffect.SectionDatas[0];
@@ -91,6 +106,9 @@ namespace EQWOWConverter.Spells
 
         private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.SectionData effSectionData, SpellVisualStageType stageType)
         {
+            // ID
+            spellVisual.SpellVisualKitDBCIDsInStage[(int)stageType] = SpellVisualKitDBC.GenerateID();
+
             // Sound data
             string soundFileNameNoExt = GetSoundFileNameNoExtFromSoundID(effSectionData.SoundID);
             spellVisual.SoundEntryDBCIDInStage[(int)stageType] = 0;
@@ -110,17 +128,17 @@ namespace EQWOWConverter.Spells
         {
             switch (soundID)
             {
-                case 103: return "spell_1.wav"; // TODO: Confirm
-                case 104: return "spell_2.wav";
-                case 105: return "spell_3.wav";
-                case 106: return "spell_4.wav";
-                case 107: return "spell_5.wav";
-                case 108: return "spelcast.wav";
-                case 109: return "spelgdht.wav";
-                case 110: return "spellhit1.wav"; // TODO: Confirm
-                case 111: return "spellhit2.wav";
-                case 112: return "spellhit3.wav"; // TODO: Confirm
-                case 113: return "spellhit4.wav";
+                case 103: return "spell_1"; // TODO: Confirm
+                case 104: return "spell_2";
+                case 105: return "spell_3";
+                case 106: return "spell_4";
+                case 107: return "spell_5";
+                case 108: return "spelcast";
+                case 109: return "spelgdht";
+                case 110: return "spelhit1"; // TODO: Confirm
+                case 111: return "spelhit2";
+                case 112: return "spelhit3"; // TODO: Confirm
+                case 113: return "spelhit4";
                 default: return string.Empty;
             }
         }

@@ -1354,14 +1354,15 @@ namespace EQWOWConverter
         {
             Logger.WriteInfo("Generating spells...");
 
+            // Create the spell visual data
+            SpellVisual.GenerateWOWSpellVisualData();
+
             // Load spell templates
+            SpellTemplate.LoadSpellTemplates();
             spellTemplates = SpellTemplate.GetSpellTemplatesByEQID().Values.ToList();
 
             // Add any custom spells
             GenerateCustomSpells(ref spellTemplates);
-
-            // Create the spell visual data
-            SpellVisual.GenerateWOWSpellVisualData();
 
             // Copy the spell sounds for staging
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
@@ -2503,6 +2504,12 @@ namespace EQWOWConverter
                 string soundDirectoryRelative = Path.Combine("Sound", "Spells", "Everquest");
                 soundEntriesDBC.AddRow(soundByFileNameNoExt.Value, soundByFileNameNoExt.Key, soundDirectoryRelative);
             }
+            foreach (SpellVisual spellVisual in SpellVisual.GetSpellVisuals())
+            {
+                spellVisualDBC.AddRow(spellVisual);
+                for (int i = 0; i < 3; i++)
+                    spellVisualKitDBC.AddRow(spellVisual, (SpellVisualStageType)i);
+            }            
 
             // Transports
             if (Configuration.GENERATE_TRANSPORTS == true)
@@ -2667,6 +2674,10 @@ namespace EQWOWConverter
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
             spellRangeDBC.SaveToDisk(dbcOutputClientFolder);
             spellRangeDBC.SaveToDisk(dbcOutputServerFolder);
+            spellVisualDBC.SaveToDisk(dbcOutputClientFolder);
+            spellVisualDBC.SaveToDisk(dbcOutputServerFolder);
+            spellVisualKitDBC.SaveToDisk(dbcOutputClientFolder);
+            spellVisualKitDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathDBC.SaveToDisk(dbcOutputClientFolder);
             taxiPathDBC.SaveToDisk(dbcOutputServerFolder);
             taxiPathNodeDBC.SaveToDisk(dbcOutputClientFolder);
