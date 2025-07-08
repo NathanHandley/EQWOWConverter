@@ -19,6 +19,7 @@ namespace EQWOWConverter.Common
     internal class Sound
     {
         private static int CURRENT_SOUNDENTRY_ID = Configuration.DBCID_SOUNDENTRIES_ID_START;
+        private static readonly object SoundLock = new object();
 
         public int DBCID;
         public string Name = string.Empty;
@@ -32,15 +33,18 @@ namespace EQWOWConverter.Common
 
         public Sound(string name, string audioFileNameNoExt, SoundType type, float minDistance, float distanceCutoff, bool loop, float volume = 1f)
         {
-            DBCID = CURRENT_SOUNDENTRY_ID;
-            CURRENT_SOUNDENTRY_ID++;
-            Name = name;
-            AudioFileNameNoExt = audioFileNameNoExt;
-            Type = type;
-            MinDistance = minDistance;
-            DistanceCutoff = distanceCutoff;
-            Loop = loop;
-            Volume = volume;
+            lock (SoundLock)
+            {
+                DBCID = CURRENT_SOUNDENTRY_ID;
+                CURRENT_SOUNDENTRY_ID++;
+                Name = name;
+                AudioFileNameNoExt = audioFileNameNoExt;
+                Type = type;
+                MinDistance = minDistance;
+                DistanceCutoff = distanceCutoff;
+                Loop = loop;
+                Volume = volume;
+            }
         }
 
         public float GetVolume()
@@ -126,6 +130,10 @@ namespace EQWOWConverter.Common
             else if (Type == SoundType.NPCCombat)
             {
                 return Configuration.AUDIO_CREATURE_SOUND_VOLUME;
+            }
+            else if (Type == SoundType.Casting)
+            {
+                return Configuration.AUDIO_SPELL_SOUND_VOLUME;
             }
 
             Logger.WriteError("Type of SoundType is not handled, so volume will be 1");

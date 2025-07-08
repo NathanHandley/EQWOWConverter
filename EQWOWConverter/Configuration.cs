@@ -293,6 +293,9 @@ namespace EQWOWConverter
         // Volume of creature sound effects like attacks and being hit
         public static readonly float AUDIO_CREATURE_SOUND_VOLUME = 0.3f;
 
+        // Volume of spells and other effects
+        public static readonly float AUDIO_SPELL_SOUND_VOLUME = 0.3f;
+
         //=====================================================================
         // Objects
         //=====================================================================
