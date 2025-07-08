@@ -18,7 +18,7 @@ using EQWOWConverter.Common;
 
 namespace EQWOWConverter.EQFiles
 {
-    // Much of this structure data was from research from "Stolistic" on the Project Latern discord (posted 12/30/2022 in #latern-general)
+    // Much of this structure data was from research from "Stolistic" on the Project Latern discord (posted 12/30/2022 in #lantern-general)
     internal class EQSpellsEFF
     {
         internal class SectionData
@@ -101,21 +101,21 @@ namespace EQWOWConverter.EQFiles
             }
         }
 
-        internal class SpellEffect
+        internal class EQSpellEffect
         {
             public int Field01;
             public int Field02;
             public SectionData[] SectionDatas = new SectionData[3]; // Always 3, sometimes blank
         }        
 
-        public List<SpellEffect> SpellEffects = new List<SpellEffect>();
+        public List<EQSpellEffect> SpellEffects = new List<EQSpellEffect>();
 
         public bool LoadFromDisk(string fileFullPath)
         {
-            Logger.WriteDebug(" - Reading Sound Effects Data from '", fileFullPath, "'...");
+            Logger.WriteDebug(" - Reading Spell Effects Data from '", fileFullPath, "'...");
             if (File.Exists(fileFullPath) == false)
             {
-                Logger.WriteError("- Could not find Sound Effects file that should be at '", fileFullPath, "'");
+                Logger.WriteError("- Could not find Spell Effects file that should be at '", fileFullPath, "'");
                 return false;
             }
 
@@ -124,9 +124,9 @@ namespace EQWOWConverter.EQFiles
 
             //  There are 255 spell effects in the file, but looks like only 52 (0-51) are populated with anything
             int byteCursor = 0;
-            for (int i = 0; i < 255; i++)
+            for (int i = 0; i < 52; i++)
             {
-                SpellEffect curEffect = new SpellEffect();
+                EQSpellEffect curEffect = new EQSpellEffect();
                 curEffect.Field01 = ByteTool.ReadInt32FromBytes(fileBytes, ref byteCursor);
                 curEffect.Field02 = ByteTool.ReadInt32FromBytes(fileBytes, ref byteCursor);
 
@@ -140,7 +140,7 @@ namespace EQWOWConverter.EQFiles
                 SpellEffects.Add(curEffect);
             }
 
-            Logger.WriteDebug(" - Done reading Sound Effects from '", fileFullPath, "'");
+            Logger.WriteDebug(" - Done reading Spell Effects from '", fileFullPath, "'");
             return true;
         }
     }
