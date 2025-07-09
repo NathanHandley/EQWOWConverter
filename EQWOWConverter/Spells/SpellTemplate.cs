@@ -80,6 +80,7 @@ namespace EQWOWConverter.Spells
                 if (SpellRangeDBCIDsBySpellRange.ContainsKey(value) == false)
                     SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
                 _SpellRangeDBCID = SpellRangeDBCIDsBySpellRange[value];
+                _SpellRange = value;
             }
         }
         protected int _SpellDurationDBCID = 21; // "Infinite" by default"
@@ -92,7 +93,8 @@ namespace EQWOWConverter.Spells
             {
                 if (SpellDurationDBCIDsByDurationInMS.ContainsKey(value) == false)
                     SpellDurationDBCIDsByDurationInMS.Add(value, SpellDurationDBC.GenerateDBCID());
-                _SpellDurationInMS = SpellDurationDBCIDsByDurationInMS[value];
+                _SpellDurationDBCID = SpellDurationDBCIDsByDurationInMS[value];
+                _SpellDurationInMS = value;
             }
         }
         public UInt32 RecoveryTimeInMS = 0;
