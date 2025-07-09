@@ -24,12 +24,13 @@ namespace EQWOWConverter.Spells
     {
         private static EQSpellsEFF? EQSpellsEFF = null;
         private static readonly object SpellVisualLock = new object();
-        private static List<SpellVisual> SpellVisuals = new List<SpellVisual>();
+        private static List<SpellVisual> BeneficialSpellVisuals = new List<SpellVisual>();
+        private static List<SpellVisual> DetrimentialSpellVisuals = new List<SpellVisual>();
         public static Dictionary<string, Sound> SoundsByFileNameNoExt = new Dictionary<string, Sound>();
 
         public int SpellVisualDBCID = 0;
         public int[] SpellVisualKitDBCIDsInStage = new int[3];
-        public int[] AnimationIDInStage = new int[3];
+        public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
 
         private static void LoadEQSpellVisualEffectsData()
@@ -46,21 +47,29 @@ namespace EQWOWConverter.Spells
             Logger.WriteDebug("Loading EQ Spell Visual Effects Data complete...");
         }
 
-        public static List<SpellVisual> GetSpellVisuals()
+        public static List<SpellVisual> GetAllSpellVisuals()
         {
             lock (SpellVisualLock)
             {
-                return SpellVisuals;
+                if (BeneficialSpellVisuals.Count == 0)
+                    GenerateWOWSpellVisualData();
+                List<SpellVisual> combinedSpellVisuals = new List<SpellVisual>();
+                combinedSpellVisuals.AddRange(BeneficialSpellVisuals);
+                combinedSpellVisuals.AddRange(DetrimentialSpellVisuals);
+                return combinedSpellVisuals;
             }
         }
 
-        public static SpellVisual GetSpellVisualByEffectID(int effectID)
+        public static SpellVisual GetSpellVisual(int effectID, bool isBeneficial)
         {
             lock (SpellVisualLock)
             {
-                if (SpellVisuals.Count == 0)
+                if (BeneficialSpellVisuals.Count == 0)
                     GenerateWOWSpellVisualData();
-                return SpellVisuals[effectID];
+                if (isBeneficial == true)
+                    return BeneficialSpellVisuals[effectID];
+                else
+                    return DetrimentialSpellVisuals[effectID];
             }
         }
 
@@ -82,29 +91,38 @@ namespace EQWOWConverter.Spells
                 // Create spell visual data for each of the EQ spell data
                 for (int i = 0; i < EQSpellsEFF.SpellEffects.Count; i++)
                 {
-                    EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
-                    SpellVisual spellVisual = new SpellVisual();
-                    spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
+                    // Two copies for good vs bad
+                    for (int j = 0; j < 2; j++)
+                    {
+                        bool isBeneficial = j == 0;
+                        EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
+                        SpellVisual spellVisual = new SpellVisual();
+                        spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
 
-                    // Source data
-                    EQSpellsEFF.SectionData sourceSectionData = spellEffect.SectionDatas[0];
-                    ConvertStageVisualData(ref spellVisual, sourceSectionData, SpellVisualStageType.Precast);                    
+                        // Source data
+                        EQSpellsEFF.SectionData sourceSectionData = spellEffect.SectionDatas[0];
+                        ConvertStageVisualData(ref spellVisual, sourceSectionData, SpellVisualStageType.Precast, isBeneficial);
 
-                    // Sprite data (missle/projectile?)
-                    EQSpellsEFF.SectionData spriteSectionData = spellEffect.SectionDatas[1];
-                    ConvertStageVisualData(ref spellVisual, spriteSectionData, SpellVisualStageType.Cast);
+                        // Sprite data (missle/projectile?)
+                        EQSpellsEFF.SectionData spriteSectionData = spellEffect.SectionDatas[1];
+                        ConvertStageVisualData(ref spellVisual, spriteSectionData, SpellVisualStageType.Cast, isBeneficial);
 
-                    // Target data
-                    EQSpellsEFF.SectionData targetSectionData = spellEffect.SectionDatas[2];
-                    ConvertStageVisualData(ref spellVisual, targetSectionData, SpellVisualStageType.Impact);
+                        // Target data
+                        EQSpellsEFF.SectionData targetSectionData = spellEffect.SectionDatas[2];
+                        ConvertStageVisualData(ref spellVisual, targetSectionData, SpellVisualStageType.Impact, isBeneficial);
 
-                    SpellVisuals.Add(spellVisual);
+                        if (isBeneficial)
+                            BeneficialSpellVisuals.Add(spellVisual);
+                        else
+                            DetrimentialSpellVisuals.Add(spellVisual);
+                    }
                 }
             }
             Logger.WriteDebug("Generating wow spell visual data complete.");
         }
 
-        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.SectionData effSectionData, SpellVisualStageType stageType)
+        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.SectionData effSectionData, 
+            SpellVisualStageType stageType, bool isBeneficial)
         {
             // ID
             spellVisual.SpellVisualKitDBCIDsInStage[(int)stageType] = SpellVisualKitDBC.GenerateID();
@@ -124,7 +142,31 @@ namespace EQWOWConverter.Spells
             }
 
             // Animation
-            spellVisual.AnimationIDInStage[(int)stageType] = GetCasterAnimationIDByEffectIndex(0); // Temp
+            switch (stageType)
+            {
+                case SpellVisualStageType.Precast:
+                    {
+                        if (isBeneficial)
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellOmni;
+                        else
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellDirected;
+                    } break;
+                case SpellVisualStageType.Cast:
+                    {
+                        if (isBeneficial)
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.SpellCastOmni;
+                        else
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.SpellCastDirected;
+                    } break;
+                case SpellVisualStageType.Impact:
+                    {
+                        if (isBeneficial)
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None;
+                        else
+                            spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None;
+                    } break;
+                default: Logger.WriteError("Unhanlded stagetype in ConvertStageVisualData"); break;
+            }
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)
@@ -144,12 +186,6 @@ namespace EQWOWConverter.Spells
                 case 113: return "spelhit4";
                 default: return string.Empty;
             }
-        }
-
-        private static int GetCasterAnimationIDByEffectIndex(int effectIndex)
-        {
-            // Temp value for testing
-            return 52;
         }
     }
 }

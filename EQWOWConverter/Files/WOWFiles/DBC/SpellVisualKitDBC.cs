@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)visualStageType]); // ID
             newRow.AddInt32(-1); // StartAnimID (AnimationData.ID, almost always -1)
-            newRow.AddInt32(spellVisual.AnimationIDInStage[(int)visualStageType]); // AnimID (AnimationData.ID for the caster)
+            newRow.AddInt32((int)spellVisual.AnimationTypeInStage[(int)visualStageType]); // AnimID (AnimationData.ID for the caster)
             newRow.AddInt32(0); // HeadEffect (SpellVisualEffectName.ID, over the head)
             newRow.AddInt32(0); // ChestEffect (SpellVisualEffectName.ID, at the chest)
             newRow.AddInt32(0); // BaseEffect (SpellVisualEffectName.ID, at the ground (base))

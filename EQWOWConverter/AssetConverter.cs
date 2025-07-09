@@ -2504,7 +2504,7 @@ namespace EQWOWConverter
                 string soundDirectoryRelative = Path.Combine("Sound", "Spells", "Everquest");
                 soundEntriesDBC.AddRow(soundByFileNameNoExt.Value, soundByFileNameNoExt.Key + ".wav", soundDirectoryRelative);
             }
-            foreach (SpellVisual spellVisual in SpellVisual.GetSpellVisuals())
+            foreach (SpellVisual spellVisual in SpellVisual.GetAllSpellVisuals())
             {
                 spellVisualDBC.AddRow(spellVisual);
                 for (int i = 0; i < 3; i++)
