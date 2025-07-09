@@ -1403,7 +1403,7 @@ namespace EQWOWConverter
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
             gateSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
-            gateSpellTemplate.SpellVisualID1 = 220; // Taken from astral recall / hearthstone
+            gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, true).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
             gateSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
@@ -1418,7 +1418,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySelfSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
-            bindAffinitySelfSpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            bindAffinitySelfSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, true).SpellVisualDBCID); // Bind
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
@@ -1434,7 +1434,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySpellTemplate.SpellRange = 30;
             bindAffinitySpellTemplate.WOWTargetType = SpellWOWTargetType.TargetParty;
-            bindAffinitySpellTemplate.SpellVisualID1 = 99; // Taken from soulstone
+            bindAffinitySpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, true).SpellVisualDBCID); // Bind
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
