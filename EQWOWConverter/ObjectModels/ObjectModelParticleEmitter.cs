@@ -16,14 +16,7 @@
 
 namespace EQWOWConverter.ObjectModels
 {
-    internal enum ObjectModelType
+    internal class ObjectModelParticleEmitter
     {
-        StaticDoodad,
-        ZoneModel,
-        SoundInstance,
-        Creature,
-        Transport,
-        EquipmentHeld,
-        SpellEffect
     }
 }

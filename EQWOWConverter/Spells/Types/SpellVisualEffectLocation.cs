@@ -14,16 +14,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.ObjectModels
+namespace EQWOWConverter.Spells
 {
-    internal enum ObjectModelType
+    internal enum SpellVisualEffectLocation
     {
-        StaticDoodad,
-        ZoneModel,
-        SoundInstance,
-        Creature,
-        Transport,
-        EquipmentHeld,
-        SpellEffect
+        None,
+        ChestCenter,
+        Head,
+        RightHand,
+        LeftHand,
+        RightFoot, // "Base", shifted right
+        LeftFoot // "Base", shifted left
     }
 }

@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
+using EQWOWConverter.ObjectModels;
 using EQWOWConverter.WOWFiles;
 
 namespace EQWOWConverter.Spells
@@ -27,11 +28,13 @@ namespace EQWOWConverter.Spells
         private static List<SpellVisual> BeneficialSpellVisuals = new List<SpellVisual>();
         private static List<SpellVisual> DetrimentialSpellVisuals = new List<SpellVisual>();
         public static Dictionary<string, Sound> SoundsByFileNameNoExt = new Dictionary<string, Sound>();
+        public static List<ObjectModel> VisualModels = new List<ObjectModel>();
 
         public int SpellVisualDBCID = 0;
         public int[] SpellVisualKitDBCIDsInStage = new int[3];
         public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
+        public Dictionary<SpellVisualEffectLocation, ObjectModel> VisualModelByEffectLocation = new Dictionary<SpellVisualEffectLocation, ObjectModel>();
 
         private static void LoadEQSpellVisualEffectsData()
         {
@@ -167,6 +170,9 @@ namespace EQWOWConverter.Spells
                     } break;
                 default: Logger.WriteError("Unhanlded stagetype in ConvertStageVisualData"); break;
             }
+
+            // Model
+
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)

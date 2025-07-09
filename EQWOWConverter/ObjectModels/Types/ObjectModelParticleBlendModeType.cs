@@ -16,14 +16,12 @@
 
 namespace EQWOWConverter.ObjectModels
 {
-    internal enum ObjectModelType
+    internal enum ObjectModelParticleBlendModeType : byte
     {
-        StaticDoodad,
-        ZoneModel,
-        SoundInstance,
-        Creature,
-        Transport,
-        EquipmentHeld,
-        SpellEffect
+        Opaque = 0,              // glDisable(GL_BLEND); glDisable(GL_ALPHA_TEST);
+        AdditiveColor = 1,       // glBlendFunc(GL_SRC_COLOR, GL_ONE);
+        AlphaBlended = 2,        // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        AlphaTested = 3,         // glDisable(GL_BLEND); glEnable(GL_ALPHA_TEST);
+        AdditiveAlpha = 4        // glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 }
