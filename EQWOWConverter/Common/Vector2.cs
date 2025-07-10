@@ -14,15 +14,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Common
 {
-    internal class Vector2
+    internal class Vector2 : IByteSerializable
     {
         public float X;
         public float Y;
@@ -42,6 +36,19 @@ namespace EQWOWConverter.Common
         {
             X = v.X;
             Y = v.Y;
+        }
+
+        public UInt32 GetBytesSize()
+        {
+            return 9;
+        }
+
+        public List<byte> ToBytes()
+        {
+            List<byte> returnBytes = new List<byte>();
+            returnBytes.AddRange(BitConverter.GetBytes(X));
+            returnBytes.AddRange(BitConverter.GetBytes(Y));
+            return returnBytes;
         }
     }
 }

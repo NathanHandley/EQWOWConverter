@@ -14,28 +14,39 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using EQWOWConverter.Common;
-
-namespace EQWOWConverter.WOWFiles
+namespace EQWOWConverter.ObjectModels
 {
-    internal class M2Int16 : IByteSerializable
+    internal class ObjectModelTrackSequenceTimestampShorts
     {
-        public Int16 Value = 0;
+        public List<UInt16> Timestamps = new List<UInt16>();
+        public UInt32 DataOffset = 0;
 
-        public M2Int16(short value) 
+        public void AddTimestamp(UInt16 timestamp)
         {
-            Value = value;
+            Timestamps.Add(timestamp);
         }
 
-        public UInt32 GetBytesSize()
+        public UInt32 GetHeaderSize()
         {
-            return 2;
+            UInt32 size = 0;
+            size += 4; // Number of elements
+            size += 4; // Data offset
+            return size;
         }
 
-        public List<byte> ToBytes()
+        public List<Byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
-            bytes.AddRange(BitConverter.GetBytes(Value));
+            bytes.AddRange(BitConverter.GetBytes(Convert.ToUInt32(Timestamps.Count)));
+            bytes.AddRange(BitConverter.GetBytes(DataOffset));
+            return bytes;
+        }
+
+        public List<Byte> GetDataBytes()
+        {
+            List<Byte> bytes = new List<Byte>();
+            foreach (UInt32 value in Timestamps)
+                bytes.AddRange(BitConverter.GetBytes(value));
             return bytes;
         }
     }

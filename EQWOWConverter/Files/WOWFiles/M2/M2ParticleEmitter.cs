@@ -38,10 +38,36 @@ namespace EQWOWConverter.WOWFiles
         private Int16 TextureTileRotation = 0; // Rotation for the texture tile, -1, 0, 1
         private UInt16 TextureDimensionsRows = 1; // For tiled textures
         private UInt16 TextureDimensionColumns = 1; // For tiled textures
-        private M2TrackSequences<FloatSerializable> EmissionSpeed = new M2TrackSequences<FloatSerializable>(); // Base velocity of emitted particles
+        private M2TrackSequences<M2Float> EmissionSpeed = new M2TrackSequences<M2Float>(); // Base velocity of emitted particles
+        private M2TrackSequences<M2Float> SpeedVariation = new M2TrackSequences<M2Float>(); // Amount of random varation in particle emission velocity
+        private M2TrackSequences<M2Float> VerticalRange = new M2TrackSequences<M2Float>(); // Range 0 to pi. For plane generators, this is the maximum polar angle of the initial velocity, and 0 makes the velocity straight up (+z)
+                                                                                                               // For sphere generators, this is the maximum elevation of the initial position, 0 makes the initial position entirely in the x-y plane (z=0)
+        private M2TrackSequences<M2Float> HorizontalRange = new M2TrackSequences<M2Float>(); // Range 0 to 2 * pi.  For plane generators this is the maximum azimuth angle of the initial velocity, and 0 makes the velocity have no sideways (y axis) component.
+                                                                                                                 // For sphere generators, this is the maximum azimuth angle of the initial position
+        private M2TrackSequences<M2Float> Gravity = new M2TrackSequences<M2Float>(); // Sometimes a float, sometimes a compressed vector as defined by the Flags
+        private M2TrackSequences<M2Float> Lifespan = new M2TrackSequences<M2Float>(); // Number of seconds a particle exists after creation
+        private float LifespanVariation = 0; // LifespanVaration * random(-1, 1) is added to Lifespan
+        private M2TrackSequences<M2Float> EmissionRate = new M2TrackSequences<M2Float>(); // What is this exactly?
+        private float EmissionRateVariation = 0; // EmissionRateVariation * random(-1, 1) is added to EmissionRate
+        private M2TrackSequences<M2Float> EmissionAreaLength = new M2TrackSequences<M2Float>(); // For plane this is width of the plane in x-axis, for Sphere it's the minimum radius
+        private M2TrackSequences<M2Float> EmissionAreaWidth = new M2TrackSequences<M2Float>(); // For plane this is width of the plane in y-axis, for Sphere it's the maximum radius
+        private M2TrackSequences<M2Float> ZSource = new M2TrackSequences<M2Float>(); // When > 0, initial particle velicoty is (position - (0, 0, ZSource)) normalized
+        private M2TrackSequencesSimple<Vector3> ColorTrack = new M2TrackSequencesSimple<Vector3>(); // Value format is actually sets of RGB where they are float values from 0-255.  Consider different object here.
+        private M2TrackSequencesSimple<M2UInt16> AlphaTrack = new M2TrackSequencesSimple<M2UInt16>(); // 0 - 32767
+        private M2TrackSequencesSimple<Vector2> ScaleTrack = new M2TrackSequencesSimple<Vector2>();
+        private Vector2 ScaleVariation = new Vector2(); // Percentage amount to randomly scale each particle
+        private M2TrackSequencesSimple<M2UInt16> HeadCellTrack = new M2TrackSequencesSimple<M2UInt16>(); // Relates to intensity but unknown exactly on values.  0, 16, 17, 32 are values seen
+        private M2TrackSequencesSimple<M2UInt16> TailCellTrack = new M2TrackSequencesSimple<M2UInt16>();
+        private float TailLengthMultiplier = 0.1f; // Multiple for calculating tail particle length.  0.1 is seen a bit
+        private float TwinkleSpeed = 18f; // Possibly a FPS number for twinkle. 18f is seen
+        private float TwinklPercent = 1f; // Not 100% sure on this
+        private Vector2 TwinkleRange = new Vector2(0.5f, 1.5f); // "Min and Max", but .5 and 1.5 is seen.  Adjust
+        private float BurstMultiplier = 1f; // Unsure, but requires M2ParticleEmitterFlags.UseBurstMultiplier
+        private float Drag = 0; // If no-zero, the particles slow down sooner than they would otherwise
+        // TODO: Base spin
 
 
-        // TODO: HERE (Particle Color Replaceable?)
+
 
         public UInt32 GetHeaderSize()
         {
