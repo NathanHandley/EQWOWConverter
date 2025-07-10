@@ -16,22 +16,22 @@
 
 namespace EQWOWConverter.Common
 {
-    internal class Fixed16 : IByteSerializable
+    internal class FloatSerializable : IByteSerializable
     {
-        public Int16 Value = 0;
+        public float Value = 0;
 
-        public Fixed16()
+        public FloatSerializable()
         {
 
         }
-        public Fixed16(Int16 value)
+        public FloatSerializable(float value)
         {
             Value = value;
         }
 
         public UInt32 GetBytesSize()
         {
-            return 2;
+            return 4;
         }
 
         public List<byte> ToBytes()

@@ -32,6 +32,15 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 RecursionModelOffset = 0; // ?
         private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.Opaque;
         private ObjectModelParticleEmitterType EmitterType = ObjectModelParticleEmitterType.Plane;
+        private UInt16 ParticleIndex = 0; // Find where this references
+        private byte ParticleType = 0; // 0 = Normal, 1 = Large (moonwell), 2 = Like 0 but for Tram(?)
+        private byte HeadOrTail = 0; // 0 = Head (billboard square quad), 1 = Tail (Billboarded along the axis of motion and stretches in length based on speed), 2 = Both.
+        private Int16 TextureTileRotation = 0; // Rotation for the texture tile, -1, 0, 1
+        private UInt16 TextureDimensionsRows = 1; // For tiled textures
+        private UInt16 TextureDimensionColumns = 1; // For tiled textures
+        private M2TrackSequences<FloatSerializable> EmissionSpeed = new M2TrackSequences<FloatSerializable>(); // Base velocity of emitted particles
+
+
         // TODO: HERE (Particle Color Replaceable?)
 
         public UInt32 GetHeaderSize()
