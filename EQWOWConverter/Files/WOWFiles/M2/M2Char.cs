@@ -14,41 +14,29 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace EQWOWConverter.Common
+using EQWOWConverter.Common;
+
+namespace EQWOWConverter.WOWFiles
 {
-    internal class Vector2 : IByteSerializable
+    internal class M2Char : IByteSerializable
     {
-        public float X;
-        public float Y;
+        public char Value;
 
-        public Vector2()
+        public M2Char(char value)
         {
-
-        }
-
-        public Vector2(float x, float y)
-        {
-            X = x;
-            Y = y;
-        }
-
-        public Vector2(Vector2 v)
-        {
-            X = v.X;
-            Y = v.Y;
+            Value = value;
         }
 
         public UInt32 GetBytesSize()
         {
-            return 8;
+            return 1;
         }
 
         public List<byte> ToBytes()
         {
-            List<byte> returnBytes = new List<byte>();
-            returnBytes.AddRange(BitConverter.GetBytes(X));
-            returnBytes.AddRange(BitConverter.GetBytes(Y));
-            return returnBytes;
+            List<byte> bytes = new List<byte>();
+            bytes.AddRange(BitConverter.GetBytes(Value));
+            return bytes;
         }
     }
 }

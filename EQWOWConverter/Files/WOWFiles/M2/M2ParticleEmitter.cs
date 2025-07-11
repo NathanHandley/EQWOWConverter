@@ -16,6 +16,9 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
+using Org.BouncyCastle.Utilities;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -41,9 +44,9 @@ namespace EQWOWConverter.WOWFiles
         private M2TrackSequences<M2Float> EmissionSpeed = new M2TrackSequences<M2Float>(); // Base velocity of emitted particles
         private M2TrackSequences<M2Float> SpeedVariation = new M2TrackSequences<M2Float>(); // Amount of random varation in particle emission velocity
         private M2TrackSequences<M2Float> VerticalRange = new M2TrackSequences<M2Float>(); // Range 0 to pi. For plane generators, this is the maximum polar angle of the initial velocity, and 0 makes the velocity straight up (+z)
-                                                                                                               // For sphere generators, this is the maximum elevation of the initial position, 0 makes the initial position entirely in the x-y plane (z=0)
+                                                                                           // For sphere generators, this is the maximum elevation of the initial position, 0 makes the initial position entirely in the x-y plane (z=0)
         private M2TrackSequences<M2Float> HorizontalRange = new M2TrackSequences<M2Float>(); // Range 0 to 2 * pi.  For plane generators this is the maximum azimuth angle of the initial velocity, and 0 makes the velocity have no sideways (y axis) component.
-                                                                                                                 // For sphere generators, this is the maximum azimuth angle of the initial position
+                                                                                             // For sphere generators, this is the maximum azimuth angle of the initial position
         private M2TrackSequences<M2Float> Gravity = new M2TrackSequences<M2Float>(); // Sometimes a float, sometimes a compressed vector as defined by the Flags
         private M2TrackSequences<M2Float> Lifespan = new M2TrackSequences<M2Float>(); // Number of seconds a particle exists after creation
         private float LifespanVariation = 0; // LifespanVaration * random(-1, 1) is added to Lifespan
@@ -64,28 +67,164 @@ namespace EQWOWConverter.WOWFiles
         private Vector2 TwinkleRange = new Vector2(0.5f, 1.5f); // "Min and Max", but .5 and 1.5 is seen.  Adjust
         private float BurstMultiplier = 1f; // Unsure, but requires M2ParticleEmitterFlags.UseBurstMultiplier
         private float Drag = 0; // If no-zero, the particles slow down sooner than they would otherwise
-        // TODO: Base spin
-
-
-
+        private float BaseSpin = 0; // Initial rotation of a particle quad
+        private float BaseSpinVariation = 0; // Random variation on base spin
+        private float Spin = 0; // Rotation of the particle quad per second
+        private float SpinVariation = 0; // Random variation on spin
+        private Vector3 TumbleMin = new Vector3();
+        private Vector3 TumbleMax = new Vector3();
+        private Vector3 WindVector = new Vector3();
+        private float WindTime = 0;
+        private float FollowSpeed1 = 0;
+        private float FollowScale1 = 0;
+        private float FollowSpeed2 = 0;
+        private float FollowScale2 = 0;
+        private UInt32 SplinePointCount = 0; // These two are actually a track, but not implementing unless we use splines
+        private UInt32 SplinePointOffset = 0;
+        private M2TrackSequences<M2Char> EnabledIn = new M2TrackSequences<M2Char>(); // May not be needed for anything.  Purpose not clear
 
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;
-            // TODO
+            size += 4; // ID
+            size += 4; // Flags
+            size += RelativePosition.GetBytesSize();
+            size += 2; // ParentBoneID
+            size += 2; // TextureID
+            size += 4; // GeometryModelLength
+            size += 4; // GeometryModelOffset
+            size += 4; // RecursionModelLength
+            size += 4; // RecursionModelOffset
+            size += 1; // BlendModeType
+            size += 1; // EmitterType
+            size += 2; // ParticleIndex
+            size += 1; // ParticleType
+            size += 1; // HeadOrTail
+            size += 2; // TextureTileRotation
+            size += 2; // TextureDimensionsRows
+            size += 2; // TextureDimensionColumns
+            size += EmissionSpeed.GetHeaderSize();
+            size += SpeedVariation.GetHeaderSize();
+            size += VerticalRange.GetHeaderSize();
+            size += HorizontalRange.GetHeaderSize();
+            size += Gravity.GetHeaderSize();
+            size += Lifespan.GetHeaderSize();
+            size += 4; // LifespanVariation
+            size += EmissionRate.GetHeaderSize();
+            size += 4; // EmissionRateVariation
+            size += EmissionAreaLength.GetHeaderSize();
+            size += EmissionAreaWidth.GetHeaderSize();
+            size += ZSource.GetHeaderSize();
+            size += ColorTrack.GetHeaderSize();
+            size += AlphaTrack.GetHeaderSize();
+            size += ScaleTrack.GetHeaderSize();
+            size += ScaleVariation.GetBytesSize();
+            size += HeadCellTrack.GetHeaderSize();
+            size += TailCellTrack.GetHeaderSize();
+            size += 4; // TailLengthMultiplier
+            size += 4; // TwinkleSpeed
+            size += 4; // TwinklPercent
+            size += TwinkleRange.GetBytesSize();
+            size += 4; // BurstMultiplier
+            size += 4; // Drag
+            size += 4; // BaseSpin
+            size += 4; // BaseSpinVariation
+            size += 4; // Spin
+            size += 4; // SpinVariation
+            size += TumbleMin.GetBytesSize();
+            size += TumbleMax.GetBytesSize();
+            size += WindVector.GetBytesSize();
+            size += 4; // WindTime
+            size += 4; // FollowSpeed1
+            size += 4; // FollowScale1
+            size += 4; // FollowSpeed2
+            size += 4; // FollowScale2
+            size += 4; // SplinePointCount
+            size += 4; // SplinePointOffset
+            size += EnabledIn.GetHeaderSize();
             return size;
         }
 
         public List<byte> GetHeaderBytes()
         {
             List<byte> bytes = new List<byte>();
-            // TODO
+            bytes.AddRange(BitConverter.GetBytes(ID));
+            bytes.AddRange(BitConverter.GetBytes(Flags));
+            bytes.AddRange(RelativePosition.ToBytes());
+            bytes.AddRange(BitConverter.GetBytes(ParentBoneID));
+            bytes.AddRange(BitConverter.GetBytes(TextureID));
+            bytes.AddRange(BitConverter.GetBytes(GeometryModelLength));
+            bytes.AddRange(BitConverter.GetBytes(GeometryModelOffset));
+            bytes.AddRange(BitConverter.GetBytes(RecursionModelLength));
+            bytes.AddRange(BitConverter.GetBytes(RecursionModelOffset));
+            bytes.Add(Convert.ToByte(BlendModeType));
+            bytes.Add(Convert.ToByte(EmitterType));
+            bytes.AddRange(BitConverter.GetBytes(ParticleIndex));
+            bytes.Add(ParticleType);
+            bytes.Add(HeadOrTail);
+            bytes.AddRange(BitConverter.GetBytes(TextureTileRotation));
+            bytes.AddRange(BitConverter.GetBytes(TextureDimensionsRows));
+            bytes.AddRange(BitConverter.GetBytes(TextureDimensionColumns));
+            bytes.AddRange(EmissionSpeed.GetHeaderBytes());
+            bytes.AddRange(SpeedVariation.GetHeaderBytes());
+            bytes.AddRange(VerticalRange.GetHeaderBytes());
+            bytes.AddRange(HorizontalRange.GetHeaderBytes());
+            bytes.AddRange(Gravity.GetHeaderBytes());
+            bytes.AddRange(Lifespan.GetHeaderBytes());
+            bytes.AddRange(BitConverter.GetBytes(LifespanVariation));
+            bytes.AddRange(EmissionRate.GetHeaderBytes());
+            bytes.AddRange(BitConverter.GetBytes(EmissionRateVariation));
+            bytes.AddRange(EmissionAreaLength.GetHeaderBytes());
+            bytes.AddRange(EmissionAreaWidth.GetHeaderBytes());
+            bytes.AddRange(ZSource.GetHeaderBytes());
+            bytes.AddRange(ColorTrack.GetHeaderBytes());
+            bytes.AddRange(AlphaTrack.GetHeaderBytes());
+            bytes.AddRange(ScaleTrack.GetHeaderBytes());
+            bytes.AddRange(ScaleVariation.ToBytes());
+            bytes.AddRange(HeadCellTrack.GetHeaderBytes());
+            bytes.AddRange(TailCellTrack.GetHeaderBytes());
+            bytes.AddRange(BitConverter.GetBytes(TailLengthMultiplier));
+            bytes.AddRange(BitConverter.GetBytes(TwinkleSpeed));
+            bytes.AddRange(BitConverter.GetBytes(TwinklPercent));
+            bytes.AddRange(TwinkleRange.ToBytes());
+            bytes.AddRange(BitConverter.GetBytes(BurstMultiplier));
+            bytes.AddRange(BitConverter.GetBytes(Drag));
+            bytes.AddRange(BitConverter.GetBytes(BaseSpin));
+            bytes.AddRange(BitConverter.GetBytes(BaseSpinVariation));
+            bytes.AddRange(BitConverter.GetBytes(Spin));
+            bytes.AddRange(BitConverter.GetBytes(SpinVariation));
+            bytes.AddRange(TumbleMin.ToBytes());
+            bytes.AddRange(TumbleMax.ToBytes());
+            bytes.AddRange(WindVector.ToBytes());
+            bytes.AddRange(BitConverter.GetBytes(WindTime));
+            bytes.AddRange(BitConverter.GetBytes(FollowSpeed1));
+            bytes.AddRange(BitConverter.GetBytes(FollowScale1));
+            bytes.AddRange(BitConverter.GetBytes(FollowSpeed2));
+            bytes.AddRange(BitConverter.GetBytes(FollowScale2));
+            bytes.AddRange(BitConverter.GetBytes(SplinePointCount));
+            bytes.AddRange(BitConverter.GetBytes(SplinePointOffset));
+            bytes.AddRange(EnabledIn.GetHeaderBytes());
             return bytes;
         }
 
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
-            // TODO
+            EmissionSpeed.AddDataBytes(ref byteBuffer);
+            SpeedVariation.AddDataBytes(ref byteBuffer);
+            VerticalRange.AddDataBytes(ref byteBuffer);
+            HorizontalRange.AddDataBytes(ref byteBuffer);
+            Gravity.AddDataBytes(ref byteBuffer);
+            Lifespan.AddDataBytes(ref byteBuffer);
+            EmissionRate.AddDataBytes(ref byteBuffer);
+            EmissionAreaLength.AddDataBytes(ref byteBuffer);
+            EmissionAreaWidth.AddDataBytes(ref byteBuffer);
+            ZSource.AddDataBytes(ref byteBuffer);
+            ColorTrack.AddDataBytes(ref byteBuffer);
+            AlphaTrack.AddDataBytes(ref byteBuffer);
+            ScaleTrack.AddDataBytes(ref byteBuffer);
+            HeadCellTrack.AddDataBytes(ref byteBuffer);
+            TailCellTrack.AddDataBytes(ref byteBuffer);
+            EnabledIn.AddDataBytes(ref byteBuffer);
         }
     }
 }

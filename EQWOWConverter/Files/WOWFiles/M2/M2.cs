@@ -58,7 +58,7 @@ namespace EQWOWConverter.WOWFiles
         private M2ArrayWithTrackedObjectsByOffset<M2Camera> Cameras = new M2ArrayWithTrackedObjectsByOffset<M2Camera>();
         private M2GenericArrayByOffset<M2Int16> CamerasIndicesLookup = new M2GenericArrayByOffset<M2Int16>();
         private M2GenericArrayByOffset<M2Dummy> RibbonEmitters = new M2GenericArrayByOffset<M2Dummy>();
-        private M2GenericArrayByOffset<M2Dummy> ParticleEmitters = new M2GenericArrayByOffset<M2Dummy>();
+        private M2ArrayWithTrackedObjectsByOffset<M2ParticleEmitter> ParticleEmitters = new M2ArrayWithTrackedObjectsByOffset<M2ParticleEmitter>();
         private M2GenericArrayByOffset<M2Dummy> SecondTextureMaterialOverrides = new M2GenericArrayByOffset<M2Dummy>(); // Multitexturing will use second material from here for blending with first
 
         public M2Skin Skin;
