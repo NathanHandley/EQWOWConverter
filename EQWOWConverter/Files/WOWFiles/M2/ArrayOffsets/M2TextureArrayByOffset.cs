@@ -44,6 +44,16 @@ namespace EQWOWConverter.WOWFiles
             Count = Convert.ToUInt32(Textures.Count);
         }
 
+        public void AddModelTexturesTemp()
+        {
+            ObjectModelTexture newTexture = new ObjectModelTexture();
+            newTexture.TextureName = "TOONSMOKE16_2";
+            newTexture.Type = ObjectModelTextureType.Hardcoded;
+            newTexture.WrapType = ObjectModelTextureWrapType.None;
+            Textures.Add(new M2Texture(newTexture, "CREATURE\\SPELLS")); // Testing
+            Count = 1; // Test
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 4; // Count

@@ -26,7 +26,13 @@ namespace EQWOWConverter.WOWFiles
 
         public M2Skin(ObjectModel wowObjectModel)
         {
-            SkinBytes.Clear();
+            // Particle objects only have a blank header
+            if (wowObjectModel.ModelType == ObjectModelType.ParticleEmitter)
+            {
+                SkinBytes.AddRange(Header.ToBytes());
+                return;
+            }
+
             List<byte> nonHeaderBytes = new List<byte>();
             int curOffset = Header.GetSize();
 

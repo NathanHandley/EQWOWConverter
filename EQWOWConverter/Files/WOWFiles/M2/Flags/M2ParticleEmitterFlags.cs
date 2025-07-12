@@ -20,12 +20,15 @@ namespace EQWOWConverter.WOWFiles
     internal enum M2ParticleEmitterFlags : UInt32
     {
         None = 0,
+        LitByLight = 0x1,
+        Unknown = 0x2,
         AffectedByPlayerOrientation = 0x4,
         TravelAbsoluteUp = 0x8, // 'Up' in world space as opposed to the model
         DoNotTrail = 0x10,
         NoLighting = 0x20, // Confirm this
         UseBurstMultiplier = 0x40, // What is this exactly?
         ParticlesAreInModelSpace = 0x80, // Transfers the animation of the emitter to the particles
+        Randomizer = 0x200,
         AlignXYAxisToZ = 0x1000,
         ClampOnGround = 0x2000,
         UseRandomTexture = 0x10000,

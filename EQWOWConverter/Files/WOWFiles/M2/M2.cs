@@ -106,7 +106,10 @@ namespace EQWOWConverter.WOWFiles
             //    Colors.AddElement(new M2Color(color, wowObjectModel.ModelAnimations.Count));
 
             // Textures
-            Textures.AddModelTextures(wowObjectModel.ModelTextures);
+            if (wowObjectModel.ModelType == ObjectModelType.ParticleEmitter)
+                Textures.AddModelTexturesTemp();
+            else
+                Textures.AddModelTextures(wowObjectModel.ModelTextures);
 
             // Texture Transparency Sequences
             foreach(var transparencySequenceSet in wowObjectModel.ModelTextureTransparencySequenceSetByMaterialIndex)
@@ -195,7 +198,8 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Particle Emitters
-            // none for now
+            if (wowObjectModel.Properties.ParticleEmitter != null)
+                ParticleEmitters.AddElement(new M2ParticleEmitter(wowObjectModel.Properties.ParticleEmitter, 0));
 
             // Second Texture Material Override (Combos)
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))

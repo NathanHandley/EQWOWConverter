@@ -45,7 +45,7 @@ namespace EQWOWConverter.ObjectModels
         public List<Byte> GetDataBytes()
         {
             List<Byte> bytes = new List<Byte>();
-            foreach (UInt32 value in Timestamps)
+            foreach (UInt16 value in Timestamps)
                 bytes.AddRange(BitConverter.GetBytes(value));
             return bytes;
         }

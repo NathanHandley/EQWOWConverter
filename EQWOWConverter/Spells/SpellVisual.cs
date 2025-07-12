@@ -29,8 +29,8 @@ namespace EQWOWConverter.Spells
         private static readonly object SpellVisualLock = new object();
         private static List<SpellVisual> BeneficialSpellVisuals = new List<SpellVisual>();
         private static List<SpellVisual> DetrimentialSpellVisuals = new List<SpellVisual>();
+        private static List<ObjectModel> VisualModels = new List<ObjectModel>();
         public static Dictionary<string, Sound> SoundsByFileNameNoExt = new Dictionary<string, Sound>();
-        public static List<ObjectModel> VisualModels = new List<ObjectModel>();
 
         public int SpellVisualDBCID = 0;
         public int[] SpellVisualKitDBCIDsInStage = new int[3];
@@ -66,6 +66,12 @@ namespace EQWOWConverter.Spells
                 combinedSpellVisuals.AddRange(DetrimentialSpellVisuals);
                 return combinedSpellVisuals;
             }
+        }
+
+        public static List<ObjectModel> GetObjectModels()
+        {
+            lock (SpellVisualLock)
+                return VisualModels;
         }
 
         public static SpellVisual GetSpellVisual(int effectID, bool isBeneficial)

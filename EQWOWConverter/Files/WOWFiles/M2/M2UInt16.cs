@@ -22,7 +22,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public UInt16 Value = 0;
 
-        public M2UInt16(ushort value)
+        public M2UInt16(UInt16 value)
         {
             Value = value;
         }

@@ -17,8 +17,6 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
 using Org.BouncyCastle.Utilities;
-using System.Collections.Generic;
-using System.Drawing;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -29,11 +27,13 @@ namespace EQWOWConverter.WOWFiles
         private Vector3 RelativePosition = new Vector3();
         private UInt16 ParentBoneID = 0;
         private UInt16 TextureID = 0;
-        private UInt32 GeometryModelLength = 0; // ?
-        private UInt32 GeometryModelOffset = 0; // ?
-        private UInt32 RecursionModelLength = 0; // ?
-        private UInt32 RecursionModelOffset = 0; // ?
-        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.Opaque;
+        M2GenericArrayByOffset<Fixed16> GeometryModel = new M2GenericArrayByOffset<Fixed16>();
+        M2GenericArrayByOffset<Fixed16> RecursionModel = new M2GenericArrayByOffset<Fixed16>();
+        //private UInt32 GeometryModelLength = 0; // ?
+        //private UInt32 GeometryModelOffset = 0; // ?
+        //private UInt32 RecursionModelLength = 0; // ?
+        //private UInt32 RecursionModelOffset = 0; // ?
+        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AlphaBlended; // Testing, should be opaque?
         private ObjectModelParticleEmitterType EmitterType = ObjectModelParticleEmitterType.Plane;
         private UInt16 ParticleIndex = 0; // Find where this references
         private byte ParticleType = 0; // 0 = Normal, 1 = Large (moonwell), 2 = Like 0 but for Tram(?)
@@ -86,14 +86,87 @@ namespace EQWOWConverter.WOWFiles
         public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter, UInt16 textureID)
         {
             TextureID = textureID;
-            EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Velocity));
-            ScaleTrack.TrackSequences.AddSequence();
-            ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(objectModelParticleEmitter.Scale, objectModelParticleEmitter.Scale));
-            EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+            //EmissionSpeed.TrackSequences.AddSequence();
+            //EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Velocity));
+            //EmissionRate.TrackSequences.AddSequence();
+            //EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
             Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Gravity));
+            //Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Gravity));
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0)); // Temp, testing if this is a problem
+            //Lifespan.TrackSequences.AddSequence();
+            //Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.LifespanInMS));
+            ScaleTrack.TrackSequences.AddSequence();
+            //ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(objectModelParticleEmitter.Scale, objectModelParticleEmitter.Scale));
+            ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(1, 1));
+
+            // Unknown / Testing
+            // Wasn't enough to make it work
+            ZSource.TrackSequences.AddSequence();
+            ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            //ColorTrack.TrackSequences.AddSequence();
+            //ColorTrack.TrackSequences.AddValueToLastSequence(0, new Vector3(255,255,255));
+            AlphaTrack.TrackSequences.AddSequence();
+            AlphaTrack.TrackSequences.AddValueToLastSequence(0, new M2UInt16(0));
+            EnabledIn.TrackSequences.AddSequence();
+            EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
+
+            // More testing
+            GeometryModel.Add(new Fixed16(0));
+            RecursionModel.Add(new Fixed16(0));
+
+            // More testing
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(6.283185f));
+
+            // More testing
+            SpeedVariation.TrackSequences.AddSequence();
+            SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0.33f));
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f)); // Taken from SmokeFlare_White
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));  // Taken from SmokeFlare_White
+
+            // More testing
+            Drag = 0.85f;
+            FollowSpeed1 = 2.5f;
+            FollowScale1 = 0.7f;
+            FollowSpeed2 = 7;
+            FollowScale2 = 0.9f;
+
+            // More testing
+            TextureTileRotation = 2;
+            TextureDimensionsRows = 8;
+            TextureDimensionColumns = 8;
+
+            // More testing
+            Flags |= (UInt32)M2ParticleEmitterFlags.LitByLight;
+            Flags |= (UInt32)M2ParticleEmitterFlags.Unknown;
+            Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
+            Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
+            Flags |= (UInt32)M2ParticleEmitterFlags.Randomizer;
+
+            // More testing
+            RelativePosition = new Vector3(-0.000301f, -0.00567455f, 0.1358659f);
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(2.777777f));
+            Lifespan.TrackSequences.AddSequence();
+            Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(4));
+
+            // More testing
+            EmissionRate.TrackSequences.AddSequence();
+            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
+
+            // (Up to ColorTrack...)
+            // More testing
+            // Start - Middle - End always required?
+            //ColorTrack.TrackSequences.AddSequence();
+            //ColorTrack.TrackSequences.AddValueToLastSequence(0, new Vector3(255, 255, 255));
+            ColorTrack.TrackSequences.AddSequence();
+            ColorTrack.TrackSequences.AddValueToLastSequence(16384, new Vector3(255, 255, 255));
+            //ColorTrack.TrackSequences.AddSequence();
+            //ColorTrack.TrackSequences.AddValueToLastSequence(32767, new Vector3(255, 255, 255));
         }
 
         public UInt32 GetHeaderSize()
@@ -104,10 +177,8 @@ namespace EQWOWConverter.WOWFiles
             size += RelativePosition.GetBytesSize();
             size += 2; // ParentBoneID
             size += 2; // TextureID
-            size += 4; // GeometryModelLength
-            size += 4; // GeometryModelOffset
-            size += 4; // RecursionModelLength
-            size += 4; // RecursionModelOffset
+            size += GeometryModel.GetHeaderSize();
+            size += RecursionModel.GetHeaderSize();
             size += 1; // BlendModeType
             size += 1; // EmitterType
             size += 2; // ParticleIndex
@@ -166,10 +237,8 @@ namespace EQWOWConverter.WOWFiles
             bytes.AddRange(RelativePosition.ToBytes());
             bytes.AddRange(BitConverter.GetBytes(ParentBoneID));
             bytes.AddRange(BitConverter.GetBytes(TextureID));
-            bytes.AddRange(BitConverter.GetBytes(GeometryModelLength));
-            bytes.AddRange(BitConverter.GetBytes(GeometryModelOffset));
-            bytes.AddRange(BitConverter.GetBytes(RecursionModelLength));
-            bytes.AddRange(BitConverter.GetBytes(RecursionModelOffset));
+            bytes.AddRange(GeometryModel.GetHeaderBytes());
+            bytes.AddRange(RecursionModel.GetHeaderBytes());
             bytes.Add(Convert.ToByte(BlendModeType));
             bytes.Add(Convert.ToByte(EmitterType));
             bytes.AddRange(BitConverter.GetBytes(ParticleIndex));
@@ -222,6 +291,10 @@ namespace EQWOWConverter.WOWFiles
 
         public void AddDataBytes(ref List<byte> byteBuffer)
         {
+            GeometryModel.AddDataBytes(ref byteBuffer);
+            AddBytesToAlign(ref byteBuffer, 16);
+            RecursionModel.AddDataBytes(ref byteBuffer);
+            AddBytesToAlign(ref byteBuffer, 16);
             EmissionSpeed.AddDataBytes(ref byteBuffer);
             SpeedVariation.AddDataBytes(ref byteBuffer);
             VerticalRange.AddDataBytes(ref byteBuffer);
@@ -238,6 +311,14 @@ namespace EQWOWConverter.WOWFiles
             HeadCellTrack.AddDataBytes(ref byteBuffer);
             TailCellTrack.AddDataBytes(ref byteBuffer);
             EnabledIn.AddDataBytes(ref byteBuffer);
+        }
+
+        private void AddBytesToAlign(ref List<byte> byteBuffer, int byteAlignMultiplier)
+        {
+            int bytesToAdd = byteAlignMultiplier - (byteBuffer.Count % byteAlignMultiplier);
+            if (bytesToAdd == byteAlignMultiplier)
+                return;
+            byteBuffer.AddRange(new byte[bytesToAdd]);
         }
     }
 }

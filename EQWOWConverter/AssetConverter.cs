@@ -1364,7 +1364,7 @@ namespace EQWOWConverter
             // Add any custom spells
             GenerateCustomSpells(ref spellTemplates);
 
-            // Copy the spell sounds for staging
+            // Copy the spell sounds
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
             foreach (Sound sound in SpellVisual.SoundsByFileNameNoExt.Values)
@@ -1375,6 +1375,23 @@ namespace EQWOWConverter
                 string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
                 string targetFullPath = Path.Combine(outputSpellSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
                 FileTool.CopyFile(sourceFullPath, targetFullPath);
+            }
+
+            // Output the objects & textures
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+            foreach (ObjectModel objectModel in SpellVisual.GetObjectModels())
+            {
+                // Write the M2 and Skin
+                string relativeMPQPath = Path.Combine("SPELLS", "Everquest", objectModel.Name);
+                M2 objectM2 = new M2(objectModel, relativeMPQPath);
+                string outputFolder = Path.Combine(exportMPQRootFolder, relativeMPQPath);
+                objectM2.WriteToDisk(objectModel.Name, outputFolder);
+
+                // Output the textures
+                ExportTexturesForObject(objectModel, sourceTextureFolder, outputFolder);
+
+                // TODO: Tie it up somewhere....
+
             }
 
             Logger.WriteDebug("Generating spells complete.");
@@ -1818,6 +1835,11 @@ namespace EQWOWConverter
             string relativeSpellSoundsPath = Path.Combine("Sound", "Spells", "Everquest");
             string fullSpellSoundsPath = Path.Combine(mpqReadyFolder, relativeSpellSoundsPath);
             mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullSpellSoundsPath + "\" \"" + relativeSpellSoundsPath + "\" /r");
+
+            // Spell Particle Emitters
+            string relativeSpellEmittersPath = Path.Combine("SPELLS", "Everquest");
+            string fullSpellEmittersPath = Path.Combine(mpqReadyFolder, relativeSpellEmittersPath);
+            mpqUpdateScriptText.AppendLine("add \"" + exportMPQFileName + "\" \"" + fullSpellEmittersPath + "\" \"" + relativeSpellEmittersPath + "\" /r");
 
             // DBC Files
             string relativeDBCClientPath = Path.Combine("DBFilesClient");
