@@ -14,9 +14,71 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.EQFiles;
+
 namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelParticleEmitter
     {
+        internal enum EmissionAttachLocation
+        {
+            Chest,
+            Head,
+            Hands, // Could be left and right hands, check
+            Feet // Colud be left and right feet, check
+        }
+
+        public string SpriteFileNameNoExt = string.Empty;
+        public EmissionAttachLocation EmissionLocation = EmissionAttachLocation.Chest;
+        public float Gravity = 0;
+        public int LifespanInMS = 0;
+        public float Scale = 0;
+        public float Velocity = 0;
+        public int SpawnRate = 0;
+
+        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            if (effectIndex > 2)
+            {
+                Logger.WriteError("Could not load ObjectModelParticleEmitter because effectIndex was > 2");
+                return;
+            }
+
+            // Convert values
+            SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
+            EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
+            Gravity = effectSection.EmitterGravities[effectIndex];
+            LifespanInMS = effectSection.EmitterSpawnLifespans[effectIndex];
+            Scale = effectSection.EmitterSpawnScale[effectIndex];
+            Velocity = effectSection.EmitterSpawnVelocities[effectIndex];
+            //SpawnRate = effectSection.EmitterSpawnRates[effectIndex]; // Figure out this rate value, 
+            SpawnRate = 10; // Temp
+
+        }
+
+        private EmissionAttachLocation GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            switch (effectSection.EmissionTypeIDs[effectIndex])
+            {
+                case 0: return EmissionAttachLocation.Hands;
+                case 1: // Fallthrough
+                case 2:
+                    {
+                        switch (effectSection.LocationIDs[effectIndex])
+                        {
+                            case 1: return EmissionAttachLocation.Head;
+                            case 2: return EmissionAttachLocation.Hands; // May need to be separate
+                            case 3: return EmissionAttachLocation.Hands; // May need to be separate
+                            case 4: return EmissionAttachLocation.Feet; // May need to be separate
+                            case 5: return EmissionAttachLocation.Feet; // May need to be separate
+                            default: return EmissionAttachLocation.Chest;
+                        }
+                    }
+                case 3: return EmissionAttachLocation.Feet;
+                case 4: return EmissionAttachLocation.Feet;
+                case 5: return EmissionAttachLocation.Chest;
+                default: return EmissionAttachLocation.Chest; // Default to chest
+            }
+        }
     }
 }

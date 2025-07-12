@@ -83,6 +83,19 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 SplinePointOffset = 0;
         private M2TrackSequences<M2Char> EnabledIn = new M2TrackSequences<M2Char>(); // May not be needed for anything.  Purpose not clear
 
+        public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter, UInt16 textureID)
+        {
+            TextureID = textureID;
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Velocity));
+            ScaleTrack.TrackSequences.AddSequence();
+            ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(objectModelParticleEmitter.Scale, objectModelParticleEmitter.Scale));
+            EmissionRate.TrackSequences.AddSequence();
+            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+            Gravity.TrackSequences.AddSequence();
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.Gravity));
+        }
+
         public UInt32 GetHeaderSize()
         {
             UInt32 size = 0;

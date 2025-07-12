@@ -25,7 +25,7 @@ namespace EQWOWConverter.EQFiles
         {
             public string[] SpriteNames = new string[3];
             public string TypeString = string.Empty;
-            public int[] LocationIDs = new int[3]; // -1 = None(?), 0 = Body Center, 1 = Head, 2 = Right Hand, 3 = Left Hand, 4 = Right Foot, 5 = Left Foot, 6 = Also center of body
+            public int[] LocationIDs = new int[3]; // -1 = None(?), 0 = Body Center, 1 = Head, 2 = Right Hand, 3 = Left Hand, 4 = Right Foot, 5 = Left Foot, 6+ = Also center of body
             public int[] EmissionTypeIDs = new int[3]; // -1 = None, 0 = Hands, 1 = Cone to the right, 2 = Sphere around player, 3 = Disc on the ground, 4 = Column from the ground, 5 = Disc at the player center
             public string[] SpriteListNames = new string[12]; // Up to 12 sprites used for animating particles. Loop through until the end and start at begining. Porticles oriented in a circle, with each 30 degrees from the next for a total of 360 degrees.
             public int SpriteListEffect; // 1 = Projectile, 2 = Disc pulsating outward and then inward
