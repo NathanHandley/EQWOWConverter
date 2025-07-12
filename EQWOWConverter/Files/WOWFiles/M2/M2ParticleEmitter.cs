@@ -99,6 +99,8 @@ namespace EQWOWConverter.WOWFiles
             //ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(objectModelParticleEmitter.Scale, objectModelParticleEmitter.Scale));
             //ScaleTrack.TrackSequences.AddValueToLastSequence(0, new Vector2(1, 1));
             ScaleTrack.AddTimeStep(0, new Vector2(1, 1));
+            ScaleTrack.AddTimeStep(16384, new Vector2(1, 1));
+            ScaleTrack.AddTimeStep(32767, new Vector2(1, 1));
 
             // Unknown / Testing
             // Wasn't enough to make it work
@@ -108,7 +110,9 @@ namespace EQWOWConverter.WOWFiles
             //ColorTrack.TrackSequences.AddValueToLastSequence(0, new Vector3(255,255,255));
             //AlphaTrack.TrackSequences.AddSequence();
             //AlphaTrack.TrackSequences.AddValueToLastSequence(0, new M2UInt16(0));
-            AlphaTrack.AddTimeStep(0, new M2UInt16(0));
+            AlphaTrack.AddTimeStep(0, new M2UInt16(32767));
+            AlphaTrack.AddTimeStep(16384, new M2UInt16(32767));
+            AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
             EnabledIn.TrackSequences.AddSequence();
             EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
 
@@ -172,6 +176,12 @@ namespace EQWOWConverter.WOWFiles
             ColorTrack.AddTimeStep(0, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(16384, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(32767, new Vector3(255, 255, 255));
+
+            HeadCellTrack.AddTimeStep(0, new M2UInt16(6));
+            HeadCellTrack.AddTimeStep(16384, new M2UInt16(33));
+            HeadCellTrack.AddTimeStep(16384, new M2UInt16(34));
+            HeadCellTrack.AddTimeStep(32767, new M2UInt16(59));
+
         }
 
         public UInt32 GetHeaderSize()
