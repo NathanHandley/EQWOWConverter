@@ -35,6 +35,7 @@ namespace EQWOWConverter.ObjectModels.Properties
         public float ActiveDoodadAnimSlideValue = 0; 
         public int ActiveDoodadAnimTimeInMS = 0;
         public bool DoGenerateCollisionFromMeshData = true;
+        public ObjectModelParticleEmitter? ParticleEmitter = null;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
 
         public ObjectModelProperties() { }
@@ -51,6 +52,7 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
             DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
+            ParticleEmitter = other.ParticleEmitter;
             RenderingEnabled = other.RenderingEnabled;
         }
 

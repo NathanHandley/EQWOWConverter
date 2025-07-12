@@ -24,6 +24,6 @@ namespace EQWOWConverter.ObjectModels
         Creature,
         Transport,
         EquipmentHeld,
-        SpellEffect
+        ParticleEmitter
     }
 }

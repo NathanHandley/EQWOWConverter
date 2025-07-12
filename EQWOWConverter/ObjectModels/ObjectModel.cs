@@ -144,6 +144,14 @@ namespace EQWOWConverter.ObjectModels
             // Process materials
             ProcessMaterials(initialMaterials, ref meshData);
 
+            // Particles have manually added textures without materials
+            if (ModelType == ObjectModelType.ParticleEmitter && Properties.ParticleEmitter != null)
+            {
+                ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                newModelTexture.TextureName = Properties.ParticleEmitter.SpriteFileNameNoExt;
+                ModelTextures.Add(newModelTexture);
+            }
+
             // Create model vertices
             GenerateModelVertices(meshData);
 
@@ -160,8 +168,8 @@ namespace EQWOWConverter.ObjectModels
             // Collision data
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
-            // Create a global sequence if there is none
-            if (GlobalLoopSequenceLimits.Count == 0)
+            // Create a global sequence if there is none and it's not an emitter
+            if (GlobalLoopSequenceLimits.Count == 0 && ModelType != ObjectModelType.ParticleEmitter)
                 GlobalLoopSequenceLimits.Add(0);
 
             // Store the final state mesh data
@@ -173,7 +181,7 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessBonesAndAnimation()
         {
-            // Static types
+            // Static types & emitters
             if ((!IsSkeletal) && EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
@@ -1590,6 +1598,10 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
+            // Skip collision for particles
+            if (ModelType == ObjectModelType.ParticleEmitter)
+                return;
+
             // Generate collision data if there is none and it's from an EQ object
             if (collisionVertices.Count == 0 && Properties.DoGenerateCollisionFromMeshData == true && 
                 (ModelType != ObjectModelType.ZoneModel && ModelType != ObjectModelType.SoundInstance && ModelType != ObjectModelType.EquipmentHeld))

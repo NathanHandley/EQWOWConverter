@@ -17,7 +17,9 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels;
+using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
+using Mysqlx.Session;
 
 namespace EQWOWConverter.Spells
 {
@@ -35,6 +37,9 @@ namespace EQWOWConverter.Spells
         public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
         public Dictionary<SpellVisualEffectLocation, ObjectModel> VisualModelByEffectLocation = new Dictionary<SpellVisualEffectLocation, ObjectModel>();
+        public ObjectModel? SourceObject = null;
+        public ObjectModel? SpriteObject = null;
+        public ObjectModel? TargetObject = null;
 
         private static void LoadEQSpellVisualEffectsData()
         {
@@ -172,7 +177,23 @@ namespace EQWOWConverter.Spells
             }
 
             // Model
-
+            // TODO: Skip sprite for now
+            if (stageType == SpellVisualStageType.Cast)
+                return;
+            ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
+            particleEmitter.Load(effSectionData, (int)stageType);
+            ObjectModelProperties objectProperties = new ObjectModelProperties();
+            objectProperties.ParticleEmitter = particleEmitter;
+            string objectName = string.Concat("eqspellemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString());
+            ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+            objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
+            switch(stageType)
+            {
+                case SpellVisualStageType.Precast: spellVisual.SourceObject = objectModel; break;
+                case SpellVisualStageType.Cast: spellVisual.SpriteObject = objectModel; break;
+                case SpellVisualStageType.Impact: spellVisual.TargetObject = objectModel; break;
+            }
+            VisualModels.Add(objectModel);
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)
