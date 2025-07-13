@@ -52,11 +52,6 @@ namespace EQWOWConverter.ObjectModels
 
         public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex, int spellVisualEffectNameDBCID)
         {
-            if (effectIndex > 2)
-            {
-                Logger.WriteError("Could not load ObjectModelParticleEmitter because effectIndex was > 2");
-                return;
-            }
             SpellVisualEffectNameDBCID = spellVisualEffectNameDBCID;
 
             // Calculate the location and pattern first since those are used in further calculations.
@@ -66,12 +61,14 @@ namespace EQWOWConverter.ObjectModels
             // Velocity
             Velocity = CalculateVelocity(effectSection, effectIndex, EmissionPattern);
 
+            // Lifespan
+            LifespanInMS = CalculateLifespanInMS(effectSection, effectIndex);
+
             float feetToMeterMod = 0.3048f;
 
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
             Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod; // Change feet to meters
-            LifespanInMS = effectSection.EmitterSpawnLifespans[effectIndex];
             Scale = effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
             
             //SpawnRate = effectSection.EmitterSpawnRates[effectIndex]; // Figure out this rate value, 
@@ -93,6 +90,17 @@ namespace EQWOWConverter.ObjectModels
 
             // Default is just use the defined velocity
             return sourceVelocity;
+        }
+
+        private int CalculateLifespanInMS(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            // Default to a second if no lifespan
+            if (effectSection.EmitterSpawnLifespans[effectIndex] == 0)
+                return 1000;
+
+            // Default to what's provided
+            else
+                return effectSection.EmitterSpawnLifespans[effectIndex];
         }
 
         private EmissionSpawnPattern GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)

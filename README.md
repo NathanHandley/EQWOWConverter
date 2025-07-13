@@ -42,6 +42,7 @@ What's currently missing:
 # Special Thanks
 In no particular order...
 - Dan Wilkins/Nick Gal/(others) for Lantern Extractor (https://github.com/LanternEQ/LanternExtractor) - This saved a lot of time trying to get EQ data exported
+- Also the community behind Lantern Extractor on their Discord.  Special callouts to Kicnlag, Silvae, Wiz, and Eldrich.
 - The people behind https://wowdev.wiki - Navigating the WoW file formats would have been near impossible without this documentation
 - WoW Modding Community Discord - For the one-off problem questions I've run into thus far (special callout to Aleist3r, Titi, Soup Aura, Stoneharry)
 - Jarl Gullberg and team working on libwarcraft (https://github.com/WowDevTools/libwarcraft) - Whenever confused by elements outlined in wowdev.wiki, this code worked as a reference sanity check

@@ -105,6 +105,7 @@ namespace EQWOWConverter.EQFiles
         {
             public int Field01;
             public int Field02;
+            public int VisualEffectIndex = 0;
             public SectionData[] SectionDatas = new SectionData[3]; // Always 3, sometimes blank
         }        
 
@@ -129,6 +130,7 @@ namespace EQWOWConverter.EQFiles
                 EQSpellEffect curEffect = new EQSpellEffect();
                 curEffect.Field01 = ByteTool.ReadInt32FromBytes(fileBytes, ref byteCursor);
                 curEffect.Field02 = ByteTool.ReadInt32FromBytes(fileBytes, ref byteCursor);
+                curEffect.VisualEffectIndex = i;
 
                 // Always three sections
                 for (int j = 0; j < 3; j++)
