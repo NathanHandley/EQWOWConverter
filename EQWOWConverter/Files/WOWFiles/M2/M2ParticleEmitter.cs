@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
         private UInt16 TextureID = 0;
         M2GenericArrayByOffset<Fixed16> GeometryModel = new M2GenericArrayByOffset<Fixed16>();
         M2GenericArrayByOffset<Fixed16> RecursionModel = new M2GenericArrayByOffset<Fixed16>();
-        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AlphaBlended; // Testing, should be opaque?
+        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AlphaTested;
         private ObjectModelParticleEmitterType EmitterType = ObjectModelParticleEmitterType.Plane;
         private UInt16 ParticleIndex = 0; // Find where this references
         private byte ParticleType = 0; // 0 = Normal, 1 = Large (moonwell), 2 = Like 0 but for Tram(?)
@@ -59,7 +59,7 @@ namespace EQWOWConverter.WOWFiles
         private float TailLengthMultiplier = 0.1f; // Multiple for calculating tail particle length.  0.1 is seen a bit
         private float TwinkleSpeed = 18f; // Possibly a FPS number for twinkle. 18f is seen
         private float TwinklPercent = 1f; // Not 100% sure on this
-        private Vector2 TwinkleRange = new Vector2(0.5f, 1.5f); // "Min and Max", but .5 and 1.5 is seen.  Adjust
+        private Vector2 TwinkleRange = new Vector2(1f, 1f); // "Min and Max" twinkle
         private float BurstMultiplier = 1f; // Unsure, but requires M2ParticleEmitterFlags.UseBurstMultiplier
         private float Drag = 0; // If no-zero, the particles slow down sooner than they would otherwise
         private float BaseSpin = 0; // Initial rotation of a particle quad
@@ -108,13 +108,14 @@ namespace EQWOWConverter.WOWFiles
 
 
             HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(6.283185f));
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
 
             Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0)); 
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
 
+            float lifespan = objectModelParticleEmitter.LifespanInMS / 1000;
             Lifespan.TrackSequences.AddSequence();
-            Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(4));
+            Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 
             EmissionRate.TrackSequences.AddSequence();
             EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
@@ -134,9 +135,10 @@ namespace EQWOWConverter.WOWFiles
             AlphaTrack.AddTimeStep(16384, new M2UInt16(32767));
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
-            ScaleTrack.AddTimeStep(0, new Vector2(1, 1));
-            ScaleTrack.AddTimeStep(16384, new Vector2(1, 1));
-            ScaleTrack.AddTimeStep(32767, new Vector2(1, 1));
+            float scale = Configuration.GENERATE_WORLD_SCALE * objectModelParticleEmitter.Scale;
+            ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));
+            ScaleTrack.AddTimeStep(16384, new Vector2(scale, scale));
+            ScaleTrack.AddTimeStep(32767, new Vector2(scale, scale));
 
             HeadCellTrack.AddTimeStep(0, new M2UInt16(6));
             HeadCellTrack.AddTimeStep(16384, new M2UInt16(33));
