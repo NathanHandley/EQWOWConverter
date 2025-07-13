@@ -15,6 +15,7 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.EQFiles;
+using System.Drawing.Text;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -28,8 +29,20 @@ namespace EQWOWConverter.ObjectModels
             Feet // Colud be left and right feet, check
         }
 
+        internal enum EmissionSpawnPattern
+        {
+            None,
+            FromHands, // Exits from the hands based on velocity
+            ConeToRight, // Unsure what uses this
+            SphereAroundPlayer, // Appears around the player starting at EmitterSpawnRadius distance from center
+            DiscOnGround, // Disc around the player
+            ColumnFromGround, // Around the player, generally going up (gravity)
+            DiscPlayerCenter // Comes out from the center of the player        
+        }
+
         public string SpriteFileNameNoExt = string.Empty;
         public EmissionAttachLocation EmissionLocation = EmissionAttachLocation.Chest;
+        public EmissionSpawnPattern EmissionPattern = EmissionSpawnPattern.None;
         public float Gravity = 0;
         public int LifespanInMS = 0;
         public float Scale = 0;
@@ -46,18 +59,56 @@ namespace EQWOWConverter.ObjectModels
             }
             SpellVisualEffectNameDBCID = spellVisualEffectNameDBCID;
 
+            // Calculate the location and pattern first since those are used in further calculations.
+            EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
+            EmissionPattern = GetEmissionSpawnPattern(effectSection, effectIndex);
+
+            // Velocity
+            Velocity = CalculateVelocity(effectSection, effectIndex, EmissionPattern);
+
+            float feetToMeterMod = 0.3048f;
+
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
-            EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
-            Gravity = effectSection.EmitterGravities[effectIndex] * 0.3048f; // Change feet to meters
+            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod; // Change feet to meters
             LifespanInMS = effectSection.EmitterSpawnLifespans[effectIndex];
-            Scale = effectSection.EmitterSpawnScale[effectIndex];
-            Velocity = effectSection.EmitterSpawnVelocities[effectIndex];
+            Scale = effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
+            
             //SpawnRate = effectSection.EmitterSpawnRates[effectIndex]; // Figure out this rate value, 
             SpawnRate = 10; // Temp
+        }
+        
+        private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, EmissionSpawnPattern spawnPattern)
+        {
+            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex];
 
+            // Hands always 'shoot out' unless there's a velocity, and then it's nothing
+            if (spawnPattern == EmissionSpawnPattern.FromHands)
+            {
+                if (sourceVelocity == 0)
+                    return -1f; // This is about right
+                else
+                    return 0f;
+            }            
+
+            // Default is just use the defined velocity
+            return sourceVelocity;
         }
 
+        private EmissionSpawnPattern GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            switch (effectSection.EmissionTypeIDs[effectIndex])
+            {
+                case 0: return EmissionSpawnPattern.FromHands;
+                case 1: return EmissionSpawnPattern.ConeToRight;
+                case 2: return EmissionSpawnPattern.SphereAroundPlayer;
+                case 3: return EmissionSpawnPattern.DiscPlayerCenter;
+                case 4: return EmissionSpawnPattern.ColumnFromGround;
+                case 5: return EmissionSpawnPattern.DiscOnGround;
+                default: return EmissionSpawnPattern.None;
+            }
+        }
+        
         private EmissionAttachLocation GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
             switch (effectSection.EmissionTypeIDs[effectIndex])

@@ -92,8 +92,9 @@ namespace EQWOWConverter.WOWFiles
             TextureDimensionsRows = 0;
             TextureDimensionColumns = 0;
 
+            float particleVelocity = objectModelParticleEmitter.Velocity;
             EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
 
             SpeedVariation.TrackSequences.AddSequence();
             SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
@@ -130,7 +131,7 @@ namespace EQWOWConverter.WOWFiles
             AlphaTrack.AddTimeStep(16384, new M2UInt16(12336));
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
-            float scale = Configuration.GENERATE_WORLD_SCALE * objectModelParticleEmitter.Scale;
+            float scale = objectModelParticleEmitter.Scale;
             ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(16384, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(32767, new Vector2(scale, scale));
