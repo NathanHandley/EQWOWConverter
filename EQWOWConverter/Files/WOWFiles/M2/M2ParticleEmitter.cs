@@ -80,13 +80,6 @@ namespace EQWOWConverter.WOWFiles
 
         public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter, UInt16 textureID)
         {
-            TextureID = textureID;
-            GeometryModel.Add(new Fixed16(0));
-            RecursionModel.Add(new Fixed16(0));
-            TextureTileRotation = 1;
-            TextureDimensionsRows = 0;
-            TextureDimensionColumns = 0;
-
             //// The following is stuff that works as a test
             //Flags |= (UInt32)M2ParticleEmitterFlags.LitByLight;
             Flags |= (UInt32)M2ParticleEmitterFlags.Unknown;
@@ -95,50 +88,70 @@ namespace EQWOWConverter.WOWFiles
             //Flags |= (UInt32)M2ParticleEmitterFlags.Randomizer;
 
             RelativePosition = new Vector3(-0.000301f, -0.00567455f, 0.1358659f);
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0)); // Temp, testing if this is a problem
-            ScaleTrack.AddTimeStep(0, new Vector2(1, 1));
-            ScaleTrack.AddTimeStep(16384, new Vector2(1, 1));
-            ScaleTrack.AddTimeStep(32767, new Vector2(1, 1));
-            ZSource.TrackSequences.AddSequence();
-            ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-            AlphaTrack.AddTimeStep(0, new M2UInt16(32767));
-            AlphaTrack.AddTimeStep(16384, new M2UInt16(32767));
-            AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
-            EnabledIn.TrackSequences.AddSequence();
-            EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(6.283185f));
+
+            TextureID = textureID;
+
+            GeometryModel.Add(new Fixed16(0));
+            RecursionModel.Add(new Fixed16(0));
+            TextureTileRotation = 1;
+            TextureDimensionsRows = 0;
+            TextureDimensionColumns = 0;
+
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(2.777777f));
+
             SpeedVariation.TrackSequences.AddSequence();
             SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0.33f));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
+
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(6.283185f));
+
+            Gravity.TrackSequences.AddSequence();
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0)); 
+
+            Lifespan.TrackSequences.AddSequence();
+            Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(4));
+
+            EmissionRate.TrackSequences.AddSequence();
+            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f)); // Taken from SmokeFlare_White
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));  // Taken from SmokeFlare_White
-            Drag = 0.85f;
-            FollowSpeed1 = 2.5f;
-            FollowScale1 = 0.7f;
-            FollowSpeed2 = 7;
-            FollowScale2 = 0.9f;
-            //TextureTileRotation = 2;
-            //TextureDimensionsRows = 8;
-            //TextureDimensionColumns = 8;
-            EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(2.777777f));
-            Lifespan.TrackSequences.AddSequence();
-            Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(4));
-            EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
+
+            ZSource.TrackSequences.AddSequence();
+            ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
             ColorTrack.AddTimeStep(0, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(16384, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(32767, new Vector3(255, 255, 255));
+
+            AlphaTrack.AddTimeStep(0, new M2UInt16(32767));
+            AlphaTrack.AddTimeStep(16384, new M2UInt16(32767));
+            AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
+
+            ScaleTrack.AddTimeStep(0, new Vector2(1, 1));
+            ScaleTrack.AddTimeStep(16384, new Vector2(1, 1));
+            ScaleTrack.AddTimeStep(32767, new Vector2(1, 1));
+
             HeadCellTrack.AddTimeStep(0, new M2UInt16(6));
             HeadCellTrack.AddTimeStep(16384, new M2UInt16(33));
             HeadCellTrack.AddTimeStep(16384, new M2UInt16(34));
             HeadCellTrack.AddTimeStep(32767, new M2UInt16(59));
-            //// End test stuff
+
+            Drag = 0.85f;
+
+            FollowSpeed1 = 2.5f;
+            FollowScale1 = 0.7f;
+            FollowSpeed2 = 7;
+            FollowScale2 = 0.9f;
+
+            EnabledIn.TrackSequences.AddSequence();
+            EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
         }
 
         public UInt32 GetHeaderSize()

@@ -35,14 +35,16 @@ namespace EQWOWConverter.ObjectModels
         public float Scale = 0;
         public float Velocity = 0;
         public int SpawnRate = 0;
+        public int SpellVisualEffectNameDBCID;
 
-        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex, int spellVisualEffectNameDBCID)
         {
             if (effectIndex > 2)
             {
                 Logger.WriteError("Could not load ObjectModelParticleEmitter because effectIndex was > 2");
                 return;
             }
+            SpellVisualEffectNameDBCID = spellVisualEffectNameDBCID;
 
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");

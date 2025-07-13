@@ -23,17 +23,17 @@ namespace EQWOWConverter.WOWFiles
         private static int CUR_ID = Configuration.DBCID_SPELLVISUALKIT_ID_START;
         private static readonly object SpellVisualKitIDLock = new object();
 
-        public void AddRow(SpellVisual spellVisual, SpellVisualStageType visualStageType)
+        public void AddRow(SpellVisual spellVisual, SpellVisualStageType visualStageType, int headEffectDBCID, int chestEffectDBCID, int baseEffectDBCID, int handEffectDBCID)
         {
             DBCRow newRow = new DBCRow();
             newRow.AddInt32(spellVisual.SpellVisualKitDBCIDsInStage[(int)visualStageType]); // ID
             newRow.AddInt32(-1); // StartAnimID (AnimationData.ID, almost always -1)
             newRow.AddInt32((int)spellVisual.AnimationTypeInStage[(int)visualStageType]); // AnimID (AnimationData.ID for the caster)
-            newRow.AddInt32(0); // HeadEffect (SpellVisualEffectName.ID, over the head)
-            newRow.AddInt32(0); // ChestEffect (SpellVisualEffectName.ID, at the chest)
-            newRow.AddInt32(0); // BaseEffect (SpellVisualEffectName.ID, at the ground (base))
-            newRow.AddInt32(0); // LeftHandEffect (SpellVisualEffectName.ID, left hand)
-            newRow.AddInt32(0); // RightHandEffect (SpellVisualEffectName.ID, right hand)
+            newRow.AddInt32(headEffectDBCID); // HeadEffect (SpellVisualEffectName.ID, over the head)
+            newRow.AddInt32(chestEffectDBCID); // ChestEffect (SpellVisualEffectName.ID, at the chest)
+            newRow.AddInt32(baseEffectDBCID); // BaseEffect (SpellVisualEffectName.ID, at the ground (base))
+            newRow.AddInt32(handEffectDBCID); // LeftHandEffect (SpellVisualEffectName.ID, left hand)
+            newRow.AddInt32(handEffectDBCID); // RightHandEffect (SpellVisualEffectName.ID, right hand)
             newRow.AddInt32(0); // BreathEffect (SpellVisualEffectName.ID, mouth? AoE?)
             newRow.AddInt32(0); // LeftWeaponEffect (SpellVisualEffectName.ID)
             newRow.AddInt32(0); // RightWeaponEffect (SpellVisualEffectName.ID)
