@@ -21,7 +21,7 @@ namespace EQWOWConverter.WOWFiles
     {
         None = 0,
         LitByLight = 0x1,
-        Unknown = 0x2,
+        UnknownSeemsRequired = 0x2,
         AffectedByPlayerOrientation = 0x4,
         TravelAbsoluteUp = 0x8, // 'Up' in world space as opposed to the model
         DoNotTrail = 0x10,

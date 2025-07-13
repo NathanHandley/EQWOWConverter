@@ -49,7 +49,7 @@ namespace EQWOWConverter.ObjectModels
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
             EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
-            Gravity = effectSection.EmitterGravities[effectIndex];
+            Gravity = effectSection.EmitterGravities[effectIndex] * 0.3048f; // Change feet to meters
             LifespanInMS = effectSection.EmitterSpawnLifespans[effectIndex];
             Scale = effectSection.EmitterSpawnScale[effectIndex];
             Velocity = effectSection.EmitterSpawnVelocities[effectIndex];

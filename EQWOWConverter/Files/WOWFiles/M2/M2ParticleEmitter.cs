@@ -28,7 +28,7 @@ namespace EQWOWConverter.WOWFiles
         private UInt16 TextureID = 0;
         M2GenericArrayByOffset<Fixed16> GeometryModel = new M2GenericArrayByOffset<Fixed16>();
         M2GenericArrayByOffset<Fixed16> RecursionModel = new M2GenericArrayByOffset<Fixed16>();
-        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AlphaTested;
+        private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AdditiveAlpha;
         private ObjectModelParticleEmitterType EmitterType = ObjectModelParticleEmitterType.Plane;
         private UInt16 ParticleIndex = 0; // Find where this references
         private byte ParticleType = 0; // 0 = Normal, 1 = Large (moonwell), 2 = Like 0 but for Tram(?)
@@ -80,14 +80,9 @@ namespace EQWOWConverter.WOWFiles
 
         public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter, UInt16 textureID)
         {
-            //// The following is stuff that works as a test
-            //Flags |= (UInt32)M2ParticleEmitterFlags.LitByLight;
-            Flags |= (UInt32)M2ParticleEmitterFlags.Unknown;
+            Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired;
             Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
-            //Flags |= (UInt32)M2ParticleEmitterFlags.Randomizer;
-
-            RelativePosition = new Vector3(-0.000301f, -0.00567455f, 0.1358659f);
 
             TextureID = textureID;
 
@@ -98,20 +93,20 @@ namespace EQWOWConverter.WOWFiles
             TextureDimensionColumns = 0;
 
             EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(2.777777f));
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
 
             SpeedVariation.TrackSequences.AddSequence();
-            SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0.33f));
+            SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
 
             VerticalRange.TrackSequences.AddSequence();
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
 
-
             HorizontalRange.TrackSequences.AddSequence();
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
 
+            float gravity = objectModelParticleEmitter.Gravity;
             Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
             float lifespan = objectModelParticleEmitter.LifespanInMS / 1000;
             Lifespan.TrackSequences.AddSequence();
@@ -132,7 +127,7 @@ namespace EQWOWConverter.WOWFiles
             ColorTrack.AddTimeStep(32767, new Vector3(255, 255, 255));
 
             AlphaTrack.AddTimeStep(0, new M2UInt16(32767));
-            AlphaTrack.AddTimeStep(16384, new M2UInt16(32767));
+            AlphaTrack.AddTimeStep(16384, new M2UInt16(12336));
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
             float scale = Configuration.GENERATE_WORLD_SCALE * objectModelParticleEmitter.Scale;
