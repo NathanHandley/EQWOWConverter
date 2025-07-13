@@ -106,10 +106,7 @@ namespace EQWOWConverter.WOWFiles
             //    Colors.AddElement(new M2Color(color, wowObjectModel.ModelAnimations.Count));
 
             // Textures
-            if (wowObjectModel.ModelType == ObjectModelType.ParticleEmitter)
-                Textures.AddModelTexturesTemp();
-            else
-                Textures.AddModelTextures(wowObjectModel.ModelTextures);
+            Textures.AddModelTextures(wowObjectModel.ModelTextures);
 
             // Texture Transparency Sequences
             foreach(var transparencySequenceSet in wowObjectModel.ModelTextureTransparencySequenceSetByMaterialIndex)
