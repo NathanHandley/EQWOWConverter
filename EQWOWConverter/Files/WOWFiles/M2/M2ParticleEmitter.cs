@@ -83,28 +83,15 @@ namespace EQWOWConverter.WOWFiles
             Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired;
             Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
-
+            
             TextureID = textureID;
-
+            
             GeometryModel.Add(new Fixed16(0));
-            RecursionModel.Add(new Fixed16(0));
 
-            float particleVelocity = objectModelParticleEmitter.Velocity;
-            EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
+            RecursionModel.Add(new Fixed16(0));
 
             SpeedVariation.TrackSequences.AddSequence();
             SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
-
-            float gravity = objectModelParticleEmitter.Gravity;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
             float lifespan = objectModelParticleEmitter.LifespanInMS / 1000;
             Lifespan.TrackSequences.AddSequence();
@@ -112,10 +99,6 @@ namespace EQWOWConverter.WOWFiles
 
             EmissionRate.TrackSequences.AddSequence();
             EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
-            EmissionAreaLength.TrackSequences.AddSequence();
-            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f)); // Taken from SmokeFlare_White
-            EmissionAreaWidth.TrackSequences.AddSequence();
-            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));  // Taken from SmokeFlare_White
 
             ZSource.TrackSequences.AddSequence();
             ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
@@ -145,6 +128,70 @@ namespace EQWOWConverter.WOWFiles
 
             EnabledIn.TrackSequences.AddSequence();
             EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
+
+            switch (objectModelParticleEmitter.EmissionPattern)
+            {
+                case ObjectModelParticleEmitter.EmissionSpawnPattern.FromHands:
+                    {
+                        PopulateAsHandSpray(objectModelParticleEmitter);
+                    } break;
+                case ObjectModelParticleEmitter.EmissionSpawnPattern.SphereAroundUnit:
+                    {
+                        PopulateAsSphere(objectModelParticleEmitter);
+                    } break;
+                default:
+                    {
+                        PopulateAsSphere(objectModelParticleEmitter);
+                    } break;
+            }
+        }
+
+        private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleEmitterType.Plane;
+
+            float particleVelocity = objectModelParticleEmitter.Velocity; 
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
+
+            float gravity = objectModelParticleEmitter.Gravity;
+            Gravity.TrackSequences.AddSequence();
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
+
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));
+        }
+
+        private void PopulateAsSphere(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleEmitterType.Sphere;
+
+            float particleVelocity = 0;
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+
+            float gravity = 0;
+            Gravity.TrackSequences.AddSequence();
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
+
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(7f));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(7f));
         }
 
         public UInt32 GetHeaderSize()

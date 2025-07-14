@@ -34,7 +34,7 @@ namespace EQWOWConverter.ObjectModels
             None,
             FromHands, // Exits from the hands based on velocity
             ConeToRight, // Unsure what uses this
-            SphereAroundPlayer, // Appears around the player starting at EmitterSpawnRadius distance from center
+            SphereAroundUnit, // Appears around the player starting at EmitterSpawnRadius distance from center
             DiscOnGround, // Disc around the player
             ColumnFromGround, // Around the player, generally going up (gravity)
             DiscPlayerCenter // Comes out from the center of the player        
@@ -109,7 +109,7 @@ namespace EQWOWConverter.ObjectModels
             {
                 case 0: return EmissionSpawnPattern.FromHands;
                 case 1: return EmissionSpawnPattern.ConeToRight;
-                case 2: return EmissionSpawnPattern.SphereAroundPlayer;
+                case 2: return EmissionSpawnPattern.SphereAroundUnit;
                 case 3: return EmissionSpawnPattern.DiscPlayerCenter;
                 case 4: return EmissionSpawnPattern.ColumnFromGround;
                 case 5: return EmissionSpawnPattern.DiscOnGround;
