@@ -1379,7 +1379,7 @@ namespace EQWOWConverter
 
             // Output the objects & textures
             string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
-            foreach (ObjectModel objectModel in SpellVisual.GetObjectModels())
+            foreach (ObjectModel objectModel in SpellVisual.GetAllEmitterObjectModels())
             {
                 // Write the M2 and Skin
                 string relativeMPQPath = Path.Combine("SPELLS", "Everquest", objectModel.Name);
@@ -2540,7 +2540,7 @@ namespace EQWOWConverter
                     spellVisualKitDBC.AddRow(spellVisual, (SpellVisualStageType)i, headEffectID, chestEffectID, baseEffectID, handEffectID);
                 }
             }
-            foreach (ObjectModel objectModel in SpellVisual.GetObjectModels())
+            foreach (ObjectModel objectModel in SpellVisual.GetAllEmitterObjectModels())
             {
                 if (objectModel.Properties.SpellParticleEmitters.Count > 0)
                 {

@@ -30,6 +30,7 @@ namespace EQWOWConverter.ObjectModels
         public float Velocity = 0;
         public int SpawnRate = 0;
         public float Radius = 0;
+        public int TextureID = 0;
 
         public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
