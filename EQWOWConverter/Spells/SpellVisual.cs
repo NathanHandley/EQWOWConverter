@@ -19,7 +19,6 @@ using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
-using static EQWOWConverter.ObjectModels.ObjectModelParticleEmitter;
 
 namespace EQWOWConverter.Spells
 {
@@ -29,20 +28,14 @@ namespace EQWOWConverter.Spells
         private static readonly object SpellVisualLock = new object();
         private static List<SpellVisual> BeneficialSpellVisuals = new List<SpellVisual>();
         private static List<SpellVisual> DetrimentialSpellVisuals = new List<SpellVisual>();
-        private static List<ObjectModel> VisualModels = new List<ObjectModel>();
+        //private static List<ObjectModel> VisualModels = new List<ObjectModel>();
         public static Dictionary<string, Sound> SoundsByFileNameNoExt = new Dictionary<string, Sound>();
 
         public int SpellVisualDBCID = 0;
         public int[] SpellVisualKitDBCIDsInStage = new int[3];
         public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
-        public Dictionary<SpellVisualStageType, ObjectModel?> ObjectModelByStages = new Dictionary<SpellVisualStageType, ObjectModel?>();
-
-        public SpellVisual()
-        {
-            for (int i = 0; i < 3; i++)
-                ObjectModelByStages.Add((SpellVisualStageType)i, null);
-        }
+        public Dictionary<SpellVisualStageType, Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>> ObjectModelByStageAndAttachLocation = new Dictionary<SpellVisualStageType, Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>>();
 
         private static void LoadEQSpellVisualEffectsData()
         {
@@ -186,18 +179,27 @@ namespace EQWOWConverter.Spells
             }
 
             // Model
-            // TODO: Skip sprite for now
+            // TODO: Skip multi-part sprite for now
             if (stageType == SpellVisualStageType.Cast)
                 return;
-            ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-            particleEmitter.Load(effSectionData, (int)stageType, SpellVisualEffectNameDBC.GenerateID());
-            ObjectModelProperties objectProperties = new ObjectModelProperties();
-            objectProperties.ParticleEmitter = particleEmitter;
             string objectName = string.Concat("eqspellemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString());
+            ObjectModelProperties objectProperties = new ObjectModelProperties();
+            objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
+            for (int i = 0; i < 3; i++)
+            {
+                ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
+                particleEmitter.Load(effSectionData, i);
+                objectProperties.SpellParticleEmitters.Add(particleEmitter);
+            }            
             ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
             objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
-            spellVisual.ObjectModelByStages[stageType] = objectModel;
-            VisualModels.Add(objectModel);
+            if (spellVisual.ObjectModelByStageAndAttachLocation.ContainsKey(stageType) == false)
+                spellVisual.ObjectModelByStageAndAttachLocation.Add(stageType, new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>());
+            if (spellVisual.ObjectModelByStageAndAttachLocation[stageType].ContainsKey()) // TODO: Link this to an object somehow
+
+
+            //spellVisual.ObjectModelByStages[stageType] = objectModel;
+            //VisualModels.Add(objectModel);
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)
@@ -219,18 +221,18 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public int GetVisualIDForAttachLocationStage(EmissionAttachLocation attachLocation, SpellVisualStageType stage)
-        {
-            ObjectModel? objectModel = ObjectModelByStages[stage];
-            if (objectModel == null)
-                return 0;
-            ObjectModelParticleEmitter? emitter = objectModel.Properties.ParticleEmitter;
-            if (emitter == null)
-                return 0;
-            if (emitter.EmissionLocation == attachLocation)
-                return emitter.SpellVisualEffectNameDBCID;
-            else
-                return 0;
-        }
+        //public int GetVisualIDForAttachLocationStage(EmissionAttachLocation attachLocation, SpellVisualStageType stage)
+        //{
+        //    ObjectModel? objectModel = ObjectModelByStages[stage];
+        //    if (objectModel == null)
+        //        return 0;
+        //    ObjectModelParticleEmitter? emitter = objectModel.Properties.ParticleEmitter;
+        //    if (emitter == null)
+        //        return 0;
+        //    if (emitter.EmissionLocation == attachLocation)
+        //        return emitter.SpellVisualEffectNameDBCID;
+        //    else
+        //        return 0;
+        //}
     }
 }

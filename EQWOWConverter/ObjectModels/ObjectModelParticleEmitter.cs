@@ -15,45 +15,24 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 using EQWOWConverter.EQFiles;
-using System.Drawing.Text;
+using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelParticleEmitter
     {
-        internal enum EmissionAttachLocation
-        {
-            Chest,
-            Head,
-            Hands, // Could be left and right hands, check
-            Feet // Colud be left and right feet, check
-        }
-
-        internal enum EmissionSpawnPattern
-        {
-            None,
-            FromHands, // Exits from the hands based on velocity
-            ConeToRight, // Unsure what uses this
-            SphereAroundUnit, // Appears around the player starting at EmitterSpawnRadius distance from center
-            DiscOnGround, // Disc around the player
-            ColumnFromGround, // Around the player, generally going up (gravity)
-            DiscPlayerCenter // Comes out from the center of the player        
-        }
-
         public string SpriteFileNameNoExt = string.Empty;
-        public EmissionAttachLocation EmissionLocation = EmissionAttachLocation.Chest;
-        public EmissionSpawnPattern EmissionPattern = EmissionSpawnPattern.None;
+        public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
+        public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
         public float Gravity = 0;
         public int LifespanInMS = 0;
         public float Scale = 0;
         public float Velocity = 0;
         public int SpawnRate = 0;
-        public int SpellVisualEffectNameDBCID;
+        public float Radius = 0;
 
-        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex, int spellVisualEffectNameDBCID)
+        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
-            SpellVisualEffectNameDBCID = spellVisualEffectNameDBCID;
-
             // Calculate the location and pattern first since those are used in further calculations.
             EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
             EmissionPattern = GetEmissionSpawnPattern(effectSection, effectIndex);
@@ -64,23 +43,28 @@ namespace EQWOWConverter.ObjectModels
             // Lifespan
             LifespanInMS = CalculateLifespanInMS(effectSection, effectIndex);
 
-            float feetToMeterMod = 0.3048f;
-
+            // Radius
+            Radius = effectSection.EmitterSpawnRadii[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
+            
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
-            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod; // Change feet to meters
-            Scale = effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
+            
+            float feetToMeterMod = 0.3048f;
+            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod; // Change feet to meters (?)
+
+            // Factor world scale for spell scale
+            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE);
             
             //SpawnRate = effectSection.EmitterSpawnRates[effectIndex]; // Figure out this rate value, 
             SpawnRate = 10; // Temp
         }
         
-        private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, EmissionSpawnPattern spawnPattern)
+        private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
             float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex];
 
             // Hands always 'shoot out' unless there's a velocity, and then it's nothing
-            if (spawnPattern == EmissionSpawnPattern.FromHands)
+            if (spawnPattern == SpellVisualEmitterSpawnPatternType.FromHands)
             {
                 if (sourceVelocity == 0)
                     return -1f; // This is about right
@@ -103,42 +87,42 @@ namespace EQWOWConverter.ObjectModels
                 return effectSection.EmitterSpawnLifespans[effectIndex];
         }
 
-        private EmissionSpawnPattern GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
-                case 0: return EmissionSpawnPattern.FromHands;
-                case 1: return EmissionSpawnPattern.ConeToRight;
-                case 2: return EmissionSpawnPattern.SphereAroundUnit;
-                case 3: return EmissionSpawnPattern.DiscPlayerCenter;
-                case 4: return EmissionSpawnPattern.ColumnFromGround;
-                case 5: return EmissionSpawnPattern.DiscOnGround;
-                default: return EmissionSpawnPattern.None;
+                case 0: return SpellVisualEmitterSpawnPatternType.FromHands;
+                case 1: return SpellVisualEmitterSpawnPatternType.ConeToRight;
+                case 2: return SpellVisualEmitterSpawnPatternType.SphereAroundUnit;
+                case 3: return SpellVisualEmitterSpawnPatternType.DiscPlayerCenter;
+                case 4: return SpellVisualEmitterSpawnPatternType.ColumnFromGround;
+                case 5: return SpellVisualEmitterSpawnPatternType.DiscOnGround;
+                default: return SpellVisualEmitterSpawnPatternType.None;
             }
         }
         
-        private EmissionAttachLocation GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
-                case 0: return EmissionAttachLocation.Hands;
+                case 0: return SpellEmitterModelAttachLocationType.Hands;
                 case 1: // Fallthrough
                 case 2:
                     {
                         switch (effectSection.LocationIDs[effectIndex])
                         {
-                            case 1: return EmissionAttachLocation.Head;
-                            case 2: return EmissionAttachLocation.Hands; // May need to be separate
-                            case 3: return EmissionAttachLocation.Hands; // May need to be separate
-                            case 4: return EmissionAttachLocation.Feet; // May need to be separate
-                            case 5: return EmissionAttachLocation.Feet; // May need to be separate
-                            default: return EmissionAttachLocation.Chest;
+                            case 1: return SpellEmitterModelAttachLocationType.Head;
+                            case 2: return SpellEmitterModelAttachLocationType.Hands; // May need to be separate
+                            case 3: return SpellEmitterModelAttachLocationType.Hands; // May need to be separate
+                            case 4: return SpellEmitterModelAttachLocationType.Feet; // May need to be separate
+                            case 5: return SpellEmitterModelAttachLocationType.Feet; // May need to be separate
+                            default: return SpellEmitterModelAttachLocationType.Chest;
                         }
                     }
-                case 3: return EmissionAttachLocation.Feet;
-                case 4: return EmissionAttachLocation.Feet;
-                case 5: return EmissionAttachLocation.Chest;
-                default: return EmissionAttachLocation.Chest; // Default to chest
+                case 3: return SpellEmitterModelAttachLocationType.Feet;
+                case 4: return SpellEmitterModelAttachLocationType.Feet;
+                case 5: return SpellEmitterModelAttachLocationType.Chest;
+                default: return SpellEmitterModelAttachLocationType.Chest; // Default to chest
             }
         }
     }

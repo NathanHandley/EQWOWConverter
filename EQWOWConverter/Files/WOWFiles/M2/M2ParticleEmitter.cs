@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.ObjectModels;
+using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.WOWFiles
 {
@@ -98,7 +99,7 @@ namespace EQWOWConverter.WOWFiles
             Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 
             EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(33));
+            EmissionRate.TrackSequences.AddValueToLastSequence(100000, new M2Float(33));
 
             ZSource.TrackSequences.AddSequence();
             ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
@@ -111,6 +112,7 @@ namespace EQWOWConverter.WOWFiles
             AlphaTrack.AddTimeStep(16384, new M2UInt16(12336));
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
+            //float scale = MathF.Min(objectModelParticleEmitter.Scale, 0.15f);
             float scale = objectModelParticleEmitter.Scale;
             ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(16384, new Vector2(scale, scale));
@@ -131,11 +133,11 @@ namespace EQWOWConverter.WOWFiles
 
             switch (objectModelParticleEmitter.EmissionPattern)
             {
-                case ObjectModelParticleEmitter.EmissionSpawnPattern.FromHands:
+                case SpellVisualEmitterSpawnPatternType.FromHands:
                     {
                         PopulateAsHandSpray(objectModelParticleEmitter);
                     } break;
-                case ObjectModelParticleEmitter.EmissionSpawnPattern.SphereAroundUnit:
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
                     {
                         PopulateAsSphere(objectModelParticleEmitter);
                     } break;
@@ -188,10 +190,12 @@ namespace EQWOWConverter.WOWFiles
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
+            //float radius = MathF.Min(objectModelParticleEmitter.Radius, 1.5f);
+            float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
-            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(7f));
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
-            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(7f));
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
         }
 
         public UInt32 GetHeaderSize()

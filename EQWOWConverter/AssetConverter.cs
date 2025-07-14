@@ -2533,20 +2533,19 @@ namespace EQWOWConverter
                 spellVisualDBC.AddRow(spellVisual);
                 for (int i = 0; i < 3; i++)
                 {
-                    int headEffectID = spellVisual.GetVisualIDForAttachLocationStage(ObjectModelParticleEmitter.EmissionAttachLocation.Head, (SpellVisualStageType)i);
-                    int chestEffectID = spellVisual.GetVisualIDForAttachLocationStage(ObjectModelParticleEmitter.EmissionAttachLocation.Chest, (SpellVisualStageType)i);
-                    int baseEffectID = spellVisual.GetVisualIDForAttachLocationStage(ObjectModelParticleEmitter.EmissionAttachLocation.Feet, (SpellVisualStageType)i);
-                    int handEffectID = spellVisual.GetVisualIDForAttachLocationStage(ObjectModelParticleEmitter.EmissionAttachLocation.Hands, (SpellVisualStageType)i);
+                    int headEffectID = spellVisual.GetVisualIDForAttachLocationStage(SpellEmitterModelAttachLocationType.Head, (SpellVisualStageType)i);
+                    int chestEffectID = spellVisual.GetVisualIDForAttachLocationStage(SpellEmitterModelAttachLocationType.Chest, (SpellVisualStageType)i);
+                    int baseEffectID = spellVisual.GetVisualIDForAttachLocationStage(SpellEmitterModelAttachLocationType.Feet, (SpellVisualStageType)i);
+                    int handEffectID = spellVisual.GetVisualIDForAttachLocationStage(SpellEmitterModelAttachLocationType.Hands, (SpellVisualStageType)i);
                     spellVisualKitDBC.AddRow(spellVisual, (SpellVisualStageType)i, headEffectID, chestEffectID, baseEffectID, handEffectID);
                 }
             }
             foreach (ObjectModel objectModel in SpellVisual.GetObjectModels())
             {
-                ObjectModelParticleEmitter? particleEmitter = objectModel.Properties.ParticleEmitter;
-                if (particleEmitter != null)
+                if (objectModel.Properties.SpellParticleEmitters.Count > 0)
                 {
                     string relativeMPQPath = Path.Combine("SPELLS", "Everquest", objectModel.Name, string.Concat(objectModel.Name, ".mdx"));
-                    spellVisualEffectNameDBC.AddRow(particleEmitter.SpellVisualEffectNameDBCID, objectModel.Name, relativeMPQPath);
+                    spellVisualEffectNameDBC.AddRow(objectModel.Properties.SpellVisualEffectNameDBCID, objectModel.Name, relativeMPQPath);
                 }
             }
 

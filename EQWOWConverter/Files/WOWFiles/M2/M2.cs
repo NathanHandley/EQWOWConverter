@@ -195,8 +195,8 @@ namespace EQWOWConverter.WOWFiles
             // none for now
 
             // Particle Emitters
-            if (wowObjectModel.Properties.ParticleEmitter != null)
-                ParticleEmitters.AddElement(new M2ParticleEmitter(wowObjectModel.Properties.ParticleEmitter, 0));
+            foreach (ObjectModelParticleEmitter emitter in wowObjectModel.Properties.SpellParticleEmitters)
+                ParticleEmitters.AddElement(new M2ParticleEmitter(emitter, 0));
 
             // Second Texture Material Override (Combos)
             if (Flags.HasFlag(M2Flags.BlendModeOverrides))

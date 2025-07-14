@@ -35,7 +35,7 @@ namespace EQWOWConverter.EQFiles
             public float[] EmitterSpawnXs = new float[3]; // #1 can be 1 or -1, #2 can be 1, #3 can be 1 or -1 (?)
             public float[] EmitterSpawnYs = new float[3]; // #1 can be 1 or -1, #2 can be -1, #3 can be 1 (?)
             public float[] EmitterSpawnZs = new float[3]; // #1 and #2 can be 1 or -1 or -2, #3 can be 1 or -1
-            public float[] EmitterSpawnRadiuses = new float[3]; // Radius of the particles
+            public float[] EmitterSpawnRadii = new float[3]; // Radius of the particles
             public float[] EmitterSpawnAngles = new float[3]; // Angle of the particles (unsure on orientation)
             public int[] EmitterSpawnLifespans = new int[3]; // Lifespawn of the particles in milliseconds
             public float[] EmitterSpawnVelocities = new float[3]; // Velocity of the particles
@@ -48,9 +48,10 @@ namespace EQWOWConverter.EQFiles
             public float[] SpriteListRadii = new float[12]; // Radius from playre's center for the particles
             public short[] SpriteListMovements = new short[12]; // Determines if the particle moves.  1 = Stationary, 2 = Moves
             public float[] SpriteListScales = new float[12]; // The scale of the particles
-        
+
             public void LoadFromBytes(List<byte> bytes, ref int byteCursor)
             {
+                // TODO: The 12 element ones are actually 4 blocks of 3, so break into parts
                 for (int i = 0; i < 3; i++)
                     SpriteNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                 TypeString = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
@@ -73,7 +74,7 @@ namespace EQWOWConverter.EQFiles
                     EmitterSpawnZs[i] = ByteTool.ReadFloatFromBytes(bytes, ref byteCursor);
                 }
                 for (int i = 0; i < 3; i++)
-                    EmitterSpawnRadiuses[i] = ByteTool.ReadFloatFromBytes(bytes, ref byteCursor);
+                    EmitterSpawnRadii[i] = ByteTool.ReadFloatFromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
                     EmitterSpawnAngles[i] = ByteTool.ReadFloatFromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
