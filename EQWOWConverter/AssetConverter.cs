@@ -1367,11 +1367,12 @@ namespace EQWOWConverter
             // Copy the spell sounds
             string inputSoundFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "sounds");
             string exportMPQRootFolder = Path.Combine(Configuration.PATH_EXPORT_FOLDER, "MPQReady");
+            string outputSpellSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "Spells", "Everquest");
+            if (Directory.Exists(outputSpellSoundFolder) == true)
+                Directory.Delete(outputSpellSoundFolder, true);
+            FileTool.CreateBlankDirectory(outputSpellSoundFolder, true);
             foreach (Sound sound in SpellVisual.SoundsByFileNameNoExt.Values)
             {
-                string outputSpellSoundFolder = Path.Combine(exportMPQRootFolder, "Sound", "Spells", "Everquest");
-                if (Directory.Exists(outputSpellSoundFolder) == false)
-                    FileTool.CreateBlankDirectory(outputSpellSoundFolder, true);
                 string sourceFullPath = Path.Combine(inputSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
                 string targetFullPath = Path.Combine(outputSpellSoundFolder, string.Concat(sound.AudioFileNameNoExt, ".wav"));
                 FileTool.CopyFile(sourceFullPath, targetFullPath);
@@ -1379,6 +1380,9 @@ namespace EQWOWConverter
 
             // Output the objects & textures
             string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+            string outputObjectFolder = Path.Combine(exportMPQRootFolder, "SPELLS", "Everquest");
+            if (Directory.Exists(outputObjectFolder) == true)
+                Directory.Delete(outputObjectFolder, true);
             foreach (ObjectModel objectModel in SpellVisual.GetAllEmitterObjectModels())
             {
                 // Write the M2 and Skin
@@ -1389,9 +1393,6 @@ namespace EQWOWConverter
 
                 // Output the textures
                 ExportTexturesForObject(objectModel, sourceTextureFolder, outputFolder);
-
-                // TODO: Tie it up somewhere....
-
             }
 
             Logger.WriteDebug("Generating spells complete.");

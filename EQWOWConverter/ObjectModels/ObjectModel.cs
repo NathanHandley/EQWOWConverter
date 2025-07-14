@@ -144,21 +144,6 @@ namespace EQWOWConverter.ObjectModels
             // Process materials
             ProcessMaterials(initialMaterials, ref meshData);
 
-            // Particles have manually added textures without materials
-            if (ModelType == ObjectModelType.ParticleEmitter)
-            {
-                foreach (ObjectModelParticleEmitter emitter in Properties.SpellParticleEmitters)
-                {
-                    if (emitter.SpriteFileNameNoExt.Length > 0)
-                    {
-                        ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                        newModelTexture.TextureName = emitter.SpriteFileNameNoExt;
-                        ModelTextures.Add(newModelTexture);
-                        emitter.TextureID = ModelTextures.Count;
-                    }
-                }
-            }
-
             // Create model vertices
             GenerateModelVertices(meshData);
 

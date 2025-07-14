@@ -266,7 +266,7 @@ namespace EQWOWConverter.Spells
                 else
                 {
                     // Make new
-                    string objectName = string.Concat("eqspellemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString());
+                    string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.EmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
                     objectProperties.SpellParticleEmitters.Add(emitter);
@@ -274,6 +274,33 @@ namespace EQWOWConverter.Spells
                     objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
                     spellVisual.AddObjectToStageAtAttachLocation(stageType, emitter.EmissionLocation, objectModel);
                     AllEmitterObjectModels.Add(objectModel);
+                    existingModel = objectModel;
+                }
+
+                // Also add the texture, manually (if needed)
+                if (existingModel != null)
+                {
+                    if (emitter.SpriteFileNameNoExt.Length > 0)
+                    {
+                        // Skip if it's already added, otherwise new
+                        int modelTextureID = -1;
+                        for (int i = 0; i < existingModel.ModelTextures.Count; i++)
+                        {
+                            if (existingModel.ModelTextures[i].TextureName == emitter.SpriteFileNameNoExt)
+                            {
+                                modelTextureID = i;
+                                break;
+                            }
+                        }
+                        if (modelTextureID == -1)
+                        {
+                            ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                            newModelTexture.TextureName = emitter.SpriteFileNameNoExt;
+                            existingModel.ModelTextures.Add(newModelTexture);
+                            modelTextureID = existingModel.ModelTextures.Count - 1;
+                        }
+                        emitter.TextureID = modelTextureID;
+                    }
                 }
             }
         }
