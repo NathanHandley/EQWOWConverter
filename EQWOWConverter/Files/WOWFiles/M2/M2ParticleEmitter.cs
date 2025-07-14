@@ -88,9 +88,6 @@ namespace EQWOWConverter.WOWFiles
 
             GeometryModel.Add(new Fixed16(0));
             RecursionModel.Add(new Fixed16(0));
-            TextureTileRotation = 1;
-            TextureDimensionsRows = 0;
-            TextureDimensionColumns = 0;
 
             float particleVelocity = objectModelParticleEmitter.Velocity;
             EmissionSpeed.TrackSequences.AddSequence();
@@ -140,8 +137,6 @@ namespace EQWOWConverter.WOWFiles
             HeadCellTrack.AddTimeStep(16384, new M2UInt16(33));
             HeadCellTrack.AddTimeStep(16384, new M2UInt16(34));
             HeadCellTrack.AddTimeStep(32767, new M2UInt16(59));
-
-            Drag = 0.85f;
 
             FollowSpeed1 = 2.5f;
             FollowScale1 = 0.7f;
