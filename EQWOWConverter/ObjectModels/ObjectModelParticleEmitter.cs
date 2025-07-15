@@ -50,31 +50,46 @@ namespace EQWOWConverter.ObjectModels
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
             
+            // Convert feet to meters
             float feetToMeterMod = 0.3048f;
-            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod; // Change feet to meters (?)
+            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod;
 
             // Factor world scale for spell scale
             Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE);
             
-            //SpawnRate = effectSection.EmitterSpawnRates[effectIndex]; // Figure out this rate value, 
-            SpawnRate = 10; // Temp
+            // Spawn rate
+            SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
         }
-        
+
+        private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
+        {
+            switch (emissionPattern)
+            {
+                case SpellVisualEmitterSpawnPatternType.FromHands: return 25;
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: return 60;
+                default: return effectSection.EmitterSpawnRates[effectIndex];
+            }
+        }
+
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
             float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex];
 
-            // Hands always 'shoot out' unless there's a velocity, and then it's nothing
-            if (spawnPattern == SpellVisualEmitterSpawnPatternType.FromHands)
+            switch (spawnPattern)
             {
-                if (sourceVelocity == 0)
-                    return -1f; // This is about right
-                else
-                    return 0f;
-            }            
-
-            // Default is just use the defined velocity
-            return sourceVelocity;
+                case SpellVisualEmitterSpawnPatternType.FromHands:
+                    {
+                        if (sourceVelocity == 0)
+                            return -1f; // This is about right
+                        else
+                            return 0f;
+                    }
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
+                    {
+                        return 0f;
+                    }
+                default:return sourceVelocity;
+            }
         }
 
         private int CalculateLifespanInMS(EQSpellsEFF.SectionData effectSection, int effectIndex)

@@ -99,10 +99,14 @@ namespace EQWOWConverter.WOWFiles
             Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 
             EmissionRate.TrackSequences.AddSequence();
-            EmissionRate.TrackSequences.AddValueToLastSequence(100000, new M2Float(33));
+            EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
 
             ZSource.TrackSequences.AddSequence();
             ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            float particleVelocity = objectModelParticleEmitter.Velocity;
+            EmissionSpeed.TrackSequences.AddSequence();
+            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
 
             ColorTrack.AddTimeStep(0, new Vector3(255, 255, 255));
             ColorTrack.AddTimeStep(16384, new Vector3(255, 255, 255));
@@ -112,7 +116,6 @@ namespace EQWOWConverter.WOWFiles
             AlphaTrack.AddTimeStep(16384, new M2UInt16(12336));
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
-            //float scale = MathF.Min(objectModelParticleEmitter.Scale, 0.15f);
             float scale = objectModelParticleEmitter.Scale;
             ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(16384, new Vector2(scale, scale));
@@ -152,10 +155,6 @@ namespace EQWOWConverter.WOWFiles
         {
             EmitterType = ObjectModelParticleEmitterType.Plane;
 
-            float particleVelocity = objectModelParticleEmitter.Velocity; 
-            EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
-
             VerticalRange.TrackSequences.AddSequence();
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
 
@@ -176,10 +175,6 @@ namespace EQWOWConverter.WOWFiles
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            float particleVelocity = 0;
-            EmissionSpeed.TrackSequences.AddSequence();
-            EmissionSpeed.TrackSequences.AddValueToLastSequence(0, new M2Float(particleVelocity));
-
             VerticalRange.TrackSequences.AddSequence();
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
 
@@ -190,7 +185,6 @@ namespace EQWOWConverter.WOWFiles
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 
-            //float radius = MathF.Min(objectModelParticleEmitter.Radius, 1.5f);
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
