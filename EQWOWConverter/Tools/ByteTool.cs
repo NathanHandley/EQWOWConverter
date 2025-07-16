@@ -102,10 +102,10 @@ namespace EQWOWConverter
             for (int i = 0; i < 4; i++)
                 intBytes[i] = sourceBytes[byteCursor + i];
             ColorRGBA colorRGBA = new ColorRGBA();
-            colorRGBA.B = sourceBytes[0];
-            colorRGBA.G = sourceBytes[1];
-            colorRGBA.R = sourceBytes[2];
-            colorRGBA.A = sourceBytes[3];
+            colorRGBA.B = intBytes[0];
+            colorRGBA.G = intBytes[1];
+            colorRGBA.R = intBytes[2];
+            colorRGBA.A = intBytes[3];
 
             if (doAdvanceCursor == true)
                 byteCursor += 4;
