@@ -188,6 +188,10 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
                     ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
+                    if (ModelType == ObjectModelType.ParticleEmitter)
+                    {
+                        ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS);
+                    }
                 }
                 else
                 {

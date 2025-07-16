@@ -443,6 +443,9 @@ namespace EQWOWConverter
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
+        // How long spell emitters play for
+        public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000; 
+
         //=====================================================================
         // Tradeskills
         //=====================================================================
