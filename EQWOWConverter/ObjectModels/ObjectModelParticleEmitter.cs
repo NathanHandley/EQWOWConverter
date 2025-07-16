@@ -73,7 +73,7 @@ namespace EQWOWConverter.ObjectModels
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
-            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex];
+            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
 
             switch (spawnPattern)
             {
@@ -84,10 +84,7 @@ namespace EQWOWConverter.ObjectModels
                         else
                             return 0f;
                     }
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
-                    {
-                        return 0f;
-                    }
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: // fallthrough
                 default:return sourceVelocity;
             }
         }
