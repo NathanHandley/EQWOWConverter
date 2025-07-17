@@ -120,8 +120,8 @@ namespace EQWOWConverter.ObjectModels
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
                 case 0: return SpellEmitterModelAttachLocationType.Hands;
+                case 3: return SpellEmitterModelAttachLocationType.Feet;
                 case 4: return SpellEmitterModelAttachLocationType.Feet;
-                case 5: return SpellEmitterModelAttachLocationType.Feet;
                 default: break;
             }
 
@@ -134,19 +134,7 @@ namespace EQWOWConverter.ObjectModels
                 case 3: return SpellEmitterModelAttachLocationType.Hands;
                 case 4: return SpellEmitterModelAttachLocationType.Feet;
                 case 5: return SpellEmitterModelAttachLocationType.Feet;
-                default:
-                    {
-                        switch (effectSection.EmissionTypeIDs[effectIndex])
-                        {
-                            //case 0: return SpellEmitterModelAttachLocationType.Hands;
-                            case 1: return SpellEmitterModelAttachLocationType.Head;
-                            case 2: return SpellEmitterModelAttachLocationType.Chest;
-                            case 3: return SpellEmitterModelAttachLocationType.Feet;
-                            //case 4: return SpellEmitterModelAttachLocationType.Feet;
-                            //case 5: return SpellEmitterModelAttachLocationType.Chest;
-                            default: return SpellEmitterModelAttachLocationType.Chest; // Default to chest
-                        }
-                    }
+                default: return SpellEmitterModelAttachLocationType.Chest;
             }
         }
     }
