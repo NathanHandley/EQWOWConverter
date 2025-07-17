@@ -113,29 +113,40 @@ namespace EQWOWConverter.ObjectModels
                 default: return SpellVisualEmitterSpawnPatternType.None;
             }
         }
-        
+
         private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
         {
+            // Emission type overrides any setting on attach location
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
                 case 0: return SpellEmitterModelAttachLocationType.Hands;
-                case 1: // Fallthrough
-                case 2:
+                case 4: return SpellEmitterModelAttachLocationType.Feet;
+                case 5: return SpellEmitterModelAttachLocationType.Feet;
+                default: break;
+            }
+
+            // Otherwise, use location ID
+            switch (effectSection.LocationIDs[effectIndex])
+            {
+                case 0: return SpellEmitterModelAttachLocationType.Chest;
+                case 1: return SpellEmitterModelAttachLocationType.Head;
+                case 2: return SpellEmitterModelAttachLocationType.Hands;
+                case 3: return SpellEmitterModelAttachLocationType.Hands;
+                case 4: return SpellEmitterModelAttachLocationType.Feet;
+                case 5: return SpellEmitterModelAttachLocationType.Feet;
+                default:
                     {
-                        switch (effectSection.LocationIDs[effectIndex])
+                        switch (effectSection.EmissionTypeIDs[effectIndex])
                         {
+                            //case 0: return SpellEmitterModelAttachLocationType.Hands;
                             case 1: return SpellEmitterModelAttachLocationType.Head;
-                            case 2: return SpellEmitterModelAttachLocationType.Hands; // May need to be separate
-                            case 3: return SpellEmitterModelAttachLocationType.Hands; // May need to be separate
-                            case 4: return SpellEmitterModelAttachLocationType.Feet; // May need to be separate
-                            case 5: return SpellEmitterModelAttachLocationType.Feet; // May need to be separate
-                            default: return SpellEmitterModelAttachLocationType.Chest;
+                            case 2: return SpellEmitterModelAttachLocationType.Chest;
+                            case 3: return SpellEmitterModelAttachLocationType.Feet;
+                            //case 4: return SpellEmitterModelAttachLocationType.Feet;
+                            //case 5: return SpellEmitterModelAttachLocationType.Chest;
+                            default: return SpellEmitterModelAttachLocationType.Chest; // Default to chest
                         }
                     }
-                case 3: return SpellEmitterModelAttachLocationType.Feet;
-                case 4: return SpellEmitterModelAttachLocationType.Feet;
-                case 5: return SpellEmitterModelAttachLocationType.Chest;
-                default: return SpellEmitterModelAttachLocationType.Chest; // Default to chest
             }
         }
     }

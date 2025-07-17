@@ -23,6 +23,7 @@ namespace EQWOWConverter.EQFiles
     {
         internal class SectionData
         {
+            public int VisualEffectIndex = 0;
             public string[] SpriteNames = new string[3];
             public string TypeString = string.Empty;
             public int[] LocationIDs = new int[3]; // -1 = None(?), 0 = Body Center, 1 = Head, 2 = Right Hand, 3 = Left Hand, 4 = Right Foot, 5 = Left Foot, 6+ = Also center of body
@@ -137,6 +138,7 @@ namespace EQWOWConverter.EQFiles
                 for (int j = 0; j < 3; j++)
                 {
                     curEffect.SectionDatas[j] = new SectionData();
+                    curEffect.SectionDatas[j].VisualEffectIndex = i;
                     curEffect.SectionDatas[j].LoadFromBytes(fileBytes, ref byteCursor);
                 }
 
