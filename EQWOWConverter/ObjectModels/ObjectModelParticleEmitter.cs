@@ -45,7 +45,7 @@ namespace EQWOWConverter.ObjectModels
             LifespanInMS = CalculateLifespanInMS(effectSection, effectIndex);
 
             // Radius
-            Radius = effectSection.EmitterSpawnRadii[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
+            Radius = CalculateRadius(effectSection, effectIndex, EmissionPattern);
             
             // Convert values
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
@@ -59,6 +59,21 @@ namespace EQWOWConverter.ObjectModels
             
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
+        }
+
+        private float CalculateRadius(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
+        {
+            float eqRadius = effectSection.EmitterSpawnRadii[effectIndex];
+
+            // Enforce any defaults
+            if (eqRadius == 0)
+            {
+                if (emissionPattern == SpellVisualEmitterSpawnPatternType.SphereAroundUnit)
+                    eqRadius = 6;
+            }
+
+            // Scale against the world
+            return eqRadius * Configuration.GENERATE_WORLD_SCALE;
         }
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
