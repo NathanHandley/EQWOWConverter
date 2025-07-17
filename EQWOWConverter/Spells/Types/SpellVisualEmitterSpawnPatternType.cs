@@ -24,6 +24,6 @@ namespace EQWOWConverter.Spells
         SphereAroundUnit, // Appears around the player starting at EmitterSpawnRadius distance from center
         DiscOnGround, // Disc around the player
         ColumnFromGround, // Around the player, generally going up (gravity)
-        DiscPlayerCenter // Comes out from the center of the player     
+        DiscAroundUnitCenter // Comes out from the center of the player     
     }
 }

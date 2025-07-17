@@ -156,7 +156,7 @@ namespace EQWOWConverter.WOWFiles
                     {
                         PopulateAsColumnFromGround(objectModelParticleEmitter);
                     } break;
-                case SpellVisualEmitterSpawnPatternType.DiscPlayerCenter:
+                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter:
                     {
                         PopulateAsDiscFromPlayerCenter(objectModelParticleEmitter);
                     } break;
@@ -282,7 +282,7 @@ namespace EQWOWConverter.WOWFiles
             HorizontalRange.TrackSequences.AddSequence();
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
 
-            float gravity = 0;
+            float gravity = objectModelParticleEmitter.Gravity;
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
 

@@ -70,6 +70,8 @@ namespace EQWOWConverter.ObjectModels
             {
                 if (emissionPattern == SpellVisualEmitterSpawnPatternType.SphereAroundUnit)
                     eqRadius = 6;
+                else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter)
+                    eqRadius = 6;
             }
 
             // Scale against the world
@@ -122,9 +124,9 @@ namespace EQWOWConverter.ObjectModels
                 case 0: return SpellVisualEmitterSpawnPatternType.FromHands;
                 case 1: return SpellVisualEmitterSpawnPatternType.ConeToRight;
                 case 2: return SpellVisualEmitterSpawnPatternType.SphereAroundUnit;
-                case 3: return SpellVisualEmitterSpawnPatternType.DiscPlayerCenter;
+                case 3: return SpellVisualEmitterSpawnPatternType.DiscOnGround;
                 case 4: return SpellVisualEmitterSpawnPatternType.ColumnFromGround;
-                case 5: return SpellVisualEmitterSpawnPatternType.DiscOnGround;
+                case 5: return SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter;
                 default: return SpellVisualEmitterSpawnPatternType.None;
             }
         }
