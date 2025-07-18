@@ -55,7 +55,7 @@ namespace EQWOWConverter.ObjectModels
             Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod;
 
             // Factor world scale for spell scale
-            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.GENERATE_WORLD_SCALE);
+            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_SCALE_MOD);
             
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
@@ -75,31 +75,35 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Scale against the world
-            return eqRadius * Configuration.GENERATE_WORLD_SCALE;
+            return eqRadius * Configuration.SPELLS_EFFECT_SCALE_MOD;
         }
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
+            int eqSpawnRate = effectSection.EmitterSpawnRates[effectIndex];
+           
+            // Unsure why these minimums are needed, but many spells feel 'off' without them
             switch (emissionPattern)
             {
-                case SpellVisualEmitterSpawnPatternType.FromHands: return 25;
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: return 60;
-                default: return effectSection.EmitterSpawnRates[effectIndex];
+                case SpellVisualEmitterSpawnPatternType.FromHands: return Math.Max(eqSpawnRate, 25);
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: return Math.Max(eqSpawnRate, 60);
+                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: return Math.Max(eqSpawnRate, 25);
+                default: return eqSpawnRate;
             }
         }
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
-            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.GENERATE_WORLD_SCALE;
+            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.SPELLS_EFFECT_SCALE_MOD;
 
             switch (spawnPattern)
             {
                 case SpellVisualEmitterSpawnPatternType.FromHands:
                     {
                         if (sourceVelocity == 0)
-                            return -1f; // This is about right
+                            return -1; // Default does seem to be about 1 (negative for reversing direction)
                         else
-                            return 0f;
+                            return -1 * sourceVelocity;
                     }
                 case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: // fallthrough
                 default:return sourceVelocity;

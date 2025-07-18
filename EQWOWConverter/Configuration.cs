@@ -444,7 +444,10 @@ namespace EQWOWConverter
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
         // How long spell emitters play for
-        public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000; 
+        public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000;
+
+        // How much scale to apply to all particles (feet => meters is 0.3048f)
+        public static readonly float SPELLS_EFFECT_SCALE_MOD = 0.3048f;
 
         //=====================================================================
         // Tradeskills
