@@ -94,7 +94,7 @@ namespace EQWOWConverter.WOWFiles
             SpeedVariation.TrackSequences.AddSequence();
             SpeedVariation.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
 
-            float lifespan = objectModelParticleEmitter.LifespanInMS / 1000;
+            float lifespan = Convert.ToSingle(objectModelParticleEmitter.LifespanInMS) / 1000f;
             Lifespan.TrackSequences.AddSequence();
             Lifespan.TrackSequences.AddValueToLastSequence(0, new M2Float(lifespan));
 

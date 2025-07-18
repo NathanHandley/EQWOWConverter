@@ -443,12 +443,18 @@ namespace EQWOWConverter
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
-        // How long spell emitters play for
+        // How long spell emitters execute for
         public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000;
 
         // How much scale to apply to all particles (feet => meters is 0.3048f)
         public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.25f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.15f;
+
+        // How much to multiply or reduce lifespan of particles. EQ particles fade sooner than WoW, so lowering looks more accurate.
+        public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
+
+        // How much to modify the spawn rate of emitters (higher = more particles)
+        public static readonly float SPELL_EMITTER_SPAWN_RATE_MOD = 1.5f;
 
         //=====================================================================
         // Tradeskills

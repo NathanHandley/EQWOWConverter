@@ -80,15 +80,18 @@ namespace EQWOWConverter.ObjectModels
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             int eqSpawnRate = effectSection.EmitterSpawnRates[effectIndex];
-           
+            int calcSpawnRate = eqSpawnRate;
+
             // Unsure why these minimums are needed, but many spells feel 'off' without them
             switch (emissionPattern)
             {
-                case SpellVisualEmitterSpawnPatternType.FromHands: return Math.Max(eqSpawnRate, 25);
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: return Math.Max(eqSpawnRate, 60);
-                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: return Math.Max(eqSpawnRate, 25);
-                default: return eqSpawnRate;
+                case SpellVisualEmitterSpawnPatternType.FromHands: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: calcSpawnRate = Math.Max(eqSpawnRate, 60); break;
+                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
+                default: break;
             }
+
+            return Convert.ToInt32(Convert.ToSingle(calcSpawnRate) * Configuration.SPELL_EMITTER_SPAWN_RATE_MOD);
         }
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
@@ -113,11 +116,11 @@ namespace EQWOWConverter.ObjectModels
         {
             // Default to a second if no lifespan
             if (effectSection.EmitterSpawnLifespans[effectIndex] == 0)
-                return 1000;
+                return Convert.ToInt32(1000f * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
 
             // Default to what's provided
             else
-                return effectSection.EmitterSpawnLifespans[effectIndex];
+                return Convert.ToInt32(Convert.ToSingle(effectSection.EmitterSpawnLifespans[effectIndex]) * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
         }
 
         private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)
