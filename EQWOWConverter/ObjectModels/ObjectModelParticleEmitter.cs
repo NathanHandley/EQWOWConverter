@@ -47,15 +47,14 @@ namespace EQWOWConverter.ObjectModels
             // Radius
             Radius = CalculateRadius(effectSection, effectIndex, EmissionPattern);
             
-            // Convert values
+            // Some sprits have _SPRITE and some don't, remove if they do
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
-            
-            // Convert feet to meters
-            float feetToMeterMod = 0.3048f;
-            Gravity = effectSection.EmitterGravities[effectIndex] * feetToMeterMod;
 
-            // Factor world scale for spell scale
-            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_SCALE_MOD);
+            // Gravity
+            Gravity = effectSection.EmitterGravities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+
+            // Scale
+            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD);
             
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
@@ -75,7 +74,7 @@ namespace EQWOWConverter.ObjectModels
             }
 
             // Scale against the world
-            return eqRadius * Configuration.SPELLS_EFFECT_SCALE_MOD;
+            return eqRadius * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
@@ -94,7 +93,7 @@ namespace EQWOWConverter.ObjectModels
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
-            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.SPELLS_EFFECT_SCALE_MOD;
+            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
 
             switch (spawnPattern)
             {

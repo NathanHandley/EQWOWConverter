@@ -134,6 +134,10 @@ namespace EQWOWConverter.WOWFiles
             EnabledIn.TrackSequences.AddSequence();
             EnabledIn.TrackSequences.AddValueToLastSequence(0, new M2Char('1'));
 
+            float gravity = objectModelParticleEmitter.Gravity;
+            Gravity.TrackSequences.AddSequence();
+            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
+
             switch (objectModelParticleEmitter.EmissionPattern)
             {
                 case SpellVisualEmitterSpawnPatternType.FromHands:
@@ -169,22 +173,23 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Plane;
-
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0.1919862f));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
-
-            float gravity = objectModelParticleEmitter.Gravity;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
+            EmitterType = ObjectModelParticleEmitterType.Sphere;
 
             EmissionAreaLength.TrackSequences.AddSequence();
-            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
             EmissionAreaWidth.TrackSequences.AddSequence();
-            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0.02777777f));
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
+
+            // Calculate the cone based on the radius where multiples of 5 will increase the initial spray
+            // Note that this radius only works this way for hand sprays because "ProcessBonesAndAnimation"
+            //  inside ObjectModel creates a rotation on the bone to ensure the sphere is oriented properly
+            float coneRadius = objectModelParticleEmitter.Radius;
+            float sprayRange = ((coneRadius / 5f) * 0.3f) + 0.1f;
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
+
         }
 
         private void PopulateAsConeToRight(ObjectModelParticleEmitter objectModelParticleEmitter)
@@ -192,105 +197,85 @@ namespace EQWOWConverter.WOWFiles
             // Temp (copy from sphere)
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            float gravity = 0;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsSphere(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            float gravity = 0;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsDiscFromGround(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            float gravity = objectModelParticleEmitter.Gravity;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsColumnFromGround(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            float gravity = 0;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsDiscFromPlayerCenter(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
 
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            float gravity = objectModelParticleEmitter.Gravity;
-            Gravity.TrackSequences.AddSequence();
-            Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         public UInt32 GetHeaderSize()

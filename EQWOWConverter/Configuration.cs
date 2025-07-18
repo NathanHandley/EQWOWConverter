@@ -447,7 +447,8 @@ namespace EQWOWConverter
         public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000;
 
         // How much scale to apply to all particles (feet => meters is 0.3048f)
-        public static readonly float SPELLS_EFFECT_SCALE_MOD = 0.3048f;
+        public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.25f;
 
         //=====================================================================
         // Tradeskills
