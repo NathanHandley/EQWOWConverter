@@ -60,10 +60,16 @@ namespace EQWOWConverter.ObjectModels
             Gravity = CalculateGravity(effectSection, effectIndex, EmissionPattern);
 
             // Scale
-            Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD);
+            Scale = CalculateScale(effectSection, effectIndex);
 
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
+        }
+
+        private float CalculateScale(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            float scale = Math.Max(effectSection.EmitterSpawnScale[effectIndex], Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN);
+            return scale * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD;
         }
 
         private float CalculateRadius(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)

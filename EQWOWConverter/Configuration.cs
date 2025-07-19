@@ -447,7 +447,9 @@ namespace EQWOWConverter
         public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000;
 
         // How much scale to apply to all particles (feet => meters is 0.3048f)
+        // Minimum scale is before mod
         public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN = 0.5f;
         public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.2f;
 
         // How much to multiply or reduce lifespan of particles. EQ particles fade sooner than WoW, so lowering looks more accurate.
