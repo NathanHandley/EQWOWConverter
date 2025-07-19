@@ -57,7 +57,7 @@ namespace EQWOWConverter.ObjectModels
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
 
             // Gravity
-            Gravity = CalculateGravity(effectSection, effectIndex);
+            Gravity = CalculateGravity(effectSection, effectIndex, EmissionPattern);
 
             // Scale
             Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD);
@@ -76,21 +76,24 @@ namespace EQWOWConverter.ObjectModels
                 if (emissionPattern == SpellVisualEmitterSpawnPatternType.SphereAroundUnit)
                     eqRadius = 6;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter)
-                    eqRadius = 6;
+                    eqRadius = 8;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscOnGround)
-                    eqRadius = 4;
+                    eqRadius = 5;
             }
 
             // Scale against the world
             return eqRadius * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
-        private float CalculateGravity(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private float CalculateGravity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
-            // TODO: Is there a default gravity for some emission patterns or locations, like "disc at player center"?
-            // - See Spirit of Wolf (effect 7). It seems the particles should be traveling to the base of the feet despite
-            // attaching to the body center
-            return effectSection.EmitterGravities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+            float eqGravity = effectSection.EmitterGravities[effectIndex];
+
+            // Disc's have a default gravity seemingly (see Spirit of Wolf (effect 7))
+            if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter && eqGravity == 0)
+                eqGravity = 6;
+
+            return eqGravity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
@@ -112,20 +115,22 @@ namespace EQWOWConverter.ObjectModels
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
-            float sourceVelocity = effectSection.EmitterSpawnVelocities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
-
-            switch (spawnPattern)
+            float velocity = effectSection.EmitterSpawnVelocities[effectIndex];
+            if (velocity == 0)
             {
-                case SpellVisualEmitterSpawnPatternType.FromHands:
-                    {
-                        if (sourceVelocity == 0)
-                            return -1; // Default does seem to be about 1 (negative for reversing direction)
-                        else
-                            return -1 * sourceVelocity;
-                    }
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: // fallthrough
-                default:return sourceVelocity;
+                switch (spawnPattern)
+                {
+                    case SpellVisualEmitterSpawnPatternType.FromHands: velocity = 3f; break;
+                    case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: velocity = 6f; break;
+                    default: break;
+                }
             }
+
+            // Particles from hands need a reverse of their velocity
+            if (spawnPattern == SpellVisualEmitterSpawnPatternType.FromHands)
+                velocity *= -1;
+
+            return velocity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
         private int CalculateLifespanInMS(EQSpellsEFF.SectionData effectSection, int effectIndex)

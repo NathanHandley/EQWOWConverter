@@ -28,7 +28,7 @@ namespace EQWOWConverter.EQFiles
             public string TypeString = string.Empty;
             public int[] LocationIDs = new int[3]; // -1 = None(?), 0 = Body Center, 1 = Head, 2 = Right Hand, 3 = Left Hand, 4 = Right Foot, 5 = Left Foot, 6+ = Also center of body
             public int[] EmissionTypeIDs = new int[3]; // -1 = None, 0 = Hands, 1 = Cone to the right, 2 = Sphere around player, 3 = Disc on the ground, 4 = Column from the ground, 5 = Disc at the player center.  Note: 5 also gives a 2 and a 3 emitter.
-            public string[] SpriteListNames = new string[12]; // Up to 12 sprites used for animating particles. Loop through until the end and start at begining. Porticles oriented in a circle, with each 30 degrees from the next for a total of 360 degrees.
+            public string[] SpriteListNames = new string[12]; // Up to 12 sprites used for animating particles. Loop through until the end and start at begining. Particles oriented in a circle, with each 30 degrees from the next for a total of 360 degrees.
             public int SpriteListEffect; // 1 = Projectile, 2 = Disc pulsating outward and then inward
             public int SoundID = 0; // Values look to be between 103-113. -1 for no sound
             public ColorRGBA[] EmitterColors = new ColorRGBA[3]; // BGRX formation, where X (otherwise alpha) is unused
