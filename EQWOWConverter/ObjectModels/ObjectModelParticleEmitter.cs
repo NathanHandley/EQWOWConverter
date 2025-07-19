@@ -61,7 +61,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Scale
             Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD);
-            
+
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
         }
@@ -100,18 +100,28 @@ namespace EQWOWConverter.ObjectModels
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
-            int eqSpawnRate = effectSection.EmitterSpawnRates[effectIndex];
-            int calcSpawnRate = eqSpawnRate;
+            int spawnRate = effectSection.EmitterSpawnRates[effectIndex];
 
-            // Unsure why these minimums are needed, but many spells feel 'off' without them
+            // Defaults
+            if (spawnRate == 0)
+            {
+                switch (emissionPattern)
+                {
+                    case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRate = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_DEFAULT; break;
+                    default: spawnRate = Configuration.SPELL_EMITTER_SPAWN_RATE_OTHER_DEFAULT; break;
+                }
+            }
+
+            // Minimums
             switch (emissionPattern)
             {
-                case SpellVisualEmitterSpawnPatternType.FromHands: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
-                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRate = Math.Max(spawnRate, Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MINIMUM); break;
+                case SpellVisualEmitterSpawnPatternType.FromHands: spawnRate = Math.Max(spawnRate, 25); break;
+                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: spawnRate = Math.Max(spawnRate, 25); break;
                 default: break;
             }
 
-            // Multipliers are based on emission pattern as well
+            // Multipliers
             float spawnRateMod = 0;
             switch (emissionPattern)
             {
@@ -119,7 +129,7 @@ namespace EQWOWConverter.ObjectModels
                 default: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
             }
 
-            return Convert.ToInt32(Convert.ToSingle(calcSpawnRate) * spawnRateMod);
+            return Convert.ToInt32(Convert.ToSingle(spawnRate) * spawnRateMod);
         }
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
@@ -150,9 +160,7 @@ namespace EQWOWConverter.ObjectModels
             if (effectSection.EmitterSpawnLifespans[effectIndex] == 0)
                 return Convert.ToInt32(1000f * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
 
-            // Default to what's provided
-            else
-                return Convert.ToInt32(Convert.ToSingle(effectSection.EmitterSpawnLifespans[effectIndex]) * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
+            return Convert.ToInt32(Convert.ToSingle(effectSection.EmitterSpawnLifespans[effectIndex]) * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
         }
 
         private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)

@@ -454,6 +454,10 @@ namespace EQWOWConverter
         public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
 
         // How much to modify the spawn rate of emitters (higher = more particles)
+        // Note: Default and minimum are before mod
+        public static readonly int SPELL_EMITTER_SPAWN_RATE_SPHERE_MINIMUM = 25;
+        public static readonly int SPELL_EMITTER_SPAWN_RATE_SPHERE_DEFAULT = 25;
+        public static readonly int SPELL_EMITTER_SPAWN_RATE_OTHER_DEFAULT = 25;
         public static readonly float SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD = 4f;
         public static readonly float SPELL_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
 
