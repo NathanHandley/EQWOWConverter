@@ -79,6 +79,8 @@ namespace EQWOWConverter.ObjectModels
                     eqRadius = 8;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscOnGround)
                     eqRadius = 5;
+                else if (emissionPattern == SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer)
+                    eqRadius = 3;
             }
 
             // Scale against the world
@@ -133,8 +135,10 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Particles from hands need a reverse of their velocity
+            // Particles from hands or outer sphere need a reverse of their velocity
             if (spawnPattern == SpellVisualEmitterSpawnPatternType.FromHands)
+                velocity *= -1;
+            if (spawnPattern == SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer)
                 velocity *= -1;
 
             return velocity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
@@ -156,7 +160,7 @@ namespace EQWOWConverter.ObjectModels
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
                 case 0: return SpellVisualEmitterSpawnPatternType.FromHands;
-                case 1: return SpellVisualEmitterSpawnPatternType.ConeToRight;
+                case 1: return SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer;
                 case 2: return SpellVisualEmitterSpawnPatternType.SphereAroundUnit;
                 case 3: return SpellVisualEmitterSpawnPatternType.DiscOnGround;
                 case 4: return SpellVisualEmitterSpawnPatternType.ColumnFromGround;

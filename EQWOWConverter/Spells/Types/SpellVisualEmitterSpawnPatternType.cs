@@ -20,7 +20,7 @@ namespace EQWOWConverter.Spells
     {
         None,
         FromHands, // Exits from the hands based on velocity
-        ConeToRight, // Unsure what uses this
+        SphereAwayFromPlayer, // Unsure what uses this
         SphereAroundUnit, // Appears around the player starting at EmitterSpawnRadius distance from center
         DiscOnGround, // Disc around the player
         ColumnFromGround, // Around the player, generally going up (gravity)

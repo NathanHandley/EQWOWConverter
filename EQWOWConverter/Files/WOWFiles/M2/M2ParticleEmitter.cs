@@ -144,10 +144,7 @@ namespace EQWOWConverter.WOWFiles
                     {
                         PopulateAsHandSpray(objectModelParticleEmitter);
                     } break;
-                case SpellVisualEmitterSpawnPatternType.ConeToRight:
-                    {
-                        PopulateAsConeToRight(objectModelParticleEmitter);
-                    } break;
+                case SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer: // Fallthrough
                 case SpellVisualEmitterSpawnPatternType.SphereAroundUnit:
                     {
                         PopulateAsSphere(objectModelParticleEmitter);
@@ -190,24 +187,6 @@ namespace EQWOWConverter.WOWFiles
             HorizontalRange.TrackSequences.AddSequence();
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
 
-        }
-
-        private void PopulateAsConeToRight(ObjectModelParticleEmitter objectModelParticleEmitter)
-        {
-            // Temp (copy from sphere)
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
-
-            float radius = objectModelParticleEmitter.Radius;
-            EmissionAreaLength.TrackSequences.AddSequence();
-            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
-            EmissionAreaWidth.TrackSequences.AddSequence();
-            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
-
-            VerticalRange.TrackSequences.AddSequence();
-            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
-
-            HorizontalRange.TrackSequences.AddSequence();
-            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
         private void PopulateAsSphere(ObjectModelParticleEmitter objectModelParticleEmitter)
