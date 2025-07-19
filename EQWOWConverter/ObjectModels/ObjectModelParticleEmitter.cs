@@ -126,6 +126,8 @@ namespace EQWOWConverter.ObjectModels
             switch (emissionPattern)
             {
                 case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
+                case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: // fallthrough
+                case SpellVisualEmitterSpawnPatternType.DiscOnGround: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_DISC_MOD; break;
                 default: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
             }
 

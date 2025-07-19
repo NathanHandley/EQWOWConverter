@@ -459,6 +459,7 @@ namespace EQWOWConverter
         public static readonly int SPELL_EMITTER_SPAWN_RATE_SPHERE_DEFAULT = 25;
         public static readonly int SPELL_EMITTER_SPAWN_RATE_OTHER_DEFAULT = 25;
         public static readonly float SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD = 4f;
+        public static readonly float SPELL_EMITTER_SPAWN_RATE_DISC_MOD = 1f;
         public static readonly float SPELL_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
 
         //=====================================================================
