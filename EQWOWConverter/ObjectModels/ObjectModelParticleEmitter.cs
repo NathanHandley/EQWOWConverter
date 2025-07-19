@@ -77,6 +77,8 @@ namespace EQWOWConverter.ObjectModels
                     eqRadius = 6;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter)
                     eqRadius = 6;
+                else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscOnGround)
+                    eqRadius = 4;
             }
 
             // Scale against the world

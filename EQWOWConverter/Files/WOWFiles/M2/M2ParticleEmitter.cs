@@ -184,7 +184,7 @@ namespace EQWOWConverter.WOWFiles
             // Note that this radius only works this way for hand sprays because "ProcessBonesAndAnimation"
             //  inside ObjectModel creates a rotation on the bone to ensure the sphere is oriented properly
             float coneRadius = objectModelParticleEmitter.Radius;
-            float sprayRange = ((coneRadius / 5f) * 0.3f) + 0.1f;
+            float sprayRange = ((coneRadius / 5f) * 0.5f) + 0.25f;
             VerticalRange.TrackSequences.AddSequence();
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
             HorizontalRange.TrackSequences.AddSequence();

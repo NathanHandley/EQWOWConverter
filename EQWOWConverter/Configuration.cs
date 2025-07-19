@@ -448,13 +448,13 @@ namespace EQWOWConverter
 
         // How much scale to apply to all particles (feet => meters is 0.3048f)
         public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.15f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.2f;
 
         // How much to multiply or reduce lifespan of particles. EQ particles fade sooner than WoW, so lowering looks more accurate.
         public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
 
         // How much to modify the spawn rate of emitters (higher = more particles)
-        public static readonly float SPELL_EMITTER_SPAWN_RATE_MOD = 1.5f;
+        public static readonly float SPELL_EMITTER_SPAWN_RATE_MOD = 1.25f;
 
         //=====================================================================
         // Tradeskills
