@@ -105,12 +105,19 @@ namespace EQWOWConverter.ObjectModels
             switch (emissionPattern)
             {
                 case SpellVisualEmitterSpawnPatternType.FromHands: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: calcSpawnRate = Math.Max(eqSpawnRate, 60); break;
                 case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: calcSpawnRate = Math.Max(eqSpawnRate, 25); break;
                 default: break;
             }
 
-            return Convert.ToInt32(Convert.ToSingle(calcSpawnRate) * Configuration.SPELL_EMITTER_SPAWN_RATE_MOD);
+            // Multipliers are based on emission pattern as well
+            float spawnRateMod = 0;
+            switch (emissionPattern)
+            {
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
+                default: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
+            }
+
+            return Convert.ToInt32(Convert.ToSingle(calcSpawnRate) * spawnRateMod);
         }
 
         private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)

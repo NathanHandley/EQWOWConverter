@@ -454,7 +454,8 @@ namespace EQWOWConverter
         public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
 
         // How much to modify the spawn rate of emitters (higher = more particles)
-        public static readonly float SPELL_EMITTER_SPAWN_RATE_MOD = 1.25f;
+        public static readonly float SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD = 4f;
+        public static readonly float SPELL_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
 
         //=====================================================================
         // Tradeskills
