@@ -112,6 +112,7 @@ namespace EQWOWConverter.EQFiles
         }        
 
         public List<EQSpellEffect> SpellEffects = new List<EQSpellEffect>();
+        public HashSet<string> UniqueSpriteNames = new HashSet<string>();
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -143,6 +144,26 @@ namespace EQWOWConverter.EQFiles
                 }
 
                 SpellEffects.Add(curEffect);
+            }
+
+            // Extract out all of the unique texture names
+            foreach (EQSpellEffect spellEffect in SpellEffects)
+            {
+                foreach (SectionData sectionData in spellEffect.SectionDatas)
+                {
+                    foreach (string spriteName in sectionData.SpriteNames)
+                    {
+                        string reformattedSpriteName = spriteName.Replace("_SPRITE", "");
+                        if (reformattedSpriteName.Length > 0 && UniqueSpriteNames.Contains(reformattedSpriteName) == false)
+                            UniqueSpriteNames.Add(reformattedSpriteName);
+                    }
+                    foreach (string spriteName in sectionData.SpriteListNames)
+                    {
+                        string reformattedSpriteName = spriteName.Replace("_SPRITE", "");
+                        if (reformattedSpriteName.Length > 0 && UniqueSpriteNames.Contains(reformattedSpriteName) == false)
+                            UniqueSpriteNames.Add(reformattedSpriteName);
+                    }
+                }
             }
 
             Logger.WriteDebug(" - Done reading Spell Effects from '", fileFullPath, "'");

@@ -329,6 +329,58 @@ namespace EQWOWConverter
             return true;
         }
 
+        public void GenerateSpellParticleSpriteSheets()
+        {
+            Logger.WriteInfo("Generating spell particle sprite sheets...");
+
+            // Load in the known unique sprite names out of spells.eff
+            string spellsEFFFileFullPath = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "clientdata", "spells.eff");
+            if (Path.Exists(spellsEFFFileFullPath) == false)
+            {
+                Logger.WriteError("Could not find spells.eff data that should be at ", spellsEFFFileFullPath, ", did you not run the extraction step?");
+                return;
+            }
+            EQSpellsEFF eqSpellsEFF = new EQSpellsEFF();
+            eqSpellsEFF.LoadFromDisk(spellsEFFFileFullPath);
+
+            // Create a list of sprite chains
+            Dictionary<string, List<string>> spriteChainsBySpriteRoot = new Dictionary<string, List<string>>();
+            foreach (string rootSpriteName in eqSpellsEFF.UniqueSpriteNames)
+            {
+                // Skip if this file doesn't exist, since there wouldn't be subsequent anyway
+                string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
+                string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(rootSpriteName, ".png"));
+                if (File.Exists(spriteFileNameFullPath) == false)
+                    continue;
+
+                // Separate the number from the text
+                string rootTextName = rootSpriteName.Substring(0, rootSpriteName.Length - 2);
+                string rootNumberPartString = rootSpriteName.Substring(rootSpriteName.Length - 2);
+                int rootNumber = int.Parse(rootNumberPartString);
+
+                // Start a chain of sprites by going through in sequence until a sprite isn't found
+                spriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                spriteChainsBySpriteRoot[rootSpriteName].Add(rootSpriteName);
+                bool spriteFound = true;
+                while (spriteFound)
+                {
+                    rootNumber++;
+                    string nextSpriteName = string.Concat(rootTextName, rootNumber.ToString());
+                    if (rootNumber < 10)
+                        nextSpriteName = string.Concat(rootTextName, "0", rootNumber.ToString());
+                    string nextSpriteFullFileName = Path.Combine(sourceTextureFolder, string.Concat(nextSpriteName, ".png"));
+                    if (File.Exists(nextSpriteFullFileName) == false)
+                    {
+                        spriteFound = false;
+                        continue;
+                    }
+                    spriteChainsBySpriteRoot[rootSpriteName].Add(nextSpriteName);
+                }
+            }
+
+            Logger.WriteInfo("Generating spell particle sprite sheets complete...");
+        }
+
         private void ResizeTexturesAndSaveCoordinatesInMaterialLists(string topFolderName, string workingRootFolderPath)
         {
             string materialListFolder = Path.Combine(workingRootFolderPath, "MaterialLists");
