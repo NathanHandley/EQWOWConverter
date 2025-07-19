@@ -35,6 +35,7 @@ namespace EQWOWConverter.Spells
         public int[] SpellVisualKitDBCIDsInStage = new int[3];
         public AnimationType[] AnimationTypeInStage = new AnimationType[3];
         public int[] SoundEntryDBCIDInStage = new int[3];
+        public int EQVisualEffectIndex = 0;
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> PrecastEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> CastEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
         public Dictionary<SpellEmitterModelAttachLocationType, ObjectModel> ImpactEmitterObjectModelByAttachLocation = new Dictionary<SpellEmitterModelAttachLocationType, ObjectModel>();
@@ -109,6 +110,7 @@ namespace EQWOWConverter.Spells
                         bool isBeneficial = j == 0;
                         EQSpellsEFF.EQSpellEffect spellEffect = EQSpellsEFF.SpellEffects[i];
                         SpellVisual spellVisual = new SpellVisual();
+                        spellVisual.EQVisualEffectIndex = i;
                         spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
 
                         // Source data
@@ -255,6 +257,19 @@ namespace EQWOWConverter.Spells
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
                 particleEmitter.Load(effSectionData, i);
                 emitters.Add(particleEmitter);
+
+                // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
+                if (effSectionData.EmissionTypeIDs[i] == 5)
+                {
+                    // While potentially accurate, it looks odd in WoW to have this happen
+                    //ObjectModelParticleEmitter particleEmitterHands = new ObjectModelParticleEmitter();
+                    //particleEmitterHands.Load(effSectionData, i, SpellVisualEmitterSpawnPatternType.FromHands);
+                    //emitters.Add(particleEmitterHands);
+
+                    ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
+                    particleEmitterGround.Load(effSectionData, i, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    emitters.Add(particleEmitterGround);
+                }                
             }
 
             // Add the emitters to new or existing emitters

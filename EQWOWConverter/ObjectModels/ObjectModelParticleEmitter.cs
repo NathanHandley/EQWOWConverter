@@ -24,6 +24,7 @@ namespace EQWOWConverter.ObjectModels
         public string SpriteFileNameNoExt = string.Empty;
         public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
+        public int VisualEffectIndex = 0;
         public float Gravity = 0;
         public int LifespanInMS = 0;
         public float Scale = 0;
@@ -32,11 +33,16 @@ namespace EQWOWConverter.ObjectModels
         public float Radius = 0;
         public int TextureID = 0;
 
-        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
+            VisualEffectIndex = effectSection.VisualEffectIndex;
+
             // Calculate the location and pattern first since those are used in further calculations.
-            EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex);
-            EmissionPattern = GetEmissionSpawnPattern(effectSection, effectIndex);
+            if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)
+                EmissionPattern = GetEmissionSpawnPattern(effectSection, effectIndex);
+            else
+                EmissionPattern = emitterPatternOverride;
+            EmissionLocation = GetEmissionAttachLocation(effectSection, effectIndex, EmissionPattern);
 
             // Velocity
             Velocity = CalculateVelocity(effectSection, effectIndex, EmissionPattern);
@@ -51,7 +57,7 @@ namespace EQWOWConverter.ObjectModels
             SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
 
             // Gravity
-            Gravity = effectSection.EmitterGravities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+            Gravity = CalculateGravity(effectSection, effectIndex);
 
             // Scale
             Scale = (effectSection.EmitterSpawnScale[effectIndex] * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD);
@@ -75,6 +81,14 @@ namespace EQWOWConverter.ObjectModels
 
             // Scale against the world
             return eqRadius * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+        }
+
+        private float CalculateGravity(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        {
+            // TODO: Is there a default gravity for some emission patterns or locations, like "disc at player center"?
+            // - See Spirit of Wolf (effect 7). It seems the particles should be traveling to the base of the feet despite
+            // attaching to the body center
+            return effectSection.EmitterGravities[effectIndex] * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
         private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
@@ -137,14 +151,15 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex, 
+            SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             // Emission type overrides any setting on attach location
-            switch (effectSection.EmissionTypeIDs[effectIndex])
+            switch (emissionPattern)
             {
-                case 0: return SpellEmitterModelAttachLocationType.Hands;
-                case 3: return SpellEmitterModelAttachLocationType.Feet;
-                case 4: return SpellEmitterModelAttachLocationType.Feet;
+                case SpellVisualEmitterSpawnPatternType.FromHands: return SpellEmitterModelAttachLocationType.Hands;
+                case SpellVisualEmitterSpawnPatternType.ColumnFromGround: return SpellEmitterModelAttachLocationType.Feet;
+                case SpellVisualEmitterSpawnPatternType.DiscOnGround: return SpellEmitterModelAttachLocationType.Feet;
                 default: break;
             }
 
