@@ -317,6 +317,9 @@ namespace EQWOWConverter
             // Create icons
             CreateIndividualIconFiles();
 
+            // Create particle sprite sheets
+            GenerateSpellParticleSpriteSheets();
+
             // Generate the liquid surfaces
             Logger.WriteInfo("Generating liquid surface materials...");
             for (int i = 1; i <= 30; i++)
@@ -344,11 +347,11 @@ namespace EQWOWConverter
             eqSpellsEFF.LoadFromDisk(spellsEFFFileFullPath);
 
             // Create a list of sprite chains
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
             Dictionary<string, List<string>> spriteChainsBySpriteRoot = new Dictionary<string, List<string>>();
             foreach (string rootSpriteName in eqSpellsEFF.UniqueSpriteNames)
             {
                 // Skip if this file doesn't exist, since there wouldn't be subsequent anyway
-                string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
                 string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(rootSpriteName, ".png"));
                 if (File.Exists(spriteFileNameFullPath) == false)
                     continue;
@@ -376,6 +379,20 @@ namespace EQWOWConverter
                     }
                     spriteChainsBySpriteRoot[rootSpriteName].Add(nextSpriteName);
                 }
+            }
+
+            // Clear the previous folder for the sprite sheet if it exists
+            string outputSpriteSheetFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
+            if (Directory.Exists(outputSpriteSheetFolder) == true)
+                Directory.Delete(outputSpriteSheetFolder, true);
+            Directory.CreateDirectory(outputSpriteSheetFolder);
+
+            // Turn the sprite chains into sprite sheets if there is more than one sprite
+            // There will always be 1, 2, or 8 in a chain
+            foreach (var spriteChain in spriteChainsBySpriteRoot)
+            {
+                string spriteChainOutputFileWithExt = string.Concat(spriteChain.Key, "Sheet.png");
+                ImageTool.GenerateSpriteSheetForSpriteChain(spriteChain.Value, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt);
             }
 
             Logger.WriteInfo("Generating spell particle sprite sheets complete...");
@@ -709,6 +726,13 @@ namespace EQWOWConverter
                 return false;
             }
             textureFoldersToProcess.Add(spellIconFolder);
+            string spellSpriteSheetsFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
+            if (Directory.Exists(spellSpriteSheetsFolder) == false)
+            {
+                Logger.WriteError("Failed to convert png files to blp, as the itemicons folder did not exist at '" + spellSpriteSheetsFolder + "'");
+                return false;
+            }
+            textureFoldersToProcess.Add(spellSpriteSheetsFolder);
             string zonesRootFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "zones");
             if (Directory.Exists(zonesRootFolder) == false)
             {

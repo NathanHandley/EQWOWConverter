@@ -226,6 +226,61 @@ namespace EQWOWConverter
             Logger.WriteDebug("Generating item icons from '" + inputImageToCutUp + "' completed.");
         }
 
+        public static void GenerateSpriteSheetForSpriteChain(List<string> inputSpriteChain, string inputFolderName, string outputFolderName, string outputFileNameWithExt)
+        {
+            Logger.WriteDebug("Generating sprite sheet named '", outputFileNameWithExt, "'");
+
+            // The first file will give the base dimensions to use
+            string imageFullPath = Path.Combine(inputFolderName, inputSpriteChain[0] + ".png");
+            Bitmap image = new Bitmap(imageFullPath);
+            int inputImageHeight = image.Height;
+            int inputImageWidth = image.Width;
+            image.Dispose();
+
+            // There will always be 2 or 8 in a chain, which we need to bring up to 16 (4x4).
+            // And to slow down the animation speed to be more EQ-like, each frame is doubled
+            int numOfImageCopies = 16 / inputSpriteChain.Count;
+
+            // Create the output image, reading in the images in chain and making copies wherever neccessary
+            // And there will always be 16 images in the final output, even if there was only 1 to start
+            using (Bitmap outputImage = new Bitmap(inputImageHeight * 4, inputImageWidth * 4))
+            {
+                int curInputImageIndex = 0;
+                int remainingInputImageCopies = numOfImageCopies;
+                for (int yFrame = 0; yFrame < 4; yFrame++)
+                {
+                    for (int xFrame = 0; xFrame < 4; xFrame++)
+                    {
+                        // Open the next image and copy in the pixels
+                        string inputImageFileName = Path.Combine(inputFolderName, inputSpriteChain[curInputImageIndex] + ".png");
+                        using (Bitmap inputImage = new Bitmap(inputImageFileName))
+                        {
+                            for (int inputYPos = 0; inputYPos < inputImageHeight; inputYPos++)
+                            {
+                                int yOutputPosition = (yFrame * inputImageHeight) + inputYPos;
+                                for (int inputXPos = 0; inputXPos < inputImageWidth; inputXPos++)
+                                {
+                                    int xOutputPosition = (xFrame * inputImageWidth) + inputXPos;
+                                    outputImage.SetPixel(xOutputPosition, yOutputPosition, inputImage.GetPixel(inputXPos, inputYPos));
+                                }
+                            }
+                        }
+                        remainingInputImageCopies--;
+                        if (remainingInputImageCopies == 0)
+                        {
+                            curInputImageIndex++;
+                            remainingInputImageCopies = numOfImageCopies;
+                        }
+                    }
+                }
+
+                string outputFileFullPath = Path.Combine(outputFolderName, outputFileNameWithExt);
+                outputImage.Save(outputFileFullPath);
+            }
+
+            Logger.WriteDebug("Generating sprite sheet complete.");
+        }
+
         // TODO: Look for solution to image operations.  These image methods are why this project is windows only.
         public static void GenerateResizedImage(string inputFilePath, string outputFilePath, int newWidth, int newHeight)
         {
