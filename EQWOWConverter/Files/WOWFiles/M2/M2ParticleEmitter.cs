@@ -87,9 +87,9 @@ namespace EQWOWConverter.WOWFiles
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
 
-            // All spell textures are pre-conditioned into 4x4 sprite sheets
-            TextureDimensionsRows = 4;
-            TextureDimensionColumns = 4;
+            // All spell textures are pre-conditioned into 8x8 sprite sheets
+            TextureDimensionsRows = 8;
+            TextureDimensionColumns = 8;
 
             GeometryModel.Add(new Fixed16(0));
 

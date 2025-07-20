@@ -237,20 +237,15 @@ namespace EQWOWConverter
             int inputImageWidth = image.Width;
             image.Dispose();
 
-            // There will always be 1, 2 or 8 in a chain, which we need to bring up to 16 (4x4).
-            // And to slow down the animation speed to be more EQ-like, each frame is doubled
-            int numOfImageCopies = 8 / inputSpriteChain.Count; // Every image is already doubled and factored for below already
-
             // Create the output image, reading in the images in chain and making copies wherever neccessary
-            // And there will always be 16 images in the final output, even if there was only 1 to start
-            using (Bitmap outputImage = new Bitmap(inputImageHeight * 4, inputImageWidth * 4))
+            // There will always be 1, 2 or 8 in a chain, which we need to bring up to 64 (8x8)
+            using (Bitmap outputImage = new Bitmap(inputImageHeight * 8, inputImageWidth * 8))
             {
                 int curInputImageIndex = 0;
-                int remainingInputImageCopies = numOfImageCopies;
-                bool doRepeatCurFrame = true;
-                for (int yFrame = 0; yFrame < 4; yFrame++)
+                int remainingInputImageCopies = 4; // And to slow down the animation speed to be more EQ-like, each frame is quadrupled
+                for (int yFrame = 0; yFrame < 8; yFrame++)
                 {
-                    for (int xFrame = 0; xFrame < 4; xFrame++)
+                    for (int xFrame = 0; xFrame < 8; xFrame++)
                     {
                         // Open the next image and copy in the pixels
                         string inputImageFileName = Path.Combine(inputFolderName, inputSpriteChain[curInputImageIndex] + ".png");
@@ -266,17 +261,15 @@ namespace EQWOWConverter
                                 }
                             }
                         }
-                        if (doRepeatCurFrame == true)
-                            doRepeatCurFrame = false;
-                        else
+                        remainingInputImageCopies--;
+                        if (remainingInputImageCopies == 0)
                         {
-                            remainingInputImageCopies--;
-                            if (remainingInputImageCopies == 0)
-                            {
-                                curInputImageIndex++;
-                                remainingInputImageCopies = numOfImageCopies;
-                            }
-                            doRepeatCurFrame = true;
+                            remainingInputImageCopies = 4;
+                            curInputImageIndex++;
+
+                            // When the number of frames has cycled, just start over
+                            if (curInputImageIndex >= inputSpriteChain.Count)
+                                curInputImageIndex = 0;
                         }
                     }
                 }
