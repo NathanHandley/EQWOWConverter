@@ -20,10 +20,12 @@ It is currently still in heavy development and things are changing daily.  Curre
 - Quests
 - Armor visuals
 - Tradeskills
+- Spell Particles
 
-What's currently missing:
+What's currently missing (all in a mid-state / work in progress):
 - Creature Spells
-- Particles (spells / equipment with particles)
+- Player Spells
+- Equipment Particles
 
 # Requirements
 - Windows build environment
