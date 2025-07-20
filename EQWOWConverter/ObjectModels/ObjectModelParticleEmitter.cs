@@ -14,6 +14,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.Spells;
 
@@ -54,7 +55,7 @@ namespace EQWOWConverter.ObjectModels
             Radius = CalculateRadius(effectSection, effectIndex, EmissionPattern);
 
             // Sprite sheet name
-            SpriteSheetFileNameNoExt = GetSpriteSheetName(effectSection.SpriteNames[effectIndex]);
+            SpriteSheetFileNameNoExt = GetSpriteSheetName(effectSection.SpriteNames[effectIndex], effectSection.EmitterColors[effectIndex]);
 
             // Gravity
             Gravity = CalculateGravity(effectSection, effectIndex, EmissionPattern);
@@ -66,13 +67,19 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
         }
 
-        private string GetSpriteSheetName(string eqSpellsEFFSpriteName)
+        private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)
         {
-            // Some sprits have _SPRITE and some don't, remove if they do, and then have it reference the spritesheet file
-            string spriteSheetName = eqSpellsEFFSpriteName.Replace("_SPRITE", "");
-            if (spriteSheetName.Length > 0)
-                spriteSheetName = string.Concat(spriteSheetName, "Sheet");
-            return spriteSheetName;
+            if (eqSpellsEFFSpriteName.Length == 0)
+                return string.Empty;
+
+            string spriteSheetFileNameNoExt = eqSpellsEFFSpriteName;
+            if ((colorRGBA.R != 0 && colorRGBA.R != 255) || (colorRGBA.G != 0 && colorRGBA.G != 255) || (colorRGBA.B != 0 && colorRGBA.B != 255))
+            {
+                string colorString = string.Concat("_c_", colorRGBA.R.ToString(), "_", colorRGBA.G.ToString(), "_", colorRGBA.B.ToString(), "_");
+                spriteSheetFileNameNoExt = string.Concat(spriteSheetFileNameNoExt, colorString);
+            }
+            spriteSheetFileNameNoExt = string.Concat(spriteSheetFileNameNoExt, "Sheet");
+            return spriteSheetFileNameNoExt;
         }
 
         private float CalculateScale(EQSpellsEFF.SectionData effectSection, int effectIndex)

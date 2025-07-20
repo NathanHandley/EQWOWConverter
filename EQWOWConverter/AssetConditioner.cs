@@ -395,6 +395,19 @@ namespace EQWOWConverter
                 ImageTool.GenerateSpriteSheetForSpriteChain(spriteChain.Value, sourceTextureFolder, outputSpriteSheetFolder, spriteChainOutputFileWithExt);
             }
 
+            // Create any colorized versions
+            foreach (var colorTintListBySpriteName in eqSpellsEFF.ColorTintsBySpriteNames)
+            {
+                foreach (ColorRGBA colorTint in colorTintListBySpriteName.Value)
+                {
+                    string colorString = string.Concat("_c_", colorTint.R.ToString(), "_", colorTint.G.ToString(), "_", colorTint.B.ToString(), "_");
+                    string spriteSheetColoredOutputFileNameNoExt = string.Concat(colorTintListBySpriteName.Key, colorString, "Sheet");
+                    string spriteSheetInputFileNameNoExt = string.Concat(colorTintListBySpriteName.Key, "Sheet");
+                    ImageTool.GenerateColoredTintedTexture(outputSpriteSheetFolder, spriteSheetInputFileNameNoExt, outputSpriteSheetFolder, spriteSheetColoredOutputFileNameNoExt, colorTint,
+                        ImageTool.ImageAssociationType.SpellParticle, false);
+                }
+            }
+
             Logger.WriteInfo("Generating spell particle sprite sheets complete...");
         }
 

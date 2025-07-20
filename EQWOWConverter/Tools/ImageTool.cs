@@ -331,7 +331,8 @@ namespace EQWOWConverter
         public enum ImageAssociationType
         {
             Creature,
-            Clothing
+            Clothing,
+            SpellParticle
         }
 
         public static void GenerateColoredTintedTexture(string inputTextureFolder, string inputTextureFileNameNoExt, string workingDirectory,

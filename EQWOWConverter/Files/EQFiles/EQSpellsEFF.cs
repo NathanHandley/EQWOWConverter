@@ -57,6 +57,7 @@ namespace EQWOWConverter.EQFiles
                 {
                     SpriteNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                     SpriteNames[i] = SpriteNames[i].Replace("GENE00", "GENE01"); // Fix invalid texture association
+                    SpriteNames[i] = SpriteNames[i].Replace("_SPRITE", ""); // Remove "_SPRITE" that appears sometimes
                 }
                 TypeString = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                 for (int i = 0; i < 3; i++)
@@ -67,6 +68,7 @@ namespace EQWOWConverter.EQFiles
                 {
                     SpriteListNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                     SpriteListNames[i] = SpriteListNames[i].Replace("GENE00", "GENE01"); // Fix invalid texture association
+                    SpriteListNames[i] = SpriteListNames[i].Replace("_SPRITE", ""); // Remove "_SPRITE" that appears sometimes
                 }
                 SpriteListEffect = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 SoundID = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
@@ -119,6 +121,7 @@ namespace EQWOWConverter.EQFiles
 
         public List<EQSpellEffect> SpellEffects = new List<EQSpellEffect>();
         public HashSet<string> UniqueSpriteNames = new HashSet<string>();
+        public Dictionary<string, List<ColorRGBA>> ColorTintsBySpriteNames = new Dictionary<string, List<ColorRGBA>>();
 
         public bool LoadFromDisk(string fileFullPath)
         {
@@ -159,15 +162,61 @@ namespace EQWOWConverter.EQFiles
                 {
                     foreach (string spriteName in sectionData.SpriteNames)
                     {
-                        string reformattedSpriteName = spriteName.Replace("_SPRITE", "");
-                        if (reformattedSpriteName.Length > 0 && UniqueSpriteNames.Contains(reformattedSpriteName) == false)
-                            UniqueSpriteNames.Add(reformattedSpriteName);
+                        if (spriteName.Length > 0 && UniqueSpriteNames.Contains(spriteName) == false)
+                            UniqueSpriteNames.Add(spriteName);
                     }
                     foreach (string spriteName in sectionData.SpriteListNames)
                     {
-                        string reformattedSpriteName = spriteName.Replace("_SPRITE", "");
-                        if (reformattedSpriteName.Length > 0 && UniqueSpriteNames.Contains(reformattedSpriteName) == false)
-                            UniqueSpriteNames.Add(reformattedSpriteName);
+                        if (spriteName.Length > 0 && UniqueSpriteNames.Contains(spriteName) == false)
+                            UniqueSpriteNames.Add(spriteName);
+                    }
+                }
+            }
+
+            // Extract out any sprites that have a color tinting
+            foreach (EQSpellEffect spellEffect in SpellEffects)
+            {
+                foreach (SectionData sectionData in spellEffect.SectionDatas)
+                {
+                    for (int i = 0; i < 3; i++)
+                    {
+                        // Skip invalid sprite names
+                        if (sectionData.SpriteNames[i].Length == 0)
+                            continue;
+
+                        // Skip Non-populated colors
+                        if (sectionData.EmitterColors[i].R == 0 && sectionData.EmitterColors[i].G == 0 && sectionData.EmitterColors[i].B == 0)
+                            continue;
+                        if (sectionData.EmitterColors[i].R == 255 && sectionData.EmitterColors[i].G == 255 && sectionData.EmitterColors[i].B == 255)
+                            continue;
+
+                        // Skip if a matching already exists
+                        bool colorExistsForTexture = false;
+                        foreach (var colorTintListBySpriteName in ColorTintsBySpriteNames)
+                        {
+                            foreach (ColorRGBA colorTint in colorTintListBySpriteName.Value)
+                            {
+                                if (colorTint == sectionData.EmitterColors[i])
+                                {
+                                    colorExistsForTexture = true;
+                                    break;
+                                }
+                            }
+                            if (colorExistsForTexture == true)
+                                continue;
+                        }
+                        if (colorExistsForTexture == true)
+                            continue;
+
+                        // Add it
+                        if (ColorTintsBySpriteNames.ContainsKey(sectionData.SpriteNames[i]) == false)
+                            ColorTintsBySpriteNames.Add(sectionData.SpriteNames[i], new List<ColorRGBA>());
+                        ColorTintsBySpriteNames[sectionData.SpriteNames[i]].Add(sectionData.EmitterColors[i]);
+                    }
+                    foreach (string spriteName in sectionData.SpriteNames)
+                    {
+                        if (spriteName.Length > 0 && UniqueSpriteNames.Contains(spriteName) == false)
+                            UniqueSpriteNames.Add(spriteName);
                     }
                 }
             }

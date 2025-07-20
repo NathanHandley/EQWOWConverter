@@ -104,5 +104,20 @@ namespace EQWOWConverter.Common
             //returnColor.A = Convert.ToByte(Math.Min(((Convert.ToSingle(colorA.A) * (1 - colorBWeight)) + (Convert.ToSingle(colorB.A)) * colorBWeight), 255));
             return returnColor;
         }
+
+        public static bool operator ==(ColorRGBA left, ColorRGBA right)
+        {
+            return left.R == right.R && left.G == right.G && left.B == right.B && left.A == right.A;
+        }
+
+        public static bool operator !=(ColorRGBA left, ColorRGBA right)
+        {
+            return !(left == right);
+        }
+
+        public override bool Equals(object? obj)
+        {
+            return obj is ColorRGBA other && this == other;
+        }
     }
 }
