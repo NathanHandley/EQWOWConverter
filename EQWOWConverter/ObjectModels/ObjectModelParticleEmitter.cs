@@ -21,7 +21,7 @@ namespace EQWOWConverter.ObjectModels
 {
     internal class ObjectModelParticleEmitter
     {
-        public string SpriteFileNameNoExt = string.Empty;
+        public string SpriteSheetFileNameNoExt = string.Empty;
         public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
         public int VisualEffectIndex = 0;
@@ -52,9 +52,9 @@ namespace EQWOWConverter.ObjectModels
 
             // Radius
             Radius = CalculateRadius(effectSection, effectIndex, EmissionPattern);
-            
-            // Some sprits have _SPRITE and some don't, remove if they do
-            SpriteFileNameNoExt = effectSection.SpriteNames[effectIndex].Replace("_SPRITE", "");
+
+            // Sprite sheet name
+            SpriteSheetFileNameNoExt = GetSpriteSheetName(effectSection.SpriteNames[effectIndex]);
 
             // Gravity
             Gravity = CalculateGravity(effectSection, effectIndex, EmissionPattern);
@@ -64,6 +64,15 @@ namespace EQWOWConverter.ObjectModels
 
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effectSection, effectIndex, EmissionPattern);
+        }
+
+        private string GetSpriteSheetName(string eqSpellsEFFSpriteName)
+        {
+            // Some sprits have _SPRITE and some don't, remove if they do, and then have it reference the spritesheet file
+            string spriteSheetName = eqSpellsEFFSpriteName.Replace("_SPRITE", "");
+            if (spriteSheetName.Length > 0)
+                spriteSheetName = string.Concat(spriteSheetName, "Sheet");
+            return spriteSheetName;
         }
 
         private float CalculateScale(EQSpellsEFF.SectionData effectSection, int effectIndex)

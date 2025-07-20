@@ -86,7 +86,11 @@ namespace EQWOWConverter.WOWFiles
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
 
             TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
-            
+
+            // All spell textures are pre-conditioned into 4x4 sprite sheets
+            TextureDimensionsRows = 4;
+            TextureDimensionColumns = 4;
+
             GeometryModel.Add(new Fixed16(0));
 
             RecursionModel.Add(new Fixed16(0));

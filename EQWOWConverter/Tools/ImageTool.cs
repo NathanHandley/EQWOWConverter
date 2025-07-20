@@ -237,9 +237,9 @@ namespace EQWOWConverter
             int inputImageWidth = image.Width;
             image.Dispose();
 
-            // There will always be 2 or 8 in a chain, which we need to bring up to 16 (4x4).
+            // There will always be 1, 2 or 8 in a chain, which we need to bring up to 16 (4x4).
             // And to slow down the animation speed to be more EQ-like, each frame is doubled
-            int numOfImageCopies = 16 / inputSpriteChain.Count;
+            int numOfImageCopies = 8 / inputSpriteChain.Count; // Every image is already doubled and factored for below already
 
             // Create the output image, reading in the images in chain and making copies wherever neccessary
             // And there will always be 16 images in the final output, even if there was only 1 to start
@@ -247,6 +247,7 @@ namespace EQWOWConverter
             {
                 int curInputImageIndex = 0;
                 int remainingInputImageCopies = numOfImageCopies;
+                bool doRepeatCurFrame = true;
                 for (int yFrame = 0; yFrame < 4; yFrame++)
                 {
                     for (int xFrame = 0; xFrame < 4; xFrame++)
@@ -265,11 +266,17 @@ namespace EQWOWConverter
                                 }
                             }
                         }
-                        remainingInputImageCopies--;
-                        if (remainingInputImageCopies == 0)
+                        if (doRepeatCurFrame == true)
+                            doRepeatCurFrame = false;
+                        else
                         {
-                            curInputImageIndex++;
-                            remainingInputImageCopies = numOfImageCopies;
+                            remainingInputImageCopies--;
+                            if (remainingInputImageCopies == 0)
+                            {
+                                curInputImageIndex++;
+                                remainingInputImageCopies = numOfImageCopies;
+                            }
+                            doRepeatCurFrame = true;
                         }
                     }
                 }

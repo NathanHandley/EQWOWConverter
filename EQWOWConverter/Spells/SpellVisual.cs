@@ -297,13 +297,13 @@ namespace EQWOWConverter.Spells
                 // Also add the texture, manually (if needed)
                 if (existingModel != null)
                 {
-                    if (emitter.SpriteFileNameNoExt.Length > 0)
+                    if (emitter.SpriteSheetFileNameNoExt.Length > 0)
                     {
                         // Skip if it's already added, otherwise new
                         int modelTextureID = -1;
                         for (int i = 0; i < existingModel.ModelTextures.Count; i++)
                         {
-                            if (existingModel.ModelTextures[i].TextureName == emitter.SpriteFileNameNoExt)
+                            if (existingModel.ModelTextures[i].TextureName == emitter.SpriteSheetFileNameNoExt)
                             {
                                 modelTextureID = i;
                                 break;
@@ -312,7 +312,7 @@ namespace EQWOWConverter.Spells
                         if (modelTextureID == -1)
                         {
                             ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                            newModelTexture.TextureName = emitter.SpriteFileNameNoExt;
+                            newModelTexture.TextureName = emitter.SpriteSheetFileNameNoExt;
                             existingModel.ModelTextures.Add(newModelTexture);
                             modelTextureID = existingModel.ModelTextures.Count - 1;
                         }
