@@ -54,14 +54,20 @@ namespace EQWOWConverter.EQFiles
             {
                 // TODO: The 12 element ones are actually 4 blocks of 3, so break into parts
                 for (int i = 0; i < 3; i++)
+                {
                     SpriteNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
+                    SpriteNames[i] = SpriteNames[i].Replace("GENE00", "GENE01"); // Fix invalid texture association
+                }
                 TypeString = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
                 for (int i = 0; i < 3; i++)
                     LocationIDs[i] = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
                     EmissionTypeIDs[i] = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 12; i++)
+                {
                     SpriteListNames[i] = ByteTool.ReadStringFromBytes(bytes, ref byteCursor, 32);
+                    SpriteListNames[i] = SpriteListNames[i].Replace("GENE00", "GENE01"); // Fix invalid texture association
+                }
                 SpriteListEffect = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 SoundID = ByteTool.ReadInt32FromBytes(bytes, ref byteCursor);
                 for (int i = 0; i < 3; i++)
