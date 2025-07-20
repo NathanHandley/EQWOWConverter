@@ -114,15 +114,15 @@ namespace EQWOWConverter.Spells
                         spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
 
                         // Source data
-                        EQSpellsEFF.SectionData sourceSectionData = spellEffect.SectionDatas[0];
+                        EQSpellsEFF.EFFSourceSectionData sourceSectionData = spellEffect.RawSectionDatas[0];
                         ConvertStageVisualData(ref spellVisual, sourceSectionData, SpellVisualStageType.Precast, isBeneficial);
 
                         // Sprite data (missle/projectile?)
-                        EQSpellsEFF.SectionData spriteSectionData = spellEffect.SectionDatas[1];
+                        EQSpellsEFF.EFFSourceSectionData spriteSectionData = spellEffect.RawSectionDatas[1];
                         ConvertStageVisualData(ref spellVisual, spriteSectionData, SpellVisualStageType.Cast, isBeneficial);
 
                         // Target data
-                        EQSpellsEFF.SectionData targetSectionData = spellEffect.SectionDatas[2];
+                        EQSpellsEFF.EFFSourceSectionData targetSectionData = spellEffect.RawSectionDatas[2];
                         ConvertStageVisualData(ref spellVisual, targetSectionData, SpellVisualStageType.Impact, isBeneficial);
 
                         if (isBeneficial)
@@ -135,7 +135,7 @@ namespace EQWOWConverter.Spells
             Logger.WriteDebug("Generating wow spell visual data complete.");
         }
 
-        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.SectionData effSectionData, 
+        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.EFFSourceSectionData effSectionData, 
             SpellVisualStageType stageType, bool isBeneficial)
         {
             // ID
@@ -244,7 +244,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.SectionData effSectionData, SpellVisualStageType stageType)
+        private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.EFFSourceSectionData effSectionData, SpellVisualStageType stageType)
         {
             // Skip the projectile/cast for now
             if (stageType == SpellVisualStageType.Cast)

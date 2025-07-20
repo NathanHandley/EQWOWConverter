@@ -34,7 +34,7 @@ namespace EQWOWConverter.ObjectModels
         public float Radius = 0;
         public int TextureID = 0;
 
-        public void Load(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
+        public void Load(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             VisualEffectIndex = effectSection.VisualEffectIndex;
 
@@ -82,13 +82,13 @@ namespace EQWOWConverter.ObjectModels
             return spriteSheetFileNameNoExt;
         }
 
-        private float CalculateScale(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private float CalculateScale(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex)
         {
             float scale = Math.Max(effectSection.EmitterSpawnScale[effectIndex], Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN);
             return scale * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD;
         }
 
-        private float CalculateRadius(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private float CalculateRadius(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             float eqRadius = effectSection.EmitterSpawnRadii[effectIndex];
 
@@ -109,7 +109,7 @@ namespace EQWOWConverter.ObjectModels
             return eqRadius * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
-        private float CalculateGravity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private float CalculateGravity(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             float eqGravity = effectSection.EmitterGravities[effectIndex];
 
@@ -120,7 +120,7 @@ namespace EQWOWConverter.ObjectModels
             return eqGravity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
-        private int CalculateSpawnRate(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private int CalculateSpawnRate(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             int spawnRate = effectSection.EmitterSpawnRates[effectIndex];
 
@@ -156,7 +156,7 @@ namespace EQWOWConverter.ObjectModels
             return Convert.ToInt32(Convert.ToSingle(spawnRate) * spawnRateMod);
         }
 
-        private float CalculateVelocity(EQSpellsEFF.SectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
+        private float CalculateVelocity(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, SpellVisualEmitterSpawnPatternType spawnPattern)
         {
             float velocity = effectSection.EmitterSpawnVelocities[effectIndex];
             if (velocity == 0)
@@ -178,7 +178,7 @@ namespace EQWOWConverter.ObjectModels
             return velocity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
-        private int CalculateLifespanInMS(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private int CalculateLifespanInMS(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex)
         {
             // Default to a second if no lifespan
             if (effectSection.EmitterSpawnLifespans[effectIndex] == 0)
@@ -187,7 +187,7 @@ namespace EQWOWConverter.ObjectModels
             return Convert.ToInt32(Convert.ToSingle(effectSection.EmitterSpawnLifespans[effectIndex]) * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
         }
 
-        private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(EQSpellsEFF.SectionData effectSection, int effectIndex)
+        private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex)
         {
             switch (effectSection.EmissionTypeIDs[effectIndex])
             {
@@ -201,7 +201,7 @@ namespace EQWOWConverter.ObjectModels
             }
         }
 
-        private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.SectionData effectSection, int effectIndex, 
+        private SpellEmitterModelAttachLocationType GetEmissionAttachLocation(EQSpellsEFF.EFFSourceSectionData effectSection, int effectIndex, 
             SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             // Emission type overrides any setting on attach location
