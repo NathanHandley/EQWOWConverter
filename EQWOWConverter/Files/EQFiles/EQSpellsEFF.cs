@@ -23,6 +23,7 @@ namespace EQWOWConverter.EQFiles
     {
         internal struct EFFSpellEmitter
         {
+            public EQSpellEffectTargetType TargetType;
             public int VisualEffectIndex;
             public string SpriteName = string.Empty;
             public int LocationID;
@@ -39,9 +40,10 @@ namespace EQWOWConverter.EQFiles
             public int SpawnRate;
             public float Scale;
 
-            public EFFSpellEmitter(int visualEffectIndex, string spriteName, int locationID, int emissionTypeID, ColorRGBA color, float gravity, float spawnX, 
+            public EFFSpellEmitter(EQSpellEffectTargetType targetType, int visualEffectIndex, string spriteName, int locationID, int emissionTypeID, ColorRGBA color, float gravity, float spawnX, 
                 float spawnY, float spawnZ, float radius, float angle, int particleLifespan, float velocity, int spawnRate, float scale)
             {
+                TargetType = targetType;
                 VisualEffectIndex = visualEffectIndex;
                 SpriteName = spriteName;
                 LocationID = locationID;
@@ -62,6 +64,7 @@ namespace EQWOWConverter.EQFiles
 
         internal struct EFFSpellSpriteListEffect
         {
+            public EQSpellEffectTargetType TargetType;
             public EQSpellListEffectType EffectType;
             public int VisualEffectIndex = 0;
             public string[] SpriteNames = new string[12];
@@ -72,9 +75,10 @@ namespace EQWOWConverter.EQFiles
             public short[] Movements = new short[12];
             public float[] Scales = new float[12];
 
-            public EFFSpellSpriteListEffect(EQSpellListEffectType effectType, int visualEffectIndex, string[] spriteNames, float[] unknowns, short[] circularShifts, short[] verticalForces, 
-                float[] radii, short[] movements, float[] scales)
+            public EFFSpellSpriteListEffect(EQSpellEffectTargetType targetType, EQSpellListEffectType effectType, int visualEffectIndex, string[] spriteNames, float[] unknowns, 
+                short[] circularShifts, short[] verticalForces, float[] radii, short[] movements, float[] scales)
             {
+                TargetType = targetType;
                 EffectType = effectType;
                 VisualEffectIndex = visualEffectIndex;
                 SpriteNames = (string[])spriteNames.Clone();
@@ -183,11 +187,8 @@ namespace EQWOWConverter.EQFiles
             public int Field02;
             public int VisualEffectIndex = 0;
             public EFFSourceSectionData[] RawSectionDatas = new EFFSourceSectionData[3]; // Always 3, sometimes blank
-            public List<EFFSpellEmitter> SourceEmitters = new List<EFFSpellEmitter>();
-            public List<EFFSpellEmitter> TargetEmitters = new List<EFFSpellEmitter>();
-            public List<EFFSpellSpriteListEffect> SourceSpriteListEffects = new List<EFFSpellSpriteListEffect>();
-            public List<EFFSpellSpriteListEffect> TargetSpriteListEffects = new List<EFFSpellSpriteListEffect>();
-            public List<EFFSpellSpriteListEffect> ProjectSpriteListEffects = new List<EFFSpellSpriteListEffect>();
+            public List<EFFSpellEmitter> Emitters = new List<EFFSpellEmitter>();
+            public List<EFFSpellSpriteListEffect> SpriteListEffects = new List<EFFSpellSpriteListEffect>();
             public int SourceSoundID = -1;
             public int TargetSoundID = -1;
         }        
@@ -324,23 +325,25 @@ namespace EQWOWConverter.EQFiles
                             default: effectType = EQSpellListEffectType.Static; break;
                         }
 
-                        // Create the sprite list effect
-                        EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(effectType, spellEffect.VisualEffectIndex, sectionData.SpriteListNames, sectionData.SpriteListUnknown,
-                            sectionData.SpriteListCircularShifts, sectionData.SpriteListVerticalForces, sectionData.SpriteListRadii, sectionData.SpriteListMovements, sectionData.SpriteListScales);
-
-                        // Align to the right bucket
+                        // Determine the target type
+                        EQSpellEffectTargetType targetType = EQSpellEffectTargetType.Caster;
                         if (effectType == EQSpellListEffectType.Projectile)
-                            spellEffect.ProjectSpriteListEffects.Add(newSpriteListEffect);
+                            targetType = EQSpellEffectTargetType.Projectile;
                         else if (effectType == EQSpellListEffectType.Static)
-                            spellEffect.SourceSpriteListEffects.Add(newSpriteListEffect);
+                            targetType = EQSpellEffectTargetType.Caster;
                         else if (effectType == EQSpellListEffectType.Pulsating)
                         {
                             if (sectionDataIter == 0)
-                                spellEffect.SourceSpriteListEffects.Add(newSpriteListEffect);
+                                targetType = EQSpellEffectTargetType.Caster;
                             // TODO: There doesn't appear to be any in position "1" that fall into this
                             else if (sectionDataIter == 2)
-                                spellEffect.TargetSpriteListEffects.Add(newSpriteListEffect);
+                                targetType = EQSpellEffectTargetType.Target;
                         }
+
+                        // Create the sprite list effect
+                        EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(targetType, effectType, spellEffect.VisualEffectIndex, sectionData.SpriteListNames, sectionData.SpriteListUnknown,
+                            sectionData.SpriteListCircularShifts, sectionData.SpriteListVerticalForces, sectionData.SpriteListRadii, sectionData.SpriteListMovements, sectionData.SpriteListScales);
+                        spellEffect.SpriteListEffects.Add(newSpriteListEffect);
                     }
 
                     // Convert any emitters
@@ -350,19 +353,21 @@ namespace EQWOWConverter.EQFiles
                         if (sectionData.EmissionTypeIDs[emitterIter] == -1)
                             continue;
 
+                        // Determine target type
+                        EQSpellEffectTargetType targetType = EQSpellEffectTargetType.Caster;
+                        if (sectionDataIter == 0) // TODO: Confirm if we need to check for "Source" in the TypeID
+                            targetType = EQSpellEffectTargetType.Caster;
+                        else if (sectionDataIter == 1)
+                            targetType = EQSpellEffectTargetType.Caster;
+                        else if (sectionDataIter == 2) // TODO: Confirm if we need to check for "Target" in the TypeID
+                            targetType = EQSpellEffectTargetType.Target;
+
                         // Create the emitter
-                        EFFSpellEmitter newEmitter = new EFFSpellEmitter(spellEffect.VisualEffectIndex, sectionData.SpriteNames[emitterIter], sectionData.LocationIDs[emitterIter],
+                        EFFSpellEmitter newEmitter = new EFFSpellEmitter(targetType, spellEffect.VisualEffectIndex, sectionData.SpriteNames[emitterIter], sectionData.LocationIDs[emitterIter],
                             sectionData.EmissionTypeIDs[emitterIter], sectionData.EmitterColors[emitterIter], sectionData.EmitterGravities[emitterIter], sectionData.EmitterSpawnXs[emitterIter],
                             sectionData.EmitterSpawnYs[emitterIter], sectionData.EmitterSpawnZs[emitterIter], sectionData.EmitterSpawnRadii[emitterIter], sectionData.EmitterSpawnAngles[emitterIter],
                             sectionData.EmitterSpawnLifespans[emitterIter], sectionData.EmitterSpawnVelocities[emitterIter], sectionData.EmitterSpawnRates[emitterIter], sectionData.EmitterSpawnScale[emitterIter]);
-
-                        // Align to the right list
-                        if (sectionDataIter == 0) // TODO: Confirm if we need to check for "Source" in the TypeID
-                            spellEffect.SourceEmitters.Add(newEmitter);
-                        else if (sectionDataIter == 1)
-                            spellEffect.SourceEmitters.Add(newEmitter); // Confirm if this is right
-                        else if (sectionDataIter == 2) // TODO: Confirm if we need to check for "Target" in the TypeID
-                            spellEffect.TargetEmitters.Add(newEmitter);
+                        spellEffect.Emitters.Add(newEmitter);
                     }
                 }
             }
