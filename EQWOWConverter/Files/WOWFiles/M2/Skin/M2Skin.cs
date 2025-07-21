@@ -26,8 +26,8 @@ namespace EQWOWConverter.WOWFiles
 
         public M2Skin(ObjectModel wowObjectModel)
         {
-            // Particle objects only have a blank header
-            if (wowObjectModel.ModelType == ObjectModelType.ParticleEmitter)
+            // Particle and projectile objects only have a blank header
+            if (wowObjectModel.ModelType == ObjectModelType.ParticleEmitter || wowObjectModel.ModelType == ObjectModelType.SpellProjectile)
             {
                 SkinBytes.AddRange(Header.ToBytes());
                 return;

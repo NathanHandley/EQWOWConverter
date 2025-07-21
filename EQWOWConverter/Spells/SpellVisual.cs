@@ -161,6 +161,9 @@ namespace EQWOWConverter.Spells
 
             // Model
             GenerateEmitterModel(ref spellVisual, spellEffect, stageType);
+
+            // If there is a projectile, create that
+            //if (spellEffect.)
         }
 
         private static int ProcessSoundAndReturnDBCID(int effectSoundID, SpellVisualStageType stageType)
@@ -242,7 +245,7 @@ namespace EQWOWConverter.Spells
 
         private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType)
         {
-            // Skip the projectile/cast for now
+            // There are no 'cast' models
             if (stageType == SpellVisualStageType.Cast)
                 return;
 

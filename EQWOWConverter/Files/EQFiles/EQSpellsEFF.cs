@@ -188,7 +188,8 @@ namespace EQWOWConverter.EQFiles
             public int VisualEffectIndex = 0;
             public EFFSourceSectionData[] RawSectionDatas = new EFFSourceSectionData[3]; // Always 3, sometimes blank
             public List<EFFSpellEmitter> Emitters = new List<EFFSpellEmitter>();
-            public List<EFFSpellSpriteListEffect> SpriteListEffects = new List<EFFSpellSpriteListEffect>();
+            public List<EFFSpellSpriteListEffect> UnitSpriteListEffects = new List<EFFSpellSpriteListEffect>();
+            public List<EFFSpellSpriteListEffect> ProjectileSpriteListEffects = new List<EFFSpellSpriteListEffect>();
             public int SourceSoundID = -1;
             public int TargetSoundID = -1;
         }        
@@ -343,7 +344,10 @@ namespace EQWOWConverter.EQFiles
                         // Create the sprite list effect
                         EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(targetType, effectType, spellEffect.VisualEffectIndex, sectionData.SpriteListNames, sectionData.SpriteListUnknown,
                             sectionData.SpriteListCircularShifts, sectionData.SpriteListVerticalForces, sectionData.SpriteListRadii, sectionData.SpriteListMovements, sectionData.SpriteListScales);
-                        spellEffect.SpriteListEffects.Add(newSpriteListEffect);
+                        if (targetType == EQSpellEffectTargetType.Projectile)
+                            spellEffect.ProjectileSpriteListEffects.Add(newSpriteListEffect);
+                        else
+                            spellEffect.UnitSpriteListEffects.Add(newSpriteListEffect);
                     }
 
                     // Convert any emitters

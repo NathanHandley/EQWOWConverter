@@ -160,8 +160,8 @@ namespace EQWOWConverter.ObjectModels
             // Collision data
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
 
-            // Create a global sequence if there is none and it's not an emitter
-            if (GlobalLoopSequenceLimits.Count == 0 && ModelType != ObjectModelType.ParticleEmitter)
+            // Create a global sequence if there is none and it's not an emitter or projectile
+            if (GlobalLoopSequenceLimits.Count == 0 && (ModelType != ObjectModelType.ParticleEmitter && ModelType != ObjectModelType.SpellProjectile))
                 GlobalLoopSequenceLimits.Add(0);
 
             // Store the final state mesh data
@@ -188,7 +188,7 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
                     ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
-                    if (ModelType == ObjectModelType.ParticleEmitter)
+                    if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
                     {
                         ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS);
 
@@ -1601,8 +1601,8 @@ namespace EQWOWConverter.ObjectModels
 
         private void ProcessCollisionData(MeshData meshData, List<Material> materials, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
         {
-            // Skip collision for particles
-            if (ModelType == ObjectModelType.ParticleEmitter)
+            // Skip collision for particles and projectiles
+            if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
                 return;
 
             // Generate collision data if there is none and it's from an EQ object
