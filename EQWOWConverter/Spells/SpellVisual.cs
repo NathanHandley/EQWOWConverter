@@ -112,19 +112,9 @@ namespace EQWOWConverter.Spells
                         SpellVisual spellVisual = new SpellVisual();
                         spellVisual.EQVisualEffectIndex = i;
                         spellVisual.SpellVisualDBCID = SpellVisualDBC.GenerateID();
-
-                        // Source data
-                        EQSpellsEFF.EFFSourceSectionData sourceSectionData = spellEffect.RawSectionDatas[0];
-                        ConvertStageVisualData(ref spellVisual, sourceSectionData, SpellVisualStageType.Precast, isBeneficial);
-
-                        // Sprite data (missle/projectile?)
-                        EQSpellsEFF.EFFSourceSectionData spriteSectionData = spellEffect.RawSectionDatas[1];
-                        ConvertStageVisualData(ref spellVisual, spriteSectionData, SpellVisualStageType.Cast, isBeneficial);
-
-                        // Target data
-                        EQSpellsEFF.EFFSourceSectionData targetSectionData = spellEffect.RawSectionDatas[2];
-                        ConvertStageVisualData(ref spellVisual, targetSectionData, SpellVisualStageType.Impact, isBeneficial);
-
+                        ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Precast, isBeneficial);
+                        ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Cast, isBeneficial);
+                        ConvertStageVisualData(ref spellVisual, spellEffect, SpellVisualStageType.Impact, isBeneficial);
                         if (isBeneficial)
                             BeneficialSpellVisuals.Add(spellVisual);
                         else
@@ -135,27 +125,12 @@ namespace EQWOWConverter.Spells
             Logger.WriteDebug("Generating wow spell visual data complete.");
         }
 
-        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.EFFSourceSectionData effSectionData, 
-            SpellVisualStageType stageType, bool isBeneficial)
+        private static void ConvertStageVisualData(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType, bool isBeneficial)
         {
             // ID
             spellVisual.SpellVisualKitDBCIDsInStage[(int)stageType] = SpellVisualKitDBC.GenerateID();
 
-            // Sound data
-            string soundFileNameNoExt = GetSoundFileNameNoExtFromSoundID(effSectionData.SoundID);
-            spellVisual.SoundEntryDBCIDInStage[(int)stageType] = 0;
-            if (soundFileNameNoExt != string.Empty)
-            {
-                if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == false)
-                {
-                    string name = string.Concat("EQ Spell ", soundFileNameNoExt);
-                    Sound sound = new Sound(name, soundFileNameNoExt, SoundType.Spell, 8, 45, false);
-                    SoundsByFileNameNoExt.Add(soundFileNameNoExt, sound);
-                }
-                spellVisual.SoundEntryDBCIDInStage[(int)stageType] = SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
-            }
-
-            // Animation
+            // Stage-specific logic
             switch (stageType)
             {
                 case SpellVisualStageType.Precast:
@@ -164,6 +139,7 @@ namespace EQWOWConverter.Spells
                             spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellOmni;
                         else
                             spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.ReadySpellDirected;
+                        spellVisual.SoundEntryDBCIDInStage[(int)stageType] = ProcessSoundAndReturnDBCID(spellEffect.SourceSoundID, stageType);
                     } break;
                 case SpellVisualStageType.Cast:
                     {
@@ -178,12 +154,32 @@ namespace EQWOWConverter.Spells
                             spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None;
                         else
                             spellVisual.AnimationTypeInStage[(int)stageType] = AnimationType.None;
+                        spellVisual.SoundEntryDBCIDInStage[(int)stageType] = ProcessSoundAndReturnDBCID(spellEffect.TargetSoundID, stageType);
                     } break;
                 default: Logger.WriteError("Unhanlded stagetype in ConvertStageVisualData"); break;
             }
 
             // Model
-            GenerateEmitterModel(ref spellVisual, effSectionData, stageType);
+            GenerateEmitterModel(ref spellVisual, spellEffect, stageType);
+        }
+
+        private static int ProcessSoundAndReturnDBCID(int effectSoundID, SpellVisualStageType stageType)
+        {
+            if (effectSoundID == -1)
+                return 0;
+            string soundFileNameNoExt = GetSoundFileNameNoExtFromSoundID(effectSoundID);
+            if (soundFileNameNoExt != string.Empty)
+            {
+                if (SoundsByFileNameNoExt.ContainsKey(soundFileNameNoExt) == false)
+                {
+                    string name = string.Concat("EQ Spell ", soundFileNameNoExt);
+                    Sound sound = new Sound(name, soundFileNameNoExt, SoundType.Spell, 8, 45, false);
+                    SoundsByFileNameNoExt.Add(soundFileNameNoExt, sound);
+                }
+                return SoundsByFileNameNoExt[soundFileNameNoExt].DBCID;
+            }
+            else
+                return 0;
         }
 
         private ObjectModel? GetObjectModelInStageAtAttachLocation(SpellVisualStageType stage, SpellEmitterModelAttachLocationType attachLocation)
@@ -244,22 +240,28 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.EFFSourceSectionData effSectionData, SpellVisualStageType stageType)
+        private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType)
         {
             // Skip the projectile/cast for now
             if (stageType == SpellVisualStageType.Cast)
                 return;
 
-            // Generate the 3 particle emitters
-            List<ObjectModelParticleEmitter> emitters = new List<ObjectModelParticleEmitter>();
-            for (int i = 0; i < 3; i++)
+            // Generate the object emitters for unit targets
+            List<ObjectModelParticleEmitter> modelEmitters = new List<ObjectModelParticleEmitter>();
+            foreach (var emitter in spellEffect.Emitters)
             {
+                // Only process stage-aligned unit emitter targets
+                if (stageType == SpellVisualStageType.Precast && emitter.TargetType != EQSpellEffectTargetType.Caster)
+                    continue;
+                if (stageType == SpellVisualStageType.Impact && emitter.TargetType != EQSpellEffectTargetType.Target)
+                    continue;
+
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-                particleEmitter.Load(effSectionData, i);
-                emitters.Add(particleEmitter);
+                particleEmitter.Load(emitter);
+                modelEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
-                if (effSectionData.EmissionTypeIDs[i] == 5)
+                if (emitter.EmissionTypeID == 5)
                 {
                     // While potentially accurate, it looks odd in WoW to have this happen
                     //ObjectModelParticleEmitter particleEmitterHands = new ObjectModelParticleEmitter();
@@ -267,13 +269,13 @@ namespace EQWOWConverter.Spells
                     //emitters.Add(particleEmitterHands);
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
-                    particleEmitterGround.Load(effSectionData, i, SpellVisualEmitterSpawnPatternType.DiscOnGround);
-                    emitters.Add(particleEmitterGround);
-                }                
+                    particleEmitterGround.Load(emitter, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    modelEmitters.Add(particleEmitterGround);
+                }
             }
 
             // Add the emitters to new or existing emitters
-            foreach (ObjectModelParticleEmitter emitter in emitters)
+            foreach (ObjectModelParticleEmitter emitter in modelEmitters)
             {
                 ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.EmissionLocation);
                 if (existingModel != null)
