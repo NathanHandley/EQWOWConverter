@@ -163,7 +163,15 @@ namespace EQWOWConverter.WOWFiles
                     } break;
                 case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter:
                     {
-                        PopulateAsDiscFromPlayerCenter(objectModelParticleEmitter);
+                        PopulateAsDiscFromUnitCenter(objectModelParticleEmitter);
+                    } break;
+                case SpellVisualEmitterSpawnPatternType.DiscAboveUnit:
+                    {
+                        PopulateAsDiscAboveUnit(objectModelParticleEmitter);
+                    } break;
+                case SpellVisualEmitterSpawnPatternType.ColumnFromAbove:
+                    {
+                        PopulateAsColumnFromAbove(objectModelParticleEmitter);
                     } break;
                 default:
                     {
@@ -233,6 +241,43 @@ namespace EQWOWConverter.WOWFiles
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+        }
+
+        private void PopulateAsColumnFromAbove(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleEmitterType.Sphere;
+
+            // TODO: Move this to a config?
+            RelativePosition.Z = 2;
+
+            float radius = objectModelParticleEmitter.Radius;
+            EmissionAreaLength.TrackSequences.AddSequence();
+            EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+            EmissionAreaWidth.TrackSequences.AddSequence();
+            EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
+
+            VerticalRange.TrackSequences.AddSequence();
+            VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(0));
+
+            HorizontalRange.TrackSequences.AddSequence();
+            HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
+        }
+
+        private void PopulateAsDiscFromUnitCenter(ObjectModelParticleEmitter objectModelParticleEmitter)
+        {
+            EmitterType = ObjectModelParticleEmitterType.Sphere;
+
+            float radius = objectModelParticleEmitter.Radius;
+            EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
             EmissionAreaWidth.TrackSequences.AddSequence();
             EmissionAreaWidth.TrackSequences.AddValueToLastSequence(0, new M2Float(radius));
@@ -244,9 +289,12 @@ namespace EQWOWConverter.WOWFiles
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(3.141593f));
         }
 
-        private void PopulateAsDiscFromPlayerCenter(ObjectModelParticleEmitter objectModelParticleEmitter)
+        private void PopulateAsDiscAboveUnit(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             EmitterType = ObjectModelParticleEmitterType.Sphere;
+
+            // TODO: Move this to a config?
+            RelativePosition.Z = 2;
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();

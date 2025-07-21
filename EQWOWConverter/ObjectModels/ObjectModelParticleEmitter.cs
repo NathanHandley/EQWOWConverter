@@ -40,7 +40,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)
-                EmissionPattern = GetEmissionSpawnPattern(effEmitter.EmissionTypeID);
+                EmissionPattern = GetEmissionSpawnPattern(effEmitter.EmissionTypeID, effEmitter.SpawnZ);
             else
                 EmissionPattern = emitterPatternOverride;
             EmissionLocation = GetEmissionAttachLocation(effEmitter.LocationID, EmissionPattern);
@@ -113,6 +113,10 @@ namespace EQWOWConverter.ObjectModels
             if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter && eqGravity == 0)
                 eqGravity = 6;
 
+            // For columns coming from above, flip the gravity (why? Blizzard looks wrong without it...)
+            if (emissionPattern == SpellVisualEmitterSpawnPatternType.ColumnFromAbove)
+                eqGravity *= -1;
+
             return eqGravity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
@@ -180,15 +184,27 @@ namespace EQWOWConverter.ObjectModels
             return Convert.ToInt32(Convert.ToSingle(eqLifespanInMS) * Configuration.SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD);
         }
 
-        private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(int eqEmissionTypeID)
+        private SpellVisualEmitterSpawnPatternType GetEmissionSpawnPattern(int eqEmissionTypeID, float eqZPosition)
         {
             switch (eqEmissionTypeID)
             {
                 case 0: return SpellVisualEmitterSpawnPatternType.FromHands;
                 case 1: return SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer;
                 case 2: return SpellVisualEmitterSpawnPatternType.SphereAroundUnit;
-                case 3: return SpellVisualEmitterSpawnPatternType.DiscOnGround;
-                case 4: return SpellVisualEmitterSpawnPatternType.ColumnFromGround;
+                case 3:
+                    {
+                        if (eqZPosition < 0)
+                            return SpellVisualEmitterSpawnPatternType.DiscAboveUnit;
+                        else
+                            return SpellVisualEmitterSpawnPatternType.DiscOnGround;
+                    }
+                case 4: 
+                    {
+                        if (eqZPosition < 0)
+                            return SpellVisualEmitterSpawnPatternType.ColumnFromAbove;
+                        else
+                            return SpellVisualEmitterSpawnPatternType.ColumnFromGround;
+                    }
                 case 5: return SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter;
                 default: return SpellVisualEmitterSpawnPatternType.None;
             }
@@ -202,6 +218,8 @@ namespace EQWOWConverter.ObjectModels
                 case SpellVisualEmitterSpawnPatternType.FromHands: return SpellEmitterModelAttachLocationType.Hands;
                 case SpellVisualEmitterSpawnPatternType.ColumnFromGround: return SpellEmitterModelAttachLocationType.Feet;
                 case SpellVisualEmitterSpawnPatternType.DiscOnGround: return SpellEmitterModelAttachLocationType.Feet;
+                case SpellVisualEmitterSpawnPatternType.DiscAboveUnit: return SpellEmitterModelAttachLocationType.Head;
+                case SpellVisualEmitterSpawnPatternType.ColumnFromAbove: return SpellEmitterModelAttachLocationType.Head;
                 default: break;
             }
 
