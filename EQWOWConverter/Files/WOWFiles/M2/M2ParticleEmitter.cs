@@ -198,7 +198,6 @@ namespace EQWOWConverter.WOWFiles
             VerticalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
             HorizontalRange.TrackSequences.AddSequence();
             HorizontalRange.TrackSequences.AddValueToLastSequence(0, new M2Float(sprayRange));
-
         }
 
         private void PopulateAsSphere(ObjectModelParticleEmitter objectModelParticleEmitter)

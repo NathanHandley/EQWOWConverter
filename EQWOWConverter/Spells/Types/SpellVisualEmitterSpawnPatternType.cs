@@ -26,6 +26,9 @@ namespace EQWOWConverter.Spells
         ColumnFromGround, // Around the player, generally going up (gravity)
         DiscAroundUnitCenter, // Comes out from the center of the player
         DiscAboveUnit,
-        ColumnFromAbove
+        ColumnFromAbove,
+        SpriteListPulsating,
+        SpriteListStatic,
+        SpriteListProjectile
     }
 }

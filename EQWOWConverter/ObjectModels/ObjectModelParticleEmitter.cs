@@ -33,6 +33,8 @@ namespace EQWOWConverter.ObjectModels
         public int SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
+        public string[] SpriteListSpriteNames = new string[12];
+        public float[] SpriteListScales = new float[12];
 
         public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
@@ -65,6 +67,36 @@ namespace EQWOWConverter.ObjectModels
 
             // Spawn rate
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, EmissionPattern);
+        }
+
+        public void Load(EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect)
+        {
+            VisualEffectIndex = spriteListEffect.VisualEffectIndex;
+
+            // Sprite names
+            int sourceSpriteNameIndex = 0;
+            for (int i = 0; i < 12; i++)
+            {
+                // Sprite names will repeat when the end is met (return to first)
+                if (spriteListEffect.SpriteNames[sourceSpriteNameIndex].Trim().Length == 0)
+                    sourceSpriteNameIndex = 0;
+                SpriteListSpriteNames[i] = spriteListEffect.SpriteNames[sourceSpriteNameIndex];
+                sourceSpriteNameIndex++;
+            }
+
+            // Emitter Type
+            switch (spriteListEffect.EffectType)
+            {
+                case EQSpellListEffectType.Static: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
+                case EQSpellListEffectType.Pulsating: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListPulsating; break;
+                case EQSpellListEffectType.Projectile: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListProjectile; break;
+                default: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
+            }
+
+            // Location (always body)
+            EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
+
+            // TODO: More
         }
 
         private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)
