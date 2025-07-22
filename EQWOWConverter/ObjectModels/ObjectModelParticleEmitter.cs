@@ -58,7 +58,7 @@ namespace EQWOWConverter.ObjectModels
             SpriteSheetFileNameNoExt = GetSpriteSheetName(effEmitter.SpriteName, effEmitter.Color);
 
             // Gravity
-            Gravity = CalculateGravity(effEmitter.Gravity, EmissionPattern);
+            Gravity = CalculateGravity(effEmitter.Gravity, effEmitter.ParticleLifespan, EmissionPattern);
 
             // Scale
             Scale = CalculateScale(effEmitter.Scale);
@@ -107,7 +107,7 @@ namespace EQWOWConverter.ObjectModels
             return eqRadius * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
 
-        private float CalculateGravity(float eqGravity, SpellVisualEmitterSpawnPatternType emissionPattern)
+        private float CalculateGravity(float eqGravity, int particleLifespanInMS, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
             // Defaults
             if (eqGravity == 0)
@@ -123,12 +123,11 @@ namespace EQWOWConverter.ObjectModels
                 }
             }
 
-            // Multipliers
-            switch (emissionPattern)
+            // For falling particles, normalize it so that they always land on the ground
+            if (eqGravity != 0 && (emissionPattern == SpellVisualEmitterSpawnPatternType.ColumnFromAbove || emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAboveUnit))
             {
-                case SpellVisualEmitterSpawnPatternType.ColumnFromAbove: eqGravity *= -5; break; // Blizzard (effect 7)
-                case SpellVisualEmitterSpawnPatternType.DiscAboveUnit: eqGravity *= 2; break; // Torrent of poison
-                default: break;
+                float calcGravity = (1000f / Convert.ToSingle(particleLifespanInMS)) * 8f;
+                return calcGravity;
             }
 
             return eqGravity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
