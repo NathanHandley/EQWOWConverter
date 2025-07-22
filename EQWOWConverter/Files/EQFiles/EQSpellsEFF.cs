@@ -256,7 +256,7 @@ namespace EQWOWConverter.EQFiles
                     for (int i = 0; i < 3; i++)
                     {
                         // Skip invalid sprite names
-                        if (sectionData.SpriteNames[i].Length == 0)
+                        if (sectionData.SpriteNames[i].Trim().Length == 0)
                             continue;
 
                         // Skip Non-populated colors
@@ -355,6 +355,10 @@ namespace EQWOWConverter.EQFiles
                     {
                         // Skip non emission types
                         if (sectionData.EmissionTypeIDs[emitterIter] == -1)
+                            continue;
+
+                        // Skip invalid sprite names
+                        if (sectionData.SpriteNames[emitterIter].Length == 0)
                             continue;
 
                         // Determine target type
