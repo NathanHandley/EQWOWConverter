@@ -315,7 +315,10 @@ namespace EQWOWConverter.Spells
                     string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.EmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
-                    objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
+                        objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
+                        objectProperties.ListSpriteSpellParticleEmitters.Add(emitter);
                     if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpelLEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);

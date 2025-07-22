@@ -78,15 +78,16 @@ namespace EQWOWConverter.ObjectModels
             VisualEffectIndex = spriteListEffect.VisualEffectIndex;
             EmitterSpriteType = ObjectModelParticleEmitterSpriteType.List;
 
-            // Sprite names
-            int sourceSpriteNameIndex = 0;
+            // Sprite values
+            int sourceSpriteIndex = 0;
             for (int i = 0; i < 12; i++)
             {
                 // Sprite names will repeat when the end is met (return to first)
-                if (spriteListEffect.SpriteNames[sourceSpriteNameIndex].Trim().Length == 0)
-                    sourceSpriteNameIndex = 0;
-                SpriteListSpriteNames[i] = GetSpriteSheetName(spriteListEffect.SpriteNames[sourceSpriteNameIndex], new ColorRGBA());
-                sourceSpriteNameIndex++;
+                if (spriteListEffect.SpriteNames[sourceSpriteIndex].Trim().Length == 0)
+                    sourceSpriteIndex = 0;
+                SpriteListSpriteNames[i] = GetSpriteSheetName(spriteListEffect.SpriteNames[sourceSpriteIndex], new ColorRGBA());
+                SpriteListScales[i] = spriteListEffect.Scales[sourceSpriteIndex];
+                sourceSpriteIndex++;
             }
 
             // Emitter Type
@@ -98,10 +99,14 @@ namespace EQWOWConverter.ObjectModels
                 default: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
             }
 
+            // Lifespan (use default)
+            LifespanInMS = 3000;
+
+            // Spawn Rate (use default)
+            SpawnRate = 1; // TODO: Doesn't work right
+
             // Location (always body)
             EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
-
-            // TODO: More
         }
 
         private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)

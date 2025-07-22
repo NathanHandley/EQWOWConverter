@@ -198,6 +198,20 @@ namespace EQWOWConverter.ObjectModels
                             ModelBones[0].RotationTrack.AddSequence();
                             ModelBones[0].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0.7071f, 0, 0, 0.7071f));
                         }
+
+                        // If there is a spell list, then bones need to be added for it
+                        foreach (ObjectModelParticleEmitter spriteListEmitter in Properties.ListSpriteSpellParticleEmitters)
+                        {
+                            for (int i = 0; i < 12; i++)
+                            {
+                                ModelBones.Add(new ObjectModelBone());
+                                int curBoneID = ModelBones.Count - 1;
+                                ModelBones[curBoneID].BoneNameEQ = string.Concat("SpellListBone", i.ToString());
+                                ModelBones[curBoneID].ParentBone = 0;
+                                spriteListEmitter.SpriteListBoneIDs[i] = curBoneID;
+                                // TODO: Create animation
+                            }
+                        }
                     }
                 }
                 else
