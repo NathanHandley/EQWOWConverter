@@ -23,6 +23,7 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelParticleEmitter
     {
         public string SpriteSheetFileNameNoExt = string.Empty;
+        public ObjectModelParticleEmitterSpriteType EmitterSpriteType = ObjectModelParticleEmitterSpriteType.Single;
         public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
         public int VisualEffectIndex = 0;
@@ -35,10 +36,13 @@ namespace EQWOWConverter.ObjectModels
         public int TextureID = 0;
         public string[] SpriteListSpriteNames = new string[12];
         public float[] SpriteListScales = new float[12];
+        public int[] SpriteListBoneIDs = new int[12];
+        public int[] SpriteListTextureIDs = new int[12]; // TODO: collapse with TextureID
 
         public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             VisualEffectIndex = effEmitter.VisualEffectIndex;
+            EmitterSpriteType = ObjectModelParticleEmitterSpriteType.Single;
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)
@@ -72,6 +76,7 @@ namespace EQWOWConverter.ObjectModels
         public void Load(EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect)
         {
             VisualEffectIndex = spriteListEffect.VisualEffectIndex;
+            EmitterSpriteType = ObjectModelParticleEmitterSpriteType.List;
 
             // Sprite names
             int sourceSpriteNameIndex = 0;
@@ -80,7 +85,7 @@ namespace EQWOWConverter.ObjectModels
                 // Sprite names will repeat when the end is met (return to first)
                 if (spriteListEffect.SpriteNames[sourceSpriteNameIndex].Trim().Length == 0)
                     sourceSpriteNameIndex = 0;
-                SpriteListSpriteNames[i] = spriteListEffect.SpriteNames[sourceSpriteNameIndex];
+                SpriteListSpriteNames[i] = GetSpriteSheetName(spriteListEffect.SpriteNames[sourceSpriteNameIndex], new ColorRGBA());
                 sourceSpriteNameIndex++;
             }
 

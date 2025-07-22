@@ -19,6 +19,7 @@ using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
+using System.Diagnostics.Eventing.Reader;
 
 namespace EQWOWConverter.Spells
 {
@@ -160,7 +161,7 @@ namespace EQWOWConverter.Spells
             }
 
             // Model
-            GenerateEmitterModel(ref spellVisual, spellEffect, stageType);
+            GenerateEmitterModels(ref spellVisual, spellEffect, stageType);
 
             // If there is a projectile, create that
             //if (spellEffect.)
@@ -243,7 +244,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void GenerateEmitterModel(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType)
+        private static void GenerateEmitterModels(ref SpellVisual spellVisual, EQSpellsEFF.EQSpellEffect spellEffect, SpellVisualStageType stageType)
         {
             // There are no 'cast' models
             if (stageType == SpellVisualStageType.Cast)
@@ -277,19 +278,44 @@ namespace EQWOWConverter.Spells
                 }
             }
 
+            // Generate object emitters for 'sprite list' emitters at the end
+            foreach (var spriteListEmitter in spellEffect.UnitSpriteListEffects)
+            {
+                // Only process stage-aligned unit emitter targets
+                if (stageType == SpellVisualStageType.Precast && spriteListEmitter.TargetType != EQSpellEffectTargetType.Caster)
+                    continue;
+                if (stageType == SpellVisualStageType.Impact && spriteListEmitter.TargetType != EQSpellEffectTargetType.Target)
+                    continue;
+
+                // TEMP: For now, only include pulsating emitters
+                if (spriteListEmitter.EffectType != EQSpellListEffectType.Pulsating)
+                    continue;
+
+                ObjectModelParticleEmitter spriteListEmitterObject = new ObjectModelParticleEmitter();
+                spriteListEmitterObject.Load(spriteListEmitter);
+                modelEmitters.Add(spriteListEmitterObject);
+            }
+
             // Add the emitters to new or existing emitters
             foreach (ObjectModelParticleEmitter emitter in modelEmitters)
             {
                 ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.EmissionLocation);
                 if (existingModel != null)
-                    existingModel.Properties.SpellParticleEmitters.Add(emitter);
+                {
+                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
+                        existingModel.Properties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
+                        existingModel.Properties.ListSpriteSpellParticleEmitters.Add(emitter);
+                    else
+                        Logger.WriteError("Unhandled emitter sprite type");
+                }
                 else
                 {
                     // Make new
                     string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.EmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
-                    objectProperties.SpellParticleEmitters.Add(emitter);
+                    objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
                     if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpelLEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
@@ -299,32 +325,44 @@ namespace EQWOWConverter.Spells
                     existingModel = objectModel;
                 }
 
-                // Also add the texture, manually (if needed)
+                // Also add the textures, manually (if needed)
                 if (existingModel != null)
                 {
-                    if (emitter.SpriteSheetFileNameNoExt.Length > 0)
-                    {
-                        // Skip if it's already added, otherwise new
-                        int modelTextureID = -1;
-                        for (int i = 0; i < existingModel.ModelTextures.Count; i++)
-                        {
-                            if (existingModel.ModelTextures[i].TextureName == emitter.SpriteSheetFileNameNoExt)
-                            {
-                                modelTextureID = i;
-                                break;
-                            }
-                        }
-                        if (modelTextureID == -1)
-                        {
-                            ObjectModelTexture newModelTexture = new ObjectModelTexture();
-                            newModelTexture.TextureName = emitter.SpriteSheetFileNameNoExt;
-                            existingModel.ModelTextures.Add(newModelTexture);
-                            modelTextureID = existingModel.ModelTextures.Count - 1;
-                        }
-                        emitter.TextureID = modelTextureID;
+                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
+                        emitter.TextureID = AddTextureToModelAndReturnID(existingModel, emitter.SpriteSheetFileNameNoExt);
+                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
+                    { 
+                        for (int i = 0; i < 12; i++)
+                            emitter.SpriteListTextureIDs[i] = AddTextureToModelAndReturnID(existingModel, emitter.SpriteListSpriteNames[i]);
                     }
+                    else
+                        Logger.WriteError("Unhandled emitter sprite type");
                 }
             }
+        }
+
+        private static int AddTextureToModelAndReturnID(ObjectModel? existingModel, string spriteSheetFileNameNoExt)
+        {
+            if (existingModel == null)
+                return -1;
+
+            int modelTextureID = -1;
+            for (int i = 0; i < existingModel.ModelTextures.Count; i++)
+            {
+                if (existingModel.ModelTextures[i].TextureName == spriteSheetFileNameNoExt)
+                {
+                    modelTextureID = i;
+                    break;
+                }
+            }
+            if (modelTextureID == -1)
+            {
+                ObjectModelTexture newModelTexture = new ObjectModelTexture();
+                newModelTexture.TextureName = spriteSheetFileNameNoExt;
+                existingModel.ModelTextures.Add(newModelTexture);
+                modelTextureID = existingModel.ModelTextures.Count - 1;
+            }
+            return modelTextureID;
         }
 
         private static string GetSoundFileNameNoExtFromSoundID(int soundID)

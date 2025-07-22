@@ -16,7 +16,6 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
-using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.ObjectModels.Properties
 {
@@ -36,7 +35,8 @@ namespace EQWOWConverter.ObjectModels.Properties
         public float ActiveDoodadAnimSlideValue = 0; 
         public int ActiveDoodadAnimTimeInMS = 0;
         public bool DoGenerateCollisionFromMeshData = true;
-        public List<ObjectModelParticleEmitter> SpellParticleEmitters = new List<ObjectModelParticleEmitter>();
+        public List<ObjectModelParticleEmitter> SingleSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
+        public List<ObjectModelParticleEmitter> ListSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
         public int SpellVisualEffectNameDBCID;
         public bool SpelLEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
@@ -55,7 +55,8 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimSlideValue = other.ActiveDoodadAnimSlideValue;
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
             DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
-            SpellParticleEmitters.AddRange(other.SpellParticleEmitters);
+            SingleSpriteSpellParticleEmitters.AddRange(other.SingleSpriteSpellParticleEmitters);
+            ListSpriteSpellParticleEmitters.AddRange(other.ListSpriteSpellParticleEmitters);
             SpellVisualEffectNameDBCID = other.SpellVisualEffectNameDBCID;
             RenderingEnabled = other.RenderingEnabled;
         }

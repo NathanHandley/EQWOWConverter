@@ -30,7 +30,7 @@ namespace EQWOWConverter.WOWFiles
         M2GenericArrayByOffset<Fixed16> GeometryModel = new M2GenericArrayByOffset<Fixed16>();
         M2GenericArrayByOffset<Fixed16> RecursionModel = new M2GenericArrayByOffset<Fixed16>();
         private ObjectModelParticleBlendModeType BlendModeType = ObjectModelParticleBlendModeType.AdditiveAlpha;
-        private ObjectModelParticleEmitterType EmitterType = ObjectModelParticleEmitterType.Plane;
+        private ObjectModelParticleM2EmitterType EmitterType = ObjectModelParticleM2EmitterType.Plane;
         private UInt16 ParticleIndex = 0; // Find where this references
         private byte ParticleType = 0; // 0 = Normal, 1 = Large (moonwell), 2 = Like 0 but for Tram(?)
         private byte HeadOrTail = 0; // 0 = Head (billboard square quad), 1 = Tail (Billboarded along the axis of motion and stretches in length based on speed), 2 = Both.
@@ -182,7 +182,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsHandSpray(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             EmissionAreaLength.TrackSequences.AddSequence();
             EmissionAreaLength.TrackSequences.AddValueToLastSequence(0, new M2Float(0f));
@@ -202,7 +202,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsSphere(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
@@ -219,7 +219,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsDiscFromGround(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
@@ -236,7 +236,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsColumnFromGround(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
@@ -253,7 +253,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsColumnFromAbove(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             // TODO: Move this to a config?
             RelativePosition.Z = 2;
@@ -273,7 +273,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsDiscFromUnitCenter(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             float radius = objectModelParticleEmitter.Radius;
             EmissionAreaLength.TrackSequences.AddSequence();
@@ -290,7 +290,7 @@ namespace EQWOWConverter.WOWFiles
 
         private void PopulateAsDiscAboveUnit(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
-            EmitterType = ObjectModelParticleEmitterType.Sphere;
+            EmitterType = ObjectModelParticleM2EmitterType.Sphere;
 
             // TODO: Move this to a config?
             RelativePosition.Z = 2;

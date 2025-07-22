@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.ObjectModels
 {
-    internal enum ObjectModelParticleEmitterType : byte
+    internal enum ObjectModelParticleM2EmitterType : byte
     {
         Plane = 1,
         Sphere = 2,
