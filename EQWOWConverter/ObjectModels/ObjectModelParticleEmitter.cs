@@ -109,13 +109,27 @@ namespace EQWOWConverter.ObjectModels
 
         private float CalculateGravity(float eqGravity, SpellVisualEmitterSpawnPatternType emissionPattern)
         {
-            // Disc's have a default gravity seemingly (see Spirit of Wolf (effect 7))
-            if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter && eqGravity == 0)
-                eqGravity = 6;
+            // Defaults
+            if (eqGravity == 0)
+            {
+                switch (emissionPattern)
+                {
+                    case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter:
+                        {
+                            if (eqGravity == 0) // See Sprit of Wolf (effect 7)
+                                eqGravity = 6;
+                        } break;
+                    default: break;
+                }
+            }
 
-            // For columns coming from above, flip the gravity (why? Blizzard looks wrong without it...)
-            if (emissionPattern == SpellVisualEmitterSpawnPatternType.ColumnFromAbove)
-                eqGravity *= -1;
+            // Multipliers
+            switch (emissionPattern)
+            {
+                case SpellVisualEmitterSpawnPatternType.ColumnFromAbove: eqGravity *= -5; break; // Blizzard (effect 7)
+                case SpellVisualEmitterSpawnPatternType.DiscAboveUnit: eqGravity *= 2; break; // Torrent of poison
+                default: break;
+            }
 
             return eqGravity * Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
         }
