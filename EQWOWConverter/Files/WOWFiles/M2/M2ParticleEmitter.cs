@@ -79,13 +79,14 @@ namespace EQWOWConverter.WOWFiles
         private UInt32 SplinePointOffset = 0;
         private M2TrackSequences<M2Char> EnabledIn = new M2TrackSequences<M2Char>(); // May not be needed for anything.  Purpose not clear
 
-        public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter, int spriteListID = -1)
+        public M2ParticleEmitter(ObjectModelParticleEmitter objectModelParticleEmitter)
         {
             Flags |= (UInt32)M2ParticleEmitterFlags.UnknownSeemsRequired;
             Flags |= (UInt32)M2ParticleEmitterFlags.TravelAbsoluteUp;
             Flags |= (UInt32)M2ParticleEmitterFlags.MoveParticlesAwayFromOrigin;
 
             // All spell textures are pre-conditioned into 8x8 sprite sheets
+            TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
             TextureDimensionsRows = 8;
             TextureDimensionColumns = 8;
 
@@ -119,8 +120,6 @@ namespace EQWOWConverter.WOWFiles
             AlphaTrack.AddTimeStep(32767, new M2UInt16(0));
 
             float scale = objectModelParticleEmitter.Scale;
-            if (spriteListID != -1)
-                scale = objectModelParticleEmitter.SpriteListScales[spriteListID];
             ScaleTrack.AddTimeStep(0, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(16384, new Vector2(scale, scale));
             ScaleTrack.AddTimeStep(32767, new Vector2(scale, scale));
@@ -141,17 +140,6 @@ namespace EQWOWConverter.WOWFiles
             float gravity = objectModelParticleEmitter.Gravity;
             Gravity.TrackSequences.AddSequence();
             Gravity.TrackSequences.AddValueToLastSequence(0, new M2Float(gravity));
-
-            // Single vs List based mappings
-            if (spriteListID != -1)
-            {
-                ParentBoneID = Convert.ToUInt16(objectModelParticleEmitter.SpriteListBoneIDs[spriteListID]);
-                TextureID = Convert.ToUInt16(objectModelParticleEmitter.SpriteListTextureIDs[spriteListID]);
-            }
-            else
-            {
-                TextureID = Convert.ToUInt16(objectModelParticleEmitter.TextureID);
-            }
 
             switch (objectModelParticleEmitter.EmissionPattern)
             {

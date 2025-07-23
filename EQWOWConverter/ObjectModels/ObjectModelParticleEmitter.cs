@@ -73,41 +73,38 @@ namespace EQWOWConverter.ObjectModels
             SpawnRate = CalculateSpawnRate(effEmitter.SpawnRate, EmissionPattern);
         }
 
-        public void Load(EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect)
-        {
-            VisualEffectIndex = spriteListEffect.VisualEffectIndex;
-            EmitterSpriteType = ObjectModelParticleEmitterSpriteType.List;
+        //public void Load(EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect)
+        //{
+        //    VisualEffectIndex = spriteListEffect.VisualEffectIndex;
+        //    EmitterSpriteType = ObjectModelParticleEmitterSpriteType.List;
 
-            // Sprite values
-            int sourceSpriteIndex = 0;
-            for (int i = 0; i < 12; i++)
-            {
-                // Sprite names will repeat when the end is met (return to first)
-                if (spriteListEffect.SpriteNames[sourceSpriteIndex].Trim().Length == 0)
-                    sourceSpriteIndex = 0;
-                SpriteListSpriteNames[i] = GetSpriteSheetName(spriteListEffect.SpriteNames[sourceSpriteIndex], new ColorRGBA());
-                SpriteListScales[i] = spriteListEffect.Scales[sourceSpriteIndex];
-                sourceSpriteIndex++;
-            }
+        //    // Sprite values
+        //    int sourceSpriteIndex = 0;
+        //    for (int i = 0; i < 12; i++)
+        //    {
+        //        // Sprite names will repeat when the end is met (return to first)
+        //        if (spriteListEffect.SpriteNames[sourceSpriteIndex].Trim().Length == 0)
+        //            sourceSpriteIndex = 0;
+        //        SpriteListSpriteNames[i] = GetSpriteSheetName(spriteListEffect.SpriteNames[sourceSpriteIndex], new ColorRGBA());
+        //        SpriteListScales[i] = CalculateScale(spriteListEffect.Scales[sourceSpriteIndex]);
+        //        sourceSpriteIndex++;
+        //    }
 
-            // Emitter Type
-            switch (spriteListEffect.EffectType)
-            {
-                case EQSpellListEffectType.Static: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
-                case EQSpellListEffectType.Pulsating: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListPulsating; break;
-                case EQSpellListEffectType.Projectile: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListProjectile; break;
-                default: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
-            }
+        //    // Emitter Type
+        //    switch (spriteListEffect.EffectType)
+        //    {
+        //        case EQSpellListEffectType.Static: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
+        //        case EQSpellListEffectType.Pulsating: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListPulsating; break;
+        //        case EQSpellListEffectType.Projectile: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListProjectile; break;
+        //        default: EmissionPattern = SpellVisualEmitterSpawnPatternType.SpriteListStatic; break;
+        //    }
 
-            // Lifespan (use default)
-            LifespanInMS = 3000;
+        //    // Lifespan (use default)
+        //    LifespanInMS = 3000;
 
-            // Spawn Rate (use default)
-            SpawnRate = 1; // TODO: Doesn't work right
-
-            // Location (always body)
-            EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
-        }
+        //    // Location (always body)
+        //    EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
+        //}
 
         private string GetSpriteSheetName(string eqSpellsEFFSpriteName, ColorRGBA colorRGBA)
         {

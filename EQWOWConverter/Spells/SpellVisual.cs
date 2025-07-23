@@ -279,22 +279,22 @@ namespace EQWOWConverter.Spells
             }
 
             // Generate object emitters for 'sprite list' emitters at the end
-            foreach (var spriteListEmitter in spellEffect.UnitSpriteListEffects)
-            {
-                // Only process stage-aligned unit emitter targets
-                if (stageType == SpellVisualStageType.Precast && spriteListEmitter.TargetType != EQSpellEffectTargetType.Caster)
-                    continue;
-                if (stageType == SpellVisualStageType.Impact && spriteListEmitter.TargetType != EQSpellEffectTargetType.Target)
-                    continue;
+            //foreach (var spriteListEmitter in spellEffect.UnitSpriteListEffects)
+            //{
+            //    // Only process stage-aligned unit emitter targets
+            //    if (stageType == SpellVisualStageType.Precast && spriteListEmitter.TargetType != EQSpellEffectTargetType.Caster)
+            //        continue;
+            //    if (stageType == SpellVisualStageType.Impact && spriteListEmitter.TargetType != EQSpellEffectTargetType.Target)
+            //        continue;
 
-                // TEMP: For now, only include pulsating emitters
-                if (spriteListEmitter.EffectType != EQSpellListEffectType.Pulsating)
-                    continue;
+            //    // TEMP: For now, only include pulsating emitters
+            //    if (spriteListEmitter.EffectType != EQSpellListEffectType.Pulsating)
+            //        continue;
 
-                ObjectModelParticleEmitter spriteListEmitterObject = new ObjectModelParticleEmitter();
-                spriteListEmitterObject.Load(spriteListEmitter);
-                modelEmitters.Add(spriteListEmitterObject);
-            }
+            //    ObjectModelParticleEmitter spriteListEmitterObject = new ObjectModelParticleEmitter();
+            //    spriteListEmitterObject.Load(spriteListEmitter);
+            //    modelEmitters.Add(spriteListEmitterObject);
+            //}
 
             // Add the emitters to new or existing emitters
             foreach (ObjectModelParticleEmitter emitter in modelEmitters)

@@ -27,6 +27,12 @@ namespace EQWOWConverter.ObjectModels
         public UInt32 TimestampsOffset = 0;
         public UInt32 ValuesOffset = 0;
 
+        public void Clear()
+        {
+            Timestamps.Clear();
+            Values.Clear();
+        }
+
         public int AddSequence()
         {
             Timestamps.Add(new ObjectModelTrackSequenceTimestamps());
