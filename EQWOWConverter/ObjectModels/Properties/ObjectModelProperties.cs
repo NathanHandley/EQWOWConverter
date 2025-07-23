@@ -36,7 +36,6 @@ namespace EQWOWConverter.ObjectModels.Properties
         public int ActiveDoodadAnimTimeInMS = 0;
         public bool DoGenerateCollisionFromMeshData = true;
         public List<ObjectModelParticleEmitter> SingleSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
-        public List<ObjectModelParticleEmitter> ListSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
         public int SpellVisualEffectNameDBCID;
         public bool SpelLEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
@@ -56,7 +55,6 @@ namespace EQWOWConverter.ObjectModels.Properties
             ActiveDoodadAnimTimeInMS = other.ActiveDoodadAnimTimeInMS;
             DoGenerateCollisionFromMeshData = other.DoGenerateCollisionFromMeshData;
             SingleSpriteSpellParticleEmitters.AddRange(other.SingleSpriteSpellParticleEmitters);
-            ListSpriteSpellParticleEmitters.AddRange(other.ListSpriteSpellParticleEmitters);
             SpellVisualEffectNameDBCID = other.SpellVisualEffectNameDBCID;
             RenderingEnabled = other.RenderingEnabled;
         }

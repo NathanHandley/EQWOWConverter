@@ -23,7 +23,6 @@ namespace EQWOWConverter.ObjectModels
     internal class ObjectModelParticleEmitter
     {
         public string SpriteSheetFileNameNoExt = string.Empty;
-        public ObjectModelParticleEmitterSpriteType EmitterSpriteType = ObjectModelParticleEmitterSpriteType.Single;
         public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
         public int VisualEffectIndex = 0;
@@ -42,7 +41,6 @@ namespace EQWOWConverter.ObjectModels
         public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             VisualEffectIndex = effEmitter.VisualEffectIndex;
-            EmitterSpriteType = ObjectModelParticleEmitterSpriteType.Single;
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)

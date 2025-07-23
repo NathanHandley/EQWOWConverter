@@ -19,7 +19,6 @@ using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.WOWFiles;
-using System.Diagnostics.Eventing.Reader;
 
 namespace EQWOWConverter.Spells
 {
@@ -250,8 +249,25 @@ namespace EQWOWConverter.Spells
             if (stageType == SpellVisualStageType.Cast)
                 return;
 
-            // Generate the object emitters for unit targets
-            List<ObjectModelParticleEmitter> modelEmitters = new List<ObjectModelParticleEmitter>();
+            // Sprite List Effects are added as model data, so create those first
+            List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects = new List<EQSpellsEFF.EFFSpellSpriteListEffect>();
+            if (stageType == SpellVisualStageType.Precast)
+                spriteListEffects = spellEffect.CasterUnitSpriteListEffects;
+            else if (stageType == SpellVisualStageType.Impact)
+                spriteListEffects = spellEffect.TargetUnitSpriteListEffects;
+            if (spriteListEffects.Count != 0)
+            {
+                string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_Chest");
+                ObjectModelProperties objectProperties = new ObjectModelProperties();
+                objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
+                ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
+                objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>(), spriteListEffects);
+                spellVisual.AddObjectToStageAtAttachLocation(stageType, SpellEmitterModelAttachLocationType.Chest, objectModel);
+                AllEmitterObjectModels.Add(objectModel);
+            }
+
+            // Generate the object particle emitters for unit targets
+            List<ObjectModelParticleEmitter> modelParticleEmitters = new List<ObjectModelParticleEmitter>();
             foreach (var emitter in spellEffect.Emitters)
             {
                 // Only process stage-aligned unit emitter targets
@@ -262,7 +278,7 @@ namespace EQWOWConverter.Spells
 
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
                 particleEmitter.Load(emitter);
-                modelEmitters.Add(particleEmitter);
+                modelParticleEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
                 if (emitter.EmissionTypeID == 5)
@@ -274,51 +290,23 @@ namespace EQWOWConverter.Spells
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
                     particleEmitterGround.Load(emitter, SpellVisualEmitterSpawnPatternType.DiscOnGround);
-                    modelEmitters.Add(particleEmitterGround);
+                    modelParticleEmitters.Add(particleEmitterGround);
                 }
             }
 
-            // Generate object emitters for 'sprite list' emitters at the end
-            //foreach (var spriteListEmitter in spellEffect.UnitSpriteListEffects)
-            //{
-            //    // Only process stage-aligned unit emitter targets
-            //    if (stageType == SpellVisualStageType.Precast && spriteListEmitter.TargetType != EQSpellEffectTargetType.Caster)
-            //        continue;
-            //    if (stageType == SpellVisualStageType.Impact && spriteListEmitter.TargetType != EQSpellEffectTargetType.Target)
-            //        continue;
-
-            //    // TEMP: For now, only include pulsating emitters
-            //    if (spriteListEmitter.EffectType != EQSpellListEffectType.Pulsating)
-            //        continue;
-
-            //    ObjectModelParticleEmitter spriteListEmitterObject = new ObjectModelParticleEmitter();
-            //    spriteListEmitterObject.Load(spriteListEmitter);
-            //    modelEmitters.Add(spriteListEmitterObject);
-            //}
-
             // Add the emitters to new or existing emitters
-            foreach (ObjectModelParticleEmitter emitter in modelEmitters)
+            foreach (ObjectModelParticleEmitter emitter in modelParticleEmitters)
             {
                 ObjectModel? existingModel = spellVisual.GetObjectModelInStageAtAttachLocation(stageType, emitter.EmissionLocation);
                 if (existingModel != null)
-                {
-                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
-                        existingModel.Properties.SingleSpriteSpellParticleEmitters.Add(emitter);
-                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
-                        existingModel.Properties.ListSpriteSpellParticleEmitters.Add(emitter);
-                    else
-                        Logger.WriteError("Unhandled emitter sprite type");
-                }
+                    existingModel.Properties.SingleSpriteSpellParticleEmitters.Add(emitter);
                 else
                 {
                     // Make new
                     string objectName = string.Concat("eqemitter_", spellVisual.SpellVisualDBCID.ToString(), "_", stageType.ToString(), "_", emitter.EmissionLocation.ToString());
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
-                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
-                        objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
-                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
-                        objectProperties.ListSpriteSpellParticleEmitters.Add(emitter);
+                    objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
                     if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
                         objectProperties.SpelLEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
@@ -330,17 +318,7 @@ namespace EQWOWConverter.Spells
 
                 // Also add the textures, manually (if needed)
                 if (existingModel != null)
-                {
-                    if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.Single)
-                        emitter.TextureID = AddTextureToModelAndReturnID(existingModel, emitter.SpriteSheetFileNameNoExt);
-                    else if (emitter.EmitterSpriteType == ObjectModelParticleEmitterSpriteType.List)
-                    { 
-                        for (int i = 0; i < 12; i++)
-                            emitter.SpriteListTextureIDs[i] = AddTextureToModelAndReturnID(existingModel, emitter.SpriteListSpriteNames[i]);
-                    }
-                    else
-                        Logger.WriteError("Unhandled emitter sprite type");
-                }
+                    emitter.TextureID = AddTextureToModelAndReturnID(existingModel, emitter.SpriteSheetFileNameNoExt);
             }
         }
 

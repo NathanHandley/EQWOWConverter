@@ -92,7 +92,8 @@ namespace EQWOWConverter.ObjectModels
         }
 
         // TODO: Vertex Colors
-        public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces)
+        public void Load(List<Material> initialMaterials, MeshData meshData, List<Vector3> collisionVertices, List<TriangleFace> collisionTriangleFaces,
+            List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects = null)
         {
             if (IsLoaded == true)
             {
