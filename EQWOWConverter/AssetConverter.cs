@@ -332,7 +332,7 @@ namespace EQWOWConverter
 
                     // Place the related textures
                     string objectTextureFolder = Path.Combine(folderRoot, "textures");
-                    ExportTexturesForObject(curObjectModel, objectTextureFolder, curStaticObjectOutputFolder);
+                    ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
@@ -374,7 +374,7 @@ namespace EQWOWConverter
 
                     // Place the related textures
                     string objectTextureFolder = Path.Combine(objectsFolderRoot, "textures");
-                    ExportTexturesForObject(curObjectModel, objectTextureFolder, curStaticObjectOutputFolder);
+                    ExportTexturesForObject(curObjectModel, new List<string>() { objectTextureFolder }, curStaticObjectOutputFolder);
 
                     // Store it
                     int gameObjectDisplayInfoID = GameObjectDisplayInfoDBC.GenerateID();
@@ -443,7 +443,7 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, objectTextureFolder, curObjectOutputFolder);
+                ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, curObjectOutputFolder);
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
@@ -473,7 +473,7 @@ namespace EQWOWConverter
 
                 // Place the related textures
                 string objectTextureFolder = Path.Combine(conditionedObjectFolderRoot, "textures");
-                ExportTexturesForObject(curObject, objectTextureFolder, curObjectOutputFolder);
+                ExportTexturesForObject(curObject, new List<string>() { objectTextureFolder }, curObjectOutputFolder);
 
                 // Save it for use elsewhere
                 ObjectModel.StaticObjectModelsByName.Add(curObject.Name, curObject);
@@ -1379,7 +1379,9 @@ namespace EQWOWConverter
             }
 
             // Output the objects & textures
-            string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets");
+            List<string> sourceTextureFolders = new List<string>();
+            sourceTextureFolders.Add(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "spellspritesheets"));
+            sourceTextureFolders.Add(Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures"));
             string outputObjectFolder = Path.Combine(exportMPQRootFolder, "SPELLS", "Everquest");
             if (Directory.Exists(outputObjectFolder) == true)
                 Directory.Delete(outputObjectFolder, true);
@@ -1392,7 +1394,7 @@ namespace EQWOWConverter
                 objectM2.WriteToDisk(objectModel.Name, outputFolder);
 
                 // Output the textures
-                ExportTexturesForObject(objectModel, sourceTextureFolder, outputFolder);
+                ExportTexturesForObject(objectModel, sourceTextureFolders, outputFolder);
             }
 
             Logger.WriteDebug("Generating spells complete.");
@@ -3615,20 +3617,31 @@ namespace EQWOWConverter
             Logger.WriteDebug("- [" + zone.ShortName + "]: Ambient sound output for zone '" + zone.ShortName + "' complete");
         }
 
-        public void ExportTexturesForObject(ObjectModel wowObjectModelData, string objectTextureInputFolder, string objectExportPath)
+        public void ExportTexturesForObject(ObjectModel wowObjectModelData, List<string> objectTextureInputFolders, string objectExportPath)
         {
             Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Exporting textures for object '" + wowObjectModelData.Name + "'...");
 
             // Go through every texture and copy it
             foreach(ObjectModelTexture texture in wowObjectModelData.ModelTextures)
             {
-                string inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
                 string outputTextureName = Path.Combine(objectExportPath, texture.TextureName + ".blp");
-                if (Path.Exists(inputTextureName) == false)
+                string inputTextureName = string.Empty;
+                bool inputTextureFound = false;
+                foreach (string objectTextureInputFolder in  objectTextureInputFolders)
+                {
+                    inputTextureName = Path.Combine(objectTextureInputFolder, texture.TextureName + ".blp");
+                    if (Path.Exists(inputTextureName) == true)
+                    {
+                        inputTextureFound = true;
+                        break;
+                    }
+                }
+                if (inputTextureFound == false)
                 {
                     Logger.WriteError("- [" + wowObjectModelData.Name + "]: Error Texture named '" + texture.TextureName + ".blp' not found.  Did you run blpconverter?");
                     return;
                 }
+
                 FileTool.CopyFile(inputTextureName, outputTextureName);
                 Logger.WriteDebug("- [" + wowObjectModelData.Name + "]: Texture named '" + texture.TextureName + ".blp' copied");
             }

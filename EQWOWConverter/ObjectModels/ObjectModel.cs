@@ -160,7 +160,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Build the bones and animation structures
             // Note: Must come after bounding box generation (in GenerateModelVertices)
-            ProcessBonesAndAnimation();
+            ProcessBonesAndAnimation(spriteListEffects);
 
             // Collision data
             ProcessCollisionData(meshData, initialMaterials, collisionVertices, collisionTriangleFaces);
@@ -176,10 +176,37 @@ namespace EQWOWConverter.ObjectModels
             IsLoaded = true;
         }
 
-        private void ProcessBonesAndAnimation()
+        private void ProcessBonesAndAnimation(List<EQSpellsEFF.EFFSpellSpriteListEffect>? spriteListEffects)
         {
-            // Static types & emitters
-            if ((!IsSkeletal) && EQObjectModelData.Animations.Count == 0)
+            // Emitters / Spell Effects
+            if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
+            {
+                ModelBoneKeyLookups.Add(-1);
+
+                // Create a base bone
+                ModelBones.Add(new ObjectModelBone());
+                ModelBones[0].BoneNameEQ = "root";
+
+                // Make one animation, TODO: Missle
+                ModelAnimations.Add(new ObjectModelAnimation());
+                ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
+                ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
+                ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS);
+
+                // For spells that spray 'from the hands', it must be rotated a quarter turn so that it cones forward 
+                if (Properties.SpelLEmitterSpraysFromHands == true)
+                {
+                    ModelBones[0].RotationTrack.AddSequence();
+                    ModelBones[0].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0.7071f, 0, 0, 0.7071f));
+                }
+
+                // Animation data needs to added if there are sprite list effects
+                if (spriteListEffects != null)
+                    AddAnimationDataForSpriteListEffects(spriteListEffects);
+            }
+
+            // Non Skeletal / Static objects
+            else if ((!IsSkeletal) && EQObjectModelData.Animations.Count == 0)
             {
                 ModelBoneKeyLookups.Add(-1);
 
@@ -193,17 +220,6 @@ namespace EQWOWConverter.ObjectModels
                     ModelAnimations.Add(new ObjectModelAnimation());
                     ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
                     ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
-                    if (ModelType == ObjectModelType.ParticleEmitter || ModelType == ObjectModelType.SpellProjectile)
-                    {
-                        ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS);
-
-                        // For spells that spray 'from the hands', it must be rotated a quarter turn so that it cones forward 
-                        if (Properties.SpelLEmitterSpraysFromHands == true)
-                        {
-                            ModelBones[0].RotationTrack.AddSequence();
-                            ModelBones[0].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0.7071f, 0, 0, 0.7071f));
-                        }
-                    }
                 }
                 else
                 {
@@ -310,7 +326,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Generate the model data for every sprite list effect
             Dictionary<string, int> materialIDBySpriteListRootName = new Dictionary<string, int>();
-            int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation
+            int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation.  Offset by 1 since root will get 0.
             foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
             {
                 // Create the materials based on sprite chains
@@ -332,9 +348,10 @@ namespace EQWOWConverter.ObjectModels
                     // Create the material for this
                     // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
+                    UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : 20);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.Diffuse, 
-                        textureNamesChainByRootTexture.Value, 20, 64, 64, true);
+                        textureNamesChainByRootTexture.Value, animationDelay, 64, 64, false);
                     initialMaterials.Add(newMaterial);
                 }
 
@@ -360,6 +377,45 @@ namespace EQWOWConverter.ObjectModels
                     // TODO: Save the quad bone index relationship?
 
                     sourceSpriteListIndex++;
+                    curQuadBoneIndex++;
+                }
+            }
+        }
+
+        private void AddAnimationDataForSpriteListEffects(List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects)
+        {
+            // It's assumed that the 'standing' animation is already created by this point
+            if (ModelAnimations.Count == 0)
+            {
+                Logger.WriteError("AddAnimationDataForSpriteListEffects failed as there were no animations");
+                return;
+            }
+
+            int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation.  Offset by 1 since root gets 0.
+            foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
+            {
+                // Generate animation data
+                int quadsForSpriteListEffect = 1; // Default is static/single
+                if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating)
+                    quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
+                for (int i = 0; i < quadsForSpriteListEffect; i++)
+                {
+                    // Each quad has a bone
+                    ModelBones.Add(new ObjectModelBone());
+
+                    // Add sequence data for this bone's quad
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+
+                    // Temp, give a range 
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(2f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
+                    ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
+
                     curQuadBoneIndex++;
                 }
             }
@@ -1872,7 +1928,7 @@ namespace EQWOWConverter.ObjectModels
                 if (minSourceTriangleVertexIndex == -1)
                 {
                     Logger.WriteError("Could not find any triangle face vertices for material '" + frameMaterials[0].UniqueName + "' in object '" + Name + "'");
-                    return;
+                    continue;
                 }
 
                 // Create new triangles using the min identified earlier
