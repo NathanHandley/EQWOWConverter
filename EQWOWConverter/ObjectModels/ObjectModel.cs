@@ -108,6 +108,10 @@ namespace EQWOWConverter.ObjectModels
                 return;
             }
 
+            // Sprite List Effects need their model data generated
+            if (spriteListEffects != null && spriteListEffects.Count > 0)
+                GenerateSpriteListModelData(ref initialMaterials, ref meshData, ref spriteListEffects);
+
             // Sort the geometry
             meshData.SortDataByMaterialAndBones();
 
@@ -295,6 +299,68 @@ namespace EQWOWConverter.ObjectModels
                 {
                     // Set the portrait camera locations
                     SetupPortraitCamera();
+                }
+            }
+        }
+
+        private void GenerateSpriteListModelData(ref List<Material> initialMaterials, ref MeshData meshData, ref List<EQSpellsEFF.EFFSpellSpriteListEffect> spriteListEffects)
+        {
+            initialMaterials.Clear();
+            meshData = new MeshData();
+
+            // Generate the model data for every sprite list effect
+            Dictionary<string, int> materialIDBySpriteListRootName = new Dictionary<string, int>();
+            int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation
+            foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
+            {
+                // Create the materials based on sprite chains
+                foreach (var textureNamesChainByRootTexture in spriteListEffect.SpriteChainsBySpriteRoot)
+                {
+                    // Load materials only once
+                    bool materialAlreadyLoaded = false;
+                    foreach (Material initialMaterial in initialMaterials)
+                    {
+                        if (initialMaterial.Name == textureNamesChainByRootTexture.Key)
+                        {
+                            materialAlreadyLoaded = true;
+                            break;
+                        }
+                    }
+                    if (materialAlreadyLoaded == true)
+                        continue;
+
+                    // Create the material for this
+                    // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32
+                    UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
+                    materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
+                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.Diffuse, 
+                        textureNamesChainByRootTexture.Value, 20, 64, 64, true);
+                    initialMaterials.Add(newMaterial);
+                }
+
+                // Create geometry
+                int quadsToCreate = 1; // Default is static/single
+                if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating)
+                    quadsToCreate = 12; // Pulsating has 12 quads in a circle
+                int sourceSpriteListIndex = 0;
+                for (int i = 0; i < quadsToCreate; i++)
+                {
+                    // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
+                    if (spriteListEffect.SpriteNames[sourceSpriteListIndex].Trim().Length == 0)
+                        sourceSpriteListIndex = 0;
+                    int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[sourceSpriteListIndex]];
+
+                    // Temp so that I can see it, the quads will be large
+                    Vector3 topLeft = new Vector3(10f, 10f, 0f);
+                    Vector3 bottomRight = new Vector3(-10f, -10f, 0f);
+                    MeshData curQuadMeshData = new MeshData();
+                    curQuadMeshData.GenerateAsQuad(materialID, topLeft, bottomRight, Convert.ToByte(curQuadBoneIndex));
+                    meshData.AddMeshData(curQuadMeshData);
+
+                    // TODO: Save the quad bone index relationship?
+
+                    sourceSpriteListIndex++;
+                    curQuadBoneIndex++;
                 }
             }
         }

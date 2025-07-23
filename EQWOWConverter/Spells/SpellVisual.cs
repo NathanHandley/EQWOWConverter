@@ -49,8 +49,9 @@ namespace EQWOWConverter.Spells
                 Logger.WriteError("Could not find spells.eff data that should be at ", spellsEFFFileFullPath, ", did you not run the conditioner step?");
                 return;
             }
+            string sourceTextureFolder = Path.Combine(Configuration.PATH_EQEXPORTSCONDITIONED_FOLDER, "equipment", "Textures");
             EQSpellsEFF = new EQSpellsEFF();
-            EQSpellsEFF.LoadFromDisk(spellsEFFFileFullPath);
+            EQSpellsEFF.LoadFromDisk(spellsEFFFileFullPath, sourceTextureFolder);
             Logger.WriteDebug("Loading EQ Spell Visual Effects Data complete...");
         }
 

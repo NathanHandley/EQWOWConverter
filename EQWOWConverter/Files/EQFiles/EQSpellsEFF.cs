@@ -74,6 +74,7 @@ namespace EQWOWConverter.EQFiles
             public float[] Radii = new float[12];
             public short[] Movements = new short[12];
             public float[] Scales = new float[12];
+            public Dictionary<string, List<string>> SpriteChainsBySpriteRoot = new Dictionary<string, List<string>>();
 
             public EFFSpellSpriteListEffect(EQSpellEffectTargetType targetType, EQSpellListEffectType effectType, int visualEffectIndex, string[] spriteNames, float[] unknowns, 
                 short[] circularShifts, short[] verticalForces, float[] radii, short[] movements, float[] scales)
@@ -198,8 +199,9 @@ namespace EQWOWConverter.EQFiles
         public List<EQSpellEffect> SpellEffects = new List<EQSpellEffect>();
         public HashSet<string> UniqueSpriteNames = new HashSet<string>();
         public Dictionary<string, List<ColorRGBA>> ColorTintsBySpriteNames = new Dictionary<string, List<ColorRGBA>>();
+        public Dictionary<string, List<string>> SpriteChainsBySpriteRoot = new Dictionary<string, List<string>>();
 
-        public bool LoadFromDisk(string fileFullPath)
+        public bool LoadFromDisk(string fileFullPath, string sourceTextureFolder)
         {
             Logger.WriteDebug(" - Reading Spell Effects Data from '", fileFullPath, "'...");
             if (File.Exists(fileFullPath) == false)
@@ -246,6 +248,39 @@ namespace EQWOWConverter.EQFiles
                         if (spriteName.Length > 0 && UniqueSpriteNames.Contains(spriteName) == false)
                             UniqueSpriteNames.Add(spriteName);
                     }
+                }
+            }
+
+            // Create a list of sprite chains
+            foreach (string rootSpriteName in UniqueSpriteNames)
+            {
+                // Skip if this file doesn't exist, since there wouldn't be subsequent anyway
+                string spriteFileNameFullPath = Path.Combine(sourceTextureFolder, string.Concat(rootSpriteName, ".png"));
+                if (File.Exists(spriteFileNameFullPath) == false)
+                    continue;
+
+                // Separate the number from the text
+                string rootTextName = rootSpriteName.Substring(0, rootSpriteName.Length - 2);
+                string rootNumberPartString = rootSpriteName.Substring(rootSpriteName.Length - 2);
+                int rootNumber = int.Parse(rootNumberPartString);
+
+                // Start a chain of sprites by going through in sequence until a sprite isn't found
+                SpriteChainsBySpriteRoot.Add(rootSpriteName, new List<string>());
+                SpriteChainsBySpriteRoot[rootSpriteName].Add(rootSpriteName);
+                bool spriteFound = true;
+                while (spriteFound)
+                {
+                    rootNumber++;
+                    string nextSpriteName = string.Concat(rootTextName, rootNumber.ToString());
+                    if (rootNumber < 10)
+                        nextSpriteName = string.Concat(rootTextName, "0", rootNumber.ToString());
+                    string nextSpriteFullFileName = Path.Combine(sourceTextureFolder, string.Concat(nextSpriteName, ".png"));
+                    if (File.Exists(nextSpriteFullFileName) == false)
+                    {
+                        spriteFound = false;
+                        continue;
+                    }
+                    SpriteChainsBySpriteRoot[rootSpriteName].Add(nextSpriteName);
                 }
             }
 
@@ -345,6 +380,16 @@ namespace EQWOWConverter.EQFiles
                         // Create the sprite list effect
                         EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(targetType, effectType, spellEffect.VisualEffectIndex, sectionData.SpriteListNames, sectionData.SpriteListUnknown,
                             sectionData.SpriteListCircularShifts, sectionData.SpriteListVerticalForces, sectionData.SpriteListRadii, sectionData.SpriteListMovements, sectionData.SpriteListScales);
+
+                        // Associate any sprite chains (can't find projectile textures yet)
+                        if (targetType != EQSpellEffectTargetType.Projectile)
+                            foreach (string spriteName in newSpriteListEffect.SpriteNames)
+                            {
+                                if (spriteName.Trim().Length > 0 && newSpriteListEffect.SpriteChainsBySpriteRoot.ContainsKey(spriteName) == false)
+                                    newSpriteListEffect.SpriteChainsBySpriteRoot.Add(spriteName, SpriteChainsBySpriteRoot[spriteName]);
+                            }
+
+                        // Add it
                         if (targetType == EQSpellEffectTargetType.Projectile)
                             spellEffect.ProjectileSpriteListEffects.Add(newSpriteListEffect);
                         else if (targetType == EQSpellEffectTargetType.Caster)

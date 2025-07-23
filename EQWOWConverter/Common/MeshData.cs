@@ -203,6 +203,46 @@ namespace EQWOWConverter.Common
             }
         }
 
+        public void GenerateAsQuad(int materialIndex, Vector3 topLeftCorner, Vector3 bottomRightCorner, byte boneID)
+        {
+            // Clear prior data
+            Vertices.Clear();
+            Normals.Clear();
+            TextureCoordinates.Clear();
+            TriangleFaces.Clear();
+            VertexColors.Clear();
+            BoneIDs.Clear();
+
+            // Set temp values
+            float highX = topLeftCorner.X;
+            float lowX = bottomRightCorner.X;
+            float highY = topLeftCorner.Y;
+            float lowY = bottomRightCorner.Y;
+            float highZ = topLeftCorner.Z;
+            float lowZ = bottomRightCorner.Z;
+
+            // Generate quad
+            int quadFaceStartVert = Vertices.Count;
+            Vertices.Add(new Vector3(highX, lowY, highZ));
+            TextureCoordinates.Add(new TextureCoordinates(1, 1));
+            Vertices.Add(new Vector3(highX, lowY, lowZ));
+            TextureCoordinates.Add(new TextureCoordinates(1, 0));
+            Vertices.Add(new Vector3(lowX, lowY, lowZ));
+            TextureCoordinates.Add(new TextureCoordinates(0, 0));
+            Vertices.Add(new Vector3(lowX, lowY, highZ));
+            TextureCoordinates.Add(new TextureCoordinates(0, 1));
+            TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+            // Fill in the blanks
+            for (int i = 0; i < Vertices.Count; i++)
+            {
+                Normals.Add(Vector3.Cross(topLeftCorner, bottomRightCorner));
+                VertexColors.Add(new ColorRGBA(0, 0, 0));
+                BoneIDs.Add(boneID);
+            }
+        }
+
         public void ApplyRotationOnVertices(Quaternion rotation)
         {
             for (int i = 0; i < Vertices.Count; i++)
