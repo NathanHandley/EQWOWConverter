@@ -202,7 +202,10 @@ namespace EQWOWConverter.ObjectModels
 
                 // Animation data needs to added if there are sprite list effects
                 if (spriteListEffects != null)
+                {
                     AddAnimationDataForSpriteListEffects(spriteListEffects);
+                    GenerateBoneLookups();
+                }
             }
 
             // Non Skeletal / Static objects
@@ -281,41 +284,46 @@ namespace EQWOWConverter.ObjectModels
                         nameplateBone.TranslationTrack.AddValueToSequence(i, 0, adjustmentVector);
                 }
 
-                // Create bone lookups on a per submesh basis (which are grouped by material)
-                // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
-                List<int> vertexMaterialIDs = new List<int>();
-                for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
-                    vertexMaterialIDs.Add(-1);
-                foreach (TriangleFace modelTriangle in ModelTriangles)
-                {
-                    vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
-                    vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
-                    vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
-                }
-                int currentMaterialID = -1;
-                for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
-                {
-                    // Expand list if new material encountered
-                    if (currentMaterialID != vertexMaterialIDs[vertexIndex])
-                    {
-                        currentMaterialID = vertexMaterialIDs[vertexIndex];
-                        BoneLookupsByMaterialIndex.Add(currentMaterialID, new List<short>());
-                    }
-
-                    // Add lookup if new bone is encountered
-                    byte curBoneIndex = ModelVertices[vertexIndex].BoneIndicesTrue[0];
-                    if (BoneLookupsByMaterialIndex[currentMaterialID].Contains(curBoneIndex) == false)
-                        BoneLookupsByMaterialIndex[currentMaterialID].Add(curBoneIndex);
-
-                    // Add a lookup reference based on the lookup index
-                    ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
-                }
+                GenerateBoneLookups();
 
                 if (IsSkeletal)
                 {
                     // Set the portrait camera locations
                     SetupPortraitCamera();
                 }
+            }
+        }
+
+        private void GenerateBoneLookups()
+        {
+            // Create bone lookups on a per submesh basis (which are grouped by material)
+            // Note: Vertices are sorted by material and then by bone index already, so we can trust that here
+            List<int> vertexMaterialIDs = new List<int>();
+            for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
+                vertexMaterialIDs.Add(-1);
+            foreach (TriangleFace modelTriangle in ModelTriangles)
+            {
+                vertexMaterialIDs[modelTriangle.V1] = modelTriangle.MaterialIndex;
+                vertexMaterialIDs[modelTriangle.V2] = modelTriangle.MaterialIndex;
+                vertexMaterialIDs[modelTriangle.V3] = modelTriangle.MaterialIndex;
+            }
+            int currentMaterialID = -1;
+            for (int vertexIndex = 0; vertexIndex < ModelVertices.Count; vertexIndex++)
+            {
+                // Expand list if new material encountered
+                if (currentMaterialID != vertexMaterialIDs[vertexIndex])
+                {
+                    currentMaterialID = vertexMaterialIDs[vertexIndex];
+                    BoneLookupsByMaterialIndex.Add(currentMaterialID, new List<short>());
+                }
+
+                // Add lookup if new bone is encountered
+                byte curBoneIndex = ModelVertices[vertexIndex].BoneIndicesTrue[0];
+                if (BoneLookupsByMaterialIndex[currentMaterialID].Contains(curBoneIndex) == false)
+                    BoneLookupsByMaterialIndex[currentMaterialID].Add(curBoneIndex);
+
+                // Add a lookup reference based on the lookup index
+                ModelVertices[vertexIndex].BoneIndicesLookup[0] = Convert.ToByte(BoneLookupsByMaterialIndex[currentMaterialID].Count - 1);
             }
         }
 
