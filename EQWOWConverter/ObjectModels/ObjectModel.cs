@@ -334,7 +334,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Generate the model data for every sprite list effect
             Dictionary<string, int> materialIDBySpriteListRootName = new Dictionary<string, int>();
-            int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation.  Offset by 1 since root will get 0.
+            int curQuadBoneIndex = 2; // Every quad gets a unique bone for rotation/manipulation.  Offset by 2 since root will get 0 and the transformed bone starts at 1
             foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
             {
                 // Create the materials based on sprite chains
@@ -385,7 +385,7 @@ namespace EQWOWConverter.ObjectModels
                     // TODO: Save the quad bone index relationship?
 
                     sourceSpriteListIndex++;
-                    curQuadBoneIndex++;
+                    curQuadBoneIndex+=2; // 2 bones per sprite list effect node
                 }
             }
         }
@@ -408,45 +408,43 @@ namespace EQWOWConverter.ObjectModels
                     quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
                 for (int i = 0; i < quadsForSpriteListEffect; i++)
                 {
-                    // Each quad has a bone
+                    // Each quad has 2 bones, one for the rotation and one for the transformation + billboard
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
-                    ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
-
-                    // Add sequence data for this bone's quad
-                    ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-
-                    // Temp, give a range 
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(1f, 0f, 0f));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
-                    //ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
-                    //ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 1.0000f, 0.0000f));
 
                     // Rotation will be based on index, going around in a circle around the character in 30 degree steps
-                    //if (quadsForSpriteListEffect > 1)
-                    //{
-                    //    ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
-                    //    switch (i)
-                    //    {
-                    //        case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, 0.9659f)); break;
-                    //        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, 0.8660f)); break;
-                    //        case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
-                    //        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, 0.5000f)); break;
-                    //        case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, 0.2588f)); break;
-                    //        case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 1.0000f, 0.0000f)); break;
-                    //        case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, -0.2588f)); break;
-                    //        case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, -0.5000f)); break;
-                    //        case 8: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
-                    //        case 9: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, -0.8660f)); break;
-                    //        case 10: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, -0.9659f)); break;
-                    //        case 11: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.0000f, -1.0000f)); break;
-                    //        default: break;
-                    //    }
-                    //}
+                    if (quadsForSpriteListEffect > 1)
+                    {
+                        ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                        ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
+                        switch (i)
+                        {
+                            case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, 0.9659f)); break;
+                            case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, 0.8660f)); break;
+                            case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
+                            case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, 0.5000f)); break;
+                            case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, 0.2588f)); break;
+                            case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 1.0000f, 0.0000f)); break;
+                            case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, -0.2588f)); break;
+                            case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, -0.5000f)); break;
+                            case 8: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
+                            case 9: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, -0.8660f)); break;
+                            case 10: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, -0.9659f)); break;
+                            case 11: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.0000f, -1.0000f)); break;
+                            default: break;
+                        }
+                    }
+
+                    curQuadBoneIndex++;
+                    ModelBones.Add(new ObjectModelBone());
+                    ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
+                    ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
+                    ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(1f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
                     curQuadBoneIndex++;
                 }
             }
