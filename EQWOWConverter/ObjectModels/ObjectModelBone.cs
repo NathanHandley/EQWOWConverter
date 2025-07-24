@@ -44,7 +44,7 @@ namespace EQWOWConverter.ObjectModels
 
         public string ParentBoneNameEQ = string.Empty;
         public Int32 KeyBoneID = Convert.ToInt32(KeyBoneType.None);
-        public ObjectModelBoneFlags Flags = ObjectModelBoneFlags.Transformed;
+        public UInt16 Flags = Convert.ToUInt16(ObjectModelBoneFlags.Transformed);
         public Int16 ParentBone = -1; // Why is this Int16 instead of Int32?
         public UInt16 SubMeshID = 0;
         public ObjectModelTrackSequences<Vector3> TranslationTrack = new ObjectModelTrackSequences<Vector3>();
