@@ -354,11 +354,11 @@ namespace EQWOWConverter.ObjectModels
                         continue;
 
                     // Create the material for this
-                    // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32
+                    // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32 (which shouldn't apply here)
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
                     UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : 20);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
-                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.Diffuse, 
+                    Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, false);
                     initialMaterials.Add(newMaterial);
                 }
@@ -411,6 +411,7 @@ namespace EQWOWConverter.ObjectModels
                     // Each quad has a bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
+                    ModelBones[curQuadBoneIndex].Flags = ObjectModelBoneFlags.SphericalBillboard;
 
                     // Add sequence data for this bone's quad
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();

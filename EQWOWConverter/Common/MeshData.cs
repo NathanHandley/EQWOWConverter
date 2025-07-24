@@ -223,16 +223,30 @@ namespace EQWOWConverter.Common
 
             // Generate quad
             int quadFaceStartVert = Vertices.Count;
-            Vertices.Add(new Vector3(highX, lowY, highZ));
+            Vertices.Add(new Vector3(highX, highY, highZ));
+            TextureCoordinates.Add(new TextureCoordinates(1, 0));
+            Vertices.Add(new Vector3(highX, highY, lowZ));
             TextureCoordinates.Add(new TextureCoordinates(1, 1));
             Vertices.Add(new Vector3(highX, lowY, lowZ));
-            TextureCoordinates.Add(new TextureCoordinates(1, 0));
-            Vertices.Add(new Vector3(lowX, lowY, lowZ));
-            TextureCoordinates.Add(new TextureCoordinates(0, 0));
-            Vertices.Add(new Vector3(lowX, lowY, highZ));
             TextureCoordinates.Add(new TextureCoordinates(0, 1));
+            Vertices.Add(new Vector3(highX, lowY, highZ));
+            TextureCoordinates.Add(new TextureCoordinates(0, 0));
             TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
             TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
+            // Upside down
+            //int quadFaceStartVert = Vertices.Count;
+            //Vertices.Add(new Vector3(highX, highY, highZ));
+            //TextureCoordinates.Add(new TextureCoordinates(1, 1));
+            //Vertices.Add(new Vector3(highX, highY, lowZ));
+            //TextureCoordinates.Add(new TextureCoordinates(1, 0));
+            //Vertices.Add(new Vector3(highX, lowY, lowZ));
+            //TextureCoordinates.Add(new TextureCoordinates(0, 0));
+            //Vertices.Add(new Vector3(highX, lowY, highZ));
+            //TextureCoordinates.Add(new TextureCoordinates(0, 1));
+            //TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert, quadFaceStartVert + 3));
+            //TriangleFaces.Add(new TriangleFace(materialIndex, quadFaceStartVert + 1, quadFaceStartVert + 3, quadFaceStartVert + 2));
+
 
             // Fill in the blanks
             for (int i = 0; i < Vertices.Count; i++)
