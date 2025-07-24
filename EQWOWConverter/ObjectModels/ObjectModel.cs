@@ -376,8 +376,8 @@ namespace EQWOWConverter.ObjectModels
                     int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[sourceSpriteListIndex]];
 
                     // Temp so that I can see it, the quads will be large
-                    Vector3 topLeft = new Vector3(10f, 10f, 0f);
-                    Vector3 bottomRight = new Vector3(-10f, -10f, 0f);
+                    Vector3 topLeft = new Vector3(2f, 2f, 2f);
+                    Vector3 bottomRight = new Vector3(-2f, -2f, -2f);
                     MeshData curQuadMeshData = new MeshData();
                     curQuadMeshData.GenerateAsQuad(materialID, topLeft, bottomRight, Convert.ToByte(curQuadBoneIndex));
                     meshData.AddMeshData(curQuadMeshData);
@@ -410,6 +410,7 @@ namespace EQWOWConverter.ObjectModels
                 {
                     // Each quad has a bone
                     ModelBones.Add(new ObjectModelBone());
+                    ModelBones[curQuadBoneIndex].ParentBone = 0;
 
                     // Add sequence data for this bone's quad
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
