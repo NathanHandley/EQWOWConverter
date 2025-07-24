@@ -356,7 +356,7 @@ namespace EQWOWConverter.ObjectModels
                     // Create the material for this
                     // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32 (which shouldn't apply here)
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
-                    UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : 20);
+                    UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, false);
@@ -375,9 +375,9 @@ namespace EQWOWConverter.ObjectModels
                         sourceSpriteListIndex = 0;
                     int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[sourceSpriteListIndex]];
 
-                    // Temp so that I can see it, the quads will be large
-                    Vector3 topLeft = new Vector3(2f, 2f, 2f);
-                    Vector3 bottomRight = new Vector3(-2f, -2f, -2f);
+                    // Build the quads
+                    Vector3 topLeft = new Vector3(0.5f, 0.5f, 0.5f);
+                    Vector3 bottomRight = new Vector3(-0.5f, -0.5f, -0.5f);
                     MeshData curQuadMeshData = new MeshData();
                     curQuadMeshData.GenerateAsQuad(materialID, topLeft, bottomRight, Convert.ToByte(curQuadBoneIndex));
                     meshData.AddMeshData(curQuadMeshData);
@@ -414,16 +414,16 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].Flags = ObjectModelBoneFlags.SphericalBillboard;
 
                     // Add sequence data for this bone's quad
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
 
                     // Temp, give a range 
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(2f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(10f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
+                    ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
 
                     curQuadBoneIndex++;
