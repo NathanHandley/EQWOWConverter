@@ -464,7 +464,8 @@ namespace EQWOWConverter
         public static readonly float SPELL_EMITTER_SPAWN_RATE_DISC_MOD = 1f;
         public static readonly float SPELL_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
 
-        // How much delay is between frames for sprite list animation
+        // Values for sprite lists
+        public static readonly float SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
         public static readonly int SPELL_EMITTER_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
 
         //=====================================================================

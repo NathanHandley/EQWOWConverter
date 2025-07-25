@@ -87,7 +87,7 @@ namespace EQWOWConverter.EQFiles
                 int sourceSpriteListIndex = 0;
                 for (int i = 0; i < 12; i++)
                 {
-                    // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
+                     // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
                     if (spriteNames[sourceSpriteListIndex].Trim().Length == 0)
                         sourceSpriteListIndex = 0;
                     SpriteNames[i] = spriteNames[sourceSpriteListIndex];
@@ -97,6 +97,7 @@ namespace EQWOWConverter.EQFiles
                     Radii[i] = radii[sourceSpriteListIndex];
                     Movements[i] = movements[sourceSpriteListIndex];
                     Scales[i] = scales[sourceSpriteListIndex];
+                    sourceSpriteListIndex++;
                 }
             }
         }

@@ -403,8 +403,6 @@ namespace EQWOWConverter.ObjectModels
                     quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
                 for (int i = 0; i < quadsForSpriteListEffect; i++)
                 {
-                    // Quads only exist for 2 seconds
-
 
 
                     // Each quad has 2 bones, one for the rotation and one for the transformation + billboard
@@ -448,12 +446,11 @@ namespace EQWOWConverter.ObjectModels
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(1999, new Vector3(1f, 1f, 1f));
+                    float curSpriteScale = spriteListEffect.Scales[i] * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(1999, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(2000, new Vector3(0f, 0f, 0f));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(10000, new Vector3(0f, 0f, 0f));
-                    //ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS), new Vector3(0f, 0f, 0f));
-                    //ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS + 1), new Vector3(1f, 1f, 1f));
 
                     curQuadBoneIndex++;
                 }
