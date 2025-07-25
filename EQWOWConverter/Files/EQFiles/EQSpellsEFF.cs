@@ -82,13 +82,22 @@ namespace EQWOWConverter.EQFiles
                 TargetType = targetType;
                 EffectType = effectType;
                 VisualEffectIndex = visualEffectIndex;
-                SpriteNames = (string[])spriteNames.Clone();
-                Unknowns = (float[])unknowns.Clone();
-                CircularShifts = (short[])circularShifts.Clone();
-                VerticalForces = (short[])verticalForces.Clone();
-                Radii = (float[])radii.Clone();
-                Movements = (short[])movements.Clone();
-                Scales = (float[])scales.Clone();
+
+                // The 12 particle values will 'wrap' around to the begining when a non-sprite name is found
+                int sourceSpriteListIndex = 0;
+                for (int i = 0; i < 12; i++)
+                {
+                    // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
+                    if (spriteNames[sourceSpriteListIndex].Trim().Length == 0)
+                        sourceSpriteListIndex = 0;
+                    SpriteNames[i] = spriteNames[sourceSpriteListIndex];
+                    Unknowns[i] = unknowns[sourceSpriteListIndex];
+                    CircularShifts[i] = circularShifts[sourceSpriteListIndex];
+                    VerticalForces[i] = verticalForces[sourceSpriteListIndex];
+                    Radii[i] = radii[sourceSpriteListIndex];
+                    Movements[i] = movements[sourceSpriteListIndex];
+                    Scales[i] = scales[sourceSpriteListIndex];
+                }
             }
         }
 

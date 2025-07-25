@@ -33,10 +33,6 @@ namespace EQWOWConverter.ObjectModels
         public int SpawnRate = 0;
         public float Radius = 0;
         public int TextureID = 0;
-        public string[] SpriteListSpriteNames = new string[12];
-        public float[] SpriteListScales = new float[12];
-        public int[] SpriteListBoneIDs = new int[12];
-        public int[] SpriteListTextureIDs = new int[12]; // TODO: collapse with TextureID
 
         public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {

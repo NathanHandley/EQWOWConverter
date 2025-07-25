@@ -367,13 +367,9 @@ namespace EQWOWConverter.ObjectModels
                 int quadsToCreate = 1; // Default is static/single
                 if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating)
                     quadsToCreate = 12; // Pulsating has 12 quads in a circle
-                int sourceSpriteListIndex = 0;
                 for (int i = 0; i < quadsToCreate; i++)
                 {
-                    // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
-                    if (spriteListEffect.SpriteNames[sourceSpriteListIndex].Trim().Length == 0)
-                        sourceSpriteListIndex = 0;
-                    int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[sourceSpriteListIndex]];
+                    int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[i]];
 
                     // Build the quads
                     Vector3 topLeft = new Vector3(0.5f, 0.5f, 0.5f);
@@ -384,7 +380,6 @@ namespace EQWOWConverter.ObjectModels
 
                     // TODO: Save the quad bone index relationship?
 
-                    sourceSpriteListIndex++;
                     curQuadBoneIndex+=2; // 2 bones per sprite list effect node
                 }
             }
@@ -408,7 +403,12 @@ namespace EQWOWConverter.ObjectModels
                     quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
                 for (int i = 0; i < quadsForSpriteListEffect; i++)
                 {
+                    // Quads only exist for 2 seconds
+
+
+
                     // Each quad has 2 bones, one for the rotation and one for the transformation + billboard
+                    // Extension bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
 
@@ -434,17 +434,27 @@ namespace EQWOWConverter.ObjectModels
                             default: break;
                         }
                     }
-
                     curQuadBoneIndex++;
+
+                    // Billboard Bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
                     ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(1f, 0f, 0f));
+
+
+                    // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(1f, 1f, 1f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(1999, new Vector3(1f, 1f, 1f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(2000, new Vector3(0f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(10000, new Vector3(0f, 0f, 0f));
+                    //ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS), new Vector3(0f, 0f, 0f));
+                    //ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS + 1), new Vector3(1f, 1f, 1f));
+
                     curQuadBoneIndex++;
                 }
             }
