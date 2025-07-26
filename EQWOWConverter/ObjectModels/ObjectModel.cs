@@ -334,7 +334,7 @@ namespace EQWOWConverter.ObjectModels
 
             // Generate the model data for every sprite list effect
             Dictionary<string, int> materialIDBySpriteListRootName = new Dictionary<string, int>();
-            int curQuadBoneIndex = 2; // Every quad gets a unique bone for rotation/manipulation.  Offset by 2 since root will get 0 and the transformed bone starts at 1
+            int curQuadBoneIndex = 3; // Every quad gets a unique bone for rotation/manipulation.  Offset by 3 since root will get 0, 1 is base rotation, 2 is continuous rotation, and transformed is 3
             foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
             {
                 // Create the materials based on sprite chains
@@ -380,7 +380,7 @@ namespace EQWOWConverter.ObjectModels
 
                     // TODO: Save the quad bone index relationship?
 
-                    curQuadBoneIndex+=2; // 2 bones per sprite list effect node
+                    curQuadBoneIndex+=3; // 3 bones per sprite list effect node
                 }
             }
         }
@@ -403,10 +403,8 @@ namespace EQWOWConverter.ObjectModels
                     quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
                 for (int i = 0; i < quadsForSpriteListEffect; i++)
                 {
-
-
-                    // Each quad has 2 bones, one for the rotation and one for the transformation + billboard
-                    // Extension bone
+                    // Each quad has 3 bones, one for the base rotation, one for the dynamic rotation, andone for the transformation + billboard
+                    // Base Rotation bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
 
@@ -432,6 +430,62 @@ namespace EQWOWConverter.ObjectModels
                             default: break;
                         }
                     }
+                    curQuadBoneIndex++;
+
+                    // Dynamic Rotation Bone
+                    ModelBones.Add(new ObjectModelBone());
+                    ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
+                    if (spriteListEffect.CircularShifts[i] != 0)
+                    {
+                        // 15 shifts is 1 full rotation, positive is counterclockwise and negative is clockwise
+                        float numOfRotations = spriteListEffect.CircularShifts[i] / 15f;
+                        if (numOfRotations < 0)
+                        {
+                            // TODO: Clockwise
+                            numOfRotations *= -1;
+                        }
+                        if (numOfRotations != 0)
+                        {
+                            ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
+                            ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
+                            ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
+
+                            // There will be 4 moved-to frames per rotation, so calculate the size of a frame
+                            int timeForOneRotationInMS = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS) / numOfRotations);
+                            int frameSizeInMS = timeForOneRotationInMS / 4;
+
+                            // Add quarter rotations until past invis time
+                            UInt32 totalTimeElapsedInMS = 0;
+                            int curQuarterStepIndex = 0;
+                            while (totalTimeElapsedInMS < Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS)
+                            {
+                                totalTimeElapsedInMS += Convert.ToUInt32(frameSizeInMS);
+
+                                // Step up in quarter steps, and loop back around when hitting 5th
+                                switch (curQuarterStepIndex)
+                                {
+                                    case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f));break;
+                                    case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
+                                    case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
+                                    case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
+                                    default: break;
+                                }
+                                curQuarterStepIndex++;
+                                if (curQuarterStepIndex == 4)
+                                    curQuarterStepIndex = 0;
+                            }
+                        }
+                    }
+
+                    // One full rotation (Counterclockwise)
+                    //ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort());
+                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.25), new QuaternionShort(0, 0, 0.7071f, 0.7071f));
+                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.5), new QuaternionShort(0, 0, 1f, 0));
+                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.75), new QuaternionShort(0, 0, 0.7071f, -0.7071f));
+                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort(0, 0, 0, -1f));
+
+                    // One full rotation (clockwise)
+                    
                     curQuadBoneIndex++;
 
                     // Billboard Bone
