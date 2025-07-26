@@ -444,7 +444,8 @@ namespace EQWOWConverter
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
         // How long spell emitters execute for
-        public static readonly int SPELLS_EFFECT_EMITTER_DURATION_IN_MS = 5000;
+        public static readonly int SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS = 5000;
+        public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
 
         // How much scale to apply to all particles (feet => meters is 0.3048f)
         // Minimum scale is before mod
@@ -467,6 +468,8 @@ namespace EQWOWConverter
         // Values for sprite lists
         public static readonly float SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
         public static readonly int SPELL_EMITTER_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
+        public static readonly int SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2000;
+        public static readonly float SPELL_EMITTER_SPRITE_LIST_PULSE_RANGE = 2f;
 
         //=====================================================================
         // Tradeskills

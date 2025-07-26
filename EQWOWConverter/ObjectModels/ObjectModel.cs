@@ -191,7 +191,7 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations.Add(new ObjectModelAnimation());
                 ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
                 ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
-                ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_DURATION_IN_MS);
+                ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS);
 
                 // For spells that spray 'from the hands', it must be rotated a quarter turn so that it cones forward 
                 if (Properties.SpelLEmitterSpraysFromHands == true)
@@ -438,19 +438,29 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
                     ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
+
+                    // Set radius / pulse effect
+                    float curSpriteRadius = spriteListEffect.Radii[i] *= Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
-                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(1f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(curSpriteRadius, 0f, 0f));
+                    if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (spriteListEffect.Radii[i] == 0f || spriteListEffect.Radii[i] >= 0.1f)) // Low (but not zero) means static image at player
+                    {
+                        UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
+                        float pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EMITTER_SPRITE_LIST_PULSE_RANGE;
+                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(animMidTimestamp, new Vector3(pulseMaxDistance, 0f, 0f));
+                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, 0f));
+                    }
 
-
-                    // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
+                    // Set Scale
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
                     float curSpriteScale = spriteListEffect.Scales[i] * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(1999, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(2000, new Vector3(0f, 0f, 0f));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(10000, new Vector3(0f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
+                    // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(0f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new Vector3(0f, 0f, 0f));
 
                     curQuadBoneIndex++;
                 }
