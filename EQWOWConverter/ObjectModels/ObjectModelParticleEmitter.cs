@@ -140,15 +140,15 @@ namespace EQWOWConverter.ObjectModels
             {
                 switch (emissionPattern)
                 {
-                    case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: eqSpawnRate = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_DEFAULT; break;
-                    default: eqSpawnRate = Configuration.SPELL_EMITTER_SPAWN_RATE_OTHER_DEFAULT; break;
+                    case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: eqSpawnRate = Configuration.SPELL_EFFECT_SPAWN_RATE_SPHERE_DEFAULT; break;
+                    default: eqSpawnRate = Configuration.SPELL_EFFECT_SPAWN_RATE_OTHER_DEFAULT; break;
                 }
             }
 
             // Minimums
             switch (emissionPattern)
             {
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: eqSpawnRate = Math.Max(eqSpawnRate, Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MINIMUM); break;
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: eqSpawnRate = Math.Max(eqSpawnRate, Configuration.SPELL_EFFECT_SPAWN_RATE_SPHERE_MINIMUM); break;
                 case SpellVisualEmitterSpawnPatternType.FromHands: eqSpawnRate = Math.Max(eqSpawnRate, 25); break;
                 case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: eqSpawnRate = Math.Max(eqSpawnRate, 25); break;
                 default: break;
@@ -158,10 +158,10 @@ namespace EQWOWConverter.ObjectModels
             float spawnRateMod = 0;
             switch (emissionPattern)
             {
-                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
+                case SpellVisualEmitterSpawnPatternType.SphereAroundUnit: spawnRateMod = Configuration.SPELL_EFFECT_SPAWN_RATE_SPHERE_MOD; break;
                 case SpellVisualEmitterSpawnPatternType.DiscAroundUnitCenter: // fallthrough
-                case SpellVisualEmitterSpawnPatternType.DiscOnGround: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_DISC_MOD; break;
-                default: spawnRateMod = Configuration.SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD; break;
+                case SpellVisualEmitterSpawnPatternType.DiscOnGround: spawnRateMod = Configuration.SPELL_EFFECT_SPAWN_RATE_DISC_MOD; break;
+                default: spawnRateMod = Configuration.SPELL_EFFECT_SPAWN_RATE_SPHERE_MOD; break;
             }
 
             return Convert.ToInt32(Convert.ToSingle(eqSpawnRate) * spawnRateMod);

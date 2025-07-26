@@ -357,7 +357,7 @@ namespace EQWOWConverter.ObjectModels
                     // Create the material for this
                     // Note: All known sprite lists for non-projectiles are sourced at 64x64, but there are some spell sprites at 32x32 (which shouldn't apply here)
                     UInt32 curMaterialID = Convert.ToUInt32(initialMaterials.Count);
-                    UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
+                    UInt32 animationDelay = Convert.ToUInt32((textureNamesChainByRootTexture.Value.Count == 1) ? 0 : Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS);
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true);
@@ -430,11 +430,12 @@ namespace EQWOWConverter.ObjectModels
                     if (curParticle.CircularShift != 0)
                     {
                         // 15 shifts is 1 full rotation, positive is counterclockwise and negative is clockwise
-                        float numOfRotations = curParticle.CircularShift / 15f;
+                        bool isClockwise = false;
+                        float numOfRotations = curParticle.CircularShift * Configuration.SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD;
                         if (numOfRotations < 0)
                         {
-                            // TODO: Clockwise
                             numOfRotations *= -1;
+                            isClockwise = true;
                         }
                         if (numOfRotations != 0)
                         {
@@ -443,41 +444,46 @@ namespace EQWOWConverter.ObjectModels
                             ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort());
 
                             // There will be 4 moved-to frames per rotation, so calculate the size of a frame
-                            int timeForOneRotationInMS = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS) / numOfRotations);
+                            int timeForOneRotationInMS = Convert.ToInt32(Convert.ToSingle(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS) / numOfRotations);
                             int frameSizeInMS = timeForOneRotationInMS / 4;
 
                             // Add quarter rotations until past invis time
                             UInt32 totalTimeElapsedInMS = 0;
                             int curQuarterStepIndex = 0;
-                            while (totalTimeElapsedInMS < Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS)
+                            while (totalTimeElapsedInMS < Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS)
                             {
                                 totalTimeElapsedInMS += Convert.ToUInt32(frameSizeInMS);
 
                                 // Step up in quarter steps, and loop back around when hitting 5th
-                                switch (curQuarterStepIndex)
+                                // Note: because of orientations these quaternions are actually the opposite of what they say (clockwise = counterclockwise)
+                                if (isClockwise == false)
                                 {
-                                    case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f));break;
-                                    case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
-                                    case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
-                                    case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
-                                    default: break;
+                                    switch (curQuarterStepIndex)
+                                    {
+                                        case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
+                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
+                                        case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
+                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
+                                        default: break;
+                                    }
+                                }
+                                else
+                                {
+                                    switch (curQuarterStepIndex)
+                                    {
+                                        case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
+                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
+                                        case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
+                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
+                                        default: break;
+                                    }
                                 }
                                 curQuarterStepIndex++;
                                 if (curQuarterStepIndex == 4)
                                     curQuarterStepIndex = 0;
                             }
                         }
-                    }
-
-                    // One full rotation (Counterclockwise)
-                    //ModelBones[0].RotationTrack.AddValueToSequence(2, 0, new QuaternionShort());
-                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.25), new QuaternionShort(0, 0, 0.7071f, 0.7071f));
-                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.5), new QuaternionShort(0, 0, 1f, 0));
-                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS * 0.75), new QuaternionShort(0, 0, 0.7071f, -0.7071f));
-                    //ModelBones[0].RotationTrack.AddValueToSequence(2, Convert.ToUInt32(Properties.ActiveDoodadAnimTimeInMS), new QuaternionShort(0, 0, 0, -1f));
-
-                    // One full rotation (clockwise)
-                    
+                    }                    
                     curQuadBoneIndex++;
 
                     // Billboard Bone
@@ -486,26 +492,26 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
 
                     // Set radius / pulse effect
-                    float curSpriteRadius = curParticle.Radius *= Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+                    float curSpriteRadius = curParticle.Radius *= Configuration.SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD;
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(curSpriteRadius, 0f, 0f));
                     if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (curParticle.Radius == 0f || curParticle.Radius >= 0.1f)) // Low (but not zero) means static image at player
                     {
-                        UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
-                        float pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EMITTER_SPRITE_LIST_PULSE_RANGE;
+                        UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
+                        float pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE;
                         ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(animMidTimestamp, new Vector3(pulseMaxDistance, 0f, 0f));
-                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, 0f));
+                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, 0f));
                     }
 
                     // Set Scale
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    float curSpriteScale = curParticle.Scale * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
+                    float curSpriteScale = curParticle.Scale * Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(0f, 0f, 0f));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(0f, 0f, 0f));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new Vector3(0f, 0f, 0f));
 
                     curQuadBoneIndex++;

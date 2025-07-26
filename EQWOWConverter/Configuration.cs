@@ -458,18 +458,20 @@ namespace EQWOWConverter
 
         // How much to modify the spawn rate of emitters (higher = more particles)
         // Note: Default and minimum are before mod
-        public static readonly int SPELL_EMITTER_SPAWN_RATE_SPHERE_MINIMUM = 25;
-        public static readonly int SPELL_EMITTER_SPAWN_RATE_SPHERE_DEFAULT = 25;
-        public static readonly int SPELL_EMITTER_SPAWN_RATE_OTHER_DEFAULT = 25;
-        public static readonly float SPELL_EMITTER_SPAWN_RATE_SPHERE_MOD = 4f;
-        public static readonly float SPELL_EMITTER_SPAWN_RATE_DISC_MOD = 1f;
-        public static readonly float SPELL_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
+        public static readonly int SPELL_EFFECT_SPAWN_RATE_SPHERE_MINIMUM = 25;
+        public static readonly int SPELL_EFFECT_SPAWN_RATE_SPHERE_DEFAULT = 25;
+        public static readonly int SPELL_EFFECT_SPAWN_RATE_OTHER_DEFAULT = 25;
+        public static readonly float SPELL_EFFECT_SPAWN_RATE_SPHERE_MOD = 4f;
+        public static readonly float SPELL_EFFECT_SPAWN_RATE_DISC_MOD = 1f;
+        public static readonly float SPELL_EFFECT_SPAWN_RATE_OTHER_MOD = 1.25f;
 
         // Values for sprite lists
-        public static readonly float SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
-        public static readonly int SPELL_EMITTER_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
-        public static readonly int SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2000;
-        public static readonly float SPELL_EMITTER_SPRITE_LIST_PULSE_RANGE = 2f;
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD = 0.3048f;
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
+        public static readonly int SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
+        public static readonly int SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2000;
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE = 1.5f;
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.25f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
 
         //=====================================================================
         // Tradeskills
