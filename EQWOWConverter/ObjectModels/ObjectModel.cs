@@ -527,11 +527,14 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, forceMaxDistance));
 
                     // Set Scale
+                    // EQ values are 0 - 25
+                    float spriteScaleEQ = MathF.Min(curParticle.Scale, Configuration.SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE);
+                    float spriteScaleWOW = Configuration.SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN + (Configuration.SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX -
+                        Configuration.SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN) * (spriteScaleEQ / Configuration.SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE);
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    float curSpriteScale = curParticle.Scale * Configuration.SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD;
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
-                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(spriteScaleWOW, spriteScaleWOW, spriteScaleWOW));
+                    ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(spriteScaleWOW, spriteScaleWOW, spriteScaleWOW));
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(0f, 0f, 0f));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new Vector3(0f, 0f, 0f));

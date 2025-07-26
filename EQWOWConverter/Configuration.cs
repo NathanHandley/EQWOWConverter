@@ -443,36 +443,32 @@ namespace EQWOWConverter
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
-        // How long spell emitters execute for
+        // Spell emitter particles
+        public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN = 0.05f;
+        public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX = 0.8f;
         public static readonly int SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS = 5000;
         public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
+        public static readonly float SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD = 0.3048f;
+        public static readonly float SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD = 0.75f;
+        public static readonly int SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM = 25;
+        public static readonly int SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_DEFAULT = 25;
+        public static readonly int SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_DEFAULT = 25;
+        public static readonly float SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MOD = 4f;
+        public static readonly float SPELL_EFFECT_EMITTER_SPAWN_RATE_DISC_MOD = 1f;
+        public static readonly float SPELL_EFFECT_EMITTER_SPAWN_RATE_OTHER_MOD = 1.25f;
 
-        // How much scale to apply to all particles (feet => meters is 0.3048f)
-        // Minimum scale is before mod
-        public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN = 0.05f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MAX = 0.8f;
-
-        // How much to multiply or reduce lifespan of particles. EQ particles fade sooner than WoW, so lowering looks more accurate.
-        public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
-
-        // How much to modify the spawn rate of emitters (higher = more particles)
-        // Note: Default and minimum are before mod
-        public static readonly int SPELL_EFFECT_SPAWN_RATE_SPHERE_MINIMUM = 25;
-        public static readonly int SPELL_EFFECT_SPAWN_RATE_SPHERE_DEFAULT = 25;
-        public static readonly int SPELL_EFFECT_SPAWN_RATE_OTHER_DEFAULT = 25;
-        public static readonly float SPELL_EFFECT_SPAWN_RATE_SPHERE_MOD = 4f;
-        public static readonly float SPELL_EFFECT_SPAWN_RATE_DISC_MOD = 1f;
-        public static readonly float SPELL_EFFECT_SPAWN_RATE_OTHER_MOD = 1.25f;
-
-        // Values for sprite lists
+        // Sprite List particles
+        public static readonly float SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MIN = 0.1f;
+        public static readonly float SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX = 10f;
+        public static readonly float SPELLS_EFFECT_SPRITE_LIST_SIZE_SCALE_MAX_EQ_VALUE = 25f; // Anything greater than 15 is treated as 15
         public static readonly float SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD = 0.3048f;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
         public static readonly int SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
         public static readonly int SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2500;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE = 1.5f;
-        public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.25f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
         public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.5f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH = 3f;
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW = -1f;
 
         //=====================================================================
         // Tradeskills
