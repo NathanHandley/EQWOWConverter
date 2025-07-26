@@ -371,8 +371,8 @@ namespace EQWOWConverter.ObjectModels
                     int materialID = materialIDBySpriteListRootName[spriteListEffect.Particles[i].SpriteName];
 
                     // Build the quads
-                    Vector3 topLeft = new Vector3(0.5f, 0.5f, 0.5f);
-                    Vector3 bottomRight = new Vector3(-0.5f, -0.5f, -0.5f);
+                    Vector3 topLeft = new Vector3(0, 0.5f, 0.5f);
+                    Vector3 bottomRight = new Vector3(0, -0.5f, -0.5f);
                     MeshData curQuadMeshData = new MeshData();
                     curQuadMeshData.GenerateAsQuad(materialID, topLeft, bottomRight, Convert.ToByte(curQuadBoneIndex));
                     meshData.AddMeshData(curQuadMeshData);
