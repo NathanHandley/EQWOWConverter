@@ -18,6 +18,7 @@ using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Creatures;
+using System.Security;
 
 namespace EQWOWConverter.ObjectModels
 {
@@ -394,6 +395,15 @@ namespace EQWOWConverter.ObjectModels
             int curQuadBoneIndex = 1; // Every quad gets a unique bone for rotation/manipulation.  Offset by 1 since root gets 0.
             foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
             {
+                // Particles can be between 1 and 12, with them being equal in distance around the player
+                int numOfCirclingParticles = 0;
+                foreach (EQSpellsEFF.EFFSpellSpriteListParticle particle in spriteListEffect.Particles)
+                {
+                    if (particle.Radius >= 0.1f || particle.Radius == 0f)
+                        numOfCirclingParticles++;
+                }
+                List<QuaternionShort> particleRotations = QuaternionShort.GetQuaternionsInCircle(numOfCirclingParticles);
+
                 // Generate animation data
                 for (int i = 0; i < spriteListEffect.Particles.Count; i++)
                 {
@@ -404,27 +414,13 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
 
-                    // Rotation will be based on index, going around in a circle around the character in 30 degree steps
-                    if (spriteListEffect.Particles.Count > 1)
+                    // Add the rotation value if there's a particle to render in the circle, otherwise it has no rotation
+                    if (particleRotations.Count > i)
                     {
                         ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                         ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
-                        switch (i)
-                        {
-                            case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, 0.9659f)); break;
-                            case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, 0.8660f)); break;
-                            case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
-                            case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, 0.5000f)); break;
-                            case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, 0.2588f)); break;
-                            case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 1.0000f, 0.0000f)); break;
-                            case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.9659f, -0.2588f)); break;
-                            case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.8660f, -0.5000f)); break;
-                            case 8: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
-                            case 9: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.5000f, -0.8660f)); break;
-                            case 10: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.2588f, -0.9659f)); break;
-                            case 11: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0, 0, 0.0000f, -1.0000f)); break;
-                            default: break;
-                        }
+                        ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(0, particleRotations[i]);
+
                     }
                     curQuadBoneIndex++;
 
@@ -505,7 +501,7 @@ namespace EQWOWConverter.ObjectModels
                     // Set Scale
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    float curSpriteScale = curParticle.Radius * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
+                    float curSpriteScale = curParticle.Scale * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles

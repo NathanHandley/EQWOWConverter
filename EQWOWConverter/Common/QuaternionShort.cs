@@ -14,13 +14,6 @@
 //  You should have received a copy of the GNU General Public License
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EQWOWConverter.Common
 {
     // This is a 'short' version of the quaternion that is used for bones
@@ -100,6 +93,34 @@ namespace EQWOWConverter.Common
             bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(Z)));
             bytes.AddRange(BitConverter.GetBytes(GetFloatAsShort(W)));
             return bytes;
+        }
+
+        // Generates a list of quaternions at equidistant locations around a circle
+        public static List<QuaternionShort> GetQuaternionsInCircle(int numOfCircleDivisions)
+        {
+            List<QuaternionShort> rotations = new List<QuaternionShort>();
+            if (numOfCircleDivisions <= 1)
+            {
+                rotations.Add(new QuaternionShort());
+                return rotations;
+            }
+
+            // Generate quaternions for each mark around the circle
+            float angleIncrement = 360.0f / numOfCircleDivisions;
+            for (int i = 0; i < numOfCircleDivisions; i++)
+            {
+                float angleDegrees = i * angleIncrement;
+                float angleRadians = angleDegrees * (float)Math.PI / 180.0f;
+                float halfAngle = angleRadians / 2.0f;
+
+                // Rotation axis is up Z
+                float sinHalfAngle = (float)Math.Sin(halfAngle);
+                float cosHalfAngle = (float)Math.Cos(halfAngle);
+
+                rotations.Add(new QuaternionShort(0.0f, 0.0f, sinHalfAngle, cosHalfAngle));
+            }
+
+            return rotations;
         }
     }
 }
