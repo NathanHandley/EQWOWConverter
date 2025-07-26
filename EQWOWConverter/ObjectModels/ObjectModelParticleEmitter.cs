@@ -84,8 +84,9 @@ namespace EQWOWConverter.ObjectModels
 
         private float CalculateScale(float eqSpawnScale)
         {
-            float scale = Math.Max(eqSpawnScale, Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN);
-            return scale * Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD;
+            float scale = Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN + (Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MAX -
+                Configuration.SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN) * (eqSpawnScale / 6f); // EQ values are 0 - 6
+            return scale;
         }
 
         private float CalculateRadius(float eqRadius, SpellVisualEmitterSpawnPatternType emissionPattern)

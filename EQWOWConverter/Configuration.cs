@@ -450,8 +450,8 @@ namespace EQWOWConverter
         // How much scale to apply to all particles (feet => meters is 0.3048f)
         // Minimum scale is before mod
         public static readonly float SPELLS_EFFECT_DISTANCE_SCALE_MOD = 0.3048f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN = 0.5f;
-        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MOD = 0.2f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MIN = 0.05f;
+        public static readonly float SPELLS_EFFECT_PARTICLE_SIZE_SCALE_MAX = 0.8f;
 
         // How much to multiply or reduce lifespan of particles. EQ particles fade sooner than WoW, so lowering looks more accurate.
         public static readonly float SPELLS_EFFECT_PARTICLE_LIFESPAN_TIME_MOD = 0.75f;
@@ -469,9 +469,10 @@ namespace EQWOWConverter
         public static readonly float SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD = 0.3048f;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_ANIMATION_SCALE_MOD = 0.5f;
         public static readonly int SPELL_EFFECT_SPRITE_LIST_ANIMATION_FRAME_DELAY_IN_MS = 60;
-        public static readonly int SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2000;
+        public static readonly int SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS = 2500;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE = 1.5f;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.25f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
+        public static readonly float SPELL_EFFECT_SPRITE_LIST_CIRCULAR_SHIFT_MOD = 0.5f; // Various reports show this as 0.066 for EQ like (divide by 15) but that seems wrong
 
         //=====================================================================
         // Tradeskills
