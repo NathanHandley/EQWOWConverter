@@ -461,9 +461,13 @@ namespace EQWOWConverter.ObjectModels
                                     switch (curQuarterStepIndex)
                                     {
                                         case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
-                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
+                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1, 0)); break;
                                         case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
-                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
+                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1)); break;
+                                        case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -0.7071f, -0.7071f)); break;
+                                        case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -1, 0)); break;
+                                        case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -0.7071f, 0.7071f)); break;
+                                        case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, 1)); break;
                                         default: break;
                                     }
                                 }
@@ -471,15 +475,19 @@ namespace EQWOWConverter.ObjectModels
                                 {
                                     switch (curQuarterStepIndex)
                                     {
-                                        case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
-                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
-                                        case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1f, 0)); break;
-                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
+                                        case 0: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -0.7071f, 0.7071f)); break;
+                                        case 1: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -1, 0)); break;
+                                        case 2: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, -0.7071f, -0.7071f)); break;
+                                        case 3: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, -0.7071f)); break;
+                                        case 4: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 1, 0)); break;
+                                        case 5: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0.7071f, 0.7071f)); break;
+                                        case 6: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, -1f)); break;
+                                        case 7: ModelBones[curQuadBoneIndex].RotationTrack.AddValueToLastSequence(totalTimeElapsedInMS, new QuaternionShort(0, 0, 0, 1)); break;
                                         default: break;
                                     }
                                 }
                                 curQuarterStepIndex++;
-                                if (curQuarterStepIndex == 4)
+                                if (curQuarterStepIndex == 8)
                                     curQuarterStepIndex = 0;
                             }
                         }
