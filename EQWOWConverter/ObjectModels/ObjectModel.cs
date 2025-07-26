@@ -18,7 +18,6 @@ using EQWOWConverter.Common;
 using EQWOWConverter.EQFiles;
 using EQWOWConverter.ObjectModels.Properties;
 using EQWOWConverter.Creatures;
-using System.Security;
 
 namespace EQWOWConverter.ObjectModels
 {

@@ -104,6 +104,8 @@ namespace EQWOWConverter.ObjectModels
                     eqRadius = 8;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.DiscOnGround)
                     eqRadius = 5;
+                else if (emissionPattern == SpellVisualEmitterSpawnPatternType.ColumnFromGround)
+                    eqRadius = 2;
                 else if (emissionPattern == SpellVisualEmitterSpawnPatternType.SphereAwayFromPlayer)
                     eqRadius = 3;
             }
