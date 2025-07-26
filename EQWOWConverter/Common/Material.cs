@@ -27,6 +27,7 @@ namespace EQWOWConverter.Common
         public int TextureWidth = 0;
         public int TextureHeight = 0;
         public bool AlwaysBrightOverride = false;
+        public bool IsParticleEffect = false;
 
         public Material() { }
 

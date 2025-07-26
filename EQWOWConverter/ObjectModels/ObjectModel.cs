@@ -361,6 +361,7 @@ namespace EQWOWConverter.ObjectModels
                     materialIDBySpriteListRootName.Add(textureNamesChainByRootTexture.Key, Convert.ToInt32(curMaterialID));
                     Material newMaterial = new Material(textureNamesChainByRootTexture.Key, textureNamesChainByRootTexture.Key, curMaterialID, MaterialType.TransparentAdditive, 
                         textureNamesChainByRootTexture.Value, animationDelay, 64, 64, true);
+                    newMaterial.IsParticleEffect = true;
                     initialMaterials.Add(newMaterial);
                 }
 
@@ -1622,6 +1623,8 @@ namespace EQWOWConverter.ObjectModels
             {
                 ObjectModelTexture newModelTexture = new ObjectModelTexture();
                 newModelTexture.TextureName = modelMaterial.Material.TextureNames[0];
+                if (modelMaterial.Material.IsParticleEffect == true)
+                    newModelTexture.WrapType = ObjectModelTextureWrapType.None;
                 ModelTextures.Add(newModelTexture);
             }
         }
