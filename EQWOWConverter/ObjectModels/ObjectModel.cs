@@ -192,10 +192,14 @@ namespace EQWOWConverter.ObjectModels
                 ModelAnimations.Add(new ObjectModelAnimation());
                 ModelAnimations[0].BoundingBox = VisibilityBoundingBox;
                 ModelAnimations[0].BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
-                ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS);
+
+                if (Properties.SpellVisualEffectStageType == Spells.SpellVisualStageType.Impact)
+                    ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS);
+                else
+                    ModelAnimations[0].DurationInMS = Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS);
 
                 // For spells that spray 'from the hands', it must be rotated a quarter turn so that it cones forward 
-                if (Properties.SpelLEmitterSpraysFromHands == true)
+                if (Properties.SpellEmitterSpraysFromHands == true)
                 {
                     ModelBones[0].RotationTrack.AddSequence();
                     ModelBones[0].RotationTrack.AddValueToLastSequence(0, new QuaternionShort(0.7071f, 0, 0, 0.7071f));

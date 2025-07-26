@@ -278,7 +278,7 @@ namespace EQWOWConverter.Spells
                     continue;
 
                 ObjectModelParticleEmitter particleEmitter = new ObjectModelParticleEmitter();
-                particleEmitter.Load(emitter);
+                particleEmitter.Load(emitter, stageType);
                 modelParticleEmitters.Add(particleEmitter);
 
                 // It seems that emitters with type 5 (disc at player center) ALSO create emitters on hands and on the ground
@@ -290,7 +290,7 @@ namespace EQWOWConverter.Spells
                     //emitters.Add(particleEmitterHands);
 
                     ObjectModelParticleEmitter particleEmitterGround = new ObjectModelParticleEmitter();
-                    particleEmitterGround.Load(emitter, SpellVisualEmitterSpawnPatternType.DiscOnGround);
+                    particleEmitterGround.Load(emitter, stageType, SpellVisualEmitterSpawnPatternType.DiscOnGround);
                     modelParticleEmitters.Add(particleEmitterGround);
                 }
             }
@@ -308,8 +308,9 @@ namespace EQWOWConverter.Spells
                     ObjectModelProperties objectProperties = new ObjectModelProperties();
                     objectProperties.SpellVisualEffectNameDBCID = SpellVisualEffectNameDBC.GenerateID();
                     objectProperties.SingleSpriteSpellParticleEmitters.Add(emitter);
+                    objectProperties.SpellVisualEffectStageType = stageType;
                     if (emitter.EmissionPattern == SpellVisualEmitterSpawnPatternType.FromHands)
-                        objectProperties.SpelLEmitterSpraysFromHands = true;
+                        objectProperties.SpellEmitterSpraysFromHands = true;
                     ObjectModel objectModel = new ObjectModel(objectName, objectProperties, ObjectModelType.ParticleEmitter, Configuration.GENERATE_OBJECT_MODEL_MIN_BOUNDARY_BOX_SIZE);
                     objectModel.Load(new List<Material>(), new MeshData(), new List<Vector3>(), new List<TriangleFace>());
                     spellVisual.AddObjectToStageAtAttachLocation(stageType, emitter.EmissionLocation, objectModel);

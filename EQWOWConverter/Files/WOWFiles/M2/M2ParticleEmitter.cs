@@ -103,6 +103,10 @@ namespace EQWOWConverter.WOWFiles
 
             EmissionRate.TrackSequences.AddSequence();
             EmissionRate.TrackSequences.AddValueToLastSequence(0, new M2Float(objectModelParticleEmitter.SpawnRate));
+            if (objectModelParticleEmitter.SpellVisualEffectStageType == Spells.SpellVisualStageType.Impact)
+                EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS), new M2Float(0));
+            else
+                EmissionRate.TrackSequences.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS), new M2Float(0));
 
             ZSource.TrackSequences.AddSequence();
             ZSource.TrackSequences.AddValueToLastSequence(0, new M2Float(0));

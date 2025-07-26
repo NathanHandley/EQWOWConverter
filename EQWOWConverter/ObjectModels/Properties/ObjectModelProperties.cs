@@ -16,6 +16,7 @@
 
 using EQWOWConverter.Common;
 using EQWOWConverter.Creatures;
+using EQWOWConverter.Spells;
 
 namespace EQWOWConverter.ObjectModels.Properties
 {
@@ -37,7 +38,8 @@ namespace EQWOWConverter.ObjectModels.Properties
         public bool DoGenerateCollisionFromMeshData = true;
         public List<ObjectModelParticleEmitter> SingleSpriteSpellParticleEmitters = new List<ObjectModelParticleEmitter>();
         public int SpellVisualEffectNameDBCID;
-        public bool SpelLEmitterSpraysFromHands = false;
+        public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
+        public bool SpellEmitterSpraysFromHands = false;
         public bool RenderingEnabled = true; // Note: This is also makes it non-interactive (non-clickable)
 
         public ObjectModelProperties() { }

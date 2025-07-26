@@ -25,6 +25,7 @@ namespace EQWOWConverter.ObjectModels
         public string SpriteSheetFileNameNoExt = string.Empty;
         public SpellEmitterModelAttachLocationType EmissionLocation = SpellEmitterModelAttachLocationType.Chest;
         public SpellVisualEmitterSpawnPatternType EmissionPattern = SpellVisualEmitterSpawnPatternType.None;
+        public SpellVisualStageType SpellVisualEffectStageType = SpellVisualStageType.None;
         public int VisualEffectIndex = 0;
         public float Gravity = 0;
         public int LifespanInMS = 0;
@@ -34,9 +35,11 @@ namespace EQWOWConverter.ObjectModels
         public float Radius = 0;
         public int TextureID = 0;
 
-        public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
+        public void Load(EQSpellsEFF.EFFSpellEmitter effEmitter, SpellVisualStageType spellVisualEffectStageType,
+            SpellVisualEmitterSpawnPatternType emitterPatternOverride = SpellVisualEmitterSpawnPatternType.None)
         {
             VisualEffectIndex = effEmitter.VisualEffectIndex;
+            SpellVisualEffectStageType = spellVisualEffectStageType;
 
             // Calculate the location and pattern first since those are used in further calculations.
             if (emitterPatternOverride == SpellVisualEmitterSpawnPatternType.None)

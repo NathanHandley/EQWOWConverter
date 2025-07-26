@@ -18,6 +18,7 @@ namespace EQWOWConverter.Spells
 {
     internal enum SpellVisualStageType : int
     {
+        None = -1,
         Precast = 0,
         Cast = 1,
         Impact = 2

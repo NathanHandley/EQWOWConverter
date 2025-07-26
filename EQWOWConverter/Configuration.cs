@@ -443,11 +443,13 @@ namespace EQWOWConverter
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 
+        // All spell properties
+        public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
+
         // Spell emitter particles
         public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MIN = 0.05f;
         public static readonly float SPELLS_EFFECT_EMITTER_SIZE_SCALE_MAX = 0.8f;
         public static readonly int SPELLS_EFFECT_EMITTER_TARGET_DURATION_IN_MS = 5000;
-        public static readonly int SPELLS_EFFECT_EMITTER_LONGEST_SPELL_TIME_IN_MS = 16000;
         public static readonly float SPELLS_EFFECT_EMITTER_DISTANCE_SCALE_MOD = 0.3048f;
         public static readonly float SPELLS_EFFECT_EMITTER_LIFESPAN_TIME_MOD = 0.75f;
         public static readonly int SPELL_EFFECT_EMITTER_SPAWN_RATE_SPHERE_MINIMUM = 25;
