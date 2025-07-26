@@ -62,43 +62,39 @@ namespace EQWOWConverter.EQFiles
             }
         }
 
+        internal struct EFFSpellSpriteListParticle
+        {
+            public string SpriteName = string.Empty;
+            public short CircularShift;
+            public short VerticalForce;
+            public float Radius;
+            public short Movement;
+            public float Scale;
+
+            public EFFSpellSpriteListParticle(string spriteName, short circularShift, short verticalForce, float radius, short movement, float scale)
+            {
+                SpriteName = spriteName;
+                CircularShift = circularShift;
+                VerticalForce = verticalForce;
+                Radius = radius;
+                Movement = movement;
+                Scale = scale;
+            }
+        }
+
         internal struct EFFSpellSpriteListEffect
         {
             public EQSpellEffectTargetType TargetType;
             public EQSpellListEffectType EffectType;
             public int VisualEffectIndex = 0;
-            public string[] SpriteNames = new string[12];
-            public float[] Unknowns = new float[12];
-            public short[] CircularShifts = new short[12];
-            public short[] VerticalForces = new short[12];
-            public float[] Radii = new float[12];
-            public short[] Movements = new short[12];
-            public float[] Scales = new float[12];
+            public List<EFFSpellSpriteListParticle> Particles= new List<EFFSpellSpriteListParticle>();
             public Dictionary<string, List<string>> SpriteChainsBySpriteRoot = new Dictionary<string, List<string>>();
 
-            public EFFSpellSpriteListEffect(EQSpellEffectTargetType targetType, EQSpellListEffectType effectType, int visualEffectIndex, string[] spriteNames, float[] unknowns, 
-                short[] circularShifts, short[] verticalForces, float[] radii, short[] movements, float[] scales)
+            public EFFSpellSpriteListEffect(EQSpellEffectTargetType targetType, EQSpellListEffectType effectType, int visualEffectIndex)
             {
                 TargetType = targetType;
                 EffectType = effectType;
                 VisualEffectIndex = visualEffectIndex;
-
-                // The 12 particle values will 'wrap' around to the begining when a non-sprite name is found
-                int sourceSpriteListIndex = 0;
-                for (int i = 0; i < 12; i++)
-                {
-                     // Determine material ID, knowing that sprite names will repeat when the end is met (return to first)
-                    if (spriteNames[sourceSpriteListIndex].Trim().Length == 0)
-                        sourceSpriteListIndex = 0;
-                    SpriteNames[i] = spriteNames[sourceSpriteListIndex];
-                    Unknowns[i] = unknowns[sourceSpriteListIndex];
-                    CircularShifts[i] = circularShifts[sourceSpriteListIndex];
-                    VerticalForces[i] = verticalForces[sourceSpriteListIndex];
-                    Radii[i] = radii[sourceSpriteListIndex];
-                    Movements[i] = movements[sourceSpriteListIndex];
-                    Scales[i] = scales[sourceSpriteListIndex];
-                    sourceSpriteListIndex++;
-                }
             }
         }
 
@@ -388,15 +384,23 @@ namespace EQWOWConverter.EQFiles
                         }
 
                         // Create the sprite list effect
-                        EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(targetType, effectType, spellEffect.VisualEffectIndex, sectionData.SpriteListNames, sectionData.SpriteListUnknown,
-                            sectionData.SpriteListCircularShifts, sectionData.SpriteListVerticalForces, sectionData.SpriteListRadii, sectionData.SpriteListMovements, sectionData.SpriteListScales);
+                        EFFSpellSpriteListEffect newSpriteListEffect = new EFFSpellSpriteListEffect(targetType, effectType, spellEffect.VisualEffectIndex);
+                        for (int i = 0; i < 12; i++)
+                        {
+                            if (sectionData.SpriteListNames[i].Trim().Length > 0)
+                            {
+                                EFFSpellSpriteListParticle newParticle = new EFFSpellSpriteListParticle(sectionData.SpriteListNames[i], sectionData.SpriteListCircularShifts[i],
+                                    sectionData.SpriteListVerticalForces[i], sectionData.SpriteListRadii[i], sectionData.SpriteListMovements[i], sectionData.SpriteListScales[i]);
+                                newSpriteListEffect.Particles.Add(newParticle);
+                            }
+                        }
 
                         // Associate any sprite chains (can't find projectile textures yet)
                         if (targetType != EQSpellEffectTargetType.Projectile)
-                            foreach (string spriteName in newSpriteListEffect.SpriteNames)
+                            foreach (EFFSpellSpriteListParticle particle in newSpriteListEffect.Particles)
                             {
-                                if (spriteName.Trim().Length > 0 && newSpriteListEffect.SpriteChainsBySpriteRoot.ContainsKey(spriteName) == false)
-                                    newSpriteListEffect.SpriteChainsBySpriteRoot.Add(spriteName, SpriteChainsBySpriteRoot[spriteName]);
+                                if (newSpriteListEffect.SpriteChainsBySpriteRoot.ContainsKey(particle.SpriteName) == false)
+                                    newSpriteListEffect.SpriteChainsBySpriteRoot.Add(particle.SpriteName, SpriteChainsBySpriteRoot[particle.SpriteName]);
                             }
 
                         // Add it

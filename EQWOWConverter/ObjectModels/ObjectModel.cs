@@ -364,12 +364,9 @@ namespace EQWOWConverter.ObjectModels
                 }
 
                 // Create geometry
-                int quadsToCreate = 1; // Default is static/single
-                if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating)
-                    quadsToCreate = 12; // Pulsating has 12 quads in a circle
-                for (int i = 0; i < quadsToCreate; i++)
+                for (int i = 0; i < spriteListEffect.Particles.Count; i++)
                 {
-                    int materialID = materialIDBySpriteListRootName[spriteListEffect.SpriteNames[i]];
+                    int materialID = materialIDBySpriteListRootName[spriteListEffect.Particles[i].SpriteName];
 
                     // Build the quads
                     Vector3 topLeft = new Vector3(0.5f, 0.5f, 0.5f);
@@ -398,18 +395,17 @@ namespace EQWOWConverter.ObjectModels
             foreach (EQSpellsEFF.EFFSpellSpriteListEffect spriteListEffect in spriteListEffects)
             {
                 // Generate animation data
-                int quadsForSpriteListEffect = 1; // Default is static/single
-                if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating)
-                    quadsForSpriteListEffect = 12; // Pulsating has 12 quads in a circle
-                for (int i = 0; i < quadsForSpriteListEffect; i++)
+                for (int i = 0; i < spriteListEffect.Particles.Count; i++)
                 {
-                    // Each quad has 3 bones, one for the base rotation, one for the dynamic rotation, andone for the transformation + billboard
+                    EQSpellsEFF.EFFSpellSpriteListParticle curParticle = spriteListEffect.Particles[i];
+
+                    // Each quad has 3 bones, one for the base rotation, one for the dynamic rotation, and one for the transformation + billboard
                     // Base Rotation bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = 0;
 
                     // Rotation will be based on index, going around in a circle around the character in 30 degree steps
-                    if (quadsForSpriteListEffect > 1)
+                    if (spriteListEffect.Particles.Count > 1)
                     {
                         ModelBones[curQuadBoneIndex].RotationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                         ModelBones[curQuadBoneIndex].RotationTrack.AddSequence();
@@ -435,10 +431,10 @@ namespace EQWOWConverter.ObjectModels
                     // Dynamic Rotation Bone
                     ModelBones.Add(new ObjectModelBone());
                     ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
-                    if (spriteListEffect.CircularShifts[i] != 0)
+                    if (curParticle.CircularShift != 0)
                     {
                         // 15 shifts is 1 full rotation, positive is counterclockwise and negative is clockwise
-                        float numOfRotations = spriteListEffect.CircularShifts[i] / 15f;
+                        float numOfRotations = curParticle.CircularShift / 15f;
                         if (numOfRotations < 0)
                         {
                             // TODO: Clockwise
@@ -494,11 +490,11 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
 
                     // Set radius / pulse effect
-                    float curSpriteRadius = spriteListEffect.Radii[i] *= Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
+                    float curSpriteRadius = curParticle.Radius *= Configuration.SPELLS_EFFECT_DISTANCE_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(curSpriteRadius, 0f, 0f));
-                    if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (spriteListEffect.Radii[i] == 0f || spriteListEffect.Radii[i] >= 0.1f)) // Low (but not zero) means static image at player
+                    if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (curParticle.Radius == 0f || curParticle.Radius >= 0.1f)) // Low (but not zero) means static image at player
                     {
                         UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
                         float pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EMITTER_SPRITE_LIST_PULSE_RANGE;
@@ -509,7 +505,7 @@ namespace EQWOWConverter.ObjectModels
                     // Set Scale
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddSequence();
-                    float curSpriteScale = spriteListEffect.Scales[i] * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
+                    float curSpriteScale = curParticle.Radius * Configuration.SPELL_EMITTER_SPRITE_LIST_ANIMATION_SCALE_MOD;
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(0, new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     ModelBones[curQuadBoneIndex].ScaleTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EMITTER_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS - 1), new Vector3(curSpriteScale, curSpriteScale, curSpriteScale));
                     // Hide the sprites after 2 seconds, as that's when all sprite list animations 'ends' with exception of projectiles
