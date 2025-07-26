@@ -500,18 +500,31 @@ namespace EQWOWConverter.ObjectModels
                     ModelBones[curQuadBoneIndex].ParentBone = Convert.ToInt16(curQuadBoneIndex - 1);
                     ModelBones[curQuadBoneIndex].Flags |= Convert.ToUInt16(ObjectModelBoneFlags.SphericalBillboard);
 
-                    // Set radius / pulse effect
+                    // Translation (radius, pulse effect, vertical force)
                     float curSpriteRadius = curParticle.Radius *= Configuration.SPELL_EFFECT_SPRITE_LIST_RADIUS_MOD;
                     ModelBones[curQuadBoneIndex].TranslationTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddSequence();
                     ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(0, new Vector3(curSpriteRadius, 0f, 0f));
+                    UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
+                    float pulseMaxDistance = curSpriteRadius;
                     if (spriteListEffect.EffectType == EQSpellListEffectType.Pulsating && (curParticle.Radius == 0f || curParticle.Radius >= 0.1f)) // Low (but not zero) means static image at player
+                        pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE;
+                    float forceMaxDistance = 0f;
+                    if (curParticle.VerticalForce != 0)
                     {
-                        UInt32 animMidTimestamp = Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS / 2);
-                        float pulseMaxDistance = curSpriteRadius + Configuration.SPELL_EFFECT_SPRITE_LIST_PULSE_RANGE;
-                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(animMidTimestamp, new Vector3(pulseMaxDistance, 0f, 0f));
-                        ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, 0f));
+                        switch (curParticle.VerticalForce)
+                        {
+                            case -3: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW; break;
+                            case -2: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW / 2; break;
+                            case -1: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW / 3; break;
+                            case 1: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH / 3; break;
+                            case 2: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH / 2; break;
+                            case 3: forceMaxDistance = Configuration.SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH; break;
+                            default: break;
+                        }
                     }
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(animMidTimestamp, new Vector3(pulseMaxDistance, 0f, forceMaxDistance * 0.5f));
+                    ModelBones[curQuadBoneIndex].TranslationTrack.AddValueToLastSequence(Convert.ToUInt32(Configuration.SPELL_EFFECT_SPRITE_LIST_MAX_NON_PREJECTILE_ANIM_TIME_IN_MS), new Vector3(curSpriteRadius, 0f, forceMaxDistance));
 
                     // Set Scale
                     ModelBones[curQuadBoneIndex].ScaleTrack.InterpolationType = ObjectModelAnimationInterpolationType.Linear;
