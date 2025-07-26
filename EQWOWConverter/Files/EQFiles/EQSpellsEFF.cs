@@ -357,6 +357,8 @@ namespace EQWOWConverter.EQFiles
                         // Skip invalid sprite list effects
                         if (sectionData.SpriteListEffect == -1)
                             continue;
+                        if (sectionData.TypeString.Trim().Length == 0 && sectionData.SpriteListEffect == 0)
+                            continue;
 
                         // Determine effect type
                         EQSpellListEffectType effectType;
