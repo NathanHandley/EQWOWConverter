@@ -1416,9 +1416,11 @@ namespace EQWOWConverter
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
-                gateSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
                 gateSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
+                gateSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
             }
+            else
+                gateSpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
@@ -1442,6 +1444,8 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            bindAffinitySelfSpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
+            bindAffinitySelfSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -1458,6 +1462,8 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
+            bindAffinitySpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
+            bindAffinitySpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             // Phase aura 1 (Day)
