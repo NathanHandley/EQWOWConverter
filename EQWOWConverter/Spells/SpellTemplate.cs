@@ -211,6 +211,10 @@ namespace EQWOWConverter.Spells
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate);
 
+                // Add spell duration text.
+                // NOTE: Do this last so text looks right
+                AddDurationToSpellDescription(ref newSpellTemplate, newSpellTemplate.SpellDurationInMS);
+
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
             }
@@ -520,6 +524,28 @@ namespace EQWOWConverter.Spells
         private void AddToAuraDescription(string descriptionToAdd)
         {
             AuraDescription = GetFormattedDescription(AuraDescription, descriptionToAdd);
+        }
+
+        private static void AddDurationToSpellDescription(ref SpellTemplate spellTemplate, int durationInMS)
+        {
+            // Skip no duration
+            if (durationInMS <= 0)
+                return;
+
+            // Pull out the time values
+            int wholeMinutes = durationInMS / 60000;
+            int remainderSeconds = (durationInMS % 60000) / 1000;
+
+            // Different text depending on minutes, seconds, or both
+            if (wholeMinutes > 0)
+            {
+                if (remainderSeconds > 0)
+                    spellTemplate.Description = (string.Concat(spellTemplate.Description, " Lasts ", wholeMinutes, " min ", remainderSeconds, " sec."));
+                else
+                    spellTemplate.Description = (string.Concat(spellTemplate.Description, " Lasts ", wholeMinutes, " min."));
+            }
+            else // Just seconds
+                spellTemplate.Description = (string.Concat(spellTemplate.Description, " Lasts ", remainderSeconds, " sec."));
         }
 
         private static string GetFormattedDescription(string initialDescription, string descriptionToAdd)
