@@ -21,7 +21,6 @@ namespace EQWOWConverter
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // \/ Make sure you set the configuration values below this line \/ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
         // ====================================================================
         // Paths and Files
         // ====================================================================
@@ -65,7 +64,6 @@ namespace EQWOWConverter
         // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
         public static readonly string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
         public static readonly string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
-
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // /\ Make sure you set the configuration values above this line /\ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -99,8 +97,8 @@ namespace EQWOWConverter
         public static readonly float GENERATE_EQUIPMENT_HELD_SCALE = 0.35f;
 
         // Identifier for what subset of expansion data to work with.  0 = Classic, 1 = Kunark, 2 = Velious
-        public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2;
-        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 0;
+        public static readonly int GENERATE_EQ_EXPANSION_ID_GENERAL = 2; // Not advisable to set this lower than 2
+        public static readonly int GENERATE_EQ_EXPANSION_ID_ZONES = 0; // Zone lines and water volumes will not work in most Kunark and Velious zones (currently)
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 0;
