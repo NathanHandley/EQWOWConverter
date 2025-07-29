@@ -43,7 +43,7 @@ Right now only classic (pre-Kunark) is in a semi-polished state, but you can ena
 4. Deploy your files manually or automatically (see below in "Deploying the Files").
 5. Regenerate map/vmap files for the server per AzerothCore instructions
 
-# Deploying the Files#
+# Deploying the Files
 Automatic Deployment: Set the configuration.cs values in "Deployment Rules"
 
 Manual Deployment:
