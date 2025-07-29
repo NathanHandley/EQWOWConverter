@@ -51,7 +51,7 @@ namespace EQWOWConverter
             }
 
             // Extract
-            if (Configuration.EXTRACT_DBC_FILES == true)
+            if (Configuration.GENERATE_EXTRACT_DBC_FILES == true)
                 ExtractClientDBCFiles();
             else
                 Logger.WriteInfo("- Note: DBC File Extraction is set to false in the Configuration");
@@ -191,7 +191,7 @@ namespace EQWOWConverter
                 CreateLoadingScreens();
 
                 // Create or update the MPQ
-                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+                string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
                 if (Configuration.GENERATE_ONLY_LISTED_ZONE_SHORTNAMES.Count == 0 || File.Exists(exportMPQFileName) == false)
                     CreatePatchMPQ();
                 else
@@ -803,7 +803,7 @@ namespace EQWOWConverter
             string exportZonesObjectsFolder = Path.Combine(exportMPQRootFolder, "World", "Everquest", "ZoneObjects");
             string exportInterfaceFolder = Path.Combine(exportMPQRootFolder, "Interface");
             string exportMusicFolder = Path.Combine(exportMPQRootFolder, "Sound", "Music");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
             string relativeStaticDoodadsPath = Path.Combine("World", "Everquest", "StaticDoodads");
 
             // Clear folders if it's a fresh build
@@ -1620,7 +1620,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Extracting client DBC files...");
 
             // Make sure the patches folder is correct
-            string wowPatchesFolder = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS");
+            string wowPatchesFolder = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS");
             if (Directory.Exists(wowPatchesFolder) == false)
                 throw new Exception("WoW client patches folder does not exist at '" + wowPatchesFolder + "', did you set PATH_WOW_ENUS_CLIENT_FOLDER?");
 
@@ -1629,7 +1629,7 @@ namespace EQWOWConverter
             patchFileNames.Add(Path.Combine(wowPatchesFolder, "patch-enUS.MPQ"));
             string[] existingPatchFiles = Directory.GetFiles(wowPatchesFolder, "patch-*-*.MPQ");
             foreach (string existingPatchName in existingPatchFiles)
-                if (existingPatchName.Contains(Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT) == false)
+                if (existingPatchName.Contains(Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT) == false)
                     patchFileNames.Add(existingPatchName);
 
             // Make sure all of the files are not locked
@@ -1679,7 +1679,7 @@ namespace EQWOWConverter
 
             // Delete the old patch file, if it exists
             Logger.WriteDebug("Deleting old patch file if it exists");
-            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string outputPatchFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(outputPatchFileName) == true)
                 File.Delete(outputPatchFileName);
 
@@ -1716,7 +1716,7 @@ namespace EQWOWConverter
         public void UpdatePatchMPQ()
         {
             Logger.WriteInfo("Updating patch MPQ...");
-            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".mpq");
+            string exportMPQFileName = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".mpq");
             if (File.Exists(exportMPQFileName) == false)
             {
                 Logger.WriteError("Attempted to update the patch MPQ, but it didn't exist at '" + exportMPQFileName + "'");
@@ -1884,7 +1884,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Deploying to client...");
 
             // Make sure a patch was created
-            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string sourcePatchFileNameAndPath = Path.Combine(Configuration.PATH_EXPORT_FOLDER, Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(sourcePatchFileNameAndPath) == false)
             {
                 Logger.WriteError("Failed to deploy to client. Patch at '" + sourcePatchFileNameAndPath + "' did not exist");
@@ -1892,7 +1892,7 @@ namespace EQWOWConverter
             }
 
             // Delete the old one if it's already deployed on the client
-            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Data", "enUS", Configuration.PATH_PATCH_NEW_FILE_NAME_NO_EXT + ".MPQ");
+            string targetPatchFileNameAndPath = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Data", "enUS", Configuration.PATH_CLIENT_PATCH_FILE_NAME_NO_EXT + ".MPQ");
             if (File.Exists(targetPatchFileNameAndPath) == true)
             {
                 try
@@ -1920,7 +1920,7 @@ namespace EQWOWConverter
             Logger.WriteInfo("Clearing client cache...");
 
             // If there is a folder, delete it
-            string folderToDelete = Path.Combine(Configuration.PATH_WOW_ENUS_CLIENT_FOLDER, "Cache", "WDB");
+            string folderToDelete = Path.Combine(Configuration.PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER, "Cache", "WDB");
             if (Directory.Exists(folderToDelete) == true)
             {
                 Logger.WriteDebug("Client cache WDB folder found, so deleting...");
@@ -1944,9 +1944,9 @@ namespace EQWOWConverter
                 Logger.WriteError("Could not deploy DBC files to the server, no folder existed at '" + sourceServerDBCFolder + "'");
                 return;
             }
-            if (Directory.Exists(Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER) == false)
+            if (Directory.Exists(Configuration.DEPLOY_SERVER_DBC_FOLDER_LOCATION) == false)
             {
-                Logger.WriteError("Could not deploy DBC files to the server, no target folder existed at '" + Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER + "'. Check that you set Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER properly");
+                Logger.WriteError("Could not deploy DBC files to the server, no target folder existed at '" + Configuration.DEPLOY_SERVER_DBC_FOLDER_LOCATION + "'. Check that you set Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER properly");
                 return;
             }
 
@@ -1955,7 +1955,7 @@ namespace EQWOWConverter
             string[] dbcFiles = Directory.GetFiles(sourceServerDBCFolder);
             foreach (string dbcFile in dbcFiles)
             {
-                string targetFileName = Path.Combine(Configuration.PATH_DEPLOY_SERVER_DBC_FILES_FOLDER, Path.GetFileName(dbcFile));
+                string targetFileName = Path.Combine(Configuration.DEPLOY_SERVER_DBC_FOLDER_LOCATION, Path.GetFileName(dbcFile));
                 FileTool.CopyFile(dbcFile, targetFileName);
             }
 

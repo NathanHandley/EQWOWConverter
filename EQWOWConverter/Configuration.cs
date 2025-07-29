@@ -18,6 +18,58 @@ namespace EQWOWConverter
 {
     internal class Configuration
     {
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // \/ Make sure you set the configuration values below this line \/ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+        // ====================================================================
+        // Paths and Files
+        // ====================================================================
+        // Location of the installed everquest trilogy client (this must have the eqgame.exe file in it)
+        public static readonly string PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER = "E:\\Development\\EQWOW-Reference\\EverQuestTrilogy";
+
+        // Location of the installed enUS version of World of Warcaft client (this must have the wow.exe in it)
+        public static readonly string PATH_WORLDOFWARCRAFT_CLIENT_INSTALL_FOLDER = "E:\\Development\\azerothcore-wotlk\\Client\\";
+
+        // The root of the tools directory (comes with this source code in a folder)
+        public static readonly string PATH_TOOLS_FOLDER = "E:\\Development\\EQWOW\\Tools";
+
+        // The root of the assets directory (comes with this source code in a folder)
+        public static readonly string PATH_ASSETS_FOLDER = "E:\\Development\\EQWOW\\Assets";
+
+        // The root folder where temporary folders and file will be generated (ensure at least 10GB of space is available in this location)
+        public static readonly string PATH_WORKING_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets";
+
+        // Name of the newely generated patch file, without the extension (make sure this is a unique naming, often patch-enUS-4 or patch-enUS-5 works here. Use patch-enUS-4 if not sure)
+        public static readonly string PATH_CLIENT_PATCH_FILE_NAME_NO_EXT = "patch-enUS-5";
+
+        // ====================================================================
+        // Deployment Rules
+        // ====================================================================
+        // If true, deploy the client file (patch mpq) after building it
+        public static readonly bool DEPLOY_CLIENT_FILES = false;
+
+        // If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)
+        public static readonly bool DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
+
+        // If true, deploy to the server files/data after building
+        public static readonly bool DEPLOY_SERVER_FILES = false;
+
+        // Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)
+        public static readonly string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "E:\\Development\\azerothcore-wotlk\\Build\\bin\\RelWithDebInfo\\data\\dbc";
+
+        // If true, deploy to the SQL to the server
+        // Note: May not work on remote servers (not tested)
+        public static readonly bool DEPLOY_SERVER_SQL = false;
+
+        // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
+        public static readonly string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
+        public static readonly string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
+
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // /\ Make sure you set the configuration values above this line /\ !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
         // ====================================================================
         // Core
         // ====================================================================
@@ -38,59 +90,6 @@ namespace EQWOWConverter
         public static readonly int LOGGING_FILE_MIN_LEVEL = 3;
 
         // ====================================================================
-        // Paths and Files
-        // ====================================================================
-        // Location of the installed everquest trilogy
-        public static readonly string PATH_EQTRILOGY_FOLDER = "E:\\Development\\EQWOW-Reference\\EverQuestTrilogy";
-
-        // Location of eq data exports before conditioning (from LaternExtractor)
-        public static readonly string PATH_EQEXPORTSRAW_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQClientExportRaw";
-
-        // Location of your enUS World of Warcaft client, where your wow.exe is (such as C:\WorldOfWarcraft)
-        public static readonly string PATH_WOW_ENUS_CLIENT_FOLDER = "E:\\Development\\azerothcore-wotlk\\Client\\";
-
-        // Where the "conditioned" eq data export files go
-        public static readonly string PATH_EQEXPORTSCONDITIONED_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\EQClientExportConditioned";
-
-        // Where the intermediate generated WOW files go
-        public static readonly string PATH_EXPORT_FOLDER = "E:\\Development\\EQWOW-Reference\\Working\\Assets\\WOWExports";
-
-        // The root of the tools directory (included in this source repository)
-        public static readonly string PATH_TOOLS_FOLDER = "E:\\Development\\EQWOW\\Tools";
-
-        // The root of the assets directory (included in this source repository)
-        public static readonly string PATH_ASSETS_FOLDER = "E:\\Development\\EQWOW\\Assets";
-
-        // Name of the newely generated patch file, without the extension. Note: Will be deleted when extracting DBC data, so make sure it's the last and new
-        public static readonly string PATH_PATCH_NEW_FILE_NAME_NO_EXT = "patch-enUS-5";
-
-        // Location of where the server DBC files would be deployed to if set to deploy
-        public static readonly string PATH_DEPLOY_SERVER_DBC_FILES_FOLDER = "E:\\Development\\azerothcore-wotlk\\Build\\bin\\RelWithDebInfo\\data\\dbc";
-
-        // ====================================================================
-        // Deployment Rules
-        // ====================================================================
-        // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool DEPLOY_CLIENT_FILES = true;
-
-        // If true, deploy to the server files/data after building
-        public static readonly bool DEPLOY_SERVER_FILES = true;
-
-        // If true, deploy to the SQL to the server
-        // Note: May not work on remote servers (not tested)
-        public static readonly bool DEPLOY_SERVER_SQL = true;
-
-        // If true, DBC files are extracted every time.
-        public static readonly bool EXTRACT_DBC_FILES = true;
-
-        // If true and when deploying client files, clear the cache
-        public static readonly bool DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
-
-        // If deploying to SQL, you need to set these to something real that points to your databases
-        public static readonly string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
-        public static readonly string DEPLOY_SQL_CONNECTION_STRING_WORLD = "Server=127.0.0.1;Database=acore_world;Uid=root;Pwd=rootpass;";
-
-        // ====================================================================
         // Generator Rules
         // ====================================================================
         // The value EQ vertices multiply by when translated into WOW vertices
@@ -105,6 +104,9 @@ namespace EQWOWConverter
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRANSPORTS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_TRADESKILLS = 0;
         public static readonly int GENERATE_EQ_EXPANSION_ID_EQUIPMENT_GRAPHICS = 0;
+
+        // If true, DBC files are extracted every time.
+        public static readonly bool GENERATE_EXTRACT_DBC_FILES = true;
 
         // If true, then objects are generated
         public static readonly bool GENERATE_OBJECTS = true;
@@ -698,5 +700,12 @@ namespace EQWOWConverter
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
         public static readonly int SQL_TRANSPORTS_GUID_END = 41;
+
+
+        // DO NOT CHANGE THESE VALUES UNLESS YOU KNOW WHAT YOU ARE DOING
+        // They are temporary values used for configuration purposes, resolved at runtime
+        public static string PATH_EQEXPORTSRAW_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "EQClientExportRaw"); }
+        public static string PATH_EQEXPORTSCONDITIONED_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "EQClientExportConditioned"); }
+        public static string PATH_EXPORT_FOLDER { get => Path.Combine(PATH_WORKING_FOLDER, "WOWExports"); }
     }
 }

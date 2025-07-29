@@ -93,7 +93,7 @@ internal class Program
 
                                 // Extraction
                                 Logger.WriteInfo("Extracting EQ files...");
-                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EQTRILOGY_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
                                     Logger.WriteInfo("Extraction completed successfully.");
                                 else
                                 {
@@ -128,7 +128,7 @@ internal class Program
                         case "2":
                             {
                                 Logger.WriteInfo("Extracting EQ files...");
-                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EQTRILOGY_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
+                                if (LanternExtractor.LanternExtractor.ProcessRequest(Configuration.PATH_EVERQUEST_TRILOGY_CLIENT_INSTALL_FOLDER, Configuration.PATH_EQEXPORTSRAW_FOLDER) == true)
                                     Logger.WriteInfo("Extraction completed successfully.");
                                 else
                                     Logger.WriteError("Extraction failed!");
