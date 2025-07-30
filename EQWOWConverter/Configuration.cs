@@ -440,6 +440,10 @@ namespace EQWOWConverter
         // How much to multiply the EQ range value for WoW
         public static readonly float SPELLS_RANGE_MULTIPLIER = 0.3333f;
 
+        // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
+        // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
+        public static readonly int SPELL_SECONDS_PER_TICK = 6;
+
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 

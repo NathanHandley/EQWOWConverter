@@ -194,7 +194,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int buffDuration = Convert.ToInt32(columns["buffduration"]);
                 if (buffDuration > 0)
-                    newSpellTemplate.SpellDurationInMS = buffDuration * 1000;
+                    newSpellTemplate.SpellDurationInMS = buffDuration * Configuration.SPELL_SECONDS_PER_TICK * 1000;
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
