@@ -117,9 +117,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType1)); // EffectAura1
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType2)); // EffectAura2
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType3)); // EffectAura3
-            newRow.AddUInt32(0); // EffectAuraPeriod1
-            newRow.AddUInt32(0); // EffectAuraPeriod2
-            newRow.AddUInt32(0); // EffectAuraPeriod3
+            newRow.AddUInt32(spellTemplate.EffectAuraPeriod1); // EffectAuraPeriod1
+            newRow.AddUInt32(spellTemplate.EffectAuraPeriod2); // EffectAuraPeriod2
+            newRow.AddUInt32(spellTemplate.EffectAuraPeriod3); // EffectAuraPeriod3
             newRow.AddFloat(0); // EffectMultipleValue1
             newRow.AddFloat(0); // EffectMultipleValue2
             newRow.AddFloat(0); // EffectMultipleValue3
