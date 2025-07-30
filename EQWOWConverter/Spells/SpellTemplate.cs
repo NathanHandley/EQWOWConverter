@@ -211,8 +211,12 @@ namespace EQWOWConverter.Spells
                 if (spellVisualEffectIndex >= 0 && spellVisualEffectIndex < 52)
                     newSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(spellVisualEffectIndex, !isDetrimental).SpellVisualDBCID);
 
+                // School class
+                int resistType = int.Parse(columns["resisttype"]);
+                newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
+
                 // Convert the spell effects
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate);
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask);
 
                 // Add spell duration text.
                 // NOTE: Do this last so text looks right
@@ -239,6 +243,19 @@ namespace EQWOWConverter.Spells
             PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Mage, "magician", "wizard");
             PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Warlock, "necromancer", "enchanter");
             PopulateClassLearnScrollProperties(ref spellTemplate, rowColumns, ClassType.Druid, "druid");
+        }
+
+        private static UInt32 GetSchoolMaskForResistType(int eqResistType)
+        {
+            switch (eqResistType)
+            {
+                case 1: return 64; // EQ Magic -> WOW Arcane
+                case 2: return 4; // EQ Fire -> WOW Fire
+                case 3: return 16; // EQ Cold -> WOW Frost
+                case 4: return 8; // EQ Poison => WOW Nature
+                case 5: return 40; // EQ Disease => WOW "Plague" (Shadow + Nature)
+                default: return 1; // Physical by default
+            }
         }
 
         private static void PopulateClassLearnScrollProperties(ref SpellTemplate spellTemplate, Dictionary<string, string> rowColumns, ClassType wowClassType, params string[] eqClassNames)
@@ -425,7 +442,7 @@ namespace EQWOWConverter.Spells
             spellTemplate.SpellEffects.Add(curEffect);
         }
 
-        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate)
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask)
         {
             // Process all spell effects
             // TODO: Formulas
@@ -442,11 +459,23 @@ namespace EQWOWConverter.Spells
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
                             if (effect.EQBaseValue > 0)
                             {
-                                spellTemplate.AddToDescription(string.Concat("Heal the target for ", effectBasePoints));
+                                spellTemplate.AddToDescription(string.Concat("Heal the target by ", effectBasePoints));
                                 wowEffectType = SpellWOWEffectType.Heal;
                             }
                             else
-                                spellTemplate.AddToDescription(string.Concat("Damage the target for ", effectBasePoints));
+                            {
+                                string descriptionFragment = string.Concat("Strike the target for ", effectBasePoints);
+                                switch (schoolMask)
+                                {
+                                    case 4: descriptionFragment = string.Concat(descriptionFragment, " fire damage"); break;
+                                    case 8: descriptionFragment = string.Concat(descriptionFragment, " nature damage"); break;
+                                    case 16: descriptionFragment = string.Concat(descriptionFragment, " frost damage"); break;
+                                    case 40: descriptionFragment = string.Concat(descriptionFragment, " plague (shadow + nature) damage"); break;
+                                    case 64: descriptionFragment = string.Concat(descriptionFragment, " arcane damage"); break;
+                                    default: descriptionFragment = string.Concat(descriptionFragment, " damage"); break; 
+                                }
+                                spellTemplate.AddToDescription(descriptionFragment);
+                            }
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.None, 0, 0);
                             curEffectID++;
                         } break;
