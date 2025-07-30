@@ -192,9 +192,13 @@ namespace EQWOWConverter.Spells
                 PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
-                int buffDuration = Convert.ToInt32(columns["buffduration"]);
-                if (buffDuration > 0)
-                    newSpellTemplate.SpellDurationInMS = buffDuration * Configuration.SPELL_SECONDS_PER_TICK * 1000;
+                int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
+                if (buffDurationInTicks > 0)
+                {
+                    // TODO: Formulas 50 and 51 are perm effects and should have no duration
+                    int buffDurationFormula = Convert.ToInt32(columns["buffdurationformula"]);
+                    newSpellTemplate.SpellDurationInMS = GetBuffDurationInMS(buffDurationInTicks, buffDurationFormula);
+                }
 
                 // Icon
                 int spellIconID = int.Parse(columns["icon"]);
@@ -401,6 +405,21 @@ namespace EQWOWConverter.Spells
             }
         }
 
+        private static int GetBuffDurationInMS(int eqBuffDurationInTicks, int eqBuffDurationFormula)
+        {
+            int buffTicks = eqBuffDurationInTicks;
+
+            // TODO: There are level-based formulas, but they are ignored for now since spellpower is a 'thing' and balance
+            // is already achieved
+            switch (eqBuffDurationFormula)
+            {
+                case 4: buffTicks = Math.Min(50, eqBuffDurationInTicks); break;
+                case 5: buffTicks = Math.Min(2, eqBuffDurationInTicks); break;
+                default: break;
+            }
+
+            return eqBuffDurationInTicks * Configuration.SPELL_SECONDS_PER_TICK * 1000;
+        }
 
         private static void PopulateEQSpellEffect(ref SpellTemplate spellTemplate, int slotID, Dictionary<string, string> rowColumns)
         {
