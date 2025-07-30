@@ -518,24 +518,61 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.ArmorClass:
                         {
                             int effectDieSides = 1;
-                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
+                            int effectBasePoints = effect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            spellTemplate.AddToDescription(string.Concat("Increase the target's armor by ", effectBasePoints));
-                            spellTemplate.AddToAuraDescription(string.Concat("Armor increased by ", effectBasePoints));
+                            if (effectBasePoints >= 0)
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Increase the target's armor by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Armor increased by ", effectBasePoints));
+                            }
+                            else
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Decreases the target's armor by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Armor decreased by ", effectBasePoints));
+                            }                                
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0, 0);
                             curEffectID++;
                         } break;
                     case SpellEQEffectType.TotalHP:
                         {
                             int effectDieSides = 1;
-                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
+                            int effectBasePoints = effect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            spellTemplate.AddToDescription(string.Concat("Increase the target's maximum health by ", effectBasePoints));
-                            spellTemplate.AddToAuraDescription(string.Concat("Maximum health increased by ", effectBasePoints));
+                            if (effectBasePoints >= 0)
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Increases the target's maximum health by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Maximum health increased by ", effectBasePoints));
+                            }
+                            else
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Decreases the target's maximum health by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Maximum health decreased by ", effectBasePoints));
+                            }                            
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0, 0);
                             curEffectID++;
                         }
                         break;
+                    case SpellEQEffectType.Attack:
+                        {
+                            int effectDieSides = 1;
+                            int effectBasePoints = effect.EQBaseValue;
+                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            if (effectBasePoints >= 0)
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Increase the target's attack rating by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Attack rating increased by ", effectBasePoints));
+                            }
+                            else
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Decrease the target's attack rating by ", effectBasePoints));
+                                spellTemplate.AddToAuraDescription(string.Concat("Attack rating decreased by ", effectBasePoints));
+                            }
+                            // Add two for ranged and melee
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModAttackPower, 0, 0, 0);
+                            curEffectID++;
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModRangedAttackPower, 0, 0, 0);
+                            curEffectID++;
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", effect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -584,7 +621,7 @@ namespace EQWOWConverter.Spells
                     break;
                 default:
                     {
-                        Logger.WriteWarning("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex >= 3, so this effect is ignored");
+                        Logger.WriteError("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex >= 3, so this effect is ignored");
                         return;
                     }
             }

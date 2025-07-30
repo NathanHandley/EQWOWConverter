@@ -105,9 +105,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // EffectMechanic1
             newRow.AddUInt32(0); // EffectMechanic2
             newRow.AddUInt32(0); // EffectMechanic3
-            newRow.AddUInt32(GetImplicitTargetA1Value(spellTemplate)); // ImplicitTargetA1
-            newRow.AddUInt32(0); // ImplicitTargetA2
-            newRow.AddUInt32(0); // ImplicitTargetA3
+            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA1
+            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA2
+            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA3
             newRow.AddUInt32(0); // ImplicitTargetB1
             newRow.AddUInt32(0); // ImplicitTargetB2
             newRow.AddUInt32(0); // ImplicitTargetB3
@@ -260,7 +260,7 @@ namespace EQWOWConverter.WOWFiles
             }
         }
 
-        private UInt32 GetImplicitTargetA1Value(SpellTemplate spellTemplate)
+        private UInt32 GetImplicitTargetValue(SpellTemplate spellTemplate)
         {
             return Convert.ToUInt32(spellTemplate.WOWTargetType);
         }
