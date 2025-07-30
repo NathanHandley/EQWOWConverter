@@ -218,7 +218,8 @@ namespace EQWOWConverter
                 Logger.WriteInfo("<+> Thread [Server Build and Deploy] Started");
 
                 // Create the SQL Scripts (note: this must always be after DBC files)
-                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes);
+                CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes,
+                    spellTemplates);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();
@@ -2747,7 +2748,7 @@ namespace EQWOWConverter
 
         public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
-            List<TradeskillRecipe> tradeskillRecipes)
+            List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates)
         {
             Logger.WriteInfo("Creating SQL Scripts...");
 
@@ -2797,6 +2798,8 @@ namespace EQWOWConverter
             QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
             QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
             SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+            SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
+            SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -3325,6 +3328,13 @@ namespace EQWOWConverter
                 }
             }
 
+            // Spell Templates
+            foreach (SpellTemplate spellTemplate in spellTemplates)
+                if (spellTemplate.SpellGroupStackingID > 0)
+                    spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
+            foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
+                spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
+
             // Trainer Abilities - Class
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
@@ -3468,6 +3478,8 @@ namespace EQWOWConverter
             poolPoolSQL.SaveToDisk("pool_pool", SQLFileType.World);
             poolTemplateSQL.SaveToDisk("pool_template", SQLFileType.World);
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
+            spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
+            spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
             if (Configuration.GENERATE_QUESTS == true)

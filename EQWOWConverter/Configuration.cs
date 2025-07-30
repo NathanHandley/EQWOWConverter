@@ -695,6 +695,10 @@ namespace EQWOWConverter
         public static readonly int SQL_QUEST_TEMPLATE_ID_END = 40000;
         public static readonly int SQL_QUEST_TEMPLATE_ID_REPEATABLE_SHIFT = 5000;
 
+        // Start and end IDs for spell groups (must be at least 220 large)
+        public static readonly int SQL_SPELL_GROUP_ID_START = 1500;
+        public static readonly int SQL_SPELL_GROUP_ID_END = 1750;
+
         // Start and end IDs for transports
         public static readonly int SQL_TRANSPORTS_GUID_START = 21;
         public static readonly int SQL_TRANSPORTS_GUID_END = 41;

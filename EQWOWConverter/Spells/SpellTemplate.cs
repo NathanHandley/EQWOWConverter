@@ -31,9 +31,10 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
+        public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
-        private static readonly object SpellTemplateLock = new object();
+        private static readonly object SpellTemplateLock = new object();       
 
         public class Reagent
         {
@@ -97,6 +98,8 @@ namespace EQWOWConverter.Spells
                 _SpellDurationInMS = value;
             }
         }
+        public int SpellGroupStackingID = -1;
+        public int SpellGroupStackingRule = 0;
         public UInt32 RecoveryTimeInMS = 0;
         public SpellWOWTargetType WOWTargetType = SpellWOWTargetType.Self;
         public UInt32 SpellVisualID1 = 0;
@@ -214,6 +217,9 @@ namespace EQWOWConverter.Spells
                 // Add spell duration text.
                 // NOTE: Do this last so text looks right
                 AddDurationToSpellDescription(ref newSpellTemplate, newSpellTemplate.SpellDurationInMS);
+
+                // Stacking rules
+                SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
 
                 // Add it
                 SpellTemplatesByEQID.Add(newSpellTemplate.EQSpellID, newSpellTemplate);
@@ -524,6 +530,33 @@ namespace EQWOWConverter.Spells
         private void AddToAuraDescription(string descriptionToAdd)
         {
             AuraDescription = GetFormattedDescription(AuraDescription, descriptionToAdd);
+        }
+
+        private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory)
+        {
+            // This is exactly how EQ does spell stacking, but it seems like an appropriate approximation that works well for wow
+            if (eqSpellCategory < 0) // NPC = -99, AA Procs = -1
+                return;
+            if (eqSpellCategory > 250) // AA Abilities = 999
+                return;
+
+            // Damage detrimental effects should stack from multiple sources / spells
+            if (eqSpellCategory == 7 || // Damage over time (magic)
+                eqSpellCategory == 8 || // Damage over time (undead)
+                eqSpellCategory == 9 || // Damage over time (life taps)
+                eqSpellCategory == 129 || // Damage over time (fire)
+                eqSpellCategory == 130 || // Damage over time (ice)
+                eqSpellCategory == 131 || // Damage over time (poison)
+                eqSpellCategory == 132) // Damage over time (disease)
+                spellTemplate.SpellGroupStackingRule = 2; // SPELL_GROUP_STACK_FLAG_NOT_SAME_CASTER
+            else
+                spellTemplate.SpellGroupStackingRule |= 8; // SPELL_GROUP_STACK_FLAG_NEVER_STACK
+
+            // Calculate the category
+            int groupStackingID = Configuration.SQL_SPELL_GROUP_ID_START + eqSpellCategory;
+            if (SpellGroupStackRuleByGroup.ContainsKey(groupStackingID) == false)
+                SpellGroupStackRuleByGroup[groupStackingID] = spellTemplate.SpellGroupStackingRule;
+            spellTemplate.SpellGroupStackingID = groupStackingID;
         }
 
         private static void AddDurationToSpellDescription(ref SpellTemplate spellTemplate, int durationInMS)
