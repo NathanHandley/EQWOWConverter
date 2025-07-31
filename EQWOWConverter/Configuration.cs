@@ -442,7 +442,9 @@ namespace EQWOWConverter
 
         // Everquest has a 'tick' every 6 seconds, so buffs and debuffs should use this as a multiplier
         // Increase or decrease this to modify how long spells work for and, in effect, the damage they do
-        public static readonly int SPELL_SECONDS_PER_TICK = 6;
+        // World of Warcraft uses a reduced amonut since anything > 5 seconds triggers out of combat events
+        public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
+        public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 4;
 
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
