@@ -179,9 +179,6 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: FacingCasterFlags
                 PopulateEQSpellEffect(ref newSpellTemplate, 1, columns);
-                // Skip if there isn't an effect
-                if (newSpellTemplate.SpellEffects.Count == 0)
-                    continue;
                 PopulateEQSpellEffect(ref newSpellTemplate, 2, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 3, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 4, columns);
@@ -193,6 +190,9 @@ namespace EQWOWConverter.Spells
                 PopulateEQSpellEffect(ref newSpellTemplate, 10, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 11, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
+                // Skip if there isn't an effect
+                if (newSpellTemplate.SpellEffects.Count == 0)
+                    continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
                 int buffDurationInTicks = Convert.ToInt32(columns["buffduration"]);
@@ -571,6 +571,27 @@ namespace EQWOWConverter.Spells
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModAttackPower, 0, 0, 0);
                             curEffectID++;
                             PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, SpellWOWAuraType.ModRangedAttackPower, 0, 0, 0);
+                            curEffectID++;
+                        } break;
+                    case SpellEQEffectType.MovementSpeed:
+                        {
+                            int effectDieSides = 1;
+                            int effectBasePoints = effect.EQBaseValue;
+                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
+                            SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
+                            if (effectBasePoints >= 0)
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Increase the target's non-mounted movement speed by ", effectBasePoints, "%"));
+                                spellTemplate.AddToAuraDescription(string.Concat("Non-mounted movement speed increased by ", effectBasePoints, "%"));
+                                wowAuraType = SpellWOWAuraType.ModIncreaseSpeed;
+                            }
+                            else
+                            {
+                                spellTemplate.AddToDescription(string.Concat("Decrease the target's non-mounted movement speed by ", effectBasePoints, "%"));
+                                spellTemplate.AddToAuraDescription(string.Concat("Non-mounted movement speed decreased by ", effectBasePoints, "%"));
+                                wowAuraType = SpellWOWAuraType.ModDecreaseSpeed;
+                            }
+                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, effectDieSides, effectBasePoints, wowEffectType, wowAuraType, 0, 0, 0);
                             curEffectID++;
                         } break;
                     default:

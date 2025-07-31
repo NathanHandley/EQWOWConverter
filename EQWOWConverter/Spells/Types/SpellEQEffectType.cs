@@ -23,7 +23,7 @@ namespace EQWOWConverter.Spells
         CurrentHitPoints = 0, // value of Negative = Damage and Positive = Heal. 
         ArmorClass = 1,
         Attack = 2,
-        //MovementSpeed = 3,
+        MovementSpeed = 3,
         //Strength = 4,
         //Dexterity = 5,
         //Agility = 6,
