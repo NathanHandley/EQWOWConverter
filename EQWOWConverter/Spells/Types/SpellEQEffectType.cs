@@ -43,6 +43,7 @@ namespace EQWOWConverter.Spells
         //Blind = 20,
         //Stun = 21,
         TotalHP = 69,
+        CurrentHitPointsOnce = 79,
         // TODO: Like 500 more...
     }
 }
