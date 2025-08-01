@@ -737,7 +737,6 @@ namespace EQWOWConverter.Spells
                     numOfExtractedEffects += 1;
                 }
                 returnList.Add(curBlockSpellEffects);
-                numOfExtractedEffects += 3;
             }
 
             return returnList;

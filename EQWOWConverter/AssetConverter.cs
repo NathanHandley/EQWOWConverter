@@ -2510,16 +2510,23 @@ namespace EQWOWConverter
                 spellIconDBC.AddSpellIconRow(i);
             for (int i = 0; i < 751; i++)
                 spellIconDBC.AddItemIconRow(i);
+            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Spells max out at three effects each, so add as blocks
                 List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
-                // For now, only use the first (TODO: More)
-                for (int i = 0; i < 1; i++)
+                for (int i = 0; i < spellEffectsByThree.Count; i++)
                 {
                     List<SpellEffectWOW> threeBlockEffects = spellEffectsByThree[i];
                     int spellID = spellTemplate.WOWSpellID;
                     string spellName = spellTemplate.Name;
+                    // If beyond the first 3 effects, spawn a new aura for it
+                    if (i != 0)
+                    {
+                        spellID = curSpellAuraGenID;
+                        curSpellAuraGenID++;
+                        spellName = string.Concat(spellName, " Split ", i.ToString());
+                    }
                     spellDBC.AddRow(spellID, spellName, spellTemplate, threeBlockEffects);
                 }
 
