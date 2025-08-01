@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal class SpellEffectWOW
+    internal class SpellEffectWOW : IEquatable<SpellEffectWOW>, IComparable<SpellEffectWOW>
     {
         public SpellWOWEffectType EffectType = SpellWOWEffectType.None;
         public Int32 EffectDieSides = 0;
@@ -46,6 +46,48 @@ namespace EQWOWConverter.Spells
             EffectBasePoints = effectBasePoints;
             EffectMiscValueA = effectMiscValueA;
             EffectMiscValueB = effectMiscValueB;
+        }
+
+        public int CompareTo(SpellEffectWOW? other)
+        {
+            // Null and auras should evaluate as 'higher' (bottom)
+            if (other == null)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAura)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraParty)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraEnemy)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraFriend)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraOwner)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraPet)
+                return 1;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraRaid)
+                return 1;
+            return 0;
+        }
+
+        public bool Equals(SpellEffectWOW? other)
+        {
+            if (other == null)
+                return false;
+            return EffectType == other.EffectType &&
+                   EffectDieSides == other.EffectDieSides &&
+                   EffectRealPointsPerLevel == other.EffectRealPointsPerLevel &&
+                   EffectBasePoints == other.EffectBasePoints &&
+                   EffectMechanic == other.EffectMechanic &&
+                   ImplicitTagetB == other.ImplicitTagetB &&
+                   EffectRadiusIndex == other.EffectRadiusIndex &&
+                   EffectAuraType == other.EffectAuraType &&
+                   EffectAuraPeriod == other.EffectAuraPeriod &&
+                   EffectMultipleValue == other.EffectMultipleValue &&
+                   EffectChainTargets == other.EffectChainTargets &&
+                   EffectItemType == other.EffectItemType &&
+                   EffectMiscValueA == other.EffectMiscValueA &&
+                   EffectMiscValueB == other.EffectMiscValueB;
         }
     }
 }

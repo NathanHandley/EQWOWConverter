@@ -608,6 +608,9 @@ namespace EQWOWConverter.Spells
                         }
                 }
             }
+
+            // Sort them so the aura effects are last
+            spellTemplate.WOWSpellEffects.Sort();
         }
 
         private void AddToDescription(string descriptionToAdd)
