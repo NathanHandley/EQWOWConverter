@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Spells
 {
-    internal class SpellEffectWOW : IEquatable<SpellEffectWOW>, IComparable<SpellEffectWOW>
+    internal class SpellEffectWOW : IComparable<SpellEffectWOW>
     {
         public SpellWOWEffectType EffectType = SpellWOWEffectType.None;
         public Int32 EffectDieSides = 0;
@@ -69,32 +69,14 @@ namespace EQWOWConverter.Spells
 
         public int CompareTo(SpellEffectWOW? other)
         {
-            // Null and auras should evaluate as 'higher' (bottom)
+            // Null and auras should evaluate as greater to push them to the bottom of the list
             if (other == null)
+                return 0;
+            if (IsAuraType() == true && other.IsAuraType() == false)
                 return 1;
-            if (IsAuraType())
-                return 1;
+            if (IsAuraType() == false && other.IsAuraType() == true)
+                return -1;
             return 0;
-        }
-
-        public bool Equals(SpellEffectWOW? other)
-        {
-            if (other == null)
-                return false;
-            return EffectType == other.EffectType &&
-                   EffectDieSides == other.EffectDieSides &&
-                   EffectRealPointsPerLevel == other.EffectRealPointsPerLevel &&
-                   EffectBasePoints == other.EffectBasePoints &&
-                   EffectMechanic == other.EffectMechanic &&
-                   ImplicitTagetB == other.ImplicitTagetB &&
-                   EffectRadiusIndex == other.EffectRadiusIndex &&
-                   EffectAuraType == other.EffectAuraType &&
-                   EffectAuraPeriod == other.EffectAuraPeriod &&
-                   EffectMultipleValue == other.EffectMultipleValue &&
-                   EffectChainTargets == other.EffectChainTargets &&
-                   EffectItemType == other.EffectItemType &&
-                   EffectMiscValueA == other.EffectMiscValueA &&
-                   EffectMiscValueB == other.EffectMiscValueB;
         }
     }
 }
