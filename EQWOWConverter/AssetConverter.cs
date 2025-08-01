@@ -2528,7 +2528,7 @@ namespace EQWOWConverter
                         curSpellAuraGenID++;
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate, threeBlockEffects);
+                    spellDBC.AddRow(spellID, spellName, spellTemplate, threeBlockEffects, i != 0);
                 }
 
                 if (spellTemplate.SkillLine != 0)

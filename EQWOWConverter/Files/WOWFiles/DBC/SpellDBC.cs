@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(int spellID, string spellName, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects)
+        public void AddRow(int spellID, string spellName, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool isSplitChainSpell)
         {
             if (spellEffects.Count != 3)
             {
@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType)); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, isSplitChainSpell)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExC
@@ -183,11 +183,13 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool isSplitChainSpell)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
             UInt32 attributeFlags = 0;
+            if (isSplitChainSpell == true)
+                attributeFlags |= 128; // SPELL_ATTR0_DO_NOT_DISPLAY_SPELLBOOK_AURA_ICON_COMBAT_LOG
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)
             if (spellTemplate.TradeskillRecipe != null)
