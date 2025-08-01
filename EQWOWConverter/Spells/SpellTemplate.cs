@@ -105,30 +105,6 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
-        public SpellWOWEffectType EffectType1 = SpellWOWEffectType.None;
-        public SpellWOWEffectType EffectType2 = SpellWOWEffectType.None;
-        public SpellWOWEffectType EffectType3 = SpellWOWEffectType.None;
-        public SpellWOWAuraType EffectAuraType1 = SpellWOWAuraType.None;
-        public SpellWOWAuraType EffectAuraType2 = SpellWOWAuraType.None;
-        public SpellWOWAuraType EffectAuraType3 = SpellWOWAuraType.None;
-        public UInt32 EffectAuraPeriod1 = 0;
-        public UInt32 EffectAuraPeriod2 = 0;
-        public UInt32 EffectAuraPeriod3 = 0;
-        public UInt32 EffectItemType1 = 0;
-        public UInt32 EffectItemType2 = 0;
-        public UInt32 EffectItemType3 = 0;
-        public Int32 EffectDieSides1 = 0;
-        public Int32 EffectDieSides2 = 0;
-        public Int32 EffectDieSides3 = 0;
-        public Int32 EffectBasePoints1 = 0;
-        public Int32 EffectBasePoints2 = 0;
-        public Int32 EffectBasePoints3 = 0;
-        public int EffectMiscValueA1 = 0;
-        public int EffectMiscValueA2 = 0;
-        public int EffectMiscValueA3 = 0;
-        public int EffectMiscValueB1 = 0;
-        public int EffectMiscValueB2 = 0;
-        public int EffectMiscValueB3 = 0;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
         public UInt32 RequiredTotemID1 = 0;
@@ -137,7 +113,8 @@ namespace EQWOWConverter.Spells
         public bool AllowCastInCombat = true;
         public List<Reagent> Reagents = new List<Reagent>();
         public int SkillLine = 0;
-        public List<SpellEffect> SpellEffects = new List<SpellEffect>();
+        public List<SpellEffectEQ> EQSpellEffects = new List<SpellEffectEQ>();
+        public List<SpellEffectWOW> WOWSpellEffects = new List<SpellEffectWOW>();
         public UInt32 ManaCost = 0;
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public UInt32 TargetCreatureType = 0; // No specific creature type
@@ -191,7 +168,7 @@ namespace EQWOWConverter.Spells
                 PopulateEQSpellEffect(ref newSpellTemplate, 11, columns);
                 PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
                 // Skip if there isn't an effect
-                if (newSpellTemplate.SpellEffects.Count == 0)
+                if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
                 PopulateAllClassLearnScrollProperties(ref newSpellTemplate, columns);
                 newSpellTemplate.ManaCost = Convert.ToUInt32(columns["mana"]);
@@ -437,7 +414,7 @@ namespace EQWOWConverter.Spells
             }
 
             // Fill in the effect details
-            SpellEffect curEffect = new SpellEffect();
+            SpellEffectEQ curEffect = new SpellEffectEQ();
             curEffect.EQEffectType = (SpellEQEffectType)effectIDRaw;
             if (slotID < 12)
             {
@@ -461,25 +438,22 @@ namespace EQWOWConverter.Spells
                 curEffect.EQMaxValue = int.Parse(rowColumns[string.Concat("max", slotID)]);
 
             // Add it
-            spellTemplate.SpellEffects.Add(curEffect);
+            spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS)
         {
             // Process all spell effects
-            // TODO: Formulas
-            // TODO: Spell / Attack power
-            int curEffectID = 0;
-            foreach(SpellEffect effect in spellTemplate.SpellEffects)
+            foreach(SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
-                switch (effect.EQEffectType)
+                switch (eqEffect.EQEffectType)
                 {
                     case SpellEQEffectType.CurrentHitPoints:
                         {
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
                             SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
                             UInt32 auraPeriod = 0;
-                            int effectAmount = Math.Abs(effect.EQBaseValue);
+                            int effectAmount = Math.Abs(eqEffect.EQBaseValue);
                             UInt32 totalAmount = 0;
                             if (spellDurationInMS > 0)
                             {
@@ -492,7 +466,7 @@ namespace EQWOWConverter.Spells
                                 wowEffectType = SpellWOWEffectType.ApplyAura;
                             }
                             string descriptionFragment = string.Empty;
-                            if (effect.EQBaseValue > 0)
+                            if (eqEffect.EQBaseValue > 0)
                             {
                                 if (spellDurationInMS > 0)
                                 {
@@ -528,12 +502,14 @@ namespace EQWOWConverter.Spells
                                 }
                             }
                             spellTemplate.AddToDescription(descriptionFragment);
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectAmount, wowEffectType, wowAuraType, 0, 0, auraPeriod);
-                            curEffectID++;
+                            if (spellDurationInMS > 0)
+                                spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, auraPeriod, 0, 0, effectAmount, 0, 0));
+                            else
+                                spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, auraPeriod, 0, 0, effectAmount, 0, 0));
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
-                            int effectBasePoints = effect.EQBaseValue;
+                            int effectBasePoints = eqEffect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
                             if (effectBasePoints >= 0)
                             {
@@ -545,12 +521,11 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.AddToDescription(string.Concat("Decreases the target's armor by ", effectBasePoints));
                                 spellTemplate.AddToAuraDescription(string.Concat("Armor decreased by ", effectBasePoints));
                             }                                
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, SpellWOWAuraType.ModResistance, 1, 0, 0);
-                            curEffectID++;
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModResistance, 0, 0, 0, effectBasePoints, 1, 0));
                         } break;
                     case SpellEQEffectType.Attack:
                         {
-                            int effectBasePoints = effect.EQBaseValue;
+                            int effectBasePoints = eqEffect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
                             if (effectBasePoints >= 0)
                             {
@@ -563,14 +538,12 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.AddToAuraDescription(string.Concat("Attack rating decreased by ", effectBasePoints));
                             }
                             // Add two for ranged and melee
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, SpellWOWAuraType.ModAttackPower, 0, 0, 0);
-                            curEffectID++;
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, SpellWOWAuraType.ModRangedAttackPower, 0, 0, 0);
-                            curEffectID++;
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModAttackPower, 0, 0, 0, effectBasePoints, 0, 0));
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModRangedAttackPower, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     case SpellEQEffectType.MovementSpeed:
                         {
-                            int effectBasePoints = effect.EQBaseValue;
+                            int effectBasePoints = eqEffect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
                             SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
                             if (effectBasePoints >= 0)
@@ -585,12 +558,11 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.AddToAuraDescription(string.Concat("Non-mounted movement speed decreased by ", effectBasePoints, "%"));
                                 wowAuraType = SpellWOWAuraType.ModDecreaseSpeed;
                             }
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, wowAuraType, 0, 0, 0);
-                            curEffectID++;
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     case SpellEQEffectType.TotalHP:
                         {
-                            int effectBasePoints = effect.EQBaseValue;
+                            int effectBasePoints = eqEffect.EQBaseValue;
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
                             if (effectBasePoints >= 0)
                             {
@@ -602,16 +574,13 @@ namespace EQWOWConverter.Spells
                                 spellTemplate.AddToDescription(string.Concat("Decreases the target's maximum health by ", effectBasePoints));
                                 spellTemplate.AddToAuraDescription(string.Concat("Maximum health decreased by ", effectBasePoints));
                             }
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0, 0);
-                            curEffectID++;
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     case SpellEQEffectType.CurrentHitPointsOnce:
                         {
-                            int effectBasePoints = Math.Abs(effect.EQBaseValue);
+                            int effectBasePoints = Math.Abs(eqEffect.EQBaseValue);
                             SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
-                            SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
-                            UInt32 auraPeriod = 0;
-                            if (effect.EQBaseValue > 0)
+                            if (eqEffect.EQBaseValue > 0)
                             {
                                 spellTemplate.AddToDescription(string.Concat("Heal the target by ", effectBasePoints));
                                 wowEffectType = SpellWOWEffectType.Heal;
@@ -630,60 +599,14 @@ namespace EQWOWConverter.Spells
                                 }
                                 spellTemplate.AddToDescription(descriptionFragment);
                             }
-                            PopulateSpellEffectDetailsAtID(ref spellTemplate, curEffectID, 0, effectBasePoints, wowEffectType, wowAuraType, 0, 0, auraPeriod);
-                            curEffectID++;
+                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.None, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     default:
                         {
-                            Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", effect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
+                            Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
                             continue;
                         }
                 }
-            }
-        }
-
-        private static void PopulateSpellEffectDetailsAtID(ref SpellTemplate spellTemplate, int effectIndex, int effectDieSides, int effectBasePoints, 
-            SpellWOWEffectType wowEffectType, SpellWOWAuraType wowAuraType, int miscEffectValueA, int miscEffectValueB, UInt32 effectAuraPeriod)
-        {
-            switch (effectIndex)
-            {
-                case 0:
-                    {
-                        spellTemplate.EffectDieSides1 = effectDieSides;
-                        spellTemplate.EffectBasePoints1 = effectBasePoints;
-                        spellTemplate.EffectType1 = wowEffectType;
-                        spellTemplate.EffectAuraType1 = wowAuraType;
-                        spellTemplate.EffectAuraPeriod1 = effectAuraPeriod;
-                        spellTemplate.EffectMiscValueA1 = miscEffectValueA;
-                        spellTemplate.EffectMiscValueB1 = miscEffectValueB;
-                    } break;
-                case 1:
-                    {
-                        spellTemplate.EffectDieSides2 = effectDieSides;
-                        spellTemplate.EffectBasePoints2 = effectBasePoints;
-                        spellTemplate.EffectType2 = wowEffectType;
-                        spellTemplate.EffectAuraType2 = wowAuraType;
-                        spellTemplate.EffectAuraPeriod2 = effectAuraPeriod;
-                        spellTemplate.EffectMiscValueA2 = miscEffectValueA;
-                        spellTemplate.EffectMiscValueB2 = miscEffectValueB;
-                    }
-                    break;
-                case 2:
-                    {
-                        spellTemplate.EffectDieSides3 = effectDieSides;
-                        spellTemplate.EffectBasePoints3 = effectBasePoints;
-                        spellTemplate.EffectType3 = wowEffectType;
-                        spellTemplate.EffectAuraType3 = wowAuraType;
-                        spellTemplate.EffectAuraPeriod3 = effectAuraPeriod;
-                        spellTemplate.EffectMiscValueA3 = miscEffectValueA;
-                        spellTemplate.EffectMiscValueB3 = miscEffectValueB;
-                    }
-                    break;
-                default:
-                    {
-                        Logger.WriteError("SpellTemplate for eq spell id ", spellTemplate.EQSpellID.ToString(), " received an effectIndex >= 3, so this effect is ignored");
-                        return;
-                    }
             }
         }
 
@@ -784,6 +707,40 @@ namespace EQWOWConverter.Spells
                 descriptionToAdd = char.ToUpper(descriptionToAdd[0]) + descriptionToAdd.Substring(1);
                 return string.Concat(descriptionToAdd, ".");
             }
+        }
+
+        public List<List<SpellEffectWOW>> GetWOWEffectsInBlocksOfThree()
+        {
+            List<List<SpellEffectWOW>> returnList = new List<List<SpellEffectWOW>> ();
+           
+            // Blank out if no spell effects
+            if (WOWSpellEffects.Count == 0)
+            {
+                List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
+                for (int i = 0; i < 3; i++)
+                    curBlockSpellEffects.Add(new SpellEffectWOW());
+                returnList.Add(curBlockSpellEffects);
+                return returnList;
+            }
+
+            // Otherwise, group in batches of 3 adding blanks to pad the space
+            int numOfExtractedEffects = 0;
+            while (numOfExtractedEffects < WOWSpellEffects.Count)
+            {
+                List<SpellEffectWOW> curBlockSpellEffects = new List<SpellEffectWOW>();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (numOfExtractedEffects >= WOWSpellEffects.Count)
+                        curBlockSpellEffects.Add(new SpellEffectWOW());
+                    else
+                        curBlockSpellEffects.Add(WOWSpellEffects[numOfExtractedEffects]);
+                    numOfExtractedEffects += 1;
+                }
+                returnList.Add(curBlockSpellEffects);
+                numOfExtractedEffects += 3;
+            }
+
+            return returnList;
         }
     }
 }

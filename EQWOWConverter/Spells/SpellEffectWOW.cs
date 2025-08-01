@@ -1,0 +1,51 @@
+﻿//  Author: Nathan Handley(nathanhandley@protonmail.com)
+//  Copyright (c) 2025 Nathan Handley
+//
+//  This program is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  This program is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+namespace EQWOWConverter.Spells
+{
+    internal class SpellEffectWOW
+    {
+        public SpellWOWEffectType EffectType = SpellWOWEffectType.None;
+        public Int32 EffectDieSides = 0;
+        public float EffectRealPointsPerLevel = 0;
+        public Int32 EffectBasePoints = 0;
+        public UInt32 EffectMechanic = 0;
+        public UInt32 ImplicitTagetB = 0;
+        public UInt32 EffectRadiusIndex = 0;
+        public SpellWOWAuraType EffectAuraType = SpellWOWAuraType.None;
+        public UInt32 EffectAuraPeriod = 0;
+        public float EffectMultipleValue = 0;
+        public UInt32 EffectChainTargets = 0;
+        public UInt32 EffectItemType = 0;
+        public int EffectMiscValueA = 0;
+        public int EffectMiscValueB = 0;
+
+        public SpellEffectWOW() { }
+
+        public SpellEffectWOW(SpellWOWEffectType effectType, SpellWOWAuraType effectAuraType, uint effectAuraPeriod, uint effectItemType, int effectDieSides, int effectBasePoints, 
+            int effectMiscValueA, int effectMiscValueB)
+        {
+            EffectType = effectType;
+            EffectAuraType = effectAuraType;
+            EffectAuraPeriod = effectAuraPeriod;
+            EffectItemType = effectItemType;
+            EffectDieSides = effectDieSides;
+            EffectBasePoints = effectBasePoints;
+            EffectMiscValueA = effectMiscValueA;
+            EffectMiscValueB = effectMiscValueB;
+        }
+    }
+}

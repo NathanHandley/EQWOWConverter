@@ -1417,11 +1417,10 @@ namespace EQWOWConverter
                 gateSpellTemplate.Description = string.Concat(gateSpellTemplate.Description, " You will have 30 minutes where you can return to your gate point after casting it.");
                 gateSpellTemplate.AuraDescription = "You are tethered to the location where you gated. Right click before the buff wears off to return there. The tether will fail if you attempt return while in combat.";
                 gateSpellTemplate.SpellDurationInMS = 1800000; // 30 minutes
-                gateSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
-                gateSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
+                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             }
             else
-                gateSpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
+                gateSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.None, 0, 0, 0, 0, 0, 0));
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
@@ -1445,8 +1444,7 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            bindAffinitySelfSpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
-            bindAffinitySelfSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
+            bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -1463,8 +1461,7 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
-            bindAffinitySpellTemplate.EffectType1 = SpellWOWEffectType.Dummy;
-            bindAffinitySpellTemplate.EffectAuraType1 = SpellWOWAuraType.Dummy;
+            bindAffinitySpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             // Phase aura 1 (Day)
@@ -1475,11 +1472,7 @@ namespace EQWOWConverter
             dayPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_DAYPHASE_SPELLDBC_ID;
             dayPhaseSpellTemplate.Description = "Able to see day EQ creatures";
             dayPhaseSpellTemplate.SpellIconID = 253;
-            dayPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
-            dayPhaseSpellTemplate.EffectDieSides1 = 1;
-            dayPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
-            dayPhaseSpellTemplate.EffectMiscValueA1 = 2;
-            dayPhaseSpellTemplate.EffectBasePoints1 = -1;
+            dayPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 2, 0));
             dayPhaseSpellTemplate.SchoolMask = 1;
             dayPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(dayPhaseSpellTemplate);
@@ -1491,12 +1484,8 @@ namespace EQWOWConverter
             nightPhaseSpellTemplate.InterruptFlags = 0;
             nightPhaseSpellTemplate.WOWSpellID = Configuration.SPELLS_NIGHTPHASE_SPELLDBC_ID;
             nightPhaseSpellTemplate.Description = "Able to see night EQ creatures";
-            nightPhaseSpellTemplate.EffectType1 = SpellWOWEffectType.ApplyAura;
-            nightPhaseSpellTemplate.EffectDieSides1 = 1;
             nightPhaseSpellTemplate.SpellIconID = 253;
-            nightPhaseSpellTemplate.EffectAuraType1 = SpellWOWAuraType.Phase;
-            nightPhaseSpellTemplate.EffectMiscValueA1 = 4;
-            nightPhaseSpellTemplate.EffectBasePoints1 = -1;
+            nightPhaseSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.ApplyAura, SpellWOWAuraType.Phase, 0, 0, 1, -1, 4, 0));
             nightPhaseSpellTemplate.SchoolMask = 1;
             nightPhaseSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             spellTemplates.Add(nightPhaseSpellTemplate);
@@ -1562,6 +1551,8 @@ namespace EQWOWConverter
 
                 // Create the produced item
                 ItemTemplate? resultItemTemplate = null;
+                Int32 effectDieSides = 0;
+                Int32 effectBasePoints = 0;
                 if (recipe.ProducedItemCountsByWOWItemID.Count == 0)
                 {
                     Logger.WriteError(string.Concat("Could not convert item template with id ", recipe.EQID, " due to there being no produced items"));
@@ -1576,8 +1567,8 @@ namespace EQWOWConverter
                 else
                 {
                     resultItemTemplate = itemTemplatesByWOWEntryID[recipe.ProducedItemCountsByWOWItemID.Keys.First()];
-                    curSpellTemplate.EffectDieSides1 = 1;
-                    curSpellTemplate.EffectBasePoints1 = recipe.ProducedItemCountsByWOWItemID.Values.First() - 1;
+                    effectDieSides = 1;
+                    effectBasePoints = recipe.ProducedItemCountsByWOWItemID.Values.First() - 1;
                 }
                 if (resultItemTemplate == null)
                 {
@@ -1594,9 +1585,7 @@ namespace EQWOWConverter
                 }
                 else
                     recipeNameCounts.Add(curSpellTemplate.Name, 1);
-
-                curSpellTemplate.EffectType1 = SpellWOWEffectType.CreateItem;
-                curSpellTemplate.EffectItemType1 = Convert.ToUInt32(resultItemTemplate.WOWEntryID);
+                curSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.CreateItem, SpellWOWAuraType.None, 0, Convert.ToUInt32(resultItemTemplate.WOWEntryID), effectDieSides, effectBasePoints, 0, 0));
                 curSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForItemIconID(resultItemTemplate.IconID);
                 curSpellTemplate.SchoolMask = 1; // "Normal"
                 curSpellTemplate.TradeskillRecipe = recipe;
@@ -2523,7 +2512,17 @@ namespace EQWOWConverter
                 spellIconDBC.AddItemIconRow(i);
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
-                spellDBC.AddRow(spellTemplate);
+                // Spells max out at three effects each, so add as blocks
+                List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
+                // For now, only use the first (TODO: More)
+                for (int i = 0; i < 1; i++)
+                {
+                    List<SpellEffectWOW> threeBlockEffects = spellEffectsByThree[i];
+                    int spellID = spellTemplate.WOWSpellID;
+                    string spellName = spellTemplate.Name;
+                    spellDBC.AddRow(spellID, spellName, spellTemplate, threeBlockEffects);
+                }
+
                 if (spellTemplate.SkillLine != 0)
                     skillLineAbilityDBC.AddRow(SkillLineAbilityDBC.GenerateID(), spellTemplate);
             }

@@ -20,20 +20,26 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(SpellTemplate spellTemplate)
+        public void AddRow(int spellID, string spellName, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects)
         {
+            if (spellEffects.Count != 3)
+            {
+                Logger.WriteError("Failed to add row to SpelLDBC for spellID ", spellID.ToString(), " since there were not exactly three spellEffects");
+                return;
+            }
+
             DBCRow newRow = new DBCRow();            
-            newRow.AddInt32(spellTemplate.WOWSpellID); // ID
+            newRow.AddInt32(spellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate)); // Attributes
-            newRow.AddUInt32(GetAttributesEx(spellTemplate)); // AttributesEx
-            newRow.AddUInt32(GetAttributesExB(spellTemplate)); // AttributesExB
-            newRow.AddUInt32(GetAttributesExC(spellTemplate)); // AttributesExC
-            newRow.AddUInt32(GetAttributesExD(spellTemplate)); // AttributesExD
-            newRow.AddUInt32(GetAttributesExE(spellTemplate)); // AttributesExE
-            newRow.AddUInt32(GetAttributesExF(spellTemplate)); // AttributesExF
+            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType)); // Attributes
+            newRow.AddUInt32(GetAttributesEx(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesEx
+            newRow.AddUInt32(GetAttributesExB(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExB
+            newRow.AddUInt32(GetAttributesExC(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExC
+            newRow.AddUInt32(GetAttributesExD(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExD
+            newRow.AddUInt32(GetAttributesExE(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExE
+            newRow.AddUInt32(GetAttributesExF(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExF
             newRow.AddUInt32(0); // AttributesExG
             newRow.AddUInt64(0); // ShapeshiftMask
             newRow.AddUInt64(0); // ShapeshiftExclude
@@ -90,51 +96,36 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt32(-1); // EquippedItemClass
             newRow.AddInt32(0); // EquippedItemSubclass
             newRow.AddInt32(0); // EquippedItemInvTypes
-            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType1)); // Effect1
-            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType2)); // Effect2
-            newRow.AddInt32(Convert.ToInt32(spellTemplate.EffectType3)); // Effect3
-            newRow.AddInt32(spellTemplate.EffectDieSides1); // EffectDieSides1
-            newRow.AddInt32(spellTemplate.EffectDieSides2); // EffectDieSides2
-            newRow.AddInt32(spellTemplate.EffectDieSides3); // EffectDieSides3
-            newRow.AddFloat(0); // EffectRealPointsPerLevel1
-            newRow.AddFloat(0); // EffectRealPointsPerLevel2
-            newRow.AddFloat(0); // EffectRealPointsPerLevel3
-            newRow.AddInt32(spellTemplate.EffectBasePoints1); // EffectBasePoints1
-            newRow.AddInt32(spellTemplate.EffectBasePoints2); // EffectBasePoints2
-            newRow.AddInt32(spellTemplate.EffectBasePoints3); // EffectBasePoints3
-            newRow.AddUInt32(0); // EffectMechanic1
-            newRow.AddUInt32(0); // EffectMechanic2
-            newRow.AddUInt32(0); // EffectMechanic3
-            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA1
-            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA2
-            newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA3
-            newRow.AddUInt32(0); // ImplicitTargetB1
-            newRow.AddUInt32(0); // ImplicitTargetB2
-            newRow.AddUInt32(0); // ImplicitTargetB3
-            newRow.AddUInt32(0); // EffectRadiusIndex1
-            newRow.AddUInt32(0); // EffectRadiusIndex2
-            newRow.AddUInt32(0); // EffectRadiusIndex3
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType1)); // EffectAura1
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType2)); // EffectAura2
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.EffectAuraType3)); // EffectAura3
-            newRow.AddUInt32(spellTemplate.EffectAuraPeriod1); // EffectAuraPeriod1
-            newRow.AddUInt32(spellTemplate.EffectAuraPeriod2); // EffectAuraPeriod2
-            newRow.AddUInt32(spellTemplate.EffectAuraPeriod3); // EffectAuraPeriod3
-            newRow.AddFloat(0); // EffectMultipleValue1
-            newRow.AddFloat(0); // EffectMultipleValue2
-            newRow.AddFloat(0); // EffectMultipleValue3
-            newRow.AddUInt32(0); // EffectChainTargets1
-            newRow.AddUInt32(0); // EffectChainTargets2
-            newRow.AddUInt32(0); // EffectChainTargets3
-            newRow.AddUInt32(spellTemplate.EffectItemType1); // EffectItemType1
-            newRow.AddUInt32(spellTemplate.EffectItemType2); // EffectItemType2
-            newRow.AddUInt32(spellTemplate.EffectItemType3); // EffectItemType3
-            newRow.AddInt32(spellTemplate.EffectMiscValueA1); // EffectMiscValue1
-            newRow.AddInt32(spellTemplate.EffectMiscValueA2); // EffectMiscValue2
-            newRow.AddInt32(spellTemplate.EffectMiscValueA3); // EffectMiscValue3
-            newRow.AddInt32(spellTemplate.EffectMiscValueB1); // EffectMiscValueB1
-            newRow.AddInt32(spellTemplate.EffectMiscValueB2); // EffectMiscValueB2
-            newRow.AddInt32(spellTemplate.EffectMiscValueB3); // EffectMiscValueB3
+            foreach (SpellEffectWOW spellEffect in spellEffects) 
+                newRow.AddInt32(Convert.ToInt32(spellEffect.EffectType)); // Effect1, Effect2, Effect3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddInt32(spellEffect.EffectDieSides); // EffectDieSides1, EffectDieSides2, EffectDieSides3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddFloat(spellEffect.EffectRealPointsPerLevel); // EffectRealPointsPerLevel1, EffectRealPointsPerLevel2, EffectRealPointsPerLevel3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddInt32(spellEffect.EffectBasePoints); // EffectBasePoints1, EffectBasePoints2, EffectBasePoints3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.EffectMechanic); // EffectMechanic1, EffectMechanic2, EffectMechanic3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA1, ImplicitTargetA2, ImplicitTargetA3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.ImplicitTagetB); // ImplicitTargetB1, ImplicitTargetB2, ImplicitTargetB3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.EffectRadiusIndex); // EffectRadiusIndex1, EffectRadiusIndex2, EffectRadiusIndex3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(Convert.ToUInt32(spellEffect.EffectAuraType)); // EffectAura1, EffectAura2, EffectAura3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.EffectAuraPeriod); // EffectAuraPeriod1, EffectAuraPeriod2, EffectAuraPeriod3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddFloat(spellEffect.EffectMultipleValue); // EffectMultipleValue1, EffectMultipleValue2, EffectMultipleValue3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.EffectChainTargets); // EffectChainTargets1, EffectChainTargets2, EffectChainTargets3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddUInt32(spellEffect.EffectItemType); // EffectItemType1, EffectItemType2, EffectItemType3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddInt32(spellEffect.EffectMiscValueA); // EffectMiscValueA1, EffectMiscValueA2, EffectMiscValueA3
+            foreach (SpellEffectWOW spellEffect in spellEffects)
+                newRow.AddInt32(spellEffect.EffectMiscValueB); // EffectMiscValueB1, EffectMiscValueB2, EffectMiscValueB3
             newRow.AddUInt32(0); // EffectTriggerSpell1
             newRow.AddUInt32(0); // EffectTriggerSpell2
             newRow.AddUInt32(0); // EffectTriggerSpell3
@@ -155,7 +146,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellIconID)); // SpellIconID
             newRow.AddUInt32(0); // ActiveIconID
             newRow.AddUInt32(0); // SpellPriority
-            newRow.AddStringLang(spellTemplate.Name); // Name_Lang
+            newRow.AddStringLang(spellName); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
             newRow.AddStringLang(spellTemplate.Description); // Description_Lang
             newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
@@ -192,9 +183,9 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        private UInt32 GetAttributes(SpellTemplate spellTemplate)
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
             UInt32 attributeFlags = 0;
             if (spellTemplate.AllowCastInCombat == false)
@@ -208,44 +199,44 @@ namespace EQWOWConverter.WOWFiles
             return attributeFlags;
         }
 
-        private UInt32 GetAttributesEx(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesEx(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 3072;
             return 0;
         }
 
-        private UInt32 GetAttributesExB(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExB(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 16385;
             return 0;
         }
 
-        private UInt32 GetAttributesExC(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExC(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 1048576;
             return 0;
         }
 
-        private UInt32 GetAttributesExD(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExD(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 128;
             return 0;
         }
 
-        private UInt32 GetAttributesExE(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExE(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 393224;
             return 0;
         }
 
-        private UInt32 GetAttributesExF(SpellTemplate spellTemplate)
+        private UInt32 GetAttributesExF(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
-            if (spellTemplate.EffectAuraType1 == SpellWOWAuraType.Phase) // Phase Aura
+            if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 4096;
             return 0;
         }
