@@ -2510,6 +2510,7 @@ namespace EQWOWConverter
                 spellIconDBC.AddSpellIconRow(i);
             for (int i = 0; i < 751; i++)
                 spellIconDBC.AddItemIconRow(i);
+            // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with SQL
             int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
@@ -2806,6 +2807,7 @@ namespace EQWOWConverter
             SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
             SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
             SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
+            SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
             TransportsSQL transportsSQL = new TransportsSQL();
             WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
 
@@ -3334,10 +3336,30 @@ namespace EQWOWConverter
                 }
             }
 
-            // Spell Templates
+            // Spells
+            // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with DBC
+            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
+            {
+                // Stack rules
                 if (spellTemplate.SpellGroupStackingID > 0)
                     spellGroupSQL.AddRow(spellTemplate.SpellGroupStackingID, spellTemplate.WOWSpellID);
+
+                // Chains for spells with > 3 effects
+                List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
+                for (int i = 1; i < spellEffectsByThree.Count; i++)
+                {
+                    if (spellEffectsByThree[i][0].IsAuraType() == false)
+                    {
+                        Logger.WriteError("Spell split for spellid ", spellTemplate.WOWSpellID.ToString(), " was not an aura type!");
+                        continue;
+                    }
+                    int chainSpellID = curSpellAuraGenID;
+                    string comment = string.Concat(spellTemplate.Name, " Split ", i.ToString());
+                    curSpellAuraGenID++;
+                    spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                }
+            }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
 
@@ -3486,6 +3508,7 @@ namespace EQWOWConverter
             smartScriptsSQL.SaveToDisk("smart_scripts", SQLFileType.World);
             spellGroupSQL.SaveToDisk("spell_group", SQLFileType.World);
             spellGroupStackRulesSQL.SaveToDisk("spell_group_stack_rules", SQLFileType.World);
+            spellLinkedSpellSQL.SaveToDisk("spell_linked_spell", SQLFileType.World);
             transportsSQL.SaveToDisk("transports", SQLFileType.World);
             waypointDataSQL.SaveToDisk("waypoint_data", SQLFileType.World);
             if (Configuration.GENERATE_QUESTS == true)

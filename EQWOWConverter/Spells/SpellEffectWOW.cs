@@ -48,24 +48,31 @@ namespace EQWOWConverter.Spells
             EffectMiscValueB = effectMiscValueB;
         }
 
+        public bool IsAuraType()
+        {
+            if (EffectType == SpellWOWEffectType.ApplyAura)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraParty)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraEnemy)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraFriend)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraOwner)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraPet)
+                return true;
+            if (EffectType == SpellWOWEffectType.ApplyAreaAuraRaid)
+                return true;
+            return false;
+        }
+
         public int CompareTo(SpellEffectWOW? other)
         {
             // Null and auras should evaluate as 'higher' (bottom)
             if (other == null)
                 return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAura)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraParty)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraEnemy)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraFriend)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraOwner)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraPet)
-                return 1;
-            if (EffectType == SpellWOWEffectType.ApplyAreaAuraRaid)
+            if (IsAuraType())
                 return 1;
             return 0;
         }
