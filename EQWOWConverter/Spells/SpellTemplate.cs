@@ -544,7 +544,7 @@ namespace EQWOWConverter.Spells
                             {
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases attack power by ", reductionAmount);
-                                newSpellEffectWOW.AuraDescription = string.Concat("armor attack power by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("attack power decreased by ", reductionAmount);
                             }
 
                             // Add a second for ranged attack power
@@ -589,6 +589,130 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health decreased by ", reductionAmount);
                             }
                         } break;
+                    case SpellEQEffectType.Strength:
+                        {
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 0; // Strength
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases maximum strength by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("maximum stringth increased by ", newSpellEffectWOW.EffectBasePoints);
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum strength by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("maximum strength decreased by ", reductionAmount);
+                            }
+                        } break;
+                    case SpellEQEffectType.Dexterity: // Fallthrough
+                    case SpellEQEffectType.Agility:
+                        {
+                            // EQ Dexterity and EQ Agility are both mapped WOW agility, so use the higher of the two and reuse if one exists
+                            bool ignoreAsAglEffectExistsAndIsStronger = false;
+                            foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+                            {
+                                if (wowEffect.EffectAuraType == SpellWOWAuraType.ModStat && wowEffect.EffectMiscValueA == 1)
+                                {
+                                    if (wowEffect.EffectBasePoints > 0 && wowEffect.EffectBasePoints >= eqEffect.EQBaseValue)
+                                        ignoreAsAglEffectExistsAndIsStronger = true;
+                                    if (wowEffect.EffectBasePoints < 0 && wowEffect.EffectBasePoints <= eqEffect.EQBaseValue)
+                                        ignoreAsAglEffectExistsAndIsStronger = true;
+                                    newSpellEffectWOW = wowEffect;
+                                }
+                            }
+                            if (ignoreAsAglEffectExistsAndIsStronger == true)
+                                continue;
+
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 1; // Agility
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases agility by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("agility increased by ", newSpellEffectWOW.EffectBasePoints);
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases agility by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("agility decreased by ", reductionAmount);
+                            }
+                        } break;
+                    case SpellEQEffectType.Stamina:
+                        {
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases stamina by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("stamina increased by ", newSpellEffectWOW.EffectBasePoints);
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases stamina by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("stamina decreased by ", reductionAmount);
+                            }
+                        } break;
+                    case SpellEQEffectType.Intelligence:
+                        {
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases intellect by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("intellect increased by ", newSpellEffectWOW.EffectBasePoints);
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases intellect by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("intellect decreased by ", reductionAmount);
+                            }
+                        } break;
+                    case SpellEQEffectType.Wisdom:
+                        {
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases spirit by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("spirit increased by ", newSpellEffectWOW.EffectBasePoints);
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases spirit by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("spirit decreased by ", reductionAmount);
+                            }
+                        } break;
+                    case SpellEQEffectType.Charisma:
+                        {
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("hit chance increased by ", newSpellEffectWOW.EffectBasePoints, "%");
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases hit chance by ", reductionAmount, "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("hit chance decreased by ", reductionAmount, "%");
+                            }
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
@@ -599,6 +723,8 @@ namespace EQWOWConverter.Spells
                 if (newSpellEffectWOW2 != null)
                     spellTemplate.WOWSpellEffects.Add(newSpellEffectWOW2);
             }
+
+            // TODO: Collapse multi-stat effects into 1 where possible
 
             // Sort them so the aura effects are last
             spellTemplate.WOWSpellEffects.Sort();
