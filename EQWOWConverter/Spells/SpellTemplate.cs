@@ -233,11 +233,11 @@ namespace EQWOWConverter.Spells
         {
             switch (eqResistType)
             {
-                case 1: return 64; // EQ Magic -> WOW Arcane
-                case 2: return 4; // EQ Fire -> WOW Fire
-                case 3: return 16; // EQ Cold -> WOW Frost
+                case 1: return 64; // EQ Magic => WOW Arcane
+                case 2: return 4; // EQ Fire => WOW Fire
+                case 3: return 16; // EQ Cold => WOW Frost
                 case 4: return 8; // EQ Poison => WOW Nature
-                case 5: return 40; // EQ Disease => WOW "Plague" (Shadow + Nature)
+                case 5: return 32; // EQ Disease => WOW Shadow
                 default: return 1; // Physical by default
             }
         }
@@ -486,7 +486,7 @@ namespace EQWOWConverter.Spells
                                     case 4: descriptionFragment = string.Concat(descriptionFragment, " fire damage"); break;
                                     case 8: descriptionFragment = string.Concat(descriptionFragment, " nature damage"); break;
                                     case 16: descriptionFragment = string.Concat(descriptionFragment, " frost damage"); break;
-                                    case 40: descriptionFragment = string.Concat(descriptionFragment, " plague (shadow + nature) damage"); break;
+                                    case 32: descriptionFragment = string.Concat(descriptionFragment, " shadow damage"); break;
                                     case 64: descriptionFragment = string.Concat(descriptionFragment, " arcane damage"); break;
                                     default: descriptionFragment = string.Concat(descriptionFragment, " damage"); break; 
                                 }
