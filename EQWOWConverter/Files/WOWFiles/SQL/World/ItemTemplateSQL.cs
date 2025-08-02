@@ -66,7 +66,6 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("maxcount", 0);
             newRow.AddInt("stackable", itemTemplate.StackSize);
             newRow.AddInt("ContainerSlots", itemTemplate.BagSlots);
-            newRow.AddInt("StatsCount", itemTemplate.StatValues.Count);
             for (int i = 1; i <= 10; i++)
             {
                 string curStatTypeFieldName = "stat_type" + i.ToString();

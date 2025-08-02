@@ -33,7 +33,8 @@ Right now only classic (pre-Kunark) is in a semi-polished state, but you can ena
 
 # Requirements
 - Windows build environment
-- AzerothCore based WoW 3.3.5 server, with the mod-everquest mod installed (https://github.com/NathanHandley/mod-everquest)
+- AzerothCore based WoW 3.3.5 server (at least through this changeset: https://github.com/azerothcore/azerothcore-wotlk/commit/9ad7cef3c474faacd2999b8575cbfc79a4d58852)
+- Install the "mod-everquest" mod into AzerothCore (https://github.com/NathanHandley/mod-everquest)
 - Installed unpatched client of the EverQuest Trilogy
 - Installed 3.3.5a WoW client, US version (which must be patched to not check for MD5 signatures, similar to other modded projects) 
 - If you want armor textures, install a texture pack.  A human one can be found here: https://github.com/NathanHandley/EQWOWConverter-HumTexturePack
