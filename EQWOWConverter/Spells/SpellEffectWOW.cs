@@ -32,6 +32,8 @@ namespace EQWOWConverter.Spells
         public UInt32 EffectItemType = 0;
         public int EffectMiscValueA = 0;
         public int EffectMiscValueB = 0;
+        public string ActionDescription = string.Empty;
+        public string AuraDescription = string.Empty;
 
         public SpellEffectWOW() { }
 
@@ -46,6 +48,29 @@ namespace EQWOWConverter.Spells
             EffectBasePoints = effectBasePoints;
             EffectMiscValueA = effectMiscValueA;
             EffectMiscValueB = effectMiscValueB;
+        }
+
+        public SpellEffectWOW Clone()
+        {
+            return new SpellEffectWOW
+            {
+                EffectType = this.EffectType,
+                EffectDieSides = this.EffectDieSides,
+                EffectRealPointsPerLevel = this.EffectRealPointsPerLevel,
+                EffectBasePoints = this.EffectBasePoints,
+                EffectMechanic = this.EffectMechanic,
+                ImplicitTagetB = this.ImplicitTagetB,
+                EffectRadiusIndex = this.EffectRadiusIndex,
+                EffectAuraType = this.EffectAuraType,
+                EffectAuraPeriod = this.EffectAuraPeriod,
+                EffectMultipleValue = this.EffectMultipleValue,
+                EffectChainTargets = this.EffectChainTargets,
+                EffectItemType = this.EffectItemType,
+                EffectMiscValueA = this.EffectMiscValueA,
+                EffectMiscValueB = this.EffectMiscValueB,
+                ActionDescription = this.ActionDescription,
+                AuraDescription = this.AuraDescription
+            };
         }
 
         public bool IsAuraType()

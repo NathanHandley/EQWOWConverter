@@ -17,6 +17,7 @@
 using EQWOWConverter.Common;
 using EQWOWConverter.Tradeskills;
 using EQWOWConverter.WOWFiles;
+using System.Text;
 
 namespace EQWOWConverter.Spells
 {
@@ -202,9 +203,7 @@ namespace EQWOWConverter.Spells
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS);
 
-                // Add spell duration text.
-                // NOTE: Do this last so text looks right
-                AddDurationToSpellDescription(ref newSpellTemplate, newSpellTemplate.SpellDurationInMS);
+                // Set the spell and aura descriptions
 
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
@@ -444,183 +443,163 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS)
         {
             // Process all spell effects
-            foreach(SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
+            foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
+                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                SpellEffectWOW? newSpellEffectWOW2 = null;
                 switch (eqEffect.EQEffectType)
                 {
-                    case SpellEQEffectType.CurrentHitPoints:
+                    case SpellEQEffectType.CurrentHitPoints: // Fallthrough
+                    case SpellEQEffectType.CurrentHitPointsOnce:
                         {
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
-                            SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
-                            UInt32 auraPeriod = 0;
+                            string elementalSchoolName = string.Empty;
+                            switch (schoolMask)
+                            {
+                                case 4: elementalSchoolName = "fire"; break;
+                                case 8: elementalSchoolName = "nature"; break;
+                                case 16: elementalSchoolName = "frost"; break;
+                                case 32: elementalSchoolName = "shadow"; break;
+                                case 64: elementalSchoolName = "arcane"; break;
+                                default: break;
+                            }
+
                             int effectAmount = Math.Abs(eqEffect.EQBaseValue);
-                            UInt32 totalAmount = 0;
-                            if (spellDurationInMS > 0)
+                            if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
                             {
-                                float tickModAmount = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
-                                effectAmount = (int)Math.Round(Convert.ToSingle(effectAmount) * tickModAmount);
-                                if (effectAmount <= 0)
-                                    effectAmount = 1;
-                                auraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
-                                totalAmount = (Convert.ToUInt32(spellDurationInMS) / auraPeriod) * Convert.ToUInt32(effectAmount);                                
-                                wowEffectType = SpellWOWEffectType.ApplyAura;
-                            }
-                            string descriptionFragment = string.Empty;
-                            if (eqEffect.EQBaseValue > 0)
-                            {
-                                if (spellDurationInMS > 0)
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
+                                if (eqEffect.EQBaseValue > 0)
                                 {
-                                    descriptionFragment = string.Concat("Heal the target for ", totalAmount, " over ", GetTimeDurationStringFromMS(spellDurationInMS));
-                                    wowAuraType = SpellWOWAuraType.PeriodicHeal;
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
+                                    newSpellEffectWOW.ActionDescription = string.Concat("healed for ", effectAmount);
                                 }
                                 else
                                 {
-                                    descriptionFragment = (string.Concat("Heal the target for ", effectAmount));
-                                    wowEffectType = SpellWOWEffectType.Heal;
+                                    newSpellEffectWOW.EffectType = SpellWOWEffectType.SchoolDamage;
+                                    if (elementalSchoolName.Length > 0)
+                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", effectAmount, " ", elementalSchoolName, " damage");
+                                    else
+                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", effectAmount, " damage");
                                 }
                             }
                             else
                             {
-                                switch (schoolMask)
+                                newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                                float effectAmountMod = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
+                                effectAmount = Math.Max((int)Math.Round(Convert.ToSingle(effectAmount) * effectAmountMod), 1);
+                                newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
+                                if (eqEffect.EQBaseValue > 0)
                                 {
-                                    case 4: descriptionFragment = string.Concat(descriptionFragment, " fire damage"); break;
-                                    case 8: descriptionFragment = string.Concat(descriptionFragment, " nature damage"); break;
-                                    case 16: descriptionFragment = string.Concat(descriptionFragment, " frost damage"); break;
-                                    case 32: descriptionFragment = string.Concat(descriptionFragment, " shadow damage"); break;
-                                    case 64: descriptionFragment = string.Concat(descriptionFragment, " arcane damage"); break;
-                                    default: descriptionFragment = string.Concat(descriptionFragment, " damage"); break; 
-                                }
-                                if (spellDurationInMS > 0)
-                                {
-                                    descriptionFragment = string.Concat("Damage the target for ", totalAmount, " over ", GetTimeDurationStringFromMS(spellDurationInMS));
-                                    wowAuraType = SpellWOWAuraType.PeriodicDamage;
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
+                                    newSpellEffectWOW.ActionDescription = string.Concat("regenerates ", effectAmount, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("regenerating ", effectAmount, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                 }
                                 else
                                 {
-                                    descriptionFragment = string.Concat("Strike the target for ", effectAmount);
-                                    wowEffectType = SpellWOWEffectType.SchoolDamage;
+                                    newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
+                                    if (elementalSchoolName.Length > 0)
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    }
+                                    else
+                                    {
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", effectAmount, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    }
                                 }
                             }
-                            spellTemplate.AddToDescription(descriptionFragment);
-                            if (spellDurationInMS > 0)
-                                spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, auraPeriod, 0, 0, effectAmount, 0, 0));
-                            else
-                                spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, auraPeriod, 0, 0, effectAmount, 0, 0));
+                            newSpellEffectWOW.EffectBasePoints = effectAmount;
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
-                            int effectBasePoints = eqEffect.EQBaseValue;
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            if (effectBasePoints >= 0)
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.EffectMiscValueA = 1; // Armor
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
-                                spellTemplate.AddToDescription(string.Concat("Increase the target's armor by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Armor increased by ", effectBasePoints));
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases armor by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("armor increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                spellTemplate.AddToDescription(string.Concat("Decreases the target's armor by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Armor decreased by ", effectBasePoints));
-                            }                                
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModResistance, 0, 0, 0, effectBasePoints, 1, 0));
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases armor by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("armor decreased by ", reductionAmount);
+                            }
                         } break;
                     case SpellEQEffectType.Attack:
                         {
-                            int effectBasePoints = eqEffect.EQBaseValue;
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            if (effectBasePoints >= 0)
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
-                                spellTemplate.AddToDescription(string.Concat("Increase the target's attack rating by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Attack rating increased by ", effectBasePoints));
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases attack power by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("attack power increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                spellTemplate.AddToDescription(string.Concat("Decrease the target's attack rating by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Attack rating decreased by ", effectBasePoints));
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases attack power by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("armor attack power by ", reductionAmount);
                             }
-                            // Add two for ranged and melee
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModAttackPower, 0, 0, 0, effectBasePoints, 0, 0));
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModRangedAttackPower, 0, 0, 0, effectBasePoints, 0, 0));
+
+                            // Add a second for ranged attack power
+                            newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                            newSpellEffectWOW2.ActionDescription = string.Empty;
+                            newSpellEffectWOW2.AuraDescription = string.Empty;
+                            newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedAttackPower;
                         } break;
                     case SpellEQEffectType.MovementSpeed:
                         {
-                            int effectBasePoints = eqEffect.EQBaseValue;
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            SpellWOWAuraType wowAuraType = SpellWOWAuraType.None;
-                            if (effectBasePoints >= 0)
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectBasePoints = Math.Abs(eqEffect.EQBaseValue);
+
+                            if (eqEffect.EQBaseValue >= 0)
                             {
-                                spellTemplate.AddToDescription(string.Concat("Increase the target's non-mounted movement speed by ", effectBasePoints, "%"));
-                                spellTemplate.AddToAuraDescription(string.Concat("Non-mounted movement speed increased by ", effectBasePoints, "%"));
-                                wowAuraType = SpellWOWAuraType.ModIncreaseSpeed;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModIncreaseSpeed;
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases non-mounted movement speed by ", newSpellEffectWOW.EffectBasePoints, "% ");
+                                newSpellEffectWOW.AuraDescription = string.Concat("non-mounted movement speed increased by ", newSpellEffectWOW.EffectBasePoints, "% ");
                             }
                             else
                             {
-                                spellTemplate.AddToDescription(string.Concat("Decrease the target's non-mounted movement speed by ", effectBasePoints, "%"));
-                                spellTemplate.AddToAuraDescription(string.Concat("Non-mounted movement speed decreased by ", effectBasePoints, "%"));
-                                wowAuraType = SpellWOWAuraType.ModDecreaseSpeed;
+                                newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDecreaseSpeed;
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases movement speed by ", newSpellEffectWOW.EffectBasePoints, "% ");
+                                newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", newSpellEffectWOW.EffectBasePoints, "% ");
                             }
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, wowAuraType, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     case SpellEQEffectType.TotalHP:
                         {
-                            int effectBasePoints = eqEffect.EQBaseValue;
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.ApplyAura;
-                            if (effectBasePoints >= 0)
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
-                                spellTemplate.AddToDescription(string.Concat("Increases the target's maximum health by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Maximum health increased by ", effectBasePoints));
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases maximum health by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("maximum health increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
-                                spellTemplate.AddToDescription(string.Concat("Decreases the target's maximum health by ", effectBasePoints));
-                                spellTemplate.AddToAuraDescription(string.Concat("Maximum health decreased by ", effectBasePoints));
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum health by ", reductionAmount);
+                                newSpellEffectWOW.AuraDescription = string.Concat("maximum health decreased by ", reductionAmount);
                             }
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.ModMaximumHealth, 0, 0, 0, effectBasePoints, 0, 0));
-                        } break;
-                    case SpellEQEffectType.CurrentHitPointsOnce:
-                        {
-                            int effectBasePoints = Math.Abs(eqEffect.EQBaseValue);
-                            SpellWOWEffectType wowEffectType = SpellWOWEffectType.SchoolDamage;
-                            if (eqEffect.EQBaseValue > 0)
-                            {
-                                spellTemplate.AddToDescription(string.Concat("Heal the target by ", effectBasePoints));
-                                wowEffectType = SpellWOWEffectType.Heal;
-                            }
-                            else
-                            {
-                                string descriptionFragment = string.Concat("Strike the target for ", effectBasePoints);
-                                switch (schoolMask)
-                                {
-                                    case 4: descriptionFragment = string.Concat(descriptionFragment, " fire damage"); break;
-                                    case 8: descriptionFragment = string.Concat(descriptionFragment, " nature damage"); break;
-                                    case 16: descriptionFragment = string.Concat(descriptionFragment, " frost damage"); break;
-                                    case 40: descriptionFragment = string.Concat(descriptionFragment, " plague (shadow + nature) damage"); break;
-                                    case 64: descriptionFragment = string.Concat(descriptionFragment, " arcane damage"); break;
-                                    default: descriptionFragment = string.Concat(descriptionFragment, " damage"); break;
-                                }
-                                spellTemplate.AddToDescription(descriptionFragment);
-                            }
-                            spellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(wowEffectType, SpellWOWAuraType.None, 0, 0, 0, effectBasePoints, 0, 0));
                         } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
                             continue;
                         }
-                }
+                }                       
+                spellTemplate.WOWSpellEffects.Add(newSpellEffectWOW);
+                if (newSpellEffectWOW2 != null)
+                    spellTemplate.WOWSpellEffects.Add(newSpellEffectWOW2);
             }
 
             // Sort them so the aura effects are last
             spellTemplate.WOWSpellEffects.Sort();
-        }
-
-        private void AddToDescription(string descriptionToAdd)
-        {
-            Description = GetFormattedDescription(Description, descriptionToAdd);
-        }
-
-        private void AddToAuraDescription(string descriptionToAdd)
-        {
-            AuraDescription = GetFormattedDescription(AuraDescription, descriptionToAdd);
         }
 
         private static void SetAuraStackRule(ref SpellTemplate spellTemplate, int eqSpellCategory)
@@ -650,7 +629,39 @@ namespace EQWOWConverter.Spells
             spellTemplate.SpellGroupStackingID = groupStackingID;
         }
 
-        private static string GetTimeDurationStringFromMS(int durationInMS)
+        private static void SetMainAndAuraDescriptions(ref SpellTemplate spellTemplate)
+        {
+            StringBuilder descriptionSB = new StringBuilder();
+            StringBuilder auraSB = new StringBuilder();
+            descriptionSB.Append("Target ");
+            for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
+            {
+                if (i != 0)
+                {
+                    if (spellTemplate.WOWSpellEffects[i].ActionDescription.Length > 0)
+                        descriptionSB.Append(", ");
+                    if (spellTemplate.WOWSpellEffects[i].AuraDescription.Length > 0 && auraSB.Length > 0)
+                        auraSB.Append(", ");
+                }
+                descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
+                auraSB.Append(spellTemplate.WOWSpellEffects[i].AuraDescription);
+            }
+
+            // Store and control capitalization
+            descriptionSB.Append('.');
+            auraSB.Append('.');
+            spellTemplate.Description = descriptionSB.ToString().ToLower();
+            if (spellTemplate.Description.Length > 0)
+                spellTemplate.Description = string.Concat(char.ToUpper(spellTemplate.Description[0]), spellTemplate.Description.Substring(1));
+            spellTemplate.AuraDescription = auraSB.ToString().ToLower();
+            if (spellTemplate.AuraDescription.Length > 0)
+                spellTemplate.AuraDescription = string.Concat(char.ToUpper(spellTemplate.AuraDescription[0]), spellTemplate.AuraDescription.Substring(1));
+
+            // Add the time duration
+            spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.SpellDurationInMS));
+        }
+
+        private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS)
         {
             // Skip no duration
             if (durationInMS <= 0)
@@ -664,52 +675,12 @@ namespace EQWOWConverter.Spells
             if (wholeMinutes > 0)
             {
                 if (remainderSeconds > 0)
-                    return (string.Concat(wholeMinutes, " min ", remainderSeconds, " sec"));
+                    return (string.Concat(" Lasts ", wholeMinutes, " min ", remainderSeconds, " sec."));
                 else
-                    return (string.Concat(wholeMinutes, " min"));
+                    return (string.Concat(" Lasts ", wholeMinutes, " min."));
             }
             else // Just seconds
-                return (string.Concat(remainderSeconds, " sec"));
-        }
-
-        private static void AddDurationToSpellDescription(ref SpellTemplate spellTemplate, int durationInMS)
-        {
-            // Skip no duration
-            if (durationInMS <= 0)
-                return;
-
-            // For HoTs and DoTs, don't double-list the duration
-            if (spellTemplate.Description.Contains(GetTimeDurationStringFromMS(durationInMS)) == false)
-                spellTemplate.Description = (string.Concat(spellTemplate.Description, " Lasts ", GetTimeDurationStringFromMS(durationInMS), "."));
-        }
-
-        private static string GetFormattedDescription(string initialDescription, string descriptionToAdd)
-        {
-            // Remove a period from the added description if added by mistake
-            if (descriptionToAdd.EndsWith("."))
-                descriptionToAdd = descriptionToAdd.Substring(0, descriptionToAdd.Length - 1);
-            if (descriptionToAdd.Length == 0)
-                return initialDescription;
-
-            // Different logic if appending vs new
-            if (initialDescription.Length > 0)
-            {
-                // Strip the last period
-                if (initialDescription.EndsWith(".") == true)
-                    initialDescription = initialDescription.Substring(0, initialDescription.Length - 1);
-
-                // Make sure the first character is lowercase since there's already text
-                string descriptionToAddLowerFirst = char.ToLower(descriptionToAdd[0]) + descriptionToAdd.Substring(1);
-
-                // Add it
-                return string.Concat(initialDescription, ", and ", descriptionToAddLowerFirst, ".");
-            }
-            else
-            {
-                // Make sure the first letter is uppercase before adding
-                descriptionToAdd = char.ToUpper(descriptionToAdd[0]) + descriptionToAdd.Substring(1);
-                return string.Concat(descriptionToAdd, ".");
-            }
+                return (string.Concat(" Lasts ", remainderSeconds, " sec."));
         }
 
         public List<List<SpellEffectWOW>> GetWOWEffectsInBlocksOfThree()
