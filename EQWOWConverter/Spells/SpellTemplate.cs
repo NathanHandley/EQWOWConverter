@@ -204,6 +204,7 @@ namespace EQWOWConverter.Spells
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS);
 
                 // Set the spell and aura descriptions
+                SetMainAndAuraDescriptions(ref newSpellTemplate);
 
                 // Stacking rules
                 SetAuraStackRule(ref newSpellTemplate, int.Parse(columns["spell_category"]));
@@ -555,7 +556,7 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.MovementSpeed:
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                            newSpellEffectWOW.EffectBasePoints = Math.Abs(eqEffect.EQBaseValue);
+                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
 
                             if (eqEffect.EQBaseValue >= 0)
                             {
@@ -566,8 +567,9 @@ namespace EQWOWConverter.Spells
                             else
                             {
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDecreaseSpeed;
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases movement speed by ", newSpellEffectWOW.EffectBasePoints, "% ");
-                                newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", newSpellEffectWOW.EffectBasePoints, "% ");
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases movement speed by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "% ");
+                                newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "% ");
+                                newSpellEffectWOW.EffectMechanic = SpellMechanicType.Snared;
                             }
                         } break;
                     case SpellEQEffectType.TotalHP:

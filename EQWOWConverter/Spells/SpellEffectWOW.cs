@@ -22,7 +22,7 @@ namespace EQWOWConverter.Spells
         public Int32 EffectDieSides = 0;
         public float EffectRealPointsPerLevel = 0;
         public Int32 EffectBasePoints = 0;
-        public UInt32 EffectMechanic = 0;
+        public SpellMechanicType EffectMechanic = SpellMechanicType.None;
         public UInt32 ImplicitTagetB = 0;
         public UInt32 EffectRadiusIndex = 0;
         public SpellWOWAuraType EffectAuraType = SpellWOWAuraType.None;

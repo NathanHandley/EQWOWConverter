@@ -105,7 +105,7 @@ namespace EQWOWConverter.WOWFiles
             foreach (SpellEffectWOW spellEffect in spellEffects)
                 newRow.AddInt32(spellEffect.EffectBasePoints); // EffectBasePoints1, EffectBasePoints2, EffectBasePoints3
             foreach (SpellEffectWOW spellEffect in spellEffects)
-                newRow.AddUInt32(spellEffect.EffectMechanic); // EffectMechanic1, EffectMechanic2, EffectMechanic3
+                newRow.AddUInt32(Convert.ToUInt32(spellEffect.EffectMechanic)); // EffectMechanic1, EffectMechanic2, EffectMechanic3
             foreach (SpellEffectWOW spellEffect in spellEffects)
                 newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA1, ImplicitTargetA2, ImplicitTargetA3
             foreach (SpellEffectWOW spellEffect in spellEffects)
