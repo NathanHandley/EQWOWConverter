@@ -264,7 +264,7 @@ namespace EQWOWConverter.Spells
                 spellTemplate.LearnScrollPropertiesByClassType[wowClassType] = spellLearnScrollProperties;
 
                 // Also save it as the lowest level possible to learn for future formulas
-                if (spellTemplate.MinimumPlayerLearnLevel > spellLearnScrollProperties.LearnLevel)
+                if (spellTemplate.MinimumPlayerLearnLevel <= 0 || spellTemplate.MinimumPlayerLearnLevel > spellLearnScrollProperties.LearnLevel)
                     spellTemplate.MinimumPlayerLearnLevel = spellLearnScrollProperties.LearnLevel;
             }
         }
