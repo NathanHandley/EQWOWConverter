@@ -107,6 +107,7 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
         public int MinimumPlayerLearnLevel = -1;
+        public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
         public UInt32 RequiredTotemID1 = 0;
@@ -157,18 +158,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
                 // TODO: FacingCasterFlags
-                PopulateEQSpellEffect(ref newSpellTemplate, 1, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 2, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 3, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 4, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 5, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 6, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 7, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 8, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 9, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 10, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 11, columns);
-                PopulateEQSpellEffect(ref newSpellTemplate, 12, columns);
+                for (int i = 1; i <= 12; i++)
+                    PopulateEQSpellEffect(ref newSpellTemplate, i, columns);
                 // Skip if there isn't an effect
                 if (newSpellTemplate.EQSpellEffects.Count == 0)
                     continue;
@@ -444,6 +435,10 @@ namespace EQWOWConverter.Spells
             if (slotID < 11)
                 curEffect.EQMaxValue = int.Parse(rowColumns[string.Concat("max", slotID)]);
 
+            // Some spells have an effect formula based on the spell level, so they must have their "spell level" set for formulas
+            if ((int)curEffect.EQBaseValueFormulaType >= 111 || (int)curEffect.EQBaseValueFormulaType <= 118)
+                spellTemplate.HasEffectBaseFormulaUsingSpellLevel = true;
+
             // Add it
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
@@ -516,13 +511,13 @@ namespace EQWOWConverter.Spells
                                     }
                                 }
                             }
-                            newSpellEffectWOW.EffectBasePoints = effectAmount;
+                            newSpellEffectWOW.SetEffectAmountValues(effectAmount, eqEffect.EQBaseValueFormulaType);
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -540,7 +535,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
 
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -563,7 +558,7 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.MovementSpeed:
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
 
                             if (eqEffect.EQBaseValue >= 0)
                             {
@@ -583,7 +578,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.ActionDescription = string.Concat("increases maximum health by ", newSpellEffectWOW.EffectBasePoints);
@@ -600,7 +595,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 0; // Strength
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -635,7 +630,7 @@ namespace EQWOWConverter.Spells
 
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 1; // Agility
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -653,7 +648,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -671,7 +666,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -689,7 +684,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -707,7 +702,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
-                            newSpellEffectWOW.EffectBasePoints = eqEffect.EQBaseValue;
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.ActionDescription = string.Concat("increases hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");

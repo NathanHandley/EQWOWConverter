@@ -65,8 +65,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(101); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(0); // MaxLevel
-            newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
-            newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
+            if (spellTemplate.HasEffectBaseFormulaUsingSpellLevel == false) // Without this, spells that don't factor spell level are too weak
+            {
+                newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
+                newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
+            }
+            else
+            {
+                newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
+                newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
+            }
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellDurationDBCID)); // DurationIndex (SpellDuration.dbc id)
             newRow.AddInt32(0); // PowerType
             newRow.AddUInt32(spellTemplate.ManaCost); // ManaCost

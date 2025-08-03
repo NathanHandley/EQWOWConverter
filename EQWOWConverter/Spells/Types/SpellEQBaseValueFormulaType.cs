@@ -38,7 +38,7 @@ namespace EQWOWConverter.Spells
         BaseAddTwentyTimesLevelMinusSpellLevel = 118,
         BaseAddLevelDivideEight = 119,
         //Splurt = 122, // What is this?
-        RandomBetweenBaseAndMax = 123,
+        //RandomBetweenBaseAndMax = 123, never used on Velious and below
         //EffectMa = 203 // What is this? Unknown?
     }
 }

@@ -21,7 +21,11 @@ namespace EQWOWConverter.Spells
         public SpellWOWEffectType EffectType = SpellWOWEffectType.None;
         public Int32 EffectDieSides = 0;
         public float EffectRealPointsPerLevel = 0;
-        public Int32 EffectBasePoints = 0;
+        private Int32 _EffectBasePoints = 0;
+        public int EffectBasePoints
+        {
+            get { return _EffectBasePoints; }
+        }
         public SpellMechanicType EffectMechanic = SpellMechanicType.None;
         public UInt32 ImplicitTagetB = 0;
         public UInt32 EffectRadiusIndex = 0;
@@ -45,7 +49,7 @@ namespace EQWOWConverter.Spells
             EffectAuraPeriod = effectAuraPeriod;
             EffectItemType = effectItemType;
             EffectDieSides = effectDieSides;
-            EffectBasePoints = effectBasePoints;
+            _EffectBasePoints = effectBasePoints;
             EffectMiscValueA = effectMiscValueA;
             EffectMiscValueB = effectMiscValueB;
         }
@@ -57,7 +61,7 @@ namespace EQWOWConverter.Spells
                 EffectType = this.EffectType,
                 EffectDieSides = this.EffectDieSides,
                 EffectRealPointsPerLevel = this.EffectRealPointsPerLevel,
-                EffectBasePoints = this.EffectBasePoints,
+                _EffectBasePoints = this.EffectBasePoints,
                 EffectMechanic = this.EffectMechanic,
                 ImplicitTagetB = this.ImplicitTagetB,
                 EffectRadiusIndex = this.EffectRadiusIndex,
@@ -71,6 +75,34 @@ namespace EQWOWConverter.Spells
                 ActionDescription = this.ActionDescription,
                 AuraDescription = this.AuraDescription
             };
+        }
+
+        public void SetEffectAmountValues(int effectBasePoints, SpellEQBaseValueFormulaType eqFormula)
+        {
+            _EffectBasePoints = effectBasePoints;
+            
+            switch (eqFormula)
+            {
+                case SpellEQBaseValueFormulaType.BaseDivideBy100: _EffectBasePoints = effectBasePoints / 100; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevel: EffectRealPointsPerLevel = 1; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: EffectRealPointsPerLevel = 2; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: EffectRealPointsPerLevel = 3; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: EffectRealPointsPerLevel = 4; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: EffectRealPointsPerLevel = 0.5f; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: EffectRealPointsPerLevel = 0.3333f; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: EffectRealPointsPerLevel = 0.25f; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: EffectRealPointsPerLevel = 0.25f; break;
+                case SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 6; break;
+                case SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 6; break;
+                case SpellEQBaseValueFormulaType.BaseAddTenTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 10; break;
+                case SpellEQBaseValueFormulaType.BaseAddFifteenTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 15; break;
+                case SpellEQBaseValueFormulaType.BaseAddTwelveTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 12; break;
+                case SpellEQBaseValueFormulaType.BaseAddTwentyTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 20; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: EffectRealPointsPerLevel = 0.125f; break;
+                case SpellEQBaseValueFormulaType.BaseValue: // Fallthrough
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesMultiplier: // Fallthrough
+                default: break;
+            }
         }
 
         public bool IsAuraType()
