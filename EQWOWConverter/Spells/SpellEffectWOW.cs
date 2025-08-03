@@ -93,23 +93,24 @@ namespace EQWOWConverter.Spells
             }
 
             // Flip spell level to negative for the calculation if points are negative, since it adds 'down'
-            if (effectMaxPoints < 0)
-                spellLevel *= -1;
+            int levelMuliplierSign = 1;
+            if (effectBasePoints < 0)
+                levelMuliplierSign = -1;
 
             // Run base through a formula using a calculated value of the supplied spell level, instead of the player level
             _EffectBasePoints = effectBasePoints;
             switch (eqFormula)
             {
                 case SpellEQBaseValueFormulaType.BaseDivideBy100: _EffectBasePoints = effectBasePoints / 100; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevel: _EffectBasePoints += spellLevel; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: _EffectBasePoints += (spellLevel * 2); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: _EffectBasePoints += (spellLevel * 3); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: _EffectBasePoints += (spellLevel * 4); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.5f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.3333f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.25f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.20f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.125f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevel: _EffectBasePoints += spellLevel * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: _EffectBasePoints += (spellLevel * 2) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: _EffectBasePoints += (spellLevel * 3) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: _EffectBasePoints += (spellLevel * 4) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.5f) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.3333f) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.25f) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.20f) * levelMuliplierSign; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.125f) * levelMuliplierSign; break;
                 default: break;
             }
 
