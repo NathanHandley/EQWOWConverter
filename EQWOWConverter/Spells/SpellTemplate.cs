@@ -195,6 +195,10 @@ namespace EQWOWConverter.Spells
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS);
 
+                // If there is no wow effect, skip it
+                if (newSpellTemplate.WOWSpellEffects.Count == 0)
+                    continue;
+
                 // Set the spell and aura descriptions
                 SetMainAndAuraDescriptions(ref newSpellTemplate);
 

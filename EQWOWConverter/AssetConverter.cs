@@ -173,6 +173,10 @@ namespace EQWOWConverter
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
                 zoneAndObjectTask.Wait();
 
+            // Generate creature spell logic
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID(); // Manage this better since spell templates is pulled above
+            ConvertCreatureSpellAI(ref creatureTemplates, spellTemplatesByEQID);
+
             // Create the DBC files
             CreateDBCFiles(zones, creatureModelTemplates, spellTemplates);
 
@@ -1190,6 +1194,59 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Creature generation complete.");
             return true;
+        }
+
+        public void ConvertCreatureSpellAI(ref List<CreatureTemplate> creatureTemplates, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        {
+            Logger.WriteInfo("Converting Creature Spell AI started.");
+
+            // Load the creature spell reference data
+            List<CreatureSpellList> creatureSpellLists = CreatureSpellList.GetCreatureSpellLists();
+            Dictionary<int, List<CreatureSpellEntry>> creatureSpellEntriesByListID = CreatureSpellEntry.GetCreatureSpellEntriesByListID();
+
+            // Cull the lists down to only list entries that have valid spells within them
+            foreach (List<CreatureSpellEntry> creatureSpellEntries in creatureSpellEntriesByListID.Values)
+                for (int i = creatureSpellEntries.Count - 1;  i >= 0; i--)
+                    if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false)
+                        creatureSpellEntries.RemoveAt(i);
+            for (int i = creatureSpellLists.Count - 1; i >= 0; i--)
+            {
+                int listID = creatureSpellLists[i].ID;
+                if (creatureSpellEntriesByListID.ContainsKey(listID) == false || creatureSpellEntriesByListID[listID].Count == 0)
+                    creatureSpellLists.RemoveAt(i);
+            }
+
+            // Create a mapping of spell list for faster lookup
+            Dictionary<int, CreatureSpellList> creatureSpellListsByID = new Dictionary<int, CreatureSpellList>();
+            foreach (CreatureSpellList creatureSpellList in creatureSpellLists)
+                creatureSpellListsByID.Add(creatureSpellList.ID, creatureSpellList);
+
+            // Attach the creature spell lists and entries
+            foreach (CreatureTemplate creatureTemplate in creatureTemplates)
+            {
+                if (creatureTemplate.CreatureSpellListID == 0)
+                    continue;
+                if (creatureSpellListsByID.ContainsKey(creatureTemplate.CreatureSpellListID) == false)
+                {
+                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list with id ", creatureTemplate.CreatureSpellListID.ToString()); 
+                    continue;
+                }
+                if (creatureSpellEntriesByListID.ContainsKey(creatureTemplate.CreatureSpellListID) == false)
+                {
+                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries list with id ", creatureTemplate.CreatureSpellListID.ToString());
+                    continue;
+                }
+                if (creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID].Count == 0)
+                {
+                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries in the list with id ", creatureTemplate.CreatureSpellListID.ToString());
+                    continue;
+                }
+                creatureTemplate.CreatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
+                foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
+                    creatureTemplate.CreatureSpellEntries.Add(spellEntry);
+            }
+
+            Logger.WriteInfo("Converting Creature Spell AI complete.");
         }
 
         public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)

@@ -69,6 +69,9 @@ namespace EQWOWConverter.Creatures
         public bool LimitOneInSpawnPool = false;
         public bool HasSmartScript = false;
         public int DefaultEmoteID = 0;
+        public int CreatureSpellListID = 0;
+        public List<CreatureSpellEntry> CreatureSpellEntries = new List<CreatureSpellEntry>();
+        public CreatureSpellList? CreatureSpellList = null;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
@@ -192,7 +195,6 @@ namespace EQWOWConverter.Creatures
                 // Clear vendor lists for riding trainers if riding trainers are disabled
                 if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false && skillTrainerType == 9)
                     newCreatureTemplate.MerchantID = 0;
-
                 newCreatureTemplate.ColorTintID = int.Parse(columns["armortint_id"]);
                 newCreatureTemplate.HasMana = (int.Parse(columns["mana"]) > 0);
                 newCreatureTemplate.HPMod = GetStatMod("hp", newCreatureTemplate.Level, newCreatureTemplate.Rank, float.Parse(columns["hp"]));
@@ -206,6 +208,7 @@ namespace EQWOWConverter.Creatures
                 ProcessEQClass(ref newCreatureTemplate, newCreatureTemplate.EQClass);
                 if (newCreatureTemplate.IsRidingTrainer == true && Configuration.CREATURE_RIDING_TRAINERS_ENABLED == false)
                     continue;
+                newCreatureTemplate.CreatureSpellListID = int.Parse(columns["creaturespelllistid"]);
 
                 // Special logic for a few variations of kobolds, which look wrong if not adjusted
                 if (raceID == 48)

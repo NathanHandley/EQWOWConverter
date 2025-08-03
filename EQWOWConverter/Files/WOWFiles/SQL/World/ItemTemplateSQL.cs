@@ -15,7 +15,6 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 using EQWOWConverter.Common;
 using EQWOWConverter.Items;
-using System.Collections.Generic;
 
 namespace EQWOWConverter.WOWFiles
 {
