@@ -598,7 +598,7 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.ActionDescription = string.Concat("increases maximum strength by ", newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.AuraDescription = string.Concat("maximum stringth increased by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.AuraDescription = string.Concat("maximum strength increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
