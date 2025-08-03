@@ -466,58 +466,59 @@ namespace EQWOWConverter.Spells
                                 default: break;
                             }
 
-                            int effectAmount = Math.Abs(eqEffect.EQBaseValue);
+                            int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
                             if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
                             {
+                                newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("healed for ", effectAmount);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("healed for ", newSpellEffectWOW.EffectBasePoints);
                                 }
                                 else
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.SchoolDamage;
                                     if (elementalSchoolName.Length > 0)
-                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", effectAmount, " ", elementalSchoolName, " damage");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage");
                                     else
-                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", effectAmount, " damage");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", newSpellEffectWOW.EffectBasePoints, " damage");
                                 }
                             }
                             else
                             {
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 float effectAmountMod = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
-                                effectAmount = Math.Max((int)Math.Round(Convert.ToSingle(effectAmount) * effectAmountMod), 1);
+                                preFormulaEffectAmount = Math.Max((int)Math.Round(Convert.ToSingle(preFormulaEffectAmount) * effectAmountMod), 1);
+                                newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                                 newSpellEffectWOW.EffectAuraPeriod = Convert.ToUInt32(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) * 1000;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("regenerates ", effectAmount, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                    newSpellEffectWOW.AuraDescription = string.Concat("regenerating ", effectAmount, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("regenerates ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.AuraDescription = string.Concat("regenerating ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                 }
                                 else
                                 {
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicDamage;
                                     if (elementalSchoolName.Length > 0)
                                     {
-                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                     else
                                     {
-                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", effectAmount, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
-                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", effectAmount, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                 }
                             }
-                            newSpellEffectWOW.SetEffectAmountValues(effectAmount, eqEffect.EQBaseValueFormulaType);
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 1; // Armor
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -535,7 +536,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
 
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -558,7 +559,7 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.MovementSpeed:
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
 
                             if (eqEffect.EQBaseValue >= 0)
                             {
@@ -578,7 +579,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.ActionDescription = string.Concat("increases maximum health by ", newSpellEffectWOW.EffectBasePoints);
@@ -595,7 +596,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 0; // Strength
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -630,7 +631,7 @@ namespace EQWOWConverter.Spells
 
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 1; // Agility
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -648,7 +649,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -666,7 +667,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -684,7 +685,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
@@ -702,7 +703,7 @@ namespace EQWOWConverter.Spells
                         {
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
-                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQBaseValueFormulaType);
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.ActionDescription = string.Concat("increases hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
