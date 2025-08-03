@@ -455,6 +455,8 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.CurrentHitPoints: // Fallthrough
                     case SpellEQEffectType.CurrentHitPointsOnce:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             string elementalSchoolName = string.Empty;
                             switch (schoolMask)
                             {
@@ -516,6 +518,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -534,6 +538,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.Attack:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -558,6 +564,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.MovementSpeed:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
 
@@ -577,6 +585,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.TotalHP:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -594,6 +604,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.Strength:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -613,6 +625,8 @@ namespace EQWOWConverter.Spells
                     case SpellEQEffectType.Dexterity: // Fallthrough
                     case SpellEQEffectType.Agility:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             // EQ Dexterity and EQ Agility are both mapped WOW agility, so use the higher of the two and reuse if one exists
                             bool ignoreAsAglEffectExistsAndIsStronger = false;
                             foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
@@ -647,6 +661,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.Stamina:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -683,6 +699,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.Wisdom:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
@@ -701,6 +719,8 @@ namespace EQWOWConverter.Spells
                         } break;
                     case SpellEQEffectType.Charisma:
                         {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, true);
