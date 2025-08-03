@@ -18,16 +18,38 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SmartScriptsSQL : SQLFile
     {
+        // This ensures no ID collision issues, without giving that responsiblity to the caller
+        private static Dictionary<int, Dictionary<int, int>> IDByEntryOrGUIDBySourceType = new Dictionary<int, Dictionary<int, int>>();
+        private static readonly object IDLock = new object();
+
         public override string DeleteRowSQL()
         {
             return "DELETE FROM smart_scripts WHERE COMMENT LIKE 'EQ%';";
+        }
+
+        private int GetUniqueID(int entryOrGUID, int sourceType)
+        {
+            lock (IDLock)
+            {
+                if (IDByEntryOrGUIDBySourceType.ContainsKey(sourceType) == false)
+                    IDByEntryOrGUIDBySourceType.Add(sourceType, new Dictionary<int, int>());
+                if (IDByEntryOrGUIDBySourceType[sourceType].ContainsKey(entryOrGUID) == false)
+                {
+                    IDByEntryOrGUIDBySourceType[sourceType].Add(entryOrGUID, 0);
+                    return 0;
+                }
+                else
+                {
+                    IDByEntryOrGUIDBySourceType[sourceType][entryOrGUID]++;
+                    return IDByEntryOrGUIDBySourceType[sourceType][entryOrGUID];
+                }
+            }
         }
 
         public void AddRowForQuestCompleteTalkEvent(int creatureTemplateID, int groupID, int questID, string comment)
         {
             AddRow(creatureTemplateID,
                    0,          // SMART_SCRIPT_TYPE_CREATURE = 0
-                   groupID,
                    20,         // SMART_EVENT_REWARD_QUEST = 20
                    questID,
                    1,          // SMART_ACTION_TALK = 1
@@ -43,7 +65,6 @@ namespace EQWOWConverter.WOWFiles
         {
             AddRow(sourceGameObjectTemplateID, // Negative for GUID, Positive for Entry
                 1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
-                0,
                 70, // SMART_EVENT_GO_STATE_CHANGED
                 2,  // State = Active (1 = Ready, 2 = Active Alternative)
                 9,  // SMART_ACTION_ACTIVATE_GOBJECT,
@@ -54,12 +75,12 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
-        public void AddRow(int entryOrGUIDID, int sourceType, int groupID, int eventType, int eventParam1, int actionType, int actionParam1, int targetType, int targetParam1, int targetParam2, string comment)
+        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventParam1, int actionType, int actionParam1, int targetType, int targetParam1, int targetParam2, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
             newRow.AddInt("source_type", sourceType); // 0 = Creature, 1 = GameObject, 2 = AreaTrigger, 9 = TimedActionList
-            newRow.AddInt("id", groupID);
+            newRow.AddInt("id", GetUniqueID(entryOrGUIDID, sourceType));
             newRow.AddInt("link", 0);
             newRow.AddInt("event_type", eventType); 
             newRow.AddInt("event_phase_mask", 0);
