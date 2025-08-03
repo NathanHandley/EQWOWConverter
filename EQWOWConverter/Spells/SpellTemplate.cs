@@ -106,6 +106,7 @@ namespace EQWOWConverter.Spells
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
+        public int MinimumPlayerLearnLevel = -1;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
         public UInt32 RequiredTotemID1 = 0;
@@ -259,7 +260,13 @@ namespace EQWOWConverter.Spells
 
             // Only save it if a valid one was found
             if (spellLearnScrollProperties.LearnLevel > -1)
+            {
                 spellTemplate.LearnScrollPropertiesByClassType[wowClassType] = spellLearnScrollProperties;
+
+                // Also save it as the lowest level possible to learn for future formulas
+                if (spellTemplate.MinimumPlayerLearnLevel > spellLearnScrollProperties.LearnLevel)
+                    spellTemplate.MinimumPlayerLearnLevel = spellLearnScrollProperties.LearnLevel;
+            }
         }
 
         private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental)
