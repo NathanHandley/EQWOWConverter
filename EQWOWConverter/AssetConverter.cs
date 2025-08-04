@@ -1244,6 +1244,7 @@ namespace EQWOWConverter
                     continue;
                 }
                 creatureTemplate.CreatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
+                creatureTemplate.HasSmartScript = true;
                 foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
                     creatureTemplate.CreatureSpellEntries.Add(spellEntry);
 

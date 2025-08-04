@@ -27,7 +27,7 @@ namespace EQWOWConverter.Creatures
         public int MinLevel;
         public int MaxLevel;
         public int ManaCost;
-        public int RecastDelay;
+        public int RecastDelayInMS;
         public int Priority;
 
         public static Dictionary<int, List<CreatureSpellEntry>> GetCreatureSpellEntriesByListID()
@@ -61,7 +61,9 @@ namespace EQWOWConverter.Creatures
                 newSpellEntry.MinLevel = int.Parse(columns["minlevel"]);
                 newSpellEntry.MaxLevel = int.Parse(columns["maxlevel"]);
                 newSpellEntry.ManaCost = int.Parse(columns["manacost"]);
-                newSpellEntry.RecastDelay = int.Parse(columns["recast_delay"]);
+                newSpellEntry.RecastDelayInMS = int.Parse(columns["recast_delay"]) * 1000;
+                if (newSpellEntry.RecastDelayInMS < 0)
+                    newSpellEntry.RecastDelayInMS = 0;
                 newSpellEntry.Priority = int.Parse(columns["priority"]);
 
                 // Add it
@@ -69,6 +71,11 @@ namespace EQWOWConverter.Creatures
                     CreatureSpellEntriesByListID.Add(newSpellEntry.CreatureSpellListID, new List<CreatureSpellEntry>());
                 CreatureSpellEntriesByListID[newSpellEntry.CreatureSpellListID].Add(newSpellEntry);
             }
+        }
+
+        public bool DoCastInCombat()
+        {
+            return true;
         }
     }
 }

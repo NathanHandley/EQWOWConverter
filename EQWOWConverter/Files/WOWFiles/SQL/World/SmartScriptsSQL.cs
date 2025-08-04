@@ -52,6 +52,9 @@ namespace EQWOWConverter.WOWFiles
                    0,          // SMART_SCRIPT_TYPE_CREATURE = 0
                    20,         // SMART_EVENT_REWARD_QUEST = 20
                    questID,
+                   0,
+                   0,
+                   0,
                    1,          // SMART_ACTION_TALK = 1
                    groupID,
                    7,          // SMART_TARGET_SELF = 1
@@ -67,6 +70,9 @@ namespace EQWOWConverter.WOWFiles
                 1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
                 70, // SMART_EVENT_GO_STATE_CHANGED
                 2,  // State = Active (1 = Ready, 2 = Active Alternative)
+                0,
+                0,
+                0,
                 9,  // SMART_ACTION_ACTIVATE_GOBJECT,
                 0,
                 14, // SMART_TARGET_GAMEOBJECT_GUID
@@ -75,7 +81,27 @@ namespace EQWOWConverter.WOWFiles
                 comment);
         }
 
-        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventParam1, int actionType, int actionParam1, int targetType, int targetParam1, int targetParam2, string comment)
+        public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
+            string comment)
+        {
+            AddRow(creatureTemplateID,
+               0,          
+               0, // SMART_EVENT_UPDATE_IC
+               0, // Initial delay in MS (minimum)
+               0, // Initial delay in MS (maximum)
+               recastDelayInMS, // Recast delay in MS (minimum)
+               recastDelayInMS, // Recast delay in MS (maximum)
+               11, // SMART_ACTION_CAST
+               wowSpellID,
+               2, // SMART_TARGET_VICTIM
+               0,
+               0,
+               comment
+            );
+        }
+
+        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
+            int actionType, int actionParam1, int targetType, int targetParam1, int targetParam2, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
@@ -87,9 +113,9 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("event_chance", 100);
             newRow.AddInt("event_flags", 0);
             newRow.AddInt("event_param1", eventParam1);
-            newRow.AddInt("event_param2", 0);
-            newRow.AddInt("event_param3", 0);
-            newRow.AddInt("event_param4", 0);
+            newRow.AddInt("event_param2", eventParam2);
+            newRow.AddInt("event_param3", eventParam3);
+            newRow.AddInt("event_param4", eventParam4);
             newRow.AddInt("event_param5", 0);
             newRow.AddInt("event_param6", 0);
             newRow.AddInt("action_type", actionType);
