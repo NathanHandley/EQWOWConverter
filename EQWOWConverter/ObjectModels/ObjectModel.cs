@@ -982,6 +982,8 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.Death);
                 FindAndSetAnimationForType(AnimationType.CombatWound);
                 FindAndSetAnimationForType(AnimationType.CombatCritical);
+                FindAndSetAnimationForType(AnimationType.SpellCastOmni);
+                FindAndSetAnimationForType(AnimationType.SpellCastDirected);
 
                 // Update the stand/fidget animation timers so that there is a fidget sometimes
                 if (ModelAnimations.Count > 2 && ModelAnimations[1].AnimationType == AnimationType.Stand)

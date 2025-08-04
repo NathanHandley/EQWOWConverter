@@ -289,6 +289,20 @@ namespace EQWOWConverter.ObjectModels
                         returnTypes.Add(EQAnimationType.t06CastPushForward);
                     }
                     break;
+                case AnimationType.SpellCastDirected:
+                    {
+                        returnTypes.Add(EQAnimationType.t06CastPushForward);
+                        returnTypes.Add(EQAnimationType.t04CastPullBack);
+                        returnTypes.Add(EQAnimationType.t05CastLoopArms);
+                    }
+                    break;
+                case AnimationType.SpellCastOmni:
+                    {
+                        returnTypes.Add(EQAnimationType.t05CastLoopArms);
+                        returnTypes.Add(EQAnimationType.t04CastPullBack);
+                        returnTypes.Add(EQAnimationType.t06CastPushForward);
+                    }
+                    break;
                 case AnimationType.NPCWelcome:
                     {
                         // TODO:
