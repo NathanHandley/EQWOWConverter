@@ -1246,6 +1246,29 @@ namespace EQWOWConverter
                 creatureTemplate.CreatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
                 foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
                     creatureTemplate.CreatureSpellEntries.Add(spellEntry);
+
+                // Handle parent mappings
+                if (creatureTemplate.CreatureSpellList.ParentListID != 0)
+                {
+                    if (creatureSpellListsByID.ContainsKey(creatureTemplate.CreatureSpellList.ParentListID) == false)
+                    {
+                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list for parent with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
+                        continue;
+                    }
+                    if (creatureSpellEntriesByListID.ContainsKey(creatureTemplate.CreatureSpellList.ParentListID) == false)
+                    {
+                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries list for parent with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
+                        continue;
+                    }
+                    if (creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID].Count == 0)
+                    {
+                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries in the parent list with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
+                        continue;
+                    }
+                    creatureTemplate.CreatureSpellListParent = creatureSpellListsByID[creatureTemplate.CreatureSpellList.ParentListID];
+                    foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID])
+                        creatureTemplate.CreatureSpellEntriesFromParentList.Add(spellEntry);
+                }
             }
 
             Logger.WriteInfo("Converting Creature Spell AI complete.");

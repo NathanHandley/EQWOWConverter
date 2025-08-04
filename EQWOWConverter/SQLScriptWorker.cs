@@ -157,89 +157,102 @@ namespace EQWOWConverter
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
+                // Skip invalid creatures
                 if (creatureTemplate.ModelTemplate == null)
-                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
-                else
                 {
-                    // Calculate the scale
-                    float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
+                    Logger.WriteError("Error generating azeroth core scripts since model template was null for creature template '" + creatureTemplate.Name + "'");
+                    continue;
+                }                
 
-                    // Class Trainers
-                    if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                // Class Trainers
+                if (creatureTemplate.ClassTrainerType != ClassType.All && creatureTemplate.ClassTrainerType != ClassType.None)
+                {
+                    // Trainers need a line in the npc trainers table
+                    npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
+
+                    // Associate the menu
+                    creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
+                }
+
+                // Profession Trainers
+                if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
+                {
+                    // Trainers need a line in the npc trainers table
+                    npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(creatureTemplate.TradeskillTrainerType), creatureTemplate.WOWCreatureTemplateID);
+                }
+
+                // Riding trainers
+                if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
+                {
+                    npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
+                    if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
+                        npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
+                }
+
+                // Determine the display id
+                int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
+                if (creatureTemplate.IsNonNPC == true)
+                    displayID = 11686; // Dranei totem
+
+                // Create the records
+                float scale = creatureTemplate.Size * creatureTemplate.Race.SpawnSizeMod;
+                creatureTemplateSQL.AddRow(creatureTemplate, scale);
+                creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
+
+                // If it's a vendor, add the vendor records too
+                if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
+                {
+                    int curSlotNum = 0;
+                    foreach (CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
                     {
-                        // Trainers need a line in the npc trainers table
-                        npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWClassTrainer(creatureTemplate.ClassTrainerType), creatureTemplate.WOWCreatureTemplateID);
-
-                        // Associate the menu
-                        creatureTemplate.GossipMenuID = classTrainerMenuIDs[creatureTemplate.ClassTrainerType];
-                    }
-
-                    // Profession Trainers
-                    if (creatureTemplate.TradeskillTrainerType != TradeskillType.None && creatureTemplate.TradeskillTrainerType != TradeskillType.Unknown)
-                    {
-                        // Trainers need a line in the npc trainers table
-                        npcTrainerSQL.AddRowForTrainerReference(SpellTrainerAbility.GetTrainerSpellsReferenceLineIDForWOWTradeskillTrainer(creatureTemplate.TradeskillTrainerType), creatureTemplate.WOWCreatureTemplateID);
-                    }
-
-                    // Riding trainers
-                    if (Configuration.CREATURE_RIDING_TRAINERS_ENABLED == true && creatureTemplate.IsRidingTrainer == true)
-                    {
-                        npcTrainerSQL.AddRowForTrainerReference(202010, creatureTemplate.WOWCreatureTemplateID); // Same as Binjy Featherwhistle
-                        if (Configuration.CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY == true)
-                            npcTrainerSQL.AddRowForTrainerReference(202011, creatureTemplate.WOWCreatureTemplateID); // Same as Hargen Bronzewing
-                    }
-
-                    // Determine the display id
-                    int displayID = creatureTemplate.ModelTemplate.DBCCreatureDisplayID;
-                    if (creatureTemplate.IsNonNPC == true)
-                        displayID = 11686; // Dranei totem
-
-                    // Create the records
-                    creatureTemplateSQL.AddRow(creatureTemplate, scale);
-                    creatureTemplateModelSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, displayID, scale);
-
-                    // If it's a vendor, add the vendor records too
-                    if (creatureTemplate.MerchantID != 0 && vendorItems.ContainsKey(creatureTemplate.MerchantID))
-                    {
-                        int curSlotNum = 0;
-                        foreach (CreatureVendorItem vendorItem in vendorItems[creatureTemplate.MerchantID])
+                        if (vendorItem.WOWItemID != -1)
                         {
-                            if (vendorItem.WOWItemID != -1)
+                            npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
+                            curSlotNum++;
+                        }
+                        else
+                        {
+                            if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
                             {
-                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, vendorItem.WOWItemID, curSlotNum);
+                                Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
+                                continue;
+                            }
+                            ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
+
+                            // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
+                            if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                            {
+                                npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
                                 curSlotNum++;
                             }
                             else
                             {
-                                if (ItemTemplate.GetItemTemplatesByEQDBIDs().ContainsKey(vendorItem.EQItemID) == false)
+                                SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                                foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
                                 {
-                                    Logger.WriteError("Attempted to add a merchant item with EQItemID '" + vendorItem.EQItemID + "' to merchant '" + creatureTemplate.MerchantID + "', but the EQItemID did not exist");
-                                    continue;
-                                }
-                                ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
-
-                                // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
-                                if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
-                                {
-                                    npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
+                                    npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
                                     curSlotNum++;
-                                }
-                                else
-                                {
-                                    SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
-                                    foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
-                                    {
-                                        npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
-                                        curSlotNum++;
-                                    }
                                 }
                             }
                         }
                     }
+                }
 
-                    // Kill rewards
-                    foreach (CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
-                        modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
+                // Kill rewards
+                foreach (CreatureFactionKillReward creatureFactionKillReward in creatureTemplate.CreatureFactionKillRewards)
+                    modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
+
+                // Spell scripts
+                if (creatureTemplate.CreatureSpellList != null)
+                {
+                    foreach (CreatureSpellEntry spellEntry in creatureTemplate.CreatureSpellEntries)
+                    {
+                        // Skip any that don't match the template
+                        if (spellEntry.MinLevel > creatureTemplate.Level || spellEntry.MaxLevel < creatureTemplate.Level)
+                            continue;
+
+
+                    }
                 }
             }
 

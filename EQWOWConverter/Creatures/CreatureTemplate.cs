@@ -72,6 +72,8 @@ namespace EQWOWConverter.Creatures
         public int CreatureSpellListID = 0;
         public List<CreatureSpellEntry> CreatureSpellEntries = new List<CreatureSpellEntry>();
         public CreatureSpellList? CreatureSpellList = null;
+        public List<CreatureSpellEntry> CreatureSpellEntriesFromParentList = new List<CreatureSpellEntry>();
+        public CreatureSpellList? CreatureSpellListParent = null;
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         
