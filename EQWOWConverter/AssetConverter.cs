@@ -224,8 +224,8 @@ namespace EQWOWConverter
 
                 // Create the SQL Scripts (note: this must always be after DBC files)
                 SQLScriptWorker sqlWorker = new SQLScriptWorker();
-                sqlWorker.CreateSQLScript(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes,
-                    spellTemplates);
+                sqlWorker.CreateSQLScripts(zones, creatureTemplates, creatureModelTemplates, creatureSpawnPools, 
+                    itemLootTemplatesByCreatureTemplateID, questTemplates, tradeskillRecipes, spellTemplates);
 
                 if (Configuration.DEPLOY_SERVER_FILES == true)
                     DeployServerFiles();

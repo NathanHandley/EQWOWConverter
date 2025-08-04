@@ -31,7 +31,53 @@ namespace EQWOWConverter
 {
     internal class SQLScriptWorker
     {
-        public void CreateSQLScript(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
+        // Characters
+        private ModEverquestCharacterHomebindSQL modEverquestCharacterHomebindSQL = new ModEverquestCharacterHomebindSQL();
+        // World
+        private AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
+        private AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
+        private BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
+        private CreatureSQL creatureSQL = new CreatureSQL();
+        private CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
+        private CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
+        private CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
+        private CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
+        private CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
+        private CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
+        private CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
+        private CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
+        private GameEventSQL gameEventSQL = new GameEventSQL();
+        private GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
+        private GameTeleSQL gameTeleSQL = new GameTeleSQL();
+        private GameWeatherSQL gameWeatherSQL = new GameWeatherSQL();
+        private GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
+        private GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
+        private GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
+        private GameObjectSQL gameObjectSQL = new GameObjectSQL();
+        private GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
+        private GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
+        private InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
+        private ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
+        private ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
+        private ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
+        private ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
+        private NPCTextSQL npcTextSQL = new NPCTextSQL();
+        private NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
+        private NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
+        private PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
+        private PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
+        private PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
+        private PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
+        private QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
+        private QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
+        private SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
+        private SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
+        private SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
+        private SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
+        private TransportsSQL transportsSQL = new TransportsSQL();
+        private WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
+
+        public void CreateSQLScripts(List<Zone> zones, List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
             List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, List<QuestTemplate> questTemplates,
             List<TradeskillRecipe> tradeskillRecipes, List<SpellTemplate> spellTemplates)
         {
@@ -42,97 +88,50 @@ namespace EQWOWConverter
             if (Directory.Exists(sqlScriptFolder))
                 Directory.Delete(sqlScriptFolder, true);
 
-            // Create the SQL Scripts
-            // Characters
-            ModEverquestCharacterHomebindSQL modEverquestCharacterHomebindSQL = new ModEverquestCharacterHomebindSQL();
-            // World
-            AreaTriggerSQL areaTriggerSQL = new AreaTriggerSQL();
-            AreaTriggerTeleportSQL areaTriggerTeleportSQL = new AreaTriggerTeleportSQL();
-            BroadcastTextSQL broadcastTextSQL = new BroadcastTextSQL();
-            CreatureSQL creatureSQL = new CreatureSQL();
-            CreatureAddonSQL creatureAddonSQL = new CreatureAddonSQL();
-            CreatureLootTemplateSQL creatureLootTableSQL = new CreatureLootTemplateSQL();
-            CreatureModelInfoSQL creatureModelInfoSQL = new CreatureModelInfoSQL();
-            CreatureQuestEnderSQL creatureQuestEnderSQL = new CreatureQuestEnderSQL();
-            CreatureQuestStarterSQL creatureQuestStarterSQL = new CreatureQuestStarterSQL();
-            CreatureTemplateSQL creatureTemplateSQL = new CreatureTemplateSQL();
-            CreatureTemplateModelSQL creatureTemplateModelSQL = new CreatureTemplateModelSQL();
-            CreatureTextSQL creatureTextSQL = new CreatureTextSQL();
-            GameEventSQL gameEventSQL = new GameEventSQL();
-            GameGraveyardSQL gameGraveyardSQL = new GameGraveyardSQL();
-            GameTeleSQL gameTeleSQL = new GameTeleSQL();
-            GameWeatherSQL gameWeatherSQL = new GameWeatherSQL();
-            GossipMenuSQL gossipMenuSQL = new GossipMenuSQL();
-            GossipMenuOptionSQL gossipMenuOptionSQL = new GossipMenuOptionSQL();
-            GraveyardZoneSQL graveyardZoneSQL = new GraveyardZoneSQL();
-            GameObjectSQL gameObjectSQL = new GameObjectSQL();
-            GameObjectTemplateSQL gameObjectTemplateSQL = new GameObjectTemplateSQL();
-            GameObjectTemplateAddonSQL gameObjectTemplateAddonSQL = new GameObjectTemplateAddonSQL();
-            InstanceTemplateSQL instanceTemplateSQL = new InstanceTemplateSQL();
-            ItemLootTemplateSQL itemLootTemplateSQL = new ItemLootTemplateSQL();
-            ItemTemplateSQL itemTemplateSQL = new ItemTemplateSQL();
-            ModEverquestCreatureOnkillReputationSQL modEverquestCreatureOnkillReputationSQL = new ModEverquestCreatureOnkillReputationSQL();
-            ModEverquestQuestCompleteReputationSQL modEverquestQuestCompleteReputationSQL = new ModEverquestQuestCompleteReputationSQL();
-            NPCTextSQL npcTextSQL = new NPCTextSQL();
-            NPCTrainerSQL npcTrainerSQL = new NPCTrainerSQL();
-            NPCVendorSQL npcVendorSQL = new NPCVendorSQL();
-            PlayerCreateInfoSQL playerCreateInfoSQL = new PlayerCreateInfoSQL();
-            PoolCreatureSQL poolCreatureSQL = new PoolCreatureSQL();
-            PoolPoolSQL poolPoolSQL = new PoolPoolSQL();
-            PoolTemplateSQL poolTemplateSQL = new PoolTemplateSQL();
-            QuestTemplateSQL questTemplateSQL = new QuestTemplateSQL();
-            QuestTemplateAddonSQL questTemplateAddonSQL = new QuestTemplateAddonSQL();
-            SmartScriptsSQL smartScriptsSQL = new SmartScriptsSQL();
-            SpellGroupSQL spellGroupSQL = new SpellGroupSQL();
-            SpellGroupStackRulesSQL spellGroupStackRulesSQL = new SpellGroupStackRulesSQL();
-            SpellLinkedSpellSQL spellLinkedSpellSQL = new SpellLinkedSpellSQL();
-            TransportsSQL transportsSQL = new TransportsSQL();
-            WaypointDataSQL waypointDataSQL = new WaypointDataSQL();
-
             // Zones
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
-            foreach (Zone zone in zones)
-            {
-                // Instance list
-                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
+            Dictionary<string, int> mapIDsByShortName;
+            PopulateZoneData(zones, zonePropertiesByShortName, out mapIDsByShortName);
 
-                // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
-                gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
-                if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
-                    gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+            // Creatures
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
+            PopulateCreatureData(creatureTemplates, creatureModelTemplates, creatureSpawnPools, spellTemplatesByEQID);
 
-                // Weather data
-                if (Configuration.ZONE_WEATHER_ENABLED == true)
-                    gameWeatherSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), zone.ZoneProperties.RainChanceWinter, zone.ZoneProperties.SnowChanceWinter,
-                        zone.ZoneProperties.RainChanceSpring, zone.ZoneProperties.SnowChanceSpring, zone.ZoneProperties.RainChanceSummer, zone.ZoneProperties.SnowChanceSummer,
-                        zone.ZoneProperties.RainChanceFall, zone.ZoneProperties.RainChanceWinter);
+            // Game Events
+            DateTime eventEnd = new DateTime(2025, 12, 30, 23, 0, 0);
+            DateTime dayStart = new DateTime(2012, 10, 29, 6, 0, 0);
+            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
+            DateTime nightStart = new DateTime(2016, 10, 28, 20, 0, 0);
+            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
 
-                // Zone lines
-                foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
-                {
-                    // Skip invalid zone lines
-                    if (zonePropertiesByShortName.ContainsKey(zoneLine.TargetZoneShortName.ToLower()) == false)
-                        continue;
+            // Items
+            PopulateItemData(itemLootTemplatesByCreatureTemplateID, spellTemplatesByEQID);
 
-                    // Area Trigger
-                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
-                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+            // Player start properties
+            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
+                PopulatePlayerStartData(zones, mapIDsByShortName);
 
-                    // Area Trigger Teleport
-                    int areaTriggerID = zoneLine.AreaTriggerID;
-                    string descriptiveName = "EQ " + zone.ShortName + " - " + zoneLine.TargetZoneShortName + " zone line";
-                    int targetMapId = ZoneProperties.GetZonePropertiesForZone(zoneLine.TargetZoneShortName).DBCMapID;
-                    float targetPositionX = zoneLine.TargetZonePosition.X;
-                    float targetPositionY = zoneLine.TargetZonePosition.Y;
-                    float targetPositionZ = zoneLine.TargetZonePosition.Z;
-                    float targetOrientation = zoneLine.TargetZoneOrientation;
-                    areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
-                }
-            }
-            Dictionary<string, int> mapIDsByShortName = new Dictionary<string, int>();
-            foreach (Zone zone in zones)
-                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+            // Quests
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
+            PopulateQuestData(questTemplates, itemTemplatesByWOWEntryID);
 
+            // Spells
+            PopulateSpellAndTradeskillData(spellTemplates, tradeskillRecipes, itemTemplatesByWOWEntryID);
+
+            // Trainer Abilities
+            PopulateTrainerAbilityListData();
+
+            // Transports
+            if (Configuration.GENERATE_TRANSPORTS == true)
+                PopulateTransportSQLData(zones, mapIDsByShortName);
+
+            // Output them
+            OutputSQLScriptsToDisk();
+        }
+
+        private void PopulateCreatureData(List<CreatureTemplate> creatureTemplates, List<CreatureModelTemplate> creatureModelTemplates,
+            List<CreatureSpawnPool> creatureSpawnPools, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        {
             // Pre-generate class trainer menus
             Dictionary<ClassType, int> classTrainerMenuIDs = new Dictionary<ClassType, int>();
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
@@ -156,7 +155,6 @@ namespace EQWOWConverter
 
             // Creature Templates
             Dictionary<int, List<CreatureVendorItem>> vendorItems = CreatureVendorItem.GetCreatureVendorItemsByMerchantIDs();
-            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 if (creatureTemplate.ModelTemplate == null)
@@ -390,78 +388,10 @@ namespace EQWOWConverter
                     }
                 }
             }
+        }
 
-            // Game Events
-            DateTime eventEnd = new DateTime(2025, 12, 30, 23, 0, 0);
-            DateTime dayStart = new DateTime(2012, 10, 29, 6, 0, 0);
-            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_DAY, dayStart, eventEnd, 1440, 840, "EQ Day");
-            DateTime nightStart = new DateTime(2016, 10, 28, 20, 0, 0);
-            gameEventSQL.AddRow(Configuration.SQL_GAMEEVENT_ID_NIGHT, nightStart, eventEnd, 1440, 600, "EQ Night");
-
-            // Graveyards
-            foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
-            {
-                // Should be one for each ghost zone
-                foreach (string zoneShortName in graveyard.GhostZoneShortNames)
-                {
-                    string zoneShortNameLower = zoneShortName.ToLower();
-                    if (zonePropertiesByShortName.ContainsKey(zoneShortNameLower) == true)
-                    {
-                        int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortNameLower).DefaultZoneArea.DBCAreaTableID);
-                        graveyardZoneSQL.AddRow(graveyard, ghostZoneAreaID);
-                    }
-                }
-
-                if (zonePropertiesByShortName.ContainsKey(graveyard.LocationShortName) == true)
-                {
-                    ZoneProperties curZoneProperties = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName);
-                    int mapID = curZoneProperties.DBCMapID;
-                    gameGraveyardSQL.AddRow(graveyard, mapID);
-
-                    // And there should be one spirit healer per graveyard
-                    int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
-                    int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
-                    creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
-                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true, string.Empty);
-                }
-            }
-
-            // Game Objects
-            if (Configuration.GENERATE_OBJECTS == true)
-            {
-                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetNonDoodadGameObjectsByZoneShortNames();
-                foreach (var gameObjectByShortName in gameObjectsByZoneShortNames)
-                {
-                    // Skip invalid objects (zones not loaded)
-                    if (zonePropertiesByShortName.ContainsKey(gameObjectByShortName.Key) == false)
-                        continue;
-                    int areaID = 0;
-                    foreach (Zone zone in zones)
-                        if (zone.ShortName.ToLower().Trim() == gameObjectByShortName.Key)
-                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
-
-                    foreach (GameObject gameObject in gameObjectByShortName.Value)
-                    {
-                        string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
-                        string name = gameObject.DisplayName;
-                        if (name.Length == 0)
-                            name = comment;
-                        int mapID = mapIDsByShortName[gameObjectByShortName.Key];
-                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
-                        gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
-                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
-
-                        // Attach any smart scripts
-                        if (gameObject.TriggerGameObjectGUID != 0)
-                        {
-                            string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
-                            smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
-                        }
-                    }
-                }
-            }
-
-            // Items
+        private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
+        {
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
@@ -504,34 +434,34 @@ namespace EQWOWConverter
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
                     creatureLootTableSQL.AddRow(itemLootTemplate);
+        }
 
-            // Player start properties
-            if (Configuration.PLAYER_USE_EQ_START_LOCATION == true && zonePropertiesByShortName.Count > 0)
+        private void PopulatePlayerStartData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
+        {
+            // Restrict to loaded zones
+            Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
             {
-                // Restrict to loaded zones
-                Dictionary<string, int> areaIDsByShortName = new Dictionary<string, int>();
-                foreach (Zone zone in zones)
-                {
-                    areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
-                }
-                foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
-                {
-                    string startZoneShortName = classRaceProperties.Value.StartZoneShortName;
-                    if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
-                    {
-                        Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname.  Using a fallback"));
-                        startZoneShortName = mapIDsByShortName.First().Key;
-                    }
-
-                    playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
-                        areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
-                        classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
-                }
+                areaIDsByShortName.Add(zone.ShortName.ToLower().Trim(), Convert.ToInt32(zone.DefaultArea.DBCAreaTableID));
             }
+            foreach (var classRaceProperties in PlayerClassRaceProperties.GetClassRacePropertiesByRaceAndClassID())
+            {
+                string startZoneShortName = classRaceProperties.Value.StartZoneShortName;
+                if (mapIDsByShortName.ContainsKey(classRaceProperties.Value.StartZoneShortName) == false)
+                {
+                    Logger.WriteDebug(string.Concat("Could not map player location for zone short name '", classRaceProperties.Value.StartZoneShortName, "' since no zone was loaded with that shortname.  Using a fallback"));
+                    startZoneShortName = mapIDsByShortName.First().Key;
+                }
 
-            // Quests
+                playerCreateInfoSQL.AddRow(classRaceProperties.Key.Item1, classRaceProperties.Key.Item2, mapIDsByShortName[startZoneShortName],
+                    areaIDsByShortName[startZoneShortName], classRaceProperties.Value.StartPositionX, classRaceProperties.Value.StartPositionY,
+                    classRaceProperties.Value.StartPositionZ, classRaceProperties.Value.StartOrientation);
+            }
+        }
+
+        private void PopulateQuestData(List<QuestTemplate> questTemplates, SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
             Dictionary<int, int> creatureTextGroupIDsByCreatureTemplateID = new Dictionary<int, int>();
-            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             foreach (QuestTemplate questTemplate in questTemplates)
             {
                 // Skip quests where items needed to complete it are not available
@@ -613,8 +543,11 @@ namespace EQWOWConverter
                     }
                 }
             }
+        }
 
-            // Spells
+        private void PopulateSpellAndTradeskillData(List<SpellTemplate> spellTemplates, List<TradeskillRecipe> tradeskillRecipes,
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
             // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with DBC
             int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
@@ -641,6 +574,25 @@ namespace EQWOWConverter
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
 
+            // Tradeskills
+            foreach (TradeskillRecipe recipe in tradeskillRecipes)
+            {
+                // Multi-item containers
+                if (recipe.ProducedFilledContainer != null)
+                {
+                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
+                    {
+                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
+                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
+                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
+                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i + 1, 100, curItemCount, comment);
+                    }
+                }
+            }
+        }
+
+        private void PopulateTrainerAbilityListData()
+        {
             // Trainer Abilities - Class
             foreach (ClassType classType in Enum.GetValues(typeof(ClassType)))
             {
@@ -663,90 +615,183 @@ namespace EQWOWConverter
                 foreach (SpellTrainerAbility trainerAbility in SpellTrainerAbility.GetTrainerSpellsForTradeskill(tradeskillType))
                     npcTrainerSQL.AddRowForTrainerAbility(lineID, trainerAbility);
             }
+        }
 
-            // Tradeskills
-            foreach (TradeskillRecipe recipe in tradeskillRecipes)
+        private void PopulateTransportSQLData(List<Zone> zones, Dictionary<string, int> mapIDsByShortName)
+        {
+            foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
             {
-                // Multi-item containers
-                if (recipe.ProducedFilledContainer != null)
+                // Only add this transport ship if the full path is zones that are loaded
+                bool zonesAreLoaded = true;
+                foreach (string touchedZone in transportShip.GetTouchedZonesSplitOut())
                 {
-                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
+                    if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
                     {
-                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
-                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
-                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
-                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i + 1, 100, curItemCount, comment);
+                        zonesAreLoaded = false;
+                        Logger.WriteDebug("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
+                        break;
                     }
+                }
+                if (zonesAreLoaded == false)
+                    continue;
+                string name = "Ship EQ (" + transportShip.Name + ")";
+                string longName = transportShip.TouchedZones + " (" + name + ")";
+                transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
+                gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
+                    transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
+                gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
+            }
+            foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
+            {
+                // Only add this transport lift if the zone is loaded
+                if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
+                {
+                    Logger.WriteDebug("Skipping transport lift since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
+                    continue;
+                }
+                int areaID = 0;
+                foreach (Zone zone in zones)
+                    if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
+                        areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+
+                string name = "Lift EQ (" + transportLift.Name + ")";
+                int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
+                gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
+                gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
+                gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
+            }
+            foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
+            {
+                // Only add this transport lift if the zone is loaded
+                if (mapIDsByShortName.ContainsKey(transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()) == false)
+                {
+                    Logger.WriteDebug("Skipping transport lift trigger since zone '" + transportLiftTrigger.SpawnZoneShortName + "' isn't being converted");
+                    continue;
+                }
+                int areaID = 0;
+                foreach (Zone zone in zones)
+                    if (zone.ShortName.ToLower().Trim() == transportLiftTrigger.SpawnZoneShortName.ToLower().Trim())
+                        areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+
+                string name = transportLiftTrigger.Name;
+                int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
+                gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
+                gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
+                gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
+                    transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
+            }
+        }
+
+        private void PopulateZoneData(List<Zone> zones, Dictionary<string, ZoneProperties> zonePropertiesByShortName, out Dictionary<string, int> mapIDsByShortName)
+        {
+            foreach (Zone zone in zones)
+            {
+                // Instance list
+                instanceTemplateSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID));
+
+                // Teleport scripts to safe positions (add a record for both descriptive and short name if they are different)
+                gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.DescriptiveNameOnlyLetters, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+                if (zone.DescriptiveNameOnlyLetters.ToLower() != zone.ShortName.ToLower())
+                    gameTeleSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DBCMapID), zone.ShortName, zone.SafePosition.Y, zone.SafePosition.Y, zone.SafePosition.Z);
+
+                // Weather data
+                if (Configuration.ZONE_WEATHER_ENABLED == true)
+                    gameWeatherSQL.AddRow(Convert.ToInt32(zone.ZoneProperties.DefaultZoneArea.DBCAreaTableID), zone.ZoneProperties.RainChanceWinter, zone.ZoneProperties.SnowChanceWinter,
+                        zone.ZoneProperties.RainChanceSpring, zone.ZoneProperties.SnowChanceSpring, zone.ZoneProperties.RainChanceSummer, zone.ZoneProperties.SnowChanceSummer,
+                        zone.ZoneProperties.RainChanceFall, zone.ZoneProperties.RainChanceWinter);
+
+                // Zone lines
+                foreach (ZonePropertiesZoneLineBox zoneLine in ZoneProperties.GetZonePropertiesForZone(zone.ShortName).ZoneLineBoxes)
+                {
+                    // Skip invalid zone lines
+                    if (zonePropertiesByShortName.ContainsKey(zoneLine.TargetZoneShortName.ToLower()) == false)
+                        continue;
+
+                    // Area Trigger
+                    areaTriggerSQL.AddRow(zoneLine.AreaTriggerID, zone.ZoneProperties.DBCMapID, zoneLine.BoxPosition.X, zoneLine.BoxPosition.Y,
+                        zoneLine.BoxPosition.Z, zoneLine.BoxLength, zoneLine.BoxWidth, zoneLine.BoxHeight, zoneLine.BoxOrientation);
+
+                    // Area Trigger Teleport
+                    int areaTriggerID = zoneLine.AreaTriggerID;
+                    string descriptiveName = "EQ " + zone.ShortName + " - " + zoneLine.TargetZoneShortName + " zone line";
+                    int targetMapId = ZoneProperties.GetZonePropertiesForZone(zoneLine.TargetZoneShortName).DBCMapID;
+                    float targetPositionX = zoneLine.TargetZonePosition.X;
+                    float targetPositionY = zoneLine.TargetZonePosition.Y;
+                    float targetPositionZ = zoneLine.TargetZonePosition.Z;
+                    float targetOrientation = zoneLine.TargetZoneOrientation;
+                    areaTriggerTeleportSQL.AddRow(areaTriggerID, descriptiveName, targetMapId, targetPositionX, targetPositionY, targetPositionZ, targetOrientation);
+                }
+            }
+            mapIDsByShortName = new Dictionary<string, int>();
+            foreach (Zone zone in zones)
+                mapIDsByShortName.Add(zone.ShortName.ToLower().Trim(), zone.ZoneProperties.DBCMapID);
+
+            // Graveyards
+            foreach (ZonePropertiesGraveyard graveyard in ZonePropertiesGraveyard.GetAllGraveyards())
+            {
+                // Should be one for each ghost zone
+                foreach (string zoneShortName in graveyard.GhostZoneShortNames)
+                {
+                    string zoneShortNameLower = zoneShortName.ToLower();
+                    if (zonePropertiesByShortName.ContainsKey(zoneShortNameLower) == true)
+                    {
+                        int ghostZoneAreaID = Convert.ToInt32(ZoneProperties.GetZonePropertiesForZone(zoneShortNameLower).DefaultZoneArea.DBCAreaTableID);
+                        graveyardZoneSQL.AddRow(graveyard, ghostZoneAreaID);
+                    }
+                }
+
+                if (zonePropertiesByShortName.ContainsKey(graveyard.LocationShortName) == true)
+                {
+                    ZoneProperties curZoneProperties = ZoneProperties.GetZonePropertiesForZone(graveyard.LocationShortName);
+                    int mapID = curZoneProperties.DBCMapID;
+                    gameGraveyardSQL.AddRow(graveyard, mapID);
+
+                    // And there should be one spirit healer per graveyard
+                    int spiritHealerGUID = CreatureTemplate.GenerateCreatureSQLGUID();
+                    int zoneAreaID = Convert.ToInt32(curZoneProperties.DefaultZoneArea.DBCAreaTableID);
+                    creatureSQL.AddRow(spiritHealerGUID, Configuration.ZONE_GRAVEYARD_SPIRIT_HEALER_CREATURETEMPLATE_ID, mapID, zoneAreaID, zoneAreaID,
+                        graveyard.SpiritHealerX, graveyard.SpiritHealerY, graveyard.SpiritHealerZ, graveyard.SpiritHealerOrientation, CreatureMovementType.None, 0, true, true, string.Empty);
                 }
             }
 
-            // Transports
-            if (Configuration.GENERATE_TRANSPORTS == true)
+            // Game Objects
+            if (Configuration.GENERATE_OBJECTS == true)
             {
-                foreach (TransportShip transportShip in TransportShip.GetAllTransportShips())
+                Dictionary<string, List<GameObject>> gameObjectsByZoneShortNames = GameObject.GetNonDoodadGameObjectsByZoneShortNames();
+                foreach (var gameObjectByShortName in gameObjectsByZoneShortNames)
                 {
-                    // Only add this transport ship if the full path is zones that are loaded
-                    bool zonesAreLoaded = true;
-                    foreach (string touchedZone in transportShip.GetTouchedZonesSplitOut())
+                    // Skip invalid objects (zones not loaded)
+                    if (zonePropertiesByShortName.ContainsKey(gameObjectByShortName.Key) == false)
+                        continue;
+                    int areaID = 0;
+                    foreach (Zone zone in zones)
+                        if (zone.ShortName.ToLower().Trim() == gameObjectByShortName.Key)
+                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
+
+                    foreach (GameObject gameObject in gameObjectByShortName.Value)
                     {
-                        if (mapIDsByShortName.ContainsKey(touchedZone.ToLower().Trim()) == false)
+                        string comment = string.Concat("EQ ", gameObject.ObjectType.ToString(), " ", gameObject.ZoneShortName, " (", gameObject.ID, ")");
+                        string name = gameObject.DisplayName;
+                        if (name.Length == 0)
+                            name = comment;
+                        int mapID = mapIDsByShortName[gameObjectByShortName.Key];
+                        gameObjectSQL.AddRow(gameObject.GameObjectGUID, gameObject.GameObjectTemplateEntryID, mapID, areaID, gameObject.Position, gameObject.Orientation, comment);
+                        gameObjectTemplateSQL.AddRowForGameObject(name, gameObject);
+                        gameObjectTemplateAddonSQL.AddRowNoDespawn(gameObject.GameObjectTemplateEntryID);
+
+                        // Attach any smart scripts
+                        if (gameObject.TriggerGameObjectGUID != 0)
                         {
-                            zonesAreLoaded = false;
-                            Logger.WriteDebug("Skipping transport ship since zone '" + touchedZone + "' isn't being converted");
-                            break;
+                            string scriptComment = string.Concat("EQ GameObject GUID ", gameObject.GameObjectGUID, " Chain Activates GUID ", gameObject.TriggerGameObjectGUID);
+                            smartScriptsSQL.AddRowForGameObjectStateTriggerEvent(gameObject.GameObjectTemplateEntryID, gameObject.TriggerGameObjectGUID, gameObject.TriggerGameObjectTemplateEntryID, scriptComment);
                         }
                     }
-                    if (zonesAreLoaded == false)
-                        continue;
-                    string name = "Ship EQ (" + transportShip.Name + ")";
-                    string longName = transportShip.TouchedZones + " (" + name + ")";
-                    transportsSQL.AddRow(transportShip.WOWGameObjectTemplateID, longName);
-                    gameObjectTemplateSQL.AddRowForTransportShip(transportShip.WOWGameObjectTemplateID, transportShip.GameObjectDisplayInfoID, name,
-                        transportShip.TaxiPathID, Convert.ToInt32(transportShip.MapID));
-                    gameObjectTemplateAddonSQL.AddRowForTransport(transportShip.WOWGameObjectTemplateID);
-                }
-                foreach (TransportLift transportLift in TransportLift.GetAllTransportLifts())
-                {
-                    // Only add this transport lift if the zone is loaded
-                    if (mapIDsByShortName.ContainsKey(transportLift.SpawnZoneShortName.ToLower().Trim()) == false)
-                    {
-                        Logger.WriteDebug("Skipping transport lift since zone '" + transportLift.SpawnZoneShortName + "' isn't being converted");
-                        continue;
-                    }
-                    int areaID = 0;
-                    foreach (Zone zone in zones)
-                        if (zone.ShortName.ToLower().Trim() == transportLift.SpawnZoneShortName.ToLower().Trim())
-                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
-
-                    string name = "Lift EQ (" + transportLift.Name + ")";
-                    int mapID = mapIDsByShortName[transportLift.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLift(transportLift.GameObjectTemplateID, transportLift.GameObjectDisplayInfoID, name, transportLift.EndTimestamp);
-                    gameObjectTemplateAddonSQL.AddRowForTransport(transportLift.GameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLift.GameObjectGUID, transportLift.GameObjectTemplateID, mapID, areaID, new Vector3(transportLift.SpawnX, transportLift.SpawnY, transportLift.SpawnZ), transportLift.Orientation);
-                }
-                foreach (TransportLiftTrigger transportLiftTrigger in TransportLiftTrigger.GetAllTransportLiftTriggers())
-                {
-                    // Only add this transport lift if the zone is loaded
-                    if (mapIDsByShortName.ContainsKey(transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()) == false)
-                    {
-                        Logger.WriteDebug("Skipping transport lift trigger since zone '" + transportLiftTrigger.SpawnZoneShortName + "' isn't being converted");
-                        continue;
-                    }
-                    int areaID = 0;
-                    foreach (Zone zone in zones)
-                        if (zone.ShortName.ToLower().Trim() == transportLiftTrigger.SpawnZoneShortName.ToLower().Trim())
-                            areaID = Convert.ToInt32(zone.DefaultArea.DBCAreaTableID);
-
-                    string name = transportLiftTrigger.Name;
-                    int mapID = mapIDsByShortName[transportLiftTrigger.SpawnZoneShortName.ToLower().Trim()];
-                    gameObjectTemplateSQL.AddRowForTransportLiftTrigger(transportLiftTrigger.GameObjectTemplateID, transportLiftTrigger.GameObjectDisplayInfoID, name, transportLiftTrigger.ResetTimeInMS);
-                    gameObjectTemplateAddonSQL.AddRowNoDespawn(transportLiftTrigger.GameObjectTemplateID);
-                    gameObjectSQL.AddRow(transportLiftTrigger.GameObjectGUID, transportLiftTrigger.GameObjectTemplateID, mapID, areaID, new Vector3(transportLiftTrigger.SpawnX, transportLiftTrigger.SpawnY,
-                        transportLiftTrigger.SpawnZ), transportLiftTrigger.Orientation);
                 }
             }
+        }
 
-            // Output them
+        private void OutputSQLScriptsToDisk()
+        {
             // Characters
             modEverquestCharacterHomebindSQL.SaveToDisk("mod_everquest_character_homebind", SQLFileType.Characters);
             // World
