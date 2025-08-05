@@ -82,7 +82,12 @@ namespace EQWOWConverter.Creatures
 
         public int CompareTo(CreatureSpellEntry other)
         {
-            return Priority.CompareTo(other.Priority);
+            // Proper way to do this is to sort by "Priority", however doing that will cause much less
+            // spell variety in the case that a high priority spell with a faster recast delay will
+            // almayst only get used after 1 step-through of the spell list (in WOW).  TODO: Customize
+            // later to get better spell sorting.
+            //return Priority.CompareTo(other.Priority);
+            return CalculatedMinimumRecastDelayInMS.CompareTo(other.CalculatedMinimumRecastDelayInMS);
         }
     }
 }
