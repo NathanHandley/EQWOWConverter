@@ -88,6 +88,7 @@ namespace EQWOWConverter.WOWFiles
         public void AddRowForCreatureTemplateInCombatSpellCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
             string comment)
         {
+            int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
             AddRow(creatureTemplateID,
                0,          
                0, // SMART_EVENT_UPDATE_IC
@@ -95,7 +96,7 @@ namespace EQWOWConverter.WOWFiles
                0, // Initial delay in MS (minimum)
                0, // Initial delay in MS (maximum)
                recastDelayInMS, // Recast delay in MS (minimum)
-               recastDelayInMS, // Recast delay in MS (maximum)
+               recastDelayInMSMax, // Recast delay in MS (maximum)
                11, // SMART_ACTION_CAST
                wowSpellID,
                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
