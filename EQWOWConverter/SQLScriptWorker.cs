@@ -243,29 +243,32 @@ namespace EQWOWConverter
                     modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
 
                 // Spell scripts
+                // TODO: Cast on agro
+                // TODO: Heal at health percent?
                 if (creatureTemplate.CreatureSpellList != null)
                 {
-                    // Add spell events for every entry
+                    // Add spell events for every out of combat entry
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
+                    {
+                        // Skip any that don't match the template
+                        if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)
+                            continue;
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        string comment = string.Concat("EQ Out of Combat Buff ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCast(creatureTemplate.WOWCreatureTemplateID,
+                            creatureSpellEntry.CalculatedMinimumInCombatRecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                    }
+
+                    // Add spell events for every combat entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
                     {
                         // Skip any that don't match the template
                         if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)
                             continue;
-
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
-
-                        // TODO: Cast on agro
-                        // TODO: Out of combat buffing
-                        // TODO: Factor for spell type (type)
-                        // TODO: Heal at health percent?
-
-                        // Add cast-in-combat
-                        if (creatureSpellEntry.DoCastInCombat() == true)
-                        {
-                            string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
-                            smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                                creatureSpellEntry.CalculatedMinimumRecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
-                        }
+                        string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
+                            creatureSpellEntry.CalculatedMinimumInCombatRecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
                     }
                 }
             }

@@ -1278,7 +1278,7 @@ namespace EQWOWConverter
                     CreatureSpellEntry curEntry = allValidSpellEntries[i];
                     SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
                     int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
-                    curEntry.CalculatedMinimumRecastDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    curEntry.CalculatedMinimumInCombatRecastDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
                     curEntry.BuffDurationInMS = spellTemplate.SpellDurationInMS;
                     allValidSpellEntries[i] = curEntry;
                 }
@@ -1291,7 +1291,7 @@ namespace EQWOWConverter
                     {
                         if (spellEntry.BuffDurationInMS >= Configuration.CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS)
                         {
-                            creatureTemplate.CreatureSpellEntriesPreCombatBuff.Add(spellEntry);
+                            creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
                             addedToList = true;
                         }
                     }
@@ -1304,7 +1304,7 @@ namespace EQWOWConverter
 
                 // Sort then set recasts (where needed) to make sure it cycles
                 creatureTemplate.CreatureSpellEntriesCombat.Sort();
-                creatureTemplate.CreatureSpellEntriesPreCombatBuff.Sort();
+                creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Sort();
             }
 
             Logger.WriteInfo("Converting Creature Spell AI complete.");

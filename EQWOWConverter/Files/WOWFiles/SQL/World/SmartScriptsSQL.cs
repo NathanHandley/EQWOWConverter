@@ -106,6 +106,27 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
+        public void AddRowForCreatureTemplateOutOfCombatBuffCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
+            string comment)
+        {
+            AddRow(creatureTemplateID,
+               0,
+               1, // SMART_EVENT_UPDATE_OOC
+               100,
+               0, // Initial delay in MS (minimum)
+               0, // Initial delay in MS (maximum)
+               recastDelayInMS, // Recast delay in MS (minimum)
+               recastDelayInMS, // Recast delay in MS (maximum)
+               11, // SMART_ACTION_CAST
+               wowSpellID,
+               64, // SMARTCAST_COMBAT_MOVE (prevents creature moving during casting)
+               1, // SMART_TARGET_SELF
+               0,
+               0,
+               comment
+            );
+        }
+
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
         {
