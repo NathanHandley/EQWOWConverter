@@ -57,6 +57,7 @@ namespace EQWOWConverter.WOWFiles
                    0,
                    1,          // SMART_ACTION_TALK = 1
                    groupID,
+                   0,
                    7,          // SMART_TARGET_SELF = 1
                    0,
                    0,
@@ -74,6 +75,7 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 9,  // SMART_ACTION_ACTIVATE_GOBJECT,
+                0,
                 0,
                 14, // SMART_TARGET_GAMEOBJECT_GUID
                 targetGameObjectGUID,
@@ -93,6 +95,7 @@ namespace EQWOWConverter.WOWFiles
                recastDelayInMS, // Recast delay in MS (maximum)
                11, // SMART_ACTION_CAST
                wowSpellID,
+               64, // SMARTCAST_COMBAT_MOVE (prevents creature moving during casting)
                2, // SMART_TARGET_VICTIM
                0,
                0,
@@ -101,7 +104,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
-            int actionType, int actionParam1, int targetType, int targetParam1, int targetParam2, string comment)
+            int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
@@ -120,7 +123,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("event_param6", 0);
             newRow.AddInt("action_type", actionType);
             newRow.AddInt("action_param1", actionParam1);
-            newRow.AddInt("action_param2", 0);
+            newRow.AddInt("action_param2", actionParam2);
             newRow.AddInt("action_param3", 0);
             newRow.AddInt("action_param4", 0);
             newRow.AddInt("action_param5", 0);

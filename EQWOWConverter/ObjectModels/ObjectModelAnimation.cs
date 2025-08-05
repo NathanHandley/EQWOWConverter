@@ -63,6 +63,8 @@ namespace EQWOWConverter.ObjectModels
             List<EQAnimationType> returnTypes = new List<EQAnimationType>();
             switch (animationType)
             {
+                case AnimationType.ReadySpellDirected: // Fallthrough
+                case AnimationType.ReadySpellOmni: //  Fallthrough
                 case AnimationType.Stand:
                     {
                         returnTypes.Add(EQAnimationType.p01StandPassive);

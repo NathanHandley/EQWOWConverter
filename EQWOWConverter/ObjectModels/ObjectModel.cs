@@ -1411,8 +1411,9 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetAllAnimationLookups()
         {
-            // Set the animations through 49 (Attack Rifle)
             AnimationLookups.Clear();
+
+            // Pre-fill 49 animation lookups (supports events)
             for (Int16 i = 0; i <= 49; i++)
                 AnimationLookups.Add(-1);
             SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Stand);
@@ -1426,6 +1427,8 @@ namespace EQWOWConverter.ObjectModels
                 SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
                 SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
                 SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.SpellCastDirected);
+                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.SpellCastOmni);
             }
         }
 
@@ -1435,10 +1438,15 @@ namespace EQWOWConverter.ObjectModels
             int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
             if (firstAnimationIndex == -1)
                 return;
-            for (int i = 0; i < AnimationLookups.Count; i++)
+            //for (int i = 0; i < AnimationLookups.Count; i++)
+            //{
+            //    if (AnimationLookups[i] == firstAnimationIndex)
+            //        return;
+            //}
+            if (Convert.ToInt32(animationType) >= AnimationLookups.Count)
             {
-                if (AnimationLookups[i] == firstAnimationIndex)
-                    return;
+                for (int i = AnimationLookups.Count; i < Convert.ToInt32(animationType) + 1; i++)
+                    AnimationLookups.Add(-1);
             }
             AnimationLookups[Convert.ToInt32(animationType)] = Convert.ToInt16(firstAnimationIndex);
         }
