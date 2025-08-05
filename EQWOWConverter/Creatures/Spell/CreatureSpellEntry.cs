@@ -16,7 +16,7 @@
 
 namespace EQWOWConverter.Creatures
 {
-    internal class CreatureSpellEntry
+    internal struct CreatureSpellEntry : IComparable<CreatureSpellEntry>
     {
         private static Dictionary<int, List<CreatureSpellEntry>> CreatureSpellEntriesByListID = new Dictionary<int, List<CreatureSpellEntry>>();
         private static readonly object CreatureSpellEntryLock = new object();
@@ -76,6 +76,11 @@ namespace EQWOWConverter.Creatures
         public bool DoCastInCombat()
         {
             return true;
+        }
+
+        public int CompareTo(CreatureSpellEntry other)
+        {
+            return Priority.CompareTo(other.Priority);
         }
     }
 }

@@ -1268,8 +1268,11 @@ namespace EQWOWConverter
                     }
                     creatureTemplate.CreatureSpellListParent = creatureSpellListsByID[creatureTemplate.CreatureSpellList.ParentListID];
                     foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID])
-                        creatureTemplate.CreatureSpellEntriesFromParentList.Add(spellEntry);
+                        creatureTemplate.CreatureSpellEntries.Add(spellEntry);
                 }
+
+                // Sort then set recasts (where needed) to make sure it cycles
+                creatureTemplate.CreatureSpellEntries.Sort();
             }
 
             Logger.WriteInfo("Converting Creature Spell AI complete.");

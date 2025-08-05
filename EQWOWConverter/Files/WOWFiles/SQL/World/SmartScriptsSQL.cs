@@ -51,6 +51,7 @@ namespace EQWOWConverter.WOWFiles
             AddRow(creatureTemplateID,
                    0,          // SMART_SCRIPT_TYPE_CREATURE = 0
                    20,         // SMART_EVENT_REWARD_QUEST = 20
+                   100,
                    questID,
                    0,
                    0,
@@ -70,6 +71,7 @@ namespace EQWOWConverter.WOWFiles
             AddRow(sourceGameObjectTemplateID, // Negative for GUID, Positive for Entry
                 1,  // SMART_SCRIPT_TYPE_GAMEOBJECT
                 70, // SMART_EVENT_GO_STATE_CHANGED
+                100,
                 2,  // State = Active (1 = Ready, 2 = Active Alternative)
                 0,
                 0,
@@ -89,6 +91,7 @@ namespace EQWOWConverter.WOWFiles
             AddRow(creatureTemplateID,
                0,          
                0, // SMART_EVENT_UPDATE_IC
+               100,
                0, // Initial delay in MS (minimum)
                0, // Initial delay in MS (maximum)
                recastDelayInMS, // Recast delay in MS (minimum)
@@ -103,7 +106,7 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
+        public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
             int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
         {
             SQLRow newRow = new SQLRow();
@@ -113,7 +116,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("link", 0);
             newRow.AddInt("event_type", eventType); 
             newRow.AddInt("event_phase_mask", 0);
-            newRow.AddInt("event_chance", 100);
+            newRow.AddInt("event_chance", eventChance);
             newRow.AddInt("event_flags", 0);
             newRow.AddInt("event_param1", eventParam1);
             newRow.AddInt("event_param2", eventParam2);

@@ -245,28 +245,26 @@ namespace EQWOWConverter
                 // Spell scripts
                 if (creatureTemplate.CreatureSpellList != null)
                 {
-                    // Non-Parent entries
-                    foreach (CreatureSpellEntry spellEntry in creatureTemplate.CreatureSpellEntries)
+                    // Add spell events for every entry
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntries)
                     {
                         // Skip any that don't match the template
-                        if (spellEntry.MinLevel > creatureTemplate.Level || spellEntry.MaxLevel < creatureTemplate.Level)
+                        if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)
                             continue;
 
-                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[spellEntry.EQSpellID];
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
 
-
-                        // TODO: Cast Priority
                         // TODO: Cast on agro
                         // TODO: Out of combat buffing
                         // TODO: Factor for spell type (type)
                         // TODO: Heal at health percent?
 
                         // Add cast-in-combat
-                        if (spellEntry.DoCastInCombat() == true)
+                        if (creatureSpellEntry.DoCastInCombat() == true)
                         {
                             string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                             smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                                spellEntry.RecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                                creatureSpellEntry.RecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
                         }
                     }
                 }

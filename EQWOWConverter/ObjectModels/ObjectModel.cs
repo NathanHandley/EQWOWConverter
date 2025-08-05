@@ -1438,11 +1438,6 @@ namespace EQWOWConverter.ObjectModels
             int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
             if (firstAnimationIndex == -1)
                 return;
-            //for (int i = 0; i < AnimationLookups.Count; i++)
-            //{
-            //    if (AnimationLookups[i] == firstAnimationIndex)
-            //        return;
-            //}
             if (Convert.ToInt32(animationType) >= AnimationLookups.Count)
             {
                 for (int i = AnimationLookups.Count; i < Convert.ToInt32(animationType) + 1; i++)
