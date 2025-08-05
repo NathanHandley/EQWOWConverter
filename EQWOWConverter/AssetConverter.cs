@@ -1278,7 +1278,7 @@ namespace EQWOWConverter
                     CreatureSpellEntry curEntry = allValidSpellEntries[i];
                     SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
                     int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
-                    curEntry.CalculatedMinimumInCombatRecastDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    curEntry.CalculatedMinimumDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
                     curEntry.BuffDurationInMS = spellTemplate.SpellDurationInMS;
                     allValidSpellEntries[i] = curEntry;
                 }

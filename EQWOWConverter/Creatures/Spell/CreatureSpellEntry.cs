@@ -28,7 +28,7 @@ namespace EQWOWConverter.Creatures
         public int MaxLevel;
         public int ManaCost;
         public int OriginalRecastDelayInMS;
-        public int CalculatedMinimumInCombatRecastDelayInMS;
+        public int CalculatedMinimumDelayInMS;
         public int BuffDurationInMS;
         public int Priority;
 
@@ -66,7 +66,7 @@ namespace EQWOWConverter.Creatures
                 newSpellEntry.OriginalRecastDelayInMS = int.Parse(columns["recast_delay"]) * 1000;
                 if (newSpellEntry.OriginalRecastDelayInMS < 0)
                     newSpellEntry.OriginalRecastDelayInMS = 0;
-                newSpellEntry.CalculatedMinimumInCombatRecastDelayInMS = newSpellEntry.OriginalRecastDelayInMS;
+                newSpellEntry.CalculatedMinimumDelayInMS = newSpellEntry.OriginalRecastDelayInMS;
                 newSpellEntry.Priority = int.Parse(columns["priority"]);
 
                 // Add it
@@ -83,7 +83,7 @@ namespace EQWOWConverter.Creatures
             // almayst only get used after 1 step-through of the spell list (in WOW).  TODO: Customize
             // later to get better spell sorting.
             //return Priority.CompareTo(other.Priority);
-            return CalculatedMinimumInCombatRecastDelayInMS.CompareTo(other.CalculatedMinimumInCombatRecastDelayInMS);
+            return CalculatedMinimumDelayInMS.CompareTo(other.CalculatedMinimumDelayInMS);
         }
     }
 }

@@ -98,7 +98,7 @@ namespace EQWOWConverter.WOWFiles
                recastDelayInMS, // Recast delay in MS (maximum)
                11, // SMART_ACTION_CAST
                wowSpellID,
-               64, // SMARTCAST_COMBAT_MOVE (prevents creature moving during casting)
+               96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
                2, // SMART_TARGET_VICTIM
                0,
                0,
@@ -106,20 +106,20 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateOutOfCombatBuffCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
+        public void AddRowForCreatureTemplateOutOfCombatBuffCastSelf(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
             string comment)
         {
             AddRow(creatureTemplateID,
                0,
                1, // SMART_EVENT_UPDATE_OOC
                100,
-               0, // Initial delay in MS (minimum)
-               0, // Initial delay in MS (maximum)
+               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS, // Initial delay in MS (minimum)
+               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS, // Initial delay in MS (maximum)
                recastDelayInMS, // Recast delay in MS (minimum)
                recastDelayInMS, // Recast delay in MS (maximum)
                11, // SMART_ACTION_CAST
                wowSpellID,
-               64, // SMARTCAST_COMBAT_MOVE (prevents creature moving during casting)
+               96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
                1, // SMART_TARGET_SELF
                0,
                0,
