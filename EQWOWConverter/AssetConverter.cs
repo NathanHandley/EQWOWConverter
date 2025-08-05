@@ -1223,9 +1223,10 @@ namespace EQWOWConverter
             foreach (CreatureSpellList creatureSpellList in creatureSpellLists)
                 creatureSpellListsByID.Add(creatureSpellList.ID, creatureSpellList);
 
-            // Attach the creature spell lists and entries
+            // Get a list of possible spells cast by the creature
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
+                List<CreatureSpellEntry> allValidSpellEntries = new List<CreatureSpellEntry>();
                 if (creatureTemplate.CreatureSpellListID == 0)
                     continue;
                 if (creatureSpellListsByID.ContainsKey(creatureTemplate.CreatureSpellListID) == false)
@@ -1246,7 +1247,7 @@ namespace EQWOWConverter
                 creatureTemplate.CreatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
                 creatureTemplate.HasSmartScript = true;
                 foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
-                    creatureTemplate.CreatureSpellEntries.Add(spellEntry);
+                    allValidSpellEntries.Add(spellEntry);
 
                 // Handle parent mappings
                 if (creatureTemplate.CreatureSpellList.ParentListID != 0)
@@ -1268,21 +1269,42 @@ namespace EQWOWConverter
                     }
                     creatureTemplate.CreatureSpellListParent = creatureSpellListsByID[creatureTemplate.CreatureSpellList.ParentListID];
                     foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID])
-                        creatureTemplate.CreatureSpellEntries.Add(spellEntry);
+                        allValidSpellEntries.Add(spellEntry);
                 }
 
                 // Calculate a true minimum recast delay by factoring in spell cast and/or aura time
-                for (int i = 0; i < creatureTemplate.CreatureSpellEntries.Count; i++)
+                for (int i = 0; i < allValidSpellEntries.Count; i++)
                 {
-                    CreatureSpellEntry curEntry = creatureTemplate.CreatureSpellEntries[i];
-                    SpellTemplate spellTemplate = spellTemplatesByEQID[creatureTemplate.CreatureSpellEntries[i].EQSpellID];
-                    int originalRecastDelayInMS = creatureTemplate.CreatureSpellEntries[i].OriginalRecastDelayInMS;
+                    CreatureSpellEntry curEntry = allValidSpellEntries[i];
+                    SpellTemplate spellTemplate = spellTemplatesByEQID[allValidSpellEntries[i].EQSpellID];
+                    int originalRecastDelayInMS = allValidSpellEntries[i].OriginalRecastDelayInMS;
                     curEntry.CalculatedMinimumRecastDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
-                    creatureTemplate.CreatureSpellEntries[i] = curEntry;
+                    curEntry.BuffDurationInMS = spellTemplate.SpellDurationInMS;
+                    allValidSpellEntries[i] = curEntry;
+                }
+
+                // Put all of the spells in their appropriate buckets
+                foreach (CreatureSpellEntry spellEntry in allValidSpellEntries)
+                {
+                    bool addedToList = false;
+                    if ((spellEntry.TypeFlags & 8) == 8) // Buff
+                    {
+                        if (spellEntry.BuffDurationInMS >= Configuration.CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS)
+                        {
+                            creatureTemplate.CreatureSpellEntriesPreCombatBuff.Add(spellEntry);
+                            addedToList = true;
+                        }
+                    }
+
+                    if (addedToList == false)
+                    {
+                        creatureTemplate.CreatureSpellEntriesCombat.Add(spellEntry);
+                    }
                 }
 
                 // Sort then set recasts (where needed) to make sure it cycles
-                creatureTemplate.CreatureSpellEntries.Sort();
+                creatureTemplate.CreatureSpellEntriesCombat.Sort();
+                creatureTemplate.CreatureSpellEntriesPreCombatBuff.Sort();
             }
 
             Logger.WriteInfo("Converting Creature Spell AI complete.");

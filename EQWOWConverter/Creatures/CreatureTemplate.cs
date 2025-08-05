@@ -70,7 +70,8 @@ namespace EQWOWConverter.Creatures
         public bool HasSmartScript = false;
         public int DefaultEmoteID = 0;
         public int CreatureSpellListID = 0;
-        public List<CreatureSpellEntry> CreatureSpellEntries = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesCombat = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesPreCombatBuff = new List<CreatureSpellEntry>();
         public CreatureSpellList? CreatureSpellList = null;
         public CreatureSpellList? CreatureSpellListParent = null;
 

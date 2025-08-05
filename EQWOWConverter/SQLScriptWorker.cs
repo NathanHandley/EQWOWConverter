@@ -246,7 +246,7 @@ namespace EQWOWConverter
                 if (creatureTemplate.CreatureSpellList != null)
                 {
                     // Add spell events for every entry
-                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntries)
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
                     {
                         // Skip any that don't match the template
                         if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)

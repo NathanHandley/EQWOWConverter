@@ -383,6 +383,9 @@ namespace EQWOWConverter
         // If true, riding trainers will include flying mounts as well
         public static readonly bool CREATURE_RIDING_TRAINERS_ALSO_TEACH_FLY = true;
 
+        // Minimum amount of duration a creature buff buff needs to be in order to be cast out of combat
+        public static readonly int CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS = 60000;
+
         //=====================================================================
         // Items
         //=====================================================================

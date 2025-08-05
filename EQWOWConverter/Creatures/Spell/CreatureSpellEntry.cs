@@ -23,12 +23,13 @@ namespace EQWOWConverter.Creatures
         public int ID;
         public int CreatureSpellListID;
         public int EQSpellID;
-        public int TypeID;
+        public int TypeFlags;
         public int MinLevel;
         public int MaxLevel;
         public int ManaCost;
         public int OriginalRecastDelayInMS;
         public int CalculatedMinimumRecastDelayInMS;
+        public int BuffDurationInMS;
         public int Priority;
 
         public static Dictionary<int, List<CreatureSpellEntry>> GetCreatureSpellEntriesByListID()
@@ -58,7 +59,7 @@ namespace EQWOWConverter.Creatures
                 newSpellEntry.ID = int.Parse(columns["id"]);
                 newSpellEntry.CreatureSpellListID = int.Parse(columns["creature_spell_list_id"]);
                 newSpellEntry.EQSpellID = int.Parse(columns["eq_spell_id"]);
-                newSpellEntry.TypeID = int.Parse(columns["type"]);
+                newSpellEntry.TypeFlags = int.Parse(columns["type"]);
                 newSpellEntry.MinLevel = int.Parse(columns["minlevel"]);
                 newSpellEntry.MaxLevel = int.Parse(columns["maxlevel"]);
                 newSpellEntry.ManaCost = int.Parse(columns["manacost"]);
