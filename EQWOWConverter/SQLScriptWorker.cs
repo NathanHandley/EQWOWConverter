@@ -264,7 +264,7 @@ namespace EQWOWConverter
                         {
                             string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                             smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
-                                creatureSpellEntry.RecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
+                                creatureSpellEntry.CalculatedMinimumRecastDelayInMS, curSpellTemplate.WOWSpellID, comment);
                         }
                     }
                 }

@@ -1271,6 +1271,16 @@ namespace EQWOWConverter
                         creatureTemplate.CreatureSpellEntries.Add(spellEntry);
                 }
 
+                // Calculate a true minimum recast delay by factoring in spell cast and/or aura time
+                for (int i = 0; i < creatureTemplate.CreatureSpellEntries.Count; i++)
+                {
+                    CreatureSpellEntry curEntry = creatureTemplate.CreatureSpellEntries[i];
+                    SpellTemplate spellTemplate = spellTemplatesByEQID[creatureTemplate.CreatureSpellEntries[i].EQSpellID];
+                    int originalRecastDelayInMS = creatureTemplate.CreatureSpellEntries[i].OriginalRecastDelayInMS;
+                    curEntry.CalculatedMinimumRecastDelayInMS = Math.Max(Math.Max(originalRecastDelayInMS, spellTemplate.SpellDurationInMS), Convert.ToInt32(spellTemplate.RecoveryTimeInMS));
+                    creatureTemplate.CreatureSpellEntries[i] = curEntry;
+                }
+
                 // Sort then set recasts (where needed) to make sure it cycles
                 creatureTemplate.CreatureSpellEntries.Sort();
             }
