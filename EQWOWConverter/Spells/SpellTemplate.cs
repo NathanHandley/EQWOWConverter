@@ -34,6 +34,7 @@ namespace EQWOWConverter.Spells
         public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
+        private static Dictionary<string, Dictionary<string, float>> EffectValueBaselinesByEffectAndValueType = new Dictionary<string, Dictionary<string, float>>();
         private static Dictionary<int, SpellTemplate> SpellTemplatesByEQID = new Dictionary<int, SpellTemplate>();
         private static readonly object SpellTemplateLock = new object();       
 
@@ -871,6 +872,95 @@ namespace EQWOWConverter.Spells
             }
 
             return returnList;
+        }
+
+        private static void PopulateEffectValueBaselines()
+        {
+            string spellEffectValueBaselineFileName = Path.Combine(Configuration.PATH_ASSETS_FOLDER, "WorldData", "SpellEffectValueBaselines.csv");
+            Logger.WriteDebug("Populating Spell Effect Value Baselines list via file '" + spellEffectValueBaselineFileName + "'");
+            List<string> spellEffectValueBaselineRows = FileTool.ReadAllStringLinesFromFile(spellEffectValueBaselineFileName, false, true);
+            bool isFirstRow = true;
+            List<string> effectValues = new List<string>();
+            foreach (string row in spellEffectValueBaselineRows)
+            {
+                // Load the row
+                string[] rowBlocks = row.Split("|");
+
+                // If it's the first row, build out the effect values
+                if (isFirstRow == true)
+                {
+                    foreach (string block in rowBlocks)
+                    {
+                        string lowerText = block.Trim().ToLower();
+                        if (lowerText == "effect")
+                            continue;
+                        effectValues.Add(lowerText);
+                    }
+
+                    isFirstRow = false;
+                    continue;
+                }
+
+                // Otherwise, load the effect values
+                string effect = rowBlocks[0].Trim().ToLower();
+                EffectValueBaselinesByEffectAndValueType.Add(effect, new Dictionary<string, float>());
+                for (int i = 1; i < rowBlocks.Count(); i++)
+                    EffectValueBaselinesByEffectAndValueType[effect].Add(effectValues[i - 1], int.Parse(rowBlocks[i]));
+            }
+        }
+
+        private static float GetConvertedEqValueToWowValue(string effectName, float eqEffectValue)
+        {
+            // Read the file if haven't yet
+            if (EffectValueBaselinesByEffectAndValueType.Count() == 0)
+                PopulateEffectValueBaselines();
+
+            // Only operate with positive numbers
+            bool flipValueSign = false;
+            if (eqEffectValue < 0)
+            {
+                flipValueSign = true;
+                eqEffectValue *= -1;
+            }
+
+            // Get the effect values row row
+            string effectNameLower = effectName.ToLower();
+            if (EffectValueBaselinesByEffectAndValueType.ContainsKey(effectNameLower) == false)
+            {
+                Logger.WriteError("Could not pull effect value for effect '" + effectNameLower + "' as that effect wasn't in the SpellEffectValueBaselines");
+                return eqEffectValue;
+            }
+            Dictionary<string, float> valuesForEffectType = EffectValueBaselinesByEffectAndValueType[effectNameLower];
+
+            // Extract the values
+            float valueEqLow = valuesForEffectType["EqLow"];
+            float valueEqHigh = valuesForEffectType["EqHigh"];
+            float valueWowLow = valuesForEffectType["WowLow"];
+            float valueWoWHigh = valuesForEffectType["WowHigh"];
+
+            // Perform no calculation if any are 0
+            if (valueEqLow == 0 || valueEqHigh == 0 || valueWowLow == 0 || valueWoWHigh == 0)
+            {
+                Logger.WriteError("Could not pull effect value for effect '" + effectNameLower + "' as that effect had a value with 0");
+                return eqEffectValue;
+            }
+
+            // Set a floor on the value
+            eqEffectValue = MathF.Max(eqEffectValue, valueEqLow);
+
+            // Calculate the value
+            float normalizedModOfHigh = ((eqEffectValue - valueEqLow) / (valueEqHigh - valueEqLow));
+            float calcBiasFactor = 1;
+            if (normalizedModOfHigh < 1)
+                calcBiasFactor = ((1 - normalizedModOfHigh) * (Configuration.SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT - 1)) + 1;
+            float biasedNormalizedModOfHigh = normalizedModOfHigh / calcBiasFactor;
+            float calculatedValue = (biasedNormalizedModOfHigh * valueWoWHigh) + ((1 - biasedNormalizedModOfHigh) * valueWowLow);
+
+            // Flip the sign if needed
+            if (flipValueSign == true)
+                calculatedValue *= -1;
+
+            return calculatedValue;
         }
     }
 }

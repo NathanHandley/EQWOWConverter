@@ -491,6 +491,11 @@ namespace EQWOWConverter
         public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_HIGH = 3f;
         public static readonly float SPELL_EFFECT_SPRITE_LIST_VERTICAL_FORCE_LOW = -1f;
 
+        // This is how much 'weight' the lower effect value has when converting EQ to WoW spell effects,
+        //  with values closer to 1 leaning towards the lower effect, and further from 1 leaning towards
+        //  the higher effect.  Don't make it less than 1.  
+        public static readonly float SPELL_EFFECT_VALUE_LOW_BIAS_WEIGHT = 2.5f;
+
         //=====================================================================
         // Tradeskills
         //=====================================================================
