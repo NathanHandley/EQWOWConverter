@@ -1211,12 +1211,6 @@ namespace EQWOWConverter
                 for (int i = creatureSpellEntries.Count - 1;  i >= 0; i--)
                     if (spellTemplatesByEQID.ContainsKey(creatureSpellEntries[i].EQSpellID) == false)
                         creatureSpellEntries.RemoveAt(i);
-            for (int i = creatureSpellLists.Count - 1; i >= 0; i--)
-            {
-                int listID = creatureSpellLists[i].ID;
-                if (creatureSpellEntriesByListID.ContainsKey(listID) == false || creatureSpellEntriesByListID[listID].Count == 0)
-                    creatureSpellLists.RemoveAt(i);
-            }
 
             // Create a mapping of spell list for faster lookup
             Dictionary<int, CreatureSpellList> creatureSpellListsByID = new Dictionary<int, CreatureSpellList>();
@@ -1227,77 +1221,56 @@ namespace EQWOWConverter
             foreach (CreatureTemplate creatureTemplate in creatureTemplates)
             {
                 List<CreatureSpellEntry> allValidSpellEntries = new List<CreatureSpellEntry>();
+                
+                // Skip any creature with no spell list as they'd have no AI
                 if (creatureTemplate.CreatureSpellListID == 0)
                     continue;
                 if (creatureSpellListsByID.ContainsKey(creatureTemplate.CreatureSpellListID) == false)
                 {
-                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list with id ", creatureTemplate.CreatureSpellListID.ToString()); 
+                    Logger.WriteError("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list with id ", creatureTemplate.CreatureSpellListID.ToString());
                     continue;
                 }
-                if (creatureSpellEntriesByListID.ContainsKey(creatureTemplate.CreatureSpellListID) == false)
+
+                // Store all of the entries
+                CreatureSpellList creatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
+                if (creatureSpellEntriesByListID.ContainsKey(creatureTemplate.CreatureSpellListID) == true)
                 {
-                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries list with id ", creatureTemplate.CreatureSpellListID.ToString());
-                    continue;
+                    foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
+                        allValidSpellEntries.Add(spellEntry);
                 }
-                if (creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID].Count == 0)
+
+                // Save On-Attack information
+                if (creatureSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureSpellList.AttackProcID))
                 {
-                    Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries in the list with id ", creatureTemplate.CreatureSpellListID.ToString());
-                    continue;
+                    int eqSpellID = creatureSpellList.AttackProcID;
+                    int procChance = creatureSpellList.ProcChance;
+                    creatureTemplate.AttackEQSpellIDAndProcChance.Add((eqSpellID, procChance));
                 }
-                creatureTemplate.CreatureSpellList = creatureSpellListsByID[creatureTemplate.CreatureSpellListID];
-                creatureTemplate.HasSmartScript = true;
-                foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
-                    allValidSpellEntries.Add(spellEntry);
-                // Agro spell (this isn't what chance is)
-                //if (creatureTemplate.CreatureSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureTemplate.CreatureSpellList.AttackProcID))
-                //{
-                //    int eqSpellID = creatureTemplate.CreatureSpellList.AttackProcID;
-                //    int procChance = creatureTemplate.CreatureSpellList.ProcChance;
-                //    creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
-                //}
 
                 // Handle parent mappings
-                if (creatureTemplate.CreatureSpellList.ParentListID != 0)
+                if (creatureSpellList.ParentListID != 0)
                 {
-                    if (creatureSpellListsByID.ContainsKey(creatureTemplate.CreatureSpellList.ParentListID) == false)
+                    if (creatureSpellListsByID.ContainsKey(creatureSpellList.ParentListID) == false)
+                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list for parent with id ", creatureSpellList.ParentListID.ToString());
+                    else
                     {
-                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell list for parent with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
-                        continue;
-                    }
-                    if (creatureSpellEntriesByListID.ContainsKey(creatureTemplate.CreatureSpellList.ParentListID) == false)
-                    {
-                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries list for parent with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
-                        continue;
-                    }
-                    if (creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID].Count == 0)
-                    {
-                        Logger.WriteDebug("For creature template eqid ", creatureTemplate.EQCreatureTemplateID.ToString(), " there was no creature spell entries in the parent list with id ", creatureTemplate.CreatureSpellList.ParentListID.ToString());
-                        continue;
-                    }
-                    creatureTemplate.CreatureSpellListParent = creatureSpellListsByID[creatureTemplate.CreatureSpellList.ParentListID];
-                    foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID])
-                        allValidSpellEntries.Add(spellEntry);
+                        CreatureSpellList creatureParentSpellList = creatureSpellListsByID[creatureSpellList.ParentListID];
 
-                    // Agro spell (this isn't what chance is)
-                    //if (creatureTemplate.CreatureSpellListParent.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureTemplate.CreatureSpellListParent.AttackProcID))
-                    //{
-                    //    if (creatureTemplate.AgroEQSpellIDAndProcChance.Count > 0)
-                    //    {
-                    //        // Only add a second if the chance isn't > 100
-                    //        if (creatureTemplate.AgroEQSpellIDAndProcChance[0].Item2 + creatureTemplate.CreatureSpellListParent.ProcChance <= 100)
-                    //        {
-                    //            int eqSpellID = creatureTemplate.CreatureSpellListParent.AttackProcID;
-                    //            int procChance = creatureTemplate.CreatureSpellListParent.ProcChance;
-                    //            creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        int eqSpellID = creatureTemplate.CreatureSpellListParent.AttackProcID;
-                    //        int procChance = creatureTemplate.CreatureSpellListParent.ProcChance;
-                    //        creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
-                    //    }
-                    //}
+                        // Add the parent entries
+                        if (creatureSpellEntriesByListID.ContainsKey(creatureSpellList.ParentListID) == true)
+                        {
+                            foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureSpellList.ParentListID])
+                                allValidSpellEntries.Add(spellEntry);
+                        }
+
+                        // Add the On-Attack
+                        if (creatureParentSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureParentSpellList.AttackProcID))
+                        {
+                            int eqSpellID = creatureParentSpellList.AttackProcID;
+                            int procChance = creatureParentSpellList.ProcChance;
+                            creatureTemplate.AttackEQSpellIDAndProcChance.Add((eqSpellID, procChance));
+                        }
+                    }
                 }
 
                 // Calculate a true minimum recast delay by factoring in spell cast and/or aura time
@@ -1346,6 +1319,10 @@ namespace EQWOWConverter
                     if (addedToList == false)
                         creatureTemplate.CreatureSpellEntriesCombat.Add(spellEntry);
                 }
+
+                // Mark if it'll have any smart scripts
+                if (allValidSpellEntries.Count > 0 || creatureTemplate.AttackEQSpellIDAndProcChance.Count > 0)
+                    creatureTemplate.HasSmartScript = true;
 
                 // Sort then set recasts (where needed) to make sure it cycles
                 creatureTemplate.CreatureSpellEntriesCombat.Sort();

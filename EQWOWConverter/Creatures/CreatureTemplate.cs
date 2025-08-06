@@ -73,9 +73,7 @@ namespace EQWOWConverter.Creatures
         public List<CreatureSpellEntry> CreatureSpellEntriesCombat = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
         public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();        
-        public CreatureSpellList? CreatureSpellList = null;
-        public CreatureSpellList? CreatureSpellListParent = null;
-        //public List<(int, int)> AgroEQSpellIDAndProcChance = new List<(int, int)>();
+        public List<(int, int)> AttackEQSpellIDAndProcChance = new List<(int, int)>();
 
         private static int CURRENT_SQL_CREATURE_GUID = Configuration.SQL_CREATURE_GUID_LOW;
         

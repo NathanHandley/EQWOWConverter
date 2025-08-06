@@ -243,7 +243,7 @@ namespace EQWOWConverter
                     modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
 
                 // Spell scripts
-                if (creatureTemplate.CreatureSpellList != null)
+                if (creatureTemplate.CreatureSpellListID > 0)
                 {
                     // Add spell events for every heal entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
@@ -272,14 +272,14 @@ namespace EQWOWConverter
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
                     }
 
-                    // Add cast on agro (not tested)
-                    //foreach (var eqSpellIDAndProcChance in creatureTemplate.AgroEQSpellIDAndProcChance)
-                    //{
-                    //    SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
-                    //    string comment = string.Concat("EQ Agro Cast ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
-                    //    smartScriptsSQL.AddRowForCreatureTemplateCastOnAgro(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
-                    //        curSpellTemplate.WOWSpellID, comment);
-                    //}
+                    // Spell on Attack
+                    foreach (var eqSpellIDAndProcChance in creatureTemplate.AttackEQSpellIDAndProcChance)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
+                        string comment = string.Concat("EQ Attack Proc ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateApplySpellOnDamageDone(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
+                            curSpellTemplate.WOWSpellID, comment);
+                    }
                 }
             }
 
