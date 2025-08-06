@@ -1248,6 +1248,13 @@ namespace EQWOWConverter
                 creatureTemplate.HasSmartScript = true;
                 foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellListID])
                     allValidSpellEntries.Add(spellEntry);
+                // Agro spell (this isn't what chance is)
+                //if (creatureTemplate.CreatureSpellList.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureTemplate.CreatureSpellList.AttackProcID))
+                //{
+                //    int eqSpellID = creatureTemplate.CreatureSpellList.AttackProcID;
+                //    int procChance = creatureTemplate.CreatureSpellList.ProcChance;
+                //    creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
+                //}
 
                 // Handle parent mappings
                 if (creatureTemplate.CreatureSpellList.ParentListID != 0)
@@ -1270,6 +1277,27 @@ namespace EQWOWConverter
                     creatureTemplate.CreatureSpellListParent = creatureSpellListsByID[creatureTemplate.CreatureSpellList.ParentListID];
                     foreach (CreatureSpellEntry spellEntry in creatureSpellEntriesByListID[creatureTemplate.CreatureSpellList.ParentListID])
                         allValidSpellEntries.Add(spellEntry);
+
+                    // Agro spell (this isn't what chance is)
+                    //if (creatureTemplate.CreatureSpellListParent.AttackProcID > 0 && spellTemplatesByEQID.ContainsKey(creatureTemplate.CreatureSpellListParent.AttackProcID))
+                    //{
+                    //    if (creatureTemplate.AgroEQSpellIDAndProcChance.Count > 0)
+                    //    {
+                    //        // Only add a second if the chance isn't > 100
+                    //        if (creatureTemplate.AgroEQSpellIDAndProcChance[0].Item2 + creatureTemplate.CreatureSpellListParent.ProcChance <= 100)
+                    //        {
+                    //            int eqSpellID = creatureTemplate.CreatureSpellListParent.AttackProcID;
+                    //            int procChance = creatureTemplate.CreatureSpellListParent.ProcChance;
+                    //            creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        int eqSpellID = creatureTemplate.CreatureSpellListParent.AttackProcID;
+                    //        int procChance = creatureTemplate.CreatureSpellListParent.ProcChance;
+                    //        creatureTemplate.AgroEQSpellIDAndProcChance.Add((eqSpellID, procChance));
+                    //    }
+                    //}
                 }
 
                 // Calculate a true minimum recast delay by factoring in spell cast and/or aura time
@@ -1316,9 +1344,7 @@ namespace EQWOWConverter
                     }
 
                     if (addedToList == false)
-                    {
                         creatureTemplate.CreatureSpellEntriesCombat.Add(spellEntry);
-                    }
                 }
 
                 // Sort then set recasts (where needed) to make sure it cycles

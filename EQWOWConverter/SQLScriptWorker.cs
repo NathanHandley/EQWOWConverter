@@ -243,7 +243,6 @@ namespace EQWOWConverter
                     modEverquestCreatureOnkillReputationSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, creatureFactionKillReward);
 
                 // Spell scripts
-                // TODO: Cast on agro
                 if (creatureTemplate.CreatureSpellList != null)
                 {
                     // Add spell events for every heal entry
@@ -272,6 +271,15 @@ namespace EQWOWConverter
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
                             creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, comment);
                     }
+
+                    // Add cast on agro (not tested)
+                    //foreach (var eqSpellIDAndProcChance in creatureTemplate.AgroEQSpellIDAndProcChance)
+                    //{
+                    //    SpellTemplate curSpellTemplate = spellTemplatesByEQID[eqSpellIDAndProcChance.Item1];
+                    //    string comment = string.Concat("EQ Agro Cast ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                    //    smartScriptsSQL.AddRowForCreatureTemplateCastOnAgro(creatureTemplate.WOWCreatureTemplateID, eqSpellIDAndProcChance.Item2,
+                    //        curSpellTemplate.WOWSpellID, comment);
+                    //}
                 }
             }
 
