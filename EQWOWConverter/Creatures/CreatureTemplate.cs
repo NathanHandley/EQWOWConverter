@@ -71,7 +71,8 @@ namespace EQWOWConverter.Creatures
         public int DefaultEmoteID = 0;
         public int CreatureSpellListID = 0;
         public List<CreatureSpellEntry> CreatureSpellEntriesCombat = new List<CreatureSpellEntry>();
-        public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesHeal = new List<CreatureSpellEntry>();
+        public List<CreatureSpellEntry> CreatureSpellEntriesOutOfCombatBuff = new List<CreatureSpellEntry>();        
         public CreatureSpellList? CreatureSpellList = null;
         public CreatureSpellList? CreatureSpellListParent = null;
 

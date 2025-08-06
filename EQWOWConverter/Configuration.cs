@@ -393,6 +393,9 @@ namespace EQWOWConverter
         // How much time to add the the max recast delay for combat spells so that there's a bit of variation
         public static readonly float CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = 0.25f;
 
+        // At what level of life a creature should cast a heal spell, if they have one
+        public static readonly int CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT = 30;
+
         //=====================================================================
         // Items
         //=====================================================================

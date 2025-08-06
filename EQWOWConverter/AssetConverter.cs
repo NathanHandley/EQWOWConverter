@@ -1286,6 +1286,10 @@ namespace EQWOWConverter
                 // Put all of the spells in their appropriate buckets
                 foreach (CreatureSpellEntry spellEntry in allValidSpellEntries)
                 {
+                    // Skip any that aren't in the right level band
+                    if (spellEntry.MinLevel > creatureTemplate.Level || spellEntry.MaxLevel < creatureTemplate.Level)
+                        continue;
+
                     bool addedToList = false;
                     if ((spellEntry.TypeFlags & 8) == 8) // Buff
                     {
@@ -1294,6 +1298,21 @@ namespace EQWOWConverter
                             creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Add(spellEntry);
                             addedToList = true;
                         }
+                    }
+                    else if ((spellEntry.TypeFlags & 2) == 2) // Heal
+                    {
+                        // Keep the strongest direct heal
+                        if (creatureTemplate.CreatureSpellEntriesHeal.Count == 0)
+                            creatureTemplate.CreatureSpellEntriesHeal.Add(spellEntry);
+                        else
+                        {
+                            int mappedHealAmount = spellTemplatesByEQID[creatureTemplate.CreatureSpellEntriesHeal[0].EQSpellID].HighestDirectHealAmountInSpellEffect;
+                            int candidateHealAmount = spellTemplatesByEQID[spellEntry.EQSpellID].HighestDirectHealAmountInSpellEffect;
+                            if (candidateHealAmount > mappedHealAmount)
+                                creatureTemplate.CreatureSpellEntriesHeal[0] = spellEntry;
+                        }
+
+                        addedToList = true;
                     }
 
                     if (addedToList == false)

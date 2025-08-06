@@ -83,7 +83,11 @@ namespace EQWOWConverter.Creatures
             // almayst only get used after 1 step-through of the spell list (in WOW).  TODO: Customize
             // later to get better spell sorting.
             //return Priority.CompareTo(other.Priority);
-            return CalculatedMinimumDelayInMS.CompareTo(other.CalculatedMinimumDelayInMS);
+            int minDelayComparison = CalculatedMinimumDelayInMS.CompareTo(other.CalculatedMinimumDelayInMS);
+            if (minDelayComparison == 0)
+                return Priority.CompareTo(other.Priority);
+            else
+                return minDelayComparison;
         }
     }
 }

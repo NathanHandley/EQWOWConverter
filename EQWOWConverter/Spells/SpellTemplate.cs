@@ -122,6 +122,7 @@ namespace EQWOWConverter.Spells
         public SpellEQTargetType EQTargetType = SpellEQTargetType.Single;
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
+        public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -481,6 +482,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
                                     newSpellEffectWOW.ActionDescription = string.Concat("healed for ", newSpellEffectWOW.EffectBasePoints);
+                                    spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
                                 }
                                 else
                                 {

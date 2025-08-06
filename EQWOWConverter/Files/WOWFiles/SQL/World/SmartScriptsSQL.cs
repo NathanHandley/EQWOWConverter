@@ -56,6 +56,8 @@ namespace EQWOWConverter.WOWFiles
                    0,
                    0,
                    0,
+                   0,
+                   0,
                    1,          // SMART_ACTION_TALK = 1
                    groupID,
                    0,
@@ -76,6 +78,8 @@ namespace EQWOWConverter.WOWFiles
                 0,
                 0,
                 0,
+                0,
+                0,
                 9,  // SMART_ACTION_ACTIVATE_GOBJECT,
                 0,
                 0,
@@ -93,14 +97,40 @@ namespace EQWOWConverter.WOWFiles
                0,          
                0, // SMART_EVENT_UPDATE_IC
                100,
-               0, // Initial delay in MS (minimum)
-               0, // Initial delay in MS (maximum)
+               1, // Initial delay in MS (minimum) - Set to 1 so it defaults after heals
+               1, // Initial delay in MS (maximum) - Set to 1 so it defaults after heals
                recastDelayInMS, // Recast delay in MS (minimum)
                recastDelayInMSMax, // Recast delay in MS (maximum)
+               0,
+               0,
                11, // SMART_ACTION_CAST
                wowSpellID,
                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
                2, // SMART_TARGET_VICTIM
+               0,
+               0,
+               comment
+            );
+        }
+
+        public void AddRowForCreatureTemplateInCombatHealCast(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
+            int range, string comment)
+        {
+            int recastDelayInMSMax = recastDelayInMS + Convert.ToInt32(Convert.ToSingle(recastDelayInMS) * Configuration.CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD);
+            AddRow(creatureTemplateID,
+               0,
+               74, // SMART_EVENT_FRIENDLY_HEALTH_PCT
+               100,
+               0, // Initial delay in MS (minimum)
+               0, // Initial delay in MS (maximum)
+               recastDelayInMS,
+               recastDelayInMSMax,
+               Configuration.CREATURE_SPELL_COMBAT_HEAL_MIN_LIFE_PERCENT, // HP Min %
+               range,
+               11, // SMART_ACTION_CAST
+               wowSpellID,
+               33, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_INTERRUPT_PREVIOUS (1)
+               7, // SMART_TARGET_ACTION_INVOKER
                0,
                0,
                comment
@@ -118,6 +148,8 @@ namespace EQWOWConverter.WOWFiles
                Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS, // Initial delay in MS (maximum)
                recastDelayInMS, // Recast delay in MS (minimum)
                recastDelayInMS, // Recast delay in MS (maximum)
+               0,
+               0,
                11, // SMART_ACTION_CAST
                wowSpellID,
                96, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting) + SMARTCAST_AURA_NOT_PRESENT (32)
@@ -129,7 +161,7 @@ namespace EQWOWConverter.WOWFiles
         }
 
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,
-            int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
+            int eventParam5, int eventParam6, int actionType, int actionParam1, int actionParam2, int targetType, int targetParam1, int targetParam2, string comment)
         {
             SQLRow newRow = new SQLRow();
             newRow.AddInt("entryorguid", entryOrGUIDID);
@@ -144,8 +176,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("event_param2", eventParam2);
             newRow.AddInt("event_param3", eventParam3);
             newRow.AddInt("event_param4", eventParam4);
-            newRow.AddInt("event_param5", 0);
-            newRow.AddInt("event_param6", 0);
+            newRow.AddInt("event_param5", eventParam5);
+            newRow.AddInt("event_param6", eventParam6);
             newRow.AddInt("action_type", actionType);
             newRow.AddInt("action_param1", actionParam1);
             newRow.AddInt("action_param2", actionParam2);

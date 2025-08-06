@@ -244,15 +244,20 @@ namespace EQWOWConverter
 
                 // Spell scripts
                 // TODO: Cast on agro
-                // TODO: Heal at health percent?
                 if (creatureTemplate.CreatureSpellList != null)
                 {
+                    // Add spell events for every heal entry
+                    foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesHeal)
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
+                        string comment = string.Concat("EQ Heal ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
+                        smartScriptsSQL.AddRowForCreatureTemplateInCombatHealCast(creatureTemplate.WOWCreatureTemplateID,
+                            creatureSpellEntry.CalculatedMinimumDelayInMS, curSpellTemplate.WOWSpellID, curSpellTemplate.SpellRange, comment);
+                    }
+
                     // Add spell events for every combat entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesCombat)
                     {
-                        // Skip any that don't match the template
-                        if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)
-                            continue;
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
                         string comment = string.Concat("EQ In Combat ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateInCombatSpellCast(creatureTemplate.WOWCreatureTemplateID,
@@ -262,9 +267,6 @@ namespace EQWOWConverter
                     // Add spell events for every buff entry
                     foreach (CreatureSpellEntry creatureSpellEntry in creatureTemplate.CreatureSpellEntriesOutOfCombatBuff)
                     {
-                        // Skip any that don't match the template
-                        if (creatureSpellEntry.MinLevel > creatureTemplate.Level || creatureSpellEntry.MaxLevel < creatureTemplate.Level)
-                            continue;
                         SpellTemplate curSpellTemplate = spellTemplatesByEQID[creatureSpellEntry.EQSpellID];
                         string comment = string.Concat("EQ Out of Combat Buffs ", creatureTemplate.Name, " (", creatureTemplate.WOWCreatureTemplateID, ") cast ", curSpellTemplate.Name, " (", curSpellTemplate.WOWSpellID, ")");
                         smartScriptsSQL.AddRowForCreatureTemplateOutOfCombatBuffCastSelf(creatureTemplate.WOWCreatureTemplateID,
