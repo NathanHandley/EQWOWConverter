@@ -3,9 +3,11 @@ HealDirectHPS|0|0|0|0|
 DamageDirectDPS|0|0|0|0|
 HealOverTimeHPS|0|0|0|0|
 DamageOverTimeDPS|0|0|0|0|
-ArmorClassAdd|0|0|0|0|
-AttackMod|0|0|0|0|
-MaxHPMod|0|0|0|0|
+ArmorClassBuff|0|0|0|0|
+ArmorClassDebuff|0|0|0|0|
+AttackBuff|0|0|0|0|
+AttackDebuff|0|0|0|0|
+MaxHPBuff|0|0|0|0|
 StrengthBuff|0|0|0|0|
 StrengthDebuff|0|0|0|0|
 AgilityBuff|0|0|0|0|
