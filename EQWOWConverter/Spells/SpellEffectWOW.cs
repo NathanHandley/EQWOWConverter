@@ -80,8 +80,11 @@ namespace EQWOWConverter.Spells
         }
 
         public void SetEffectAmountValues(int effectBasePoints, int effectMaxPoints, int spellLevel, SpellEQBaseValueFormulaType eqFormula, 
-            int spellDurationInMS, bool useMax, string valueScalingFormulaName)
+            int spellCastTimeInMS, bool useMax, string valueScalingFormulaName)
         {
+            // Normalize the formula name
+            valueScalingFormulaName = valueScalingFormulaName.ToLower().Trim();
+
             // Avoid underlevel calculations
             if (spellLevel < 0)
                 spellLevel = 0;
@@ -132,36 +135,25 @@ namespace EQWOWConverter.Spells
             }
 
             // Scale the value if it's a controlled type
-            if (valueScalingFormulaName.Trim().Length > 0)
+            if (valueScalingFormulaName.Length > 0)
             {
-
+                float beforeValue = _EffectBasePoints;
+                bool doFlipSign = false;
+                if (beforeValue < 0)
+                {
+                    doFlipSign = true;
+                    beforeValue *= -1;
+                }
+                if (valueScalingFormulaName.Contains("overtime"))
+                    beforeValue = beforeValue / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
+                else if (valueScalingFormulaName.Contains("dps") || valueScalingFormulaName.Contains("hps"))
+                    beforeValue = beforeValue / Math.Max((Convert.ToSingle(spellCastTimeInMS) * 0.001f), 1f); // No lower than 1 second for the calculation
+                float afterValue = GetConvertedEqValueToWowValue(valueScalingFormulaName, beforeValue);
+                float calculatedNewValue = Convert.ToSingle(_EffectBasePoints) * (afterValue / beforeValue);
+                _EffectBasePoints = Math.Max(Convert.ToInt32(calculatedNewValue), 1);
+                if (doFlipSign)
+                    _EffectBasePoints *= -1;
             }
-
-            // Disabled this way because this makes both spell tooltips impossible to generate (without being very complicated and messy) due to
-            // spell effects having to spill over to multiple auras, and it also makes it extremely hard to balance spells
-            //_EffectBasePoints = effectBasePoints;
-            //switch (eqFormula)
-            //{
-            //    case SpellEQBaseValueFormulaType.BaseDivideBy100: _EffectBasePoints = effectBasePoints / 100; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevel: EffectRealPointsPerLevel = 1; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: EffectRealPointsPerLevel = 2; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: EffectRealPointsPerLevel = 3; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: EffectRealPointsPerLevel = 4; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: EffectRealPointsPerLevel = 0.5f; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: EffectRealPointsPerLevel = 0.3333f; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: EffectRealPointsPerLevel = 0.25f; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: EffectRealPointsPerLevel = 0.20f; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddSixTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 6; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddEightTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 6; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddTenTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 10; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddFifteenTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 15; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddTwelveTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 12; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddTwentyTimesLevelMinusSpellLevel: EffectRealPointsPerLevel = 20; break;
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: EffectRealPointsPerLevel = 0.125f; break;
-            //    case SpellEQBaseValueFormulaType.BaseValue: // Fallthrough
-            //    case SpellEQBaseValueFormulaType.BaseAddLevelTimesMultiplier: // Fallthrough
-            //    default: break;
-            //}
         }
 
         public bool IsAuraType()
@@ -214,7 +206,7 @@ namespace EQWOWConverter.Spells
                 string effect = rowBlocks[0].Trim().ToLower();
                 EffectValueBaselinesByEffectAndValueType.Add(effect, new Dictionary<string, float>());
                 for (int i = 1; i < rowBlocks.Count(); i++)
-                    EffectValueBaselinesByEffectAndValueType[effect].Add(effectValues[i - 1], int.Parse(rowBlocks[i]));
+                    EffectValueBaselinesByEffectAndValueType[effect].Add(effectValues[i - 1], float.Parse(rowBlocks[i]));
             }
         }
 
@@ -223,14 +215,6 @@ namespace EQWOWConverter.Spells
             // Read the file if haven't yet
             if (EffectValueBaselinesByEffectAndValueType.Count() == 0)
                 PopulateEffectValueBaselines();
-
-            // Only operate with positive numbers
-            bool flipValueSign = false;
-            if (eqEffectValue < 0)
-            {
-                flipValueSign = true;
-                eqEffectValue *= -1;
-            }
 
             // Get the effect values row row
             string effectNameLower = effectName.ToLower();
@@ -245,13 +229,21 @@ namespace EQWOWConverter.Spells
             float valueEqLow = valuesForEffectType["eqlow"];
             float valueEqHigh = valuesForEffectType["eqhigh"];
             float valueWowLow = valuesForEffectType["wowlow"];
-            float valueWoWHigh = valuesForEffectType["wowhigh"];
+            float valueWoWHigh = valuesForEffectType["wowhigh60"];
 
             // Perform no calculation if any are 0
             if (valueEqLow == 0 || valueEqHigh == 0 || valueWowLow == 0 || valueWoWHigh == 0)
             {
                 Logger.WriteError("Could not pull effect value for effect '" + effectNameLower + "' as that effect had a value with 0");
                 return eqEffectValue;
+            }
+
+            // Only operate with positive numbers
+            bool flipValueSign = false;
+            if (eqEffectValue < 0)
+            {
+                flipValueSign = true;
+                eqEffectValue *= -1;
             }
 
             // Set a floor on the value
