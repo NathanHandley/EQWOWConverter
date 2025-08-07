@@ -234,9 +234,9 @@ namespace EQWOWConverter.Spells
             // Perform no calculation if any are 0
             if (valueEqLow == 0 || valueEqHigh == 0 || valueWowLow == 0 || valueWoWHigh == 0)
             {
-                Logger.WriteError("Could not pull effect value for effect '" + effectNameLower + "' as that effect had a value with 0");
+                Logger.WriteDebug("Could not pull effect value for effect '" + effectNameLower + "' as that effect had a value with 0");
                 return eqEffectValue;
-            }
+            } 
 
             // Only operate with positive numbers
             bool flipValueSign = false;
