@@ -979,7 +979,10 @@ namespace EQWOWConverter.ObjectModels
                 FindAndSetAnimationForType(AnimationType.ShuffleLeft);
                 FindAndSetAnimationForType(AnimationType.ShuffleRight);
                 FindAndSetAnimationForType(AnimationType.Swim);
-                FindAndSetAnimationForType(AnimationType.Death);
+                FindAndSetAnimationForType(AnimationType.SwimIdle);
+                FindAndSetAnimationForType(AnimationType.SwimBackwards);
+                FindAndSetAnimationForType(AnimationType.SwimLeft);
+                FindAndSetAnimationForType(AnimationType.SwimRight);
                 FindAndSetAnimationForType(AnimationType.CombatWound);
                 FindAndSetAnimationForType(AnimationType.CombatCritical);
                 FindAndSetAnimationForType(AnimationType.SpellCastOmni);
@@ -1416,23 +1419,28 @@ namespace EQWOWConverter.ObjectModels
             // Pre-fill 49 animation lookups (supports events)
             for (Int16 i = 0; i <= 49; i++)
                 AnimationLookups.Add(-1);
-            SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Stand);
+            SetAnimationIndicesForAnimationType(AnimationType.Stand);
             if (IsSkeletal)
             {
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Walk);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Run);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatWound);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.CombatCritical);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.StandWound);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.AttackUnarmed);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Death);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.Swim);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.SpellCastDirected);
-                SetFirstUnusedAnimationIndexForAnimationType(AnimationType.SpellCastOmni);
+                SetAnimationIndicesForAnimationType(AnimationType.Walk);
+                SetAnimationIndicesForAnimationType(AnimationType.Run);
+                SetAnimationIndicesForAnimationType(AnimationType.CombatWound);
+                SetAnimationIndicesForAnimationType(AnimationType.CombatCritical);
+                SetAnimationIndicesForAnimationType(AnimationType.StandWound);
+                SetAnimationIndicesForAnimationType(AnimationType.AttackUnarmed);
+                SetAnimationIndicesForAnimationType(AnimationType.Death);
+                SetAnimationIndicesForAnimationType(AnimationType.Swim);
+                SetAnimationIndicesForAnimationType(AnimationType.Swim);
+                SetAnimationIndicesForAnimationType(AnimationType.SwimIdle);
+                SetAnimationIndicesForAnimationType(AnimationType.SwimBackwards);
+                SetAnimationIndicesForAnimationType(AnimationType.SwimLeft);
+                SetAnimationIndicesForAnimationType(AnimationType.SwimRight);
+                SetAnimationIndicesForAnimationType(AnimationType.SpellCastDirected);
+                SetAnimationIndicesForAnimationType(AnimationType.SpellCastOmni);
             }
         }
 
-        private void SetFirstUnusedAnimationIndexForAnimationType(AnimationType animationType)
+        private void SetAnimationIndicesForAnimationType(AnimationType animationType)
         {
             List<EQAnimationType> validEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
             int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
