@@ -31,6 +31,7 @@ namespace EQWOWConverter.Spells
 
         public static Dictionary<int, int> SpellCastTimeDBCIDsByCastTime = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellRangeDBCIDsBySpellRange = new Dictionary<int, int>();
+        public static Dictionary<int, int> SpellRadiusDBCIDsBySpellRadius = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellDurationDBCIDsByDurationInMS = new Dictionary<int, int>();
         public static Dictionary<int, int> SpellGroupStackRuleByGroup = new Dictionary<int, int>();
 
@@ -83,6 +84,20 @@ namespace EQWOWConverter.Spells
                     SpellRangeDBCIDsBySpellRange.Add(value, SpellRangeDBC.GenerateDBCID());
                 _SpellRangeDBCID = SpellRangeDBCIDsBySpellRange[value];
                 _SpellRange = value;
+            }
+        }
+        protected int _SpellRadiusDBCID = 0;
+        public int SpellRadiusDBCID { get { return _SpellRadiusDBCID; } }
+        protected int _SpellRadius = 0;
+        public int SpellRadius
+        {
+            get { return _SpellRadius; }
+            set
+            {
+                if (SpellRadiusDBCIDsBySpellRadius.ContainsKey(value) == false)
+                    SpellRadiusDBCIDsBySpellRadius.Add(value, SpellRadiusDBC.GenerateDBCID());
+                _SpellRadiusDBCID = SpellRadiusDBCIDsBySpellRadius[value];
+                _SpellRadius = value;
             }
         }
         protected int _SpellDurationDBCID = 21; // "Infinite" by default"
@@ -154,7 +169,7 @@ namespace EQWOWConverter.Spells
                 //newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
                 //newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these
                 newSpellTemplate.SpellRange = Convert.ToInt32(float.Parse(columns["range"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
-                // TODO: AOE range?
+                newSpellTemplate.SpellRadius = Convert.ToInt32(float.Parse(columns["aoerange"]) * Configuration.SPELLS_RANGE_MULTIPLIER);
                 newSpellTemplate.RecoveryTimeInMS = UInt32.Parse(columns["cast_recovery_time"]);
                 newSpellTemplate.Category = 0; // Temp / TODO: Figure out how/what to set here
                 newSpellTemplate.CastTimeInMS = int.Parse(columns["cast_time"]);
@@ -194,7 +209,8 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
 
                 // Convert the spell effects
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, newSpellTemplate.CastTimeInMS, targets);
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, 
+                    newSpellTemplate.CastTimeInMS, targets, newSpellTemplate.SpellRadiusDBCID);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -447,129 +463,6 @@ namespace EQWOWConverter.Spells
             return spellWOWTargetTypes;
         }
 
-        //private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range)
-        //{
-        //    // Capture the EQ Target type
-        //    if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
-        //    {
-        //        Logger.WriteError("SpellTemplate with EQID ", spellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
-        //        spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
-        //        return;
-        //    }
-        //    else
-        //        spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
-
-        //    // Map the EQ target type to WOW
-        //    switch (spellTemplate.EQTargetType)
-        //    {
-        //        case SpellEQTargetType.LineOfSight:
-        //            {
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
-        //            } break;
-        //        case SpellEQTargetType.GroupV1:
-        //        case SpellEQTargetType.GroupV2:
-        //            {
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.CasterParty;
-        //            } break;
-        //        case SpellEQTargetType.PointBlankAreaOfEffect:
-        //        case SpellEQTargetType.AreaOfEffectUndead: // TODO, may not be needed.  See "Words of the Undead King"
-        //            {
-        //                // This is from Circle of Healing and Thunderclap.  May have differences for good vs bad effects
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster;
-        //            } break;
-        //        case SpellEQTargetType.Single:
-        //            {
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
-        //            } break;
-        //        case SpellEQTargetType.Self:
-        //            {
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
-        //            } break;
-        //        case SpellEQTargetType.TargetedAreaOfEffect:
-        //        case SpellEQTargetType.TargetedAreaOfEffectLifeTap:
-        //        {
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly;
-        //            } break;
-        //        case SpellEQTargetType.Animal:
-        //            {
-        //                spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" put into this for now
-        //            } break;
-        //        case SpellEQTargetType.Undead:
-        //            {
-        //                spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-        //            } break;
-        //        case SpellEQTargetType.Summoned:
-        //            {
-        //                spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "Any" is probably wrong, figure out good vs bad
-        //            } break;
-        //        case SpellEQTargetType.LifeTap:
-        //            {
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
-        //            } break;
-        //        case SpellEQTargetType.Pet:
-        //            {
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Pet;
-        //            } break;
-        //        case SpellEQTargetType.Corpse:
-        //            {
-        //                // TODO: Make only work on corpses
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Corpse;
-        //            } break;
-        //        case SpellEQTargetType.Plant:
-        //            {
-        //                // Using "elemental" for now
-        //                spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-        //            } break;
-        //        case SpellEQTargetType.UberGiants:
-        //            {
-        //                spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-        //            } break;
-        //        case SpellEQTargetType.UberDragons:
-        //            {
-        //                spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
-        //                if (isDetrimental == true)
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
-        //                else
-        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-        //            } break;
-
-        //        default:
-        //            {
-        //                Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
-        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
-        //            } break;
-        //    }
-        //}
-
         private static int GetBuffDurationInMS(int eqBuffDurationInTicks, int eqBuffDurationFormula)
         {
             int buffTicks = eqBuffDurationInTicks;
@@ -631,7 +524,7 @@ namespace EQWOWConverter.Spells
         }
 
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, 
-            int spellCastTimeInMS, List<SpellWOWTargetType> targets)
+            int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex)
         {
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
@@ -997,17 +890,7 @@ namespace EQWOWConverter.Spells
                         }
                 }
 
-                // Multiply the effect adds based on how many target types there should be
-                //foreach (SpellWOWTargetType targetType in targets)
-                //{
-                //    foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
-                //    {
-                //        SpellEffectWOW curSpellEffect = newSpellEffect.Clone();
-                //        newSpellEffect.ImplicitTargetA = targetType;
-                //        spellTemplate.WOWSpellEffects.Add(curSpellEffect);
-                //    }
-                //}
-                // Add the target types
+                // Add the target types and radius
                 foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
                 {
                     if (targets.Count == 0)
@@ -1023,6 +906,7 @@ namespace EQWOWConverter.Spells
                     newSpellEffect.ImplicitTargetA = targets[0];
                     if (targets.Count == 2)
                         newSpellEffect.ImplicitTargetB = targets[1];
+                    newSpellEffect.EffectRadiusIndex = Convert.ToUInt32(spellRadiusIndex);
                     spellTemplate.WOWSpellEffects.Add(newSpellEffect);
                 }
 

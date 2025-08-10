@@ -171,6 +171,8 @@ namespace EQWOWConverter
             spellDurationDBC.LoadFromDisk(dbcInputFolder, "SpellDuration.dbc");
             SpellIconDBC spellIconDBC = new SpellIconDBC();
             spellIconDBC.LoadFromDisk(dbcInputFolder, "SpellIcon.dbc");
+            SpellRadiusDBC spellRadiusDBC = new SpellRadiusDBC();
+            spellRadiusDBC.LoadFromDisk(dbcInputFolder, "SpellRadius.dbc");
             SpellRangeDBC spellRangeDBC = new SpellRangeDBC();
             spellRangeDBC.LoadFromDisk(dbcInputFolder, "SpellRange.dbc");
             SpellVisualDBC spellVisualDBC = new SpellVisualDBC();
@@ -487,6 +489,8 @@ namespace EQWOWConverter
                 spellCastTimesDBC.AddRow(spellCastTimeDBCIDByCastTime.Value, spellCastTimeDBCIDByCastTime.Key);
             foreach (var spellRangeDBCIDByRange in SpellTemplate.SpellRangeDBCIDsBySpellRange)
                 spellRangeDBC.AddRow(spellRangeDBCIDByRange.Value, spellRangeDBCIDByRange.Key);
+            foreach (var spellRadiusDBCIDByRadius in SpellTemplate.SpellRadiusDBCIDsBySpellRadius)
+                spellRadiusDBC.AddRow(spellRadiusDBCIDByRadius.Value, spellRadiusDBCIDByRadius.Key);
             foreach (var spellDurationDBCIDByDurationInMS in SpellTemplate.SpellDurationDBCIDsByDurationInMS)
                 spellDurationDBC.AddRow(spellDurationDBCIDByDurationInMS.Value, spellDurationDBCIDByDurationInMS.Key);
             foreach (var soundByFileNameNoExt in SpellVisual.SoundsByFileNameNoExt)
@@ -676,6 +680,8 @@ namespace EQWOWConverter
             spellDurationDBC.SaveToDisk(dbcOutputServerFolder);
             spellIconDBC.SaveToDisk(dbcOutputClientFolder);
             spellIconDBC.SaveToDisk(dbcOutputServerFolder);
+            spellRadiusDBC.SaveToDisk(dbcOutputClientFolder);
+            spellRadiusDBC.SaveToDisk(dbcOutputServerFolder);
             spellRangeDBC.SaveToDisk(dbcOutputClientFolder);
             spellRangeDBC.SaveToDisk(dbcOutputServerFolder);
             spellVisualDBC.SaveToDisk(dbcOutputClientFolder);

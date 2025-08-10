@@ -623,6 +623,9 @@ namespace EQWOWConverter
         // ID for spellicon.dbc
         public static readonly int DBCID_SPELLICON_ID_START = 4400;
 
+        // ID for spellradius.dbc
+        public static readonly int DBCID_SPELLRADIUS_ID_START = 70;
+
         // ID for SpellRange.dbc
         public static readonly int DBCID_SPELLRANGE_ID_START = 190;
 
