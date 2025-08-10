@@ -595,6 +595,12 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex)
         {
+            if (spellTemplate.EQSpellID == 281)
+            {
+                int x = 5;
+
+            }
+
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
@@ -681,7 +687,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
                             newSpellEffectWOW.EffectMiscValueA = 1; // Armor
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ArmorClassBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase armor by ", newSpellEffectWOW.EffectBasePoints);
@@ -703,7 +709,7 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AttackBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase attack power by ", newSpellEffectWOW.EffectBasePoints);
@@ -755,7 +761,7 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "MaxHPBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase maximum health by ", newSpellEffectWOW.EffectBasePoints);
@@ -778,7 +784,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 0; // Strength
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StrengthBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase maximum strength by ", newSpellEffectWOW.EffectBasePoints);
@@ -817,7 +823,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 1; // Agility
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AgilityBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase agility by ", newSpellEffectWOW.EffectBasePoints);
@@ -840,7 +846,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StaminaBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase stamina by ", newSpellEffectWOW.EffectBasePoints);
@@ -861,7 +867,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "IntellectBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase intellect by ", newSpellEffectWOW.EffectBasePoints);
@@ -884,7 +890,7 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "SpiritBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase spirit by ", newSpellEffectWOW.EffectBasePoints);
@@ -906,7 +912,7 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
-                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            if (eqEffect.EQBaseValue >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HitPctBuff");
                                 newSpellEffectWOW.ActionDescription = string.Concat("increase hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
