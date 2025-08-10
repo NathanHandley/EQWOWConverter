@@ -29,7 +29,8 @@ namespace EQWOWConverter.Spells
             get { return _EffectBasePoints; }
         }
         public SpellMechanicType EffectMechanic = SpellMechanicType.None;
-        public UInt32 ImplicitTagetB = 0;
+        public SpellWOWTargetType ImplicitTargetA = SpellWOWTargetType.Self;
+        public SpellWOWTargetType ImplicitTargetB = SpellWOWTargetType.None;
         public UInt32 EffectRadiusIndex = 0;
         public SpellWOWAuraType EffectAuraType = SpellWOWAuraType.None;
         public UInt32 EffectAuraPeriod = 0;
@@ -65,7 +66,8 @@ namespace EQWOWConverter.Spells
                 EffectRealPointsPerLevel = this.EffectRealPointsPerLevel,
                 _EffectBasePoints = this.EffectBasePoints,
                 EffectMechanic = this.EffectMechanic,
-                ImplicitTagetB = this.ImplicitTagetB,
+                ImplicitTargetA = this.ImplicitTargetA,
+                ImplicitTargetB = this.ImplicitTargetB,
                 EffectRadiusIndex = this.EffectRadiusIndex,
                 EffectAuraType = this.EffectAuraType,
                 EffectAuraPeriod = this.EffectAuraPeriod,

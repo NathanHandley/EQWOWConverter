@@ -102,7 +102,6 @@ namespace EQWOWConverter.Spells
         public int SpellGroupStackingID = -1;
         public int SpellGroupStackingRule = 0;
         public UInt32 RecoveryTimeInMS = 0;
-        public SpellWOWTargetType WOWTargetType = SpellWOWTargetType.Self;
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?
@@ -123,6 +122,7 @@ namespace EQWOWConverter.Spells
         public UInt32 TargetCreatureType = 0; // No specific creature type
         public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
+        private string TargetDescriptionTextFragment = string.Empty;
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -179,10 +179,10 @@ namespace EQWOWConverter.Spells
                 if (spellIconID >= 2500)
                     newSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(spellIconID - 2500);
 
-                // Target
+                // Targets
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
-                PopulateTarget(ref newSpellTemplate, eqTargetTypeID, isDetrimental);
+                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.SpellRange);
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -194,7 +194,7 @@ namespace EQWOWConverter.Spells
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
 
                 // Convert the spell effects
-                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, newSpellTemplate.CastTimeInMS);
+                ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, newSpellTemplate.CastTimeInMS, targets);
 
                 // If there is no wow effect, skip it
                 if (newSpellTemplate.WOWSpellEffects.Count == 0)
@@ -265,14 +265,21 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental)
+        private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range)
         {
+            if (spellTemplate.WOWSpellID == 92411)
+            {
+                int x = 5;
+            }
+
+            List<SpellWOWTargetType> spellWOWTargetTypes = new List<SpellWOWTargetType>();
+
             // Capture the EQ Target type
             if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
             {
                 Logger.WriteError("SpellTemplate with EQID ", spellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
-                spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
-                return;
+                spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                return spellWOWTargetTypes;
             }
             else
                 spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
@@ -283,110 +290,285 @@ namespace EQWOWConverter.Spells
                 case SpellEQTargetType.LineOfSight:
                     {
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                    }
+                    break;
                 case SpellEQTargetType.GroupV1:
                 case SpellEQTargetType.GroupV2:
                     {
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.CasterParty;
-                    } break;
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.CasterParty);
+                    }
+                    break;
                 case SpellEQTargetType.PointBlankAreaOfEffect:
                 case SpellEQTargetType.AreaOfEffectUndead: // TODO, may not be needed.  See "Words of the Undead King"
                     {
-                        // This is from Circle of Healing and Thunderclap.  May have differences for good vs bad effects
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundCaster;
-                    } break;
+                        if (isDetrimental == true)
+                        {
+                            // Referenced from Blast Wave
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCasterTargetingEnemies);
+                        }
+                        if (isDetrimental == false)
+                        {
+                            // Referenced from Circle of healing
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                        }
+                        if (spellTemplate.EQTargetType == SpellEQTargetType.AreaOfEffectUndead)
+                            spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
+                    }
+                    break;
                 case SpellEQTargetType.Single:
                     {
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                    }
+                    break;
                 case SpellEQTargetType.Self:
                     {
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
-                    } break;
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                    }
+                    break;
                 case SpellEQTargetType.TargetedAreaOfEffect:
                 case SpellEQTargetType.TargetedAreaOfEffectLifeTap:
-                {
+                    {
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundTargetEnemy;
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                        }
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.AreaAroundTargetAlly;
-                    } break;
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                        }
+                    }
+                    break;
                 case SpellEQTargetType.Animal:
                     {
                         spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" put into this for now
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" put into this for now
+                    }
+                    break;
                 case SpellEQTargetType.Undead:
                     {
                         spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                    }
+                    break;
                 case SpellEQTargetType.Summoned:
                     {
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "Any" is probably wrong, figure out good vs bad
+                        if (isDetrimental == true)
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                        else
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
+                    }
+                    break;
+                case SpellEQTargetType.AreaOfEffectSummoned:
+                    {
+                        spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
+                        if (isDetrimental == true)
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                        }
+                        else
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                        }
                     } break;
                 case SpellEQTargetType.LifeTap:
                     {
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetFriendly;
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                    }
+                    break;
                 case SpellEQTargetType.Pet:
                     {
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.Pet;
-                    } break;
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.Pet);
+                    }
+                    break;
                 case SpellEQTargetType.Corpse:
                     {
                         // TODO: Make only work on corpses
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.Corpse;
-                    } break;
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.None);
+                    }
+                    break;
                 case SpellEQTargetType.Plant:
                     {
                         // Using "elemental" for now
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                    }
+                    break;
                 case SpellEQTargetType.UberGiants:
                     {
                         spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-                    } break;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                    }
+                    break;
                 case SpellEQTargetType.UberDragons:
                     {
                         spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
                         if (isDetrimental == true)
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetEnemy;
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                         else
-                            spellTemplate.WOWTargetType = SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
-                    } break;
-
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                    }
+                    break;
                 default:
                     {
                         Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
-                        spellTemplate.WOWTargetType = SpellWOWTargetType.Self;
-                    } break;
+                        spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                    }
+                    break;
             }
+
+            return spellWOWTargetTypes;
         }
+
+        //private static void PopulateTarget(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range)
+        //{
+        //    // Capture the EQ Target type
+        //    if (Enum.IsDefined(typeof(SpellEQTargetType), eqTargetTypeID) == false)
+        //    {
+        //        Logger.WriteError("SpellTemplate with EQID ", spellTemplate.EQSpellID.ToString(), " has unknown target type of ", eqTargetTypeID.ToString());
+        //        spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
+        //        return;
+        //    }
+        //    else
+        //        spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
+
+        //    // Map the EQ target type to WOW
+        //    switch (spellTemplate.EQTargetType)
+        //    {
+        //        case SpellEQTargetType.LineOfSight:
+        //            {
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
+        //            } break;
+        //        case SpellEQTargetType.GroupV1:
+        //        case SpellEQTargetType.GroupV2:
+        //            {
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.CasterParty;
+        //            } break;
+        //        case SpellEQTargetType.PointBlankAreaOfEffect:
+        //        case SpellEQTargetType.AreaOfEffectUndead: // TODO, may not be needed.  See "Words of the Undead King"
+        //            {
+        //                // This is from Circle of Healing and Thunderclap.  May have differences for good vs bad effects
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster;
+        //            } break;
+        //        case SpellEQTargetType.Single:
+        //            {
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
+        //            } break;
+        //        case SpellEQTargetType.Self:
+        //            {
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
+        //            } break;
+        //        case SpellEQTargetType.TargetedAreaOfEffect:
+        //        case SpellEQTargetType.TargetedAreaOfEffectLifeTap:
+        //        {
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly;
+        //            } break;
+        //        case SpellEQTargetType.Animal:
+        //            {
+        //                spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" put into this for now
+        //            } break;
+        //        case SpellEQTargetType.Undead:
+        //            {
+        //                spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+        //            } break;
+        //        case SpellEQTargetType.Summoned:
+        //            {
+        //                spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "Any" is probably wrong, figure out good vs bad
+        //            } break;
+        //        case SpellEQTargetType.LifeTap:
+        //            {
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly;
+        //            } break;
+        //        case SpellEQTargetType.Pet:
+        //            {
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Pet;
+        //            } break;
+        //        case SpellEQTargetType.Corpse:
+        //            {
+        //                // TODO: Make only work on corpses
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Corpse;
+        //            } break;
+        //        case SpellEQTargetType.Plant:
+        //            {
+        //                // Using "elemental" for now
+        //                spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+        //            } break;
+        //        case SpellEQTargetType.UberGiants:
+        //            {
+        //                spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+        //            } break;
+        //        case SpellEQTargetType.UberDragons:
+        //            {
+        //                spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
+        //                if (isDetrimental == true)
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy;
+        //                else
+        //                    spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny; // "lull" and heal undead put into this for now
+        //            } break;
+
+        //        default:
+        //            {
+        //                Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
+        //                spellWOWTargetTypes.Add(SpellWOWTargetType.Self;
+        //            } break;
+        //    }
+        //}
 
         private static int GetBuffDurationInMS(int eqBuffDurationInTicks, int eqBuffDurationFormula)
         {
@@ -448,13 +630,13 @@ namespace EQWOWConverter.Spells
             spellTemplate.EQSpellEffects.Add(curEffect);
         }
 
-        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, int spellCastTimeInMS)
+        private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, 
+            int spellCastTimeInMS, List<SpellWOWTargetType> targets)
         {
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
-                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
-                SpellEffectWOW? newSpellEffectWOW2 = null;
+                List<SpellEffectWOW> newSpellEffects = new List<SpellEffectWOW>();
                 switch (eqEffect.EQEffectType)
                 {
                     case SpellEQEffectType.CurrentHitPoints: // Fallthrough
@@ -476,6 +658,7 @@ namespace EQWOWConverter.Spells
                             int preFormulaEffectAmount = Math.Abs(eqEffect.EQBaseValue);
                             if (spellDurationInMS <= 0 || eqEffect.EQEffectType == SpellEQEffectType.CurrentHitPointsOnce)
                             {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.None;
                                 if (eqEffect.EQBaseValue > 0)
                                 {
@@ -493,9 +676,11 @@ namespace EQWOWConverter.Spells
                                     else
                                         newSpellEffectWOW.ActionDescription = string.Concat("struck for ", newSpellEffectWOW.EffectBasePoints, " damage");
                                 }
+                                newSpellEffects.Add(newSpellEffectWOW);
                             }
                             else
                             {
+                                SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                                 newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                                 float effectAmountMod = Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW) / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_EQ);
                                 preFormulaEffectAmount = Math.Max((int)Math.Round(Convert.ToSingle(preFormulaEffectAmount) * effectAmountMod), 1);
@@ -523,12 +708,14 @@ namespace EQWOWConverter.Spells
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                 }
+                                newSpellEffects.Add(newSpellEffectWOW);
                             }
                         } break;
                     case SpellEQEffectType.ArmorClass:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModResistance;
                             newSpellEffectWOW.EffectMiscValueA = 1; // Armor
@@ -545,11 +732,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases armor by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("armor decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Attack:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackPower;
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
@@ -565,17 +754,20 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases attack power by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack power decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
 
                             // Add a second for ranged attack power
-                            newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                            SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
                             newSpellEffectWOW2.ActionDescription = string.Empty;
                             newSpellEffectWOW2.AuraDescription = string.Empty;
                             newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedAttackPower;
+                            newSpellEffects.Add(newSpellEffectWOW2);
                         } break;
                     case SpellEQEffectType.MovementSpeed:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             if (eqEffect.EQBaseValue >= 0)
                             {
@@ -592,11 +784,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "% ");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Snared;
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.TotalHP:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMaximumHealth;
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
@@ -612,11 +806,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum health by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Strength:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 0; // Strength
@@ -633,6 +829,7 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum strength by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum strength decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Dexterity: // Fallthrough
                     case SpellEQEffectType.Agility:
@@ -649,12 +846,12 @@ namespace EQWOWConverter.Spells
                                         ignoreAsAglEffectExistsAndIsStronger = true;
                                     if (wowEffect.EffectBasePoints < 0 && wowEffect.EffectBasePoints <= eqEffect.EQBaseValue)
                                         ignoreAsAglEffectExistsAndIsStronger = true;
-                                    newSpellEffectWOW = wowEffect;
                                 }
                             }
                             if (ignoreAsAglEffectExistsAndIsStronger == true)
                                 continue;
 
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 1; // Agility
@@ -671,11 +868,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases agility by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("agility decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Stamina:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 2; // Stamina
@@ -692,9 +891,11 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases stamina by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("stamina decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Intelligence:
                         {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 3; // Intellect
@@ -711,11 +912,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases intellect by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Wisdom:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStat;
                             newSpellEffectWOW.EffectMiscValueA = 4; // Spirit
@@ -732,11 +935,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases spirit by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("spirit decreased by ", reductionAmount);
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.Charisma:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModHitChance;
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
@@ -752,11 +957,13 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases hit chance by ", reductionAmount, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance decreased by ", reductionAmount, "%");
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     case SpellEQEffectType.AttackSpeed:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMeleeHaste;
 
@@ -773,12 +980,14 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.ActionDescription = string.Concat("decreases attack speed by ", reductionAmount, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack speed decreased by ", reductionAmount, "%");
                             }
+                            newSpellEffects.Add(newSpellEffectWOW);
 
                             // Add a second for ranged attack speed
-                            newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                            SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
                             newSpellEffectWOW2.ActionDescription = string.Empty;
                             newSpellEffectWOW2.AuraDescription = string.Empty;
                             newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedHaste;
+                            newSpellEffects.Add(newSpellEffectWOW2);
                         }
                         break;
                     default:
@@ -786,10 +995,37 @@ namespace EQWOWConverter.Spells
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
                             continue;
                         }
-                }                       
-                spellTemplate.WOWSpellEffects.Add(newSpellEffectWOW);
-                if (newSpellEffectWOW2 != null)
-                    spellTemplate.WOWSpellEffects.Add(newSpellEffectWOW2);
+                }
+
+                // Multiply the effect adds based on how many target types there should be
+                //foreach (SpellWOWTargetType targetType in targets)
+                //{
+                //    foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
+                //    {
+                //        SpellEffectWOW curSpellEffect = newSpellEffect.Clone();
+                //        newSpellEffect.ImplicitTargetA = targetType;
+                //        spellTemplate.WOWSpellEffects.Add(curSpellEffect);
+                //    }
+                //}
+                // Add the target types
+                foreach (SpellEffectWOW newSpellEffect in newSpellEffects)
+                {
+                    if (targets.Count == 0)
+                    {
+                        Logger.WriteError("Too few targets for spell effect");
+                        continue;
+                    }
+                    if (targets.Count > 2)
+                    {
+                        Logger.WriteError("Too many targets for spell effect");
+                        continue;
+                    }
+                    newSpellEffect.ImplicitTargetA = targets[0];
+                    if (targets.Count == 2)
+                        newSpellEffect.ImplicitTargetB = targets[1];
+                    spellTemplate.WOWSpellEffects.Add(newSpellEffect);
+                }
+
             }
 
             // TODO: Collapse multi-stat effects into 1 where possible
@@ -829,7 +1065,8 @@ namespace EQWOWConverter.Spells
         {
             StringBuilder descriptionSB = new StringBuilder();
             StringBuilder auraSB = new StringBuilder();
-            descriptionSB.Append("Target ");
+            descriptionSB.Append(spellTemplate.TargetDescriptionTextFragment);
+            descriptionSB.Append(" ");
             for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
             {
                 if (i != 0)

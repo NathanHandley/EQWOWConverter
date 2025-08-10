@@ -1200,7 +1200,7 @@ namespace EQWOWConverter
 
         public void ConvertCreatureSpellAI(ref List<CreatureTemplate> creatureTemplates, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
-            Logger.WriteInfo("Converting Creature Spell AI started.");
+            Logger.WriteInfo("Converting Creature Spell AI...");
 
             // Load the creature spell reference data
             List<CreatureSpellList> creatureSpellLists = CreatureSpellList.GetCreatureSpellLists();
@@ -1329,7 +1329,7 @@ namespace EQWOWConverter
                 creatureTemplate.CreatureSpellEntriesOutOfCombatBuff.Sort();
             }
 
-            Logger.WriteInfo("Converting Creature Spell AI complete.");
+            Logger.WriteDebug("Converting Creature Spell AI complete.");
         }
 
         public void ConvertLoot(List<CreatureTemplate> creatureTemplates, out Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID)
@@ -1564,7 +1564,7 @@ namespace EQWOWConverter
             gateSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(22);
             gateSpellTemplate.CastTimeInMS = 5000;
             gateSpellTemplate.RecoveryTimeInMS = 8000;
-            gateSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
+            gateSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
             gateSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(9, true).SpellVisualDBCID); // Gate
             gateSpellTemplate.PlayerLearnableByClassTrainer = true;
             gateSpellTemplate.AllowCastInCombat = false;
@@ -1579,12 +1579,12 @@ namespace EQWOWConverter
             bindAffinitySelfSpellTemplate.SpellIconID = SpellIconDBC.GetDBCIDForSpellIconID(21);
             bindAffinitySelfSpellTemplate.CastTimeInMS = 6000;
             bindAffinitySelfSpellTemplate.RecoveryTimeInMS = 12000;
-            bindAffinitySelfSpellTemplate.WOWTargetType = SpellWOWTargetType.Self;
             bindAffinitySelfSpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, true).SpellVisualDBCID); // Bind
             bindAffinitySelfSpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySelfSpellTemplate.AllowCastInCombat = false;
             bindAffinitySelfSpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             bindAffinitySelfSpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            bindAffinitySelfSpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.Self;
             spellTemplates.Add(bindAffinitySelfSpellTemplate);
 
             // Bind Affinity
@@ -1596,12 +1596,12 @@ namespace EQWOWConverter
             bindAffinitySpellTemplate.CastTimeInMS = 6000;
             bindAffinitySpellTemplate.RecoveryTimeInMS = 12000;
             bindAffinitySpellTemplate.SpellRange = 30;
-            bindAffinitySpellTemplate.WOWTargetType = SpellWOWTargetType.TargetParty;
             bindAffinitySpellTemplate.SpellVisualID1 = Convert.ToUInt32(SpellVisual.GetSpellVisual(14, true).SpellVisualDBCID); // Bind
             bindAffinitySpellTemplate.PlayerLearnableByClassTrainer = true;
             bindAffinitySpellTemplate.AllowCastInCombat = false;
             bindAffinitySpellTemplate.SkillLine = Configuration.DBCID_SKILLLINE_ALTERATION_ID;
             bindAffinitySpellTemplate.WOWSpellEffects.Add(new SpellEffectWOW(SpellWOWEffectType.Dummy, SpellWOWAuraType.Dummy, 0, 0, 0, 0, 0, 0));
+            bindAffinitySpellTemplate.WOWSpellEffects[0].ImplicitTargetA = SpellWOWTargetType.TargetParty;
             spellTemplates.Add(bindAffinitySpellTemplate);
 
             // Phase aura 1 (Day)

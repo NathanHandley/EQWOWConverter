@@ -43,7 +43,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // AttributesExG
             newRow.AddUInt64(0); // ShapeshiftMask
             newRow.AddUInt64(0); // ShapeshiftExclude
-            newRow.AddUInt32(GetTargetValue(spellTemplate)); // Targets
+            newRow.AddUInt32(0); // Targets (should this be non-zero?)
             newRow.AddUInt32(spellTemplate.TargetCreatureType); // TargetCreatureType
             newRow.AddUInt32(spellTemplate.SpellFocusID); // RequiresSpellFocus
             newRow.AddUInt32(0); // FacingCasterFlags
@@ -107,9 +107,9 @@ namespace EQWOWConverter.WOWFiles
             foreach (SpellEffectWOW spellEffect in spellEffects)
                 newRow.AddUInt32(Convert.ToUInt32(spellEffect.EffectMechanic)); // EffectMechanic1, EffectMechanic2, EffectMechanic3
             foreach (SpellEffectWOW spellEffect in spellEffects)
-                newRow.AddUInt32(GetImplicitTargetValue(spellTemplate)); // ImplicitTargetA1, ImplicitTargetA2, ImplicitTargetA3
+                newRow.AddUInt32(Convert.ToUInt32(spellEffect.ImplicitTargetA)); // ImplicitTargetA1, ImplicitTargetA2, ImplicitTargetA3
             foreach (SpellEffectWOW spellEffect in spellEffects)
-                newRow.AddUInt32(spellEffect.ImplicitTagetB); // ImplicitTargetB1, ImplicitTargetB2, ImplicitTargetB3
+                newRow.AddUInt32(Convert.ToUInt32(spellEffect.ImplicitTargetB)); // ImplicitTargetB1, ImplicitTargetB2, ImplicitTargetB3
             foreach (SpellEffectWOW spellEffect in spellEffects)
                 newRow.AddUInt32(spellEffect.EffectRadiusIndex); // EffectRadiusIndex1, EffectRadiusIndex2, EffectRadiusIndex3
             foreach (SpellEffectWOW spellEffect in spellEffects)
@@ -241,21 +241,6 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 4096;
             return 0;
-        }
-
-        private UInt32 GetTargetValue(SpellTemplate spellTemplate)
-        {
-            switch (spellTemplate.WOWTargetType)
-            {
-                //case SpellTargetType.SelfSingle: return 0;
-                //case SpellTargetType.AllyGroupedSingle: return 16;
-                default: return 0;
-            }
-        }
-
-        private UInt32 GetImplicitTargetValue(SpellTemplate spellTemplate)
-        {
-            return Convert.ToUInt32(spellTemplate.WOWTargetType);
         }
     }
 }

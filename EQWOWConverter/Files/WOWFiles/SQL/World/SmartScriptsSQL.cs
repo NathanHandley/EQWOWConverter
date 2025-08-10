@@ -182,8 +182,9 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, string comment)
+        public void AddRowForCreatureTemplateApplySpellOnDamageDone(int creatureTemplateID, int chance, int wowSpellID, /* int spellVisualImpactKitID, */string comment)
         {
+            // Damage event
             AddRow(creatureTemplateID,
                0,
                33, // SMART_EVENT_DAMAGED_TARGET
@@ -202,6 +203,26 @@ namespace EQWOWConverter.WOWFiles
                0,
                comment
             );
+
+            //// Spell Visual
+            //AddRow(creatureTemplateID,
+            //   0,
+            //   33, // SMART_EVENT_DAMAGED_TARGET
+            //   chance,
+            //   0, // Min Damage
+            //   1000000, // Max Damage (ensures always happens
+            //   0,
+            //   0,
+            //   0,
+            //   0,
+            //   11, // SMART_ACTION_CAST
+            //   wowSpellID,
+            //   64, // SMARTCAST_COMBAT_MOVE (64) (prevents creature moving during casting)
+            //   2, // SMART_TARGET_VICTIM
+            //   0,
+            //   0,
+            //   comment
+            //);
         }
 
         public void AddRow(int entryOrGUIDID, int sourceType, int eventType, int eventChance, int eventParam1, int eventParam2, int eventParam3, int eventParam4,

@@ -42,10 +42,11 @@ namespace EQWOWConverter.Spells
 {
     internal enum SpellWOWTargetType : int
     {
-        Corpse = 0, // This isn't actually a wow target type
+        None = 0, // This isn't actually a wow target type, but might be corpse?
         Self = 1,
         Pet = 5,
         TargetEnemy = 6,
+        AreaAroundCasterTargetingEnemies = 15,
         AreaAroundTargetEnemy = 16,
         CasterParty = 20,
         TargetFriendly = 21,
