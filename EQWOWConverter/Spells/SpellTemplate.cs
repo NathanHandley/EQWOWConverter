@@ -197,7 +197,7 @@ namespace EQWOWConverter.Spells
                 // Targets
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
-                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.SpellRange);
+                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -281,13 +281,8 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range)
+        private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range, int spellRadius)
         {
-            if (spellTemplate.WOWSpellID == 92411)
-            {
-                int x = 5;
-            }
-
             List<SpellWOWTargetType> spellWOWTargetTypes = new List<SpellWOWTargetType>();
 
             // Capture the EQ Target type
@@ -306,47 +301,72 @@ namespace EQWOWConverter.Spells
                 case SpellEQTargetType.LineOfSight:
                     {
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single visible enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single visible friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.GroupV1:
                 case SpellEQTargetType.GroupV2:
                     {
                         spellWOWTargetTypes.Add(SpellWOWTargetType.CasterParty);
+                        if (spellRadius > 0)
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party within ", spellRadius, " yards around the caster");
+                        else
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets the whole party.");
                     }
                     break;
                 case SpellEQTargetType.PointBlankAreaOfEffect:
                 case SpellEQTargetType.AreaOfEffectUndead: // TODO, may not be needed.  See "Words of the Undead King"
                     {
+                        string targetTypeDescriptionFragment = "";
+                        if (spellTemplate.EQTargetType == SpellEQTargetType.AreaOfEffectUndead)
+                        {
+                            spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
+                            targetTypeDescriptionFragment = "undead ";
+                        }
+
                         if (isDetrimental == true)
                         {
                             // Referenced from Blast Wave
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCaster);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundCasterTargetingEnemies);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "enemies within ", spellRadius, " yards around the caster");
                         }
                         if (isDetrimental == false)
                         {
                             // Referenced from Circle of healing
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets ", targetTypeDescriptionFragment, "friendly units within ", spellRadius, " yards around the caster");
                         }
-                        if (spellTemplate.EQTargetType == SpellEQTargetType.AreaOfEffectUndead)
-                            spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
+
                     }
                     break;
                 case SpellEQTargetType.Single:
                     {
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.Self:
                     {
                         spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                        spellTemplate.TargetDescriptionTextFragment = "Targets self";
                     }
                     break;
                 case SpellEQTargetType.TargetedAreaOfEffect:
@@ -356,11 +376,13 @@ namespace EQWOWConverter.Spells
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets enemies within ", spellRadius, " yards around the caster");
                         }
                         else
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets friendly units within ", spellRadius, " yards around the caster");
                         }
                     }
                     break;
@@ -368,27 +390,45 @@ namespace EQWOWConverter.Spells
                     {
                         spellTemplate.TargetCreatureType = 1; // Beast, 0x0001
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single beast enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" put into this for now
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single beast friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.Undead:
                     {
                         spellTemplate.TargetCreatureType = 32; // Undead, 0x0020
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single undead enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single undead friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.Summoned:
                     {
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.AreaOfEffectSummoned:
@@ -398,30 +438,40 @@ namespace EQWOWConverter.Spells
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets elemental enemies within ", spellRadius, " yards around the caster");
                         }
                         else
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets elemental friendly units within ", spellRadius, " yards around the caster");
                         }
                     } break;
                 case SpellEQTargetType.LifeTap:
                     {
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.Pet:
                     {
                         spellWOWTargetTypes.Add(SpellWOWTargetType.Pet);
+                        spellTemplate.TargetDescriptionTextFragment = "Targets your pet";
                     }
                     break;
                 case SpellEQTargetType.Corpse:
                     {
                         // TODO: Make only work on corpses
                         spellWOWTargetTypes.Add(SpellWOWTargetType.None);
+                        spellTemplate.TargetDescriptionTextFragment = "Targets a friendly corpse";
                     }
                     break;
                 case SpellEQTargetType.Plant:
@@ -429,33 +479,52 @@ namespace EQWOWConverter.Spells
                         // Using "elemental" for now
                         spellTemplate.TargetCreatureType = 8; // Elemental, 0x0008
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental enemy";
+                        }
                         else
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single elemental friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.UberGiants:
                     {
                         spellTemplate.TargetCreatureType = 16; // Giant, 0x0010
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single giant enemy";
+                        }
                         else
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal put into this for now
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single giant friendly unit";
+                        }
                     }
                     break;
                 case SpellEQTargetType.UberDragons:
                     {
                         spellTemplate.TargetCreatureType = 2; // Dragonkin, 0x0002
                         if (isDetrimental == true)
+                        {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single dragonkin enemy";
+                        }
                         else
-                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal undead put into this for now
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny); // "lull" and heal put into this for now
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single dragonkin friendly unit";
+                        }
                     }
                     break;
                 default:
                     {
                         Logger.WriteError("Unable to map eq target type ", spellTemplate.EQTargetType.ToString(), " to WOW target type");
                         spellWOWTargetTypes.Add(SpellWOWTargetType.Self);
+                        spellTemplate.TargetDescriptionTextFragment = "Targets self";
                     }
                     break;
             }
@@ -557,7 +626,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HealDirectHPS");
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.Heal;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("healed for ", newSpellEffectWOW.EffectBasePoints);
+                                    newSpellEffectWOW.ActionDescription = string.Concat("heal for ", newSpellEffectWOW.EffectBasePoints);
                                     spellTemplate.HighestDirectHealAmountInSpellEffect = Math.Max(spellTemplate.HighestDirectHealAmountInSpellEffect, newSpellEffectWOW.EffectBasePoints);
                                 }
                                 else
@@ -565,9 +634,9 @@ namespace EQWOWConverter.Spells
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageDirectDPS");
                                     newSpellEffectWOW.EffectType = SpellWOWEffectType.SchoolDamage;
                                     if (elementalSchoolName.Length > 0)
-                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("strike for ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage");
                                     else
-                                        newSpellEffectWOW.ActionDescription = string.Concat("struck for ", newSpellEffectWOW.EffectBasePoints, " damage");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("strike for ", newSpellEffectWOW.EffectBasePoints, " damage");
                                 }
                                 newSpellEffects.Add(newSpellEffectWOW);
                             }
@@ -582,7 +651,7 @@ namespace EQWOWConverter.Spells
                                 {
                                     newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HealOverTimeHPS");
                                     newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.PeriodicHeal;
-                                    newSpellEffectWOW.ActionDescription = string.Concat("regenerates ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                    newSpellEffectWOW.ActionDescription = string.Concat("regenerate ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     newSpellEffectWOW.AuraDescription = string.Concat("regenerating ", newSpellEffectWOW.EffectBasePoints, " health per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                 }
                                 else
@@ -591,13 +660,13 @@ namespace EQWOWConverter.Spells
                                     if (elementalSchoolName.Length > 0)
                                     {
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageOverTimeDPS");
-                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                     else
                                     {
                                         newSpellEffectWOW.SetEffectAmountValues(preFormulaEffectAmount, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "DamageOverTimeDPS");
-                                        newSpellEffectWOW.ActionDescription = string.Concat("inflicts ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
+                                        newSpellEffectWOW.ActionDescription = string.Concat("inflict ", newSpellEffectWOW.EffectBasePoints, " ", elementalSchoolName, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                         newSpellEffectWOW.AuraDescription = string.Concat("suffering ", newSpellEffectWOW.EffectBasePoints, " damage per ", Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW, " seconds");
                                     }
                                 }
@@ -615,14 +684,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ArmorClassBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases armor by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase armor by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("armor increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "ArmorClassDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases armor by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease armor by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("armor decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -637,14 +706,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AttackBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases attack power by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase attack power by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack power increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AttackDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases attack power by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease attack power by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack power decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -666,15 +735,15 @@ namespace EQWOWConverter.Spells
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "");
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModIncreaseSpeed;
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases non-mounted movement speed by ", newSpellEffectWOW.EffectBasePoints, "% ");
-                                newSpellEffectWOW.AuraDescription = string.Concat("non-mounted movement speed increased by ", newSpellEffectWOW.EffectBasePoints, "% ");
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase non-mounted movement speed by ", newSpellEffectWOW.EffectBasePoints, "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("non-mounted movement speed increased by ", newSpellEffectWOW.EffectBasePoints, "%");
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "");
                                 newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModDecreaseSpeed;
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases movement speed by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "% ");
-                                newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "% ");
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease movement speed by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("movement speed decreased by ", Math.Abs(newSpellEffectWOW.EffectBasePoints), "%");
                                 newSpellEffectWOW.EffectMechanic = SpellMechanicType.Snared;
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -689,14 +758,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "MaxHPBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases maximum health by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase maximum health by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum health by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease maximum health by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum health decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -712,14 +781,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StrengthBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases maximum strength by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase maximum strength by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum strength increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StrengthDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases maximum strength by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease maximum strength by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("maximum strength decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -751,14 +820,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AgilityBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases agility by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase agility by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("agility increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "AgilityDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases agility by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease agility by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("agility decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -774,14 +843,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StaminaBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases stamina by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase stamina by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("stamina increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "StaminaDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases stamina by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease stamina by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("stamina decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -795,14 +864,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "IntellectBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases intellect by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase intellect by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "IntellectDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases intellect by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease intellect by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("intellect decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -818,14 +887,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "SpiritBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases spirit by ", newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase spirit by ", newSpellEffectWOW.EffectBasePoints);
                                 newSpellEffectWOW.AuraDescription = string.Concat("spirit increased by ", newSpellEffectWOW.EffectBasePoints);
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "SpiritDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases spirit by ", reductionAmount);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease spirit by ", reductionAmount);
                                 newSpellEffectWOW.AuraDescription = string.Concat("spirit decreased by ", reductionAmount);
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -840,14 +909,14 @@ namespace EQWOWConverter.Spells
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HitPctBuff");
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase hit chance by ", newSpellEffectWOW.EffectBasePoints, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance increased by ", newSpellEffectWOW.EffectBasePoints, "%");
                             }
                             else
                             {
                                 newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue, eqEffect.EQMaxValue, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "HitPctDebuff");
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases hit chance by ", reductionAmount, "%");
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease hit chance by ", reductionAmount, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance decreased by ", reductionAmount, "%");
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -864,13 +933,13 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, eqEffect.EQMaxValue - 100, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "");
                             if (newSpellEffectWOW.EffectBasePoints >= 0)
                             {   
-                                newSpellEffectWOW.ActionDescription = string.Concat("increases attack speed by ", newSpellEffectWOW.EffectBasePoints, "%");
+                                newSpellEffectWOW.ActionDescription = string.Concat("increase attack speed by ", newSpellEffectWOW.EffectBasePoints, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack speed increased by ", newSpellEffectWOW.EffectBasePoints, "%");
                             }
                             else
                             {
                                 int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
-                                newSpellEffectWOW.ActionDescription = string.Concat("decreases attack speed by ", reductionAmount, "%");
+                                newSpellEffectWOW.ActionDescription = string.Concat("decrease attack speed by ", reductionAmount, "%");
                                 newSpellEffectWOW.AuraDescription = string.Concat("attack speed decreased by ", reductionAmount, "%");
                             }
                             newSpellEffects.Add(newSpellEffectWOW);
@@ -949,8 +1018,6 @@ namespace EQWOWConverter.Spells
         {
             StringBuilder descriptionSB = new StringBuilder();
             StringBuilder auraSB = new StringBuilder();
-            descriptionSB.Append(spellTemplate.TargetDescriptionTextFragment);
-            descriptionSB.Append(" ");
             for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
             {
                 if (i != 0)
@@ -973,6 +1040,9 @@ namespace EQWOWConverter.Spells
             spellTemplate.AuraDescription = auraSB.ToString().ToLower();
             if (spellTemplate.AuraDescription.Length > 0)
                 spellTemplate.AuraDescription = string.Concat(char.ToUpper(spellTemplate.AuraDescription[0]), spellTemplate.AuraDescription.Substring(1));
+
+            // Add target information to spell
+            spellTemplate.Description = string.Concat(spellTemplate.Description, " ", spellTemplate.TargetDescriptionTextFragment, ".");
 
             // Add the time duration
             spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.SpellDurationInMS));
