@@ -3,11 +3,11 @@ HealDirectHPS|10|202|25.6|918|0
 DamageDirectDPS|5.33|333.33|16.6|300|0
 HealOverTimeHPS|0.1667|50|1|74|0
 DamageOverTimeDPS|0.1667|18.5|0.5|53|0
-ArmorClassBuff|0|0|0|0|0
-ArmorClassDebuff|0|0|0|0|0
-AttackBuff|0|0|0|0|0
+ArmorClassBuff|15|90|8|685|0
+ArmorClassDebuff|15|18|140|2600|0
+AttackBuff|10|17|25|550|0
 AttackDebuff|0|0|0|0|0
-MaxHPBuff|0|0|0|0|0
+MaxHPBuff|10|150|50|510|2255
 StrengthBuff|0|0|0|0|0
 StrengthDebuff|0|0|0|0|0
 AgilityBuff|0|0|0|0|0
@@ -18,5 +18,5 @@ IntellectBuff|0|0|0|0|0
 IntellectDebuff|0|0|0|0|0
 SpiritBuff|0|0|0|0|0
 SpiritDebuff|0|0|0|0|0
-HitPctBuff|0|0|0|0|0
-HitPctDebuff|0|0|0|0|0
+HitPctBuff|1|55|1|15|0
+HitPctDebuff|1|30|1|10|0
