@@ -753,6 +753,34 @@ namespace EQWOWConverter.Spells
                                 newSpellEffectWOW.AuraDescription = string.Concat("hit chance decreased by ", reductionAmount, "%");
                             }
                         } break;
+                    case SpellEQEffectType.AttackSpeed:
+                        {
+                            if (eqEffect.EQBaseValue == 0)
+                                continue;
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModMeleeHaste;
+
+                            // Baseline for attack speed is 100, so above that is increase and below that is decrease
+                            newSpellEffectWOW.SetEffectAmountValues(eqEffect.EQBaseValue - 100, eqEffect.EQMaxValue - 100, spellTemplate.MinimumPlayerLearnLevel, eqEffect.EQBaseValueFormulaType, spellCastTimeInMS, true, "");
+                            if (newSpellEffectWOW.EffectBasePoints >= 0)
+                            {   
+                                newSpellEffectWOW.ActionDescription = string.Concat("increases attack speed by ", newSpellEffectWOW.EffectBasePoints, "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("attack speed increased by ", newSpellEffectWOW.EffectBasePoints, "%");
+                            }
+                            else
+                            {
+                                int reductionAmount = Math.Abs(newSpellEffectWOW.EffectBasePoints);
+                                newSpellEffectWOW.ActionDescription = string.Concat("decreases attack speed by ", reductionAmount, "%");
+                                newSpellEffectWOW.AuraDescription = string.Concat("attack speed decreased by ", reductionAmount, "%");
+                            }
+
+                            // Add a second for ranged attack speed
+                            newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                            newSpellEffectWOW2.ActionDescription = string.Empty;
+                            newSpellEffectWOW2.AuraDescription = string.Empty;
+                            newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedHaste;
+                        }
+                        break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());

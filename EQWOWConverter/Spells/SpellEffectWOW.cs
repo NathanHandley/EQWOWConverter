@@ -275,5 +275,10 @@ namespace EQWOWConverter.Spells
                 return -1;
             return 0;
         }
+
+        public void OverrideBasePoints(int basePoints)
+        {
+            _EffectBasePoints = basePoints;
+        }
     }
 }

@@ -31,7 +31,7 @@ namespace EQWOWConverter.Spells
         Intelligence = 8,
         Wisdom = 9,
         Charisma = 10,
-        //AttackSpeed = 11,
+        AttackSpeed = 11,
         //Invisibility = 12,
         //SeeInvisibility = 13,
         //WaterBreathing = 14,
