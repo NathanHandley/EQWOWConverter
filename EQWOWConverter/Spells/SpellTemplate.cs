@@ -595,12 +595,6 @@ namespace EQWOWConverter.Spells
         private static void ConvertEQSpellEffectsIntoWOWEffects(ref SpellTemplate spellTemplate, UInt32 schoolMask, int spellDurationInMS, 
             int spellCastTimeInMS, List<SpellWOWTargetType> targets, int spellRadiusIndex)
         {
-            if (spellTemplate.EQSpellID == 281)
-            {
-                int x = 5;
-
-            }
-
             // Process all spell effects
             foreach (SpellEffectEQ eqEffect in spellTemplate.EQSpellEffects)
             {
