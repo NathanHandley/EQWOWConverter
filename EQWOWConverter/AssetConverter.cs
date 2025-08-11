@@ -2097,19 +2097,34 @@ namespace EQWOWConverter
 
             foreach(ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
             {
-                if (itemTemplate.WOWEntryID == 88751)
-                {
-                    int x = 5;
-                }
-
                 // Worn
-                // TODO
+                if (itemTemplate.EQWornEffectSpellID > 0)
+                {
+                    if (spellTemplatesByEQID.ContainsKey(itemTemplate.EQWornEffectSpellID) == false)
+                        Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQWornEffectSpellID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
+                    else
+                    {
+                        SpellTemplate curSpellTemplate = spellTemplatesByEQID[itemTemplate.EQWornEffectSpellID];
+                        if (curSpellTemplate.WOWSpellIDWorn <= 0)
+                            Logger.WriteError("Could not map spell with eqid ", itemTemplate.EQWornEffectSpellID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell did not have a value in 'wow_worn-id'");
+                        else
+                        {
+                            itemTemplate.WOWSpellID1 = curSpellTemplate.WOWSpellIDWorn;
+                            itemTemplate.WOWSpellTrigger1 = 1; // On Equip
+                            itemTemplate.WOWSpellPPMRate1 = 0;
+                            itemTemplate.WOWSpellCharges1 = 0; // Unlimited
+                            itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                            itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                            itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                        }
+                    }
+                }
 
                 // Clicky
                 // TODO
 
                 // Proc
-                if (itemTemplate.EQCombatProcSpellEffectID > 0)
+                else if (itemTemplate.EQCombatProcSpellEffectID > 0)
                 {
                     if (spellTemplatesByEQID.ContainsKey(itemTemplate.EQCombatProcSpellEffectID) == false)
                         Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");

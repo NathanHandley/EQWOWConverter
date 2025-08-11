@@ -51,6 +51,7 @@ namespace EQWOWConverter.Spells
         }
 
         public int WOWSpellID = 0;
+        public int WOWSpellIDWorn = -1;
         public int EQSpellID = -1;
         public string Name = string.Empty;
         public string Description = string.Empty;
@@ -165,6 +166,7 @@ namespace EQWOWConverter.Spells
                 SpellTemplate newSpellTemplate = new SpellTemplate();
                 newSpellTemplate.EQSpellID = int.Parse(columns["eq_id"]);
                 newSpellTemplate.WOWSpellID = int.Parse(columns["wow_id"]);
+                newSpellTemplate.WOWSpellIDWorn = int.Parse(columns["wow_worn_id"]);
                 newSpellTemplate.Name = columns["name"];
                 //newSpellTemplate.AuraDescription = newSpellTemplate.Name; // TODO: Find strings for these
                 //newSpellTemplate.Description = newSpellTemplate.Name; // TODO: Find strings for these

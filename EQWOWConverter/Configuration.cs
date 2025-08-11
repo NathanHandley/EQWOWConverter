@@ -618,10 +618,11 @@ namespace EQWOWConverter
         // ID for spells found in Spell.dbc
         // - Manually created spells reserve IDs from 86900 to 86999.  See "Spells"
         // - Recipes reserve IDs 87000 to 91221
-        // - Converted spells IDs start at 92000 and base spells range to 95826, with IDs after 96000 used for 'split' auras
+        // - Converted spells IDs start at 92000 and base spells range to 95826, with IDs after 96050 used for 'split' auras
         //   that have more than 3 spell effects
+        // - SpellIDs 96000 - 96049 reserved for 'worn' effects (effects that always take effect when worn)
         public static readonly int DBCID_SPELL_ID_START = 86900;
-        public static readonly int DBCID_SPELL_ID_SPLIT_AURAS_START = 96000;
+        public static readonly int DBCID_SPELL_ID_SPLIT_AURAS_START = 96050;
 
         // ID for spellcasttimes.dbc
         public static readonly int DBCID_SPELLCASTTIME_ID_START = 215;

@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(int spellID, string spellName, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool isSplitChainSpell)
+        public void AddRow(int spellID, string spellName, string spellDescription, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool doHideFromDisplay, bool overrideDurationToInfinite)
         {
             if (spellEffects.Count != 3)
             {
@@ -33,7 +33,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, isSplitChainSpell)); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, doHideFromDisplay)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExC
@@ -70,7 +70,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // MaxLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // BaseLevel
             newRow.AddUInt32(Convert.ToUInt32(Math.Max(0, spellTemplate.MinimumPlayerLearnLevel))); // SpellLevel
-            newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellDurationDBCID)); // DurationIndex (SpellDuration.dbc id)
+            if (overrideDurationToInfinite == true)
+                newRow.AddUInt32(21); // DurationIndex (SpellDuration.dbc id) - 21 is infinite (auras use it)
+            else
+                newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellDurationDBCID)); // DurationIndex (SpellDuration.dbc id)
             newRow.AddInt32(0); // PowerType
             newRow.AddUInt32(spellTemplate.ManaCost); // ManaCost
             newRow.AddUInt32(0); // ManaCostPerLevel
@@ -151,7 +154,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellPriority
             newRow.AddStringLang(spellName); // Name_Lang
             newRow.AddStringLang(""); // NameSubtext_Lang
-            newRow.AddStringLang(spellTemplate.Description); // Description_Lang
+            newRow.AddStringLang(spellDescription); // Description_Lang
             newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
             newRow.AddUInt32(133); // StartRecoveryCategory
@@ -186,12 +189,12 @@ namespace EQWOWConverter.WOWFiles
             Rows.Add(newRow);
         }
 
-        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool isSplitChainSpell)
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
             UInt32 attributeFlags = 0;
-            if (isSplitChainSpell == true)
+            if (doHideFromDisplay == true)
                 attributeFlags |= 128; // SPELL_ATTR0_DO_NOT_DISPLAY_SPELLBOOK_AURA_ICON_COMBAT_LOG
             if (spellTemplate.AllowCastInCombat == false)
                 attributeFlags |= 268435456; // SPELL_ATTR0_NOT_IN_COMBAT_ONLY_PEACEFUL (0x10000000)

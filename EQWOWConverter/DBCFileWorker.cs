@@ -479,7 +479,21 @@ namespace EQWOWConverter
                         curSpellAuraGenID++;
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate, threeBlockEffects, i != 0);
+                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false);
+
+                    // Worn effects get their own copy too
+                    if (spellTemplate.WOWSpellIDWorn > 0)
+                    {
+                        spellID = spellTemplate.WOWSpellIDWorn;
+                        spellName = string.Concat(spellTemplate.Name, " (worn)");
+                        if (i != 0)
+                        {
+                            spellID = curSpellAuraGenID;
+                            curSpellAuraGenID++;
+                            spellName = string.Concat(spellName, " Split ", i.ToString());
+                        }
+                        spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true);
+                    }
                 }
 
                 if (spellTemplate.SkillLine != 0)
