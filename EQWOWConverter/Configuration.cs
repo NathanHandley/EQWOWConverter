@@ -387,8 +387,9 @@ namespace EQWOWConverter
         public static readonly int CREATURE_SPELL_OOC_BUFF_MIN_DURATION_IN_MS = 60000;
 
         // How long to wait initially before casting a buff, to stagger casting a bit
-        public static readonly int CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS = 1000;
+        public static readonly int CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS = 500;
         public static readonly int CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS = 5000;
+        public static readonly int CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS = 2000;
 
         // How much time to add the the max recast delay for combat spells so that there's a bit of variation
         public static readonly float CREATURE_SPELL_COMBAT_RECAST_DELAY_MAX_ADD_MOD = 0.25f;
@@ -463,6 +464,7 @@ namespace EQWOWConverter
         // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
         // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
         public static readonly int SPELL_RECOVERY_TIME_MINIMUM_IN_MS = 3501;
+
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 

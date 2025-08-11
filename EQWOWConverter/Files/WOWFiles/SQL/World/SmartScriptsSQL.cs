@@ -21,6 +21,7 @@ namespace EQWOWConverter.WOWFiles
         // This ensures no ID collision issues, without giving that responsiblity to the caller
         private static Dictionary<int, Dictionary<int, int>> IDByEntryOrGUIDBySourceType = new Dictionary<int, Dictionary<int, int>>();
         private static readonly object IDLock = new object();
+        private Random RandomGenerator = new Random();
 
         public override string DeleteRowSQL()
         {
@@ -137,15 +138,16 @@ namespace EQWOWConverter.WOWFiles
             );
         }
 
-        public void AddRowForCreatureTemplateOutOfCombatBuffCastSelf(int creatureTemplateID, int recastDelayInMS, int wowSpellID,
-            string comment)
+        public void AddRowForCreatureTemplateOutOfCombatBuffCastSelf(int creatureTemplateID, int recastDelayInMS, int wowSpellID, string comment)
         {
+            int addedDelayRandomValue = RandomGenerator.Next(0, Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_RANDOM_RANGE_ADD_IN_MS);
+
             AddRow(creatureTemplateID,
                0,
                1, // SMART_EVENT_UPDATE_OOC
                100,
-               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS, // Initial delay in MS (minimum)
-               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS, // Initial delay in MS (maximum)
+               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MIN_IN_MS + addedDelayRandomValue, // Initial delay in MS (minimum)
+               Configuration.CREATURE_SPELL_OCC_BUFF_INITIAL_DELAY_MAX_IN_MS + addedDelayRandomValue, // Initial delay in MS (maximum)
                recastDelayInMS, // Recast delay in MS (minimum)
                recastDelayInMS, // Recast delay in MS (maximum)
                0,
