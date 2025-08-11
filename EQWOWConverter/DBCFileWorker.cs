@@ -479,20 +479,23 @@ namespace EQWOWConverter
                         curSpellAuraGenID++;
                         spellName = string.Concat(spellName, " Split ", i.ToString());
                     }
-                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false);
+                    spellDBC.AddRow(spellID, spellName, spellTemplate.Description, spellTemplate, threeBlockEffects, i != 0, false, false);
 
                     // Worn effects get their own copy too
                     if (spellTemplate.WOWSpellIDWorn > 0)
                     {
                         spellID = spellTemplate.WOWSpellIDWorn;
-                        spellName = string.Concat(spellTemplate.Name, " (worn)");
+                        spellName = string.Concat(spellTemplate.Name, " (from gear)");
                         if (i != 0)
                         {
                             spellID = curSpellAuraGenID;
                             curSpellAuraGenID++;
                             spellName = string.Concat(spellName, " Split ", i.ToString());
                         }
-                        spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true);
+                        if (Configuration.ITEMS_SHOW_WORN_EFFECT_AURA_ICON == true)
+                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, i != 0, true, true);
+                        else
+                            spellDBC.AddRow(spellID, spellName, spellTemplate.AuraDescription, spellTemplate, threeBlockEffects, true, true, true);
                     }
                 }
 

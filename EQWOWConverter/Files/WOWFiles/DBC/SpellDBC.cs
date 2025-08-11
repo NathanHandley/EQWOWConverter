@@ -20,7 +20,8 @@ namespace EQWOWConverter.WOWFiles
 {
     internal class SpellDBC : DBCFile
     {
-        public void AddRow(int spellID, string spellName, string spellDescription, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool doHideFromDisplay, bool overrideDurationToInfinite)
+        public void AddRow(int spellID, string spellName, string spellDescription, SpellTemplate spellTemplate, List<SpellEffectWOW> spellEffects, bool doHideFromDisplay, bool overrideDurationToInfinite, 
+            bool preventClickOff)
         {
             if (spellEffects.Count != 3)
             {
@@ -33,7 +34,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
             newRow.AddUInt32(0); // DispelType
             newRow.AddUInt32(0); // Mechanic
-            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, doHideFromDisplay)); // Attributes
+            newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesEx
             newRow.AddUInt32(GetAttributesExB(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExB
             newRow.AddUInt32(GetAttributesExC(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesExC
@@ -188,8 +189,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellDifficultyID
             Rows.Add(newRow);
         }
-
-        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay)
+        
+        private UInt32 GetAttributes(SpellTemplate spellTemplate, SpellWOWAuraType auraType, bool doHideFromDisplay, bool preventClickOff)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 2843738496;
@@ -204,6 +205,8 @@ namespace EQWOWConverter.WOWFiles
                 attributeFlags |= 32; // SPELL_ATTR0_IS_TRADESKILL (0x00000020)
             }
             attributeFlags |= 65536; // SPELL_ATTR0_NOT_SHAPESHIFTED (0x00010000)
+            if (preventClickOff == true)
+                attributeFlags |= 2147483648; // SPELL_ATTR0_NO_AURA_CANCEL (0x80000000)
             return attributeFlags;
         }
 

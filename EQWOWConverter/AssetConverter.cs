@@ -2132,7 +2132,7 @@ namespace EQWOWConverter
                     {
                         itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellID;
                         itemTemplate.WOWSpellTrigger1 = 2; // Chance on Hit
-                        itemTemplate.WOWSpellPPMRate1 = Configuration.ITEM_WEAPON_EFFECT_PPM_BASE_RATE; // TODO: Make this varied?
+                        itemTemplate.WOWSpellPPMRate1 = Configuration.ITEMS_WEAPON_EFFECT_PPM_BASE_RATE; // TODO: Make this varied?
                         itemTemplate.WOWSpellCharges1 = 0; // Unlimited
                         itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
                         itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)

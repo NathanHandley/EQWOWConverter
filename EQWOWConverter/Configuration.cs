@@ -407,7 +407,10 @@ namespace EQWOWConverter
         public static readonly float ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
 
         // This is the base PPM (Procs Per Minute) used for weapon proc weapons
-        public static readonly float ITEM_WEAPON_EFFECT_PPM_BASE_RATE = 2f;
+        public static readonly float ITEMS_WEAPON_EFFECT_PPM_BASE_RATE = 2f;
+
+        // If true, gear that has a worn effect will show as a buff on the character
+        public static readonly bool ITEMS_SHOW_WORN_EFFECT_AURA_ICON = true;
 
         // If this is true, then weapons and armor that allow all normally-aligned classes to be
         //  classified as 'all'.  For example: Bronze Breastplate allows all plate classes, so
