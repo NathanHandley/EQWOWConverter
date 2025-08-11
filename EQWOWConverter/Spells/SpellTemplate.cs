@@ -116,7 +116,7 @@ namespace EQWOWConverter.Spells
         }
         public int SpellGroupStackingID = -1;
         public int SpellGroupStackingRule = 0;
-        public UInt32 RecoveryTimeInMS = 0;
+        public UInt32 RecoveryTimeInMS = 0; // Note that this may be zero for a player but not a creature.  See Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS
         public UInt32 SpellVisualID1 = 0;
         public UInt32 SpellVisualID2 = 0;
         public bool PlayerLearnableByClassTrainer = false; // Needed?

@@ -459,6 +459,10 @@ namespace EQWOWConverter
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_EQ = 6;
         public static readonly int SPELL_PERIODIC_SECONDS_PER_TICK_WOW = 4;
 
+        // This is the minimum allowable recovery time any spell can have, which any smaller will become zero
+        // and only subjected to the global cooldown of 1.5 seconds.  This is only enforced on the raw spell
+        // records and not the SpellTemplate, to ensure cast repeats are correct for creatures
+        public static readonly int SPELL_RECOVERY_TIME_MINIMUM_IN_MS = 3501;
         // If true, you can learn spells from items
         public static readonly bool SPELLS_LEARNABLE_FROM_ITEMS_ENABLED = true;
 

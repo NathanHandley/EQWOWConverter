@@ -56,7 +56,10 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // ExcludeCasterAuraSpell
             newRow.AddUInt32(0); // ExcludeTargetAuraSpell
             newRow.AddUInt32(Convert.ToUInt32(spellTemplate.SpellCastTimeDBCID)); // CastingTimeIndex
-            newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
+            if (spellTemplate.RecoveryTimeInMS < Configuration.SPELL_RECOVERY_TIME_MINIMUM_IN_MS)
+                newRow.AddUInt32(0); // RecoveryTime
+            else
+                newRow.AddUInt32(spellTemplate.RecoveryTimeInMS); // RecoveryTime
             newRow.AddUInt32(0); // CategoryRecoveryTime
             newRow.AddUInt32(spellTemplate.InterruptFlags); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
             newRow.AddUInt32(0); // AuraInterruptFlags
@@ -151,8 +154,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddStringLang(spellTemplate.Description); // Description_Lang
             newRow.AddStringLang(spellTemplate.AuraDescription); // AuraDescription_Lang
             newRow.AddUInt32(0); // ManaCostPct
-            newRow.AddUInt32(0); // StartRecoveryCategory
-            newRow.AddUInt32(0); // StartRecoveryTime
+            newRow.AddUInt32(133); // StartRecoveryCategory
+            newRow.AddUInt32(1500); // StartRecoveryTime
             newRow.AddUInt32(0); // MaxTargetLevel
             newRow.AddUInt32(0); // SpellClassSet
             newRow.AddUInt32(0); // SpellClassMask1
