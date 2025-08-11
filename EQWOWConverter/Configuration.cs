@@ -406,6 +406,9 @@ namespace EQWOWConverter
         // This is how much is reduced from the weapon delay of EQ weapons, value is 0 - 1;
         public static readonly float ITEMS_WEAPON_DELAY_REDUCTION_AMT = 0.2f;
 
+        // This is the base PPM (Procs Per Minute) used for weapon proc weapons
+        public static readonly float ITEM_WEAPON_EFFECT_PPM_BASE_RATE = 2f;
+
         // If this is true, then weapons and armor that allow all normally-aligned classes to be
         //  classified as 'all'.  For example: Bronze Breastplate allows all plate classes, so
         //  it will have the classes allowed list set to 'any'

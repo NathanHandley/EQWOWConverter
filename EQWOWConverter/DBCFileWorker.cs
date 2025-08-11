@@ -433,14 +433,14 @@ namespace EQWOWConverter
             {
                 if (itemTemplate.IsExistingItemAlready == true)
                     continue;
-                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQSpellID != 0)
+                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
                 {
                     // Spell scrolls get multiplied out by classes
-                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
                         itemDBC.AddRow(itemTemplate, itemTemplate.WOWEntryID);
                     else
                     {
-                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
                         foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)

@@ -220,14 +220,14 @@ namespace EQWOWConverter
                             ItemTemplate itemTemplate = ItemTemplate.GetItemTemplatesByEQDBIDs()[vendorItem.EQItemID];
 
                             // Some vendor items are spell scrolls, and if so then there will be a vendor item row for each one
-                            if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                            if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
                             {
                                 npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, itemTemplate.WOWEntryID, curSlotNum);
                                 curSlotNum++;
                             }
                             else
                             {
-                                SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                                SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
                                 foreach (var scrollPropertiesByClassType in spellTemplate.LearnScrollPropertiesByClassType)
                                 {
                                     npcVendorSQL.AddRow(creatureTemplate.WOWCreatureTemplateID, scrollPropertiesByClassType.Value.WOWItemTemplateID, curSlotNum);
@@ -438,12 +438,12 @@ namespace EQWOWConverter
                     continue;
 
                 // Associate spells if it's a learnable item
-                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQSpellID != 0)
+                if (itemTemplate.DoesTeachSpell == true && itemTemplate.EQScrollSpellID != 0)
                 {
                     // Make items "junk" if there is no spell to learn and there should be
-                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQSpellID) == false)
+                    if (Configuration.SPELLS_LEARNABLE_FROM_ITEMS_ENABLED == false || spellTemplatesByEQID.ContainsKey(itemTemplate.EQScrollSpellID) == false)
                     {
-                        itemTemplate.EQSpellID = 0;
+                        itemTemplate.EQScrollSpellID = 0;
                         itemTemplate.DoesTeachSpell = false;
                         itemTemplate.Quality = ItemWOWQuality.Poor;
                         itemTemplate.Description = "The magic in this scroll has faded to time";
@@ -452,7 +452,7 @@ namespace EQWOWConverter
                     else
                     {
                         // If it is a valid spell scroll, there is one scroll per class that can learn it
-                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQSpellID];
+                        SpellTemplate spellTemplate = spellTemplatesByEQID[itemTemplate.EQScrollSpellID];
                         itemTemplate.ClassID = 9;
                         itemTemplate.SubClassID = 0;
                         itemTemplate.WOWSpellID1 = spellTemplate.WOWSpellID;

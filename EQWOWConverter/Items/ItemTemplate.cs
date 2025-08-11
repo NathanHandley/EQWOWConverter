@@ -63,10 +63,18 @@ namespace EQWOWConverter.Items
         public ItemDisplayInfo? ItemDisplayInfo = null;
         public bool DoesTeachSpell = false;
         public int WOWSpellID1 = 0;
-        public int EQSpellID = 0;
-        public int SpellCooldown1 = -1;
-        public int SpellCategory1 = 0; // 11 = food, 59 = water/alcohol
-        public int SpellCategoryCooldown1 = -1;
+        public int WOWSpellTrigger1 = 0;
+        public int WOWSpellCharges1 = 0;
+        public float WOWSpellPPMRate1 = 0;
+        public int EQScrollSpellID = 0;
+        public int EQWornEffectSpellID = 0;
+        public int EQWornEffectMinLevel = 0;
+        public int EQClickSpellEffectID = 0;
+        public int EQCombatProcSpellEffectID = 0;
+        public int EQCombatProcSpellEffectMinLevel = 0;
+        public int WOWSpellCooldown1 = -1;
+        public int WOWSpellCategory1 = 0; // 11 = food, 59 = water/alcohol
+        public int WOWSpellCategoryCooldown1 = -1;
         public int CastTime = 0;
         public int FoodType = 0; // For pets: 1 - Meat, 2 - Fish, 3 - Cheese, 4 - Bread, 5 - Fungus, 6 - fruit, 7 - Raw Meat, 8 - Raw Fish
         public List<int> ContainedWOWItemTemplateIDs = new List<int>();
@@ -1001,9 +1009,9 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 0; // Was 5 but was unlimited. Made 0 for consumable.
-                        itemTemplate.SpellCategory1 = 11; // Food
-                        itemTemplate.SpellCooldown1 = 1;
-                        itemTemplate.SpellCategoryCooldown1 = 1000;
+                        itemTemplate.WOWSpellCategory1 = 11; // Food
+                        itemTemplate.WOWSpellCooldown1 = 1;
+                        itemTemplate.WOWSpellCategoryCooldown1 = 1000;
                         itemTemplate.WOWItemMaterialType = -1;
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 70)
@@ -1029,9 +1037,9 @@ namespace EQWOWConverter.Items
                     {
                         itemTemplate.ClassID = 0;
                         itemTemplate.SubClassID = 5;
-                        itemTemplate.SpellCategory1 = 59; // Water/alcohol
-                        itemTemplate.SpellCooldown1 = 1;
-                        itemTemplate.SpellCategoryCooldown1 = 1000;
+                        itemTemplate.WOWSpellCategory1 = 59; // Water/alcohol
+                        itemTemplate.WOWSpellCooldown1 = 1;
+                        itemTemplate.WOWSpellCategoryCooldown1 = 1000;
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 80)
                             itemTemplate.WOWSpellID1 = 43183;
@@ -1307,8 +1315,20 @@ namespace EQWOWConverter.Items
                 }
 
                 // Spell associations
-                newItemTemplate.EQSpellID = int.Parse(columns["scrolleffect"]);
+                newItemTemplate.EQScrollSpellID = int.Parse(columns["scrolleffect"]);
                 newItemTemplate.DoesTeachSpell = columns["scrolltype"] == "7" ? true : false;
+                if (int.Parse(columns["worntype"]) == 2)
+                {
+                    newItemTemplate.EQWornEffectSpellID = int.Parse(columns["worneffect"]);
+                    newItemTemplate.EQWornEffectMinLevel = int.Parse(columns["wornlevel"]);
+                }
+                else
+                {
+                    newItemTemplate.EQCombatProcSpellEffectID = int.Parse(columns["proceffect"]);
+                    newItemTemplate.EQCombatProcSpellEffectMinLevel = int.Parse(columns["proclevel"]);
+                    //newItemTemplate.EQProcRate = int.Parse(columns["procrate"]); // TODO: Consider this?
+                }
+                newItemTemplate.EQClickSpellEffectID = int.Parse(columns["clickeffect"]);
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;

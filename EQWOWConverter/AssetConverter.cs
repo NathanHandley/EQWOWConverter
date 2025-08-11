@@ -163,11 +163,12 @@ namespace EQWOWConverter
             ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
 
             // Finish the items
+            AssignItemSpellEffects(ref itemTemplatesByWOWEntryID);
             CreateItemGraphics(ref itemTemplatesByEQDBID);
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
-                ConvertQuests(itemTemplatesByEQDBID, ref questTemplates, ref creatureTemplates);
+                ConvertQuests(ref questTemplates, ref creatureTemplates);
 
             // Make sure zones are done
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)
@@ -704,7 +705,7 @@ namespace EQWOWConverter
             }
         }
 
-        public void ConvertQuests(SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID, ref List<QuestTemplate> questTemplates, ref List<CreatureTemplate> creatureTemplates)
+        public void ConvertQuests(ref List<QuestTemplate> questTemplates, ref List<CreatureTemplate> creatureTemplates)
         {
             Dictionary<string, ZoneProperties> zonePropertiesByShortName = ZoneProperties.GetZonePropertyListByShortName();
             Dictionary<int, CreatureTemplate> creatureTemplatesByEQID = CreatureTemplate.GetCreatureTemplateListByEQID();
@@ -1677,8 +1678,8 @@ namespace EQWOWConverter
                         curItemTemplate.ClassID = 12; // Quest
                         curItemTemplate.SubClassID = 12; // Quest
                         curItemTemplate.InventoryType = ItemWOWInventoryType.NoEquip;
-                        curItemTemplate.SpellCooldown1 = 1;
-                        curItemTemplate.SpellCategoryCooldown1 = 1000;
+                        curItemTemplate.WOWSpellCooldown1 = 1;
+                        curItemTemplate.WOWSpellCategoryCooldown1 = 1000;
                         curItemTemplate.WOWItemMaterialType = -1;
                     }
                 }
@@ -2085,6 +2086,45 @@ namespace EQWOWConverter
                 Directory.Delete(targetTextureFolder, true);
             Directory.CreateDirectory(targetTextureFolder);
             FileTool.CopyDirectoryAndContents(sourceTextureFolder, targetTextureFolder, true, true, "*.blp");
+        }
+
+        public void AssignItemSpellEffects(ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
+        {
+            Logger.WriteInfo("Assigning item spell effects...");
+
+            // Attach any spells to 
+            Dictionary<int, SpellTemplate> spellTemplatesByEQID = SpellTemplate.GetSpellTemplatesByEQID();
+
+            foreach(ItemTemplate itemTemplate in itemTemplatesByWOWEntryID.Values)
+            {
+                if (itemTemplate.WOWEntryID == 88751)
+                {
+                    int x = 5;
+                }
+
+                // Worn
+                // TODO
+
+                // Clicky
+                // TODO
+
+                // Proc
+                if (itemTemplate.EQCombatProcSpellEffectID > 0)
+                {
+                    if (spellTemplatesByEQID.ContainsKey(itemTemplate.EQCombatProcSpellEffectID) == false)
+                        Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQCombatProcSpellEffectID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
+                    else
+                    {
+                        itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQCombatProcSpellEffectID].WOWSpellID;
+                        itemTemplate.WOWSpellTrigger1 = 2; // Chance on Hit
+                        itemTemplate.WOWSpellPPMRate1 = Configuration.ITEM_WEAPON_EFFECT_PPM_BASE_RATE; // TODO: Make this varied?
+                        itemTemplate.WOWSpellCharges1 = 0; // Unlimited
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                    }
+                }
+            }
         }
 
         public void ClearNonPlayerObtainableItemsAndRecipes(ref List<TradeskillRecipe> tradeskillRecipes, ref SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
