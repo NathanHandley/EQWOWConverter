@@ -70,8 +70,10 @@ namespace EQWOWConverter.Items
         public int EQWornEffectSpellID = 0;
         public int EQWornEffectMinLevel = 0;
         public int EQClickSpellEffectID = 0;
+        public int EQClickType = 0;
         public int EQCombatProcSpellEffectID = 0;
         public int EQCombatProcSpellEffectMinLevel = 0;
+        public int MaxCharges = 0;
         public int WOWSpellCooldown1 = -1;
         public int WOWSpellCategory1 = 0; // 11 = food, 59 = water/alcohol
         public int WOWSpellCategoryCooldown1 = -1;
@@ -1329,6 +1331,8 @@ namespace EQWOWConverter.Items
                     //newItemTemplate.EQProcRate = int.Parse(columns["procrate"]); // TODO: Consider this?
                 }
                 newItemTemplate.EQClickSpellEffectID = int.Parse(columns["clickeffect"]);
+                newItemTemplate.EQClickType = int.Parse(columns["clicktype"]);
+                newItemTemplate.MaxCharges = Math.Max(int.Parse(columns["maxcharges"]), 0);
 
                 // Icon information
                 int iconID = int.Parse(columns["icon"]) - 500;

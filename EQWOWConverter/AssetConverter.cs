@@ -2120,9 +2120,6 @@ namespace EQWOWConverter
                     }
                 }
 
-                // Clicky
-                // TODO
-
                 // Proc
                 else if (itemTemplate.EQCombatProcSpellEffectID > 0)
                 {
@@ -2139,6 +2136,48 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
                     }
                 }
+
+                // Clicky
+                else if (itemTemplate.EQClickSpellEffectID > 0)
+                {
+                    if (spellTemplatesByEQID.ContainsKey(itemTemplate.EQClickSpellEffectID) == false)
+                        Logger.WriteDebug("Could not map spell with eqid ", itemTemplate.EQClickSpellEffectID.ToString(), " to item ", itemTemplate.Name, " (", itemTemplate.WOWEntryID.ToString(), ") as the spell didn't exist");
+                    else
+                    {
+                        itemTemplate.WOWSpellID1 = spellTemplatesByEQID[itemTemplate.EQClickSpellEffectID].WOWSpellID;
+                        itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
+                        switch (itemTemplate.EQClickType)
+                        {
+                            case 1: // Clickable from inventory with level requirement (note: Can't make worn gear clickable from inventory)
+                            case 4: // Must equip to click
+                            case 5: // Clickable from inventory with level, class, race requirements (nuance not yet implemented)
+                                {
+                                    itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges;
+                                    if (itemTemplate.ClassID == 0 && itemTemplate.SubClassID == 1) // Potions are expendable
+                                        itemTemplate.WOWSpellCharges1 *= -1;
+                                } break;
+                            case 3: // Expendable
+                                {
+                                    itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges * -1;
+                                } break;
+                            default:
+                                {
+                                    Logger.WriteError("Unhandled EQClickType of ", itemTemplate.EQClickType.ToString());
+                                } break;
+                        }
+                        itemTemplate.WOWSpellCooldown1 = -1; // Use spell's default
+                        itemTemplate.WOWSpellCategory1 = 0; // No category (no shared)
+                        itemTemplate.WOWSpellCategoryCooldown1 = -1; // Default
+                    }
+                }
+
+                // Remap gate
+                if (itemTemplate.WOWSpellID1 == 36)
+                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_GATE_SPELLDBC_ID;
+
+                // Remap bind
+                if (itemTemplate.WOWSpellID1 == 35)
+                    itemTemplate.WOWSpellID1 = Configuration.SPELLS_BINDSELF_SPELLDBC_ID;
             }
         }
 
