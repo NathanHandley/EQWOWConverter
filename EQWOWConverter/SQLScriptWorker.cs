@@ -432,6 +432,7 @@ namespace EQWOWConverter
 
         private void PopulateItemData(Dictionary<int, List<ItemLootTemplate>> itemLootTemplatesByCreatureTemplateID, Dictionary<int, SpellTemplate> spellTemplatesByEQID)
         {
+            SortedDictionary<int, ItemTemplate> itemTemplatesByWOWID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             foreach (ItemTemplate itemTemplate in ItemTemplate.GetItemTemplatesByEQDBIDs().Values)
             {
                 if (itemTemplate.IsExistingItemAlready == true)
@@ -468,8 +469,22 @@ namespace EQWOWConverter
                     }
                 }
                 else
+                {
                     itemTemplateSQL.AddRow(itemTemplate, itemTemplate.WOWEntryID, itemTemplate.Name, itemTemplate.Description, itemTemplate.RequiredLevel, itemTemplate.AllowedClassTypes);
-
+                    for (int i = 0; i < itemTemplate.ContainedWOWItemTemplateIDs.Count; i++)
+                    {
+                        int curWOWItemTemplateID = itemTemplate.ContainedWOWItemTemplateIDs[i];
+                        float curItemChance = itemTemplate.ContainedItemChances[i];
+                        int curItemCount = 1;
+                        if (itemTemplate.ContainedtemCounts.Count > i)
+                            curItemCount = itemTemplate.ContainedtemCounts[i];
+                        string comment = string.Concat(itemTemplate.Name, " - ", itemTemplatesByWOWID[curWOWItemTemplateID].Name);
+                        if (curItemChance >= 100)
+                            itemLootTemplateSQL.AddRow(itemTemplate.WOWEntryID, curWOWItemTemplateID, 2 + i, curItemChance, curItemCount, comment);
+                        else
+                            itemLootTemplateSQL.AddRow(itemTemplate.WOWEntryID, curWOWItemTemplateID, 1, curItemChance, curItemCount, comment);
+                    }
+                }
             }
             foreach (var itemLootTemplateByCreatureTemplateID in itemLootTemplatesByCreatureTemplateID.Values)
                 foreach (ItemLootTemplate itemLootTemplate in itemLootTemplateByCreatureTemplateID)
@@ -570,18 +585,6 @@ namespace EQWOWConverter
                     modEverquestQuestCompleteReputationSQL.AddRow(firstQuestID, completionReputation);
                     modEverquestQuestCompleteReputationSQL.AddRow(repeatQuestID, completionReputation);
                 }
-
-                // Loot templates for containers
-                if (questTemplate.RandomAwardContainerItemTemplate != null)
-                {
-                    for (int i = 0; i < questTemplate.RandomAwardContainerItemTemplate.ContainedWOWItemTemplateIDs.Count; i++)
-                    {
-                        int curWOWItemTemplateID = questTemplate.RandomAwardContainerItemTemplate.ContainedWOWItemTemplateIDs[i];
-                        float curItemChance = questTemplate.RandomAwardContainerItemTemplate.ContainedItemChances[i];
-                        string comment = string.Concat(questTemplate.RandomAwardContainerItemTemplate.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
-                        itemLootTemplateSQL.AddRow(questTemplate.RandomAwardContainerItemTemplate.WOWEntryID, curWOWItemTemplateID, 1, curItemChance, 1, comment);
-                    }
-                }
             }
         }
 
@@ -613,22 +616,6 @@ namespace EQWOWConverter
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)
                 spellGroupStackRulesSQL.AddRow(spellGroupStackRuleByGroup.Key, spellGroupStackRuleByGroup.Value);
-
-            // Tradeskills
-            foreach (TradeskillRecipe recipe in tradeskillRecipes)
-            {
-                // Multi-item containers
-                if (recipe.ProducedFilledContainer != null)
-                {
-                    for (int i = 0; i < recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs.Count; i++)
-                    {
-                        int curWOWItemTemplateID = recipe.ProducedFilledContainer.ContainedWOWItemTemplateIDs[i];
-                        int curItemCount = recipe.ProducedFilledContainer.ContainedtemCounts[i];
-                        string comment = string.Concat(recipe.ProducedFilledContainer.Name, " - ", itemTemplatesByWOWEntryID[curWOWItemTemplateID].Name);
-                        itemLootTemplateSQL.AddRow(recipe.ProducedFilledContainer.WOWEntryID, curWOWItemTemplateID, i + 1, 100, curItemCount, comment);
-                    }
-                }
-            }
         }
 
         private void PopulateTrainerAbilityListData()

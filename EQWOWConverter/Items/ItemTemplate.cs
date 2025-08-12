@@ -1637,18 +1637,6 @@ namespace EQWOWConverter.Items
             return itemTemplate;
         }
 
-        //public void MatchSourceFlagsToItemTemplate(ItemTemplate sourceFlagsItemTemplate)
-        //{
-        //    IsCreatedBySpell = sourceFlagsItemTemplate.IsCreatedBySpell;
-        //    IsDroppedByCreature = sourceFlagsItemTemplate.IsDroppedByCreature;
-        //    IsExistingItemAlready = sourceFlagsItemTemplate.IsExistingItemAlready;
-        //    IsFoundInGameObject = sourceFlagsItemTemplate.IsFoundInGameObject;
-        //    IsGivenAsStartItem = sourceFlagsItemTemplate.IsGivenAsStartItem;
-        //    IsRewardedFromQuest = sourceFlagsItemTemplate.IsRewardedFromQuest;
-        //    IsSoldByVendor = sourceFlagsItemTemplate.IsSoldByVendor;
-        //    NumOfTradeskillsThatCreateIt = sourceFlagsItemTemplate.NumOfTradeskillsThatCreateIt;
-        //}
-
         public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, out ItemTemplate createdBagItemTemplate, 
             out ItemTemplate createdEssenceItem)
         {
@@ -1656,7 +1644,6 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate = new ItemTemplate();
             createdBagItemTemplate.WOWEntryID = originalItemTemplate.WOWEntryID; // Hand over the entry ID from the original item
             createdBagItemTemplate.EQItemID = originalItemTemplate.EQItemID;
-            //createdBagItemTemplate.MatchSourceFlagsToItemTemplate(originalItemTemplate);
             createdBagItemTemplate.IsNoDrop = originalItemTemplate.IsNoDrop;
             createdBagItemTemplate.ContainedWOWItemTemplateIDs.Add(newItemWOWItemEntryID); // Add the item reference
             createdBagItemTemplate.ContainedItemChances.Add(100);
@@ -1680,7 +1667,6 @@ namespace EQWOWConverter.Items
             createdEssenceItem.WOWEntryID = essenceWOWItemEntryID;
             createdEssenceItem.EQItemID = CUR_ITEM_GENERATED_EQID;
             CUR_ITEM_GENERATED_EQID++;
-            //createdEssenceItem.MatchSourceFlagsToItemTemplate(originalItemTemplate);
             createdEssenceItem.IsNoDrop = originalItemTemplate.IsNoDrop;
             createdEssenceItem.ClassID = 15; // Miscellaneous
             createdEssenceItem.SubClassID = 8; // Other
