@@ -1702,7 +1702,7 @@ namespace EQWOWConverter
                 else if (recipe.ProducedItemCountsByWOWItemID.Count > 1)
                 {
                     string containerName = string.Concat(recipe.Name, " Items");
-                    resultItemTemplate = ItemTemplate.CreateTradeskillMultiItemContainer(containerName, recipe.ProducedItemCountsByWOWItemID);
+                    resultItemTemplate = ItemTemplate.CreateMultiItemTradeskillContainer(containerName, recipe.ProducedItemCountsByWOWItemID);
                     recipe.ProducedFilledContainer = resultItemTemplate;
                 }
                 else
@@ -2148,8 +2148,8 @@ namespace EQWOWConverter
                         itemTemplate.WOWSpellTrigger1 = 0; // Use (click)
                         switch (itemTemplate.EQClickType)
                         {
-                            case 1: // Clickable from inventory with level requirement (note: Can't make worn gear clickable from inventory)
                             case 4: // Must equip to click
+                            case 1: // Clickable from inventory with level requirement (note: Can't make worn gear clickable from inventory)
                             case 5: // Clickable from inventory with level, class, race requirements (nuance not yet implemented)
                                 {
                                     itemTemplate.WOWSpellCharges1 = itemTemplate.MaxCharges;

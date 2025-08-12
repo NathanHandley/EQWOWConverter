@@ -25,7 +25,7 @@ namespace EQWOWConverter.Items
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
         private static int CUR_ITEM_CONTAINER_WOWID = Configuration.SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID;
-        private static int CUR_ITEM_CONTAINER_EQID = 50000;
+        private static int CUR_ITEM_GENERATED_EQID = 50000;
 
         public int EQItemID = 0;
         public int WOWEntryID = 0;
@@ -71,6 +71,8 @@ namespace EQWOWConverter.Items
         public int EQWornEffectMinLevel = 0;
         public int EQClickSpellEffectID = 0;
         public int EQClickType = 0;
+        public int WOWClickEquipItemTemplateWOWID = 0;
+        public int WOWClickEssenceItemTemplateWOWID = 0;
         public int EQCombatProcSpellEffectID = 0;
         public int EQCombatProcSpellEffectMinLevel = 0;
         public int MaxCharges = 0;
@@ -95,6 +97,7 @@ namespace EQWOWConverter.Items
         public int TotemDBCID = 0;
         public int RequiredLevel = 1;
         public string EQItemDisplayFileName = string.Empty;
+        ItemTemplate? ParentItemTemplate = null;
 
         public ItemTemplate()
         {
@@ -119,6 +122,8 @@ namespace EQWOWConverter.Items
                 return true;
             if (IsFoundInGameObject == true)
                 return true;
+            if (ParentItemTemplate != null)
+                return ParentItemTemplate.IsPlayerObtainable();
             return false;
         }
 
@@ -1334,6 +1339,8 @@ namespace EQWOWConverter.Items
                 }
                 newItemTemplate.EQClickSpellEffectID = int.Parse(columns["clickeffect"]);
                 newItemTemplate.EQClickType = int.Parse(columns["clicktype"]);
+                newItemTemplate.WOWClickEquipItemTemplateWOWID = int.Parse(columns["clickequipwowid"]);
+                newItemTemplate.WOWClickEssenceItemTemplateWOWID = int.Parse(columns["clickessencewowid"]);
                 newItemTemplate.MaxCharges = Math.Max(int.Parse(columns["maxcharges"]), 0);
 
                 // Icon information
@@ -1442,19 +1449,36 @@ namespace EQWOWConverter.Items
 
                 progressionCounter.Write(1);
 
-                // Add
-                if (ItemTemplatesByEQDBID.ContainsKey(newItemTemplate.EQItemID))
+                List<ItemTemplate> itemsToAdd = new List<ItemTemplate>();
+                // Add additional items if clicky items need to be split out
+                if (Configuration.ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS == true && newItemTemplate.EQClickSpellEffectID > 0 &&
+                    newItemTemplate.WOWClickEquipItemTemplateWOWID > 0 && newItemTemplate.WOWClickEssenceItemTemplateWOWID > 0)
                 {
-                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with EQItemID '" + newItemTemplate.EQItemID + "'");
-                    continue;
+                    ItemTemplate newBagItemTemplate;
+                    ItemTemplate newEssenceItemTemplate;
+                    ConvertItemToClickyVersionWithBagAndEssence(ref newItemTemplate, newItemTemplate.WOWClickEquipItemTemplateWOWID, newItemTemplate.WOWClickEssenceItemTemplateWOWID,
+                        out newBagItemTemplate, out newEssenceItemTemplate);
+                    itemsToAdd.Add(newBagItemTemplate);
+                    itemsToAdd.Add(newEssenceItemTemplate);
                 }
-                ItemTemplatesByEQDBID.Add(newItemTemplate.EQItemID, newItemTemplate);
-                if (ItemTemplatesByWOWEntryID.ContainsKey(newItemTemplate.WOWEntryID))
+
+                // Add the items
+                itemsToAdd.Add(newItemTemplate);
+                foreach (ItemTemplate itemTemplate in itemsToAdd)
                 {
-                    Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with WOWEntryID '" + newItemTemplate.WOWEntryID + "'");
-                    continue;
+                    if (ItemTemplatesByEQDBID.ContainsKey(itemTemplate.EQItemID))
+                    {
+                        Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with EQItemID '" + itemTemplate.EQItemID + "'");
+                        continue;
+                    }
+                    ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
+                    if (ItemTemplatesByWOWEntryID.ContainsKey(itemTemplate.WOWEntryID))
+                    {
+                        Logger.WriteError("Items list via file '" + itemsFileName + "' has an duplicate row with WOWEntryID '" + itemTemplate.WOWEntryID + "'");
+                        continue;
+                    }
+                    ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
                 }
-                ItemTemplatesByWOWEntryID.Add(newItemTemplate.WOWEntryID, newItemTemplate);
             }
         }
 
@@ -1539,7 +1563,7 @@ namespace EQWOWConverter.Items
             // Complete the object
             itemTemplate.IsRewardedFromQuest = true;
             itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
-            itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
+            itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             itemTemplate.ClassID = 15; // Misc
             itemTemplate.SubClassID = 0; // Bag
             itemTemplate.Name = name;
@@ -1555,11 +1579,11 @@ namespace EQWOWConverter.Items
             ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
 
             CUR_ITEM_CONTAINER_WOWID++;
-            CUR_ITEM_CONTAINER_EQID++;
+            CUR_ITEM_GENERATED_EQID++;
             return itemTemplate;
         }
 
-        public static ItemTemplate? CreateTradeskillMultiItemContainer(string name, Dictionary<int, int> itemCountsByWOWItemID)
+        public static ItemTemplate CreateMultiItemTradeskillContainer(string name, Dictionary<int, int> itemCountsByWOWItemID)
         {
             ItemTemplate itemTemplate = new ItemTemplate();
 
@@ -1572,12 +1596,12 @@ namespace EQWOWConverter.Items
             }
 
             // Calculate the icon name
-            string iconName = string.Concat("INV_EQ_", Configuration.TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID);
+            string iconName = string.Concat("INV_EQ_", Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
 
             // Complete the object
             itemTemplate.NumOfTradeskillsThatCreateIt = 1;
             itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
-            itemTemplate.EQItemID = CUR_ITEM_CONTAINER_EQID;
+            itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             itemTemplate.ClassID = 0;
             itemTemplate.SubClassID = 8; // Other
             itemTemplate.Name = name;
@@ -1586,6 +1610,7 @@ namespace EQWOWConverter.Items
             itemTemplate.BuyPriceInCopper = 0;
             itemTemplate.SellPriceInCopper = 0;
             itemTemplate.CanBeOpened = true;
+            itemTemplate.IsNoDrop = true;            
 
             // Make a description
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWIDs = GetItemTemplatesByWOWEntryID();
@@ -1608,8 +1633,73 @@ namespace EQWOWConverter.Items
             ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
 
             CUR_ITEM_CONTAINER_WOWID++;
-            CUR_ITEM_CONTAINER_EQID++;
+            CUR_ITEM_GENERATED_EQID++;
             return itemTemplate;
+        }
+
+        //public void MatchSourceFlagsToItemTemplate(ItemTemplate sourceFlagsItemTemplate)
+        //{
+        //    IsCreatedBySpell = sourceFlagsItemTemplate.IsCreatedBySpell;
+        //    IsDroppedByCreature = sourceFlagsItemTemplate.IsDroppedByCreature;
+        //    IsExistingItemAlready = sourceFlagsItemTemplate.IsExistingItemAlready;
+        //    IsFoundInGameObject = sourceFlagsItemTemplate.IsFoundInGameObject;
+        //    IsGivenAsStartItem = sourceFlagsItemTemplate.IsGivenAsStartItem;
+        //    IsRewardedFromQuest = sourceFlagsItemTemplate.IsRewardedFromQuest;
+        //    IsSoldByVendor = sourceFlagsItemTemplate.IsSoldByVendor;
+        //    NumOfTradeskillsThatCreateIt = sourceFlagsItemTemplate.NumOfTradeskillsThatCreateIt;
+        //}
+
+        public static void ConvertItemToClickyVersionWithBagAndEssence(ref ItemTemplate originalItemTemplate, int newItemWOWItemEntryID, int essenceWOWItemEntryID, out ItemTemplate createdBagItemTemplate, 
+            out ItemTemplate createdEssenceItem)
+        {
+            // Create the bag
+            createdBagItemTemplate = new ItemTemplate();
+            createdBagItemTemplate.WOWEntryID = originalItemTemplate.WOWEntryID; // Hand over the entry ID from the original item
+            createdBagItemTemplate.EQItemID = originalItemTemplate.EQItemID;
+            //createdBagItemTemplate.MatchSourceFlagsToItemTemplate(originalItemTemplate);
+            createdBagItemTemplate.IsNoDrop = originalItemTemplate.IsNoDrop;
+            createdBagItemTemplate.ContainedWOWItemTemplateIDs.Add(newItemWOWItemEntryID); // Add the item reference
+            createdBagItemTemplate.ContainedItemChances.Add(100);
+            createdBagItemTemplate.ContainedtemCounts.Add(1);
+            createdBagItemTemplate.ContainedWOWItemTemplateIDs.Add(essenceWOWItemEntryID); // Add the essence reference
+            createdBagItemTemplate.ContainedItemChances.Add(100);
+            createdBagItemTemplate.ContainedtemCounts.Add(1);
+            createdBagItemTemplate.ClassID = 0;
+            createdBagItemTemplate.SubClassID = 8; // Other
+            createdBagItemTemplate.Name = string.Concat(originalItemTemplate.Name, " Container");
+            createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'");
+            string bagIconName = string.Concat("INV_EQ_", Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
+            createdBagItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), bagIconName, ItemWOWInventoryType.Bag, 0, 0);
+            createdBagItemTemplate.Quality = originalItemTemplate.Quality;
+            createdBagItemTemplate.BuyPriceInCopper = 0;
+            createdBagItemTemplate.SellPriceInCopper = 0;
+            createdBagItemTemplate.CanBeOpened = true;
+
+            // Create the essence
+            createdEssenceItem = new ItemTemplate();
+            createdEssenceItem.WOWEntryID = essenceWOWItemEntryID;
+            createdEssenceItem.EQItemID = CUR_ITEM_GENERATED_EQID;
+            CUR_ITEM_GENERATED_EQID++;
+            //createdEssenceItem.MatchSourceFlagsToItemTemplate(originalItemTemplate);
+            createdEssenceItem.IsNoDrop = originalItemTemplate.IsNoDrop;
+            createdEssenceItem.ClassID = 15; // Miscellaneous
+            createdEssenceItem.SubClassID = 8; // Other
+            createdEssenceItem.Name = string.Concat(originalItemTemplate.Name, " Essence");
+            createdEssenceItem.Description = string.Concat("Contains the power of item '", originalItemTemplate.Name, "', allowing the casting of the spell held within without having to wear the item");
+            createdEssenceItem.ItemDisplayInfo = originalItemTemplate.ItemDisplayInfo;
+            createdEssenceItem.Quality = originalItemTemplate.Quality;
+            createdEssenceItem.BuyPriceInCopper = 0;
+            createdEssenceItem.SellPriceInCopper = 0;
+            createdEssenceItem.EQClickSpellEffectID = originalItemTemplate.EQClickSpellEffectID;
+            createdEssenceItem.EQClickType = originalItemTemplate.EQClickType;
+            createdEssenceItem.MaxCharges = originalItemTemplate.MaxCharges;
+            createdEssenceItem.ParentItemTemplate = createdBagItemTemplate;
+
+            // Remap the original item template
+            originalItemTemplate.WOWEntryID = newItemWOWItemEntryID;
+            originalItemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
+            originalItemTemplate.ParentItemTemplate = createdBagItemTemplate;
+            CUR_ITEM_GENERATED_EQID++;
         }
     }
 }

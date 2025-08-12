@@ -412,6 +412,12 @@ namespace EQWOWConverter
         // If true, gear that has a worn effect will show as a buff on the character
         public static readonly bool ITEMS_SHOW_WORN_EFFECT_AURA_ICON = true;
 
+        // If true, any item that is clickable item that also has a spell will be replaced with a 
+        // container item that contains both the equippable item as well as a non-equipable version
+        // that can be clicked from inventory.  WOW doesn't let you click equipable spell items
+        // from inventory
+        public static readonly bool ITEMS_CREATE_ESSENCE_ITEM_FOR_EQUIPEABLE_CLICK_SPELL_ITEMS = true;
+
         // If this is true, then weapons and armor that allow all normally-aligned classes to be
         //  classified as 'all'.  For example: Bronze Breastplate allows all plate classes, so
         //  it will have the classes allowed list set to 'any'
@@ -424,6 +430,10 @@ namespace EQWOWConverter
 
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
         public static readonly int ITEMS_BAG_SLOT_MULTIPLIER = 2;
+
+        // This is the icon ID that is used for multi-item containers that contain more than one item
+        // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
+        public static readonly int ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
 
         //=====================================================================
         // Quests
@@ -528,10 +538,6 @@ namespace EQWOWConverter
 
         // How long every tradeskill will take in milliseconds
         public static readonly int TRADESKILL_CAST_TIME_IN_MS = 5000;
-
-        // This is the icon ID that is used for tradeskill results that contain more than one item
-        // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
-        public static readonly int TRADESKILL_MULTI_ITEMS_CONTAINER_ICON_ID = 57;
 
         // Tradeskill items that need a totem in TotemCategory.dbc will align under this
         public static readonly int TRADESKILL_TOTEM_CATEGORY_START = 30;
@@ -716,7 +722,9 @@ namespace EQWOWConverter
         // Start and end IDs for template entries
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
-        public static readonly int SQL_ITEM_TEMPLATE_CLASS_SPECIFIC_SPELL_SCROLL_START_ID = 110500; // Through 112887
+        public static readonly int SQL_ITEM_TEMPLATE_CLASS_SPECIFIC_SPELL_SCROLL_ENTRY_START_ID = 110500; // Through 112887
+        public static readonly int SQL_ITEM_TEMPLATE_EQUIPPED_CLICK_BAG_ENTRY_START_ID = 113000; // Through 113932
+        public static readonly int SQL_ITEM_TEMPLATE_EQUIPPED_CLICK_ESSENCE_ENTRY_START_ID = 114000; // Through 114932
         public static readonly int SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID = 116000;
 
         // Stand and end IDs for npc_text sql records
