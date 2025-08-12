@@ -1015,6 +1015,7 @@ namespace EQWOWConverter.Items
                         itemTemplate.WOWSpellCooldown1 = 1;
                         itemTemplate.WOWSpellCategoryCooldown1 = 1000;
                         itemTemplate.WOWItemMaterialType = -1;
+                        itemTemplate.WOWSpellCharges1 = -1; // 1 charge, consume on use
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 70)
                             itemTemplate.WOWSpellID1 = 45548;
@@ -1042,6 +1043,7 @@ namespace EQWOWConverter.Items
                         itemTemplate.WOWSpellCategory1 = 59; // Water/alcohol
                         itemTemplate.WOWSpellCooldown1 = 1;
                         itemTemplate.WOWSpellCategoryCooldown1 = 1000;
+                        itemTemplate.WOWSpellCharges1 = -1; // 1 charge, consume on use
                         itemTemplate.BuyCount = 5;
                         if (castTime >= 80)
                             itemTemplate.WOWSpellID1 = 43183;
