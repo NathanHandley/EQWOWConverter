@@ -798,8 +798,8 @@ namespace EQWOWConverter.Items
                             {
                                 case 2: // Quiver
                                     {
-                                        itemTemplate.ClassID = 2;
-                                        itemTemplate.SubClassID = 3;
+                                        itemTemplate.ClassID = 11;
+                                        itemTemplate.SubClassID = 2;
                                         itemTemplate.InventoryType = ItemWOWInventoryType.Quiver;
                                         itemTemplate.InventoryType = ItemWOWInventoryType.Bag;
                                     } break;
