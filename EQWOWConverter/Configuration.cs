@@ -431,6 +431,11 @@ namespace EQWOWConverter
         // How much to multiple the slot size of a bag in EQ.  EQ allows for 2x the number bags of WOW (not including starter)
         public static readonly int ITEMS_BAG_SLOT_MULTIPLIER = 2;
 
+        // If true, weight reduction on bags will translate to additional slots
+        // Note that the add percent rounds up to the next multiple of 2
+        public static readonly bool ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED = true;
+        public static readonly float ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT = 0.08f;
+
         // This is the icon ID that is used for multi-item containers that contain more than one item
         // The ID here is the icon ID as defined by X in "INV_EQ_X.blp"
         public static readonly int ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID = 57;

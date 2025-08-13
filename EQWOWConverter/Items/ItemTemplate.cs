@@ -1376,10 +1376,22 @@ namespace EQWOWConverter.Items
                     newItemTemplate.BuyPriceInCopper = 1;
                 newItemTemplate.SellPriceInCopper = int.Max(Convert.ToInt32(Convert.ToDouble(newItemTemplate.BuyPriceInCopper) * 0.25), 1);
 
-                // Other
+                // Bag properties
                 newItemTemplate.BagSlots = int.Parse(columns["bagslots"]) * Configuration.ITEMS_BAG_SLOT_MULTIPLIER;
                 if (newItemTemplate.BagSlots > 0 && newItemTemplate.ClassID == 2 && newItemTemplate.SubClassID == 14) // Remove slots for EQ tradeskill containers
                     newItemTemplate.BagSlots = 0;
+                if (newItemTemplate.BagSlots > 0 && Configuration.ITEMS_BAG_WEIGHT_REDUCTION_INCREASES_SLOTS_ENABLED == true)
+                {
+                    float weightReduction = float.Parse(columns["bagwr"]);
+                    if (weightReduction > 0)
+                    {
+                        // Round up additional bag slots to multiples of 2
+                        int additionalBagSlots = Convert.ToInt32(Math.Ceiling((weightReduction * Configuration.ITEM_BAG_WEIGHT_REDUCTION_INCREASE_SLOTS_ADD_PER_PERCENT) / 2.0) * 2.0);
+                        newItemTemplate.BagSlots = newItemTemplate.BagSlots + additionalBagSlots;
+                    }
+                }
+
+                // Other
                 newItemTemplate.StackSize = int.Max(int.Parse(columns["stacksize"]), 1);
                 newItemTemplate.AllowedClassTypes = GetClassTypesFromClassMask(newItemTemplate.EQClassMask, newItemTemplate.ClassID, newItemTemplate.SubClassID);
                 newItemTemplate.FoodType = int.Parse(columns["foodtype"]);
