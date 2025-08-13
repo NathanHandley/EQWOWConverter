@@ -162,13 +162,15 @@ namespace EQWOWConverter
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID = ItemTemplate.GetItemTemplatesByWOWEntryID();
             ClearNonPlayerObtainableItemsAndRecipes(ref tradeskillRecipes, ref itemTemplatesByWOWEntryID);
 
-            // Finish the items
+            // Assign item spell effects
             AssignItemSpellEffects(ref itemTemplatesByWOWEntryID);
-            CreateItemGraphics(ref itemTemplatesByEQDBID);
 
             // Quests Finish-up
             if (Configuration.GENERATE_QUESTS == true)
                 ConvertQuests(ref questTemplates, ref creatureTemplates);
+
+            // Generate item graphics
+            CreateItemGraphics(ref itemTemplatesByEQDBID);
 
             // Make sure zones are done
             if (Configuration.CORE_ENABLE_MULTITHREADING == true)

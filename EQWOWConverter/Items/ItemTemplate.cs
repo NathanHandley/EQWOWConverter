@@ -1567,7 +1567,7 @@ namespace EQWOWConverter.Items
             itemTemplate.ClassID = 15; // Misc
             itemTemplate.SubClassID = 0; // Bag
             itemTemplate.Name = name;
-            itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), iconName, ItemWOWInventoryType.Bag, 0, 0);
+            itemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
             itemTemplate.Quality = ItemWOWQuality.Common;
             itemTemplate.BuyPriceInCopper = 0;
             itemTemplate.SellPriceInCopper = 0;
@@ -1605,7 +1605,7 @@ namespace EQWOWConverter.Items
             itemTemplate.ClassID = 0;
             itemTemplate.SubClassID = 8; // Other
             itemTemplate.Name = name;
-            itemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), iconName, ItemWOWInventoryType.Bag, 0, 0);
+            itemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
             itemTemplate.Quality = ItemWOWQuality.Common;
             itemTemplate.BuyPriceInCopper = 0;
             itemTemplate.SellPriceInCopper = 0;
