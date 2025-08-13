@@ -1420,6 +1420,7 @@ namespace EQWOWConverter
 
             Logger.WriteInfo("Item and loot conversion complete.");
         }
+
         private void CreateItemGraphics(ref SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBID)
         {
             Logger.WriteInfo("Creating item graphics started");

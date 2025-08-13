@@ -1654,9 +1654,8 @@ namespace EQWOWConverter.Items
             createdBagItemTemplate.ClassID = 0;
             createdBagItemTemplate.SubClassID = 8; // Other
             createdBagItemTemplate.Name = string.Concat(originalItemTemplate.Name, " Container");
-            createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'");
-            string bagIconName = string.Concat("INV_EQ_", Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID);
-            createdBagItemTemplate.ItemDisplayInfo = ItemDisplayInfo.CreateItemDisplayInfo(string.Concat("eq_", "it63"), bagIconName, ItemWOWInventoryType.Bag, 0, 0);
+            createdBagItemTemplate.Description = string.Concat("Contains the item and the essence of the item '", originalItemTemplate.Name, "'.");
+            createdBagItemTemplate.IconID = Configuration.ITEMS_MULTI_ITEMS_CONTAINER_ICON_ID;
             createdBagItemTemplate.Quality = originalItemTemplate.Quality;
             createdBagItemTemplate.BuyPriceInCopper = 0;
             createdBagItemTemplate.SellPriceInCopper = 0;
@@ -1671,8 +1670,8 @@ namespace EQWOWConverter.Items
             createdEssenceItem.ClassID = 15; // Miscellaneous
             createdEssenceItem.SubClassID = 8; // Other
             createdEssenceItem.Name = string.Concat(originalItemTemplate.Name, " Essence");
-            createdEssenceItem.Description = string.Concat("Contains the power of item '", originalItemTemplate.Name, "', allowing the casting of the spell held within without having to wear the item");
-            createdEssenceItem.ItemDisplayInfo = originalItemTemplate.ItemDisplayInfo;
+            createdEssenceItem.Description = string.Concat("Contains the power of item '", originalItemTemplate.Name, "', allowing casting of the spell on the item without having to wear it.");
+            createdEssenceItem.IconID = originalItemTemplate.IconID;
             createdEssenceItem.Quality = originalItemTemplate.Quality;
             createdEssenceItem.BuyPriceInCopper = 0;
             createdEssenceItem.SellPriceInCopper = 0;
