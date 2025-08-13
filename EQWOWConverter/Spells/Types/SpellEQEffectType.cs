@@ -32,9 +32,9 @@ namespace EQWOWConverter.Spells
         Wisdom = 9,
         Charisma = 10,
         AttackSpeed = 11,
-        //Invisibility = 12,
-        //SeeInvisibility = 13,
-        //WaterBreathing = 14,
+        InvisibilityUnstable = 12,
+        SeeInvisibility = 13,
+        WaterBreathing = 14,
         //CurrentMana = 15,
         //NPCFrenzy = 16, // ?
         //NPCAwareness = 17, // ?
@@ -44,6 +44,7 @@ namespace EQWOWConverter.Spells
         //Stun = 21,
         TotalHP = 69,
         CurrentHitPointsOnce = 79,
+        Invisibility = 314,
         // TODO: Like 500 more...
     }
 }

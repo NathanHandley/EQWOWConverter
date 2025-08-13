@@ -23,11 +23,7 @@ namespace EQWOWConverter.Spells
         public SpellWOWEffectType EffectType = SpellWOWEffectType.None;
         public Int32 EffectDieSides = 0;
         public float EffectRealPointsPerLevel = 0;
-        private Int32 _EffectBasePoints = 0;
-        public int EffectBasePoints
-        {
-            get { return _EffectBasePoints; }
-        }
+        public int EffectBasePoints = 0;
         public SpellMechanicType EffectMechanic = SpellMechanicType.None;
         public SpellWOWTargetType ImplicitTargetA = SpellWOWTargetType.Self;
         public SpellWOWTargetType ImplicitTargetB = SpellWOWTargetType.None;
@@ -52,7 +48,7 @@ namespace EQWOWConverter.Spells
             EffectAuraPeriod = effectAuraPeriod;
             EffectItemType = effectItemType;
             EffectDieSides = effectDieSides;
-            _EffectBasePoints = effectBasePoints;
+            EffectBasePoints = effectBasePoints;
             EffectMiscValueA = effectMiscValueA;
             EffectMiscValueB = effectMiscValueB;
         }
@@ -64,7 +60,7 @@ namespace EQWOWConverter.Spells
                 EffectType = this.EffectType,
                 EffectDieSides = this.EffectDieSides,
                 EffectRealPointsPerLevel = this.EffectRealPointsPerLevel,
-                _EffectBasePoints = this.EffectBasePoints,
+                EffectBasePoints = this.EffectBasePoints,
                 EffectMechanic = this.EffectMechanic,
                 ImplicitTargetA = this.ImplicitTargetA,
                 ImplicitTargetB = this.ImplicitTargetB,
@@ -111,19 +107,19 @@ namespace EQWOWConverter.Spells
                 effectMaxPoints *= -1;
 
             // Run base through a formula using a calculated value of the supplied spell level, instead of the player level
-            _EffectBasePoints = Math.Abs(effectBasePoints);
+            EffectBasePoints = Math.Abs(effectBasePoints);
             switch (eqFormula)
             {
-                case SpellEQBaseValueFormulaType.BaseDivideBy100: _EffectBasePoints = effectBasePoints / 100; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevel: _EffectBasePoints += spellLevel; break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: _EffectBasePoints += (spellLevel * 2); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: _EffectBasePoints += (spellLevel * 3); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: _EffectBasePoints += (spellLevel * 4); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.5f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.3333f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.25f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.20f); break;
-                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: _EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.125f); break;
+                case SpellEQBaseValueFormulaType.BaseDivideBy100: EffectBasePoints = effectBasePoints / 100; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevel: EffectBasePoints += spellLevel; break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesTwo: EffectBasePoints += (spellLevel * 2); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesThree: EffectBasePoints += (spellLevel * 3); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelTimesFour: EffectBasePoints += (spellLevel * 4); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideTwo: EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.5f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideThree: EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.3333f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFour: EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.25f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideFive: EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.20f); break;
+                case SpellEQBaseValueFormulaType.BaseAddLevelDivideEight: EffectBasePoints += Convert.ToInt32(Convert.ToSingle(spellLevel) * 0.125f); break;
                 default: break;
             }
 
@@ -131,28 +127,28 @@ namespace EQWOWConverter.Spells
             if (effectMaxPoints != 0)
             {
                 if (useMax == true)
-                    _EffectBasePoints = effectMaxPoints;
+                    EffectBasePoints = effectMaxPoints;
                 else 
-                    _EffectBasePoints = Math.Min(EffectBasePoints, effectMaxPoints);
+                    EffectBasePoints = Math.Min(EffectBasePoints, effectMaxPoints);
             }
 
             // Scale the value if it's a controlled type
             if (valueScalingFormulaName.Length > 0)
             {
-                float beforeValue = _EffectBasePoints;
+                float beforeValue = EffectBasePoints;
                 if (valueScalingFormulaName.Contains("overtime"))
                     beforeValue = beforeValue / Convert.ToSingle(Configuration.SPELL_PERIODIC_SECONDS_PER_TICK_WOW);
                 else if (valueScalingFormulaName.Contains("dps") || valueScalingFormulaName.Contains("hps"))
                     beforeValue = beforeValue / Math.Max((Convert.ToSingle(spellCastTimeInMS) * 0.001f), 1f); // No lower than 1 second for the calculation
                 float afterValue = GetConvertedEqValueToWowValue(valueScalingFormulaName, beforeValue);
-                float calculatedNewValue = Convert.ToSingle(_EffectBasePoints) * (afterValue / beforeValue);
-                _EffectBasePoints = Math.Max(Convert.ToInt32(calculatedNewValue), 1);
+                float calculatedNewValue = Convert.ToSingle(EffectBasePoints) * (afterValue / beforeValue);
+                EffectBasePoints = Math.Max(Convert.ToInt32(calculatedNewValue), 1);
                     
             }
 
             // Reverse the sign
             if (effectBasePointsWasNegative == true)
-                _EffectBasePoints *= -1;
+                EffectBasePoints *= -1;
         }
 
         public bool IsAuraType()
@@ -277,7 +273,7 @@ namespace EQWOWConverter.Spells
 
         public void OverrideBasePoints(int basePoints)
         {
-            _EffectBasePoints = basePoints;
+            EffectBasePoints = basePoints;
         }
     }
 }

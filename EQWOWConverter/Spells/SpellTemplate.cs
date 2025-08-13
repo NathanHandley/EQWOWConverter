@@ -952,8 +952,37 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW2.AuraDescription = string.Empty;
                             newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRangedHaste;
                             newSpellEffects.Add(newSpellEffectWOW2);
-                        }
-                        break;
+                        } break;
+                    case SpellEQEffectType.InvisibilityUnstable:
+                    case SpellEQEffectType.Invisibility:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModInvisibility;
+                            newSpellEffectWOW.ActionDescription = string.Concat("grants invisibility");
+                            newSpellEffectWOW.AuraDescription = string.Concat("shrouded by invisibility");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.SeeInvisibility:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModInvisibilityDetect;
+                            newSpellEffectWOW.EffectBasePoints = 1000;
+                            newSpellEffectWOW.ActionDescription = string.Concat("grants ability to see invisibility");
+                            newSpellEffectWOW.AuraDescription = string.Concat("able to see through invisibility");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.WaterBreathing:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.WaterBreathing;
+                            newSpellEffectWOW.EffectBasePoints = 1;
+                            newSpellEffectWOW.ActionDescription = string.Concat("grants ability to breath underwater");
+                            newSpellEffectWOW.AuraDescription = string.Concat("able to breath underwater");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
                     default:
                         {
                             Logger.WriteError("Unhandled SpellTemplate EQEffectType of ", eqEffect.EQEffectType.ToString(), " for eq spell id ", spellTemplate.EQSpellID.ToString());
