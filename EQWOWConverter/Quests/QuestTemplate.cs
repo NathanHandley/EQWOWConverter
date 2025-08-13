@@ -67,6 +67,7 @@ namespace EQWOWConverter.Quests
         public List<QuestCompletionFactionReward> questCompletionFactionRewards = new List<QuestCompletionFactionReward>();
         public ItemTemplate? RandomAwardContainerItemTemplate = null;
         public bool HasInvalidItems = false;
+        public int MultiRewardContainerWOWItemID = -1;
 
         public static List<QuestTemplate> GetQuestTemplates()
         {
@@ -308,6 +309,7 @@ namespace EQWOWConverter.Quests
                     foreach (QuestReaction reaction in reactionsByQuestID[newQuestTemplate.QuestIDWOW])
                         newQuestTemplate.Reactions.Add(reaction);
                 }
+                newQuestTemplate.MultiRewardContainerWOWItemID = int.Parse(columns["reward_container_wowid"]);
                 QuestTemplates.Add(newQuestTemplate);
             }
         }

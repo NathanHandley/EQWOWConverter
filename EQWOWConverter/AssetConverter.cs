@@ -730,8 +730,14 @@ namespace EQWOWConverter
                 // If there is a random award, handle it
                 if (questTemplate.RewardItemEQIDs.Count > 0 && questTemplate.RewardItemChances[0] < 100)
                 {
+                    if (questTemplate.MultiRewardContainerWOWItemID <= 0)
+                    {
+                        Logger.WriteError("Quest template ", questTemplate.QuestIDWOW.ToString(), " had multiple rewards but no reward_container_wowid, skipping");
+                        continue;
+                    }
                     string containerName = string.Concat(questTemplate.QuestgiverName.Replace("_", " ").Replace("#", ""), "'s Reward");
-                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateQuestRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, questTemplate.RewardItemCounts);
+                    questTemplate.RandomAwardContainerItemTemplate = ItemTemplate.CreateQuestRandomItemContainer(containerName, questTemplate.RewardItemEQIDs, questTemplate.RewardItemChances, 
+                        questTemplate.RewardItemCounts, questTemplate.MultiRewardContainerWOWItemID);
                     questTemplate.RewardItemWOWIDs.Clear();
                     questTemplate.RewardItemEQIDs.Clear();
                     questTemplate.RewardItemCounts.Clear();
@@ -1704,8 +1710,13 @@ namespace EQWOWConverter
                 }
                 else if (recipe.ProducedItemCountsByWOWItemID.Count > 1)
                 {
+                    if (recipe.ProducedMultiContainerWOWID <= 0)
+                    {
+                        Logger.WriteError("Recipe ", recipe.EQID.ToString(), " had multiple produced items but no produced_multi_container_wowid, skipping.");
+                        continue;
+                    }
                     string containerName = string.Concat(recipe.Name, " Items");
-                    resultItemTemplate = ItemTemplate.CreateMultiItemTradeskillContainer(containerName, recipe.ProducedItemCountsByWOWItemID);
+                    resultItemTemplate = ItemTemplate.CreateMultiItemTradeskillContainer(containerName, recipe.ProducedItemCountsByWOWItemID, recipe.ProducedMultiContainerWOWID);
                     recipe.ProducedFilledContainer = resultItemTemplate;
                 }
                 else

@@ -720,12 +720,13 @@ namespace EQWOWConverter
         public static readonly int SQL_GOSSIPMENU_MENUID_END = 69999;
 
         // Start and end IDs for template entries
+        // - Class-Specific scroll IDs range 110500 - 112887
+        // - Equipped Click Bag IDs range 113000 - 113932
+        // - Equipped Click Essence IDs range 114000 - 114932
+        // - Quest Template multi-item reward containers IDs range 116000 - 116199
+        // - Tradeskill multi-item creation containers IDs range 117000 - 117217
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_START = 85000;
         public static readonly int SQL_ITEM_TEMPLATE_ENTRY_END = 120000;
-        public static readonly int SQL_ITEM_TEMPLATE_CLASS_SPECIFIC_SPELL_SCROLL_ENTRY_START_ID = 110500; // Through 112887
-        public static readonly int SQL_ITEM_TEMPLATE_EQUIPPED_CLICK_BAG_ENTRY_START_ID = 113000; // Through 113932
-        public static readonly int SQL_ITEM_TEMPLATE_EQUIPPED_CLICK_ESSENCE_ENTRY_START_ID = 114000; // Through 114932
-        public static readonly int SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID = 116000;
 
         // Stand and end IDs for npc_text sql records
         public static readonly int SQL_NPCTEXT_ID_START = 80000;

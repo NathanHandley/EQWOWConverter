@@ -49,6 +49,7 @@ namespace EQWOWConverter.Tradeskills
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
         public int RequiredFocus = 0;
+        public int ProducedMultiContainerWOWID = -1;
 
         public TradeskillRecipe(int spellID, int eQID, string name, TradeskillType type, int skillNeededEQ, int trivialEQ)
         {
@@ -271,6 +272,7 @@ namespace EQWOWConverter.Tradeskills
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_JEWELCRAFTING);
                     if (type == TradeskillType.Alchemy && recipe.RequiredTotemID1 == 0)
                         recipe.RequiredTotemID1 = Convert.ToUInt32(Configuration.TRADESKILL_TOTEM_CATEGORY_DBCID_ALCHEMY);
+                    recipe.ProducedMultiContainerWOWID = int.Parse(columns["produced_multi_container_wowid"]);
 
                     // Generate WOW values
                     PopulateWOWSkillLevelsAndLine(recipe);

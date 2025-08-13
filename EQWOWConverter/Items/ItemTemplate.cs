@@ -24,7 +24,6 @@ namespace EQWOWConverter.Items
         private static Dictionary<string, Dictionary<string, float>> StatBaselinesBySlotAndStat = new Dictionary<string, Dictionary<string, float>>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByEQDBID = new SortedDictionary<int, ItemTemplate>();
         private static SortedDictionary<int, ItemTemplate> ItemTemplatesByWOWEntryID = new SortedDictionary<int, ItemTemplate>();
-        private static int CUR_ITEM_CONTAINER_WOWID = Configuration.SQL_ITEM_TEMPLATE_RANDOM_ITEM_CONTAINER_START_ID;
         private static int CUR_ITEM_GENERATED_EQID = 50000;
 
         public int EQItemID = 0;
@@ -1517,7 +1516,8 @@ namespace EQWOWConverter.Items
             }
         }
 
-        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, List<int> itemCounts)
+        public static ItemTemplate? CreateQuestRandomItemContainer(string name, List<int> eqItemIDsInsideContainer, List<float> itemChances, 
+            List<int> itemCounts, int multiContainerWOWItemTemplateID)
         {
             SortedDictionary<int, ItemTemplate> itemTemplatesByEQDBIDs = GetItemTemplatesByEQDBIDs();
             ItemTemplate itemTemplate = new ItemTemplate();
@@ -1562,7 +1562,7 @@ namespace EQWOWConverter.Items
 
             // Complete the object
             itemTemplate.IsRewardedFromQuest = true;
-            itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
+            itemTemplate.WOWEntryID = multiContainerWOWItemTemplateID;
             itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             itemTemplate.ClassID = 15; // Misc
             itemTemplate.SubClassID = 0; // Bag
@@ -1578,12 +1578,11 @@ namespace EQWOWConverter.Items
             ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
             ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
 
-            CUR_ITEM_CONTAINER_WOWID++;
             CUR_ITEM_GENERATED_EQID++;
             return itemTemplate;
         }
 
-        public static ItemTemplate CreateMultiItemTradeskillContainer(string name, Dictionary<int, int> itemCountsByWOWItemID)
+        public static ItemTemplate CreateMultiItemTradeskillContainer(string name, Dictionary<int, int> itemCountsByWOWItemID, int containerItemTemplateID)
         {
             ItemTemplate itemTemplate = new ItemTemplate();
 
@@ -1600,7 +1599,7 @@ namespace EQWOWConverter.Items
 
             // Complete the object
             itemTemplate.NumOfTradeskillsThatCreateIt = 1;
-            itemTemplate.WOWEntryID = CUR_ITEM_CONTAINER_WOWID;
+            itemTemplate.WOWEntryID = containerItemTemplateID;
             itemTemplate.EQItemID = CUR_ITEM_GENERATED_EQID;
             itemTemplate.ClassID = 0;
             itemTemplate.SubClassID = 8; // Other
@@ -1632,7 +1631,6 @@ namespace EQWOWConverter.Items
             ItemTemplatesByEQDBID.Add(itemTemplate.EQItemID, itemTemplate);
             ItemTemplatesByWOWEntryID.Add(itemTemplate.WOWEntryID, itemTemplate);
 
-            CUR_ITEM_CONTAINER_WOWID++;
             CUR_ITEM_GENERATED_EQID++;
             return itemTemplate;
         }
