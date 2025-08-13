@@ -36,15 +36,39 @@ namespace EQWOWConverter.Spells
         SeeInvisibility = 13,
         WaterBreathing = 14,
         //CurrentMana = 15,
-        //NPCFrenzy = 16, // ?
-        //NPCAwareness = 17, // ?
-        //Pacify = 18, // aka: Lull
+        //NPCFrenzy = 16, // What is this?
+        //NPCAwareness = 17, // What is this?
+        //Pacify = 18, -- This isn't implemented in eq emulators so always skip it
         //ModFaction = 19,
         //Blind = 20,
-        //Stun = 21,
+        Stun = 21,
+        //Charm = 22,
+        //Fear = 23,
+        //Stamina = 24,
+        //BindAffinity = 25,
+        //Gate = 26,
+        //CancelMagic = 27,
+        //....
+        //ResistFire = 46,
+        //ResistCold = 47,
+        //ResistPoison = 48,
+        //ResistDisease = 49,
+        //ResistMagic = 50,
+        //....
         TotalHP = 69,
+        //....
         CurrentHitPointsOnce = 79,
+        //....
+        //Revive = 81,
+        //....
+        //Teleport = 83,
+        //....
+        //Silence = 96,
+        //TotalMana = 97,
+        //AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
+        Root = 99,
+        //....
         Invisibility = 314,
-        // TODO: Like 500 more...
+        // TODO: Goes up to 526
     }
 }

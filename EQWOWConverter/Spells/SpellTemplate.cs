@@ -978,9 +978,46 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.WaterBreathing;
-                            newSpellEffectWOW.EffectBasePoints = 1;
                             newSpellEffectWOW.ActionDescription = string.Concat("grants ability to breath underwater");
                             newSpellEffectWOW.AuraDescription = string.Concat("able to breath underwater");
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    // Not happy with this
+                    //case SpellEQEffectType.Blind:
+                    //    {
+                    //        SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                    //        newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                    //        newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModAttackerMeleeHitChance;
+                    //        newSpellEffectWOW.EffectBasePoints = -200;
+                    //        newSpellEffectWOW.ActionDescription = string.Concat("cause blindness which makes all hits miss and stops movement");
+                    //        newSpellEffectWOW.AuraDescription = string.Concat("unable to land hits or move due to blindness");
+                    //        newSpellEffects.Add(newSpellEffectWOW);
+
+                    //        // Add a second for stopping movement
+                    //        SpellEffectWOW newSpellEffectWOW2 = newSpellEffectWOW.Clone();
+                    //        newSpellEffectWOW2.ActionDescription = string.Empty;
+                    //        newSpellEffectWOW2.AuraDescription = string.Empty;
+                    //        newSpellEffectWOW2.EffectBasePoints = 0;
+                    //        newSpellEffectWOW2.EffectAuraType = SpellWOWAuraType.ModRoot;
+                    //        newSpellEffects.Add(newSpellEffectWOW2);
+                    //    } break;
+                    case SpellEQEffectType.Stun:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModStun;
+                            newSpellEffectWOW.ActionDescription = string.Concat("stuns");
+                            newSpellEffectWOW.AuraDescription = string.Concat("stunned");
+                            spellTemplate.SpellDurationInMS = eqEffect.EQBaseValue;
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.Root:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
+                            newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModRoot;
+                            newSpellEffectWOW.ActionDescription = string.Concat("stops movement by rooting in place");
+                            newSpellEffectWOW.AuraDescription = string.Concat("unable to move");
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     default:
