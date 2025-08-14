@@ -273,7 +273,7 @@ namespace EQWOWConverter.Spells
             if (spellDurationInMS == 0)
                 return 0;
             if (isDetrimental == false)
-                return 1; // MAGIC
+                return 0;
             switch (eqResistType)
             {
                 case 1: return 1; // EQ Magic => MAGIC
