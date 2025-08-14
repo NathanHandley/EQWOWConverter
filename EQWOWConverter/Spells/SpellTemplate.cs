@@ -125,6 +125,7 @@ namespace EQWOWConverter.Spells
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
+        public UInt32 DispellType = 0;
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
         public UInt32 SpellFocusID = 0;
@@ -213,6 +214,7 @@ namespace EQWOWConverter.Spells
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
+                newSpellTemplate.DispellType = GetDispellTypeForResistType(resistType, isDetrimental, newSpellTemplate.SpellDurationInMS);
 
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
@@ -262,6 +264,24 @@ namespace EQWOWConverter.Spells
                 case 4: return 8; // EQ Poison => WOW Nature
                 case 5: return 32; // EQ Disease => WOW Shadow
                 default: return 1; // Physical by default
+            }
+        }
+
+        public static UInt32 GetDispellTypeForResistType(int eqResistType, bool isDetrimental, int spellDurationInMS)
+        {
+            // TODO: Honor 'nodispell'?
+            if (spellDurationInMS == 0)
+                return 0;
+            if (isDetrimental == false)
+                return 1; // MAGIC
+            switch (eqResistType)
+            {
+                case 1: return 1; // EQ Magic => MAGIC
+                case 2: return 1; // EQ Fire => MAGIC
+                case 3: return 1; // EQ Cold => MAGIC
+                case 4: return 4; // EQ Poison => POISON
+                case 5: return 3; // EQ Disease => DISEASE
+                default: return 0; // None
             }
         }
 
