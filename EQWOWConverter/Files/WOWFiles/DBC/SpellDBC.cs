@@ -65,7 +65,7 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(spellTemplate.InterruptFlags); // InterruptFlags (15 is standard interrupt for things like moving, pushback, and interrupt cast)
             newRow.AddUInt32(0); // AuraInterruptFlags
             newRow.AddUInt32(0); // ChannelInterruptFlags
-            newRow.AddUInt32(0); // ProcTypeMask
+            newRow.AddUInt32(GetProcFlags(spellTemplate)); // ProcTypeMask
             newRow.AddUInt32(101); // ProcChance
             newRow.AddUInt32(0); // ProcCharges
             newRow.AddUInt32(0); // MaxLevel
@@ -166,8 +166,8 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddUInt32(0); // SpellClassMask2
             newRow.AddUInt32(0); // SpellClassMask3
             newRow.AddUInt32(0); // MaxTargets
-            newRow.AddUInt32(0); // DefenseType
-            newRow.AddUInt32(0); // PreventionType
+            newRow.AddUInt32(spellTemplate.DefenseType); // DefenseType
+            newRow.AddUInt32(spellTemplate.PreventionType); // PreventionType
             newRow.AddUInt32(0); // StanceBarOrder
             newRow.AddFloat(0); // EffectChainAmplitude1
             newRow.AddFloat(0); // EffectChainAmplitude2
@@ -235,14 +235,21 @@ namespace EQWOWConverter.WOWFiles
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 128;
-            return 0;
+            UInt32 attributeFlags = 0;
+            if (spellTemplate.NoPartialImmunity == true)
+            {
+                attributeFlags |= 2048; // SPELL_ATTR4_NO_PARTIAL_IMMUNITY
+                attributeFlags |= 536870912; // SPELL_ATTR4_AURA_BOUNCE_FAILS_SPELL
+            }
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesExE(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
         {
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 393224;
-            return 0;
+            UInt32 attributeFlags = 0;
+            return attributeFlags;
         }
 
         private UInt32 GetAttributesExF(SpellTemplate spellTemplate, SpellWOWAuraType auraType)
@@ -250,6 +257,19 @@ namespace EQWOWConverter.WOWFiles
             if (auraType == SpellWOWAuraType.Phase) // Phase Aura
                 return 4096;
             return 0;
+        }
+
+        private UInt32 GetProcFlags(SpellTemplate spellTemplate)
+        {
+            UInt32 procFlags = 0;
+            if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
+            {   
+                procFlags |= 32; // PROC_FLAG_TAKEN_SPELL_MELEE_DMG_CLASS
+                procFlags |= 512; // PROC_FLAG_TAKEN_SPELL_RANGED_DMG_CLASS
+                procFlags |= 8192; // PROC_FLAG_TAKEN_SPELL_NONE_DMG_CLASS_NEG
+                procFlags |= 131072; // PROC_FLAG_TAKEN_SPELL_MAGIC_DMG_CLASS_NEG
+            }
+            return procFlags;
         }
     }
 }

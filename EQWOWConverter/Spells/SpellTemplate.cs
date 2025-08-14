@@ -139,6 +139,10 @@ namespace EQWOWConverter.Spells
         public Dictionary<ClassType, SpellLearnScrollProperties> LearnScrollPropertiesByClassType = new Dictionary<ClassType, SpellLearnScrollProperties>();
         public int HighestDirectHealAmountInSpellEffect = 0; // Used in spell priority calculations
         private string TargetDescriptionTextFragment = string.Empty;
+        public bool BreakEffectOnNonAutoDirectDamage = false;
+        public bool NoPartialImmunity = false;
+        public UInt32 DefenseType = 0; // 0 None, 1 Magic, 2 Melee, 3 Ranged
+        public UInt32 PreventionType = 0; // 0 None, 1 Silence, 2 Pacify, 4 No Actions
 
         public static Dictionary<int, SpellTemplate> GetSpellTemplatesByEQID()
         {
@@ -209,6 +213,10 @@ namespace EQWOWConverter.Spells
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
+
+                // Set defensive properties
+                newSpellTemplate.DefenseType = 1; // Magic
+                newSpellTemplate.PreventionType = 1; // Silence
 
                 // Convert the spell effects
                 ConvertEQSpellEffectsIntoWOWEffects(ref newSpellTemplate, newSpellTemplate.SchoolMask, newSpellTemplate.SpellDurationInMS, 
@@ -1016,8 +1024,10 @@ namespace EQWOWConverter.Spells
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.ApplyAura;
                             newSpellEffectWOW.EffectAuraType = SpellWOWAuraType.ModRoot;
-                            newSpellEffectWOW.ActionDescription = string.Concat("stops movement by rooting in place");
-                            newSpellEffectWOW.AuraDescription = string.Concat("unable to move");
+                            newSpellEffectWOW.ActionDescription = string.Concat("roots in place stops movement by rooting in place");
+                            newSpellEffectWOW.AuraDescription = string.Concat("rooted");
+                            spellTemplate.BreakEffectOnNonAutoDirectDamage = true;
+                            spellTemplate.NoPartialImmunity = true;
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     default:
@@ -1114,6 +1124,10 @@ namespace EQWOWConverter.Spells
 
             // Add the time duration
             spellTemplate.Description = string.Concat(spellTemplate.Description, GetTimeDurationStringFromMSWithLeadingSpace(spellTemplate.SpellDurationInMS));
+
+            // Add any additional fragments to descriptions
+            if (spellTemplate.BreakEffectOnNonAutoDirectDamage == true)
+                spellTemplate.Description = string.Concat(spellTemplate.Description, " May break on direct damage.");
         }
 
         private static string GetTimeDurationStringFromMSWithLeadingSpace(int durationInMS)
