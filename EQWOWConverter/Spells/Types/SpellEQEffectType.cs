@@ -67,6 +67,7 @@ namespace EQWOWConverter.Spells
         //TotalMana = 97,
         //AttackSpeed2 = 98, // Looks like this stacks with the other attack speed
         Root = 99,
+        HealOverTime = 100,
         //....
         Invisibility = 314,
         // TODO: Goes up to 526

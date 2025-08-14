@@ -633,6 +633,7 @@ namespace EQWOWConverter.Spells
                 {
                     case SpellEQEffectType.CurrentHitPoints: // Fallthrough
                     case SpellEQEffectType.CurrentHitPointsOnce:
+                    case SpellEQEffectType.HealOverTime:
                         {
                             if (eqEffect.EQBaseValue == 0)
                                 continue;
