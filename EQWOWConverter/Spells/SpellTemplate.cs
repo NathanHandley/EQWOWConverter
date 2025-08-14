@@ -1117,17 +1117,25 @@ namespace EQWOWConverter.Spells
         {
             StringBuilder descriptionSB = new StringBuilder();
             StringBuilder auraSB = new StringBuilder();
+            bool descriptionTextHasBeenAddedToAction = false;
+            bool descriptionTextHasBeenAddedToAura = false;
             for (int i = 0; i < spellTemplate.WOWSpellEffects.Count; i++)
             {
-                if (i != 0)
+                SpellEffectWOW spellEffectWOW = spellTemplate.WOWSpellEffects[i];
+                if (spellEffectWOW.ActionDescription.Length > 0 )
                 {
-                    if (spellTemplate.WOWSpellEffects[i].ActionDescription.Length > 0)
+                    if (descriptionTextHasBeenAddedToAction == true)
                         descriptionSB.Append(", ");
-                    if (spellTemplate.WOWSpellEffects[i].AuraDescription.Length > 0 && auraSB.Length > 0)
-                        auraSB.Append(", ");
+                    descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
+                    descriptionTextHasBeenAddedToAction = true;
                 }
-                descriptionSB.Append(spellTemplate.WOWSpellEffects[i].ActionDescription);
-                auraSB.Append(spellTemplate.WOWSpellEffects[i].AuraDescription);
+                if (spellEffectWOW.AuraDescription.Length > 0)
+                {
+                    if (descriptionTextHasBeenAddedToAura == true)
+                        auraSB.Append(", ");
+                    auraSB.Append(spellTemplate.WOWSpellEffects[i].AuraDescription);
+                    descriptionTextHasBeenAddedToAura = true;
+                }
             }
 
             // Store and control capitalization
