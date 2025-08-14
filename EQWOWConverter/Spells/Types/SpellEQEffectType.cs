@@ -47,7 +47,7 @@ namespace EQWOWConverter.Spells
         //Stamina = 24,
         //BindAffinity = 25,
         //Gate = 26,
-        //CancelMagic = 27,
+        CancelMagic = 27,
         //....
         //ResistFire = 46,
         //ResistCold = 47,
@@ -69,6 +69,8 @@ namespace EQWOWConverter.Spells
         Root = 99,
         HealOverTime = 100,
         //....
+        //DispelDetrimental = 154, -- Not used (Purify Soul, AA ability)
+        //DispelBeneficial = 209, -- Not used
         Invisibility = 314,
         // TODO: Goes up to 526
     }

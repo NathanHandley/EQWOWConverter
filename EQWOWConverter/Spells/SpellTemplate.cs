@@ -204,7 +204,7 @@ namespace EQWOWConverter.Spells
                 // Targets
                 int eqTargetTypeID = int.Parse(columns["targettype"]);
                 bool isDetrimental = int.Parse(columns["goodEffect"]) == 0 ? true : false; // "2" should be non-detrimental group only (not caster).  Ignoring that for now.
-                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
+                List<SpellWOWTargetType> targets = CalculateTargets(ref newSpellTemplate, eqTargetTypeID, isDetrimental, newSpellTemplate.EQSpellEffects, newSpellTemplate.SpellRange, newSpellTemplate.SpellRadius);
 
                 // Visual
                 int spellVisualEffectIndex = int.Parse(columns["SpellVisualEffectIndex"]);
@@ -273,7 +273,7 @@ namespace EQWOWConverter.Spells
             if (spellDurationInMS == 0)
                 return 0;
             if (isDetrimental == false)
-                return 0;
+                return 1;
             switch (eqResistType)
             {
                 case 1: return 1; // EQ Magic => MAGIC
@@ -311,7 +311,7 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, int range, int spellRadius)
+        private static List<SpellWOWTargetType> CalculateTargets(ref SpellTemplate spellTemplate, int eqTargetTypeID, bool isDetrimental, List<SpellEffectEQ> eqSpellEffects, int range, int spellRadius)
         {
             List<SpellWOWTargetType> spellWOWTargetTypes = new List<SpellWOWTargetType>();
 
@@ -324,6 +324,14 @@ namespace EQWOWConverter.Spells
             }
             else
                 spellTemplate.EQTargetType = (SpellEQTargetType)eqTargetTypeID;
+
+            // Some spell effects allow targeting both friendly and enemy
+            bool canTargetBothEnemyAndFriendly = false;
+            foreach (SpellEffectEQ effect in eqSpellEffects)
+            {
+                if (effect.EQEffectType == SpellEQEffectType.CancelMagic)
+                    canTargetBothEnemyAndFriendly = true;
+            }
 
             // Map the EQ target type to WOW
             switch (spellTemplate.EQTargetType)
@@ -381,7 +389,13 @@ namespace EQWOWConverter.Spells
                     break;
                 case SpellEQTargetType.Single:
                     {
-                        if (isDetrimental == true)
+                        if (canTargetBothEnemyAndFriendly == true)
+                        {
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
+                            spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
+                            spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy or friendly unit";
+                        }
+                        else if (isDetrimental == true)
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                             spellTemplate.TargetDescriptionTextFragment = "Targets a single enemy";
@@ -1049,6 +1063,28 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.AuraDescription = string.Concat("rooted");
                             spellTemplate.BreakEffectOnNonAutoDirectDamage = true;
                             spellTemplate.NoPartialImmunity = true;
+                            newSpellEffects.Add(newSpellEffectWOW);
+                        } break;
+                    case SpellEQEffectType.CancelMagic:
+                        {
+                            SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
+                            newSpellEffectWOW.EffectType = SpellWOWEffectType.Dispel;
+                            newSpellEffectWOW.EffectMiscValueA = 1;
+                            newSpellEffectWOW.EffectDieSides = 1;
+                            int numOfOtherDispells = 0;
+                            foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
+                            {
+                                if (wowEffect.EffectType == SpellWOWEffectType.Dispel && wowEffect.EffectMiscValueA == 1)
+                                {
+                                    wowEffect.AuraDescription = string.Empty;
+                                    wowEffect.ActionDescription = string.Empty;
+                                    numOfOtherDispells++;
+                                }
+                            }
+                            int totalDispellCount = numOfOtherDispells + 1;
+                            newSpellEffectWOW.ActionDescription = string.Concat("dispells ", totalDispellCount, " beneficial (enemy) or detrimental (friendly) magic effect");
+                            if (totalDispellCount > 1)
+                                newSpellEffectWOW.ActionDescription = string.Concat(newSpellEffectWOW.ActionDescription, "s");
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
                     default:

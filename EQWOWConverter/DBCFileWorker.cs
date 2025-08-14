@@ -462,7 +462,7 @@ namespace EQWOWConverter
             for (int i = 0; i < 751; i++)
                 spellIconDBC.AddItemIconRow(i);
             // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with SQL
-            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
+            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Spells max out at three effects each, so add as blocks
