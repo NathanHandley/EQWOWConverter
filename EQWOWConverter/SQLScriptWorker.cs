@@ -591,8 +591,9 @@ namespace EQWOWConverter
         private void PopulateSpellAndTradeskillData(List<SpellTemplate> spellTemplates, List<TradeskillRecipe> tradeskillRecipes,
             SortedDictionary<int, ItemTemplate> itemTemplatesByWOWEntryID)
         {
-            // TODO: Save this aura gen ID in the spellTemplate, so it doesn't run into conflict with DBC
-            int curSpellAuraGenID = Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START;
+            // Spell split data
+            // TODO: Save this spell gen ID in the spellTemplate, so it doesn't run into conflict with DBC
+            int curSpellSplitGenID = Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START;
             foreach (SpellTemplate spellTemplate in spellTemplates)
             {
                 // Stack rules
@@ -603,15 +604,14 @@ namespace EQWOWConverter
                 List<List<SpellEffectWOW>> spellEffectsByThree = spellTemplate.GetWOWEffectsInBlocksOfThree();
                 for (int i = 1; i < spellEffectsByThree.Count; i++)
                 {
-                    if (spellEffectsByThree[i][0].IsAuraType() == false)
-                    {
-                        Logger.WriteError("Spell split for spellid ", spellTemplate.WOWSpellID.ToString(), " was not an aura type!");
-                        continue;
-                    }
-                    int chainSpellID = curSpellAuraGenID;
+                    int chainSpellID = curSpellSplitGenID;
                     string comment = string.Concat(spellTemplate.Name, " Split ", i.ToString());
-                    curSpellAuraGenID++;
-                    spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                    curSpellSplitGenID++;
+                    // TODO: Check if there are mixtures of aura and non-aura spells first, this may have a bug
+                    if (spellTemplate.SpellDurationInMS > 0)
+                        spellLinkedSpellSQL.AddRowForAuraTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
+                    else
+                        spellLinkedSpellSQL.AddRowForHitTrigger(spellTemplate.WOWSpellID, chainSpellID, comment);
                 }
             }
             foreach (var spellGroupStackRuleByGroup in SpellTemplate.SpellGroupStackRuleByGroup)

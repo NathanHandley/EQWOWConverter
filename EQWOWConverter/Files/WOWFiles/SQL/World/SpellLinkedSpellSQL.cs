@@ -20,7 +20,7 @@ namespace EQWOWConverter.WOWFiles
     {
         public override string DeleteRowSQL()
         {
-            return "DELETE FROM spell_linked_spell WHERE `spell_trigger` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `spell_trigger` <= " + Configuration.DBCID_SPELL_ID_SPLIT_AURAS_START + ";";
+            return "DELETE FROM spell_linked_spell WHERE `spell_trigger` >= " + Configuration.DBCID_SPELL_ID_START.ToString() + " AND `spell_trigger` <= " + Configuration.DBCID_SPELL_ID_SPLIT_SPELLS_START + ";";
         }
 
         public void AddRowForAuraTrigger(int triggeringSpellID, int triggeredSpellID, string comment)
@@ -29,6 +29,16 @@ namespace EQWOWConverter.WOWFiles
             newRow.AddInt("spell_trigger", triggeringSpellID);
             newRow.AddInt("spell_effect", triggeredSpellID);
             newRow.AddInt("type", 2); // 2 with a positive spell_effect value means 'add or remove aura in response to this'
+            newRow.AddString("comment", comment);
+            Rows.Add(newRow);
+        }
+
+        public void AddRowForHitTrigger(int triggeringSpellID, int triggeredSpellID, string comment)
+        {
+            SQLRow newRow = new SQLRow();
+            newRow.AddInt("spell_trigger", triggeringSpellID);
+            newRow.AddInt("spell_effect", triggeredSpellID);
+            newRow.AddInt("type", 1); // 1 is a spell hit
             newRow.AddString("comment", comment);
             Rows.Add(newRow);
         }
