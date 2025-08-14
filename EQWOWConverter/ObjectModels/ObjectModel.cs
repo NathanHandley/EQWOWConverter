@@ -1150,7 +1150,8 @@ namespace EQWOWConverter.ObjectModels
                         ObjectModelAnimation newAnimation = new ObjectModelAnimation();
                         newAnimation.DurationInMS = Convert.ToUInt32(animation.Value.TotalTimeInMS);
                         newAnimation.AnimationType = animationType;
-                        newAnimation.EQAnimationType = animation.Value.EQAnimationType;
+                        newAnimation.EQAnimationTypeTrue = animation.Value.EQAnimationType;
+                        newAnimation.EQAnimationTypePreferred = compatibleAnimationTypes[0];
                         newAnimation.BoundingBox = VisibilityBoundingBox;
                         newAnimation.BoundingRadius = VisibilityBoundingBox.FurthestPointDistanceFromCenter();
                         newAnimation.AliasNext = Convert.ToUInt16(ModelAnimations.Count); // The next animation is itself, so it's a loop (TODO: Change this)
@@ -1421,6 +1422,7 @@ namespace EQWOWConverter.ObjectModels
             for (Int16 i = 0; i <= 49; i++)
                 AnimationLookups.Add(-1);
             SetAnimationIndicesForAnimationType(AnimationType.Stand);
+
             if (IsSkeletal)
             {
                 SetAnimationIndicesForAnimationType(AnimationType.Walk);
@@ -1443,8 +1445,8 @@ namespace EQWOWConverter.ObjectModels
 
         private void SetAnimationIndicesForAnimationType(AnimationType animationType)
         {
-            List<EQAnimationType> validEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
-            int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validEQAnimationTypes.ToArray());
+            List<EQAnimationType> validPreferredEQAnimationTypes = ObjectModelAnimation.GetPrioritizedCompatibleEQAnimationTypes(animationType);
+            int firstAnimationIndex = GetFirstAnimationIndexForEQAnimationTypes(validPreferredEQAnimationTypes.ToArray());
             if (firstAnimationIndex == -1)
                 return;
             if (Convert.ToInt32(animationType) >= AnimationLookups.Count)
@@ -1462,7 +1464,7 @@ namespace EQWOWConverter.ObjectModels
                 for (int i = 0; i < ModelAnimations.Count; i++)
                 {
                     ObjectModelAnimation curAnimation = ModelAnimations[i];
-                    if (curAnimation.EQAnimationType == eqAnimationType)
+                    if (curAnimation.EQAnimationTypePreferred == eqAnimationType)
                         return i;
                 }
             }

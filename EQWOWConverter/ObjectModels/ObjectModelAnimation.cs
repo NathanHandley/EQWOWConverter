@@ -24,7 +24,7 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 SubAnimationID = 0; // wowdev also refers to this as variationIndex
         public UInt32 DurationInMS = 10000;
         public float MoveSpeed = 2f;
-        public ObjectModelAnimationFlags Flags = ObjectModelAnimationFlags.AnimationInM2  | ObjectModelAnimationFlags.Set0x80OnLoad | ObjectModelAnimationFlags.BlendedAnimation;
+        public ObjectModelAnimationFlags Flags = ObjectModelAnimationFlags.AnimationInM2  | ObjectModelAnimationFlags.Set0x80OnLoad /*| ObjectModelAnimationFlags.BlendedAnimation*/;
         public Int16 PlayFrequency = 32767; // Always make this add up to 32767 for animations of same type
         public UInt16 Padding = 0;
         public UInt32 ReplayMin = 0;
@@ -36,7 +36,8 @@ namespace EQWOWConverter.ObjectModels
         public UInt16 AliasNext = 0; // Id in the list of animations if this is an alias (?)
         public int NumOfFramesFromEQTemplate = -1;
         public bool Loop = true;
-        public EQAnimationType EQAnimationType = EQAnimationType.Unknown;
+        public EQAnimationType EQAnimationTypeTrue = EQAnimationType.Unknown;
+        public EQAnimationType EQAnimationTypePreferred = EQAnimationType.Unknown;
         private AnimationType _AnimationType = AnimationType.Stand; // This correlates to AnimationData.dbc.  0 is standing
         
         public AnimationType AnimationType
