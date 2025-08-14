@@ -406,13 +406,13 @@ namespace EQWOWConverter.Spells
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
-                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets enemies within ", spellRadius, " yards around the caster");
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an enemy and other enemies within ", spellRadius, " yards around the target");
                         }
                         else
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetFriendly);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
-                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets friendly units within ", spellRadius, " yards around the caster");
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets a friendly unit and other friendly units within ", spellRadius, " yards around the target");
                         }
                     }
                     break;
@@ -468,13 +468,13 @@ namespace EQWOWConverter.Spells
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetEnemy);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetEnemy);
-                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets elemental enemies within ", spellRadius, " yards around the caster");
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an elemental enemy and other elemental enemies within ", spellRadius, " yards around the target");
                         }
                         else
                         {
                             spellWOWTargetTypes.Add(SpellWOWTargetType.TargetAny);
                             spellWOWTargetTypes.Add(SpellWOWTargetType.AreaAroundTargetAlly);
-                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets elemental friendly units within ", spellRadius, " yards around the caster");
+                            spellTemplate.TargetDescriptionTextFragment = string.Concat("Targets an elemental friendly unit and other elemental friendly units within ", spellRadius, " yards around the target");
                         }
                     } break;
                 case SpellEQTargetType.LifeTap:
