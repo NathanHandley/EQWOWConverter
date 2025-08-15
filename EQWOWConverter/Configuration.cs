@@ -46,20 +46,20 @@ namespace EQWOWConverter
         // Deployment Rules
         // ====================================================================
         // If true, deploy the client file (patch mpq) after building it
-        public static readonly bool DEPLOY_CLIENT_FILES = false;
+        public static readonly bool DEPLOY_CLIENT_FILES = true;
 
         // If true and when deploying client files, clear the cache (only relevant if you set DEPLOY_CLIENT_FILES to true, otherwise ignored)
         public static readonly bool DEPLOY_CLEAR_CACHE_ON_CLIENT_DEPLOY = true;
 
         // If true, deploy to the server files/data after building
-        public static readonly bool DEPLOY_SERVER_FILES = false;
+        public static readonly bool DEPLOY_SERVER_FILES = true;
 
         // Location of where the server DBC files would be deployed to (only relevant if you set DEPLOY_SERVER_FILES to true, otherwise ignored)
         public static readonly string DEPLOY_SERVER_DBC_FOLDER_LOCATION = "E:\\Development\\azerothcore-wotlk\\Build\\bin\\RelWithDebInfo\\data\\dbc";
 
         // If true, deploy to the SQL to the server
         // Note: May not work on remote servers (not tested)
-        public static readonly bool DEPLOY_SERVER_SQL = false;
+        public static readonly bool DEPLOY_SERVER_SQL = true;
 
         // If deploying to SQL, you need to set these to something real that points to your databases (only relevant if you set DEPLOY_SERVER_SQL to true, otherwise ignored)
         public static readonly string DEPLOY_SQL_CONNECTION_STRING_CHARACTERS = "Server=127.0.0.1;Database=acore_characters;Uid=root;Pwd=rootpass;";
