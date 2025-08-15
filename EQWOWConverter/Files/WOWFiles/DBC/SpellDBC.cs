@@ -32,7 +32,7 @@ namespace EQWOWConverter.WOWFiles
             DBCRow newRow = new DBCRow();            
             newRow.AddInt32(spellID); // ID
             newRow.AddUInt32(spellTemplate.Category); // Category (SpellCategory.ID)
-            newRow.AddUInt32(spellTemplate.DispellType); // DispelType
+            newRow.AddUInt32(spellTemplate.DispelType); // DispelType
             newRow.AddUInt32(0); // Mechanic
             newRow.AddUInt32(GetAttributes(spellTemplate, spellEffects[0].EffectAuraType, doHideFromDisplay, preventClickOff)); // Attributes
             newRow.AddUInt32(GetAttributesEx(spellTemplate, spellEffects[0].EffectAuraType)); // AttributesEx

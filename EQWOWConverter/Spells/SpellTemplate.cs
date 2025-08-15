@@ -125,7 +125,7 @@ namespace EQWOWConverter.Spells
         public bool HasEffectBaseFormulaUsingSpellLevel = false;
         public int RequiredAreaIDs = -1;
         public UInt32 SchoolMask = 1;
-        public UInt32 DispellType = 0;
+        public UInt32 DispelType = 0;
         public UInt32 RequiredTotemID1 = 0;
         public UInt32 RequiredTotemID2 = 0;
         public UInt32 SpellFocusID = 0;
@@ -214,7 +214,7 @@ namespace EQWOWConverter.Spells
                 // School class
                 int resistType = int.Parse(columns["resisttype"]);
                 newSpellTemplate.SchoolMask = GetSchoolMaskForResistType(resistType);
-                newSpellTemplate.DispellType = GetDispellTypeForResistType(resistType, isDetrimental, newSpellTemplate.SpellDurationInMS);
+                newSpellTemplate.DispelType = GetDispelTypeForResistType(resistType, isDetrimental, newSpellTemplate.SpellDurationInMS);
 
                 // Set defensive properties
                 newSpellTemplate.DefenseType = 1; // Magic
@@ -267,9 +267,9 @@ namespace EQWOWConverter.Spells
             }
         }
 
-        public static UInt32 GetDispellTypeForResistType(int eqResistType, bool isDetrimental, int spellDurationInMS)
+        public static UInt32 GetDispelTypeForResistType(int eqResistType, bool isDetrimental, int spellDurationInMS)
         {
-            // TODO: Honor 'nodispell'?
+            // TODO: Honor 'nodispel'?
             if (spellDurationInMS == 0)
                 return 0;
             if (isDetrimental == false)
@@ -1071,19 +1071,19 @@ namespace EQWOWConverter.Spells
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.Dispel;
                             newSpellEffectWOW.EffectMiscValueA = 1; // 1 = Magic
                             newSpellEffectWOW.EffectDieSides = 1;
-                            int numOfOtherDispells = 0;
+                            int numOfOtherDispels = 0;
                             foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
                             {
                                 if (wowEffect.EffectType == SpellWOWEffectType.Dispel && wowEffect.EffectMiscValueA == 1) 
                                 {
                                     wowEffect.AuraDescription = string.Empty;
                                     wowEffect.ActionDescription = string.Empty;
-                                    numOfOtherDispells++;
+                                    numOfOtherDispels++;
                                 }
                             }
-                            int totalDispellCount = numOfOtherDispells + 1;
-                            newSpellEffectWOW.ActionDescription = string.Concat("dispells ", totalDispellCount, " beneficial (enemy) or detrimental (friendly) magic effect");
-                            if (totalDispellCount > 1)
+                            int totalDispelCount = numOfOtherDispels + 1;
+                            newSpellEffectWOW.ActionDescription = string.Concat("dispels ", totalDispelCount, " beneficial (enemy) or detrimental (friendly) magic effect");
+                            if (totalDispelCount > 1)
                                 newSpellEffectWOW.ActionDescription = string.Concat(newSpellEffectWOW.ActionDescription, "s");
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
@@ -1094,31 +1094,31 @@ namespace EQWOWConverter.Spells
                                 continue;
 
                             // Calculate a potency
-                            int totalDispells = 1;
+                            int totalDispels = 1;
                             if (eqEffect.EQBaseValue < -1 && eqEffect.EQBaseValue > -10)
-                                totalDispells = 2;
+                                totalDispels = 2;
                             else if (eqEffect.EQBaseValue <= -10)
-                                totalDispells = 3;
+                                totalDispels = 3;
 
                             // Update the true count by counting other ones
-                            int numOfOtherDispells = 0;
+                            int numOfOtherDispels = 0;
                             foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
                             {
                                 if (wowEffect.EffectType == SpellWOWEffectType.Dispel && wowEffect.EffectMiscValueA == 3) // 3 = Disease
                                 {
                                     wowEffect.AuraDescription = string.Empty;
                                     wowEffect.ActionDescription = string.Empty;
-                                    numOfOtherDispells++;
+                                    numOfOtherDispels++;
                                 }
                             }
-                            int totalDispellCount = totalDispells + numOfOtherDispells;
+                            int totalDispelCount = totalDispels + numOfOtherDispels;
 
                             // Create one for each count
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.Dispel;
                             newSpellEffectWOW.EffectMiscValueA = 3; // 3 = Disease
                             newSpellEffectWOW.EffectDieSides = 1;
-                            for (int i = 1; i < totalDispells; i++)
+                            for (int i = 1; i < totalDispels; i++)
                             {
                                 SpellEffectWOW newSpellEffectWOWAdditonal = newSpellEffectWOW.Clone();
                                 newSpellEffectWOWAdditonal.ActionDescription = string.Empty;
@@ -1127,8 +1127,8 @@ namespace EQWOWConverter.Spells
                             }
 
                             // Set the in the display
-                            newSpellEffectWOW.ActionDescription = string.Concat("cures ", totalDispellCount, " disease");
-                            if (totalDispells > 1)
+                            newSpellEffectWOW.ActionDescription = string.Concat("cures ", totalDispelCount, " disease");
+                            if (totalDispels > 1)
                                 newSpellEffectWOW.ActionDescription = string.Concat(newSpellEffectWOW.ActionDescription, "s");
                             newSpellEffects.Add(newSpellEffectWOW);
                         } break;
@@ -1139,31 +1139,31 @@ namespace EQWOWConverter.Spells
                                 continue;
 
                             // Calculate a potency
-                            int totalDispells = 1;
+                            int totalDispels = 1;
                             if (eqEffect.EQBaseValue < -1 && eqEffect.EQBaseValue > -10)
-                                totalDispells = 2;
+                                totalDispels = 2;
                             else if (eqEffect.EQBaseValue <= -10)
-                                totalDispells = 3;
+                                totalDispels = 3;
 
                             // Update the true count by counting other ones
-                            int numOfOtherDispells = 0;
+                            int numOfOtherDispels = 0;
                             foreach (SpellEffectWOW wowEffect in spellTemplate.WOWSpellEffects)
                             {
                                 if (wowEffect.EffectType == SpellWOWEffectType.Dispel && wowEffect.EffectMiscValueA == 4) // 4 = Poison
                                 {
                                     wowEffect.AuraDescription = string.Empty;
                                     wowEffect.ActionDescription = string.Empty;
-                                    numOfOtherDispells++;
+                                    numOfOtherDispels++;
                                 }
                             }
-                            int totalDispellCount = totalDispells + numOfOtherDispells;
+                            int totalDispelCount = totalDispels + numOfOtherDispels;
 
                             // Create one for each count
                             SpellEffectWOW newSpellEffectWOW = new SpellEffectWOW();
                             newSpellEffectWOW.EffectType = SpellWOWEffectType.Dispel;
                             newSpellEffectWOW.EffectMiscValueA = 4; // 4 = Poison
                             newSpellEffectWOW.EffectDieSides = 1;
-                            for (int i = 1; i < totalDispells; i++)
+                            for (int i = 1; i < totalDispels; i++)
                             {
                                 SpellEffectWOW newSpellEffectWOWAdditonal = newSpellEffectWOW.Clone();
                                 newSpellEffectWOWAdditonal.ActionDescription = string.Empty;
@@ -1172,8 +1172,8 @@ namespace EQWOWConverter.Spells
                             }
 
                             // Set the in the display
-                            newSpellEffectWOW.ActionDescription = string.Concat("cures ", totalDispellCount, " poison");
-                            if (totalDispells > 1)
+                            newSpellEffectWOW.ActionDescription = string.Concat("cures ", totalDispelCount, " poison");
+                            if (totalDispels > 1)
                                 newSpellEffectWOW.ActionDescription = string.Concat(newSpellEffectWOW.ActionDescription, "s");
                             newSpellEffects.Add(newSpellEffectWOW);
                         }
